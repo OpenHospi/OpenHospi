@@ -614,7 +614,6 @@ export type Database = {
           show_instagram: boolean | null
           study_program: string | null
           study_year: number | null
-          surfconext_sub: string
           updated_at: string | null
           vereniging: string | null
         }
@@ -629,7 +628,7 @@ export type Database = {
           faculty?: string | null
           first_name: string
           gender?: Database["public"]["Enums"]["gender_enum"] | null
-          id?: string
+          id: string
           instagram_handle?: string | null
           institution_domain: string
           language?: Database["public"]["Enums"]["language_enum"] | null
@@ -645,7 +644,6 @@ export type Database = {
           show_instagram?: boolean | null
           study_program?: string | null
           study_year?: number | null
-          surfconext_sub: string
           updated_at?: string | null
           vereniging?: string | null
         }
@@ -676,11 +674,18 @@ export type Database = {
           show_instagram?: boolean | null
           study_program?: string | null
           study_year?: number | null
-          surfconext_sub?: string
           updated_at?: string | null
           vereniging?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       public_keys: {
         Row: {
@@ -1205,7 +1210,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_conversation_member: {
+        Args: { _conversation_id: string }
+        Returns: boolean
+      }
+      is_housemate: {
+        Args: {
+          _roles?: Database["public"]["Enums"]["housemate_role_enum"][]
+          _room_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       admin_action_enum:

@@ -71,7 +71,7 @@ describe.skipIf(!DB_URL)('RLS policies', () => {
     await client.query("SET LOCAL request.jwt.claims = ''");
   }
 
-  /** Seed profiles, a room, and Sophie as the room owner */
+  /** Seed user + profiles, a room, and Sophie as the room owner */
   async function seedBaseData() {
     // Remove any conflicting seed data (rolled back with the transaction)
     await client.query(
@@ -83,13 +83,25 @@ describe.skipIf(!DB_URL)('RLS policies', () => {
       'DELETE FROM profiles WHERE id = ANY($1)',
       [[JAN, SOPHIE, CAROL]],
     );
+    await client.query(
+      'DELETE FROM "user" WHERE id = ANY($1)',
+      [[JAN, SOPHIE, CAROL]],
+    );
 
     await client.query(`
-      INSERT INTO profiles (id, surfconext_sub, first_name, last_name, email, institution_domain)
+      INSERT INTO "user" (id, name, email, "emailVerified")
       VALUES
-        ($1, 'jan-sub',    'Jan',    'Jansen',   'jan@test.nl',    'test.nl'),
-        ($2, 'sophie-sub', 'Sophie', 'de Vries', 'sophie@test.nl', 'test.nl'),
-        ($3, 'carol-sub',  'Carol',  'Smit',     'carol@test.nl',  'test.nl')
+        ($1, 'Jan Jansen',    'jan-test@id.openhospi.nl',    true),
+        ($2, 'Sophie de Vries', 'sophie-test@id.openhospi.nl', true),
+        ($3, 'Carol Smit',    'carol-test@id.openhospi.nl',  true)
+    `, [JAN, SOPHIE, CAROL]);
+
+    await client.query(`
+      INSERT INTO profiles (id, first_name, last_name, email, institution_domain)
+      VALUES
+        ($1, 'Jan',    'Jansen',   'jan@test.nl',    'test.nl'),
+        ($2, 'Sophie', 'de Vries', 'sophie@test.nl', 'test.nl'),
+        ($3, 'Carol',  'Smit',     'carol@test.nl',  'test.nl')
     `, [JAN, SOPHIE, CAROL]);
 
     await client.query(`
@@ -139,10 +151,17 @@ describe.skipIf(!DB_URL)('RLS policies', () => {
 
     it('user can insert own profile (id = self)', async () => {
       const NEW_USER = '00000000-0000-0000-0000-000000000099';
+      // FK requires a user row first
+      await resetRole();
+      await client.query(
+        `INSERT INTO "user" (id, name, email, "emailVerified")
+         VALUES ($1, 'New User', 'new-test@id.openhospi.nl', true)`,
+        [NEW_USER],
+      );
       await actAs(NEW_USER);
       const { rowCount } = await client.query(
-        `INSERT INTO profiles (id, surfconext_sub, first_name, last_name, email, institution_domain)
-         VALUES ($1, 'new-sub', 'New', 'User', 'new@test.nl', 'test.nl')`,
+        `INSERT INTO profiles (id, first_name, last_name, email, institution_domain)
+         VALUES ($1, 'New', 'User', 'new@test.nl', 'test.nl')`,
         [NEW_USER],
       );
       expect(rowCount).toBe(1);

@@ -5,7 +5,6 @@ import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
 import { SponsorTier } from "@/components/marketing/sponsor-tier";
 import { FeatureCard } from "@/components/marketing/feature-card";
-import { Button } from "@/components/ui/button";
 import {
   Cloud,
   Database,
@@ -118,12 +117,13 @@ export default function CostsPage() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Button variant="outline" asChild>
-              <a href="mailto:sponsor@openhospi.nl">
-                <Mail className="size-4" />
-                {t("sponsor.cta")}
-              </a>
-            </Button>
+            <a
+              href="mailto:sponsor@openhospi.nl"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <Mail className="size-4" />
+              {t("sponsor.cta")}
+            </a>
           </div>
         </div>
       </section>

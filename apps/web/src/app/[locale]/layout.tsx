@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/theme-provider";
 import { APP_NAME } from "@openhospi/shared/constants";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -33,8 +45,15 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = (await import(`../../messages/${locale}.json`)).default;
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <ThemeProvider>{children}</ThemeProvider>
-    </NextIntlClientProvider>
+    <html lang={locale} suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </NextIntlClientProvider>
+        <Analytics />
+      </body>
+    </html>
   );
 }

@@ -410,10 +410,10 @@
     },
     "donate": {
       "title": "OpenHospi unterstützen",
-      "description": "Jeder Beitrag hilft, die Plattform für Studierende kostenlos zu halten.",
+      "description": "Jeder Beitrag hilft, die Plattform für Studierende kostenlos zu halten. Über Open Collective kannst du genau sehen, wohin dein Geld fließt.",
       "oneTime": "Einmalige Spende",
       "monthly": "Monatliche Unterstützung",
-      "cta": "Über GitHub Sponsors spenden"
+      "cta": "Über Open Collective spenden"
     },
     "sponsor": {
       "title": "Sponsor werden",
@@ -438,7 +438,7 @@
     },
     "transparency": {
       "title": "Wohin geht das Geld?",
-      "description": "100% der Spenden fließen in Infrastrukturkosten. Wir veröffentlichen unsere Finanzen offen. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten."
+      "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten."
     }
   }
 }

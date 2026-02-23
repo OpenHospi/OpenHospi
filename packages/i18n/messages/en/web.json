@@ -410,10 +410,10 @@
     },
     "donate": {
       "title": "Support OpenHospi",
-      "description": "Every contribution helps keep the platform free for students.",
+      "description": "Every contribution helps keep the platform free for students. Via Open Collective you can see exactly where your money goes.",
       "oneTime": "One-time donation",
       "monthly": "Monthly support",
-      "cta": "Donate via GitHub Sponsors"
+      "cta": "Donate via Open Collective"
     },
     "sponsor": {
       "title": "Become a sponsor",
@@ -438,7 +438,7 @@
     },
     "transparency": {
       "title": "Where does the money go?",
-      "description": "100% of donations go to infrastructure costs. We publish our finances openly. No salaries, no profit — just keeping the platform running for students."
+      "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students."
     }
   }
 }

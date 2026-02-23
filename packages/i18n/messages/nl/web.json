@@ -410,10 +410,10 @@
     },
     "donate": {
       "title": "Steun OpenHospi",
-      "description": "Elke bijdrage helpt het platform gratis te houden voor studenten.",
+      "description": "Elke bijdrage helpt het platform gratis te houden voor studenten. Via Open Collective kun je precies zien waar je geld naartoe gaat.",
       "oneTime": "Eenmalige donatie",
       "monthly": "Maandelijkse steun",
-      "cta": "Doneer via GitHub Sponsors"
+      "cta": "Doneer via Open Collective"
     },
     "sponsor": {
       "title": "Word sponsor",
@@ -438,7 +438,7 @@
     },
     "transparency": {
       "title": "Waar gaat het geld naartoe?",
-      "description": "100% van de donaties gaat naar infrastructuurkosten. We publiceren onze financiën openlijk. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten."
+      "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten."
     }
   }
 }

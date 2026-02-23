@@ -39,7 +39,7 @@ export function DonateCard({
         <div className="mt-6">
           <Button asChild variant="outline" className="w-full">
             <a
-              href="https://github.com/sponsors/rubentalstra"
+              href="https://opencollective.com/openhospi"
               target="_blank"
               rel="noopener noreferrer"
             >

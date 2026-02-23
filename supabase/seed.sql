@@ -7,7 +7,7 @@ VALUES
   ('00000000-0000-0000-0000-000000000002', 'Sophie Bakker', '00000000-0000-0000-0000-000000000002@id.openhospi.nl', true);
 
 -- Test profiles
-INSERT INTO profiles (id, first_name, last_name, email, institution_domain, affiliation, gender, bio, study_program, study_year, lifestyle_tags, language)
+INSERT INTO profiles (id, first_name, last_name, email, institution_domain, affiliation, gender, bio, study_program, study_year, lifestyle_tags, languages)
 VALUES
   (
     '00000000-0000-0000-0000-000000000001',
@@ -21,7 +21,7 @@ VALUES
     'Artificial Intelligence',
     2,
     ARRAY['gezellig', 'sporten', 'gamen', 'vroege_vogel']::lifestyle_tag_enum[],
-    'nl'
+    ARRAY['nl']::language_enum[]
   ),
   (
     '00000000-0000-0000-0000-000000000002',
@@ -35,7 +35,7 @@ VALUES
     'Psychologie',
     3,
     ARRAY['rustig', 'lezen', 'koken', 'vegetarisch', 'schoon']::lifestyle_tag_enum[],
-    'nl'
+    ARRAY['nl']::language_enum[]
   );
 
 -- Test room listing

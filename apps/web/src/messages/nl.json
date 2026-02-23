@@ -1,4 +1,22 @@
 {
+  "enums": {
+    "language_enum": {
+      "nl": "Nederlands",
+      "en": "Engels",
+      "de": "Duits",
+      "fr": "Frans",
+      "es": "Spaans",
+      "it": "Italiaans",
+      "pt": "Portugees",
+      "zh": "Chinees",
+      "ar": "Arabisch",
+      "tr": "Turks",
+      "pl": "Pools",
+      "hi": "Hindi",
+      "ja": "Japans",
+      "ko": "Koreaans"
+    }
+  },
   "metadata": {
     "title": "OpenHospi — Gratis studentenhuisvesting",
     "description": "Het gratis, open-source platform voor studentenhuisvesting in Nederland."

@@ -5,8 +5,8 @@
   },
   "header": {
     "nav": {
-      "howItWorks": "How it works",
-      "forHouses": "For houses",
+      "findRoom": "Find a room",
+      "listRoom": "List a room",
       "safety": "Safety",
       "costs": "Costs",
       "about": "About"
@@ -19,8 +19,8 @@
     "legal": "Legal",
     "community": "Community",
     "links": {
-      "howItWorks": "How it works",
-      "forHouses": "For houses",
+      "findRoom": "Find a room",
+      "listRoom": "List a room",
       "safety": "Safety",
       "costs": "Costs",
       "privacy": "Privacy policy",
@@ -87,13 +87,33 @@
       "button": "Log in with SURFconext"
     }
   },
-  "howItWorks": {
-    "title": "How it works",
-    "subtitle": "Step-by-step guide to finding a room or filling one.",
-    "seekerTab": "I'm looking for a room",
-    "houseTab": "I have a room",
-    "seeker": {
-      "steps": [
+  "findRoom": {
+    "title": "Find a room",
+    "subtitle": "The easiest way to find your next student room — free, fair, and only for verified students.",
+    "why": {
+      "title": "Why search on OpenHospi?",
+      "items": [
+        {
+          "title": "Verified students",
+          "description": "Every user is a real student, verified by their university or hogeschool through SURFconext. No fake profiles."
+        },
+        {
+          "title": "Completely free",
+          "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility."
+        },
+        {
+          "title": "Encrypted chat",
+          "description": "Your conversations are end-to-end encrypted. We can't read them, nobody can."
+        },
+        {
+          "title": "Fair for everyone",
+          "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
+        }
+      ]
+    },
+    "steps": {
+      "title": "How to find a room",
+      "items": [
         {
           "title": "Log in with SURFconext",
           "description": "Use your university account to verify your identity."
@@ -120,8 +140,38 @@
         }
       ]
     },
-    "house": {
-      "steps": [
+    "cta": {
+      "title": "Ready to find your room?",
+      "button": "Log in with SURFconext"
+    }
+  },
+  "listRoom": {
+    "title": "List a room",
+    "subtitle": "The easiest way to find your next housemate.",
+    "why": {
+      "title": "Why list on OpenHospi?",
+      "items": [
+        {
+          "title": "Verified candidates",
+          "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
+        },
+        {
+          "title": "Completely free",
+          "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
+        },
+        {
+          "title": "Manage responses",
+          "description": "Review profiles, read messages, and invite candidates — all in one place."
+        },
+        {
+          "title": "Share your listing",
+          "description": "Generate a unique link to share on social media or in group chats."
+        }
+      ]
+    },
+    "steps": {
+      "title": "How to list a room",
+      "items": [
         {
           "title": "Log in with SURFconext",
           "description": "All members verify via their university account."
@@ -147,35 +197,6 @@
           "description": "After hospiteren, pick the person who fits best."
         }
       ]
-    }
-  },
-  "forHouses": {
-    "title": "For houses",
-    "subtitle": "The easiest way to find your next housemate.",
-    "why": {
-      "title": "Why list on OpenHospi?",
-      "items": [
-        {
-          "title": "Verified candidates",
-          "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
-        },
-        {
-          "title": "Completely free",
-          "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
-        },
-        {
-          "title": "Manage responses",
-          "description": "Review profiles, read messages, and invite candidates — all in one place."
-        },
-        {
-          "title": "Share your listing",
-          "description": "Generate a unique link to share on social media or in group chats."
-        }
-      ]
-    },
-    "workflow": {
-      "title": "How it works for houses",
-      "description": "Create your house profile, add a room listing, review responses, and invite the best candidates for hospiteren."
     },
     "shareLink": {
       "title": "Share your listing anywhere",

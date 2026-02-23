@@ -15,8 +15,8 @@ import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./language-switcher";
 
 const navLinks = [
-  { href: "/how-it-works", key: "howItWorks" },
-  { href: "/for-houses", key: "forHouses" },
+  { href: "/find-a-room", key: "findRoom" },
+  { href: "/list-a-room", key: "listRoom" },
   { href: "/safety", key: "safety" },
   { href: "/costs", key: "costs" },
   { href: "/about", key: "about" },

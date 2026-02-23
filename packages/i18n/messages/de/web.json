@@ -5,8 +5,8 @@
   },
   "header": {
     "nav": {
-      "howItWorks": "So funktioniert's",
-      "forHouses": "Für WGs",
+      "findRoom": "Zimmer finden",
+      "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
       "costs": "Kosten",
       "about": "Über uns"
@@ -19,8 +19,8 @@
     "legal": "Rechtliches",
     "community": "Community",
     "links": {
-      "howItWorks": "So funktioniert's",
-      "forHouses": "Für WGs",
+      "findRoom": "Zimmer finden",
+      "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
       "costs": "Kosten",
       "privacy": "Datenschutz",
@@ -87,13 +87,33 @@
       "button": "Mit SURFconext anmelden"
     }
   },
-  "howItWorks": {
-    "title": "So funktioniert's",
-    "subtitle": "Schritt-für-Schritt-Anleitung zum Finden oder Anbieten eines Zimmers.",
-    "seekerTab": "Ich suche ein Zimmer",
-    "houseTab": "Ich habe ein Zimmer",
-    "seeker": {
-      "steps": [
+  "findRoom": {
+    "title": "Zimmer finden",
+    "subtitle": "Der einfachste Weg, dein nächstes Studentenzimmer zu finden — kostenlos, fair und nur für verifizierte Studierende.",
+    "why": {
+      "title": "Warum auf OpenHospi suchen?",
+      "items": [
+        {
+          "title": "Verifizierte Studierende",
+          "description": "Jeder Nutzer ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext. Keine Fake-Profile."
+        },
+        {
+          "title": "Komplett kostenlos",
+          "description": "Keine versteckten Kosten, keine Premium-Pläne. Niemand kann zahlen, um sich Vorrang zu verschaffen. Jeder Studierende hat die gleiche Sichtbarkeit."
+        },
+        {
+          "title": "Verschlüsselter Chat",
+          "description": "Deine Gespräche sind Ende-zu-Ende verschlüsselt. Wir können sie nicht lesen, niemand kann das."
+        },
+        {
+          "title": "Fair für alle",
+          "description": "Open Source und Community-getrieben. Kein Unternehmen verdient daran — von einem Studierenden gestartet, für alle Studierenden."
+        }
+      ]
+    },
+    "steps": {
+      "title": "So findest du ein Zimmer",
+      "items": [
         {
           "title": "Mit SURFconext anmelden",
           "description": "Nutze deinen Uni-Account, um deine Identität zu verifizieren."
@@ -120,8 +140,38 @@
         }
       ]
     },
-    "house": {
-      "steps": [
+    "cta": {
+      "title": "Bereit, dein Zimmer zu finden?",
+      "button": "Mit SURFconext anmelden"
+    }
+  },
+  "listRoom": {
+    "title": "Zimmer anbieten",
+    "subtitle": "Der einfachste Weg, deinen nächsten Mitbewohner zu finden.",
+    "why": {
+      "title": "Warum auf OpenHospi inserieren?",
+      "items": [
+        {
+          "title": "Verifizierte Kandidaten",
+          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext."
+        },
+        {
+          "title": "Komplett kostenlos",
+          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair für alle."
+        },
+        {
+          "title": "Anfragen verwalten",
+          "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen — alles an einem Ort."
+        },
+        {
+          "title": "Anzeige teilen",
+          "description": "Generiere einen einzigartigen Link zum Teilen in sozialen Medien oder Gruppenchats."
+        }
+      ]
+    },
+    "steps": {
+      "title": "So bietest du ein Zimmer an",
+      "items": [
         {
           "title": "Mit SURFconext anmelden",
           "description": "Alle Bewohner verifizieren sich über ihren Uni-Account."
@@ -147,35 +197,6 @@
           "description": "Nach dem Hospiteren wählst du die Person, die am besten passt."
         }
       ]
-    }
-  },
-  "forHouses": {
-    "title": "Für WGs",
-    "subtitle": "Der einfachste Weg, deinen nächsten Mitbewohner zu finden.",
-    "why": {
-      "title": "Warum auf OpenHospi inserieren?",
-      "items": [
-        {
-          "title": "Verifizierte Kandidaten",
-          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext."
-        },
-        {
-          "title": "Komplett kostenlos",
-          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair für alle."
-        },
-        {
-          "title": "Anfragen verwalten",
-          "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen — alles an einem Ort."
-        },
-        {
-          "title": "Anzeige teilen",
-          "description": "Generiere einen einzigartigen Link zum Teilen in sozialen Medien oder Gruppenchats."
-        }
-      ]
-    },
-    "workflow": {
-      "title": "So funktioniert's für WGs",
-      "description": "Erstelle dein WG-Profil, füge eine Zimmeranzeige hinzu, prüfe Anfragen und lade die besten Kandidaten zum Hospiteren ein."
     },
     "shareLink": {
       "title": "Teile deine Anzeige überall",

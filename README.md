@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg" height="128" alt="OpenHospi logo">
+    <img src="./packages/shared/assets/logo.svg" height="128" alt="OpenHospi logo">     
 </p>
 
 <h1 align="center">OpenHospi</h1>

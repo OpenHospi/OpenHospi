@@ -5,8 +5,8 @@
   },
   "header": {
     "nav": {
-      "howItWorks": "So funktioniert's",
-      "forHouses": "Für WGs",
+      "findRoom": "Kamer zoeken",
+      "listRoom": "Kamer aanbieden",
       "safety": "Sicherheit",
       "costs": "Kosten",
       "about": "Über uns"
@@ -19,8 +19,8 @@
     "legal": "Rechtliches",
     "community": "Community",
     "links": {
-      "howItWorks": "So funktioniert's",
-      "forHouses": "Für WGs",
+      "findRoom": "Kamer zoeken",
+      "listRoom": "Kamer aanbieden",
       "safety": "Sicherheit",
       "costs": "Kosten",
       "privacy": "Datenschutz",
@@ -87,103 +87,124 @@
       "button": "Mit SURFconext anmelden"
     }
   },
-  "howItWorks": {
-    "title": "So funktioniert's",
-    "subtitle": "Schritt-für-Schritt-Anleitung zum Finden oder Anbieten eines Zimmers.",
-    "seekerTab": "Ich suche ein Zimmer",
-    "houseTab": "Ich habe ein Zimmer",
-    "seeker": {
-      "steps": [
-        {
-          "title": "Mit SURFconext anmelden",
-          "description": "Nutze deinen Uni-Account, um deine Identität zu verifizieren."
-        },
-        {
-          "title": "Profil vervollständigen",
-          "description": "Füge dein Studium, Hobbys und Vorlieben hinzu, damit WGs dich kennenlernen."
-        },
-        {
-          "title": "Zimmer durchsuchen",
-          "description": "Filtere nach Stadt, Preis, Verfügbarkeit und WG-Typ."
-        },
-        {
-          "title": "Auf Zimmer reagieren",
-          "description": "Sende eine persönliche Nachricht an die WG, warum du gut passen würdest."
-        },
-        {
-          "title": "Zum Hospiteren eingeladen werden",
-          "description": "Wenn die WG dein Profil mag, laden sie dich zum Besuch ein."
-        },
-        {
-          "title": "Einziehen!",
-          "description": "Nach einem erfolgreichen Hospiteren bist du dabei. Willkommen zu Hause!"
-        }
-      ]
-    },
-    "house": {
-      "steps": [
-        {
-          "title": "Mit SURFconext anmelden",
-          "description": "Alle Bewohner verifizieren sich über ihren Uni-Account."
-        },
-        {
-          "title": "WG erstellen",
-          "description": "Füge Adresse, Fotos, Zimmerdetails und Hausregeln hinzu."
-        },
-        {
-          "title": "Anzeige veröffentlichen",
-          "description": "Mache dein Zimmer für verifizierte Studierende in den ganzen Niederlanden sichtbar."
-        },
-        {
-          "title": "Anfragen ansehen",
-          "description": "Durchsuche Kandidatenprofile und lies ihre persönlichen Nachrichten."
-        },
-        {
-          "title": "Kandidaten einladen",
-          "description": "Wähle deine Favoriten aus und lade sie zum Hospiteren ein."
-        },
-        {
-          "title": "Neuen Mitbewohner wählen",
-          "description": "Nach dem Hospiteren wählst du die Person, die am besten passt."
-        }
-      ]
-    }
-  },
-  "forHouses": {
-    "title": "Für WGs",
-    "subtitle": "Der einfachste Weg, deinen nächsten Mitbewohner zu finden.",
+  "findRoom": {
+    "title": "Kamer zoeken",
+    "subtitle": "De makkelijkste manier om je volgende studentenkamer te vinden — gratis, eerlijk en alleen voor geverifieerde studenten.",
     "why": {
-      "title": "Warum auf OpenHospi inserieren?",
+      "title": "Waarom zoeken op OpenHospi?",
       "items": [
         {
-          "title": "Verifizierte Kandidaten",
-          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext."
+          "title": "Geverifieerde studenten",
+          "description": "Elke gebruiker is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via SURFconext. Geen nepprofielen."
         },
         {
-          "title": "Komplett kostenlos",
-          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair für alle."
+          "title": "Volledig gratis",
+          "description": "Geen verborgen kosten, geen premium plannen. Niemand kan betalen om voorrang te krijgen. Elke student heeft dezelfde zichtbaarheid."
         },
         {
-          "title": "Anfragen verwalten",
-          "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen — alles an einem Ort."
+          "title": "Versleutelde chat",
+          "description": "Je gesprekken zijn end-to-end versleuteld. Wij kunnen ze niet lezen, niemand kan dat."
         },
         {
-          "title": "Anzeige teilen",
-          "description": "Generiere einen einzigartigen Link zum Teilen in sozialen Medien oder Gruppenchats."
+          "title": "Eerlijk voor iedereen",
+          "description": "Open source en community-driven. Geen bedrijf dat eraan verdient — gestart door een student, voor alle studenten."
         }
       ]
     },
-    "workflow": {
-      "title": "So funktioniert's für WGs",
-      "description": "Erstelle dein WG-Profil, füge eine Zimmeranzeige hinzu, prüfe Anfragen und lade die besten Kandidaten zum Hospiteren ein."
-    },
-    "shareLink": {
-      "title": "Teile deine Anzeige überall",
-      "description": "Jedes Zimmer bekommt einen einzigartigen Link, den du auf Instagram, WhatsApp oder deiner WG-Website teilen kannst."
+    "steps": {
+      "title": "Hoe vind je een kamer?",
+      "items": [
+        {
+          "title": "Log in met SURFconext",
+          "description": "Gebruik je universiteitsaccount om je identiteit te verifiëren."
+        },
+        {
+          "title": "Maak je profiel compleet",
+          "description": "Voeg je studie, hobby's en voorkeuren toe zodat huizen je leren kennen."
+        },
+        {
+          "title": "Blader door kamers",
+          "description": "Filter op stad, prijs, beschikbaarheid en type huis."
+        },
+        {
+          "title": "Reageer op kamers",
+          "description": "Stuur een persoonlijk bericht naar het huis om uit te leggen waarom jij goed past."
+        },
+        {
+          "title": "Word uitgenodigd voor hospiteren",
+          "description": "Als het huis je profiel leuk vindt, nodigen ze je uit voor een bezoek."
+        },
+        {
+          "title": "Verhuis!",
+          "description": "Na een geslaagd hospiteren ben je erbij. Welkom thuis!"
+        }
+      ]
     },
     "cta": {
-      "title": "Bereit, deinen nächsten Mitbewohner zu finden?",
-      "button": "Mit SURFconext anmelden"
+      "title": "Klaar om je kamer te vinden?",
+      "button": "Inloggen met SURFconext"
+    }
+  },
+  "listRoom": {
+    "title": "Kamer aanbieden",
+    "subtitle": "De makkelijkste manier om je volgende huisgenoot te vinden.",
+    "why": {
+      "title": "Waarom adverteren op OpenHospi?",
+      "items": [
+        {
+          "title": "Geverifieerde kandidaten",
+          "description": "Elke kandidaat is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via SURFconext."
+        },
+        {
+          "title": "Volledig gratis",
+          "description": "Geen advertentiekosten, geen premium plaatsingen. Niemand betaalt om bovenaan te staan. Eerlijk voor iedereen."
+        },
+        {
+          "title": "Beheer reacties",
+          "description": "Bekijk profielen, lees berichten en nodig kandidaten uit — alles op één plek."
+        },
+        {
+          "title": "Deel je advertentie",
+          "description": "Genereer een unieke link om te delen op social media of in groepschats."
+        }
+      ]
+    },
+    "steps": {
+      "title": "Hoe bied je een kamer aan?",
+      "items": [
+        {
+          "title": "Log in met SURFconext",
+          "description": "Alle bewoners verifiëren via hun universiteitsaccount."
+        },
+        {
+          "title": "Maak je huis aan",
+          "description": "Voeg je adres, foto's, kamerdetails en huisregels toe."
+        },
+        {
+          "title": "Publiceer je advertentie",
+          "description": "Maak je kamer zichtbaar voor geverifieerde studenten door heel Nederland."
+        },
+        {
+          "title": "Bekijk reacties",
+          "description": "Bekijk profielen van kandidaten en lees hun persoonlijke berichten."
+        },
+        {
+          "title": "Nodig kandidaten uit",
+          "description": "Selecteer je favorieten en nodig ze uit voor hospiteren."
+        },
+        {
+          "title": "Kies je nieuwe huisgenoot",
+          "description": "Na het hospiteren kies je de persoon die het beste past."
+        }
+      ]
+    },
+    "shareLink": {
+      "title": "Deel je advertentie overal",
+      "description": "Elke kamer krijgt een unieke link die je kunt delen op Instagram, WhatsApp of je huiswebsite."
+    },
+    "cta": {
+      "title": "Klaar om je volgende huisgenoot te vinden?",
+      "button": "Inloggen met SURFconext"
     }
   },
   "safety": {
@@ -305,32 +326,115 @@
     "subtitle": "OpenHospi ist kostenlos für alle Nutzer. Das kostet es uns, die Plattform zu betreiben.",
     "intro": {
       "title": "Was kostet OpenHospi?",
-      "description": "OpenHospi ist und bleibt immer kostenlos für Studierende. Keine versteckten Kosten, keine Premium-Pläne, keine Werbung. Hier ist ein transparenter Überblick über unsere Betriebskosten."
+      "description": "OpenHospi is en blijft altijd gratis voor studenten. Geen verborgen kosten, geen premium plannen, geen advertenties. Hier is een transparant overzicht van onze draaikosten — alle prijzen zijn inclusief 21% BTW."
     },
     "breakdown": {
-      "title": "Monatliche Kostenaufstellung",
-      "items": [
+      "title": "Kostenopbouw",
+      "groups": [
         {
-          "name": "Hosting (Vercel)",
-          "description": "Frontend-Hosting und CDN",
-          "cost": "€0–20/Mo"
+          "name": "Infrastructuur",
+          "description": "Hosting, database en authenticatie",
+          "items": [
+            {
+              "name": "Vercel",
+              "description": "Website hosting en CDN",
+              "current": "€0/mnd (Hobby)",
+              "atScale": "~€18,50/mnd (Pro)"
+            },
+            {
+              "name": "Supabase",
+              "description": "PostgreSQL database en opslag",
+              "current": "€0/mnd (Free)",
+              "atScale": "~€23/mnd (Pro)"
+            },
+            {
+              "name": "SURFconext",
+              "description": "Studentenverificatie",
+              "current": "Gratis",
+              "atScale": "Gratis"
+            }
+          ]
         },
         {
-          "name": "Datenbank (Supabase)",
-          "description": "PostgreSQL-Datenbank, Auth und Speicher",
-          "cost": "€0–25/Mo"
+          "name": "Domeinen",
+          "description": "3 domeinen bij Vimexx, jaarlijks verlengd",
+          "items": [
+            {
+              "name": "openhospi.nl",
+              "description": ".nl domein",
+              "cost": "€7,95/jr"
+            },
+            {
+              "name": "openhospi.com",
+              "description": ".com domein",
+              "cost": "€29,03/jr"
+            },
+            {
+              "name": "openhospi.eu",
+              "description": ".eu domein",
+              "cost": "€13,30/jr"
+            }
+          ]
         },
         {
-          "name": "Domain",
-          "description": "openhospi.nl Domain-Registrierung",
-          "cost": "~€1/Mo"
+          "name": "App Stores",
+          "description": "Publicatie in iOS en Android app stores",
+          "items": [
+            {
+              "name": "Apple Developer Program",
+              "description": "Vereist voor iOS App Store",
+              "cost": "€99/jr"
+            },
+            {
+              "name": "Google Play Developer",
+              "description": "Vereist voor Play Store",
+              "cost": "€25 (eenmalig)"
+            }
+          ]
+        }
+      ]
+    },
+    "summary": {
+      "title": "Totaaloverzicht",
+      "currentLabel": "Huidige kosten",
+      "atScaleLabel": "Bij groei (10K+ gebruikers)",
+      "perYear": "/jr",
+      "perMonth": "/mnd",
+      "rows": [
+        {
+          "name": "Vercel",
+          "current": "€0",
+          "atScale": "~€222"
+        },
+        {
+          "name": "Supabase",
+          "current": "€0",
+          "atScale": "~€276"
         },
         {
           "name": "SURFconext",
-          "description": "Studierendenverifizierung über SURFconext",
-          "cost": "Kostenlos"
+          "current": "€0",
+          "atScale": "€0"
+        },
+        {
+          "name": "Domeinen (3x)",
+          "current": "~€50",
+          "atScale": "~€50"
+        },
+        {
+          "name": "Apple Developer",
+          "current": "€99",
+          "atScale": "€99"
+        },
+        {
+          "name": "Google Play",
+          "current": "€25",
+          "atScale": "—"
         }
-      ]
+      ],
+      "totalLabel": "Totaal per jaar",
+      "currentTotal": "~€174/jr",
+      "atScaleTotal": "~€647/jr (~€54/mnd)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",
@@ -351,35 +455,32 @@
     },
     "donate": {
       "title": "OpenHospi unterstützen",
-      "description": "Jeder Beitrag hilft, die Plattform für Studierende kostenlos zu halten.",
-      "oneTime": "Einmalige Spende",
-      "monthly": "Monatliche Unterstützung",
-      "cta": "Über GitHub Sponsors spenden"
-    },
-    "sponsor": {
-      "title": "Sponsor werden",
       "tiers": [
         {
-          "name": "Supporter",
-          "price": "€10/Mo",
-          "description": "Dein Name auf unserer Sponsorenseite."
+          "name": "Backer",
+          "price": "€5/mnd",
+          "badge": "Maandelijks",
+          "description": "Je naam op onze sponsorspagina."
         },
         {
-          "name": "Partner",
-          "price": "€50/Mo",
-          "description": "Logo auf unserer Website und README."
+          "name": "Sponsor",
+          "price": "€25/mnd",
+          "badge": "Maandelijks",
+          "description": "Je logo op onze website en README."
         },
         {
-          "name": "Institutionell",
-          "price": "Auf Anfrage",
-          "description": "Prominente Platzierung und direkte Unterstützung für Universitäten und Wohnungsorganisationen."
+          "name": "Donatie",
+          "price": "Flexibel",
+          "badge": "Eenmalig",
+          "description": "Steun met een eenmalig bedrag naar keuze."
         }
       ],
-      "cta": "Kontaktiere uns"
+      "cta": "Doneer via Open Collective"
     },
     "transparency": {
       "title": "Wohin geht das Geld?",
-      "description": "100% der Spenden fließen in Infrastrukturkosten. Wir veröffentlichen unsere Finanzen offen. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten."
+      "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten.",
+      "badge": "OpenHospi op Open Collective"
     }
   }
 }

@@ -12,6 +12,7 @@ import {
   LOCATION_TAGS,
   RENTAL_TYPES,
   ROOM_FEATURES,
+  VERENIGINGEN,
 } from "@openhospi/shared/enums";
 import { z } from "zod";
 
@@ -51,8 +52,7 @@ export const roomPreferencesSchema = z.object({
   preferred_age_min: z.coerce.number().int().min(16).max(99).optional(),
   preferred_age_max: z.coerce.number().int().min(16).max(99).optional(),
   preferred_lifestyle_tags: z.array(z.enum(LIFESTYLE_TAGS)).optional(),
-  is_verenigingshuis: z.boolean().optional(),
-  room_vereniging: z.string().max(100).optional(),
+  room_vereniging: z.enum(VERENIGINGEN).optional(),
 });
 
 export const editRoomSchema = z
@@ -78,8 +78,7 @@ export const editRoomSchema = z
     preferred_age_min: z.coerce.number().int().min(16).max(99).optional(),
     preferred_age_max: z.coerce.number().int().min(16).max(99).optional(),
     preferred_lifestyle_tags: z.array(z.enum(LIFESTYLE_TAGS)).optional(),
-    is_verenigingshuis: z.boolean().optional(),
-    room_vereniging: z.string().max(100).optional(),
+    room_vereniging: z.enum(VERENIGINGEN).optional(),
   })
   .refine(
     (data) => {

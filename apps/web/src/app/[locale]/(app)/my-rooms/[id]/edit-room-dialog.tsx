@@ -10,9 +10,10 @@ import {
   LOCATION_TAGS,
   RENTAL_TYPES,
   ROOM_FEATURES,
+  VERENIGINGEN,
 } from "@openhospi/shared/enums";
 import type { LifestyleTag, LocationTag, RoomFeature } from "@openhospi/shared/enums";
-import { Loader2, Pencil } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -21,6 +22,14 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +46,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -90,13 +100,11 @@ export function EditRoomDialog({ room }: Props) {
       preferred_age_min: room.preferred_age_min ?? undefined,
       preferred_age_max: room.preferred_age_max ?? undefined,
       preferred_lifestyle_tags: room.preferred_lifestyle_tags as LifestyleTag[],
-      is_verenigingshuis: room.is_verenigingshuis,
-      room_vereniging: room.room_vereniging ?? "",
+      room_vereniging: (room.room_vereniging as EditRoomData["room_vereniging"]) ?? undefined,
     },
   });
 
   const rentalType = form.watch("rental_type");
-  const isVerenigingshuis = form.watch("is_verenigingshuis");
   const selectedFeatures = form.watch("features") ?? [];
   const selectedLocationTags = form.watch("location_tags") ?? [];
   const selectedLifestyleTags = form.watch("preferred_lifestyle_tags") ?? [];
@@ -527,32 +535,79 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="is_verenigingshuis"
+              name="room_vereniging"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel className="cursor-pointer">{t("fields.isVerenigingshuis")}</FormLabel>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
+                <FormItem className="flex flex-col">
+                  <FormLabel>
+                    {t("fields.roomVereniging")}{" "}
+                    <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                  </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value
+                            ? tEnums(`vereniging.${field.value}`)
+                            : t("placeholders.searchVereniging")}
+                          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput placeholder={t("placeholders.searchVereniging")} />
+                        <CommandList>
+                          <CommandEmpty>{t("noResults")}</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value="__none__"
+                              onSelect={() => {
+                                form.setValue("room_vereniging", undefined, {
+                                  shouldValidate: true,
+                                });
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 size-4",
+                                  !field.value ? "opacity-100" : "opacity-0",
+                                )}
+                              />
+                              {t("noSelection")}
+                            </CommandItem>
+                            {VERENIGINGEN.map((v) => (
+                              <CommandItem
+                                key={v}
+                                value={tEnums(`vereniging.${v}`)}
+                                onSelect={() => {
+                                  form.setValue("room_vereniging", v, { shouldValidate: true });
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 size-4",
+                                    field.value === v ? "opacity-100" : "opacity-0",
+                                  )}
+                                />
+                                {tEnums(`vereniging.${v}`)}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
-            {isVerenigingshuis && (
-              <FormField
-                control={form.control}
-                name="room_vereniging"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.roomVereniging")}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t("placeholders.roomVereniging")} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
 
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>

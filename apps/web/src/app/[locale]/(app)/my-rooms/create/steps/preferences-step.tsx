@@ -6,9 +6,10 @@ import {
   LIFESTYLE_TAGS,
   LOCATION_TAGS,
   ROOM_FEATURES,
+  VERENIGINGEN,
 } from "@openhospi/shared/enums";
 import type { LifestyleTag, LocationTag, RoomFeature } from "@openhospi/shared/enums";
-import { Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +17,14 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -25,8 +34,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
 import type { RoomPreferencesData } from "@/lib/schemas/room";
 import { roomPreferencesSchema } from "@/lib/schemas/room";
 import { cn } from "@/lib/utils";
@@ -55,12 +64,9 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
       preferred_age_min: defaultValues.preferred_age_min ?? undefined,
       preferred_age_max: defaultValues.preferred_age_max ?? undefined,
       preferred_lifestyle_tags: (defaultValues.preferred_lifestyle_tags as LifestyleTag[]) ?? [],
-      is_verenigingshuis: defaultValues.is_verenigingshuis ?? false,
-      room_vereniging: defaultValues.room_vereniging ?? "",
+      room_vereniging: defaultValues.room_vereniging ?? undefined,
     },
   });
-
-  const isVerenigingshuis = form.watch("is_verenigingshuis");
 
   function toggleArrayField<T extends string>(
     name: "features" | "location_tags" | "preferred_lifestyle_tags",
@@ -218,32 +224,77 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
 
         <FormField
           control={form.control}
-          name="is_verenigingshuis"
+          name="room_vereniging"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-3">
-              <FormLabel className="cursor-pointer">{t("fields.isVerenigingshuis")}</FormLabel>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
+            <FormItem className="flex flex-col">
+              <FormLabel>
+                {t("fields.roomVereniging")}{" "}
+                <span className="text-muted-foreground font-normal">({t("optional")})</span>
+              </FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value
+                        ? tEnums(`vereniging.${field.value}`)
+                        : t("placeholders.searchVereniging")}
+                      <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                  <Command>
+                    <CommandInput placeholder={t("placeholders.searchVereniging")} />
+                    <CommandList>
+                      <CommandEmpty>{t("noResults")}</CommandEmpty>
+                      <CommandGroup>
+                        <CommandItem
+                          value="__none__"
+                          onSelect={() => {
+                            form.setValue("room_vereniging", undefined, { shouldValidate: true });
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 size-4",
+                              !field.value ? "opacity-100" : "opacity-0",
+                            )}
+                          />
+                          {t("noSelection")}
+                        </CommandItem>
+                        {VERENIGINGEN.map((v) => (
+                          <CommandItem
+                            key={v}
+                            value={tEnums(`vereniging.${v}`)}
+                            onSelect={() => {
+                              form.setValue("room_vereniging", v, { shouldValidate: true });
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 size-4",
+                                field.value === v ? "opacity-100" : "opacity-0",
+                              )}
+                            />
+                            {tEnums(`vereniging.${v}`)}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
             </FormItem>
           )}
         />
-
-        {isVerenigingshuis && (
-          <FormField
-            control={form.control}
-            name="room_vereniging"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("fields.roomVereniging")}</FormLabel>
-                <FormControl>
-                  <Input placeholder={t("placeholders.roomVereniging")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
 
         <div className="flex justify-between">
           <Button variant="outline" type="button" onClick={onBack}>

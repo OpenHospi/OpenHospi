@@ -6,6 +6,7 @@ import {
   APPLICATION_STATUSES, REVIEW_DECISIONS, INVITATION_STATUSES,
   HOUSEMATE_ROLES, CONVERSATION_TYPES, MESSAGE_TYPES,
   DELIVERY_STATUSES, ADMIN_ACTIONS, REPORT_REASONS, REPORT_STATUSES,
+  VERENIGINGEN, STUDY_LEVELS,
 } from './enums.js';
 
 const ALL_ENUMS = {
@@ -13,6 +14,7 @@ const ALL_ENUMS = {
   GENDER_PREFERENCES,
   LANGUAGES,
   AFFILIATIONS,
+  STUDY_LEVELS,
   LIFESTYLE_TAGS,
   HOUSE_TYPES,
   ROOM_STATUSES,
@@ -31,11 +33,12 @@ const ALL_ENUMS = {
   ADMIN_ACTIONS,
   REPORT_REASONS,
   REPORT_STATUSES,
+  VERENIGINGEN,
 };
 
 describe('@openhospi/shared — enums', () => {
-  it('exports 22 enum arrays', () => {
-    expect(Object.keys(ALL_ENUMS)).toHaveLength(22);
+  it('exports 24 enum arrays', () => {
+    expect(Object.keys(ALL_ENUMS)).toHaveLength(24);
   });
 
   it.each(Object.entries(ALL_ENUMS))('%s is a non-empty array', (_name, arr) => {
@@ -59,14 +62,24 @@ describe('@openhospi/shared — enums', () => {
     expect(GENDERS).toEqual(['man', 'vrouw', 'zeg_ik_liever_niet']);
   });
 
-  it('CITIES includes major Dutch cities and "anders"', () => {
+  it('CITIES includes major Dutch cities and has 60 values', () => {
     expect(CITIES).toContain('amsterdam');
     expect(CITIES).toContain('groningen');
     expect(CITIES).toContain('utrecht');
-    expect(CITIES).toContain('anders');
+    expect(CITIES).toContain('dronten');
+    expect(CITIES).toContain('terschelling');
+    expect(CITIES).not.toContain('anders');
+    expect(CITIES).toHaveLength(60);
   });
 
   it('LIFESTYLE_TAGS has at least 20 tags', () => {
     expect(LIFESTYLE_TAGS.length).toBeGreaterThanOrEqual(20);
+  });
+
+  it('VERENIGINGEN includes "anders" and has at least 150 values', () => {
+    expect(VERENIGINGEN).toContain('anders');
+    expect(VERENIGINGEN).toContain('vindicat');
+    expect(VERENIGINGEN).toContain('minerva');
+    expect(VERENIGINGEN.length).toBeGreaterThanOrEqual(150);
   });
 });

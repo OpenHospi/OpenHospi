@@ -99,8 +99,8 @@ export function RoomCreateForm({ room }: Props) {
             preferred_age_max: room.preferred_age_max ?? undefined,
             preferred_lifestyle_tags:
               room.preferred_lifestyle_tags as RoomPreferencesData["preferred_lifestyle_tags"],
-            is_verenigingshuis: room.is_verenigingshuis,
-            room_vereniging: room.room_vereniging ?? undefined,
+            room_vereniging:
+              room.room_vereniging as RoomPreferencesData["room_vereniging"],
           }}
           onBack={() => setStep(2)}
           onNext={() => setStep(4)}

@@ -1,4 +1,5 @@
 import { getInstitution } from "@openhospi/surfconext";
+import { getTranslations } from "next-intl/server";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export async function ProfileHeader({ profile }: Props) {
+  const tEnums = await getTranslations("enums");
   const institution = getInstitution(profile.institution_domain);
 
   const initials = `${profile.first_name[0] ?? ""}${profile.last_name[0] ?? ""}`
@@ -29,7 +31,9 @@ export async function ProfileHeader({ profile }: Props) {
         </h1>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{institution.short}</Badge>
-          {profile.vereniging && <Badge variant="outline">{profile.vereniging}</Badge>}
+          {profile.vereniging && (
+            <Badge variant="outline">{tEnums(`vereniging.${profile.vereniging}`)}</Badge>
+          )}
         </div>
       </div>
     </div>

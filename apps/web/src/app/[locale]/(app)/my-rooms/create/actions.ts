@@ -102,7 +102,6 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
     preferred_age_min,
     preferred_age_max,
     preferred_lifestyle_tags,
-    is_verenigingshuis,
     room_vereniging,
   } = parsed.data;
 
@@ -110,8 +109,8 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
     `UPDATE rooms SET
        features = $1, location_tags = $2, preferred_gender = $3,
        preferred_age_min = $4, preferred_age_max = $5, preferred_lifestyle_tags = $6,
-       is_verenigingshuis = $7, room_vereniging = $8
-     WHERE id = $9`,
+       room_vereniging = $7
+     WHERE id = $8`,
     [
       features ?? [],
       location_tags ?? [],
@@ -119,8 +118,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
       preferred_age_min || null,
       preferred_age_max || null,
       preferred_lifestyle_tags ?? [],
-      is_verenigingshuis ?? false,
-      is_verenigingshuis ? room_vereniging || null : null,
+      room_vereniging || null,
       roomId,
     ],
   );

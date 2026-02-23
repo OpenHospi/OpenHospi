@@ -1,14 +1,22 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CITIES } from "@openhospi/shared/enums";
-import { Loader2 } from "lucide-react";
+import { CITIES, VERENIGINGEN } from "@openhospi/shared/enums";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -18,6 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -28,6 +37,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import type { PreferencesStepData } from "@/lib/schemas/profile";
 import { preferencesStepSchema } from "@/lib/schemas/profile";
+import { cn } from "@/lib/utils";
 
 import { finishOnboarding, savePreferencesStep } from "../actions";
 
@@ -48,7 +58,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
       preferred_city: defaultValues.preferred_city,
       max_rent: defaultValues.max_rent ?? undefined,
       available_from: defaultValues.available_from ?? "",
-      vereniging: defaultValues.vereniging ?? "",
+      vereniging: defaultValues.vereniging ?? undefined,
       instagram_handle: defaultValues.instagram_handle ?? "",
       show_instagram: defaultValues.show_instagram ?? false,
     },
@@ -136,14 +146,71 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
           control={form.control}
           name="vereniging"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>
                 {t("fields.vereniging")}{" "}
                 <span className="text-muted-foreground font-normal">({t("optional")})</span>
               </FormLabel>
-              <FormControl>
-                <Input placeholder={t("placeholders.vereniging")} {...field} />
-              </FormControl>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value
+                        ? tEnums(`vereniging.${field.value}`)
+                        : t("placeholders.searchVereniging")}
+                      <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                  <Command>
+                    <CommandInput placeholder={t("placeholders.searchVereniging")} />
+                    <CommandList>
+                      <CommandEmpty>{t("noResults")}</CommandEmpty>
+                      <CommandGroup>
+                        <CommandItem
+                          value="__none__"
+                          onSelect={() => {
+                            form.setValue("vereniging", undefined, { shouldValidate: true });
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 size-4",
+                              !field.value ? "opacity-100" : "opacity-0",
+                            )}
+                          />
+                          {t("noSelection")}
+                        </CommandItem>
+                        {VERENIGINGEN.map((v) => (
+                          <CommandItem
+                            key={v}
+                            value={tEnums(`vereniging.${v}`)}
+                            onSelect={() => {
+                              form.setValue("vereniging", v, { shouldValidate: true });
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 size-4",
+                                field.value === v ? "opacity-100" : "opacity-0",
+                              )}
+                            />
+                            {tEnums(`vereniging.${v}`)}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}

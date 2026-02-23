@@ -85,7 +85,8 @@ export function OnboardingForm({ initialData }: Props) {
               (initialData.preferred_city as PreferencesStepData["preferred_city"]) ?? undefined,
             max_rent: initialData.max_rent ?? undefined,
             available_from: initialData.available_from ?? "",
-            vereniging: initialData.vereniging ?? "",
+            vereniging:
+              (initialData.vereniging as PreferencesStepData["vereniging"]) ?? undefined,
             instagram_handle: initialData.instagram_handle ?? "",
             show_instagram: initialData.show_instagram ?? false,
           }}

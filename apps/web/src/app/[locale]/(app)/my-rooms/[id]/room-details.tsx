@@ -41,6 +41,12 @@ export async function RoomDetails({ room }: Props) {
         {room.total_housemates && (
           <Detail label={t("fields.totalHousemates")} value={String(room.total_housemates)} />
         )}
+        {room.room_vereniging && (
+          <Detail
+            label={t("fields.roomVereniging")}
+            value={tEnums(`vereniging.${room.room_vereniging}`)}
+          />
+        )}
         <Detail
           label={t("fields.preferredGender")}
           value={tEnums(`gender_preference.${room.preferred_gender}`)}

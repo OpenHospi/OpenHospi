@@ -5,7 +5,7 @@ import {
   MAX_STUDY_PROGRAM_LENGTH,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
-import { CITIES, GENDERS, LIFESTYLE_TAGS, STUDY_LEVELS } from "@openhospi/shared/enums";
+import { CITIES, GENDERS, LIFESTYLE_TAGS, STUDY_LEVELS, VERENIGINGEN } from "@openhospi/shared/enums";
 import { z } from "zod";
 
 export const aboutStepSchema = z.object({
@@ -24,7 +24,7 @@ export const preferencesStepSchema = z.object({
   preferred_city: z.enum(CITIES),
   max_rent: z.coerce.number().int().min(0).max(5000).optional(),
   available_from: z.string().min(1),
-  vereniging: z.string().max(100).optional(),
+  vereniging: z.enum(VERENIGINGEN).optional(),
   instagram_handle: z.string().max(MAX_INSTAGRAM_HANDLE_LENGTH).optional(),
   show_instagram: z.boolean().optional(),
 });
@@ -39,7 +39,7 @@ export const editProfileSchema = z.object({
   preferred_city: z.enum(CITIES),
   max_rent: z.coerce.number().int().min(0).max(5000).optional(),
   available_from: z.string().min(1),
-  vereniging: z.string().max(100).optional(),
+  vereniging: z.enum(VERENIGINGEN).optional(),
   instagram_handle: z.string().max(MAX_INSTAGRAM_HANDLE_LENGTH).optional(),
   show_instagram: z.boolean().optional(),
 });

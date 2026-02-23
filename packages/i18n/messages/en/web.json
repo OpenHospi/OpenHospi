@@ -25,7 +25,8 @@
       "costs": "Costs",
       "privacy": "Privacy policy",
       "terms": "Terms & conditions",
-      "about": "About"
+      "about": "About",
+      "missingAssociation": "Association missing?"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -411,7 +412,8 @@
         "bio": "Tell something about yourself...",
         "preferredCity": "Select a city",
         "maxRent": "e.g. 600",
-        "vereniging": "e.g. Vindicat"
+        "vereniging": "e.g. Vindicat",
+        "searchVereniging": "Search association..."
       },
       "photoSlots": {
         "slot1": "Your best photo",
@@ -425,6 +427,8 @@
       "next": "Next",
       "back": "Back",
       "complete": "Complete profile",
+      "noResults": "No results found.",
+      "noSelection": "No selection",
       "tagCounter": "{count}/{max} selected (min {min})",
       "validation": {
         "minTags": "Select at least {min} tags"
@@ -473,8 +477,7 @@
         "preferredAgeMin": "Min age",
         "preferredAgeMax": "Max age",
         "preferredLifestyleTags": "Preferred lifestyle",
-        "isVerenigingshuis": "Association house",
-        "roomVereniging": "Association name"
+        "roomVereniging": "Association"
       },
       "placeholders": {
         "title": "e.g. Cozy room in student house",
@@ -485,7 +488,7 @@
         "deposit": "e.g. 450",
         "roomSize": "e.g. 12",
         "totalHousemates": "e.g. 5",
-        "roomVereniging": "e.g. Vindicat"
+        "searchVereniging": "Search association..."
       },
       "photoSlots": {
         "slot1": "Cover photo",
@@ -536,7 +539,10 @@
         "title": "Room management",
         "details": "Room details",
         "noDescription": "No description"
-      }
+      },
+      "noResults": "No results found.",
+      "noSelection": "No selection",
+      "optional": "optional"
     }
   },
   "costs": {
@@ -675,6 +681,18 @@
       "title": "Where does the money go?",
       "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students.",
       "badge": "OpenHospi on Open Collective"
+    }
+  },
+  "missingAssociation": {
+    "title": "Is your association missing?",
+    "description": "Our list is based on Wikipedia and may be incomplete. Let us know and we'll add your association!",
+    "cardTitle": "Send us an email",
+    "emailSubject": "Add missing association",
+    "emailBody": "Hello OpenHospi,\n\nI would like to request the following association to be added:\n\nName: [name of the association]\nCity: [city]\nWebsite: [url]\n\nThank you!",
+    "labels": {
+      "to": "To",
+      "subject": "Subject",
+      "body": "Message"
     }
   }
 }

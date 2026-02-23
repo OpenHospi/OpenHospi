@@ -31,8 +31,8 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
        furnishing = $14, total_housemates = $15,
        features = $16, location_tags = $17, preferred_gender = $18,
        preferred_age_min = $19, preferred_age_max = $20, preferred_lifestyle_tags = $21,
-       is_verenigingshuis = $22, room_vereniging = $23
-     WHERE id = $24`,
+       room_vereniging = $22
+     WHERE id = $23`,
     [
       d.title,
       d.description || null,
@@ -55,8 +55,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
       d.preferred_age_min || null,
       d.preferred_age_max || null,
       d.preferred_lifestyle_tags ?? [],
-      d.is_verenigingshuis ?? false,
-      d.is_verenigingshuis ? d.room_vereniging || null : null,
+      d.room_vereniging || null,
       roomId,
     ],
   );

@@ -27,7 +27,6 @@ export type Room = {
   total_housemates: number | null;
   features: string[];
   location_tags: string[];
-  is_verenigingshuis: boolean;
   room_vereniging: string | null;
   preferred_gender: string;
   preferred_age_min: number | null;

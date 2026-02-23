@@ -25,7 +25,8 @@
       "costs": "Kosten",
       "privacy": "Datenschutz",
       "terms": "AGB",
-      "about": "Über uns"
+      "about": "Über uns",
+      "missingAssociation": "Vereinigung fehlt?"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
     "openSource": "Open Source",
@@ -411,7 +412,8 @@
         "bio": "Erzähl etwas über dich...",
         "preferredCity": "Stadt auswählen",
         "maxRent": "z.B. 600",
-        "vereniging": "z.B. Vindicat"
+        "vereniging": "z.B. Vindicat",
+        "searchVereniging": "Verein suchen..."
       },
       "photoSlots": {
         "slot1": "Dein bestes Foto",
@@ -425,6 +427,8 @@
       "next": "Weiter",
       "back": "Zurück",
       "complete": "Profil abschließen",
+      "noResults": "Keine Ergebnisse gefunden.",
+      "noSelection": "Keine Auswahl",
       "tagCounter": "{count}/{max} ausgewählt (min {min})",
       "validation": {
         "minTags": "Wähle mindestens {min} Tags"
@@ -473,8 +477,7 @@
         "preferredAgeMin": "Mindestalter",
         "preferredAgeMax": "Höchstalter",
         "preferredLifestyleTags": "Gewünschter Lebensstil",
-        "isVerenigingshuis": "Vereinshaus",
-        "roomVereniging": "Vereinsname"
+        "roomVereniging": "Vereinigung"
       },
       "placeholders": {
         "title": "z.B. Gemütliches Zimmer in WG",
@@ -485,7 +488,7 @@
         "deposit": "z.B. 450",
         "roomSize": "z.B. 12",
         "totalHousemates": "z.B. 5",
-        "roomVereniging": "z.B. Vindicat"
+        "searchVereniging": "Verein suchen..."
       },
       "photoSlots": {
         "slot1": "Titelfoto",
@@ -536,7 +539,10 @@
         "title": "Zimmerverwaltung",
         "details": "Zimmerdetails",
         "noDescription": "Keine Beschreibung"
-      }
+      },
+      "noResults": "Keine Ergebnisse gefunden.",
+      "noSelection": "Keine Auswahl",
+      "optional": "optional"
     }
   },
   "costs": {
@@ -675,6 +681,18 @@
       "title": "Wohin geht das Geld?",
       "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten.",
       "badge": "OpenHospi auf Open Collective"
+    }
+  },
+  "missingAssociation": {
+    "title": "Fehlt deine Vereinigung?",
+    "description": "Unsere Liste basiert auf Wikipedia und ist möglicherweise unvollständig. Lass es uns wissen und wir fügen deine Vereinigung hinzu!",
+    "cardTitle": "Schick uns eine E-Mail",
+    "emailSubject": "Fehlende Vereinigung hinzufügen",
+    "emailBody": "Hallo OpenHospi,\n\nIch möchte gerne die folgende Vereinigung hinzufügen lassen:\n\nName: [Name der Vereinigung]\nStadt: [Stadt]\nWebsite: [URL]\n\nDanke!",
+    "labels": {
+      "to": "An",
+      "subject": "Betreff",
+      "body": "Nachricht"
     }
   }
 }

@@ -36,6 +36,7 @@ export function MarketingFooter() {
       links: [
         { href: "/about", label: t("links.about") },
         { href: "/costs", label: t("links.costs") },
+        { href: "/missing-association", label: t("links.missingAssociation") },
       ],
     },
   ];

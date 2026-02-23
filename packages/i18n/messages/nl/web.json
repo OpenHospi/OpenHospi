@@ -25,7 +25,8 @@
       "costs": "Kosten",
       "privacy": "Privacybeleid",
       "terms": "Voorwaarden",
-      "about": "Over ons"
+      "about": "Over ons",
+      "missingAssociation": "Vereniging mist?"
     },
     "tagline": "Gratis, open-source studentenhuisvesting voor Nederland.",
     "openSource": "Open source",
@@ -411,7 +412,8 @@
         "bio": "Vertel iets over jezelf...",
         "preferredCity": "Selecteer een stad",
         "maxRent": "bijv. 600",
-        "vereniging": "bijv. Vindicat"
+        "vereniging": "bijv. Vindicat",
+        "searchVereniging": "Zoek vereniging..."
       },
       "photoSlots": {
         "slot1": "Je beste foto",
@@ -425,6 +427,8 @@
       "next": "Volgende",
       "back": "Vorige",
       "complete": "Profiel afronden",
+      "noResults": "Geen resultaten gevonden.",
+      "noSelection": "Geen selectie",
       "tagCounter": "{count}/{max} geselecteerd (min {min})",
       "validation": {
         "minTags": "Selecteer minimaal {min} tags"
@@ -473,8 +477,7 @@
         "preferredAgeMin": "Min leeftijd",
         "preferredAgeMax": "Max leeftijd",
         "preferredLifestyleTags": "Gewenste levensstijl",
-        "isVerenigingshuis": "Verenigingshuis",
-        "roomVereniging": "Naam vereniging"
+        "roomVereniging": "Vereniging"
       },
       "placeholders": {
         "title": "bijv. Gezellige kamer in studentenhuis",
@@ -485,7 +488,7 @@
         "deposit": "bijv. 450",
         "roomSize": "bijv. 12",
         "totalHousemates": "bijv. 5",
-        "roomVereniging": "bijv. Vindicat"
+        "searchVereniging": "Zoek vereniging..."
       },
       "photoSlots": {
         "slot1": "Hoofdfoto",
@@ -536,7 +539,10 @@
         "title": "Kamerbeheer",
         "details": "Kamerdetails",
         "noDescription": "Geen beschrijving"
-      }
+      },
+      "noResults": "Geen resultaten gevonden.",
+      "noSelection": "Geen selectie",
+      "optional": "optioneel"
     }
   },
   "costs": {
@@ -675,6 +681,18 @@
       "title": "Waar gaat het geld naartoe?",
       "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten.",
       "badge": "OpenHospi op Open Collective"
+    }
+  },
+  "missingAssociation": {
+    "title": "Staat jouw vereniging er niet bij?",
+    "description": "Onze lijst is gebaseerd op Wikipedia en kan onvolledig zijn. Laat het ons weten en we voegen jouw vereniging toe!",
+    "cardTitle": "Stuur ons een e-mail",
+    "emailSubject": "Ontbrekende vereniging toevoegen",
+    "emailBody": "Hallo OpenHospi,\n\nIk wil graag de volgende vereniging laten toevoegen:\n\nNaam: [naam van de vereniging]\nStad: [stad]\nWebsite: [url]\n\nBedankt!",
+    "labels": {
+      "to": "Aan",
+      "subject": "Onderwerp",
+      "body": "Bericht"
     }
   }
 }

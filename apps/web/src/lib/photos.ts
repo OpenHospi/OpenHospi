@@ -5,11 +5,12 @@ export async function uploadPhotoToStorage(
   bucket: string,
   path: string,
   file: File,
+  maxSize: number = MAX_AVATAR_SIZE,
 ): Promise<string> {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
     throw new Error("Invalid file type");
   }
-  if (file.size > MAX_AVATAR_SIZE) {
+  if (file.size > maxSize) {
     throw new Error("File too large");
   }
 

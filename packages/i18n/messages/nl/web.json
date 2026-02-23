@@ -332,6 +332,7 @@
   "app": {
     "sidebar": {
       "discover": "Ontdekken",
+      "myRooms": "Mijn kamers",
       "applications": "Reacties",
       "profile": "Profiel",
       "settings": "Instellingen",
@@ -427,6 +428,114 @@
       "tagCounter": "{count}/{max} geselecteerd (min {min})",
       "validation": {
         "minTags": "Selecteer minimaal {min} tags"
+      }
+    },
+    "rooms": {
+      "title": "Mijn kamers",
+      "empty": "Je hebt nog geen kamers aangemaakt.",
+      "createFirst": "Maak je eerste advertentie",
+      "createNew": "Nieuwe kamer",
+      "applicants": "{count, plural, =0 {Geen reacties} =1 {1 reactie} other {# reacties}}",
+      "wizard": {
+        "stepOf": "Stap {current} van {total}",
+        "steps": {
+          "basicInfo": "Basisgegevens",
+          "details": "Kamerdetails",
+          "preferences": "Voorkeuren",
+          "photos": "Foto's"
+        },
+        "stepDescriptions": {
+          "step1": "Geef je kamer een titel en locatie.",
+          "step2": "Voeg prijs, beschikbaarheid en kamerdetails toe.",
+          "step3": "Stel voorkeuren en kenmerken in voor je kamer.",
+          "step4": "Upload foto's om je kamer te laten zien."
+        }
+      },
+      "fields": {
+        "title": "Titel",
+        "description": "Beschrijving",
+        "city": "Stad",
+        "neighborhood": "Wijk",
+        "address": "Adres",
+        "rentPrice": "Maandelijkse huur",
+        "deposit": "Borg",
+        "utilitiesIncluded": "Inclusief gas/water/licht",
+        "roomSize": "Kamergrootte (m²)",
+        "availableFrom": "Beschikbaar vanaf",
+        "availableUntil": "Beschikbaar tot",
+        "rentalType": "Huurtype",
+        "houseType": "Woningtype",
+        "furnishing": "Inrichting",
+        "totalHousemates": "Aantal huisgenoten",
+        "features": "Kenmerken",
+        "locationTags": "Locatie",
+        "preferredGender": "Voorkeur geslacht",
+        "preferredAgeMin": "Min leeftijd",
+        "preferredAgeMax": "Max leeftijd",
+        "preferredLifestyleTags": "Gewenste levensstijl",
+        "isVerenigingshuis": "Verenigingshuis",
+        "roomVereniging": "Naam vereniging"
+      },
+      "placeholders": {
+        "title": "bijv. Gezellige kamer in studentenhuis",
+        "description": "Beschrijf de kamer en het huis...",
+        "neighborhood": "bijv. Centrum",
+        "address": "bijv. Keizersgracht 1",
+        "rentPrice": "bijv. 450",
+        "deposit": "bijv. 450",
+        "roomSize": "bijv. 12",
+        "totalHousemates": "bijv. 5",
+        "roomVereniging": "bijv. Vindicat"
+      },
+      "photoSlots": {
+        "slot1": "Hoofdfoto",
+        "slot2": "Kameroverzicht",
+        "slot3": "Badkamer/keuken",
+        "slot4": "Gemeenschappelijke ruimte",
+        "slot5": "Buitenkant/straat",
+        "slot6": "Extra",
+        "slot7": "Extra",
+        "slot8": "Extra",
+        "slot9": "Extra",
+        "slot10": "Extra"
+      },
+      "actions": {
+        "publish": "Kamer publiceren",
+        "saveDraft": "Opslaan als concept",
+        "pause": "Pauzeer advertentie",
+        "activate": "Activeer advertentie",
+        "close": "Sluit advertentie",
+        "edit": "Bewerk kamer",
+        "next": "Volgende",
+        "back": "Vorige"
+      },
+      "shareLink": {
+        "title": "Deellink",
+        "copy": "Link kopiëren",
+        "copied": "Link gekopieerd!",
+        "regenerate": "Link opnieuw genereren",
+        "regenerateConfirm": "Dit maakt de oude link ongeldig. Doorgaan?",
+        "expiry": "Vervalt op",
+        "maxUses": "Max gebruik",
+        "useCount": "{count} keer gebruikt",
+        "noExpiry": "Geen vervaldatum",
+        "noLimit": "Geen limiet"
+      },
+      "status": {
+        "confirmClose": "Weet je zeker dat je deze advertentie wilt sluiten? Dit kan niet ongedaan worden.",
+        "confirmCloseTitle": "Advertentie sluiten",
+        "publishError": "Upload minstens 1 foto voordat je publiceert.",
+        "published": "Kamer gepubliceerd!",
+        "paused": "Kamer gepauzeerd",
+        "activated": "Kamer geactiveerd",
+        "closed": "Kamer gesloten",
+        "updated": "Kamer bijgewerkt",
+        "draftSaved": "Concept opgeslagen"
+      },
+      "manage": {
+        "title": "Kamerbeheer",
+        "details": "Kamerdetails",
+        "noDescription": "Geen beschrijving"
       }
     }
   },

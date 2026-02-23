@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
-import { GENDERS, STUDY_LEVELS } from "@openhospi/shared/enums";
+import { GENDERS, getStudyLevelsForInstitutionType, STUDY_LEVELS } from "@openhospi/shared/enums";
+import { getInstitution } from "@openhospi/surfconext";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -35,10 +36,11 @@ import { saveAboutStep } from "../actions";
 
 type Props = {
   defaultValues: Partial<AboutStepData>;
+  institutionDomain?: string;
   onNext: () => void;
 };
 
-export function AboutStep({ defaultValues, onNext }: Props) {
+export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
   const t = useTranslations("app.onboarding");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
@@ -141,7 +143,10 @@ export function AboutStep({ defaultValues, onNext }: Props) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {STUDY_LEVELS.map((level) => (
+                  {(institutionDomain
+                    ? getStudyLevelsForInstitutionType(getInstitution(institutionDomain).type)
+                    : STUDY_LEVELS
+                  ).map((level) => (
                     <SelectItem key={level} value={level}>
                       {tEnums(`study_level.${level}`)}
                     </SelectItem>

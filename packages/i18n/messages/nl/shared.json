@@ -96,6 +96,66 @@
       "venlo": "Venlo",
       "helmond": "Helmond",
       "anders": "Anders"
+    },
+    "house_type": {
+      "studentenhuis": "Studentenhuis",
+      "appartement": "Appartement",
+      "studio": "Studio",
+      "woongroep": "Woongroep",
+      "anti_kraak": "Anti-kraak"
+    },
+    "room_status": {
+      "draft": "Concept",
+      "active": "Actief",
+      "paused": "Gepauzeerd",
+      "closed": "Gesloten"
+    },
+    "furnishing": {
+      "kaal": "Kaal",
+      "gestoffeerd": "Gestoffeerd",
+      "gemeubileerd": "Gemeubileerd"
+    },
+    "room_feature": {
+      "eigen_badkamer": "Eigen badkamer",
+      "gedeelde_badkamer": "Gedeelde badkamer",
+      "eigen_keuken": "Eigen keuken",
+      "gedeelde_keuken": "Gedeelde keuken",
+      "balkon": "Balkon",
+      "tuin": "Tuin",
+      "terras": "Terras",
+      "berging": "Berging",
+      "parkeerplaats": "Parkeerplaats",
+      "fietsenstalling": "Fietsenstalling",
+      "wasmachine": "Wasmachine",
+      "droger": "Droger",
+      "vaatwasser": "Vaatwasser",
+      "wifi_inbegrepen": "Wifi inbegrepen",
+      "huisdieren_toegestaan": "Huisdieren toegestaan",
+      "roken_toegestaan": "Roken toegestaan",
+      "geen_huisdieren": "Geen huisdieren",
+      "niet_roken": "Niet roken"
+    },
+    "rental_type": {
+      "vast": "Vast",
+      "onderhuur": "Onderhuur",
+      "tijdelijk": "Tijdelijk"
+    },
+    "location_tag": {
+      "dichtbij_universiteit": "Dichtbij universiteit",
+      "dichtbij_station": "Dichtbij station",
+      "dichtbij_ov": "Dichtbij OV",
+      "dichtbij_centrum": "Dichtbij centrum",
+      "dichtbij_supermarkt": "Dichtbij supermarkt",
+      "dichtbij_uitgaan": "Dichtbij uitgaan",
+      "dichtbij_sportcentrum": "Dichtbij sportcentrum",
+      "dichtbij_park": "Dichtbij park",
+      "rustige_buurt": "Rustige buurt",
+      "levendige_buurt": "Levendige buurt"
+    },
+    "gender_preference": {
+      "man": "Man",
+      "vrouw": "Vrouw",
+      "geen_voorkeur": "Geen voorkeur"
     }
   }
 }

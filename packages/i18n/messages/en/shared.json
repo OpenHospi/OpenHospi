@@ -96,6 +96,66 @@
       "venlo": "Venlo",
       "helmond": "Helmond",
       "anders": "Other"
+    },
+    "house_type": {
+      "studentenhuis": "Student house",
+      "appartement": "Apartment",
+      "studio": "Studio",
+      "woongroep": "Shared living group",
+      "anti_kraak": "Anti-squat"
+    },
+    "room_status": {
+      "draft": "Draft",
+      "active": "Active",
+      "paused": "Paused",
+      "closed": "Closed"
+    },
+    "furnishing": {
+      "kaal": "Unfurnished",
+      "gestoffeerd": "Floored & curtained",
+      "gemeubileerd": "Furnished"
+    },
+    "room_feature": {
+      "eigen_badkamer": "Private bathroom",
+      "gedeelde_badkamer": "Shared bathroom",
+      "eigen_keuken": "Private kitchen",
+      "gedeelde_keuken": "Shared kitchen",
+      "balkon": "Balcony",
+      "tuin": "Garden",
+      "terras": "Terrace",
+      "berging": "Storage",
+      "parkeerplaats": "Parking spot",
+      "fietsenstalling": "Bike storage",
+      "wasmachine": "Washing machine",
+      "droger": "Dryer",
+      "vaatwasser": "Dishwasher",
+      "wifi_inbegrepen": "Wi-Fi included",
+      "huisdieren_toegestaan": "Pets allowed",
+      "roken_toegestaan": "Smoking allowed",
+      "geen_huisdieren": "No pets",
+      "niet_roken": "No smoking"
+    },
+    "rental_type": {
+      "vast": "Permanent",
+      "onderhuur": "Sublet",
+      "tijdelijk": "Temporary"
+    },
+    "location_tag": {
+      "dichtbij_universiteit": "Near university",
+      "dichtbij_station": "Near train station",
+      "dichtbij_ov": "Near public transport",
+      "dichtbij_centrum": "Near city center",
+      "dichtbij_supermarkt": "Near supermarket",
+      "dichtbij_uitgaan": "Near nightlife",
+      "dichtbij_sportcentrum": "Near sports center",
+      "dichtbij_park": "Near park",
+      "rustige_buurt": "Quiet neighborhood",
+      "levendige_buurt": "Lively neighborhood"
+    },
+    "gender_preference": {
+      "man": "Man",
+      "vrouw": "Woman",
+      "geen_voorkeur": "No preference"
     }
   }
 }

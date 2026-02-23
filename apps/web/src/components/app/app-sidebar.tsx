@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Home, Search, Settings, User } from "lucide-react";
+import { Building2, FileText, Home, Search, Settings, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -39,6 +39,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
       label: t("discover"),
       href: "/discover" as const,
       icon: Search,
+      disabled: false,
+    },
+    {
+      label: t("myRooms"),
+      href: "/my-rooms" as const,
+      icon: Building2,
       disabled: false,
     },
     {

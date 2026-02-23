@@ -96,6 +96,66 @@
       "venlo": "Venlo",
       "helmond": "Helmond",
       "anders": "Andere"
+    },
+    "house_type": {
+      "studentenhuis": "Studierendenhaus",
+      "appartement": "Wohnung",
+      "studio": "Studio",
+      "woongroep": "Wohngemeinschaft",
+      "anti_kraak": "Anti-Squat"
+    },
+    "room_status": {
+      "draft": "Entwurf",
+      "active": "Aktiv",
+      "paused": "Pausiert",
+      "closed": "Geschlossen"
+    },
+    "furnishing": {
+      "kaal": "Unmöbliert",
+      "gestoffeerd": "Teilmöbliert",
+      "gemeubileerd": "Möbliert"
+    },
+    "room_feature": {
+      "eigen_badkamer": "Eigenes Bad",
+      "gedeelde_badkamer": "Geteiltes Bad",
+      "eigen_keuken": "Eigene Küche",
+      "gedeelde_keuken": "Geteilte Küche",
+      "balkon": "Balkon",
+      "tuin": "Garten",
+      "terras": "Terrasse",
+      "berging": "Abstellraum",
+      "parkeerplaats": "Parkplatz",
+      "fietsenstalling": "Fahrradabstellplatz",
+      "wasmachine": "Waschmaschine",
+      "droger": "Trockner",
+      "vaatwasser": "Geschirrspüler",
+      "wifi_inbegrepen": "WLAN inklusive",
+      "huisdieren_toegestaan": "Haustiere erlaubt",
+      "roken_toegestaan": "Rauchen erlaubt",
+      "geen_huisdieren": "Keine Haustiere",
+      "niet_roken": "Nichtraucher"
+    },
+    "rental_type": {
+      "vast": "Fest",
+      "onderhuur": "Untermiete",
+      "tijdelijk": "Vorübergehend"
+    },
+    "location_tag": {
+      "dichtbij_universiteit": "Nahe Universität",
+      "dichtbij_station": "Nahe Bahnhof",
+      "dichtbij_ov": "Nahe ÖPNV",
+      "dichtbij_centrum": "Nahe Zentrum",
+      "dichtbij_supermarkt": "Nahe Supermarkt",
+      "dichtbij_uitgaan": "Nahe Nachtleben",
+      "dichtbij_sportcentrum": "Nahe Sportzentrum",
+      "dichtbij_park": "Nahe Park",
+      "rustige_buurt": "Ruhiges Viertel",
+      "levendige_buurt": "Lebhaftes Viertel"
+    },
+    "gender_preference": {
+      "man": "Mann",
+      "vrouw": "Frau",
+      "geen_voorkeur": "Keine Präferenz"
     }
   }
 }

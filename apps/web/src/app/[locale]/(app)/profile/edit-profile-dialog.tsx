@@ -6,8 +6,15 @@ import {
   MAX_LIFESTYLE_TAGS,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
-import { CITIES, GENDERS, LIFESTYLE_TAGS, STUDY_LEVELS } from "@openhospi/shared/enums";
+import {
+  CITIES,
+  GENDERS,
+  getStudyLevelsForInstitutionType,
+  LIFESTYLE_TAGS,
+  STUDY_LEVELS,
+} from "@openhospi/shared/enums";
 import type { LifestyleTag } from "@openhospi/shared/enums";
+import { getInstitution } from "@openhospi/surfconext";
 import { Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -190,7 +197,12 @@ export function EditProfileDialog({ profile }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {STUDY_LEVELS.map((level) => (
+                      {(profile.institution_domain
+                        ? getStudyLevelsForInstitutionType(
+                            getInstitution(profile.institution_domain).type,
+                          )
+                        : STUDY_LEVELS
+                      ).map((level) => (
                         <SelectItem key={level} value={level}>
                           {tEnums(`study_level.${level}`)}
                         </SelectItem>

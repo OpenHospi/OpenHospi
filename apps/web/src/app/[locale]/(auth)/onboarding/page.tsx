@@ -33,6 +33,7 @@ export default async function OnboardingPage({ params }: Props) {
   }
 
   const initialData: Partial<Profile> = {
+    institution_domain: profile?.institution_domain,
     gender: profile?.gender,
     birth_date: profile?.birth_date,
     study_program: profile?.study_program,

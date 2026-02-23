@@ -332,6 +332,7 @@
   "app": {
     "sidebar": {
       "discover": "Entdecken",
+      "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
       "profile": "Profil",
       "settings": "Einstellungen",
@@ -427,6 +428,114 @@
       "tagCounter": "{count}/{max} ausgewählt (min {min})",
       "validation": {
         "minTags": "Wähle mindestens {min} Tags"
+      }
+    },
+    "rooms": {
+      "title": "Meine Zimmer",
+      "empty": "Du hast noch keine Zimmer erstellt.",
+      "createFirst": "Erstelle deine erste Anzeige",
+      "createNew": "Neues Zimmer",
+      "applicants": "{count, plural, =0 {Keine Bewerber} =1 {1 Bewerber} other {# Bewerber}}",
+      "wizard": {
+        "stepOf": "Schritt {current} von {total}",
+        "steps": {
+          "basicInfo": "Grunddaten",
+          "details": "Zimmerdetails",
+          "preferences": "Präferenzen",
+          "photos": "Fotos"
+        },
+        "stepDescriptions": {
+          "step1": "Gib deinem Zimmer einen Titel und Standort.",
+          "step2": "Füge Preis, Verfügbarkeit und Zimmerdetails hinzu.",
+          "step3": "Setze Präferenzen und Merkmale für dein Zimmer.",
+          "step4": "Lade Fotos hoch, um dein Zimmer zu zeigen."
+        }
+      },
+      "fields": {
+        "title": "Titel",
+        "description": "Beschreibung",
+        "city": "Stadt",
+        "neighborhood": "Stadtteil",
+        "address": "Adresse",
+        "rentPrice": "Monatliche Miete",
+        "deposit": "Kaution",
+        "utilitiesIncluded": "Nebenkosten inklusive",
+        "roomSize": "Zimmergröße (m²)",
+        "availableFrom": "Verfügbar ab",
+        "availableUntil": "Verfügbar bis",
+        "rentalType": "Mietart",
+        "houseType": "Wohnungstyp",
+        "furnishing": "Einrichtung",
+        "totalHousemates": "Anzahl Mitbewohner",
+        "features": "Merkmale",
+        "locationTags": "Lage",
+        "preferredGender": "Bevorzugtes Geschlecht",
+        "preferredAgeMin": "Mindestalter",
+        "preferredAgeMax": "Höchstalter",
+        "preferredLifestyleTags": "Gewünschter Lebensstil",
+        "isVerenigingshuis": "Vereinshaus",
+        "roomVereniging": "Vereinsname"
+      },
+      "placeholders": {
+        "title": "z.B. Gemütliches Zimmer in WG",
+        "description": "Beschreibe das Zimmer und die WG...",
+        "neighborhood": "z.B. Zentrum",
+        "address": "z.B. Keizersgracht 1",
+        "rentPrice": "z.B. 450",
+        "deposit": "z.B. 450",
+        "roomSize": "z.B. 12",
+        "totalHousemates": "z.B. 5",
+        "roomVereniging": "z.B. Vindicat"
+      },
+      "photoSlots": {
+        "slot1": "Titelfoto",
+        "slot2": "Zimmerübersicht",
+        "slot3": "Bad/Küche",
+        "slot4": "Gemeinschaftsbereich",
+        "slot5": "Außen/Straße",
+        "slot6": "Extra",
+        "slot7": "Extra",
+        "slot8": "Extra",
+        "slot9": "Extra",
+        "slot10": "Extra"
+      },
+      "actions": {
+        "publish": "Zimmer veröffentlichen",
+        "saveDraft": "Als Entwurf speichern",
+        "pause": "Anzeige pausieren",
+        "activate": "Anzeige aktivieren",
+        "close": "Anzeige schließen",
+        "edit": "Zimmer bearbeiten",
+        "next": "Weiter",
+        "back": "Zurück"
+      },
+      "shareLink": {
+        "title": "Teilen-Link",
+        "copy": "Link kopieren",
+        "copied": "Link kopiert!",
+        "regenerate": "Link neu generieren",
+        "regenerateConfirm": "Dies macht den alten Link ungültig. Fortfahren?",
+        "expiry": "Läuft ab am",
+        "maxUses": "Max. Nutzungen",
+        "useCount": "{count} Mal genutzt",
+        "noExpiry": "Kein Ablauf",
+        "noLimit": "Kein Limit"
+      },
+      "status": {
+        "confirmClose": "Bist du sicher, dass du diese Anzeige schließen möchtest? Dies kann nicht rückgängig gemacht werden.",
+        "confirmCloseTitle": "Anzeige schließen",
+        "publishError": "Lade mindestens 1 Foto hoch, bevor du veröffentlichst.",
+        "published": "Zimmer veröffentlicht!",
+        "paused": "Zimmer pausiert",
+        "activated": "Zimmer aktiviert",
+        "closed": "Zimmer geschlossen",
+        "updated": "Zimmer aktualisiert",
+        "draftSaved": "Entwurf gespeichert"
+      },
+      "manage": {
+        "title": "Zimmerverwaltung",
+        "details": "Zimmerdetails",
+        "noDescription": "Keine Beschreibung"
       }
     }
   },

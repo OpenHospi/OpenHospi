@@ -54,6 +54,7 @@ export function OnboardingForm({ initialData }: Props) {
             study_level: (initialData.study_level as AboutStepData["study_level"]) ?? undefined,
             bio: initialData.bio ?? "",
           }}
+          institutionDomain={initialData.institution_domain}
           onNext={() => setStep(2)}
         />
       )}

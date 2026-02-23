@@ -332,6 +332,7 @@
   "app": {
     "sidebar": {
       "discover": "Discover",
+      "myRooms": "My Rooms",
       "applications": "Applications",
       "profile": "Profile",
       "settings": "Settings",
@@ -427,6 +428,114 @@
       "tagCounter": "{count}/{max} selected (min {min})",
       "validation": {
         "minTags": "Select at least {min} tags"
+      }
+    },
+    "rooms": {
+      "title": "My Rooms",
+      "empty": "You haven't listed any rooms yet.",
+      "createFirst": "Create your first listing",
+      "createNew": "New room",
+      "applicants": "{count, plural, =0 {No applicants} =1 {1 applicant} other {# applicants}}",
+      "wizard": {
+        "stepOf": "Step {current} of {total}",
+        "steps": {
+          "basicInfo": "Basic info",
+          "details": "Room details",
+          "preferences": "Preferences",
+          "photos": "Photos"
+        },
+        "stepDescriptions": {
+          "step1": "Give your room a title and location.",
+          "step2": "Add pricing, availability, and room details.",
+          "step3": "Set preferences and features for your room.",
+          "step4": "Upload photos to show your room."
+        }
+      },
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "city": "City",
+        "neighborhood": "Neighborhood",
+        "address": "Address",
+        "rentPrice": "Monthly rent",
+        "deposit": "Deposit",
+        "utilitiesIncluded": "Utilities included",
+        "roomSize": "Room size (m²)",
+        "availableFrom": "Available from",
+        "availableUntil": "Available until",
+        "rentalType": "Rental type",
+        "houseType": "House type",
+        "furnishing": "Furnishing",
+        "totalHousemates": "Total housemates",
+        "features": "Features",
+        "locationTags": "Location",
+        "preferredGender": "Preferred gender",
+        "preferredAgeMin": "Min age",
+        "preferredAgeMax": "Max age",
+        "preferredLifestyleTags": "Preferred lifestyle",
+        "isVerenigingshuis": "Association house",
+        "roomVereniging": "Association name"
+      },
+      "placeholders": {
+        "title": "e.g. Cozy room in student house",
+        "description": "Describe the room and house...",
+        "neighborhood": "e.g. Centrum",
+        "address": "e.g. Keizersgracht 1",
+        "rentPrice": "e.g. 450",
+        "deposit": "e.g. 450",
+        "roomSize": "e.g. 12",
+        "totalHousemates": "e.g. 5",
+        "roomVereniging": "e.g. Vindicat"
+      },
+      "photoSlots": {
+        "slot1": "Cover photo",
+        "slot2": "Room overview",
+        "slot3": "Bathroom/kitchen",
+        "slot4": "Common area",
+        "slot5": "Outside/street",
+        "slot6": "Extra",
+        "slot7": "Extra",
+        "slot8": "Extra",
+        "slot9": "Extra",
+        "slot10": "Extra"
+      },
+      "actions": {
+        "publish": "Publish room",
+        "saveDraft": "Save as draft",
+        "pause": "Pause listing",
+        "activate": "Activate listing",
+        "close": "Close listing",
+        "edit": "Edit room",
+        "next": "Next",
+        "back": "Back"
+      },
+      "shareLink": {
+        "title": "Share link",
+        "copy": "Copy link",
+        "copied": "Link copied!",
+        "regenerate": "Regenerate link",
+        "regenerateConfirm": "This will invalidate the old link. Continue?",
+        "expiry": "Expires at",
+        "maxUses": "Max uses",
+        "useCount": "{count} times used",
+        "noExpiry": "No expiry",
+        "noLimit": "No limit"
+      },
+      "status": {
+        "confirmClose": "Are you sure you want to close this listing? This cannot be undone.",
+        "confirmCloseTitle": "Close listing",
+        "publishError": "Upload at least 1 photo before publishing.",
+        "published": "Room published!",
+        "paused": "Room paused",
+        "activated": "Room activated",
+        "closed": "Room closed",
+        "updated": "Room updated",
+        "draftSaved": "Draft saved"
+      },
+      "manage": {
+        "title": "Room management",
+        "details": "Room details",
+        "noDescription": "No description"
       }
     }
   },

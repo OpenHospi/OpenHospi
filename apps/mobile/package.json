@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "@openhospi/supabase": "workspace:*",
     "@openhospi/surfconext": "workspace:*",

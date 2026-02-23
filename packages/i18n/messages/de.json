@@ -1,0 +1,409 @@
+{
+  "common": {
+    "appName": "OpenHospi",
+    "loading": "Laden...",
+    "error": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen"
+  },
+  "enums": {
+    "language_enum": {
+      "nl": "Niederl\u00e4ndisch",
+      "en": "Englisch",
+      "de": "Deutsch",
+      "fr": "Franz\u00f6sisch",
+      "es": "Spanisch",
+      "it": "Italienisch",
+      "pt": "Portugiesisch",
+      "zh": "Chinesisch",
+      "ar": "Arabisch",
+      "tr": "T\u00fcrkisch",
+      "pl": "Polnisch",
+      "hi": "Hindi",
+      "ja": "Japanisch",
+      "ko": "Koreanisch"
+    }
+  },
+  "metadata": {
+    "title": "OpenHospi \u2014 Kostenlose Studentenwohnungen",
+    "description": "Die kostenlose, Open-Source-Plattform f\u00fcr Studentenwohnungen in den Niederlanden."
+  },
+  "header": {
+    "nav": {
+      "howItWorks": "So funktioniert's",
+      "forHouses": "F\u00fcr WGs",
+      "safety": "Sicherheit",
+      "costs": "Kosten",
+      "about": "\u00dcber uns"
+    },
+    "login": "Mit SURFconext anmelden",
+    "menuOpen": "Men\u00fc \u00f6ffnen"
+  },
+  "footer": {
+    "product": "Produkt",
+    "legal": "Rechtliches",
+    "community": "Community",
+    "links": {
+      "howItWorks": "So funktioniert's",
+      "forHouses": "F\u00fcr WGs",
+      "safety": "Sicherheit",
+      "costs": "Kosten",
+      "privacy": "Datenschutz",
+      "terms": "AGB",
+      "about": "\u00dcber uns"
+    },
+    "tagline": "Kostenlose, Open-Source-Studentenwohnungen f\u00fcr die Niederlande.",
+    "openSource": "Open Source",
+    "rights": "Alle Rechte vorbehalten."
+  },
+  "home": {
+    "hero": {
+      "title": "Hospiteren.\nKostenlos. Fair.\nNur Studierende.",
+      "subtitle": "OpenHospi ist die kostenlose, Open-Source-Plattform f\u00fcr Studentenwohnungen in den Niederlanden. Verifiziert \u00fcber SURFconext \u2014 keine Vermittler, keine Geb\u00fchren.",
+      "cta": "Mit SURFconext anmelden"
+    },
+    "features": {
+      "title": "Warum OpenHospi?",
+      "free": {
+        "title": "Immer kostenlos",
+        "description": "Keine versteckten Kosten, keine Premium-Pl\u00e4ne. Niemand kann zahlen, um sich Vorrang zu verschaffen. Jeder Studierende hat die gleiche Sichtbarkeit \u2014 kostenlos, f\u00fcr immer."
+      },
+      "verified": {
+        "title": "Verifizierte Studierende",
+        "description": "Jeder Nutzer wird \u00fcber SURFconext verifiziert \u2014 nur echte Studierende."
+      },
+      "encrypted": {
+        "title": "E2E-verschl\u00fcsselter Chat",
+        "description": "Deine Gespr\u00e4che sind Ende-zu-Ende verschl\u00fcsselt. Wir k\u00f6nnen sie nicht lesen, niemand kann das."
+      },
+      "fair": {
+        "title": "Fair und transparent",
+        "description": "Open Source und Community-getrieben. Kein Unternehmen verdient daran \u2014 von einem Studierenden gestartet, f\u00fcr alle Studierenden."
+      }
+    },
+    "howItWorks": {
+      "title": "So funktioniert's",
+      "step1": {
+        "title": "Anmelden",
+        "description": "Melde dich mit deinem Uni-Account \u00fcber SURFconext an."
+      },
+      "step2": {
+        "title": "Suchen",
+        "description": "Durchsuche verf\u00fcgbare Zimmer oder stelle deine WG ein."
+      },
+      "step3": {
+        "title": "Ausgew\u00e4hlt werden",
+        "description": "WGs laden Kandidaten ein \u2014 das traditionelle niederl\u00e4ndische Hospiteren."
+      }
+    },
+    "students": {
+      "title": "Nur echte Studierende",
+      "description": "Bei OpenHospi wirst du von deiner eigenen Universit\u00e4t oder Hochschule \u00fcber SURFconext verifiziert. Deine Einrichtung steht hinter deinem Profil \u2014 so wei\u00df jeder, dass du ein echter Studierender bist. Keine Fake-Profile, kein Betrug.",
+      "badge": "SURFconext verifiziert"
+    },
+    "openSource": {
+      "title": "Open Source",
+      "description": "OpenHospi ist vollst\u00e4ndig Open Source. Jeder kann den Code einsehen, beitragen oder eine eigene Instanz betreiben. Transparenz ist kein Feature \u2014 es ist ein Prinzip.",
+      "cta": "Auf GitHub ansehen"
+    },
+    "cta": {
+      "title": "Bereit, dein Zimmer zu finden?",
+      "subtitle": "Sei dabei auf der fairsten Wohnungsplattform der Niederlande \u2014 kostenlos, fair und nur f\u00fcr Studierende.",
+      "button": "Mit SURFconext anmelden"
+    }
+  },
+  "howItWorks": {
+    "title": "So funktioniert's",
+    "subtitle": "Schritt-f\u00fcr-Schritt-Anleitung zum Finden oder Anbieten eines Zimmers.",
+    "seekerTab": "Ich suche ein Zimmer",
+    "houseTab": "Ich habe ein Zimmer",
+    "seeker": {
+      "steps": [
+        {
+          "title": "Mit SURFconext anmelden",
+          "description": "Nutze deinen Uni-Account, um deine Identit\u00e4t zu verifizieren."
+        },
+        {
+          "title": "Profil vervollst\u00e4ndigen",
+          "description": "F\u00fcge dein Studium, Hobbys und Vorlieben hinzu, damit WGs dich kennenlernen."
+        },
+        {
+          "title": "Zimmer durchsuchen",
+          "description": "Filtere nach Stadt, Preis, Verf\u00fcgbarkeit und WG-Typ."
+        },
+        {
+          "title": "Auf Zimmer reagieren",
+          "description": "Sende eine pers\u00f6nliche Nachricht an die WG, warum du gut passen w\u00fcrdest."
+        },
+        {
+          "title": "Zum Hospiteren eingeladen werden",
+          "description": "Wenn die WG dein Profil mag, laden sie dich zum Besuch ein."
+        },
+        {
+          "title": "Einziehen!",
+          "description": "Nach einem erfolgreichen Hospiteren bist du dabei. Willkommen zu Hause!"
+        }
+      ]
+    },
+    "house": {
+      "steps": [
+        {
+          "title": "Mit SURFconext anmelden",
+          "description": "Alle Bewohner verifizieren sich \u00fcber ihren Uni-Account."
+        },
+        {
+          "title": "WG erstellen",
+          "description": "F\u00fcge Adresse, Fotos, Zimmerdetails und Hausregeln hinzu."
+        },
+        {
+          "title": "Anzeige ver\u00f6ffentlichen",
+          "description": "Mache dein Zimmer f\u00fcr verifizierte Studierende in den ganzen Niederlanden sichtbar."
+        },
+        {
+          "title": "Anfragen ansehen",
+          "description": "Durchsuche Kandidatenprofile und lies ihre pers\u00f6nlichen Nachrichten."
+        },
+        {
+          "title": "Kandidaten einladen",
+          "description": "W\u00e4hle deine Favoriten aus und lade sie zum Hospiteren ein."
+        },
+        {
+          "title": "Neuen Mitbewohner w\u00e4hlen",
+          "description": "Nach dem Hospiteren w\u00e4hlst du die Person, die am besten passt."
+        }
+      ]
+    }
+  },
+  "forHouses": {
+    "title": "F\u00fcr WGs",
+    "subtitle": "Der einfachste Weg, deinen n\u00e4chsten Mitbewohner zu finden.",
+    "why": {
+      "title": "Warum auf OpenHospi inserieren?",
+      "items": [
+        {
+          "title": "Verifizierte Kandidaten",
+          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universit\u00e4t oder Hochschule \u00fcber SURFconext."
+        },
+        {
+          "title": "Komplett kostenlos",
+          "description": "Keine Inseratsgeb\u00fchren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair f\u00fcr alle."
+        },
+        {
+          "title": "Anfragen verwalten",
+          "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen \u2014 alles an einem Ort."
+        },
+        {
+          "title": "Anzeige teilen",
+          "description": "Generiere einen einzigartigen Link zum Teilen in sozialen Medien oder Gruppenchats."
+        }
+      ]
+    },
+    "workflow": {
+      "title": "So funktioniert's f\u00fcr WGs",
+      "description": "Erstelle dein WG-Profil, f\u00fcge eine Zimmeranzeige hinzu, pr\u00fcfe Anfragen und lade die besten Kandidaten zum Hospiteren ein."
+    },
+    "shareLink": {
+      "title": "Teile deine Anzeige \u00fcberall",
+      "description": "Jedes Zimmer bekommt einen einzigartigen Link, den du auf Instagram, WhatsApp oder deiner WG-Website teilen kannst."
+    },
+    "cta": {
+      "title": "Bereit, deinen n\u00e4chsten Mitbewohner zu finden?",
+      "button": "Mit SURFconext anmelden"
+    }
+  },
+  "safety": {
+    "title": "Sicherheit & Vertrauen",
+    "subtitle": "Deine Sicherheit hat f\u00fcr uns h\u00f6chste Priorit\u00e4t. So sch\u00fctzen wir dich.",
+    "features": [
+      {
+        "title": "SURFconext-Verifizierung",
+        "description": "Jeder Nutzer wird von seiner eigenen Universit\u00e4t oder Hochschule \u00fcber SURFconext verifiziert. Deine Einrichtung steht hinter deinem Profil. Keine Fake-Profile."
+      },
+      {
+        "title": "Ende-zu-Ende verschl\u00fcsselter Chat",
+        "description": "Nachrichten sind zwischen Absender und Empf\u00e4nger verschl\u00fcsselt. Wir k\u00f6nnen deine Gespr\u00e4che nicht lesen."
+      },
+      {
+        "title": "Keine Tracker",
+        "description": "Wir verwenden keine Drittanbieter-Tracker, Analytics-Cookies oder verkaufen deine Daten."
+      },
+      {
+        "title": "DSGVO-konform",
+        "description": "Wir befolgen die EU-Datenschutzverordnung. Du kannst deine Daten jederzeit exportieren oder l\u00f6schen."
+      },
+      {
+        "title": "Open Source",
+        "description": "Unsere gesamte Codebasis ist \u00f6ffentlich. Jeder kann pr\u00fcfen, wie wir mit deinen Daten umgehen."
+      },
+      {
+        "title": "Melden & Blockieren",
+        "description": "Melde unangemessenes Verhalten oder blockiere Nutzer mit einem Klick. Wir handeln schnell bei Meldungen."
+      }
+    ]
+  },
+  "about": {
+    "title": "\u00dcber OpenHospi",
+    "mission": {
+      "title": "Unsere Mission",
+      "description": "OpenHospi existiert, um Studentenwohnungen in den Niederlanden fair, kostenlos und zug\u00e4nglich zu machen. Wir glauben, dass die Zimmersuche kein Geld kosten sollte und der Prozess transparent sein muss. OpenHospi wird niemals Freemium oder Pay-to-Win sein: Niemand kann zahlen, um mehr Sichtbarkeit zu bekommen. Jeder Studierende bekommt die gleichen Chancen."
+    },
+    "crisis": {
+      "title": "Das Problem",
+      "description": "Studierende suchen Zimmer \u00fcber Facebook-Gruppen, Instagram und kostenpflichtige Plattformen. Auf kommerziellen Seiten zahlst du, um Anzeigen zu sehen oder Vorrang zu bekommen. Das ist unfair \u2014 das System funktioniert f\u00fcr Plattformen, nicht f\u00fcr Studierende."
+    },
+    "builtBy": {
+      "title": "Wie es begann",
+      "description": "Ruben Talstra sah Mitstudierende, die mit Facebook-Gruppen, Instagram und kostenpflichtigen Plattformen k\u00e4mpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu k\u00e4mpfen. So ist OpenHospi entstanden."
+    },
+    "openSource": {
+      "title": "Open Source & Community",
+      "description": "OpenHospi ist ein Community-Projekt. Jeder kann Code, \u00dcbersetzungen oder Ideen beitragen. Wir sind transparent in allem, was wir tun.",
+      "cta": "Auf GitHub beitragen"
+    }
+  },
+  "privacy": {
+    "title": "Datenschutzerkl\u00e4rung",
+    "lastUpdated": "Zuletzt aktualisiert: Februar 2026",
+    "sections": [
+      {
+        "title": "Welche Daten wir erheben",
+        "content": "Wir erheben Daten, die du bei der Kontoerstellung (\u00fcber SURFconext) angibst, deine Profilinformationen, Zimmeranzeigen und Nachrichten, die du \u00fcber die Plattform sendest."
+      },
+      {
+        "title": "SURFconext-Daten",
+        "content": "Wenn du dich \u00fcber SURFconext anmeldest, erhalten wir deinen Namen, deine E-Mail-Adresse, deine Institution und deine Zugeh\u00f6rigkeit (Student/Mitarbeiter). Wir nutzen diese Daten zur Identit\u00e4tsverifizierung und Kontoerstellung."
+      },
+      {
+        "title": "Wie wir deine Daten verwenden",
+        "content": "Wir verwenden deine Daten ausschlie\u00dflich zur Bereitstellung der OpenHospi-Plattform. Wir verkaufen deine Daten nicht, nutzen sie nicht f\u00fcr Werbung und teilen sie nicht mit Dritten, au\u00dfer wenn gesetzlich vorgeschrieben."
+      },
+      {
+        "title": "Auftragsverarbeiter",
+        "content": "Unsere Datenbank wird auf Supabase (EU-Region) gehostet. Supabase fungiert als unser Auftragsverarbeiter gem\u00e4\u00df einem Auftragsverarbeitungsvertrag."
+      },
+      {
+        "title": "Aufbewahrungsfrist",
+        "content": "Deine Daten werden aufbewahrt, solange dein Konto aktiv ist. Du kannst dein Konto jederzeit l\u00f6schen, wodurch alle deine Daten dauerhaft entfernt werden."
+      },
+      {
+        "title": "Deine Rechte",
+        "content": "Gem\u00e4\u00df der DSGVO hast du das Recht auf Auskunft, Berichtigung, Export und L\u00f6schung deiner personenbezogenen Daten. Kontaktiere uns unter privacy@openhospi.nl, um diese Rechte auszu\u00fcben."
+      },
+      {
+        "title": "Kontakt",
+        "content": "F\u00fcr datenschutzbezogene Fragen, E-Mail an privacy@openhospi.nl."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Allgemeine Gesch\u00e4ftsbedingungen",
+    "lastUpdated": "Zuletzt aktualisiert: Februar 2026",
+    "sections": [
+      {
+        "title": "Berechtigung",
+        "content": "OpenHospi steht Studierenden und Mitarbeitern niederl\u00e4ndischer Bildungseinrichtungen zur Verf\u00fcgung, die an SURFconext angeschlossen sind."
+      },
+      {
+        "title": "Kontoverantwortung",
+        "content": "Du bist f\u00fcr die Sicherheit deines Kontos verantwortlich. Teile deine Anmeldedaten nicht und versuche nicht, dich als jemand anderes auszugeben."
+      },
+      {
+        "title": "Akzeptable Nutzung",
+        "content": "Du stimmst zu, OpenHospi nur f\u00fcr die Suche oder das Anbieten von Studentenwohnungen zu nutzen. Bel\u00e4stigung, Diskriminierung, Betrug und Spam sind verboten."
+      },
+      {
+        "title": "Eigentumsrechte an Inhalten",
+        "content": "Du beh\u00e4ltst das Eigentum an Inhalten, die du postest (Profiltext, Fotos, Nachrichten). Durch das Posten gew\u00e4hrst du OpenHospi eine Lizenz, diese Inhalte auf der Plattform anzuzeigen."
+      },
+      {
+        "title": "Haftung",
+        "content": "OpenHospi wird ohne Gew\u00e4hr bereitgestellt. Wir sind nicht verantwortlich f\u00fcr die Richtigkeit von Anzeigen, das Verhalten anderer Nutzer oder Transaktionen au\u00dferhalb der Plattform."
+      },
+      {
+        "title": "Anwendbares Recht",
+        "content": "Diese Bedingungen unterliegen niederl\u00e4ndischem Recht. Streitigkeiten werden vor niederl\u00e4ndischen Gerichten verhandelt."
+      }
+    ]
+  },
+  "costs": {
+    "title": "Kosten & Transparenz",
+    "subtitle": "OpenHospi ist kostenlos f\u00fcr alle Nutzer. Das kostet es uns, die Plattform zu betreiben.",
+    "intro": {
+      "title": "Was kostet OpenHospi?",
+      "description": "OpenHospi ist und bleibt immer kostenlos f\u00fcr Studierende. Keine versteckten Kosten, keine Premium-Pl\u00e4ne, keine Werbung. Hier ist ein transparenter \u00dcberblick \u00fcber unsere Betriebskosten."
+    },
+    "breakdown": {
+      "title": "Monatliche Kostenaufstellung",
+      "items": [
+        {
+          "name": "Hosting (Vercel)",
+          "description": "Frontend-Hosting und CDN",
+          "cost": "\u20ac0\u201320/Mo"
+        },
+        {
+          "name": "Datenbank (Supabase)",
+          "description": "PostgreSQL-Datenbank, Auth und Speicher",
+          "cost": "\u20ac0\u201325/Mo"
+        },
+        {
+          "name": "Domain",
+          "description": "openhospi.nl Domain-Registrierung",
+          "cost": "~\u20ac1/Mo"
+        },
+        {
+          "name": "SURFconext",
+          "description": "Studierendenverifizierung \u00fcber SURFconext",
+          "cost": "Kostenlos"
+        }
+      ]
+    },
+    "keepFree": {
+      "title": "Wie halten wir es kostenlos?",
+      "pillars": [
+        {
+          "title": "Spenden",
+          "description": "Individuelle Beitr\u00e4ge von Nutzern, die die Plattform unterst\u00fctzen m\u00f6chten."
+        },
+        {
+          "title": "Sponsoring",
+          "description": "Universit\u00e4ten und Studierendenorganisationen k\u00f6nnen OpenHospi sponsern."
+        },
+        {
+          "title": "Open Source",
+          "description": "Freiwillige Entwickler tragen Code bei und reduzieren die Entwicklungskosten."
+        }
+      ]
+    },
+    "donate": {
+      "title": "OpenHospi unterst\u00fctzen",
+      "description": "Jeder Beitrag hilft, die Plattform f\u00fcr Studierende kostenlos zu halten.",
+      "oneTime": "Einmalige Spende",
+      "monthly": "Monatliche Unterst\u00fctzung",
+      "cta": "\u00dcber GitHub Sponsors spenden"
+    },
+    "sponsor": {
+      "title": "Sponsor werden",
+      "tiers": [
+        {
+          "name": "Supporter",
+          "price": "\u20ac10/Mo",
+          "description": "Dein Name auf unserer Sponsorenseite."
+        },
+        {
+          "name": "Partner",
+          "price": "\u20ac50/Mo",
+          "description": "Logo auf unserer Website und README."
+        },
+        {
+          "name": "Institutionell",
+          "price": "Auf Anfrage",
+          "description": "Prominente Platzierung und direkte Unterst\u00fctzung f\u00fcr Universit\u00e4ten und Wohnungsorganisationen."
+        }
+      ],
+      "cta": "Kontaktiere uns"
+    },
+    "transparency": {
+      "title": "Wohin geht das Geld?",
+      "description": "100% der Spenden flie\u00dfen in Infrastrukturkosten. Wir ver\u00f6ffentlichen unsere Finanzen offen. Keine Geh\u00e4lter, kein Gewinn \u2014 nur die Plattform f\u00fcr Studierende am Laufen halten."
+    }
+  }
+}

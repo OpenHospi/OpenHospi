@@ -1,3 +1,5 @@
+import { getMessages } from "@openhospi/i18n";
+import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
@@ -9,6 +11,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: await getMessages(locale as Locale),
   };
 });

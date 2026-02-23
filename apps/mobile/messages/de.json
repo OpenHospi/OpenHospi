@@ -1,8 +1,0 @@
-{
-  "common": {
-    "appName": "OpenHospi",
-    "loading": "Laden...",
-    "error": "Etwas ist schiefgelaufen",
-    "retry": "Erneut versuchen"
-  }
-}

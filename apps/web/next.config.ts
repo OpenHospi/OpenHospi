@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
     "@openhospi/supabase",
     "@openhospi/surfconext",
     "@openhospi/crypto",
+    "@openhospi/i18n",
   ],
   async redirects() {
     return [

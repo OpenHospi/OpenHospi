@@ -1,4 +1,10 @@
 {
+  "common": {
+    "appName": "OpenHospi",
+    "loading": "Laden...",
+    "error": "Er is iets misgegaan",
+    "retry": "Opnieuw proberen"
+  },
   "enums": {
     "language_enum": {
       "nl": "Nederlands",
@@ -331,17 +337,17 @@
         {
           "name": "Hosting (Vercel)",
           "description": "Frontend hosting en CDN",
-          "cost": "€0–20/mnd"
+          "cost": "\u20ac0\u201320/mnd"
         },
         {
           "name": "Database (Supabase)",
           "description": "PostgreSQL database, auth en opslag",
-          "cost": "€0–25/mnd"
+          "cost": "\u20ac0\u201325/mnd"
         },
         {
           "name": "Domein",
           "description": "openhospi.nl domeinregistratie",
-          "cost": "~€1/mnd"
+          "cost": "~\u20ac1/mnd"
         },
         {
           "name": "SURFconext",
@@ -379,12 +385,12 @@
       "tiers": [
         {
           "name": "Supporter",
-          "price": "€10/mnd",
+          "price": "\u20ac10/mnd",
           "description": "Je naam op onze sponsorspagina."
         },
         {
           "name": "Partner",
-          "price": "€50/mnd",
+          "price": "\u20ac50/mnd",
           "description": "Logo op onze website en README."
         },
         {
@@ -397,7 +403,7 @@
     },
     "transparency": {
       "title": "Waar gaat het geld naartoe?",
-      "description": "100% van de donaties gaat naar infrastructuurkosten. We publiceren onze financiën openlijk. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten."
+      "description": "100% van de donaties gaat naar infrastructuurkosten. We publiceren onze financi\u00ebn openlijk. Geen salarissen, geen winst \u2014 alleen het platform draaiende houden voor studenten."
     }
   }
 }

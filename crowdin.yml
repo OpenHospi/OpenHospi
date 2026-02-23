@@ -1,6 +1,8 @@
-preserve_hierarchy: 1
+preserve_hierarchy: true
+export_languages:
+  - en
+  - de
 files:
-  - source: /apps/web/src/messages/nl.json
-    translation: /apps/web/src/messages/%two_letters_code%.json
-  - source: /apps/mobile/messages/nl.json
-    translation: /apps/mobile/messages/%two_letters_code%.json
+  - source: /packages/i18n/messages/nl.json
+    translation: /packages/i18n/messages/%two_letters_code%.json
+    skip_untranslated_strings: true

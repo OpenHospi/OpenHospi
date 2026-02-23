@@ -1,3 +1,5 @@
+import { getMessages } from "@openhospi/i18n";
+import type { Locale } from "@openhospi/i18n";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
@@ -41,7 +43,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   setRequestLocale(locale);
 
-  const messages = (await import(`../../messages/${locale}.json`)).default;
+  const messages = await getMessages(locale as Locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>

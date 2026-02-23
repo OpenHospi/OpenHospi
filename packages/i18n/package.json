@@ -5,6 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./web": "./src/web.ts",
+    "./app": "./src/app.ts",
     "./messages/*": "./messages/*"
   },
   "dependencies": {

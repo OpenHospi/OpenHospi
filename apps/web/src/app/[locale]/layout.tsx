@@ -1,5 +1,5 @@
-import { getMessages } from "@openhospi/i18n";
 import type { Locale } from "@openhospi/i18n";
+import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";

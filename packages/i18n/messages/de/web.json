@@ -305,32 +305,91 @@
     "subtitle": "OpenHospi ist kostenlos für alle Nutzer. Das kostet es uns, die Plattform zu betreiben.",
     "intro": {
       "title": "Was kostet OpenHospi?",
-      "description": "OpenHospi ist und bleibt immer kostenlos für Studierende. Keine versteckten Kosten, keine Premium-Pläne, keine Werbung. Hier ist ein transparenter Überblick über unsere Betriebskosten."
+      "description": "OpenHospi ist und bleibt immer kostenlos für Studierende. Keine versteckten Kosten, keine Premium-Pläne, keine Werbung. Hier ist ein transparenter Überblick über unsere Betriebskosten — alle Preise verstehen sich inklusive 21% MwSt."
     },
     "breakdown": {
-      "title": "Monatliche Kostenaufstellung",
-      "items": [
+      "title": "Kostenaufstellung",
+      "groups": [
         {
-          "name": "Hosting (Vercel)",
-          "description": "Frontend-Hosting und CDN",
-          "cost": "€0–20/Mo"
+          "name": "Infrastruktur",
+          "description": "Hosting, Datenbank und Authentifizierung",
+          "items": [
+            {
+              "name": "Vercel",
+              "description": "Website-Hosting und CDN",
+              "current": "€0/Mo (Hobby)",
+              "atScale": "~€18,50/Mo (Pro)"
+            },
+            {
+              "name": "Supabase",
+              "description": "PostgreSQL-Datenbank und Speicher",
+              "current": "€0/Mo (Free)",
+              "atScale": "~€23/Mo (Pro)"
+            },
+            {
+              "name": "SURFconext",
+              "description": "Studierendenverifizierung",
+              "current": "Kostenlos",
+              "atScale": "Kostenlos"
+            }
+          ]
         },
         {
-          "name": "Datenbank (Supabase)",
-          "description": "PostgreSQL-Datenbank, Auth und Speicher",
-          "cost": "€0–25/Mo"
+          "name": "Domains",
+          "description": "3 Domains bei Vimexx, jährlich verlängert",
+          "items": [
+            {
+              "name": "openhospi.nl",
+              "description": ".nl Domain",
+              "cost": "€7,95/Jahr"
+            },
+            {
+              "name": "openhospi.com",
+              "description": ".com Domain",
+              "cost": "€29,03/Jahr"
+            },
+            {
+              "name": "openhospi.eu",
+              "description": ".eu Domain",
+              "cost": "€13,30/Jahr"
+            }
+          ]
         },
         {
-          "name": "Domain",
-          "description": "openhospi.nl Domain-Registrierung",
-          "cost": "~€1/Mo"
-        },
-        {
-          "name": "SURFconext",
-          "description": "Studierendenverifizierung über SURFconext",
-          "cost": "Kostenlos"
+          "name": "App Stores",
+          "description": "Veröffentlichung in iOS und Android App Stores",
+          "items": [
+            {
+              "name": "Apple Developer Program",
+              "description": "Erforderlich für iOS App Store",
+              "cost": "€99/Jahr"
+            },
+            {
+              "name": "Google Play Developer",
+              "description": "Erforderlich für Play Store",
+              "cost": "€25 (einmalig)"
+            }
+          ]
         }
       ]
+    },
+    "summary": {
+      "title": "Gesamtübersicht",
+      "currentLabel": "Aktuelle Kosten",
+      "atScaleLabel": "Bei Wachstum (10K+ Nutzer)",
+      "perYear": "/Jahr",
+      "perMonth": "/Mo",
+      "rows": [
+        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
+        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
+        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
+        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
+        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
+        { "name": "Google Play", "current": "€25", "atScale": "—" }
+      ],
+      "totalLabel": "Gesamt pro Jahr",
+      "currentTotal": "~€174/Jahr",
+      "atScaleTotal": "~€647/Jahr (~€54/Mo)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",

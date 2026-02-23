@@ -305,32 +305,91 @@
     "subtitle": "OpenHospi is gratis voor alle gebruikers. Dit kost het ons om te draaien.",
     "intro": {
       "title": "Wat kost OpenHospi?",
-      "description": "OpenHospi is en blijft altijd gratis voor studenten. Geen verborgen kosten, geen premium plannen, geen advertenties. Hier is een transparant overzicht van onze draaikosten."
+      "description": "OpenHospi is en blijft altijd gratis voor studenten. Geen verborgen kosten, geen premium plannen, geen advertenties. Hier is een transparant overzicht van onze draaikosten — alle prijzen zijn inclusief 21% BTW."
     },
     "breakdown": {
-      "title": "Maandelijkse kostenopbouw",
-      "items": [
+      "title": "Kostenopbouw",
+      "groups": [
         {
-          "name": "Hosting (Vercel)",
-          "description": "Frontend hosting en CDN",
-          "cost": "€0–20/mnd"
+          "name": "Infrastructuur",
+          "description": "Hosting, database en authenticatie",
+          "items": [
+            {
+              "name": "Vercel",
+              "description": "Website hosting en CDN",
+              "current": "€0/mnd (Hobby)",
+              "atScale": "~€18,50/mnd (Pro)"
+            },
+            {
+              "name": "Supabase",
+              "description": "PostgreSQL database en opslag",
+              "current": "€0/mnd (Free)",
+              "atScale": "~€23/mnd (Pro)"
+            },
+            {
+              "name": "SURFconext",
+              "description": "Studentenverificatie",
+              "current": "Gratis",
+              "atScale": "Gratis"
+            }
+          ]
         },
         {
-          "name": "Database (Supabase)",
-          "description": "PostgreSQL database, auth en opslag",
-          "cost": "€0–25/mnd"
+          "name": "Domeinen",
+          "description": "3 domeinen bij Vimexx, jaarlijks verlengd",
+          "items": [
+            {
+              "name": "openhospi.nl",
+              "description": ".nl domein",
+              "cost": "€7,95/jr"
+            },
+            {
+              "name": "openhospi.com",
+              "description": ".com domein",
+              "cost": "€29,03/jr"
+            },
+            {
+              "name": "openhospi.eu",
+              "description": ".eu domein",
+              "cost": "€13,30/jr"
+            }
+          ]
         },
         {
-          "name": "Domein",
-          "description": "openhospi.nl domeinregistratie",
-          "cost": "~€1/mnd"
-        },
-        {
-          "name": "SURFconext",
-          "description": "Studentenverificatie via SURFconext",
-          "cost": "Gratis"
+          "name": "App Stores",
+          "description": "Publicatie in iOS en Android app stores",
+          "items": [
+            {
+              "name": "Apple Developer Program",
+              "description": "Vereist voor iOS App Store",
+              "cost": "€99/jr"
+            },
+            {
+              "name": "Google Play Developer",
+              "description": "Vereist voor Play Store",
+              "cost": "€25 (eenmalig)"
+            }
+          ]
         }
       ]
+    },
+    "summary": {
+      "title": "Totaaloverzicht",
+      "currentLabel": "Huidige kosten",
+      "atScaleLabel": "Bij groei (10K+ gebruikers)",
+      "perYear": "/jr",
+      "perMonth": "/mnd",
+      "rows": [
+        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
+        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
+        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
+        { "name": "Domeinen (3x)", "current": "~€50", "atScale": "~€50" },
+        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
+        { "name": "Google Play", "current": "€25", "atScale": "—" }
+      ],
+      "totalLabel": "Totaal per jaar",
+      "currentTotal": "~€174/jr",
+      "atScaleTotal": "~€647/jr (~€54/mnd)"
     },
     "keepFree": {
       "title": "Hoe houden we het gratis?",

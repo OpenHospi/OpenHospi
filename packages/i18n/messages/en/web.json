@@ -401,12 +401,36 @@
       "perYear": "/yr",
       "perMonth": "/mo",
       "rows": [
-        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
-        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
-        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
-        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
-        { "name": "Google Play", "current": "€25", "atScale": "—" }
+        {
+          "name": "Vercel",
+          "current": "€0",
+          "atScale": "~€222"
+        },
+        {
+          "name": "Supabase",
+          "current": "€0",
+          "atScale": "~€276"
+        },
+        {
+          "name": "SURFconext",
+          "current": "€0",
+          "atScale": "€0"
+        },
+        {
+          "name": "Domains (3x)",
+          "current": "~€50",
+          "atScale": "~€50"
+        },
+        {
+          "name": "Apple Developer",
+          "current": "€99",
+          "atScale": "€99"
+        },
+        {
+          "name": "Google Play",
+          "current": "€25",
+          "atScale": "—"
+        }
       ],
       "totalLabel": "Total per year",
       "currentTotal": "~€174/yr",

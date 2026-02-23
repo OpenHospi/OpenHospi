@@ -196,14 +196,10 @@ export default function CostsPage() {
               href="https://opencollective.com/openhospi"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-block"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://opencollective.com/openhospi/tiers/badge.svg"
-                alt={t("transparency.badge")}
-                className="h-auto"
-              />
+              <ExternalLink className="size-4" />
+              {t("transparency.badge")}
             </a>
           </div>
         </div>

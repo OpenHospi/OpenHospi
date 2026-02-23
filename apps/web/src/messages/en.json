@@ -41,7 +41,7 @@
       "title": "Why OpenHospi?",
       "free": {
         "title": "Always free",
-        "description": "No hidden fees, no premium plans. Free for everyone, forever."
+        "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility — free, forever."
       },
       "verified": {
         "title": "Verified students",
@@ -53,7 +53,7 @@
       },
       "fair": {
         "title": "Fair and transparent",
-        "description": "Open source, community-driven, and built by students for students."
+        "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
       }
     },
     "howItWorks": {
@@ -73,7 +73,7 @@
     },
     "students": {
       "title": "Only real students",
-      "description": "OpenHospi uses SURFconext — the official single sign-on for Dutch education — to verify every user. No fake profiles, no scams.",
+      "description": "On OpenHospi, your university or hogeschool verifies you through SURFconext. Your institution stands behind your profile — so everyone knows you're a real student. No fake profiles, no scams.",
       "badge": "SURFconext verified"
     },
     "openSource": {
@@ -83,7 +83,7 @@
     },
     "cta": {
       "title": "Ready to find your room?",
-      "subtitle": "Join thousands of students on the fairest housing platform in the Netherlands.",
+      "subtitle": "Be among the first students on the fairest housing platform in the Netherlands — free, fair, and students only.",
       "button": "Log in with SURFconext"
     }
   },
@@ -107,7 +107,7 @@
           "description": "Filter by city, price, availability, and house type."
         },
         {
-          "title": "Apply to rooms",
+          "title": "Respond to rooms",
           "description": "Send a personal message to the house explaining why you'd be a good fit."
         },
         {
@@ -132,11 +132,11 @@
         },
         {
           "title": "Publish your listing",
-          "description": "Make your room visible to thousands of verified students."
+          "description": "Make your room visible to verified students across the Netherlands."
         },
         {
-          "title": "Review applications",
-          "description": "Browse applicant profiles and read their personal messages."
+          "title": "Review responses",
+          "description": "Browse candidate profiles and read their personal messages."
         },
         {
           "title": "Invite candidates",
@@ -156,15 +156,15 @@
       "title": "Why list on OpenHospi?",
       "items": [
         {
-          "title": "Verified applicants",
-          "description": "Every applicant is a real student, verified via SURFconext."
+          "title": "Verified candidates",
+          "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
         },
         {
           "title": "Completely free",
-          "description": "No listing fees, no premium placements. Fair for everyone."
+          "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
         },
         {
-          "title": "Manage applications",
+          "title": "Manage responses",
           "description": "Review profiles, read messages, and invite candidates — all in one place."
         },
         {
@@ -175,7 +175,7 @@
     },
     "workflow": {
       "title": "How it works for houses",
-      "description": "Create your house profile, add a room listing, review applications, and invite the best candidates for hospiteren."
+      "description": "Create your house profile, add a room listing, review responses, and invite the best candidates for hospiteren."
     },
     "shareLink": {
       "title": "Share your listing anywhere",
@@ -192,7 +192,7 @@
     "features": [
       {
         "title": "SURFconext verification",
-        "description": "Every user is verified through SURFconext, the official Dutch education SSO. No fake profiles."
+        "description": "Every user is verified by their own university or hogeschool through SURFconext. Your institution stands behind your profile. No fake profiles."
       },
       {
         "title": "End-to-end encrypted chat",
@@ -220,15 +220,15 @@
     "title": "About OpenHospi",
     "mission": {
       "title": "Our mission",
-      "description": "OpenHospi exists to make student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent."
+      "description": "OpenHospi exists to make student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent. OpenHospi will never be freemium or pay-to-win: no one can pay to get more visibility. Every student gets the same chances."
     },
     "crisis": {
-      "title": "The housing crisis",
-      "description": "The Netherlands faces a severe student housing shortage. Commercial platforms charge listing fees and premium placements, making an already stressful process worse. We're building an alternative."
+      "title": "The problem",
+      "description": "Students search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority. That's unfair — the system works for platforms, not for students."
     },
     "builtBy": {
-      "title": "Built by students",
-      "description": "OpenHospi was created by students who experienced the housing struggle firsthand. We know the problems because we've lived them."
+      "title": "How it started",
+      "description": "Ruben Talstra saw fellow students struggling with Facebook groups, Instagram, and paid platforms. He didn't experience it himself, but saw many around him dealing with it. That's how OpenHospi was born."
     },
     "openSource": {
       "title": "Open source & community",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Heart, Home, Users } from "lucide-react";
+import { AlertTriangle, Github, Heart, User } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -11,8 +11,8 @@ const sectionConfig: {
   icon: LucideIcon;
 }[] = [
   { key: "mission", icon: Heart },
-  { key: "crisis", icon: Home },
-  { key: "builtBy", icon: Users },
+  { key: "crisis", icon: AlertTriangle },
+  { key: "builtBy", icon: User },
   { key: "openSource", icon: Github },
 ];
 

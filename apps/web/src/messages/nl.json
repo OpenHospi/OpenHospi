@@ -41,7 +41,7 @@
       "title": "Waarom OpenHospi?",
       "free": {
         "title": "Altijd gratis",
-        "description": "Geen verborgen kosten, geen premium plannen. Gratis voor iedereen, voor altijd."
+        "description": "Geen verborgen kosten, geen premium plannen. Niemand kan betalen om voorrang te krijgen. Elke student heeft dezelfde zichtbaarheid — gratis, voor altijd."
       },
       "verified": {
         "title": "Geverifieerde studenten",
@@ -53,7 +53,7 @@
       },
       "fair": {
         "title": "Eerlijk en transparant",
-        "description": "Open source, community-driven en gebouwd door studenten voor studenten."
+        "description": "Open source en community-driven. Geen bedrijf dat eraan verdient — gestart door een student, voor alle studenten."
       }
     },
     "howItWorks": {
@@ -68,12 +68,12 @@
       },
       "step3": {
         "title": "Word gekozen",
-        "description": "Huizen nodigen kandidaten uit — de traditionele Nederlandse hospiteeravond."
+        "description": "Huizen nodigen kandidaten uit — het traditionele Nederlandse hospiteren."
       }
     },
     "students": {
       "title": "Alleen echte studenten",
-      "description": "OpenHospi gebruikt SURFconext — de officiële single sign-on voor het Nederlandse onderwijs — om elke gebruiker te verifiëren. Geen nepprofielen, geen oplichting.",
+      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool via SURFconext. Jouw instelling staat achter je profiel — zo weet iedereen dat je een echte student bent. Geen nepprofielen, geen oplichting.",
       "badge": "SURFconext geverifieerd"
     },
     "openSource": {
@@ -83,7 +83,7 @@
     },
     "cta": {
       "title": "Klaar om een kamer te vinden?",
-      "subtitle": "Sluit je aan bij duizenden studenten op het eerlijkste huisvestingsplatform van Nederland.",
+      "subtitle": "Wees erbij op het eerlijkste huisvestingsplatform van Nederland — gratis, eerlijk en alleen voor studenten.",
       "button": "Inloggen met SURFconext"
     }
   },
@@ -107,7 +107,7 @@
           "description": "Filter op stad, prijs, beschikbaarheid en type huis."
         },
         {
-          "title": "Solliciteer op kamers",
+          "title": "Reageer op kamers",
           "description": "Stuur een persoonlijk bericht naar het huis om uit te leggen waarom jij goed past."
         },
         {
@@ -132,11 +132,11 @@
         },
         {
           "title": "Publiceer je advertentie",
-          "description": "Maak je kamer zichtbaar voor duizenden geverifieerde studenten."
+          "description": "Maak je kamer zichtbaar voor geverifieerde studenten door heel Nederland."
         },
         {
-          "title": "Bekijk sollicitaties",
-          "description": "Bekijk profielen van sollicitanten en lees hun persoonlijke berichten."
+          "title": "Bekijk reacties",
+          "description": "Bekijk profielen van kandidaten en lees hun persoonlijke berichten."
         },
         {
           "title": "Nodig kandidaten uit",
@@ -156,15 +156,15 @@
       "title": "Waarom adverteren op OpenHospi?",
       "items": [
         {
-          "title": "Geverifieerde sollicitanten",
-          "description": "Elke sollicitant is een echte student, geverifieerd via SURFconext."
+          "title": "Geverifieerde kandidaten",
+          "description": "Elke kandidaat is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via SURFconext."
         },
         {
           "title": "Volledig gratis",
-          "description": "Geen advertentiekosten, geen premium plaatsingen. Eerlijk voor iedereen."
+          "description": "Geen advertentiekosten, geen premium plaatsingen. Niemand betaalt om bovenaan te staan. Eerlijk voor iedereen."
         },
         {
-          "title": "Beheer sollicitaties",
+          "title": "Beheer reacties",
           "description": "Bekijk profielen, lees berichten en nodig kandidaten uit — alles op één plek."
         },
         {
@@ -175,7 +175,7 @@
     },
     "workflow": {
       "title": "Hoe het werkt voor huizen",
-      "description": "Maak je huisprofiel aan, voeg een kameradvertentie toe, bekijk sollicitaties en nodig de beste kandidaten uit voor hospiteren."
+      "description": "Maak je huisprofiel aan, voeg een kameradvertentie toe, bekijk reacties en nodig de beste kandidaten uit voor hospiteren."
     },
     "shareLink": {
       "title": "Deel je advertentie overal",
@@ -192,7 +192,7 @@
     "features": [
       {
         "title": "SURFconext-verificatie",
-        "description": "Elke gebruiker is geverifieerd via SURFconext, de officiële Nederlandse onderwijs-SSO. Geen nepprofielen."
+        "description": "Elke gebruiker wordt geverifieerd door zijn of haar eigen universiteit of hogeschool via SURFconext. Jouw instelling staat achter je profiel. Geen nepprofielen."
       },
       {
         "title": "End-to-end versleutelde chat",
@@ -220,15 +220,15 @@
     "title": "Over OpenHospi",
     "mission": {
       "title": "Onze missie",
-      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant zou moeten zijn."
+      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant zou moeten zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
     },
     "crisis": {
-      "title": "De woningcrisis",
-      "description": "Nederland kampt met een ernstig tekort aan studentenhuisvesting. Commerciële platforms rekenen advertentiekosten en premium plaatsingen, waardoor een al stressvol proces nog erger wordt. Wij bouwen een alternatief."
+      "title": "Het probleem",
+      "description": "Studenten zoeken kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Dat is oneerlijk — het systeem werkt voor platforms, niet voor studenten."
     },
     "builtBy": {
-      "title": "Gebouwd door studenten",
-      "description": "OpenHospi is gemaakt door studenten die de woningnood zelf hebben ervaren. We kennen de problemen omdat we ze zelf hebben meegemaakt."
+      "title": "Hoe het begon",
+      "description": "Ruben Talstra zag medestudenten worstelen met Facebook-groepen, Instagram en betaalde platforms. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. Zo is OpenHospi ontstaan."
     },
     "openSource": {
       "title": "Open source & community",

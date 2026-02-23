@@ -410,26 +410,27 @@
     },
     "donate": {
       "title": "Steun OpenHospi",
-      "description": "Elke bijdrage helpt het platform gratis te houden voor studenten. Via Open Collective kun je precies zien waar je geld naartoe gaat.",
-      "oneTime": "Eenmalige donatie",
-      "monthly": "Maandelijkse steun",
-      "cta": "Doneer via Open Collective"
-    },
-    "sponsor": {
-      "title": "Word sponsor",
       "tiers": [
         {
           "name": "Backer",
           "price": "€5/mnd",
+          "badge": "Maandelijks",
           "description": "Je naam op onze sponsorspagina."
         },
         {
           "name": "Sponsor",
           "price": "€25/mnd",
+          "badge": "Maandelijks",
           "description": "Je logo op onze website en README."
+        },
+        {
+          "name": "Donatie",
+          "price": "Flexibel",
+          "badge": "Eenmalig",
+          "description": "Steun met een eenmalig bedrag naar keuze."
         }
       ],
-      "cta": "Word sponsor via Open Collective"
+      "cta": "Doneer via Open Collective"
     },
     "transparency": {
       "title": "Waar gaat het geld naartoe?",

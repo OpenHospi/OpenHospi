@@ -410,26 +410,27 @@
     },
     "donate": {
       "title": "Support OpenHospi",
-      "description": "Every contribution helps keep the platform free for students. Via Open Collective you can see exactly where your money goes.",
-      "oneTime": "One-time donation",
-      "monthly": "Monthly support",
-      "cta": "Donate via Open Collective"
-    },
-    "sponsor": {
-      "title": "Become a sponsor",
       "tiers": [
         {
           "name": "Backer",
           "price": "€5/mo",
+          "badge": "Monthly",
           "description": "Your name on our sponsors page."
         },
         {
           "name": "Sponsor",
           "price": "€25/mo",
+          "badge": "Monthly",
           "description": "Your logo on our website and README."
+        },
+        {
+          "name": "Donation",
+          "price": "Flexible",
+          "badge": "One-time",
+          "description": "Support with any amount you choose."
         }
       ],
-      "cta": "Become a sponsor via Open Collective"
+      "cta": "Donate via Open Collective"
     },
     "transparency": {
       "title": "Where does the money go?",

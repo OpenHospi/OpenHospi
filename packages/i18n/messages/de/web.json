@@ -410,26 +410,27 @@
     },
     "donate": {
       "title": "OpenHospi unterstützen",
-      "description": "Jeder Beitrag hilft, die Plattform für Studierende kostenlos zu halten. Über Open Collective kannst du genau sehen, wohin dein Geld fließt.",
-      "oneTime": "Einmalige Spende",
-      "monthly": "Monatliche Unterstützung",
-      "cta": "Über Open Collective spenden"
-    },
-    "sponsor": {
-      "title": "Sponsor werden",
       "tiers": [
         {
           "name": "Backer",
           "price": "€5/Mo",
+          "badge": "Monatlich",
           "description": "Dein Name auf unserer Sponsorenseite."
         },
         {
           "name": "Sponsor",
           "price": "€25/Mo",
+          "badge": "Monatlich",
           "description": "Dein Logo auf unserer Website und README."
+        },
+        {
+          "name": "Spende",
+          "price": "Flexibel",
+          "badge": "Einmalig",
+          "description": "Unterstütze mit einem Betrag deiner Wahl."
         }
       ],
-      "cta": "Werde Sponsor über Open Collective"
+      "cta": "Über Open Collective spenden"
     },
     "transparency": {
       "title": "Wohin geht das Geld?",

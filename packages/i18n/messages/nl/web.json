@@ -349,7 +349,85 @@
     "profile": {
       "title": "Mijn profiel",
       "institution": "Instelling",
-      "placeholder": "Je volledige profiel wordt binnenkort beschikbaar."
+      "edit": "Bewerken",
+      "editTitle": "Profiel bewerken",
+      "editSuccess": "Profiel bijgewerkt",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "bio": "Over mij",
+      "studyInfo": "Studie-informatie",
+      "studyProgram": "Studie",
+      "studyLevel": "Studieniveau",
+      "gender": "Geslacht",
+      "birthDate": "Geboortedatum",
+      "preferences": "Voorkeuren",
+      "preferredCity": "Voorkeursstad",
+      "maxRent": "Max huur",
+      "availableFrom": "Beschikbaar vanaf",
+      "lifestyleTags": "Levensstijl",
+      "completeness": {
+        "title": "Profiel {completed}/{total} compleet",
+        "photo": "Profielfoto",
+        "bio": "Bio",
+        "studyProgram": "Studie",
+        "birthDate": "Geboortedatum",
+        "preferredCity": "Voorkeursstad",
+        "lifestyleTags": "Levensstijl tags (2+)",
+        "vereniging": "Vereniging"
+      }
+    },
+    "onboarding": {
+      "title": "Maak je profiel compleet",
+      "stepOf": "Stap {current} van {total}",
+      "steps": {
+        "about": "Over jou",
+        "personality": "Persoonlijkheid",
+        "photos": "Foto's",
+        "preferences": "Voorkeuren"
+      },
+      "stepDescriptions": {
+        "step1": "Vertel iets over jezelf.",
+        "step2": "Wat past het beste bij jou?",
+        "step3": "Voeg foto's toe zodat huizen je leren kennen.",
+        "step4": "Wat zoek je?"
+      },
+      "fields": {
+        "gender": "Geslacht",
+        "birthDate": "Geboortedatum",
+        "studyProgram": "Studie",
+        "studyLevel": "Studieniveau",
+        "bio": "Over mij",
+        "preferredCity": "Voorkeursstad",
+        "maxRent": "Max huur",
+        "availableFrom": "Beschikbaar vanaf",
+        "vereniging": "Vereniging",
+        "instagram": "Instagram",
+        "showInstagram": "Instagram tonen op profiel"
+      },
+      "placeholders": {
+        "studyProgram": "bijv. Informatica",
+        "studyLevel": "Selecteer je niveau",
+        "bio": "Vertel iets over jezelf...",
+        "preferredCity": "Selecteer een stad",
+        "maxRent": "bijv. 600",
+        "vereniging": "bijv. Vindicat"
+      },
+      "photoSlots": {
+        "slot1": "Je beste foto",
+        "slot2": "In je vrije tijd",
+        "slot3": "Laat je persoonlijkheid zien",
+        "slot4": "Met vrienden of huisgenoten",
+        "slot5": "Je studie of werk"
+      },
+      "required": "Verplicht",
+      "optional": "optioneel",
+      "next": "Volgende",
+      "back": "Vorige",
+      "complete": "Profiel afronden",
+      "tagCounter": "{count}/{max} geselecteerd (min {min})",
+      "validation": {
+        "minTags": "Selecteer minimaal {min} tags"
+      }
     }
   },
   "costs": {

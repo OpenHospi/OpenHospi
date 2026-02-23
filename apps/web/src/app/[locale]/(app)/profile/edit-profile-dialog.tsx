@@ -1,0 +1,362 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  MAX_BIO_LENGTH,
+  MAX_LIFESTYLE_TAGS,
+  MIN_LIFESTYLE_TAGS,
+} from "@openhospi/shared/constants";
+import { CITIES, GENDERS, LIFESTYLE_TAGS, STUDY_LEVELS } from "@openhospi/shared/enums";
+import type { LifestyleTag } from "@openhospi/shared/enums";
+import { Loader2, Pencil } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import type { Profile } from "@/lib/profile";
+import type { EditProfileData } from "@/lib/schemas/profile";
+import { editProfileSchema } from "@/lib/schemas/profile";
+import { cn } from "@/lib/utils";
+
+import { updateProfile } from "./profile-actions";
+
+type Props = {
+  profile: Profile;
+};
+
+export function EditProfileDialog({ profile }: Props) {
+  const t = useTranslations("app.profile");
+  const tOnboarding = useTranslations("app.onboarding");
+  const tEnums = useTranslations("enums");
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<EditProfileData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(editProfileSchema as any),
+    defaultValues: {
+      gender: (profile.gender as EditProfileData["gender"]) ?? undefined,
+      birth_date: profile.birth_date ?? "",
+      study_program: profile.study_program ?? "",
+      study_level: (profile.study_level as EditProfileData["study_level"]) ?? undefined,
+      bio: profile.bio ?? "",
+      lifestyle_tags: (profile.lifestyle_tags as LifestyleTag[]) ?? [],
+      preferred_city: (profile.preferred_city as EditProfileData["preferred_city"]) ?? undefined,
+      max_rent: profile.max_rent ?? undefined,
+      available_from: profile.available_from ?? "",
+      vereniging: profile.vereniging ?? "",
+      instagram_handle: profile.instagram_handle ?? "",
+      show_instagram: profile.show_instagram ?? false,
+    },
+  });
+
+  function onSubmit(data: EditProfileData) {
+    startTransition(async () => {
+      const result = await updateProfile(data);
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success(t("editSuccess"));
+      setOpen(false);
+    });
+  }
+
+  const selectedTags = form.watch("lifestyle_tags") ?? [];
+
+  function toggleTag(tag: LifestyleTag) {
+    const current = form.getValues("lifestyle_tags") ?? [];
+    if (current.includes(tag)) {
+      form.setValue(
+        "lifestyle_tags",
+        current.filter((t) => t !== tag),
+        { shouldValidate: true },
+      );
+    } else if (current.length < MAX_LIFESTYLE_TAGS) {
+      form.setValue("lifestyle_tags", [...current, tag], { shouldValidate: true });
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          <Pencil className="size-4" />
+          {t("edit")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{t("editTitle")}</DialogTitle>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.gender")}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-wrap gap-3"
+                    >
+                      {GENDERS.map((g) => (
+                        <label
+                          key={g}
+                          className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                        >
+                          <RadioGroupItem value={g} />
+                          {tEnums(`gender.${g}`)}
+                        </label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="birth_date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.birthDate")}</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="study_program"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.studyProgram")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="study_level"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.studyLevel")}</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {STUDY_LEVELS.map((level) => (
+                        <SelectItem key={level} value={level}>
+                          {tEnums(`study_level.${level}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.bio")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="min-h-24 resize-none"
+                      maxLength={MAX_BIO_LENGTH}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="space-y-2">
+              <FormLabel>{t("lifestyleTags")}</FormLabel>
+              <p className="text-xs text-muted-foreground">
+                {tOnboarding("tagCounter", {
+                  count: selectedTags.length,
+                  min: MIN_LIFESTYLE_TAGS,
+                  max: MAX_LIFESTYLE_TAGS,
+                })}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {LIFESTYLE_TAGS.map((tag) => {
+                  const isSelected = selectedTags.includes(tag);
+                  return (
+                    <Badge
+                      key={tag}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleTag(tag)}
+                    >
+                      {tEnums(`lifestyle_tag.${tag}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            <FormField
+              control={form.control}
+              name="preferred_city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.preferredCity")}</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {CITIES.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {tEnums(`city.${city}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="max_rent"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.maxRent")}</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} max={5000} {...field} value={field.value ?? ""} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="available_from"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.availableFrom")}</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="vereniging"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.vereniging")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="instagram_handle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{tOnboarding("fields.instagram")}</FormLabel>
+                  <FormControl>
+                    <Input placeholder="@username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="show_instagram"
+              render={({ field }) => (
+                <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                  <FormLabel className="cursor-pointer">
+                    {tOnboarding("fields.showInstagram")}
+                  </FormLabel>
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                {t("cancel")}
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2 className="animate-spin" />}
+                {t("save")}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -2,7 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 
 import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getSession } from "@/lib/auth-server";
+import { getSession, requireCompleteProfile } from "@/lib/auth-server";
 
 type Props = {
   children: React.ReactNode;
@@ -14,6 +14,10 @@ export default async function AppLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   const session = await getSession();
+
+  if (session) {
+    await requireCompleteProfile(session.user.id, locale);
+  }
 
   const user = {
     name: session?.user.name || "User",

@@ -349,7 +349,85 @@
     "profile": {
       "title": "Mein Profil",
       "institution": "Einrichtung",
-      "placeholder": "Dein vollständiges Profil kommt bald."
+      "edit": "Bearbeiten",
+      "editTitle": "Profil bearbeiten",
+      "editSuccess": "Profil aktualisiert",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "bio": "Über mich",
+      "studyInfo": "Studieninformation",
+      "studyProgram": "Studiengang",
+      "studyLevel": "Studienniveau",
+      "gender": "Geschlecht",
+      "birthDate": "Geburtsdatum",
+      "preferences": "Präferenzen",
+      "preferredCity": "Bevorzugte Stadt",
+      "maxRent": "Max Miete",
+      "availableFrom": "Verfügbar ab",
+      "lifestyleTags": "Lebensstil",
+      "completeness": {
+        "title": "Profil {completed}/{total} vollständig",
+        "photo": "Profilfoto",
+        "bio": "Bio",
+        "studyProgram": "Studiengang",
+        "birthDate": "Geburtsdatum",
+        "preferredCity": "Bevorzugte Stadt",
+        "lifestyleTags": "Lebensstil-Tags (2+)",
+        "vereniging": "Verein"
+      }
+    },
+    "onboarding": {
+      "title": "Vervollständige dein Profil",
+      "stepOf": "Schritt {current} von {total}",
+      "steps": {
+        "about": "Über dich",
+        "personality": "Persönlichkeit",
+        "photos": "Fotos",
+        "preferences": "Präferenzen"
+      },
+      "stepDescriptions": {
+        "step1": "Erzähl uns etwas über dich.",
+        "step2": "Was beschreibt dich am besten?",
+        "step3": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
+        "step4": "Was suchst du?"
+      },
+      "fields": {
+        "gender": "Geschlecht",
+        "birthDate": "Geburtsdatum",
+        "studyProgram": "Studiengang",
+        "studyLevel": "Studienniveau",
+        "bio": "Über mich",
+        "preferredCity": "Bevorzugte Stadt",
+        "maxRent": "Max Miete",
+        "availableFrom": "Verfügbar ab",
+        "vereniging": "Studentenverein",
+        "instagram": "Instagram",
+        "showInstagram": "Instagram im Profil anzeigen"
+      },
+      "placeholders": {
+        "studyProgram": "z.B. Informatik",
+        "studyLevel": "Wähle dein Niveau",
+        "bio": "Erzähl etwas über dich...",
+        "preferredCity": "Stadt auswählen",
+        "maxRent": "z.B. 600",
+        "vereniging": "z.B. Vindicat"
+      },
+      "photoSlots": {
+        "slot1": "Dein bestes Foto",
+        "slot2": "In deiner Freizeit",
+        "slot3": "Zeig deine Persönlichkeit",
+        "slot4": "Mit Freunden oder Mitbewohnern",
+        "slot5": "Dein Studium oder Arbeit"
+      },
+      "required": "Pflichtfeld",
+      "optional": "optional",
+      "next": "Weiter",
+      "back": "Zurück",
+      "complete": "Profil abschließen",
+      "tagCounter": "{count}/{max} ausgewählt (min {min})",
+      "validation": {
+        "minTags": "Wähle mindestens {min} Tags"
+      }
     }
   },
   "costs": {

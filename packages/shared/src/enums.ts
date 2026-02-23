@@ -16,6 +16,12 @@ export type Language = (typeof LANGUAGES)[number];
 export const AFFILIATIONS = ['student', 'employee', 'staff'] as const;
 export type Affiliation = (typeof AFFILIATIONS)[number];
 
+export const STUDY_LEVELS = [
+  'mbo', 'hbo_propedeuse', 'hbo_bachelor',
+  'wo_propedeuse', 'wo_bachelor', 'pre_master', 'master', 'phd',
+] as const;
+export type StudyLevel = (typeof STUDY_LEVELS)[number];
+
 export const LIFESTYLE_TAGS = [
   // Social vibe
   'gezellig', 'rustig', 'introvert', 'extravert',

@@ -349,7 +349,85 @@
     "profile": {
       "title": "My profile",
       "institution": "Institution",
-      "placeholder": "Your full profile is coming soon."
+      "edit": "Edit",
+      "editTitle": "Edit profile",
+      "editSuccess": "Profile updated",
+      "save": "Save",
+      "cancel": "Cancel",
+      "bio": "About me",
+      "studyInfo": "Study info",
+      "studyProgram": "Study program",
+      "studyLevel": "Study level",
+      "gender": "Gender",
+      "birthDate": "Date of birth",
+      "preferences": "Preferences",
+      "preferredCity": "Preferred city",
+      "maxRent": "Max rent",
+      "availableFrom": "Available from",
+      "lifestyleTags": "Lifestyle",
+      "completeness": {
+        "title": "Profile {completed}/{total} complete",
+        "photo": "Profile photo",
+        "bio": "Bio",
+        "studyProgram": "Study program",
+        "birthDate": "Date of birth",
+        "preferredCity": "Preferred city",
+        "lifestyleTags": "Lifestyle tags (2+)",
+        "vereniging": "Association"
+      }
+    },
+    "onboarding": {
+      "title": "Complete your profile",
+      "stepOf": "Step {current} of {total}",
+      "steps": {
+        "about": "About you",
+        "personality": "Personality",
+        "photos": "Photos",
+        "preferences": "Preferences"
+      },
+      "stepDescriptions": {
+        "step1": "Tell us a bit about yourself.",
+        "step2": "What describes you best?",
+        "step3": "Add photos so houses get to know you.",
+        "step4": "What are you looking for?"
+      },
+      "fields": {
+        "gender": "Gender",
+        "birthDate": "Date of birth",
+        "studyProgram": "Study program",
+        "studyLevel": "Study level",
+        "bio": "About me",
+        "preferredCity": "Preferred city",
+        "maxRent": "Max rent",
+        "availableFrom": "Available from",
+        "vereniging": "Student association",
+        "instagram": "Instagram",
+        "showInstagram": "Show Instagram on profile"
+      },
+      "placeholders": {
+        "studyProgram": "e.g. Computer Science",
+        "studyLevel": "Select your level",
+        "bio": "Tell something about yourself...",
+        "preferredCity": "Select a city",
+        "maxRent": "e.g. 600",
+        "vereniging": "e.g. Vindicat"
+      },
+      "photoSlots": {
+        "slot1": "Your best photo",
+        "slot2": "In your free time",
+        "slot3": "Show your personality",
+        "slot4": "With friends or housemates",
+        "slot5": "Your study or work"
+      },
+      "required": "Required",
+      "optional": "optional",
+      "next": "Next",
+      "back": "Back",
+      "complete": "Complete profile",
+      "tagCounter": "{count}/{max} selected (min {min})",
+      "validation": {
+        "minTags": "Select at least {min} tags"
+      }
     }
   },
   "costs": {

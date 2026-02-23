@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           {APP_NAME}
         </Link>
       </div>
-      <div className="w-full max-w-sm">{children}</div>
+      <div className="w-full max-w-lg">{children}</div>
     </div>
   );
 }

@@ -12,6 +12,15 @@ export const MAX_STUDY_PROGRAM_LENGTH = 200;
 export const MAX_NOTES_LENGTH = 2000;
 export const MAX_INSTAGRAM_HANDLE_LENGTH = 30;
 
+// Photo limits
+export const MAX_PROFILE_PHOTOS = 5;
+export const MAX_ROOM_PHOTOS = 10;
+export const MAX_PHOTO_CAPTION_LENGTH = 200;
+
+// Lifestyle tag limits
+export const MIN_LIFESTYLE_TAGS = 2;
+export const MAX_LIFESTYLE_TAGS = 8;
+
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB
 export const MAX_ROOM_PHOTO_SIZE = 5 * 1024 * 1024; // 5 MB

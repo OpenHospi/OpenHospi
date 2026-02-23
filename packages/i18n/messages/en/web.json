@@ -419,26 +419,22 @@
       "title": "Become a sponsor",
       "tiers": [
         {
-          "name": "Supporter",
-          "price": "€10/mo",
+          "name": "Backer",
+          "price": "€5/mo",
           "description": "Your name on our sponsors page."
         },
         {
-          "name": "Partner",
-          "price": "€50/mo",
-          "description": "Logo on our website and README."
-        },
-        {
-          "name": "Institutional",
-          "price": "On request",
-          "description": "Prominent placement and direct support for universities and housing organizations."
+          "name": "Sponsor",
+          "price": "€25/mo",
+          "description": "Your logo on our website and README."
         }
       ],
-      "cta": "Contact us"
+      "cta": "Become a sponsor via Open Collective"
     },
     "transparency": {
       "title": "Where does the money go?",
-      "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students."
+      "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students.",
+      "badge": "OpenHospi on Open Collective"
     }
   }
 }

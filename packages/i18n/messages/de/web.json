@@ -419,26 +419,22 @@
       "title": "Sponsor werden",
       "tiers": [
         {
-          "name": "Supporter",
-          "price": "€10/Mo",
+          "name": "Backer",
+          "price": "€5/Mo",
           "description": "Dein Name auf unserer Sponsorenseite."
         },
         {
-          "name": "Partner",
-          "price": "€50/Mo",
-          "description": "Logo auf unserer Website und README."
-        },
-        {
-          "name": "Institutionell",
-          "price": "Auf Anfrage",
-          "description": "Prominente Platzierung und direkte Unterstützung für Universitäten und Wohnungsorganisationen."
+          "name": "Sponsor",
+          "price": "€25/Mo",
+          "description": "Dein Logo auf unserer Website und README."
         }
       ],
-      "cta": "Kontaktiere uns"
+      "cta": "Werde Sponsor über Open Collective"
     },
     "transparency": {
       "title": "Wohin geht das Geld?",
-      "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten."
+      "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten.",
+      "badge": "OpenHospi auf Open Collective"
     }
   }
 }

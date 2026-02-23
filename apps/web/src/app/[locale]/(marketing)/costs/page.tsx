@@ -1,6 +1,6 @@
 "use client";
 
-import { Cloud, Globe, Smartphone, Heart, Building2, Code, Mail } from "lucide-react";
+import { Cloud, Globe, Smartphone, Heart, Building2, Code, ExternalLink } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -162,8 +162,8 @@ export default function CostsPage() {
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("sponsor.title")}</h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-3">
-            {([0, 1, 2] as const).map((i) => (
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:mx-auto sm:max-w-2xl">
+            {([0, 1] as const).map((i) => (
               <SponsorTier
                 key={i}
                 name={t(`sponsor.tiers.${i}.name`)}
@@ -174,10 +174,12 @@ export default function CostsPage() {
           </div>
           <div className="mt-8 text-center">
             <a
-              href="mailto:sponsor@openhospi.nl"
+              href="https://opencollective.com/openhospi"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Mail className="size-4" />
+              <ExternalLink className="size-4" />
               {t("sponsor.cta")}
             </a>
           </div>
@@ -190,6 +192,19 @@ export default function CostsPage() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold sm:text-3xl">{t("transparency.title")}</h2>
             <p className="mt-4 text-muted-foreground">{t("transparency.description")}</p>
+            <a
+              href="https://opencollective.com/openhospi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-block"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://opencollective.com/openhospi/tiers/badge.svg"
+                alt={t("transparency.badge")}
+                className="h-auto"
+              />
+            </a>
           </div>
         </div>
       </section>

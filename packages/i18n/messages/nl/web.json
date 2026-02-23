@@ -419,26 +419,22 @@
       "title": "Word sponsor",
       "tiers": [
         {
-          "name": "Supporter",
-          "price": "€10/mnd",
+          "name": "Backer",
+          "price": "€5/mnd",
           "description": "Je naam op onze sponsorspagina."
         },
         {
-          "name": "Partner",
-          "price": "€50/mnd",
-          "description": "Logo op onze website en README."
-        },
-        {
-          "name": "Institutioneel",
-          "price": "Op aanvraag",
-          "description": "Prominente vermelding en directe ondersteuning voor universiteiten en woningorganisaties."
+          "name": "Sponsor",
+          "price": "€25/mnd",
+          "description": "Je logo op onze website en README."
         }
       ],
-      "cta": "Neem contact op"
+      "cta": "Word sponsor via Open Collective"
     },
     "transparency": {
       "title": "Waar gaat het geld naartoe?",
-      "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten."
+      "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten.",
+      "badge": "OpenHospi op Open Collective"
     }
   }
 }

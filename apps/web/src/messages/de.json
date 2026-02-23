@@ -41,7 +41,7 @@
       "title": "Warum OpenHospi?",
       "free": {
         "title": "Immer kostenlos",
-        "description": "Keine versteckten Kosten, keine Premium-Pläne. Kostenlos für alle, für immer."
+        "description": "Keine versteckten Kosten, keine Premium-Pläne. Niemand kann zahlen, um sich Vorrang zu verschaffen. Jeder Studierende hat die gleiche Sichtbarkeit — kostenlos, für immer."
       },
       "verified": {
         "title": "Verifizierte Studierende",
@@ -53,7 +53,7 @@
       },
       "fair": {
         "title": "Fair und transparent",
-        "description": "Open Source, Community-getrieben und von Studierenden für Studierende gebaut."
+        "description": "Open Source und Community-getrieben. Kein Unternehmen verdient daran — von einem Studierenden gestartet, für alle Studierenden."
       }
     },
     "howItWorks": {
@@ -73,7 +73,7 @@
     },
     "students": {
       "title": "Nur echte Studierende",
-      "description": "OpenHospi nutzt SURFconext — das offizielle Single Sign-On des niederländischen Bildungswesens — um jeden Nutzer zu verifizieren. Keine Fake-Profile, kein Betrug.",
+      "description": "Bei OpenHospi wirst du von deiner eigenen Universität oder Hochschule über SURFconext verifiziert. Deine Einrichtung steht hinter deinem Profil — so weiß jeder, dass du ein echter Studierender bist. Keine Fake-Profile, kein Betrug.",
       "badge": "SURFconext verifiziert"
     },
     "openSource": {
@@ -83,7 +83,7 @@
     },
     "cta": {
       "title": "Bereit, dein Zimmer zu finden?",
-      "subtitle": "Schließe dich Tausenden von Studierenden auf der fairsten Wohnungsplattform der Niederlande an.",
+      "subtitle": "Sei dabei auf der fairsten Wohnungsplattform der Niederlande — kostenlos, fair und nur für Studierende.",
       "button": "Mit SURFconext anmelden"
     }
   },
@@ -107,7 +107,7 @@
           "description": "Filtere nach Stadt, Preis, Verfügbarkeit und WG-Typ."
         },
         {
-          "title": "Auf Zimmer bewerben",
+          "title": "Auf Zimmer reagieren",
           "description": "Sende eine persönliche Nachricht an die WG, warum du gut passen würdest."
         },
         {
@@ -132,11 +132,11 @@
         },
         {
           "title": "Anzeige veröffentlichen",
-          "description": "Mache dein Zimmer für Tausende verifizierte Studierende sichtbar."
+          "description": "Mache dein Zimmer für verifizierte Studierende in den ganzen Niederlanden sichtbar."
         },
         {
-          "title": "Bewerbungen prüfen",
-          "description": "Durchsuche Bewerberprofile und lies ihre persönlichen Nachrichten."
+          "title": "Anfragen ansehen",
+          "description": "Durchsuche Kandidatenprofile und lies ihre persönlichen Nachrichten."
         },
         {
           "title": "Kandidaten einladen",
@@ -156,15 +156,15 @@
       "title": "Warum auf OpenHospi inserieren?",
       "items": [
         {
-          "title": "Verifizierte Bewerber",
-          "description": "Jeder Bewerber ist ein echter Studierender, verifiziert über SURFconext."
+          "title": "Verifizierte Kandidaten",
+          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext."
         },
         {
           "title": "Komplett kostenlos",
-          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Fair für alle."
+          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair für alle."
         },
         {
-          "title": "Bewerbungen verwalten",
+          "title": "Anfragen verwalten",
           "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen — alles an einem Ort."
         },
         {
@@ -175,7 +175,7 @@
     },
     "workflow": {
       "title": "So funktioniert's für WGs",
-      "description": "Erstelle dein WG-Profil, füge eine Zimmeranzeige hinzu, prüfe Bewerbungen und lade die besten Kandidaten zum Hospiteren ein."
+      "description": "Erstelle dein WG-Profil, füge eine Zimmeranzeige hinzu, prüfe Anfragen und lade die besten Kandidaten zum Hospiteren ein."
     },
     "shareLink": {
       "title": "Teile deine Anzeige überall",
@@ -192,7 +192,7 @@
     "features": [
       {
         "title": "SURFconext-Verifizierung",
-        "description": "Jeder Nutzer wird über SURFconext verifiziert, das offizielle niederländische Bildungs-SSO. Keine Fake-Profile."
+        "description": "Jeder Nutzer wird von seiner eigenen Universität oder Hochschule über SURFconext verifiziert. Deine Einrichtung steht hinter deinem Profil. Keine Fake-Profile."
       },
       {
         "title": "Ende-zu-Ende verschlüsselter Chat",
@@ -220,15 +220,15 @@
     "title": "Über OpenHospi",
     "mission": {
       "title": "Unsere Mission",
-      "description": "OpenHospi existiert, um Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich zu machen. Wir glauben, dass die Zimmersuche kein Geld kosten sollte und der Prozess transparent sein muss."
+      "description": "OpenHospi existiert, um Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich zu machen. Wir glauben, dass die Zimmersuche kein Geld kosten sollte und der Prozess transparent sein muss. OpenHospi wird niemals Freemium oder Pay-to-Win sein: Niemand kann zahlen, um mehr Sichtbarkeit zu bekommen. Jeder Studierende bekommt die gleichen Chancen."
     },
     "crisis": {
-      "title": "Die Wohnungskrise",
-      "description": "Die Niederlande haben einen gravierenden Mangel an Studentenwohnungen. Kommerzielle Plattformen verlangen Inseratsgebühren und Premium-Platzierungen, was einen bereits stressigen Prozess verschlimmert. Wir bauen eine Alternative."
+      "title": "Das Problem",
+      "description": "Studierende suchen Zimmer über Facebook-Gruppen, Instagram und kostenpflichtige Plattformen. Auf kommerziellen Seiten zahlst du, um Anzeigen zu sehen oder Vorrang zu bekommen. Das ist unfair — das System funktioniert für Plattformen, nicht für Studierende."
     },
     "builtBy": {
-      "title": "Von Studierenden gebaut",
-      "description": "OpenHospi wurde von Studierenden entwickelt, die die Wohnungsnot selbst erlebt haben. Wir kennen die Probleme, weil wir sie selbst durchgemacht haben."
+      "title": "Wie es begann",
+      "description": "Ruben Talstra sah Mitstudierende, die mit Facebook-Gruppen, Instagram und kostenpflichtigen Plattformen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. So ist OpenHospi entstanden."
     },
     "openSource": {
       "title": "Open Source & Community",

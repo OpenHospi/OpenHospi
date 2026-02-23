@@ -1,7 +1,14 @@
-preserve_hierarchy: 1
+preserve_hierarchy: true
 export_languages:
   - en
   - de
 files:
-  - source: /packages/i18n/messages/nl.json
-    translation: /packages/i18n/messages/%two_letters_code%.json
+  - source: /packages/i18n/messages/nl/shared.json
+    translation: /packages/i18n/messages/%two_letters_code%/shared.json
+    skip_untranslated_strings: true
+  - source: /packages/i18n/messages/nl/web.json
+    translation: /packages/i18n/messages/%two_letters_code%/web.json
+    skip_untranslated_strings: true
+  - source: /packages/i18n/messages/nl/app.json
+    translation: /packages/i18n/messages/%two_letters_code%/app.json
+    skip_untranslated_strings: true

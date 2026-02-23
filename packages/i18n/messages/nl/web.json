@@ -1,28 +1,4 @@
 {
-  "common": {
-    "appName": "OpenHospi",
-    "loading": "Laden...",
-    "error": "Er is iets misgegaan",
-    "retry": "Opnieuw proberen"
-  },
-  "enums": {
-    "language_enum": {
-      "nl": "Nederlands",
-      "en": "Engels",
-      "de": "Duits",
-      "fr": "Frans",
-      "es": "Spaans",
-      "it": "Italiaans",
-      "pt": "Portugees",
-      "zh": "Chinees",
-      "ar": "Arabisch",
-      "tr": "Turks",
-      "pl": "Pools",
-      "hi": "Hindi",
-      "ja": "Japans",
-      "ko": "Koreaans"
-    }
-  },
   "metadata": {
     "title": "OpenHospi — Gratis studentenhuisvesting",
     "description": "Het gratis, open-source platform voor studentenhuisvesting in Nederland."
@@ -337,17 +313,17 @@
         {
           "name": "Hosting (Vercel)",
           "description": "Frontend hosting en CDN",
-          "cost": "\u20ac0\u201320/mnd"
+          "cost": "€0–20/mnd"
         },
         {
           "name": "Database (Supabase)",
           "description": "PostgreSQL database, auth en opslag",
-          "cost": "\u20ac0\u201325/mnd"
+          "cost": "€0–25/mnd"
         },
         {
           "name": "Domein",
           "description": "openhospi.nl domeinregistratie",
-          "cost": "~\u20ac1/mnd"
+          "cost": "~€1/mnd"
         },
         {
           "name": "SURFconext",
@@ -385,12 +361,12 @@
       "tiers": [
         {
           "name": "Supporter",
-          "price": "\u20ac10/mnd",
+          "price": "€10/mnd",
           "description": "Je naam op onze sponsorspagina."
         },
         {
           "name": "Partner",
-          "price": "\u20ac50/mnd",
+          "price": "€50/mnd",
           "description": "Logo op onze website en README."
         },
         {
@@ -403,7 +379,7 @@
     },
     "transparency": {
       "title": "Waar gaat het geld naartoe?",
-      "description": "100% van de donaties gaat naar infrastructuurkosten. We publiceren onze financi\u00ebn openlijk. Geen salarissen, geen winst \u2014 alleen het platform draaiende houden voor studenten."
+      "description": "100% van de donaties gaat naar infrastructuurkosten. We publiceren onze financiën openlijk. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten."
     }
   }
 }

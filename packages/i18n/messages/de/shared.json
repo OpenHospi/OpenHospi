@@ -1,0 +1,26 @@
+{
+  "common": {
+    "appName": "OpenHospi",
+    "loading": "Laden...",
+    "error": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen"
+  },
+  "enums": {
+    "language_enum": {
+      "nl": "Niederländisch",
+      "en": "Englisch",
+      "de": "Deutsch",
+      "fr": "Französisch",
+      "es": "Spanisch",
+      "it": "Italienisch",
+      "pt": "Portugiesisch",
+      "zh": "Chinesisch",
+      "ar": "Arabisch",
+      "tr": "Türkisch",
+      "pl": "Polnisch",
+      "hi": "Hindi",
+      "ja": "Japanisch",
+      "ko": "Koreanisch"
+    }
+  }
+}

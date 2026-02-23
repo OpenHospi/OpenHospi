@@ -1,31 +1,7 @@
 {
-  "common": {
-    "appName": "OpenHospi",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "retry": "Try again"
-  },
-  "enums": {
-    "language_enum": {
-      "nl": "Dutch",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "it": "Italian",
-      "pt": "Portuguese",
-      "zh": "Chinese",
-      "ar": "Arabic",
-      "tr": "Turkish",
-      "pl": "Polish",
-      "hi": "Hindi",
-      "ja": "Japanese",
-      "ko": "Korean"
-    }
-  },
   "metadata": {
-    "title": "OpenHospi \u2014 Free Student Housing Platform for the Netherlands",
-    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext \u2014 no middlemen, no fees."
+    "title": "OpenHospi — Free Student Housing Platform for the Netherlands",
+    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees."
   },
   "header": {
     "nav": {
@@ -58,18 +34,18 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nFree. Fair.\nStudents only.",
-      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext \u2014 no middlemen, no fees.",
+      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees.",
       "cta": "Log in with SURFconext"
     },
     "features": {
       "title": "Why OpenHospi?",
       "free": {
         "title": "Always free",
-        "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility \u2014 free, forever."
+        "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility — free, forever."
       },
       "verified": {
         "title": "Verified students",
-        "description": "Every user is verified through SURFconext \u2014 only real students."
+        "description": "Every user is verified through SURFconext — only real students."
       },
       "encrypted": {
         "title": "E2E encrypted chat",
@@ -77,7 +53,7 @@
       },
       "fair": {
         "title": "Fair and transparent",
-        "description": "Open source and community-driven. No company profiting from it \u2014 started by a student, for all students."
+        "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
       }
     },
     "howItWorks": {
@@ -92,22 +68,22 @@
       },
       "step3": {
         "title": "Get chosen",
-        "description": "Houses invite candidates \u2014 the traditional Dutch hospiteren."
+        "description": "Houses invite candidates — the traditional Dutch hospiteren."
       }
     },
     "students": {
       "title": "Only real students",
-      "description": "On OpenHospi, your university or hogeschool verifies you through SURFconext. Your institution stands behind your profile \u2014 so everyone knows you're a real student. No fake profiles, no scams.",
+      "description": "On OpenHospi, your university or hogeschool verifies you through SURFconext. Your institution stands behind your profile — so everyone knows you're a real student. No fake profiles, no scams.",
       "badge": "SURFconext verified"
     },
     "openSource": {
       "title": "Open source",
-      "description": "OpenHospi is fully open source. Anyone can inspect the code, contribute, or run their own instance. Transparency is not a feature \u2014 it's a principle.",
+      "description": "OpenHospi is fully open source. Anyone can inspect the code, contribute, or run their own instance. Transparency is not a feature — it's a principle.",
       "cta": "View on GitHub"
     },
     "cta": {
       "title": "Ready to find your room?",
-      "subtitle": "Be among the first students on the fairest housing platform in the Netherlands \u2014 free, fair, and students only.",
+      "subtitle": "Be among the first students on the fairest housing platform in the Netherlands — free, fair, and students only.",
       "button": "Log in with SURFconext"
     }
   },
@@ -189,7 +165,7 @@
         },
         {
           "title": "Manage responses",
-          "description": "Review profiles, read messages, and invite candidates \u2014 all in one place."
+          "description": "Review profiles, read messages, and invite candidates — all in one place."
         },
         {
           "title": "Share your listing",
@@ -248,7 +224,7 @@
     },
     "crisis": {
       "title": "The problem",
-      "description": "Students search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority. That's unfair \u2014 the system works for platforms, not for students."
+      "description": "Students search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority. That's unfair — the system works for platforms, not for students."
     },
     "builtBy": {
       "title": "How it started",
@@ -337,17 +313,17 @@
         {
           "name": "Hosting (Vercel)",
           "description": "Frontend hosting and CDN",
-          "cost": "\u20ac0\u201320/mo"
+          "cost": "€0–20/mo"
         },
         {
           "name": "Database (Supabase)",
           "description": "PostgreSQL database, auth, and storage",
-          "cost": "\u20ac0\u201325/mo"
+          "cost": "€0–25/mo"
         },
         {
           "name": "Domain",
           "description": "openhospi.nl domain registration",
-          "cost": "~\u20ac1/mo"
+          "cost": "~€1/mo"
         },
         {
           "name": "SURFconext",
@@ -385,12 +361,12 @@
       "tiers": [
         {
           "name": "Supporter",
-          "price": "\u20ac10/mo",
+          "price": "€10/mo",
           "description": "Your name on our sponsors page."
         },
         {
           "name": "Partner",
-          "price": "\u20ac50/mo",
+          "price": "€50/mo",
           "description": "Logo on our website and README."
         },
         {
@@ -403,7 +379,7 @@
     },
     "transparency": {
       "title": "Where does the money go?",
-      "description": "100% of donations go to infrastructure costs. We publish our finances openly. No salaries, no profit \u2014 just keeping the platform running for students."
+      "description": "100% of donations go to infrastructure costs. We publish our finances openly. No salaries, no profit — just keeping the platform running for students."
     }
   }
 }

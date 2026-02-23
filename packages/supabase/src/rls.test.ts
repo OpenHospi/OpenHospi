@@ -223,6 +223,72 @@ describe.skipIf(!DB_URL)('RLS policies', () => {
   });
 
   // ==========================================================================
+  // rooms — vereniging exclusivity
+  // ==========================================================================
+  describe('rooms — vereniging exclusivity', () => {
+    const VERENIGING_ROOM = '00000000-0000-0000-0000-000000000012';
+
+    beforeEach(async () => {
+      // Sophie creates a vereniging-exclusive room
+      await resetRole();
+      await client.query(
+        `UPDATE profiles SET vereniging = 'ssr' WHERE id = $1`,
+        [SOPHIE],
+      );
+      await client.query(`
+        INSERT INTO rooms (id, created_by, title, city, rent_price, status, is_verenigingshuis, room_vereniging)
+        VALUES ($1, $2, 'SSR Room', 'utrecht', 400, 'active', true, 'ssr')
+      `, [VERENIGING_ROOM, SOPHIE]);
+    });
+
+    it('non-member cannot see association-exclusive room', async () => {
+      await actAs(JAN);
+      const { rows } = await client.query(
+        'SELECT id FROM rooms WHERE id = $1',
+        [VERENIGING_ROOM],
+      );
+      expect(rows.length).toBe(0);
+    });
+
+    it('member of same association can see it', async () => {
+      await resetRole();
+      await client.query(
+        `UPDATE profiles SET vereniging = 'ssr' WHERE id = $1`,
+        [JAN],
+      );
+      await actAs(JAN);
+      const { rows } = await client.query(
+        'SELECT id FROM rooms WHERE id = $1',
+        [VERENIGING_ROOM],
+      );
+      expect(rows.length).toBe(1);
+    });
+
+    it('member of different association cannot see it', async () => {
+      await resetRole();
+      await client.query(
+        `UPDATE profiles SET vereniging = 'navigators' WHERE id = $1`,
+        [JAN],
+      );
+      await actAs(JAN);
+      const { rows } = await client.query(
+        'SELECT id FROM rooms WHERE id = $1',
+        [VERENIGING_ROOM],
+      );
+      expect(rows.length).toBe(0);
+    });
+
+    it('owner always sees own association room', async () => {
+      await actAs(SOPHIE);
+      const { rows } = await client.query(
+        'SELECT id FROM rooms WHERE id = $1',
+        [VERENIGING_ROOM],
+      );
+      expect(rows.length).toBe(1);
+    });
+  });
+
+  // ==========================================================================
   // housemates
   // ==========================================================================
   describe('housemates', () => {

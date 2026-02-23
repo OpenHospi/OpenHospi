@@ -1,4 +1,22 @@
 {
+  "enums": {
+    "language_enum": {
+      "nl": "Dutch",
+      "en": "English",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish",
+      "it": "Italian",
+      "pt": "Portuguese",
+      "zh": "Chinese",
+      "ar": "Arabic",
+      "tr": "Turkish",
+      "pl": "Polish",
+      "hi": "Hindi",
+      "ja": "Japanese",
+      "ko": "Korean"
+    }
+  },
   "metadata": {
     "title": "OpenHospi — Free Student Housing Platform for the Netherlands",
     "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees."

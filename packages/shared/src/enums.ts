@@ -7,7 +7,10 @@ export type Gender = (typeof GENDERS)[number];
 export const GENDER_PREFERENCES = ['man', 'vrouw', 'geen_voorkeur'] as const;
 export type GenderPreference = (typeof GENDER_PREFERENCES)[number];
 
-export const LANGUAGES = ['nl', 'en', 'de'] as const;
+export const LANGUAGES = [
+  'nl', 'en', 'de', 'fr', 'es', 'it', 'pt',
+  'zh', 'ar', 'tr', 'pl', 'hi', 'ja', 'ko',
+] as const;
 export type Language = (typeof LANGUAGES)[number];
 
 export const AFFILIATIONS = ['student', 'employee', 'staff'] as const;

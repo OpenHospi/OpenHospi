@@ -601,7 +601,7 @@ export type Database = {
           id: string
           instagram_handle: string | null
           institution_domain: string
-          language: Database["public"]["Enums"]["language_enum"] | null
+          languages: Database["public"]["Enums"]["language_enum"][] | null
           last_login_at: string | null
           last_name: string
           lifestyle_tags:
@@ -631,7 +631,7 @@ export type Database = {
           id: string
           instagram_handle?: string | null
           institution_domain: string
-          language?: Database["public"]["Enums"]["language_enum"] | null
+          languages?: Database["public"]["Enums"]["language_enum"][] | null
           last_login_at?: string | null
           last_name: string
           lifestyle_tags?:
@@ -661,7 +661,7 @@ export type Database = {
           id?: string
           instagram_handle?: string | null
           institution_domain?: string
-          language?: Database["public"]["Enums"]["language_enum"] | null
+          languages?: Database["public"]["Enums"]["language_enum"][] | null
           last_login_at?: string | null
           last_name?: string
           lifestyle_tags?:
@@ -882,6 +882,9 @@ export type Database = {
       }
       rooms: {
         Row: {
+          accepted_languages:
+            | Database["public"]["Enums"]["language_enum"][]
+            | null
           address: string | null
           available_from: string | null
           available_until: string | null
@@ -923,6 +926,9 @@ export type Database = {
           utilities_included: boolean | null
         }
         Insert: {
+          accepted_languages?:
+            | Database["public"]["Enums"]["language_enum"][]
+            | null
           address?: string | null
           available_from?: string | null
           available_until?: string | null
@@ -964,6 +970,9 @@ export type Database = {
           utilities_included?: boolean | null
         }
         Update: {
+          accepted_languages?:
+            | Database["public"]["Enums"]["language_enum"][]
+            | null
           address?: string | null
           available_from?: string | null
           available_until?: string | null
@@ -1292,7 +1301,21 @@ export type Database = {
         | "attending"
         | "not_attending"
         | "maybe"
-      language_enum: "nl" | "en" | "de"
+      language_enum:
+        | "nl"
+        | "en"
+        | "de"
+        | "fr"
+        | "es"
+        | "it"
+        | "pt"
+        | "zh"
+        | "ar"
+        | "tr"
+        | "pl"
+        | "hi"
+        | "ja"
+        | "ko"
       lifestyle_tag_enum:
         | "gezellig"
         | "rustig"
@@ -1566,7 +1589,22 @@ export const Constants = {
         "not_attending",
         "maybe",
       ],
-      language_enum: ["nl", "en", "de"],
+      language_enum: [
+        "nl",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pt",
+        "zh",
+        "ar",
+        "tr",
+        "pl",
+        "hi",
+        "ja",
+        "ko",
+      ],
       lifestyle_tag_enum: [
         "gezellig",
         "rustig",

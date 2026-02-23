@@ -321,6 +321,37 @@
       }
     ]
   },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "description": "Log in with your university account to access OpenHospi.",
+      "surfconextButton": "Log in with SURFconext",
+      "surfconextDescription": "Use your university or hogeschool account."
+    }
+  },
+  "app": {
+    "sidebar": {
+      "discover": "Discover",
+      "applications": "Applications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "comingSoon": "Coming soon"
+    },
+    "userMenu": {
+      "profile": "My profile",
+      "settings": "Settings",
+      "logout": "Log out"
+    },
+    "discover": {
+      "title": "Discover rooms",
+      "placeholder": "Room discovery coming soon."
+    },
+    "profile": {
+      "title": "My profile",
+      "institution": "Institution",
+      "placeholder": "Your full profile is coming soon."
+    }
+  },
   "costs": {
     "title": "Costs & Transparency",
     "subtitle": "OpenHospi is free for all users. Here's what it costs us to run.",

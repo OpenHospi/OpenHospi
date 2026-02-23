@@ -321,6 +321,37 @@
       }
     ]
   },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
+      "surfconextButton": "Anmelden mit SURFconext",
+      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule."
+    }
+  },
+  "app": {
+    "sidebar": {
+      "discover": "Entdecken",
+      "applications": "Bewerbungen",
+      "profile": "Profil",
+      "settings": "Einstellungen",
+      "comingSoon": "Demnächst"
+    },
+    "userMenu": {
+      "profile": "Mein Profil",
+      "settings": "Einstellungen",
+      "logout": "Abmelden"
+    },
+    "discover": {
+      "title": "Zimmer entdecken",
+      "placeholder": "Zimmerentdeckung kommt bald."
+    },
+    "profile": {
+      "title": "Mein Profil",
+      "institution": "Einrichtung",
+      "placeholder": "Dein vollständiges Profil kommt bald."
+    }
+  },
   "costs": {
     "title": "Kosten & Transparenz",
     "subtitle": "OpenHospi ist kostenlos für alle Nutzer. Das kostet es uns, die Plattform zu betreiben.",

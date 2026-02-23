@@ -321,6 +321,37 @@
       }
     ]
   },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "description": "Log in met je universiteitsaccount om toegang te krijgen tot OpenHospi.",
+      "surfconextButton": "Inloggen met SURFconext",
+      "surfconextDescription": "Gebruik het account van je universiteit of hogeschool."
+    }
+  },
+  "app": {
+    "sidebar": {
+      "discover": "Ontdekken",
+      "applications": "Reacties",
+      "profile": "Profiel",
+      "settings": "Instellingen",
+      "comingSoon": "Binnenkort"
+    },
+    "userMenu": {
+      "profile": "Mijn profiel",
+      "settings": "Instellingen",
+      "logout": "Uitloggen"
+    },
+    "discover": {
+      "title": "Kamers ontdekken",
+      "placeholder": "Kamerontdekking komt binnenkort beschikbaar."
+    },
+    "profile": {
+      "title": "Mijn profiel",
+      "institution": "Instelling",
+      "placeholder": "Je volledige profiel wordt binnenkort beschikbaar."
+    }
+  },
   "costs": {
     "title": "Kosten & Transparantie",
     "subtitle": "OpenHospi is gratis voor alle gebruikers. Dit kost het ons om te draaien.",

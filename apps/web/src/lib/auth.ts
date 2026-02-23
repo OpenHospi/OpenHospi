@@ -12,6 +12,11 @@ export const auth = betterAuth({
       generateId: "uuid",
     },
   },
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL!,
+    "https://connect.test.surfconext.nl",
+    "https://connect.surfconext.nl",
+  ],
   accountLinking: { enabled: false },
   databaseHooks: {
     user: {

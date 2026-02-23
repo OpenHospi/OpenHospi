@@ -95,8 +95,7 @@ CREATE TYPE report_status_enum AS ENUM ('pending', 'reviewing', 'resolved', 'dis
 
 -- PROFILES
 CREATE TABLE profiles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  surfconext_sub TEXT UNIQUE NOT NULL,
+  id UUID PRIMARY KEY REFERENCES "user"(id),
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -371,7 +370,7 @@ CREATE TABLE notifications (
 -- ADMIN AUDIT LOG
 CREATE TABLE admin_audit_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  admin_user_id TEXT NOT NULL CHECK (admin_user_id ~ '^[0-9a-fA-F-]{36}$'),
+  admin_user_id UUID NOT NULL,
   action admin_action_enum NOT NULL,
   target_type TEXT,
   target_id UUID,
@@ -477,7 +476,6 @@ CREATE INDEX idx_blocks_blocked_id ON blocks (blocked_id);
 CREATE INDEX idx_notifications_user_id ON notifications (user_id, created_at DESC);
 CREATE INDEX idx_push_tokens_user_id ON push_tokens (user_id);
 CREATE INDEX idx_reports_status ON reports (status);
-CREATE INDEX idx_profiles_surfconext_sub ON profiles (surfconext_sub);
 
 
 -- ============================================

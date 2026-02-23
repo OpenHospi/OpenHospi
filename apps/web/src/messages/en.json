@@ -1,0 +1,385 @@
+{
+  "metadata": {
+    "title": "OpenHospi — Free Student Housing Platform for the Netherlands",
+    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees."
+  },
+  "header": {
+    "nav": {
+      "howItWorks": "How it works",
+      "forHouses": "For houses",
+      "safety": "Safety",
+      "costs": "Costs",
+      "about": "About"
+    },
+    "login": "Log in with SURFconext",
+    "menuOpen": "Open menu"
+  },
+  "footer": {
+    "product": "Product",
+    "legal": "Legal",
+    "community": "Community",
+    "links": {
+      "howItWorks": "How it works",
+      "forHouses": "For houses",
+      "safety": "Safety",
+      "costs": "Costs",
+      "privacy": "Privacy policy",
+      "terms": "Terms & conditions",
+      "about": "About"
+    },
+    "tagline": "Free, open-source student housing for the Netherlands.",
+    "openSource": "Open source",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "hero": {
+      "title": "Hospiteren.\nFree. Fair.\nStudents only.",
+      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees.",
+      "cta": "Log in with SURFconext"
+    },
+    "features": {
+      "title": "Why OpenHospi?",
+      "free": {
+        "title": "Always free",
+        "description": "No hidden fees, no premium plans. Free for everyone, forever."
+      },
+      "verified": {
+        "title": "Verified students",
+        "description": "Every user is verified through SURFconext — only real students."
+      },
+      "encrypted": {
+        "title": "E2E encrypted chat",
+        "description": "Your conversations are end-to-end encrypted. We can't read them, nobody can."
+      },
+      "fair": {
+        "title": "Fair and transparent",
+        "description": "Open source, community-driven, and built by students for students."
+      }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1": {
+        "title": "Log in",
+        "description": "Sign in with your university account via SURFconext."
+      },
+      "step2": {
+        "title": "Search",
+        "description": "Browse available rooms or list your house."
+      },
+      "step3": {
+        "title": "Get chosen",
+        "description": "Houses invite candidates — the traditional Dutch hospiteren."
+      }
+    },
+    "students": {
+      "title": "Only real students",
+      "description": "OpenHospi uses SURFconext — the official single sign-on for Dutch education — to verify every user. No fake profiles, no scams.",
+      "badge": "SURFconext verified"
+    },
+    "openSource": {
+      "title": "Open source",
+      "description": "OpenHospi is fully open source. Anyone can inspect the code, contribute, or run their own instance. Transparency is not a feature — it's a principle.",
+      "cta": "View on GitHub"
+    },
+    "cta": {
+      "title": "Ready to find your room?",
+      "subtitle": "Join thousands of students on the fairest housing platform in the Netherlands.",
+      "button": "Log in with SURFconext"
+    }
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "subtitle": "Step-by-step guide to finding a room or filling one.",
+    "seekerTab": "I'm looking for a room",
+    "houseTab": "I have a room",
+    "seeker": {
+      "steps": [
+        {
+          "title": "Log in with SURFconext",
+          "description": "Use your university account to verify your identity."
+        },
+        {
+          "title": "Complete your profile",
+          "description": "Add your study, hobbies, and preferences so houses get to know you."
+        },
+        {
+          "title": "Browse rooms",
+          "description": "Filter by city, price, availability, and house type."
+        },
+        {
+          "title": "Apply to rooms",
+          "description": "Send a personal message to the house explaining why you'd be a good fit."
+        },
+        {
+          "title": "Get invited to hospiteren",
+          "description": "If the house likes your profile, they'll invite you for a visit."
+        },
+        {
+          "title": "Move in!",
+          "description": "After a successful hospiteren, you're in. Welcome home!"
+        }
+      ]
+    },
+    "house": {
+      "steps": [
+        {
+          "title": "Log in with SURFconext",
+          "description": "All members verify via their university account."
+        },
+        {
+          "title": "Create your house",
+          "description": "Add your address, photos, room details, and house rules."
+        },
+        {
+          "title": "Publish your listing",
+          "description": "Make your room visible to thousands of verified students."
+        },
+        {
+          "title": "Review applications",
+          "description": "Browse applicant profiles and read their personal messages."
+        },
+        {
+          "title": "Invite candidates",
+          "description": "Select your favorites and invite them for hospiteren."
+        },
+        {
+          "title": "Choose your new housemate",
+          "description": "After hospiteren, pick the person who fits best."
+        }
+      ]
+    }
+  },
+  "forHouses": {
+    "title": "For houses",
+    "subtitle": "The easiest way to find your next housemate.",
+    "why": {
+      "title": "Why list on OpenHospi?",
+      "items": [
+        {
+          "title": "Verified applicants",
+          "description": "Every applicant is a real student, verified via SURFconext."
+        },
+        {
+          "title": "Completely free",
+          "description": "No listing fees, no premium placements. Fair for everyone."
+        },
+        {
+          "title": "Manage applications",
+          "description": "Review profiles, read messages, and invite candidates — all in one place."
+        },
+        {
+          "title": "Share your listing",
+          "description": "Generate a unique link to share on social media or in group chats."
+        }
+      ]
+    },
+    "workflow": {
+      "title": "How it works for houses",
+      "description": "Create your house profile, add a room listing, review applications, and invite the best candidates for hospiteren."
+    },
+    "shareLink": {
+      "title": "Share your listing anywhere",
+      "description": "Every room gets a unique link you can share on Instagram, WhatsApp, or your house website."
+    },
+    "cta": {
+      "title": "Ready to find your next housemate?",
+      "button": "Log in with SURFconext"
+    }
+  },
+  "safety": {
+    "title": "Safety & Trust",
+    "subtitle": "Your safety is our top priority. Here's how we protect you.",
+    "features": [
+      {
+        "title": "SURFconext verification",
+        "description": "Every user is verified through SURFconext, the official Dutch education SSO. No fake profiles."
+      },
+      {
+        "title": "End-to-end encrypted chat",
+        "description": "Messages are encrypted between sender and receiver. We cannot read your conversations."
+      },
+      {
+        "title": "No trackers",
+        "description": "We don't use third-party trackers, analytics cookies, or sell your data."
+      },
+      {
+        "title": "GDPR compliant",
+        "description": "We follow EU data protection regulations. You can export or delete your data anytime."
+      },
+      {
+        "title": "Open source",
+        "description": "Our entire codebase is public. Anyone can audit how we handle your data."
+      },
+      {
+        "title": "Report & block",
+        "description": "Report inappropriate behavior or block users with one click. We act on reports quickly."
+      }
+    ]
+  },
+  "about": {
+    "title": "About OpenHospi",
+    "mission": {
+      "title": "Our mission",
+      "description": "OpenHospi exists to make student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent."
+    },
+    "crisis": {
+      "title": "The housing crisis",
+      "description": "The Netherlands faces a severe student housing shortage. Commercial platforms charge listing fees and premium placements, making an already stressful process worse. We're building an alternative."
+    },
+    "builtBy": {
+      "title": "Built by students",
+      "description": "OpenHospi was created by students who experienced the housing struggle firsthand. We know the problems because we've lived them."
+    },
+    "openSource": {
+      "title": "Open source & community",
+      "description": "OpenHospi is a community project. Anyone can contribute code, translations, or ideas. We're transparent about everything we do.",
+      "cta": "Contribute on GitHub"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: February 2026",
+    "sections": [
+      {
+        "title": "What data we collect",
+        "content": "We collect data you provide when creating your account (via SURFconext), your profile information, room listings, and messages you send through the platform."
+      },
+      {
+        "title": "SURFconext data",
+        "content": "When you log in via SURFconext, we receive your name, email address, institution, and affiliation (student/employee). We use this to verify your identity and create your account."
+      },
+      {
+        "title": "How we use your data",
+        "content": "We use your data solely to provide the OpenHospi platform. We do not sell your data, use it for advertising, or share it with third parties except as required by law."
+      },
+      {
+        "title": "Data processor",
+        "content": "Our database is hosted on Supabase (EU region). Supabase acts as our data processor under a Data Processing Agreement."
+      },
+      {
+        "title": "Data retention",
+        "content": "Your data is retained as long as your account is active. You can delete your account at any time, which will permanently remove all your data."
+      },
+      {
+        "title": "Your rights",
+        "content": "Under GDPR, you have the right to access, correct, export, and delete your personal data. Contact us at privacy@openhospi.nl to exercise these rights."
+      },
+      {
+        "title": "Contact",
+        "content": "For privacy-related questions, email privacy@openhospi.nl."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "lastUpdated": "Last updated: February 2026",
+    "sections": [
+      {
+        "title": "Eligibility",
+        "content": "OpenHospi is available to students and staff of Dutch educational institutions that are connected to SURFconext."
+      },
+      {
+        "title": "Account responsibilities",
+        "content": "You are responsible for maintaining the security of your account. Do not share your login credentials or attempt to impersonate others."
+      },
+      {
+        "title": "Acceptable use",
+        "content": "You agree to use OpenHospi only for finding or offering student housing. Harassment, discrimination, fraud, and spam are prohibited."
+      },
+      {
+        "title": "Content ownership",
+        "content": "You retain ownership of content you post (profile text, photos, messages). By posting, you grant OpenHospi a license to display this content on the platform."
+      },
+      {
+        "title": "Liability",
+        "content": "OpenHospi is provided as-is. We are not responsible for the accuracy of listings, the behavior of other users, or any transactions made outside the platform."
+      },
+      {
+        "title": "Governing law",
+        "content": "These terms are governed by Dutch law. Any disputes will be resolved in the courts of the Netherlands."
+      }
+    ]
+  },
+  "costs": {
+    "title": "Costs & Transparency",
+    "subtitle": "OpenHospi is free for all users. Here's what it costs us to run.",
+    "intro": {
+      "title": "What does OpenHospi cost?",
+      "description": "OpenHospi is and will always be free for students. No hidden fees, no premium plans, no ads. Here's a transparent overview of our running costs."
+    },
+    "breakdown": {
+      "title": "Monthly cost breakdown",
+      "items": [
+        {
+          "name": "Hosting (Vercel)",
+          "description": "Frontend hosting and CDN",
+          "cost": "\u20ac0\u201320/mo"
+        },
+        {
+          "name": "Database (Supabase)",
+          "description": "PostgreSQL database, auth, and storage",
+          "cost": "\u20ac0\u201325/mo"
+        },
+        {
+          "name": "Domain",
+          "description": "openhospi.nl domain registration",
+          "cost": "~\u20ac1/mo"
+        },
+        {
+          "name": "SURFconext",
+          "description": "Student verification via SURFconext",
+          "cost": "Free"
+        }
+      ]
+    },
+    "keepFree": {
+      "title": "How do we keep it free?",
+      "pillars": [
+        {
+          "title": "Donations",
+          "description": "Individual contributions from users who want to support the platform."
+        },
+        {
+          "title": "Sponsorships",
+          "description": "Universities and student organizations can sponsor OpenHospi."
+        },
+        {
+          "title": "Open source",
+          "description": "Volunteer developers contribute code, reducing development costs."
+        }
+      ]
+    },
+    "donate": {
+      "title": "Support OpenHospi",
+      "description": "Every contribution helps keep the platform free for students.",
+      "oneTime": "One-time donation",
+      "monthly": "Monthly support",
+      "cta": "Donate via GitHub Sponsors"
+    },
+    "sponsor": {
+      "title": "Become a sponsor",
+      "tiers": [
+        {
+          "name": "Supporter",
+          "price": "\u20ac10/mo",
+          "description": "Your name on our sponsors page."
+        },
+        {
+          "name": "Partner",
+          "price": "\u20ac50/mo",
+          "description": "Logo on our website and README."
+        },
+        {
+          "name": "Institutional",
+          "price": "On request",
+          "description": "Prominent placement and direct support for universities and housing organizations."
+        }
+      ],
+      "cta": "Contact us"
+    },
+    "transparency": {
+      "title": "Where does the money go?",
+      "description": "100% of donations go to infrastructure costs. We publish our finances openly. No salaries, no profit \u2014 just keeping the platform running for students."
+    }
+  }
+}

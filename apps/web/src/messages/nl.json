@@ -1,0 +1,385 @@
+{
+  "metadata": {
+    "title": "OpenHospi — Gratis studentenhuisvesting",
+    "description": "Het gratis, open-source platform voor studentenhuisvesting in Nederland."
+  },
+  "header": {
+    "nav": {
+      "howItWorks": "Hoe het werkt",
+      "forHouses": "Voor huizen",
+      "safety": "Veiligheid",
+      "costs": "Kosten",
+      "about": "Over ons"
+    },
+    "login": "Inloggen met SURFconext",
+    "menuOpen": "Menu openen"
+  },
+  "footer": {
+    "product": "Product",
+    "legal": "Juridisch",
+    "community": "Community",
+    "links": {
+      "howItWorks": "Hoe het werkt",
+      "forHouses": "Voor huizen",
+      "safety": "Veiligheid",
+      "costs": "Kosten",
+      "privacy": "Privacybeleid",
+      "terms": "Voorwaarden",
+      "about": "Over ons"
+    },
+    "tagline": "Gratis, open-source studentenhuisvesting voor Nederland.",
+    "openSource": "Open source",
+    "rights": "Alle rechten voorbehouden."
+  },
+  "home": {
+    "hero": {
+      "title": "Hospiteren.\nGratis. Eerlijk.\nAlleen studenten.",
+      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via SURFconext — geen tussenpersonen, geen kosten.",
+      "cta": "Inloggen met SURFconext"
+    },
+    "features": {
+      "title": "Waarom OpenHospi?",
+      "free": {
+        "title": "Altijd gratis",
+        "description": "Geen verborgen kosten, geen premium plannen. Gratis voor iedereen, voor altijd."
+      },
+      "verified": {
+        "title": "Geverifieerde studenten",
+        "description": "Elke gebruiker is geverifieerd via SURFconext — alleen echte studenten."
+      },
+      "encrypted": {
+        "title": "E2E versleutelde chat",
+        "description": "Je gesprekken zijn end-to-end versleuteld. Wij kunnen ze niet lezen, niemand kan dat."
+      },
+      "fair": {
+        "title": "Eerlijk en transparant",
+        "description": "Open source, community-driven en gebouwd door studenten voor studenten."
+      }
+    },
+    "howItWorks": {
+      "title": "Hoe het werkt",
+      "step1": {
+        "title": "Log in",
+        "description": "Log in met je universiteitsaccount via SURFconext."
+      },
+      "step2": {
+        "title": "Zoek",
+        "description": "Blader door beschikbare kamers of zet je huis online."
+      },
+      "step3": {
+        "title": "Word gekozen",
+        "description": "Huizen nodigen kandidaten uit — de traditionele Nederlandse hospiteeravond."
+      }
+    },
+    "students": {
+      "title": "Alleen echte studenten",
+      "description": "OpenHospi gebruikt SURFconext — de officiële single sign-on voor het Nederlandse onderwijs — om elke gebruiker te verifiëren. Geen nepprofielen, geen oplichting.",
+      "badge": "SURFconext geverifieerd"
+    },
+    "openSource": {
+      "title": "Open source",
+      "description": "OpenHospi is volledig open source. Iedereen kan de code bekijken, bijdragen of een eigen instantie draaien. Transparantie is geen feature — het is een principe.",
+      "cta": "Bekijk op GitHub"
+    },
+    "cta": {
+      "title": "Klaar om een kamer te vinden?",
+      "subtitle": "Sluit je aan bij duizenden studenten op het eerlijkste huisvestingsplatform van Nederland.",
+      "button": "Inloggen met SURFconext"
+    }
+  },
+  "howItWorks": {
+    "title": "Hoe het werkt",
+    "subtitle": "Stap-voor-stap gids voor het vinden of aanbieden van een kamer.",
+    "seekerTab": "Ik zoek een kamer",
+    "houseTab": "Ik heb een kamer",
+    "seeker": {
+      "steps": [
+        {
+          "title": "Log in met SURFconext",
+          "description": "Gebruik je universiteitsaccount om je identiteit te verifiëren."
+        },
+        {
+          "title": "Maak je profiel compleet",
+          "description": "Voeg je studie, hobby's en voorkeuren toe zodat huizen je leren kennen."
+        },
+        {
+          "title": "Blader door kamers",
+          "description": "Filter op stad, prijs, beschikbaarheid en type huis."
+        },
+        {
+          "title": "Solliciteer op kamers",
+          "description": "Stuur een persoonlijk bericht naar het huis om uit te leggen waarom jij goed past."
+        },
+        {
+          "title": "Word uitgenodigd voor hospiteren",
+          "description": "Als het huis je profiel leuk vindt, nodigen ze je uit voor een bezoek."
+        },
+        {
+          "title": "Verhuis!",
+          "description": "Na een geslaagd hospiteren ben je erbij. Welkom thuis!"
+        }
+      ]
+    },
+    "house": {
+      "steps": [
+        {
+          "title": "Log in met SURFconext",
+          "description": "Alle bewoners verifiëren via hun universiteitsaccount."
+        },
+        {
+          "title": "Maak je huis aan",
+          "description": "Voeg je adres, foto's, kamerdetails en huisregels toe."
+        },
+        {
+          "title": "Publiceer je advertentie",
+          "description": "Maak je kamer zichtbaar voor duizenden geverifieerde studenten."
+        },
+        {
+          "title": "Bekijk sollicitaties",
+          "description": "Bekijk profielen van sollicitanten en lees hun persoonlijke berichten."
+        },
+        {
+          "title": "Nodig kandidaten uit",
+          "description": "Selecteer je favorieten en nodig ze uit voor hospiteren."
+        },
+        {
+          "title": "Kies je nieuwe huisgenoot",
+          "description": "Na het hospiteren kies je de persoon die het beste past."
+        }
+      ]
+    }
+  },
+  "forHouses": {
+    "title": "Voor huizen",
+    "subtitle": "De makkelijkste manier om je volgende huisgenoot te vinden.",
+    "why": {
+      "title": "Waarom adverteren op OpenHospi?",
+      "items": [
+        {
+          "title": "Geverifieerde sollicitanten",
+          "description": "Elke sollicitant is een echte student, geverifieerd via SURFconext."
+        },
+        {
+          "title": "Volledig gratis",
+          "description": "Geen advertentiekosten, geen premium plaatsingen. Eerlijk voor iedereen."
+        },
+        {
+          "title": "Beheer sollicitaties",
+          "description": "Bekijk profielen, lees berichten en nodig kandidaten uit — alles op één plek."
+        },
+        {
+          "title": "Deel je advertentie",
+          "description": "Genereer een unieke link om te delen op social media of in groepschats."
+        }
+      ]
+    },
+    "workflow": {
+      "title": "Hoe het werkt voor huizen",
+      "description": "Maak je huisprofiel aan, voeg een kameradvertentie toe, bekijk sollicitaties en nodig de beste kandidaten uit voor hospiteren."
+    },
+    "shareLink": {
+      "title": "Deel je advertentie overal",
+      "description": "Elke kamer krijgt een unieke link die je kunt delen op Instagram, WhatsApp of je huiswebsite."
+    },
+    "cta": {
+      "title": "Klaar om je volgende huisgenoot te vinden?",
+      "button": "Inloggen met SURFconext"
+    }
+  },
+  "safety": {
+    "title": "Veiligheid & Vertrouwen",
+    "subtitle": "Je veiligheid is onze topprioriteit. Zo beschermen we je.",
+    "features": [
+      {
+        "title": "SURFconext-verificatie",
+        "description": "Elke gebruiker is geverifieerd via SURFconext, de officiële Nederlandse onderwijs-SSO. Geen nepprofielen."
+      },
+      {
+        "title": "End-to-end versleutelde chat",
+        "description": "Berichten zijn versleuteld tussen verzender en ontvanger. Wij kunnen je gesprekken niet lezen."
+      },
+      {
+        "title": "Geen trackers",
+        "description": "We gebruiken geen third-party trackers, analytics-cookies of verkopen je data."
+      },
+      {
+        "title": "AVG-conform",
+        "description": "We volgen de EU-gegevensbeschermingsregels. Je kunt je data altijd exporteren of verwijderen."
+      },
+      {
+        "title": "Open source",
+        "description": "Onze hele codebase is openbaar. Iedereen kan controleren hoe we met je data omgaan."
+      },
+      {
+        "title": "Melden & blokkeren",
+        "description": "Meld ongepast gedrag of blokkeer gebruikers met één klik. We handelen snel op meldingen."
+      }
+    ]
+  },
+  "about": {
+    "title": "Over OpenHospi",
+    "mission": {
+      "title": "Onze missie",
+      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant zou moeten zijn."
+    },
+    "crisis": {
+      "title": "De woningcrisis",
+      "description": "Nederland kampt met een ernstig tekort aan studentenhuisvesting. Commerciële platforms rekenen advertentiekosten en premium plaatsingen, waardoor een al stressvol proces nog erger wordt. Wij bouwen een alternatief."
+    },
+    "builtBy": {
+      "title": "Gebouwd door studenten",
+      "description": "OpenHospi is gemaakt door studenten die de woningnood zelf hebben ervaren. We kennen de problemen omdat we ze zelf hebben meegemaakt."
+    },
+    "openSource": {
+      "title": "Open source & community",
+      "description": "OpenHospi is een communityproject. Iedereen kan code, vertalingen of ideeën bijdragen. We zijn transparant over alles wat we doen.",
+      "cta": "Bijdragen op GitHub"
+    }
+  },
+  "privacy": {
+    "title": "Privacybeleid",
+    "lastUpdated": "Laatst bijgewerkt: februari 2026",
+    "sections": [
+      {
+        "title": "Welke gegevens we verzamelen",
+        "content": "We verzamelen gegevens die je verstrekt bij het aanmaken van je account (via SURFconext), je profielinformatie, kameradvertenties en berichten die je via het platform verstuurt."
+      },
+      {
+        "title": "SURFconext-gegevens",
+        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres, instelling en affiliatie (student/medewerker). We gebruiken dit om je identiteit te verifiëren en je account aan te maken."
+      },
+      {
+        "title": "Hoe we je gegevens gebruiken",
+        "content": "We gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden. We verkopen je gegevens niet, gebruiken ze niet voor reclame en delen ze niet met derden, behalve wanneer de wet dit vereist."
+      },
+      {
+        "title": "Gegevensverwerker",
+        "content": "Onze database wordt gehost op Supabase (EU-regio). Supabase fungeert als onze gegevensverwerker onder een Verwerkersovereenkomst."
+      },
+      {
+        "title": "Bewaartermijn",
+        "content": "Je gegevens worden bewaard zolang je account actief is. Je kunt je account op elk moment verwijderen, waarmee al je gegevens permanent worden verwijderd."
+      },
+      {
+        "title": "Jouw rechten",
+        "content": "Onder de AVG heb je het recht om je persoonsgegevens in te zien, te corrigeren, te exporteren en te verwijderen. Neem contact op via privacy@openhospi.nl om deze rechten uit te oefenen."
+      },
+      {
+        "title": "Contact",
+        "content": "Voor privacy-gerelateerde vragen, e-mail privacy@openhospi.nl."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Algemene Voorwaarden",
+    "lastUpdated": "Laatst bijgewerkt: februari 2026",
+    "sections": [
+      {
+        "title": "Geschiktheid",
+        "content": "OpenHospi is beschikbaar voor studenten en medewerkers van Nederlandse onderwijsinstellingen die zijn aangesloten bij SURFconext."
+      },
+      {
+        "title": "Accountverantwoordelijkheden",
+        "content": "Je bent verantwoordelijk voor het beveiligen van je account. Deel je inloggegevens niet en probeer je niet voor te doen als iemand anders."
+      },
+      {
+        "title": "Acceptabel gebruik",
+        "content": "Je stemt ermee in om OpenHospi alleen te gebruiken voor het zoeken of aanbieden van studentenhuisvesting. Intimidatie, discriminatie, fraude en spam zijn verboden."
+      },
+      {
+        "title": "Eigendom van content",
+        "content": "Je behoudt het eigendom van content die je plaatst (profieltekst, foto's, berichten). Door te plaatsen verleen je OpenHospi een licentie om deze content op het platform weer te geven."
+      },
+      {
+        "title": "Aansprakelijkheid",
+        "content": "OpenHospi wordt aangeboden zoals het is. We zijn niet verantwoordelijk voor de juistheid van advertenties, het gedrag van andere gebruikers of transacties die buiten het platform plaatsvinden."
+      },
+      {
+        "title": "Toepasselijk recht",
+        "content": "Deze voorwaarden vallen onder Nederlands recht. Eventuele geschillen worden beslecht door de Nederlandse rechtbanken."
+      }
+    ]
+  },
+  "costs": {
+    "title": "Kosten & Transparantie",
+    "subtitle": "OpenHospi is gratis voor alle gebruikers. Dit kost het ons om te draaien.",
+    "intro": {
+      "title": "Wat kost OpenHospi?",
+      "description": "OpenHospi is en blijft altijd gratis voor studenten. Geen verborgen kosten, geen premium plannen, geen advertenties. Hier is een transparant overzicht van onze draaikosten."
+    },
+    "breakdown": {
+      "title": "Maandelijkse kostenopbouw",
+      "items": [
+        {
+          "name": "Hosting (Vercel)",
+          "description": "Frontend hosting en CDN",
+          "cost": "€0–20/mnd"
+        },
+        {
+          "name": "Database (Supabase)",
+          "description": "PostgreSQL database, auth en opslag",
+          "cost": "€0–25/mnd"
+        },
+        {
+          "name": "Domein",
+          "description": "openhospi.nl domeinregistratie",
+          "cost": "~€1/mnd"
+        },
+        {
+          "name": "SURFconext",
+          "description": "Studentenverificatie via SURFconext",
+          "cost": "Gratis"
+        }
+      ]
+    },
+    "keepFree": {
+      "title": "Hoe houden we het gratis?",
+      "pillars": [
+        {
+          "title": "Donaties",
+          "description": "Individuele bijdragen van gebruikers die het platform willen ondersteunen."
+        },
+        {
+          "title": "Sponsoring",
+          "description": "Universiteiten en studentenorganisaties kunnen OpenHospi sponsoren."
+        },
+        {
+          "title": "Open source",
+          "description": "Vrijwillige ontwikkelaars dragen code bij, waardoor de ontwikkelkosten dalen."
+        }
+      ]
+    },
+    "donate": {
+      "title": "Steun OpenHospi",
+      "description": "Elke bijdrage helpt het platform gratis te houden voor studenten.",
+      "oneTime": "Eenmalige donatie",
+      "monthly": "Maandelijkse steun",
+      "cta": "Doneer via GitHub Sponsors"
+    },
+    "sponsor": {
+      "title": "Word sponsor",
+      "tiers": [
+        {
+          "name": "Supporter",
+          "price": "€10/mnd",
+          "description": "Je naam op onze sponsorspagina."
+        },
+        {
+          "name": "Partner",
+          "price": "€50/mnd",
+          "description": "Logo op onze website en README."
+        },
+        {
+          "name": "Institutioneel",
+          "price": "Op aanvraag",
+          "description": "Prominente vermelding en directe ondersteuning voor universiteiten en woningorganisaties."
+        }
+      ],
+      "cta": "Neem contact op"
+    },
+    "transparency": {
+      "title": "Waar gaat het geld naartoe?",
+      "description": "100% van de donaties gaat naar infrastructuurkosten. We publiceren onze financiën openlijk. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten."
+    }
+  }
+}

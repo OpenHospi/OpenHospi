@@ -1,11 +1,16 @@
 -- Test seed data for local development
 
+-- Test user rows (Better Auth)
+INSERT INTO "user" (id, name, email, "emailVerified")
+VALUES
+  ('00000000-0000-0000-0000-000000000001', 'Jan de Vries', '00000000-0000-0000-0000-000000000001@id.openhospi.nl', true),
+  ('00000000-0000-0000-0000-000000000002', 'Sophie Bakker', '00000000-0000-0000-0000-000000000002@id.openhospi.nl', true);
+
 -- Test profiles
-INSERT INTO profiles (id, surfconext_sub, first_name, last_name, email, institution_domain, affiliation, gender, bio, study_program, study_year, lifestyle_tags, language)
+INSERT INTO profiles (id, first_name, last_name, email, institution_domain, affiliation, gender, bio, study_program, study_year, lifestyle_tags, language)
 VALUES
   (
     '00000000-0000-0000-0000-000000000001',
-    'urn:collab:person:rug.nl:j.devries',
     'Jan',
     'de Vries',
     'j.de.vries@student.rug.nl',
@@ -20,7 +25,6 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000002',
-    'urn:collab:person:uu.nl:s.bakker',
     'Sophie',
     'Bakker',
     's.bakker@students.uu.nl',

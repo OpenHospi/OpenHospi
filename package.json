@@ -21,7 +21,14 @@
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "supabase", "@parcel/watcher", "@swc/core", "sharp", "unrs-resolver"],
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "supabase",
+      "@parcel/watcher",
+      "@swc/core",
+      "sharp",
+      "unrs-resolver"
+    ],
     "overrides": {
       "@types/react": "^19.2.14",
       "@types/react-dom": "^19.2.3"
@@ -29,6 +36,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.18",
+    "dotenv": "^17.3.1",
     "supabase": "^2.76.11",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"

@@ -1,0 +1,10 @@
+preserve_hierarchy: true
+
+files:
+  # Web app (Next.js + next-intl)
+  - source: /apps/web/src/messages/nl.json
+    translation: /apps/web/src/messages/%two_letters_code%.json
+
+  # Mobile app (Expo — prepared for future use)
+  - source: /apps/mobile/messages/nl.json
+    translation: /apps/mobile/messages/%two_letters_code%.json

@@ -1,16 +1,27 @@
 "use client";
 
-import { Cloud, Database, Globe, ShieldCheck, Heart, Building2, Code, Mail } from "lucide-react";
+import { Cloud, Globe, Smartphone, Heart, Building2, Code, ExternalLink } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
 import { FeatureCard } from "@/components/marketing/feature-card";
-import { SponsorTier } from "@/components/marketing/sponsor-tier";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-const costIcons: LucideIcon[] = [Cloud, Database, Globe, ShieldCheck];
+const groupIcons: LucideIcon[] = [Cloud, Globe, Smartphone];
+const groupItemCounts = [3, 3, 2] as const;
 const pillarIcons: LucideIcon[] = [Heart, Building2, Code];
+
+// Infrastructure items (group 0) use current/atScale, others use cost
+const infrastructureGroupIndex = 0;
 
 export default function CostsPage() {
   const t = useTranslations("costs");
@@ -32,26 +43,90 @@ export default function CostsPage() {
         </div>
       </section>
 
-      {/* Cost breakdown */}
+      {/* Cost breakdown — grouped cards */}
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("breakdown.title")}</h2>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
-            {([0, 1, 2, 3] as const).map((i) => (
-              <CostCard
-                key={i}
-                icon={costIcons[i]}
-                name={t(`breakdown.items.${i}.name`)}
-                description={t(`breakdown.items.${i}.description`)}
-                cost={t(`breakdown.items.${i}.cost`)}
-              />
-            ))}
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {([0, 1, 2] as const).map((groupIndex) => {
+              const items = Array.from({ length: groupItemCounts[groupIndex] }, (_, j) => {
+                const base = {
+                  name: t(`breakdown.groups.${groupIndex}.items.${j}.name`),
+                  description: t(`breakdown.groups.${groupIndex}.items.${j}.description`),
+                };
+
+                if (groupIndex === infrastructureGroupIndex) {
+                  return {
+                    ...base,
+                    current: t(`breakdown.groups.${groupIndex}.items.${j}.current`),
+                    atScale: t(`breakdown.groups.${groupIndex}.items.${j}.atScale`),
+                  };
+                }
+
+                return {
+                  ...base,
+                  cost: t(`breakdown.groups.${groupIndex}.items.${j}.cost`),
+                };
+              });
+
+              return (
+                <CostCard
+                  key={groupIndex}
+                  icon={groupIcons[groupIndex]}
+                  name={t(`breakdown.groups.${groupIndex}.name`)}
+                  description={t(`breakdown.groups.${groupIndex}.description`)}
+                  items={items}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Summary table */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("summary.title")}</h2>
+          <div className="mx-auto mt-12 max-w-2xl overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-1/3">&nbsp;</TableHead>
+                  <TableHead className="text-right">
+                    {t("summary.currentLabel")}
+                    <span className="text-muted-foreground"> {t("summary.perYear")}</span>
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t("summary.atScaleLabel")}
+                    <span className="text-muted-foreground"> {t("summary.perYear")}</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {([0, 1, 2, 3, 4, 5] as const).map((i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium">{t(`summary.rows.${i}.name`)}</TableCell>
+                    <TableCell className="text-right">{t(`summary.rows.${i}.current`)}</TableCell>
+                    <TableCell className="text-right">{t(`summary.rows.${i}.atScale`)}</TableCell>
+                  </TableRow>
+                ))}
+                <TableRow className="border-t-2 font-bold">
+                  <TableCell>{t("summary.totalLabel")}</TableCell>
+                  <TableCell className="text-right text-primary">
+                    {t("summary.currentTotal")}
+                  </TableCell>
+                  <TableCell className="text-right text-primary">
+                    {t("summary.atScaleTotal")}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
       </section>
 
       {/* How we keep it free */}
-      <section className="py-24">
+      <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("keepFree.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -67,53 +142,40 @@ export default function CostsPage() {
         </div>
       </section>
 
-      {/* Donate */}
-      <section className="bg-muted/30 py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-md">
-            <DonateCard
-              title={t("donate.title")}
-              description={t("donate.description")}
-              oneTimeLabel={t("donate.oneTime")}
-              monthlyLabel={t("donate.monthly")}
-              ctaLabel={t("donate.cta")}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Sponsor tiers */}
+      {/* Donate & Sponsor */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("sponsor.title")}</h2>
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("donate.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             {([0, 1, 2] as const).map((i) => (
-              <SponsorTier
+              <DonateCard
                 key={i}
-                name={t(`sponsor.tiers.${i}.name`)}
-                price={t(`sponsor.tiers.${i}.price`)}
-                description={t(`sponsor.tiers.${i}.description`)}
+                name={t(`donate.tiers.${i}.name`)}
+                price={t(`donate.tiers.${i}.price`)}
+                badge={t(`donate.tiers.${i}.badge`)}
+                description={t(`donate.tiers.${i}.description`)}
+                ctaLabel={t("donate.cta")}
               />
             ))}
-          </div>
-          <div className="mt-8 text-center">
-            <a
-              href="mailto:sponsor@openhospi.nl"
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              <Mail className="size-4" />
-              {t("sponsor.cta")}
-            </a>
           </div>
         </div>
       </section>
 
       {/* Transparency */}
-      <section className="bg-muted/30 py-24">
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold sm:text-3xl">{t("transparency.title")}</h2>
             <p className="mt-4 text-muted-foreground">{t("transparency.description")}</p>
+            <a
+              href="https://opencollective.com/openhospi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <ExternalLink className="size-4" />
+              {t("transparency.badge")}
+            </a>
           </div>
         </div>
       </section>

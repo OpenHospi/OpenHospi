@@ -19,8 +19,8 @@ export function MarketingFooter() {
     {
       title: t("product"),
       links: [
-        { href: "/how-it-works", label: t("links.howItWorks") },
-        { href: "/for-houses", label: t("links.forHouses") },
+        { href: "/find-a-room", label: t("links.findRoom") },
+        { href: "/list-a-room", label: t("links.listRoom") },
         { href: "/safety", label: t("links.safety") },
       ],
     },

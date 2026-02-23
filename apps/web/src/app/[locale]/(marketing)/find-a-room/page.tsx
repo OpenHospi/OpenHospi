@@ -1,20 +1,39 @@
 "use client";
 
-import { ClipboardList, Link2, ShieldCheck, HandCoins } from "lucide-react";
+import {
+  HandCoins,
+  LogIn,
+  Mail,
+  MessageCircle,
+  PartyPopper,
+  Scale,
+  Search,
+  ShieldCheck,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { FeatureCard } from "@/components/marketing/feature-card";
+import { StepList } from "@/components/marketing/step-list";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
-const whyIcons = [ShieldCheck, HandCoins, ClipboardList, Link2] as const;
+const whyIcons = [ShieldCheck, HandCoins, MessageCircle, Scale] as const;
+const stepIcons: LucideIcon[] = [LogIn, UserPlus, Search, Mail, Users, PartyPopper];
 
-export default function ForHousesPage() {
-  const t = useTranslations("forHouses");
+export default function FindARoomPage() {
+  const t = useTranslations("findRoom");
+
+  const steps = Array.from({ length: 6 }, (_, i) => ({
+    title: t(`steps.items.${i}.title`),
+    description: t(`steps.items.${i}.description`),
+  }));
 
   return (
     <>
-      {/* Header */}
+      {/* Hero */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
@@ -24,7 +43,7 @@ export default function ForHousesPage() {
         </div>
       </section>
 
-      {/* Why list */}
+      {/* Why section */}
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("why.title")}</h2>
@@ -41,29 +60,16 @@ export default function ForHousesPage() {
         </div>
       </section>
 
-      {/* Workflow */}
+      {/* Steps section */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold sm:text-3xl">{t("workflow.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("workflow.description")}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Share link */}
-      <section className="bg-muted/30 py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <Link2 className="mx-auto size-12 text-primary" />
-            <h2 className="mt-4 text-2xl font-bold sm:text-3xl">{t("shareLink.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("shareLink.description")}</p>
-          </div>
+          <h2 className="mb-12 text-center text-2xl font-bold sm:text-3xl">{t("steps.title")}</h2>
+          <StepList steps={steps} icons={stepIcons} />
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("cta.title")}</h2>
           <div className="mt-8">

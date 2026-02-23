@@ -5,8 +5,8 @@ const BASE_URL = "https://openhospi.nl";
 
 const pages = [
   "",
-  "/how-it-works",
-  "/for-houses",
+  "/find-a-room",
+  "/list-a-room",
   "/safety",
   "/about",
   "/privacy",

@@ -5,8 +5,8 @@
   },
   "header": {
     "nav": {
-      "howItWorks": "How it works",
-      "forHouses": "For houses",
+      "findRoom": "Find a room",
+      "listRoom": "List a room",
       "safety": "Safety",
       "costs": "Costs",
       "about": "About"
@@ -19,8 +19,8 @@
     "legal": "Legal",
     "community": "Community",
     "links": {
-      "howItWorks": "How it works",
-      "forHouses": "For houses",
+      "findRoom": "Find a room",
+      "listRoom": "List a room",
       "safety": "Safety",
       "costs": "Costs",
       "privacy": "Privacy policy",
@@ -87,13 +87,33 @@
       "button": "Log in with SURFconext"
     }
   },
-  "howItWorks": {
-    "title": "How it works",
-    "subtitle": "Step-by-step guide to finding a room or filling one.",
-    "seekerTab": "I'm looking for a room",
-    "houseTab": "I have a room",
-    "seeker": {
-      "steps": [
+  "findRoom": {
+    "title": "Find a room",
+    "subtitle": "The easiest way to find your next student room — free, fair, and only for verified students.",
+    "why": {
+      "title": "Why search on OpenHospi?",
+      "items": [
+        {
+          "title": "Verified students",
+          "description": "Every user is a real student, verified by their university or hogeschool through SURFconext. No fake profiles."
+        },
+        {
+          "title": "Completely free",
+          "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility."
+        },
+        {
+          "title": "Encrypted chat",
+          "description": "Your conversations are end-to-end encrypted. We can't read them, nobody can."
+        },
+        {
+          "title": "Fair for everyone",
+          "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
+        }
+      ]
+    },
+    "steps": {
+      "title": "How to find a room",
+      "items": [
         {
           "title": "Log in with SURFconext",
           "description": "Use your university account to verify your identity."
@@ -120,8 +140,38 @@
         }
       ]
     },
-    "house": {
-      "steps": [
+    "cta": {
+      "title": "Ready to find your room?",
+      "button": "Log in with SURFconext"
+    }
+  },
+  "listRoom": {
+    "title": "List a room",
+    "subtitle": "The easiest way to find your next housemate.",
+    "why": {
+      "title": "Why list on OpenHospi?",
+      "items": [
+        {
+          "title": "Verified candidates",
+          "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
+        },
+        {
+          "title": "Completely free",
+          "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
+        },
+        {
+          "title": "Manage responses",
+          "description": "Review profiles, read messages, and invite candidates — all in one place."
+        },
+        {
+          "title": "Share your listing",
+          "description": "Generate a unique link to share on social media or in group chats."
+        }
+      ]
+    },
+    "steps": {
+      "title": "How to list a room",
+      "items": [
         {
           "title": "Log in with SURFconext",
           "description": "All members verify via their university account."
@@ -147,35 +197,6 @@
           "description": "After hospiteren, pick the person who fits best."
         }
       ]
-    }
-  },
-  "forHouses": {
-    "title": "For houses",
-    "subtitle": "The easiest way to find your next housemate.",
-    "why": {
-      "title": "Why list on OpenHospi?",
-      "items": [
-        {
-          "title": "Verified candidates",
-          "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
-        },
-        {
-          "title": "Completely free",
-          "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
-        },
-        {
-          "title": "Manage responses",
-          "description": "Review profiles, read messages, and invite candidates — all in one place."
-        },
-        {
-          "title": "Share your listing",
-          "description": "Generate a unique link to share on social media or in group chats."
-        }
-      ]
-    },
-    "workflow": {
-      "title": "How it works for houses",
-      "description": "Create your house profile, add a room listing, review responses, and invite the best candidates for hospiteren."
     },
     "shareLink": {
       "title": "Share your listing anywhere",
@@ -305,32 +326,91 @@
     "subtitle": "OpenHospi is free for all users. Here's what it costs us to run.",
     "intro": {
       "title": "What does OpenHospi cost?",
-      "description": "OpenHospi is and will always be free for students. No hidden fees, no premium plans, no ads. Here's a transparent overview of our running costs."
+      "description": "OpenHospi is and will always be free for students. No hidden fees, no premium plans, no ads. Here's a transparent overview of our running costs — all prices include 21% VAT."
     },
     "breakdown": {
-      "title": "Monthly cost breakdown",
-      "items": [
+      "title": "Cost breakdown",
+      "groups": [
         {
-          "name": "Hosting (Vercel)",
-          "description": "Frontend hosting and CDN",
-          "cost": "€0–20/mo"
+          "name": "Infrastructure",
+          "description": "Hosting, database, and authentication",
+          "items": [
+            {
+              "name": "Vercel",
+              "description": "Website hosting and CDN",
+              "current": "€0/mo (Hobby)",
+              "atScale": "~€18.50/mo (Pro)"
+            },
+            {
+              "name": "Supabase",
+              "description": "PostgreSQL database and storage",
+              "current": "€0/mo (Free)",
+              "atScale": "~€23/mo (Pro)"
+            },
+            {
+              "name": "SURFconext",
+              "description": "Student verification",
+              "current": "Free",
+              "atScale": "Free"
+            }
+          ]
         },
         {
-          "name": "Database (Supabase)",
-          "description": "PostgreSQL database, auth, and storage",
-          "cost": "€0–25/mo"
+          "name": "Domains",
+          "description": "3 domains at Vimexx, renewed annually",
+          "items": [
+            {
+              "name": "openhospi.nl",
+              "description": ".nl domain",
+              "cost": "€7.95/yr"
+            },
+            {
+              "name": "openhospi.com",
+              "description": ".com domain",
+              "cost": "€29.03/yr"
+            },
+            {
+              "name": "openhospi.eu",
+              "description": ".eu domain",
+              "cost": "€13.30/yr"
+            }
+          ]
         },
         {
-          "name": "Domain",
-          "description": "openhospi.nl domain registration",
-          "cost": "~€1/mo"
-        },
-        {
-          "name": "SURFconext",
-          "description": "Student verification via SURFconext",
-          "cost": "Free"
+          "name": "App Stores",
+          "description": "Publishing to iOS and Android app stores",
+          "items": [
+            {
+              "name": "Apple Developer Program",
+              "description": "Required for iOS App Store",
+              "cost": "€99/yr"
+            },
+            {
+              "name": "Google Play Developer",
+              "description": "Required for Play Store",
+              "cost": "€25 (one-time)"
+            }
+          ]
         }
       ]
+    },
+    "summary": {
+      "title": "Total overview",
+      "currentLabel": "Current costs",
+      "atScaleLabel": "At scale (10K+ users)",
+      "perYear": "/yr",
+      "perMonth": "/mo",
+      "rows": [
+        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
+        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
+        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
+        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
+        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
+        { "name": "Google Play", "current": "€25", "atScale": "—" }
+      ],
+      "totalLabel": "Total per year",
+      "currentTotal": "~€174/yr",
+      "atScaleTotal": "~€647/yr (~€54/mo)"
     },
     "keepFree": {
       "title": "How do we keep it free?",
@@ -351,35 +431,32 @@
     },
     "donate": {
       "title": "Support OpenHospi",
-      "description": "Every contribution helps keep the platform free for students.",
-      "oneTime": "One-time donation",
-      "monthly": "Monthly support",
-      "cta": "Donate via GitHub Sponsors"
-    },
-    "sponsor": {
-      "title": "Become a sponsor",
       "tiers": [
         {
-          "name": "Supporter",
-          "price": "€10/mo",
+          "name": "Backer",
+          "price": "€5/mo",
+          "badge": "Monthly",
           "description": "Your name on our sponsors page."
         },
         {
-          "name": "Partner",
-          "price": "€50/mo",
-          "description": "Logo on our website and README."
+          "name": "Sponsor",
+          "price": "€25/mo",
+          "badge": "Monthly",
+          "description": "Your logo on our website and README."
         },
         {
-          "name": "Institutional",
-          "price": "On request",
-          "description": "Prominent placement and direct support for universities and housing organizations."
+          "name": "Donation",
+          "price": "Flexible",
+          "badge": "One-time",
+          "description": "Support with any amount you choose."
         }
       ],
-      "cta": "Contact us"
+      "cta": "Donate via Open Collective"
     },
     "transparency": {
       "title": "Where does the money go?",
-      "description": "100% of donations go to infrastructure costs. We publish our finances openly. No salaries, no profit — just keeping the platform running for students."
+      "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students.",
+      "badge": "OpenHospi on Open Collective"
     }
   }
 }

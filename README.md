@@ -13,7 +13,8 @@
   <a href="https://github.com/rubentalstra/OpenHospi/stargazers"><img src="https://img.shields.io/github/stars/rubentalstra/OpenHospi" alt="GitHub stars"></a>
   <a href="https://github.com/rubentalstra/OpenHospi/issues"><img src="https://img.shields.io/github/issues/rubentalstra/OpenHospi" alt="GitHub issues"></a>
   <a href="https://github.com/rubentalstra/OpenHospi/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs Welcome"></a>
-  <a href="https://crowdin.com/project/openhospi"><img src="https://badges.crowdin.net/openhospi/localized.svg" alt="Crowdin"></a>
+  <a title="Crowdin" target="_blank" href="https://crowdin.com/project/openhospi"><img src="https://badges.crowdin.net/openhospi/localized.svg" alt="Crowdin"></a>
+  <a href="https://opencollective.com/openhospi"><img src="https://opencollective.com/openhospi/all/badge.svg?label=Financial+Contributors" alt="Open Collective"></a>
 </p>
 
 ---

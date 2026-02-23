@@ -5,8 +5,8 @@
   },
   "header": {
     "nav": {
-      "howItWorks": "So funktioniert's",
-      "forHouses": "Für WGs",
+      "findRoom": "Zimmer finden",
+      "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
       "costs": "Kosten",
       "about": "Über uns"
@@ -19,8 +19,8 @@
     "legal": "Rechtliches",
     "community": "Community",
     "links": {
-      "howItWorks": "So funktioniert's",
-      "forHouses": "Für WGs",
+      "findRoom": "Zimmer finden",
+      "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
       "costs": "Kosten",
       "privacy": "Datenschutz",
@@ -87,13 +87,33 @@
       "button": "Mit SURFconext anmelden"
     }
   },
-  "howItWorks": {
-    "title": "So funktioniert's",
-    "subtitle": "Schritt-für-Schritt-Anleitung zum Finden oder Anbieten eines Zimmers.",
-    "seekerTab": "Ich suche ein Zimmer",
-    "houseTab": "Ich habe ein Zimmer",
-    "seeker": {
-      "steps": [
+  "findRoom": {
+    "title": "Zimmer finden",
+    "subtitle": "Der einfachste Weg, dein nächstes Studentenzimmer zu finden — kostenlos, fair und nur für verifizierte Studierende.",
+    "why": {
+      "title": "Warum auf OpenHospi suchen?",
+      "items": [
+        {
+          "title": "Verifizierte Studierende",
+          "description": "Jeder Nutzer ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext. Keine Fake-Profile."
+        },
+        {
+          "title": "Komplett kostenlos",
+          "description": "Keine versteckten Kosten, keine Premium-Pläne. Niemand kann zahlen, um sich Vorrang zu verschaffen. Jeder Studierende hat die gleiche Sichtbarkeit."
+        },
+        {
+          "title": "Verschlüsselter Chat",
+          "description": "Deine Gespräche sind Ende-zu-Ende verschlüsselt. Wir können sie nicht lesen, niemand kann das."
+        },
+        {
+          "title": "Fair für alle",
+          "description": "Open Source und Community-getrieben. Kein Unternehmen verdient daran — von einem Studierenden gestartet, für alle Studierenden."
+        }
+      ]
+    },
+    "steps": {
+      "title": "So findest du ein Zimmer",
+      "items": [
         {
           "title": "Mit SURFconext anmelden",
           "description": "Nutze deinen Uni-Account, um deine Identität zu verifizieren."
@@ -120,8 +140,38 @@
         }
       ]
     },
-    "house": {
-      "steps": [
+    "cta": {
+      "title": "Bereit, dein Zimmer zu finden?",
+      "button": "Mit SURFconext anmelden"
+    }
+  },
+  "listRoom": {
+    "title": "Zimmer anbieten",
+    "subtitle": "Der einfachste Weg, deinen nächsten Mitbewohner zu finden.",
+    "why": {
+      "title": "Warum auf OpenHospi inserieren?",
+      "items": [
+        {
+          "title": "Verifizierte Kandidaten",
+          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext."
+        },
+        {
+          "title": "Komplett kostenlos",
+          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair für alle."
+        },
+        {
+          "title": "Anfragen verwalten",
+          "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen — alles an einem Ort."
+        },
+        {
+          "title": "Anzeige teilen",
+          "description": "Generiere einen einzigartigen Link zum Teilen in sozialen Medien oder Gruppenchats."
+        }
+      ]
+    },
+    "steps": {
+      "title": "So bietest du ein Zimmer an",
+      "items": [
         {
           "title": "Mit SURFconext anmelden",
           "description": "Alle Bewohner verifizieren sich über ihren Uni-Account."
@@ -147,35 +197,6 @@
           "description": "Nach dem Hospiteren wählst du die Person, die am besten passt."
         }
       ]
-    }
-  },
-  "forHouses": {
-    "title": "Für WGs",
-    "subtitle": "Der einfachste Weg, deinen nächsten Mitbewohner zu finden.",
-    "why": {
-      "title": "Warum auf OpenHospi inserieren?",
-      "items": [
-        {
-          "title": "Verifizierte Kandidaten",
-          "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über SURFconext."
-        },
-        {
-          "title": "Komplett kostenlos",
-          "description": "Keine Inseratsgebühren, keine Premium-Platzierungen. Niemand zahlt, um ganz oben zu stehen. Fair für alle."
-        },
-        {
-          "title": "Anfragen verwalten",
-          "description": "Profile ansehen, Nachrichten lesen und Kandidaten einladen — alles an einem Ort."
-        },
-        {
-          "title": "Anzeige teilen",
-          "description": "Generiere einen einzigartigen Link zum Teilen in sozialen Medien oder Gruppenchats."
-        }
-      ]
-    },
-    "workflow": {
-      "title": "So funktioniert's für WGs",
-      "description": "Erstelle dein WG-Profil, füge eine Zimmeranzeige hinzu, prüfe Anfragen und lade die besten Kandidaten zum Hospiteren ein."
     },
     "shareLink": {
       "title": "Teile deine Anzeige überall",
@@ -305,32 +326,91 @@
     "subtitle": "OpenHospi ist kostenlos für alle Nutzer. Das kostet es uns, die Plattform zu betreiben.",
     "intro": {
       "title": "Was kostet OpenHospi?",
-      "description": "OpenHospi ist und bleibt immer kostenlos für Studierende. Keine versteckten Kosten, keine Premium-Pläne, keine Werbung. Hier ist ein transparenter Überblick über unsere Betriebskosten."
+      "description": "OpenHospi ist und bleibt immer kostenlos für Studierende. Keine versteckten Kosten, keine Premium-Pläne, keine Werbung. Hier ist ein transparenter Überblick über unsere Betriebskosten — alle Preise verstehen sich inklusive 21% MwSt."
     },
     "breakdown": {
-      "title": "Monatliche Kostenaufstellung",
-      "items": [
+      "title": "Kostenaufstellung",
+      "groups": [
         {
-          "name": "Hosting (Vercel)",
-          "description": "Frontend-Hosting und CDN",
-          "cost": "€0–20/Mo"
+          "name": "Infrastruktur",
+          "description": "Hosting, Datenbank und Authentifizierung",
+          "items": [
+            {
+              "name": "Vercel",
+              "description": "Website-Hosting und CDN",
+              "current": "€0/Mo (Hobby)",
+              "atScale": "~€18,50/Mo (Pro)"
+            },
+            {
+              "name": "Supabase",
+              "description": "PostgreSQL-Datenbank und Speicher",
+              "current": "€0/Mo (Free)",
+              "atScale": "~€23/Mo (Pro)"
+            },
+            {
+              "name": "SURFconext",
+              "description": "Studierendenverifizierung",
+              "current": "Kostenlos",
+              "atScale": "Kostenlos"
+            }
+          ]
         },
         {
-          "name": "Datenbank (Supabase)",
-          "description": "PostgreSQL-Datenbank, Auth und Speicher",
-          "cost": "€0–25/Mo"
+          "name": "Domains",
+          "description": "3 Domains bei Vimexx, jährlich verlängert",
+          "items": [
+            {
+              "name": "openhospi.nl",
+              "description": ".nl Domain",
+              "cost": "€7,95/Jahr"
+            },
+            {
+              "name": "openhospi.com",
+              "description": ".com Domain",
+              "cost": "€29,03/Jahr"
+            },
+            {
+              "name": "openhospi.eu",
+              "description": ".eu Domain",
+              "cost": "€13,30/Jahr"
+            }
+          ]
         },
         {
-          "name": "Domain",
-          "description": "openhospi.nl Domain-Registrierung",
-          "cost": "~€1/Mo"
-        },
-        {
-          "name": "SURFconext",
-          "description": "Studierendenverifizierung über SURFconext",
-          "cost": "Kostenlos"
+          "name": "App Stores",
+          "description": "Veröffentlichung in iOS und Android App Stores",
+          "items": [
+            {
+              "name": "Apple Developer Program",
+              "description": "Erforderlich für iOS App Store",
+              "cost": "€99/Jahr"
+            },
+            {
+              "name": "Google Play Developer",
+              "description": "Erforderlich für Play Store",
+              "cost": "€25 (einmalig)"
+            }
+          ]
         }
       ]
+    },
+    "summary": {
+      "title": "Gesamtübersicht",
+      "currentLabel": "Aktuelle Kosten",
+      "atScaleLabel": "Bei Wachstum (10K+ Nutzer)",
+      "perYear": "/Jahr",
+      "perMonth": "/Mo",
+      "rows": [
+        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
+        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
+        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
+        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
+        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
+        { "name": "Google Play", "current": "€25", "atScale": "—" }
+      ],
+      "totalLabel": "Gesamt pro Jahr",
+      "currentTotal": "~€174/Jahr",
+      "atScaleTotal": "~€647/Jahr (~€54/Mo)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",
@@ -351,35 +431,32 @@
     },
     "donate": {
       "title": "OpenHospi unterstützen",
-      "description": "Jeder Beitrag hilft, die Plattform für Studierende kostenlos zu halten.",
-      "oneTime": "Einmalige Spende",
-      "monthly": "Monatliche Unterstützung",
-      "cta": "Über GitHub Sponsors spenden"
-    },
-    "sponsor": {
-      "title": "Sponsor werden",
       "tiers": [
         {
-          "name": "Supporter",
-          "price": "€10/Mo",
+          "name": "Backer",
+          "price": "€5/Mo",
+          "badge": "Monatlich",
           "description": "Dein Name auf unserer Sponsorenseite."
         },
         {
-          "name": "Partner",
-          "price": "€50/Mo",
-          "description": "Logo auf unserer Website und README."
+          "name": "Sponsor",
+          "price": "€25/Mo",
+          "badge": "Monatlich",
+          "description": "Dein Logo auf unserer Website und README."
         },
         {
-          "name": "Institutionell",
-          "price": "Auf Anfrage",
-          "description": "Prominente Platzierung und direkte Unterstützung für Universitäten und Wohnungsorganisationen."
+          "name": "Spende",
+          "price": "Flexibel",
+          "badge": "Einmalig",
+          "description": "Unterstütze mit einem Betrag deiner Wahl."
         }
       ],
-      "cta": "Kontaktiere uns"
+      "cta": "Über Open Collective spenden"
     },
     "transparency": {
       "title": "Wohin geht das Geld?",
-      "description": "100% der Spenden fließen in Infrastrukturkosten. Wir veröffentlichen unsere Finanzen offen. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten."
+      "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten.",
+      "badge": "OpenHospi auf Open Collective"
     }
   }
 }

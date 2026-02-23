@@ -1,7 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ClipboardList,
   Home,
@@ -10,13 +8,15 @@ import {
   Search,
   Share2,
   Sparkles,
-  UserCheck,
   UserPlus,
   Users,
   Eye,
   PartyPopper,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const seekerIcons: LucideIcon[] = [LogIn, UserPlus, Search, Mail, Users, PartyPopper];
 const houseIcons: LucideIcon[] = [LogIn, Home, Share2, Eye, ClipboardList, Sparkles];
@@ -41,9 +41,7 @@ function StepList({
               <Icon className="size-5 text-primary" />
             </div>
             <h3 className="mt-4 font-semibold">{step.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {step.description}
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{step.description}</p>
           </div>
         );
       })}
@@ -68,9 +66,7 @@ export default function HowItWorksPage() {
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            {t("title")}
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
           <p className="mt-4 text-lg text-muted-foreground">{t("subtitle")}</p>
         </div>
 

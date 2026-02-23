@@ -1,22 +1,18 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "./language-switcher";
+import logo from "@openhospi/shared/assets/logo.svg";
+import { APP_NAME } from "@openhospi/shared/constants";
 import { Menu } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { APP_NAME } from "@openhospi/shared/constants";
-import logo from "@openhospi/shared/assets/logo.svg";
+
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Link } from "@/i18n/navigation";
+
+import { LanguageSwitcher } from "./language-switcher";
 
 const navLinks = [
   { href: "/how-it-works", key: "howItWorks" },

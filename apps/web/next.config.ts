@@ -15,7 +15,7 @@ const cspHeader = `
   base-uri 'self';
   object-src 'none';
 `
-  .replace(/\n/g, "")
+  .replaceAll('\n', "")
   .trim();
 
 const nextConfig: NextConfig = {

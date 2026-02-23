@@ -1,10 +1,3 @@
-import { useTranslations } from "next-intl";
-import { Hero } from "@/components/marketing/hero";
-import { FeatureCard } from "@/components/marketing/feature-card";
-import { CtaSection } from "@/components/marketing/cta-section";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "@/i18n/navigation";
 import {
   BadgeCheck,
   Github,
@@ -16,6 +9,13 @@ import {
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import { CtaSection } from "@/components/marketing/cta-section";
+import { FeatureCard } from "@/components/marketing/feature-card";
+import { Hero } from "@/components/marketing/hero";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const featureIcons = {
   free: HandCoins,
@@ -67,9 +67,7 @@ export default function HomePage() {
                   <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
                     <Icon className="size-7 text-primary" />
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold">
-                    {t(`howItWorks.${step}.title`)}
-                  </h3>
+                  <h3 className="mt-4 text-lg font-semibold">{t(`howItWorks.${step}.title`)}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
                     {t(`howItWorks.${step}.description`)}
                   </p>
@@ -88,9 +86,7 @@ export default function HomePage() {
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
               {t("students.title")}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              {t("students.description")}
-            </p>
+            <p className="mt-4 text-lg text-muted-foreground">{t("students.description")}</p>
             <Badge variant="secondary" className="mt-6">
               {t("students.badge")}
             </Badge>
@@ -106,9 +102,7 @@ export default function HomePage() {
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
               {t("openSource.title")}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
-              {t("openSource.description")}
-            </p>
+            <p className="mt-4 text-lg text-muted-foreground">{t("openSource.description")}</p>
             <div className="mt-8">
               <Button variant="outline" asChild>
                 <a

@@ -1,5 +1,5 @@
-import type { MetadataRoute } from "next";
 import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://openhospi.nl";
 
@@ -26,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: page === "" ? 1.0 : 0.8,
         alternates: {
           languages: Object.fromEntries(
-            SUPPORTED_LOCALES.map((l) => [l, `${BASE_URL}/${l}${page}`])
+            SUPPORTED_LOCALES.map((l) => [l, `${BASE_URL}/${l}${page}`]),
           ),
         },
       });

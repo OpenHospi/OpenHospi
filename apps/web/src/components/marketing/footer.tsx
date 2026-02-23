@@ -1,14 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { LanguageSwitcher } from "./language-switcher";
+import logo from "@openhospi/shared/assets/logo.svg";
+import { APP_NAME } from "@openhospi/shared/constants";
 import { Github } from "lucide-react";
 import Image from "next/image";
-import { APP_NAME } from "@openhospi/shared/constants";
-import logo from "@openhospi/shared/assets/logo.svg";
+import { useTranslations } from "next-intl";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Link } from "@/i18n/navigation";
+
+import { LanguageSwitcher } from "./language-switcher";
 
 export function MarketingFooter() {
   const t = useTranslations("footer");
@@ -48,9 +50,7 @@ export function MarketingFooter() {
               <Image src={logo} alt="" width={24} height={24} className="size-6" />
               <p className="text-xl font-bold text-primary">{APP_NAME}</p>
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("tagline")}
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{t("tagline")}</p>
             <div className="mt-4 flex items-center gap-3">
               <a
                 href="https://github.com/rubentalstra/OpenHospi"

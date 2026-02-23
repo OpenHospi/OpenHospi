@@ -1,9 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { motion } from "framer-motion";
 
 export function Hero() {
   const t = useTranslations("home.hero");
@@ -24,17 +25,11 @@ export function Hero() {
               .map((line, i) => (
                 <span key={i}>
                   {i > 0 && <br />}
-                  {i === 0 ? (
-                    <span className="text-primary">{line}</span>
-                  ) : (
-                    line
-                  )}
+                  {i === 0 ? <span className="text-primary">{line}</span> : line}
                 </span>
               ))}
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-            {t("subtitle")}
-          </p>
+          <p className="mt-6 text-lg text-muted-foreground sm:text-xl">{t("subtitle")}</p>
           <div className="mt-10">
             <Button size="lg" asChild>
               <Link href="/api/auth/signin">{t("cta")}</Link>

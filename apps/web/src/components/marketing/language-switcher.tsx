@@ -1,8 +1,8 @@
 "use client";
 
+import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe } from "lucide-react";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 
 const localeLabels: Record<string, string> = {
   nl: "NL",

@@ -1,5 +1,5 @@
-import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
+import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { Pool } from "pg";
 

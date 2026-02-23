@@ -1,21 +1,13 @@
 "use client";
 
+import { Cloud, Database, Globe, ShieldCheck, Heart, Building2, Code, Mail } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+
 import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
-import { SponsorTier } from "@/components/marketing/sponsor-tier";
 import { FeatureCard } from "@/components/marketing/feature-card";
-import {
-  Cloud,
-  Database,
-  Globe,
-  ShieldCheck,
-  Heart,
-  Building2,
-  Code,
-  Mail,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { SponsorTier } from "@/components/marketing/sponsor-tier";
 
 const costIcons: LucideIcon[] = [Cloud, Database, Globe, ShieldCheck];
 const pillarIcons: LucideIcon[] = [Heart, Building2, Code];
@@ -29,19 +21,13 @@ export default function CostsPage() {
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              {t("title")}
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              {t("subtitle")}
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
+            <p className="mt-4 text-lg text-muted-foreground">{t("subtitle")}</p>
           </div>
 
           <div className="mx-auto mt-12 max-w-2xl text-center">
             <h2 className="text-2xl font-bold">{t("intro.title")}</h2>
-            <p className="mt-4 text-muted-foreground">
-              {t("intro.description")}
-            </p>
+            <p className="mt-4 text-muted-foreground">{t("intro.description")}</p>
           </div>
         </div>
       </section>
@@ -49,9 +35,7 @@ export default function CostsPage() {
       {/* Cost breakdown */}
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
-            {t("breakdown.title")}
-          </h2>
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("breakdown.title")}</h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {([0, 1, 2, 3] as const).map((i) => (
               <CostCard
@@ -69,9 +53,7 @@ export default function CostsPage() {
       {/* How we keep it free */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
-            {t("keepFree.title")}
-          </h2>
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("keepFree.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             {([0, 1, 2] as const).map((i) => (
               <FeatureCard
@@ -103,9 +85,7 @@ export default function CostsPage() {
       {/* Sponsor tiers */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
-            {t("sponsor.title")}
-          </h2>
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("sponsor.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
             {([0, 1, 2] as const).map((i) => (
               <SponsorTier
@@ -132,12 +112,8 @@ export default function CostsPage() {
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold sm:text-3xl">
-              {t("transparency.title")}
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              {t("transparency.description")}
-            </p>
+            <h2 className="text-2xl font-bold sm:text-3xl">{t("transparency.title")}</h2>
+            <p className="mt-4 text-muted-foreground">{t("transparency.description")}</p>
           </div>
         </div>
       </section>

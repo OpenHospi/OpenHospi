@@ -12,4 +12,5 @@ if (!connectionString) {
 export const pool = new Pool({
   connectionString,
   max: 5,
+  ssl: { rejectUnauthorized: false },
 });

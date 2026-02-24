@@ -15,7 +15,7 @@ import { Link } from "@/i18n/navigation";
 import { getSession } from "@/lib/auth-server";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 function isCity(slug: string): boolean {
   return CITIES.includes(slug as (typeof CITIES)[number]);

@@ -9,7 +9,8 @@
       "listRoom": "List a room",
       "safety": "Safety",
       "costs": "Costs",
-      "about": "About"
+      "about": "About",
+      "browseRooms": "Browse rooms"
     },
     "login": "Log in with SURFconext",
     "menuOpen": "Open menu"
@@ -22,6 +23,7 @@
       "findRoom": "Find a room",
       "listRoom": "List a room",
       "safety": "Safety",
+      "browseRooms": "Browse rooms",
       "costs": "Costs",
       "privacy": "Privacy policy",
       "terms": "Terms & conditions",
@@ -346,7 +348,35 @@
     },
     "discover": {
       "title": "Discover rooms",
-      "placeholder": "Room discovery coming soon."
+      "roomCount": "Showing {showing} of {total} rooms",
+      "empty": "No rooms match your filters. Try adjusting your search.",
+      "filters": {
+        "city": "City",
+        "cityPlaceholder": "All cities",
+        "minPrice": "Min price",
+        "maxPrice": "Max price",
+        "houseType": "House type",
+        "houseTypePlaceholder": "All types",
+        "furnishing": "Furnishing",
+        "furnishingPlaceholder": "All",
+        "availableFrom": "Available from",
+        "features": "Features",
+        "featuresPlaceholder": "Select features...",
+        "locationTags": "Location",
+        "locationTagsPlaceholder": "Select tags...",
+        "sort": "Sort by",
+        "sortNewest": "Newest first",
+        "sortCheapest": "Cheapest first",
+        "sortMostExpensive": "Most expensive first",
+        "clearFilters": "Clear filters",
+        "selectedCount": "{count} selected",
+        "showFilters": "Show filters",
+        "hideFilters": "Hide filters"
+      },
+      "card": {
+        "perMonth": "/mo",
+        "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}"
+      }
     },
     "profile": {
       "title": "My profile",
@@ -681,6 +711,42 @@
       "title": "Where does the money go?",
       "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students.",
       "badge": "OpenHospi on Open Collective"
+    }
+  },
+  "public": {
+    "rooms": {
+      "title": "Student rooms in the Netherlands",
+      "subtitle": "Browse student housing across Dutch cities.",
+      "roomsAvailable": "{count, plural, =0 {No rooms} =1 {1 room} other {# rooms}} available",
+      "loginToBrowse": "Log in to browse all rooms"
+    },
+    "cityPage": {
+      "title": "Student rooms in {city}",
+      "subtitle": "{count, plural, =0 {No rooms} =1 {1 room} other {# rooms}} available in {city}",
+      "featuredRooms": "Featured rooms",
+      "noRooms": "No rooms available in this city yet.",
+      "loginCta": "Log in to see all rooms and apply",
+      "browseOtherCities": "Browse other cities"
+    },
+    "room": {
+      "perMonth": "/mo",
+      "details": "Room details",
+      "description": "Description",
+      "features": "Features",
+      "locationTags": "Location",
+      "preferences": "Looking for",
+      "loginToApply": "Log in with SURFconext to apply",
+      "goToApp": "View in app",
+      "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}",
+      "availableFrom": "Available from {date}",
+      "availableUntil": "until {date}",
+      "notFound": "Room not found",
+      "notFoundDescription": "This room may have been removed or is no longer available.",
+      "deposit": "Deposit",
+      "utilitiesIncluded": "Utilities included",
+      "utilitiesExcluded": "Utilities not included",
+      "roomSize": "{size} m²",
+      "rentalType": "Rental type"
     }
   },
   "missingAssociation": {

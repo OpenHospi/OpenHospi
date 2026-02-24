@@ -21,6 +21,7 @@ export function MarketingFooter() {
       links: [
         { href: "/find-a-room", label: t("links.findRoom") },
         { href: "/list-a-room", label: t("links.listRoom") },
+        { href: "/rooms", label: t("links.browseRooms") },
         { href: "/safety", label: t("links.safety") },
       ],
     },

@@ -17,6 +17,7 @@ import { LanguageSwitcher } from "./language-switcher";
 const navLinks = [
   { href: "/find-a-room", key: "findRoom" },
   { href: "/list-a-room", key: "listRoom" },
+  { href: "/rooms", key: "browseRooms" },
   { href: "/safety", key: "safety" },
   { href: "/costs", key: "costs" },
   { href: "/about", key: "about" },

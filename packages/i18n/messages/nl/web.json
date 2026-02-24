@@ -9,7 +9,8 @@
       "listRoom": "Kamer aanbieden",
       "safety": "Veiligheid",
       "costs": "Kosten",
-      "about": "Over ons"
+      "about": "Over ons",
+      "browseRooms": "Kamers bekijken"
     },
     "login": "Inloggen met SURFconext",
     "menuOpen": "Menu openen"
@@ -22,6 +23,7 @@
       "findRoom": "Kamer zoeken",
       "listRoom": "Kamer aanbieden",
       "safety": "Veiligheid",
+      "browseRooms": "Kamers bekijken",
       "costs": "Kosten",
       "privacy": "Privacybeleid",
       "terms": "Voorwaarden",
@@ -346,7 +348,35 @@
     },
     "discover": {
       "title": "Kamers ontdekken",
-      "placeholder": "Kamerontdekking komt binnenkort beschikbaar."
+      "roomCount": "{showing} van {total} kamers",
+      "empty": "Geen kamers gevonden met deze filters. Pas je zoekopdracht aan.",
+      "filters": {
+        "city": "Stad",
+        "cityPlaceholder": "Alle steden",
+        "minPrice": "Min prijs",
+        "maxPrice": "Max prijs",
+        "houseType": "Woningtype",
+        "houseTypePlaceholder": "Alle types",
+        "furnishing": "Inrichting",
+        "furnishingPlaceholder": "Alle",
+        "availableFrom": "Beschikbaar vanaf",
+        "features": "Kenmerken",
+        "featuresPlaceholder": "Selecteer kenmerken...",
+        "locationTags": "Locatie",
+        "locationTagsPlaceholder": "Selecteer tags...",
+        "sort": "Sorteer op",
+        "sortNewest": "Nieuwste eerst",
+        "sortCheapest": "Goedkoopste eerst",
+        "sortMostExpensive": "Duurste eerst",
+        "clearFilters": "Filters wissen",
+        "selectedCount": "{count} geselecteerd",
+        "showFilters": "Toon filters",
+        "hideFilters": "Verberg filters"
+      },
+      "card": {
+        "perMonth": "/mnd",
+        "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}"
+      }
     },
     "profile": {
       "title": "Mijn profiel",
@@ -681,6 +711,42 @@
       "title": "Waar gaat het geld naartoe?",
       "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten.",
       "badge": "OpenHospi op Open Collective"
+    }
+  },
+  "public": {
+    "rooms": {
+      "title": "Studentenkamers in Nederland",
+      "subtitle": "Bekijk studentenhuisvesting door heel Nederland.",
+      "roomsAvailable": "{count, plural, =0 {Geen kamers} =1 {1 kamer} other {# kamers}} beschikbaar",
+      "loginToBrowse": "Log in om alle kamers te bekijken"
+    },
+    "cityPage": {
+      "title": "Studentenkamers in {city}",
+      "subtitle": "{count, plural, =0 {Geen kamers} =1 {1 kamer} other {# kamers}} beschikbaar in {city}",
+      "featuredRooms": "Uitgelichte kamers",
+      "noRooms": "Nog geen kamers beschikbaar in deze stad.",
+      "loginCta": "Log in om alle kamers te bekijken en te reageren",
+      "browseOtherCities": "Bekijk andere steden"
+    },
+    "room": {
+      "perMonth": "/mnd",
+      "details": "Kamerdetails",
+      "description": "Beschrijving",
+      "features": "Kenmerken",
+      "locationTags": "Locatie",
+      "preferences": "Zoekt",
+      "loginToApply": "Log in met SURFconext om te reageren",
+      "goToApp": "Bekijk in app",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "availableFrom": "Beschikbaar vanaf {date}",
+      "availableUntil": "tot {date}",
+      "notFound": "Kamer niet gevonden",
+      "notFoundDescription": "Deze kamer is mogelijk verwijderd of niet meer beschikbaar.",
+      "deposit": "Borg",
+      "utilitiesIncluded": "Inclusief gas/water/licht",
+      "utilitiesExcluded": "Exclusief gas/water/licht",
+      "roomSize": "{size} m²",
+      "rentalType": "Huurtype"
     }
   },
   "missingAssociation": {

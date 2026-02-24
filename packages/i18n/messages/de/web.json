@@ -9,7 +9,8 @@
       "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
       "costs": "Kosten",
-      "about": "Über uns"
+      "about": "Über uns",
+      "browseRooms": "Zimmer durchsuchen"
     },
     "login": "Mit SURFconext anmelden",
     "menuOpen": "Menü öffnen"
@@ -22,6 +23,7 @@
       "findRoom": "Zimmer finden",
       "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
+      "browseRooms": "Zimmer durchsuchen",
       "costs": "Kosten",
       "privacy": "Datenschutz",
       "terms": "AGB",
@@ -346,7 +348,35 @@
     },
     "discover": {
       "title": "Zimmer entdecken",
-      "placeholder": "Zimmerentdeckung kommt bald."
+      "roomCount": "{showing} von {total} Zimmern",
+      "empty": "Keine Zimmer gefunden. Passe deine Filter an.",
+      "filters": {
+        "city": "Stadt",
+        "cityPlaceholder": "Alle Städte",
+        "minPrice": "Min Preis",
+        "maxPrice": "Max Preis",
+        "houseType": "Wohnungstyp",
+        "houseTypePlaceholder": "Alle Typen",
+        "furnishing": "Einrichtung",
+        "furnishingPlaceholder": "Alle",
+        "availableFrom": "Verfügbar ab",
+        "features": "Merkmale",
+        "featuresPlaceholder": "Merkmale auswählen...",
+        "locationTags": "Lage",
+        "locationTagsPlaceholder": "Tags auswählen...",
+        "sort": "Sortieren nach",
+        "sortNewest": "Neueste zuerst",
+        "sortCheapest": "Günstigste zuerst",
+        "sortMostExpensive": "Teuerste zuerst",
+        "clearFilters": "Filter löschen",
+        "selectedCount": "{count} ausgewählt",
+        "showFilters": "Filter anzeigen",
+        "hideFilters": "Filter ausblenden"
+      },
+      "card": {
+        "perMonth": "/Mo",
+        "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}"
+      }
     },
     "profile": {
       "title": "Mein Profil",
@@ -681,6 +711,42 @@
       "title": "Wohin geht das Geld?",
       "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten.",
       "badge": "OpenHospi auf Open Collective"
+    }
+  },
+  "public": {
+    "rooms": {
+      "title": "Studentenzimmer in den Niederlanden",
+      "subtitle": "Durchsuche Studentenwohnungen in niederländischen Städten.",
+      "roomsAvailable": "{count, plural, =0 {Keine Zimmer} =1 {1 Zimmer} other {# Zimmer}} verfügbar",
+      "loginToBrowse": "Anmelden um alle Zimmer zu sehen"
+    },
+    "cityPage": {
+      "title": "Studentenzimmer in {city}",
+      "subtitle": "{count, plural, =0 {Keine Zimmer} =1 {1 Zimmer} other {# Zimmer}} verfügbar in {city}",
+      "featuredRooms": "Ausgewählte Zimmer",
+      "noRooms": "Noch keine Zimmer in dieser Stadt verfügbar.",
+      "loginCta": "Anmelden um alle Zimmer zu sehen und sich zu bewerben",
+      "browseOtherCities": "Andere Städte durchsuchen"
+    },
+    "room": {
+      "perMonth": "/Mo",
+      "details": "Zimmerdetails",
+      "description": "Beschreibung",
+      "features": "Merkmale",
+      "locationTags": "Lage",
+      "preferences": "Sucht",
+      "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
+      "goToApp": "In App ansehen",
+      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
+      "availableFrom": "Verfügbar ab {date}",
+      "availableUntil": "bis {date}",
+      "notFound": "Zimmer nicht gefunden",
+      "notFoundDescription": "Dieses Zimmer wurde möglicherweise entfernt oder ist nicht mehr verfügbar.",
+      "deposit": "Kaution",
+      "utilitiesIncluded": "Nebenkosten inklusive",
+      "utilitiesExcluded": "Nebenkosten nicht inklusive",
+      "roomSize": "{size} m²",
+      "rentalType": "Mietart"
     }
   },
   "missingAssociation": {

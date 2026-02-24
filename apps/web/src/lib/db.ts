@@ -1,3 +1,15 @@
 import { Pool } from "pg";
 
-export const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
+const connectionString = process.env.POSTGRES_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "POSTGRES_URL environment variable is not set. " +
+      "Set it in .env.local (local) or Vercel dashboard (production).",
+  );
+}
+
+export const pool = new Pool({
+  connectionString,
+  max: 5,
+});

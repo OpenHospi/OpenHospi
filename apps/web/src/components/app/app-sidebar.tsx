@@ -51,7 +51,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
       label: t("applications"),
       href: "/applications" as const,
       icon: FileText,
-      disabled: true,
+      disabled: false,
     },
     {
       label: t("profile"),
@@ -89,7 +89,9 @@ export function AppSidebar({ user }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
-                const isActive = pathname === `/${locale}${item.href}`;
+                const isActive =
+                  pathname === `/${locale}${item.href}` ||
+                  pathname.startsWith(`/${locale}${item.href}/`);
                 return (
                   <SidebarMenuItem key={item.href}>
                     {item.disabled ? (

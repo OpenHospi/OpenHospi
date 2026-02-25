@@ -5,6 +5,7 @@ import { redirect } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";
 
+import { ApplicantsSection } from "./applicants-section";
 import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomDetails } from "./room-details";
 import { RoomHeader } from "./room-header";
@@ -48,6 +49,10 @@ export default async function RoomDetailPage({ params }: Props) {
       <RoomDetails room={room} />
 
       <StatusControls room={room} />
+
+      {room.status !== "draft" && (
+        <ApplicantsSection roomId={room.id} userId={user.id} />
+      )}
 
       {room.status !== "draft" && <ShareLinkSection room={room} />}
     </div>

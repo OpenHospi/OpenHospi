@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { FileText, Home } from "lucide-react";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 
@@ -48,7 +48,15 @@ export async function RoomCard({ room }: Props) {
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm text-muted-foreground">
           <span>{tEnums(`city.${room.city}`)}</span>
-          <span>€{room.rent_price}/mo</span>
+          <span className="flex items-center gap-2">
+            {room.applicant_count > 0 && (
+              <span className="flex items-center gap-1">
+                <FileText className="size-3.5" />
+                {room.applicant_count}
+              </span>
+            )}
+            <span>€{room.rent_price}/mo</span>
+          </span>
         </CardContent>
       </Card>
     </Link>

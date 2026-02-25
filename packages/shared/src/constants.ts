@@ -23,6 +23,11 @@ export const MAX_LIFESTYLE_TAGS = 8;
 
 // Pagination
 export const ROOMS_PER_PAGE = 12;
+export const APPLICATIONS_PER_PAGE = 12;
+export const MAX_APPLICANTS_PER_PAGE = 100;
+
+// Application
+export const MIN_PERSONAL_MESSAGE_LENGTH = 50;
 
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB

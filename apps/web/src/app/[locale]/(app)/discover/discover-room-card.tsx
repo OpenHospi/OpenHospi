@@ -16,7 +16,7 @@ export async function DiscoverRoomCard({ room }: Props) {
   const tEnums = await getTranslations("enums");
 
   return (
-    <Link href={`/rooms/${room.id}`}>
+    <Link href={`/discover/${room.id}`}>
       <Card className="overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-video bg-muted">
           {room.cover_photo_url ? (

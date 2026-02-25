@@ -340,6 +340,24 @@
       "oikos_nomos": "Oikos Nomos",
       "zhtc": "ZHTC",
       "anders": "Andere"
+    },
+    "application_status": {
+      "sent": "Gesendet",
+      "seen": "Gesehen",
+      "liked": "Gefällt",
+      "maybe": "Vielleicht",
+      "rejected": "Abgelehnt",
+      "invited": "Eingeladen",
+      "attending": "Nimmt teil",
+      "not_attending": "Nimmt nicht teil",
+      "accepted": "Angenommen",
+      "not_chosen": "Nicht gewählt",
+      "withdrawn": "Zurückgezogen"
+    },
+    "review_decision": {
+      "like": "Gefällt mir",
+      "maybe": "Vielleicht",
+      "reject": "Ablehnen"
     }
   }
 }

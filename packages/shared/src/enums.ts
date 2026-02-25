@@ -287,6 +287,30 @@ export const REPORT_STATUSES = [
 ] as const;
 export type ReportStatus = (typeof REPORT_STATUSES)[number];
 
+export const VALID_APPLICATION_TRANSITIONS: Record<
+  ApplicationStatus,
+  readonly ApplicationStatus[]
+> = {
+  sent: ["seen", "withdrawn"],
+  seen: ["liked", "maybe", "rejected", "withdrawn"],
+  liked: ["invited", "maybe", "rejected", "withdrawn"],
+  maybe: ["liked", "invited", "rejected", "withdrawn"],
+  rejected: [],
+  invited: ["accepted", "not_chosen", "withdrawn"],
+  attending: ["accepted", "not_chosen"],
+  not_attending: [],
+  accepted: [],
+  not_chosen: [],
+  withdrawn: [],
+} as const;
+
+export function isValidApplicationTransition(
+  from: ApplicationStatus,
+  to: ApplicationStatus,
+): boolean {
+  return VALID_APPLICATION_TRANSITIONS[from]?.includes(to) ?? false;
+}
+
 export const VERENIGINGEN = [
   // Alkmaar
   "omnivas",

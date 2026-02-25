@@ -2,19 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { pool } from "@/lib/db";
 import { createDraftRoom } from "@/lib/rooms";
 import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@/lib/schemas/room";
 import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@/lib/schemas/room";
-
-async function verifyRoomOwnership(roomId: string, userId: string) {
-  const { rows } = await pool.query("SELECT id FROM rooms WHERE id = $1 AND created_by = $2", [
-    roomId,
-    userId,
-  ]);
-  if (rows.length === 0) throw new Error("Room not found");
-}
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
   const session = await requireSession("nl");
@@ -32,7 +24,7 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
   const parsed = roomBasicInfoSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   const { title, description, city, neighborhood, address } = parsed.data;
   await pool.query(
@@ -49,7 +41,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
   const parsed = roomDetailsSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   const {
     rent_price,
@@ -93,7 +85,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
   const parsed = roomPreferencesSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   const {
     features,
@@ -128,7 +120,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
 
 export async function publishRoom(roomId: string) {
   const session = await requireSession("nl");
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   // Check at least 1 photo
   const { rows: photoRows } = await pool.query(

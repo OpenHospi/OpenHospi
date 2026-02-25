@@ -14,6 +14,29 @@ export async function requireSession(locale: string) {
   return session;
 }
 
+export async function requireRoomOwnership(roomId: string, userId: string) {
+  const { rows } = await pool.query("SELECT id FROM rooms WHERE id = $1 AND created_by = $2", [
+    roomId,
+    userId,
+  ]);
+  if (rows.length === 0) throw new Error("Room not found");
+}
+
+export async function requireHousemate(
+  roomId: string,
+  userId: string,
+  roles?: string[],
+): Promise<string> {
+  const { rows } = await pool.query(
+    roles
+      ? "SELECT role FROM housemates WHERE room_id = $1 AND user_id = $2 AND role = ANY($3)"
+      : "SELECT role FROM housemates WHERE room_id = $1 AND user_id = $2",
+    roles ? [roomId, userId, roles] : [roomId, userId],
+  );
+  if (rows.length === 0) throw new Error("Not a housemate");
+  return rows[0].role;
+}
+
 export async function requireCompleteProfile(userId: string, locale: string) {
   const { rows } = await pool.query(
     `SELECT

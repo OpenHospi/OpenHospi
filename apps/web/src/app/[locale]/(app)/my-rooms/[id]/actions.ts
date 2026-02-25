@@ -2,25 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { pool } from "@/lib/db";
 import type { EditRoomData, ShareLinkSettingsData } from "@/lib/schemas/room";
 import { editRoomSchema, shareLinkSettingsSchema } from "@/lib/schemas/room";
-
-async function verifyRoomOwnership(roomId: string, userId: string) {
-  const { rows } = await pool.query("SELECT id FROM rooms WHERE id = $1 AND created_by = $2", [
-    roomId,
-    userId,
-  ]);
-  if (rows.length === 0) throw new Error("Room not found");
-}
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession("nl");
   const parsed = editRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   const d = parsed.data;
   await pool.query(
@@ -66,7 +58,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
 
 export async function updateRoomStatus(roomId: string, status: string) {
   const session = await requireSession("nl");
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   // Validate status transitions
   const { rows } = await pool.query("SELECT status FROM rooms WHERE id = $1", [roomId]);
@@ -100,7 +92,7 @@ export async function updateRoomStatus(roomId: string, status: string) {
 
 export async function regenerateShareLink(roomId: string) {
   const session = await requireSession("nl");
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   await pool.query(
     "UPDATE rooms SET share_link = gen_random_uuid()::TEXT, share_link_use_count = 0 WHERE id = $1",
@@ -116,7 +108,7 @@ export async function updateShareLinkSettings(roomId: string, data: ShareLinkSet
   const parsed = shareLinkSettingsSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  await verifyRoomOwnership(roomId, session.user.id);
+  await requireRoomOwnership(roomId, session.user.id);
 
   await pool.query(
     "UPDATE rooms SET share_link_expires_at = $1, share_link_max_uses = $2 WHERE id = $3",

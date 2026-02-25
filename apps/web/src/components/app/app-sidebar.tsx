@@ -1,10 +1,9 @@
 "use client";
 
 import { Building2, FileText, Home, Search, Settings, User } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
-import { LanguageSwitcher } from "@/components/marketing/language-switcher";
+import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Sidebar,
@@ -18,7 +17,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation-app";
 
 import { UserMenu } from "./user-menu";
 
@@ -31,7 +30,6 @@ type AppSidebarProps = {
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const t = useTranslations("app.sidebar");
-  const locale = useLocale();
   const pathname = usePathname();
 
   const navItems = [
@@ -90,8 +88,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
             <SidebarMenu>
               {navItems.map((item) => {
                 const isActive =
-                  pathname === `/${locale}${item.href}` ||
-                  pathname.startsWith(`/${locale}${item.href}/`);
+                  pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
                   <SidebarMenuItem key={item.href}>
                     {item.disabled ? (
@@ -118,7 +115,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
       <SidebarFooter>
         <div className="flex items-center gap-1 px-2">
           <ThemeToggle />
-          <LanguageSwitcher />
+          <AppLanguageSwitcher />
         </div>
         <SidebarSeparator />
         <SidebarMenu>

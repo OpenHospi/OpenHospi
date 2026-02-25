@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { redirect } from "@/i18n/navigation";
 import { getSession } from "@/lib/auth-server";
 
 import { LoginButton } from "./login-button";
@@ -25,7 +25,7 @@ export default async function LoginPage({ params }: Props) {
   setRequestLocale(locale);
 
   const session = await getSession();
-  if (session) redirect({ href: "/discover", locale });
+  if (session) redirect("/discover");
 
   const t = await getTranslations({ locale, namespace: "auth.login" });
 

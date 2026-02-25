@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 import { getApplicationForRoom, getRoomDetailForApply } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 
@@ -46,7 +46,7 @@ type Props = {
 export default async function DiscoverRoomDetailPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const t = await getTranslations({ locale, namespace: "app.roomDetail" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });

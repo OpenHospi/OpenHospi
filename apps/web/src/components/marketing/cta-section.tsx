@@ -1,14 +1,13 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/lib/urls";
 
 export function CtaSection() {
   const t = useTranslations("home.cta");
-  const locale = useLocale();
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   return (
     <section className="bg-primary/5 py-24">

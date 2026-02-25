@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 import { requireSession } from "@/lib/auth-server";
 import { getUserRooms } from "@/lib/rooms";
 
@@ -26,7 +26,7 @@ type Props = {
 export default async function MyRoomsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const rooms = await getUserRooms(user.id);
   const t = await getTranslations({ locale, namespace: "app.rooms" });

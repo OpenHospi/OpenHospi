@@ -13,7 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { StepList } from "@/components/marketing/step-list";
@@ -25,8 +25,7 @@ const stepIcons: LucideIcon[] = [LogIn, UserPlus, Search, Mail, Users, PartyPopp
 
 export default function FindARoomPage() {
   const t = useTranslations("findRoom");
-  const locale = useLocale();
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   const steps = Array.from({ length: 6 }, (_, i) => ({
     title: t(`steps.items.${i}.title`),

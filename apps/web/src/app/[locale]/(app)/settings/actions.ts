@@ -17,7 +17,7 @@ import { requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage } from "@/lib/photos";
 
 export async function exportData() {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const userId = session.user.id;
 
   const data = await withRLS(userId, async (tx) => {
@@ -55,7 +55,7 @@ export async function exportData() {
 }
 
 export async function deleteAccount() {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const userId = session.user.id;
 
   // Collect all photo URLs to delete from storage

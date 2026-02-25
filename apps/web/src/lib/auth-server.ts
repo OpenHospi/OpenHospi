@@ -10,9 +10,9 @@ export async function getSession() {
   return auth.api.getSession({ headers: await headers() });
 }
 
-export async function requireSession(locale: string) {
+export async function requireSession() {
   const session = await getSession();
-  if (!session) redirect(`/${locale}/login`);
+  if (!session) redirect("/login");
   return session;
 }
 
@@ -48,7 +48,7 @@ export async function requireHousemate(
   return row.role!;
 }
 
-export async function requireCompleteProfile(userId: string, locale: string) {
+export async function requireCompleteProfile(userId: string) {
   const result = await withRLS(userId, async (tx) => {
     const [profile] = await tx
       .select({
@@ -83,6 +83,6 @@ export async function requireCompleteProfile(userId: string, locale: string) {
   });
 
   if (result.needsRedirect) {
-    redirect(`/${locale}/onboarding`);
+    redirect("/onboarding");
   }
 }

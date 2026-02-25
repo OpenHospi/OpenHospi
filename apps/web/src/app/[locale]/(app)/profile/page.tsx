@@ -27,7 +27,7 @@ type Props = {
 export default async function ProfilePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const profile = await getProfile(user.id);
   if (!profile) return null;

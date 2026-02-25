@@ -4,7 +4,7 @@ import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Menu } from "lucide-react";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -26,9 +26,8 @@ const navLinks = [
 
 export function MarketingHeader() {
   const t = useTranslations("header");
-  const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

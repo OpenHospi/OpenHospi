@@ -70,7 +70,7 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
 export default async function DiscoverPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
   const sp = await searchParams;
 
   const hasSearchParams = Object.keys(sp).length > 0;

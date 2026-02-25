@@ -12,7 +12,7 @@ import { requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage } from "@/lib/photos";
 
 export async function updateProfile(data: EditProfileData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = editProfileSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -45,7 +45,7 @@ export async function saveProfilePhoto(
   url: string,
   slot: number,
 ): Promise<{ error?: string; photo?: ProfilePhoto }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
   if (!url) return { error: "Missing URL" };
@@ -71,7 +71,7 @@ export async function saveProfilePhoto(
 }
 
 export async function deleteProfilePhoto(slot: number): Promise<{ error?: string }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
 

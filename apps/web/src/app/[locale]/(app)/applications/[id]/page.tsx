@@ -1,13 +1,14 @@
 import { Home } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Link, redirect } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 import { getApplicationDetail } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 import { cn } from "@/lib/utils";
@@ -51,11 +52,11 @@ type Props = {
 export default async function ApplicationDetailPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const application = await getApplicationDetail(id, user.id);
   if (!application) {
-    return redirect({ href: "/applications", locale });
+    return redirect("/applications");
   }
 
   const t = await getTranslations({ locale, namespace: "app.applications" });

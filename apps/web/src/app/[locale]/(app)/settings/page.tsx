@@ -22,7 +22,7 @@ type Props = {
 export default async function SettingsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  await requireSession(locale);
+  await requireSession();
   const t = await getTranslations({ locale, namespace: "app.settings" });
 
   return (

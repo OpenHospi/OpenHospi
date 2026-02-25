@@ -11,7 +11,7 @@ import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { createDraftRoom } from "@/lib/rooms";
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   try {
     const id = await createDraftRoom(session.user.id);
     return { id };
@@ -22,7 +22,7 @@ export async function createDraftRoomAction(): Promise<{ id?: string; error?: st
 }
 
 export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = roomBasicInfoSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -46,7 +46,7 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
 }
 
 export async function saveDetails(roomId: string, data: RoomDetailsData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = roomDetailsSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -75,7 +75,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
 }
 
 export async function savePreferences(roomId: string, data: RoomPreferencesData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = roomPreferencesSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -101,7 +101,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
 }
 
 export async function publishRoom(roomId: string) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   await requireRoomOwnership(roomId, session.user.id);
 
   return withRLS(session.user.id, async (tx) => {

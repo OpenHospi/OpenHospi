@@ -1,15 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/lib/urls";
 
 export function Hero() {
   const t = useTranslations("home.hero");
-  const locale = useLocale();
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   return (
     <section className="relative overflow-hidden py-24 sm:py-32 lg:py-40">

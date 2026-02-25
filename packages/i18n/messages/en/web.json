@@ -376,7 +376,8 @@
       "card": {
         "perMonth": "/mnd",
         "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}"
-      }
+      },
+      "loadMore": "Meer laden"
     },
     "profile": {
       "title": "Mijn profiel",
@@ -634,6 +635,32 @@
         "is_housemate": "Je bent al huisgenoot van deze kamer.",
         "already_applied": "Je hebt je al aangemeld voor deze kamer."
       }
+    },
+    "settings": {
+      "title": "Instellingen",
+      "exportSuccess": "Gegevens succesvol geëxporteerd",
+      "dataExport": {
+        "title": "Exporteer je gegevens",
+        "description": "Download al je persoonlijke gegevens als JSON-bestand. Dit omvat je profiel, kamers, aanmeldingen en beoordelingen.",
+        "button": "Gegevens exporteren"
+      },
+      "dangerZone": {
+        "title": "Gevarenzone",
+        "description": "Verwijder je account en alle bijbehorende gegevens permanent. Deze actie kan niet ongedaan worden gemaakt.",
+        "deleteButton": "Account verwijderen",
+        "confirmTitle": "Weet je het zeker?",
+        "confirmDescription": "Dit verwijdert permanent je account, profiel, kamers, aanmeldingen en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt.",
+        "cancel": "Annuleren",
+        "confirmDelete": "Mijn account verwijderen"
+      }
+    },
+    "errors": {
+      "title": "Er ging iets mis",
+      "description": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+      "retry": "Opnieuw proberen",
+      "notFoundTitle": "Pagina niet gevonden",
+      "notFoundDescription": "De pagina die je zoekt bestaat niet of is verplaatst.",
+      "backToDiscover": "Terug naar ontdekken"
     },
     "applications": {
       "title": "Mijn aanmeldingen",

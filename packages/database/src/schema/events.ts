@@ -1,8 +1,10 @@
-import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { sql } from "drizzle-orm";
+import { authenticatedRole } from "drizzle-orm/neon";
 import {
   date,
   index,
   integer,
+  pgPolicy,
   pgTable,
   text,
   time,
@@ -43,10 +45,30 @@ export const hospiEvents = pgTable(
       .$onUpdateFn(() => new Date()),
   },
   (table) => [
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.createdBy),
-      modify: authUid(table.createdBy),
+    // All housemates of the room can view events
+    pgPolicy("hospi_events_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from housemates where housemates.room_id = ${table.roomId} and housemates.user_id = (select auth.user_id())::uuid)`,
+    }),
+    // Only event creator can insert
+    pgPolicy("hospi_events_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`(select auth.user_id())::uuid = ${table.createdBy}`,
+    }),
+    // Only event creator can update
+    pgPolicy("hospi_events_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`(select auth.user_id())::uuid = ${table.createdBy}`,
+      withCheck: sql`(select auth.user_id())::uuid = ${table.createdBy}`,
+    }),
+    // Only event creator can delete
+    pgPolicy("hospi_events_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`(select auth.user_id())::uuid = ${table.createdBy}`,
     }),
   ],
 );
@@ -72,10 +94,29 @@ export const hospiInvitations = pgTable(
     unique("hospi_invitations_event_id_user_id_key").on(table.eventId, table.userId),
     index("idx_hospi_invitations_event_id").on(table.eventId),
     index("idx_hospi_invitations_user_id").on(table.userId),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.userId),
-      modify: authUid(table.userId),
+    // Invitee OR event creator can view
+    pgPolicy("hospi_invitations_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.userId} = (select auth.user_id())::uuid or exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id())::uuid)`,
+    }),
+    // Only event creator can invite
+    pgPolicy("hospi_invitations_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id())::uuid)`,
+    }),
+    // Invitee (RSVP) or event creator can update
+    pgPolicy("hospi_invitations_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = (select auth.user_id())::uuid or exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id())::uuid)`,
+    }),
+    // Only event creator can delete
+    pgPolicy("hospi_invitations_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id())::uuid)`,
     }),
   ],
 );
@@ -104,10 +145,26 @@ export const votes = pgTable(
       table.applicantId,
       table.round,
     ),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.voterId),
-      modify: authUid(table.voterId),
+    pgPolicy("votes_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`(select auth.user_id())::uuid = ${table.voterId}`,
+    }),
+    pgPolicy("votes_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`(select auth.user_id())::uuid = ${table.voterId}`,
+    }),
+    pgPolicy("votes_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`(select auth.user_id())::uuid = ${table.voterId}`,
+      withCheck: sql`(select auth.user_id())::uuid = ${table.voterId}`,
+    }),
+    pgPolicy("votes_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`(select auth.user_id())::uuid = ${table.voterId}`,
     }),
   ],
 );

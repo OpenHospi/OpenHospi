@@ -13,6 +13,7 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DATABASE_URL_UNPOOLED!,
   },
+  schemaFilter: ["public"],
   entities: {
     roles: {
       provider: "neon"

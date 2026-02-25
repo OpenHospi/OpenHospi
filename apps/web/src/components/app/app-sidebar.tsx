@@ -63,7 +63,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
       label: t("settings"),
       href: "/settings" as const,
       icon: Settings,
-      disabled: true,
+      disabled: false,
     },
   ];
 

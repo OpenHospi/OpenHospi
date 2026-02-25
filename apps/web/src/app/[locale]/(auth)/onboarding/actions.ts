@@ -1,11 +1,7 @@
 "use server";
 
-import { db } from "@openhospi/database";
+import { withRLS } from "@openhospi/database";
 import { profiles } from "@openhospi/database/schema";
-import { eq } from "drizzle-orm";
-
-import { redirect } from "@/i18n/navigation";
-import { requireSession } from "@/lib/auth-server";
 import {
   aboutStepSchema,
   personalityStepSchema,
@@ -14,6 +10,10 @@ import {
   type PersonalityStepData,
   type PreferencesStepData,
 } from "@openhospi/database/validators";
+import { eq } from "drizzle-orm";
+
+import { redirect } from "@/i18n/navigation";
+import { requireSession } from "@/lib/auth-server";
 
 export async function saveAboutStep(data: AboutStepData) {
   const session = await requireSession("nl");
@@ -22,16 +22,18 @@ export async function saveAboutStep(data: AboutStepData) {
 
   const { gender, birthDate, studyProgram, studyLevel, bio } = parsed.data;
 
-  await db
-    .update(profiles)
-    .set({
-      gender,
-      birthDate,
-      studyProgram,
-      studyLevel: studyLevel || null,
-      bio: bio || null,
-    })
-    .where(eq(profiles.id, session.user.id));
+  await withRLS(session.user.id, (tx) =>
+    tx
+      .update(profiles)
+      .set({
+        gender,
+        birthDate,
+        studyProgram,
+        studyLevel: studyLevel || null,
+        bio: bio || null,
+      })
+      .where(eq(profiles.id, session.user.id)),
+  );
 
   return { success: true };
 }
@@ -41,10 +43,12 @@ export async function savePersonalityStep(data: PersonalityStepData) {
   const parsed = personalityStepSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  await db
-    .update(profiles)
-    .set({ lifestyleTags: parsed.data.lifestyleTags })
-    .where(eq(profiles.id, session.user.id));
+  await withRLS(session.user.id, (tx) =>
+    tx
+      .update(profiles)
+      .set({ lifestyleTags: parsed.data.lifestyleTags })
+      .where(eq(profiles.id, session.user.id)),
+  );
 
   return { success: true };
 }
@@ -57,17 +61,19 @@ export async function savePreferencesStep(data: PreferencesStepData) {
   const { preferredCity, maxRent, availableFrom, vereniging, instagramHandle, showInstagram } =
     parsed.data;
 
-  await db
-    .update(profiles)
-    .set({
-      preferredCity,
-      maxRent: maxRent != null ? String(maxRent) : null,
-      availableFrom,
-      vereniging: vereniging || null,
-      instagramHandle: instagramHandle || null,
-      showInstagram,
-    })
-    .where(eq(profiles.id, session.user.id));
+  await withRLS(session.user.id, (tx) =>
+    tx
+      .update(profiles)
+      .set({
+        preferredCity,
+        maxRent: maxRent != null ? String(maxRent) : null,
+        availableFrom,
+        vereniging: vereniging || null,
+        instagramHandle: instagramHandle || null,
+        showInstagram,
+      })
+      .where(eq(profiles.id, session.user.id)),
+  );
 
   return { success: true };
 }

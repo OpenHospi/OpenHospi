@@ -1,11 +1,11 @@
 "use client";
 
+import type { AboutStepData, PreferencesStepData } from "@openhospi/database/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
 import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/profile";
-import type { AboutStepData, PreferencesStepData } from "@openhospi/database/validators";
 
 import { AboutStep } from "./steps/about-step";
 import { PersonalityStep } from "./steps/personality-step";

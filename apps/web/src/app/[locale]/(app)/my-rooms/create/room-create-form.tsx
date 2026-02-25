@@ -1,12 +1,12 @@
 "use client";
 
+import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
 import type { RoomPhoto, RoomWithPhotos } from "@/lib/rooms";
-import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 
 import { BasicInfoStep } from "./steps/basic-info-step";
 import { DetailsStep } from "./steps/details-step";

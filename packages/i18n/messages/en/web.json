@@ -376,7 +376,8 @@
       "card": {
         "perMonth": "/mo",
         "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}"
-      }
+      },
+      "loadMore": "Load more"
     },
     "profile": {
       "title": "My profile",
@@ -635,6 +636,32 @@
         "is_housemate": "You are already a housemate of this room.",
         "already_applied": "You have already applied to this room."
       }
+    },
+    "settings": {
+      "title": "Settings",
+      "exportSuccess": "Data exported successfully",
+      "dataExport": {
+        "title": "Export your data",
+        "description": "Download all your personal data as a JSON file. This includes your profile, rooms, applications, and reviews.",
+        "button": "Export data"
+      },
+      "dangerZone": {
+        "title": "Danger zone",
+        "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+        "deleteButton": "Delete account",
+        "confirmTitle": "Are you sure?",
+        "confirmDescription": "This will permanently delete your account, profile, rooms, applications, and all associated data. This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirmDelete": "Delete my account"
+      }
+    },
+    "errors": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "retry": "Try again",
+      "notFoundTitle": "Page not found",
+      "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+      "backToDiscover": "Back to discover"
     },
     "applications": {
       "title": "My Applications",

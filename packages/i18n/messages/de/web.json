@@ -376,7 +376,8 @@
       "card": {
         "perMonth": "/Mo",
         "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}"
-      }
+      },
+      "loadMore": "Mehr laden"
     },
     "profile": {
       "title": "Mein Profil",
@@ -635,6 +636,32 @@
         "is_housemate": "Du bist bereits Mitbewohner dieses Zimmers.",
         "already_applied": "Du hast dich bereits für dieses Zimmer beworben."
       }
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "exportSuccess": "Daten erfolgreich exportiert",
+      "dataExport": {
+        "title": "Deine Daten exportieren",
+        "description": "Lade alle deine persönlichen Daten als JSON-Datei herunter. Dies umfasst dein Profil, Zimmer, Bewerbungen und Bewertungen.",
+        "button": "Daten exportieren"
+      },
+      "dangerZone": {
+        "title": "Gefahrenzone",
+        "description": "Lösche dein Konto und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+        "deleteButton": "Konto löschen",
+        "confirmTitle": "Bist du sicher?",
+        "confirmDescription": "Dies löscht dauerhaft dein Konto, Profil, Zimmer, Bewerbungen und alle zugehörigen Daten. Diese Aktion kann nicht rückgängig gemacht werden.",
+        "cancel": "Abbrechen",
+        "confirmDelete": "Mein Konto löschen"
+      }
+    },
+    "errors": {
+      "title": "Etwas ist schiefgelaufen",
+      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "retry": "Erneut versuchen",
+      "notFoundTitle": "Seite nicht gefunden",
+      "notFoundDescription": "Die Seite, die du suchst, existiert nicht oder wurde verschoben.",
+      "backToDiscover": "Zurück zur Suche"
     },
     "applications": {
       "title": "Meine Bewerbungen",

@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { EditProfileData } from "@openhospi/database/validators";
+import { editProfileSchema } from "@openhospi/database/validators";
 import {
   MAX_BIO_LENGTH,
   MAX_LIFESTYLE_TAGS,
@@ -60,8 +62,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Profile } from "@/lib/profile";
-import type { EditProfileData } from "@openhospi/database/validators";
-import { editProfileSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { updateProfile } from "./profile-actions";

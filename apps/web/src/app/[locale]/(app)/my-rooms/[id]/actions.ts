@@ -1,13 +1,13 @@
 "use server";
 
-import { db } from "@openhospi/database";
+import { withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
+import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
+import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
-import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
-import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession("nl");
@@ -17,33 +17,35 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
   await requireRoomOwnership(roomId, session.user.id);
 
   const d = parsed.data;
-  await db
-    .update(rooms)
-    .set({
-      title: d.title,
-      description: d.description || null,
-      city: d.city,
-      neighborhood: d.neighborhood || null,
-      address: d.address || null,
-      rentPrice: String(d.rentPrice),
-      deposit: d.deposit != null ? String(d.deposit) : null,
-      utilitiesIncluded: d.utilitiesIncluded ?? false,
-      roomSizeM2: d.roomSizeM2 || null,
-      availableFrom: d.availableFrom,
-      availableUntil: d.rentalType === "vast" ? null : d.availableUntil || null,
-      rentalType: d.rentalType,
-      houseType: d.houseType || null,
-      furnishing: d.furnishing || null,
-      totalHousemates: d.totalHousemates || null,
-      features: d.features ?? [],
-      locationTags: d.locationTags ?? [],
-      preferredGender: d.preferredGender || "geen_voorkeur",
-      preferredAgeMin: d.preferredAgeMin || null,
-      preferredAgeMax: d.preferredAgeMax || null,
-      preferredLifestyleTags: d.preferredLifestyleTags ?? [],
-      roomVereniging: d.roomVereniging || null,
-    })
-    .where(eq(rooms.id, roomId));
+  await withRLS(session.user.id, (tx) =>
+    tx
+      .update(rooms)
+      .set({
+        title: d.title,
+        description: d.description || null,
+        city: d.city,
+        neighborhood: d.neighborhood || null,
+        address: d.address || null,
+        rentPrice: String(d.rentPrice),
+        deposit: d.deposit != null ? String(d.deposit) : null,
+        utilitiesIncluded: d.utilitiesIncluded ?? false,
+        roomSizeM2: d.roomSizeM2 || null,
+        availableFrom: d.availableFrom,
+        availableUntil: d.rentalType === "vast" ? null : d.availableUntil || null,
+        rentalType: d.rentalType,
+        houseType: d.houseType || null,
+        furnishing: d.furnishing || null,
+        totalHousemates: d.totalHousemates || null,
+        features: d.features ?? [],
+        locationTags: d.locationTags ?? [],
+        preferredGender: d.preferredGender || "geen_voorkeur",
+        preferredAgeMin: d.preferredAgeMin || null,
+        preferredAgeMax: d.preferredAgeMax || null,
+        preferredLifestyleTags: d.preferredLifestyleTags ?? [],
+        roomVereniging: d.roomVereniging || null,
+      })
+      .where(eq(rooms.id, roomId)),
+  );
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };
@@ -53,51 +55,55 @@ export async function updateRoomStatus(roomId: string, status: string) {
   const session = await requireSession("nl");
   await requireRoomOwnership(roomId, session.user.id);
 
-  const [room] = await db
-    .select({ status: rooms.status })
-    .from(rooms)
-    .where(eq(rooms.id, roomId));
-  const current = room?.status;
+  return withRLS(session.user.id, async (tx) => {
+    const [room] = await tx
+      .select({ status: rooms.status })
+      .from(rooms)
+      .where(eq(rooms.id, roomId));
+    const current = room?.status;
 
-  const validTransitions: Record<string, string[]> = {
-    draft: ["active"],
-    active: ["paused", "closed"],
-    paused: ["active", "closed"],
-  };
+    const validTransitions: Record<string, string[]> = {
+      draft: ["active"],
+      active: ["paused", "closed"],
+      paused: ["active", "closed"],
+    };
 
-  if (!validTransitions[current!]?.includes(status)) {
-    return { error: "Invalid status transition" };
-  }
+    if (!validTransitions[current!]?.includes(status)) {
+      return { error: "Invalid status transition" };
+    }
 
-  if (current === "draft" && status === "active") {
-    const [photoCount] = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(roomPhotos)
-      .where(eq(roomPhotos.roomId, roomId));
-    if (photoCount.count === 0) return { error: "publishError" };
-  }
+    if (current === "draft" && status === "active") {
+      const [photoCount] = await tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(roomPhotos)
+        .where(eq(roomPhotos.roomId, roomId));
+      if (photoCount.count === 0) return { error: "publishError" };
+    }
 
-  await db
-    .update(rooms)
-    .set({ status: status as "draft" | "active" | "paused" | "closed" })
-    .where(eq(rooms.id, roomId));
+    await tx
+      .update(rooms)
+      .set({ status: status as "draft" | "active" | "paused" | "closed" })
+      .where(eq(rooms.id, roomId));
 
-  revalidatePath(`/my-rooms/${roomId}`);
-  revalidatePath("/my-rooms");
-  return { success: true };
+    revalidatePath(`/my-rooms/${roomId}`);
+    revalidatePath("/my-rooms");
+    return { success: true };
+  });
 }
 
 export async function regenerateShareLink(roomId: string) {
   const session = await requireSession("nl");
   await requireRoomOwnership(roomId, session.user.id);
 
-  await db
-    .update(rooms)
-    .set({
-      shareLink: sql`gen_random_uuid()::text`,
-      shareLinkUseCount: 0,
-    })
-    .where(eq(rooms.id, roomId));
+  await withRLS(session.user.id, (tx) =>
+    tx
+      .update(rooms)
+      .set({
+        shareLink: sql`gen_random_uuid()::text`,
+        shareLinkUseCount: 0,
+      })
+      .where(eq(rooms.id, roomId)),
+  );
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };
@@ -110,15 +116,17 @@ export async function updateShareLinkSettings(roomId: string, data: ShareLinkSet
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  await db
-    .update(rooms)
-    .set({
-      shareLinkExpiresAt: parsed.data.shareLinkExpiresAt
-        ? new Date(parsed.data.shareLinkExpiresAt)
-        : null,
-      shareLinkMaxUses: parsed.data.shareLinkMaxUses || null,
-    })
-    .where(eq(rooms.id, roomId));
+  await withRLS(session.user.id, (tx) =>
+    tx
+      .update(rooms)
+      .set({
+        shareLinkExpiresAt: parsed.data.shareLinkExpiresAt
+          ? new Date(parsed.data.shareLinkExpiresAt)
+          : null,
+        shareLinkMaxUses: parsed.data.shareLinkMaxUses || null,
+      })
+      .where(eq(rooms.id, roomId)),
+  );
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };

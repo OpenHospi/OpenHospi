@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ReviewData } from "@openhospi/database/validators";
+import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
 import { REVIEW_DECISIONS } from "@openhospi/shared/enums";
 import { Loader2, UserCircle } from "lucide-react";
@@ -11,6 +13,7 @@ import { useMemo, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { InstitutionBadge } from "@/components/app/institution-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +28,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import type { RoomApplicant } from "@/lib/applicants";
-import type { ReviewData } from "@openhospi/database/validators";
-import { reviewSchema } from "@openhospi/database/validators";
 
 import { submitReview } from "./applicant-actions";
 
@@ -124,6 +125,7 @@ export function ApplicantProfileSheet({
               )}
               {applicant.gender && <> · {tEnums(`gender.${applicant.gender}`)}</>}
             </p>
+            <InstitutionBadge domain={applicant.institutionDomain} />
             {applicant.studyProgram && (
               <p className="text-sm">
                 {applicant.studyProgram}

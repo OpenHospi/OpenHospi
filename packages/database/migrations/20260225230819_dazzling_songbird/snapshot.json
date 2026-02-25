@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "da8f0f9e-2586-4006-b707-4ff8b04e7d9c",
+  "id": "8f4b8fc8-261c-4373-81e6-157ad92bbfd4",
   "prevIds": [
-    "7912873e-7973-4bcc-bcfe-1727e09f3a71"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -636,7 +636,7 @@
       "schema": "public"
     },
     {
-      "isRlsEnabled": false,
+      "isRlsEnabled": true,
       "name": "conversations",
       "entityType": "tables",
       "schema": "public"
@@ -5597,9 +5597,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
+      "using": "exists(select 1 from housemates where housemates.room_id = \"hospi_events\".\"room_id\" and housemates.user_id = (select auth.user_id()))",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "hospi_events_select",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_events"
@@ -5612,7 +5612,7 @@
       ],
       "using": null,
       "withCheck": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
-      "name": "crud-authenticated-policy-insert",
+      "name": "hospi_events_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_events"
@@ -5625,7 +5625,7 @@
       ],
       "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
       "withCheck": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
-      "name": "crud-authenticated-policy-update",
+      "name": "hospi_events_update",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_events"
@@ -5638,7 +5638,7 @@
       ],
       "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "hospi_events_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_events"
@@ -5649,9 +5649,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"hospi_invitations\".\"user_id\")",
+      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "hospi_invitations_select",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_invitations"
@@ -5663,8 +5663,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"hospi_invitations\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
+      "name": "hospi_invitations_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_invitations"
@@ -5675,9 +5675,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"hospi_invitations\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"hospi_invitations\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
+      "withCheck": null,
+      "name": "hospi_invitations_update",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_invitations"
@@ -5688,9 +5688,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"hospi_invitations\".\"user_id\")",
+      "using": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "hospi_invitations_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "hospi_invitations"
@@ -5753,9 +5753,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
+      "using": "exists(select 1 from conversation_members cm2 where cm2.conversation_id = \"conversation_members\".\"conversation_id\" and cm2.user_id = (select auth.user_id()))",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "conversation_members_select",
       "entityType": "policies",
       "schema": "public",
       "table": "conversation_members"
@@ -5767,8 +5767,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"conversation_members\".\"user_id\" = (select auth.user_id()) or exists(select 1 from conversation_members cm2 where cm2.conversation_id = \"conversation_members\".\"conversation_id\" and cm2.user_id = (select auth.user_id()))",
+      "name": "conversation_members_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "conversation_members"
@@ -5780,8 +5780,8 @@
         "authenticated"
       ],
       "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "withCheck": null,
+      "name": "conversation_members_update",
       "entityType": "policies",
       "schema": "public",
       "table": "conversation_members"
@@ -5794,10 +5794,36 @@
       ],
       "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "conversation_members_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "conversation_members"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "SELECT",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "exists(select 1 from conversation_members where conversation_members.conversation_id = \"conversations\".\"id\" and conversation_members.user_id = (select auth.user_id()))",
+      "withCheck": null,
+      "name": "conversations_select",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "conversations"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "INSERT",
+      "roles": [
+        "authenticated"
+      ],
+      "using": null,
+      "withCheck": "true",
+      "name": "conversations_insert",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "conversations"
     },
     {
       "as": "PERMISSIVE",
@@ -5853,13 +5879,26 @@
     },
     {
       "as": "PERMISSIVE",
+      "for": "SELECT",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "exists(select 1 from conversation_members where conversation_members.conversation_id = \"messages\".\"conversation_id\" and conversation_members.user_id = (select auth.user_id()))",
+      "withCheck": null,
+      "name": "messages_select",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "messages"
+    },
+    {
+      "as": "PERMISSIVE",
       "for": "INSERT",
       "roles": [
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"messages\".\"sender_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"messages\".\"sender_id\" = (select auth.user_id()) and exists(select 1 from conversation_members where conversation_members.conversation_id = \"messages\".\"conversation_id\" and conversation_members.user_id = (select auth.user_id()))",
+      "name": "messages_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "messages"
@@ -5871,8 +5910,8 @@
         "authenticated"
       ],
       "using": "(select auth.user_id() = \"messages\".\"sender_id\")",
-      "withCheck": "(select auth.user_id() = \"messages\".\"sender_id\")",
-      "name": "crud-authenticated-policy-update",
+      "withCheck": null,
+      "name": "messages_update",
       "entityType": "policies",
       "schema": "public",
       "table": "messages"
@@ -5885,7 +5924,7 @@
       ],
       "using": "(select auth.user_id() = \"messages\".\"sender_id\")",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "messages_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "messages"

@@ -672,15 +672,15 @@
           "items": [
             {
               "name": "Vercel",
-              "description": "Website-Hosting und CDN",
+              "description": "Website hosting, CDN en bestandsopslag",
               "current": "€0/Mo (Hobby)",
               "atScale": "~€18,50/Mo (Pro)"
             },
             {
-              "name": "Supabase",
-              "description": "PostgreSQL-Datenbank und Speicher",
+              "name": "Neon",
+              "description": "Serverless PostgreSQL database",
               "current": "€0/Mo (Free)",
-              "atScale": "~€23/Mo (Pro)"
+              "atScale": "~€15/mnd (Launch)"
             },
             {
               "name": "SURFconext",
@@ -742,9 +742,9 @@
           "atScale": "~€222"
         },
         {
-          "name": "Supabase",
+          "name": "Neon",
           "current": "€0",
-          "atScale": "~€276"
+          "atScale": "~€180"
         },
         {
           "name": "SURFconext",
@@ -769,7 +769,7 @@
       ],
       "totalLabel": "Gesamt pro Jahr",
       "currentTotal": "~€174/Jahr",
-      "atScaleTotal": "~€647/Jahr (~€54/Mo)"
+      "atScaleTotal": "~€551/jr (~€46/mnd)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",

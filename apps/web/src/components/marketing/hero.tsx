@@ -1,13 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/urls";
 
 export function Hero() {
   const t = useTranslations("home.hero");
+  const locale = useLocale();
+  const loginUrl = getLoginUrl(locale);
 
   return (
     <section className="relative overflow-hidden py-24 sm:py-32 lg:py-40">
@@ -32,7 +34,7 @@ export function Hero() {
           <p className="mt-6 text-lg text-muted-foreground sm:text-xl">{t("subtitle")}</p>
           <div className="mt-10">
             <Button size="lg" asChild>
-              <Link href="/api/auth/signin">{t("cta")}</Link>
+              <a href={loginUrl}>{t("cta")}</a>
             </Button>
           </div>
         </motion.div>

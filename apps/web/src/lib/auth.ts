@@ -13,6 +13,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     process.env.BETTER_AUTH_URL!,
+    "https://*.openhospi.nl",
     "https://connect.test.surfconext.nl",
     "https://connect.surfconext.nl",
   ],

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 import { getCitiesWithRoomCount } from "@/lib/discover";
+import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,7 @@ export default async function RoomsIndexPage({ params }: Props) {
   const cities = await getCitiesWithRoomCount();
   const t = await getTranslations({ locale, namespace: "public.rooms" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const loginUrl = getLoginUrl(locale);
 
   return (
     <section className="py-24">
@@ -70,7 +72,7 @@ export default async function RoomsIndexPage({ params }: Props) {
         {/* CTA */}
         <div className="mt-16 text-center">
           <Button asChild size="lg">
-            <Link href="/api/auth/signin">{t("loginToBrowse")}</Link>
+            <a href={loginUrl}>{t("loginToBrowse")}</a>
           </Button>
         </div>
       </div>

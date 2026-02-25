@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { PreferencesStepData } from "@openhospi/database/validators";
+import { preferencesStepSchema } from "@openhospi/database/validators";
 import { CITIES, VERENIGINGEN } from "@openhospi/shared/enums";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -35,8 +37,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { PreferencesStepData } from "@openhospi/database/validators";
-import { preferencesStepSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { finishOnboarding, savePreferencesStep } from "../actions";

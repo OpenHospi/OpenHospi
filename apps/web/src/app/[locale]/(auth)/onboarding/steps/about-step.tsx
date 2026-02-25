@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { AboutStepData } from "@openhospi/database/validators";
+import { aboutStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
 import { GENDERS, getStudyLevelsForInstitutionType, STUDY_LEVELS } from "@openhospi/shared/enums";
 import { getInstitution } from "@openhospi/surfconext";
@@ -29,8 +31,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { AboutStepData } from "@openhospi/database/validators";
-import { aboutStepSchema } from "@openhospi/database/validators";
 
 import { saveAboutStep } from "../actions";
 

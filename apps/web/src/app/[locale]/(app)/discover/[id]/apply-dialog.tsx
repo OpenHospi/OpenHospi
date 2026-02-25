@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ApplyToRoomData } from "@openhospi/database/validators";
+import { applyToRoomSchema } from "@openhospi/database/validators";
 import {
   MAX_PERSONAL_MESSAGE_LENGTH,
   MIN_PERSONAL_MESSAGE_LENGTH,
@@ -29,8 +31,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import type { ApplyToRoomData } from "@openhospi/database/validators";
-import { applyToRoomSchema } from "@openhospi/database/validators";
 
 import { applyToRoom } from "./actions";
 

@@ -1,4 +1,15 @@
-import { boolean, index, jsonb, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import {
+  boolean,
+  index,
+  jsonb,
+  pgPolicy,
+  pgTable,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 import { adminActionEnum } from "./enums";
 import { profiles } from "./profiles";
@@ -22,6 +33,11 @@ export const pushTokens = pgTable(
   (table) => [
     unique("push_tokens_user_id_expo_push_token_key").on(table.userId, table.expoPushToken),
     index("idx_push_tokens_user_id").on(table.userId),
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.userId),
+      modify: authUid(table.userId),
+    }),
   ],
 );
 
@@ -38,9 +54,18 @@ export const notifications = pgTable(
     sent: boolean("sent").default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index("idx_notifications_user_id").on(table.userId, table.createdAt)],
+  (table) => [
+    index("idx_notifications_user_id").on(table.userId, table.createdAt),
+    // Own notifications: read only (server creates them via owner connection)
+    pgPolicy("notifications_select_own", {
+      for: "select",
+      to: authenticatedRole,
+      using: authUid(table.userId),
+    }),
+  ],
 );
 
+// Admin audit log — no RLS (admin-only, accessed via owner connection)
 export const adminAuditLog = pgTable("admin_audit_log", {
   id: uuid("id").defaultRandom().primaryKey(),
   adminUserId: uuid("admin_user_id").notNull(),

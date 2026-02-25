@@ -12,7 +12,7 @@ type Props = {
 };
 
 export async function ApplicantsSection({ roomId, userId }: Props) {
-  const applicants = await getRoomApplicants(roomId);
+  const applicants = await getRoomApplicants(roomId, userId);
   const t = await getTranslations("app.rooms.applicants");
 
   return (

@@ -1,10 +1,12 @@
-import { sql } from "drizzle-orm";
+import { isNotNull, sql } from "drizzle-orm";
+import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
   boolean,
   date,
   index,
   jsonb,
   numeric,
+  pgPolicy,
   pgTable,
   smallint,
   text,
@@ -49,8 +51,8 @@ export const profiles = pgTable(
     preferredCity: cityEnum("preferred_city"),
     instagramHandle: text("instagram_handle"),
     showInstagram: boolean("show_instagram").default(false),
-    lifestyleTags: lifestyleTagEnum("lifestyle_tags").array().default(sql`'{}'`),
-    languages: languageEnum("languages").array().default(sql`'{}'`),
+    lifestyleTags: lifestyleTagEnum("lifestyle_tags").array().default([]),
+    languages: languageEnum("languages").array().default([]),
     notificationPreferences: jsonb("notification_preferences"),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -62,7 +64,18 @@ export const profiles = pgTable(
   (table) => [
     index("idx_profiles_vereniging")
       .on(table.id, table.vereniging)
-      .where(sql`vereniging IS NOT NULL`),
+      .where(isNotNull(table.vereniging)),
+    pgPolicy("profiles_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`true`,
+    }),
+    pgPolicy("profiles_update_own", {
+      for: "update",
+      to: authenticatedRole,
+      using: authUid(table.id),
+      withCheck: authUid(table.id),
+    }),
   ],
 );
 
@@ -81,5 +94,10 @@ export const profilePhotos = pgTable(
   (table) => [
     unique("profile_photos_user_id_slot_key").on(table.userId, table.slot),
     index("idx_profile_photos_user").on(table.userId),
+    crudPolicy({
+      role: authenticatedRole,
+      read: sql`true`,
+      modify: authUid(table.userId),
+    }),
   ],
 );

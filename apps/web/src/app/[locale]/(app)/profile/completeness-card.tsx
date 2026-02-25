@@ -1,5 +1,5 @@
-import { getTranslations } from "next-intl/server";
 import { CheckCircle2, Circle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";

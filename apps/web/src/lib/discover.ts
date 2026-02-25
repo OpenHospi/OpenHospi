@@ -1,4 +1,4 @@
-import { db } from "@openhospi/database";
+import { db, withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
@@ -33,9 +33,14 @@ export type DiscoverFilters = {
 
 export type DiscoverSort = "newest" | "cheapest" | "most_expensive";
 
+export type DiscoverCursor = {
+  createdAt: string;
+  id: string;
+};
+
 export type DiscoverResult = {
   rooms: DiscoverRoom[];
-  total: number;
+  nextCursor: DiscoverCursor | null;
 };
 
 export type PublicRoom = {
@@ -69,13 +74,13 @@ export type CityWithCount = {
   count: number;
 };
 
-export async function getDiscoverRooms(
+/* eslint-disable @typescript-eslint/no-explicit-any -- Dynamic filter values from URL params can't be statically typed as Drizzle enum values */
+function buildDiscoverConditions(
   userId: string,
   filters: DiscoverFilters,
-  page: number,
   sort: DiscoverSort,
-): Promise<DiscoverResult> {
-  /* eslint-disable @typescript-eslint/no-explicit-any -- Dynamic filter values from URL params can't be statically typed as Drizzle enum values */
+  cursor?: DiscoverCursor,
+): ReturnType<typeof eq>[] {
   const conditions: ReturnType<typeof eq>[] = [eq(rooms.status, "active")];
 
   // Vereiniging visibility: show non-vereniging rooms + rooms matching user's vereniging
@@ -83,47 +88,54 @@ export async function getDiscoverRooms(
     sql`(${rooms.roomVereniging} IS NULL OR ${rooms.roomVereniging} = (SELECT vereniging FROM profiles WHERE id = ${userId}))` as any,
   );
 
-  if (filters.city) {
-    conditions.push(eq(rooms.city, filters.city as any));
-  }
-  if (filters.minPrice != null) {
-    conditions.push(gte(rooms.rentPrice, String(filters.minPrice)));
-  }
-  if (filters.maxPrice != null) {
-    conditions.push(lte(rooms.rentPrice, String(filters.maxPrice)));
-  }
-  if (filters.houseType) {
-    conditions.push(eq(rooms.houseType, filters.houseType as any));
-  }
-  if (filters.furnishing) {
-    conditions.push(eq(rooms.furnishing, filters.furnishing as any));
-  }
-  if (filters.availableFrom) {
-    conditions.push(lte(rooms.availableFrom, filters.availableFrom));
-  }
-  if (filters.features && filters.features.length > 0) {
-    conditions.push(sql`${rooms.features} @> ${filters.features}` as any);
-  }
-  if (filters.locationTags && filters.locationTags.length > 0) {
-    conditions.push(sql`${rooms.locationTags} @> ${filters.locationTags}` as any);
-  }
-  /* eslint-enable @typescript-eslint/no-explicit-any */
+  // Gender matching: rooms with a preference only shown to matching profiles
+  conditions.push(
+    sql`(${rooms.preferredGender} = 'geen_voorkeur' OR ${rooms.preferredGender}::text = (SELECT gender FROM profiles WHERE id = ${userId}))` as any,
+  );
 
-  const where = and(...conditions);
-  const offset = (page - 1) * ROOMS_PER_PAGE;
+  if (filters.city) conditions.push(eq(rooms.city, filters.city as any));
+  if (filters.minPrice != null) conditions.push(gte(rooms.rentPrice, String(filters.minPrice)));
+  if (filters.maxPrice != null) conditions.push(lte(rooms.rentPrice, String(filters.maxPrice)));
+  if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType as any));
+  if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing as any));
+  if (filters.availableFrom) conditions.push(lte(rooms.availableFrom, filters.availableFrom));
+  if (filters.features?.length) conditions.push(sql`${rooms.features} @> ${filters.features}` as any);
+  if (filters.locationTags?.length) conditions.push(sql`${rooms.locationTags} @> ${filters.locationTags}` as any);
 
-  let orderBy;
-  if (sort === "cheapest") {
-    orderBy = asc(rooms.rentPrice);
-  } else if (sort === "most_expensive") {
-    orderBy = desc(rooms.rentPrice);
-  } else {
-    orderBy = desc(rooms.createdAt);
+  if (cursor) {
+    if (sort === "cheapest") {
+      conditions.push(sql`(${rooms.rentPrice}, ${rooms.id}) > (${cursor.createdAt}, ${cursor.id})` as any);
+    } else if (sort === "most_expensive") {
+      conditions.push(sql`(${rooms.rentPrice}, ${rooms.id}) < (${cursor.createdAt}, ${cursor.id})` as any);
+    } else {
+      conditions.push(sql`(${rooms.createdAt}, ${rooms.id}) < (${cursor.createdAt}, ${cursor.id})` as any);
+    }
   }
 
-  const [countResult, dataResult] = await Promise.all([
-    db.select({ total: sql<number>`count(*)::int` }).from(rooms).where(where),
-    db
+  return conditions;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+export async function getDiscoverRooms(
+  userId: string,
+  filters: DiscoverFilters,
+  sort: DiscoverSort,
+  cursor?: DiscoverCursor,
+): Promise<DiscoverResult> {
+  return withRLS(userId, async (tx) => {
+    const conditions = buildDiscoverConditions(userId, filters, sort, cursor);
+    const where = and(...conditions);
+
+    let orderBy;
+    if (sort === "cheapest") {
+      orderBy = [asc(rooms.rentPrice), asc(rooms.id)];
+    } else if (sort === "most_expensive") {
+      orderBy = [desc(rooms.rentPrice), desc(rooms.id)];
+    } else {
+      orderBy = [desc(rooms.createdAt), desc(rooms.id)];
+    }
+
+    const dataResult = await tx
       .select({
         id: rooms.id,
         title: rooms.title,
@@ -141,20 +153,33 @@ export async function getDiscoverRooms(
       })
       .from(rooms)
       .where(where)
-      .orderBy(orderBy)
-      .limit(ROOMS_PER_PAGE)
-      .offset(offset),
-  ]);
+      .orderBy(...orderBy)
+      .limit(ROOMS_PER_PAGE + 1);
 
-  return {
-    total: countResult[0]?.total ?? 0,
-    rooms: dataResult.map((r) => ({
+    const hasMore = dataResult.length > ROOMS_PER_PAGE;
+    const resultRows = hasMore ? dataResult.slice(0, ROOMS_PER_PAGE) : dataResult;
+
+    const mappedRooms = resultRows.map((r) => ({
       ...r,
       rentPrice: Number(r.rentPrice),
       features: r.features ?? [],
       locationTags: r.locationTags ?? [],
-    })),
-  };
+    }));
+
+    const lastRow = resultRows[resultRows.length - 1];
+    const nextCursor: DiscoverCursor | null =
+      hasMore && lastRow
+        ? {
+            createdAt:
+              sort === "newest"
+                ? lastRow.createdAt.toISOString()
+                : String(lastRow.rentPrice),
+            id: lastRow.id,
+          }
+        : null;
+
+    return { rooms: mappedRooms, nextCursor };
+  });
 }
 
 export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> {

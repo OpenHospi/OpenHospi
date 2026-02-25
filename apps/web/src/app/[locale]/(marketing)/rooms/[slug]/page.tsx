@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
-import { getSession } from "@/lib/auth-server";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
+import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +80,8 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const cityName = tEnums(`city.${city}`);
+  const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
+  const loginUrl = getLoginUrl(locale);
 
   // Safe: all values come from our DB and i18n — no user-supplied HTML
   const jsonLdScript = JSON.stringify({
@@ -90,7 +92,7 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
     itemListElement: rooms.map((room, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `https://openhospi.nl/${locale}/rooms/${room.id}`,
+      url: `${marketingUrl}/${locale}/rooms/${room.id}`,
     })),
   });
 
@@ -123,7 +125,7 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
 
         <div className="mt-16 flex flex-col items-center gap-4">
           <Button asChild size="lg">
-            <Link href="/api/auth/signin">{t("loginCta")}</Link>
+            <a href={loginUrl}>{t("loginCta")}</a>
           </Button>
           <Button variant="ghost" asChild>
             <Link href="/rooms">
@@ -143,8 +145,8 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
   const room = await getPublicRoom(roomId);
   if (!room) notFound();
 
-  const session = await getSession();
   const t = await getTranslations({ locale, namespace: "public.room" });
+  const loginUrl = getLoginUrl(locale);
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const cityName = tEnums(`city.${room.city}`);
@@ -352,15 +354,9 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                     {t("availableFrom", { date: room.available_from })}
                   </p>
                 )}
-                {session ? (
-                  <Button asChild className="w-full">
-                    <Link href="/discover">{t("goToApp")}</Link>
-                  </Button>
-                ) : (
-                  <Button asChild className="w-full">
-                    <Link href="/api/auth/signin">{t("loginToApply")}</Link>
-                  </Button>
-                )}
+                <Button asChild className="w-full">
+                  <a href={loginUrl}>{t("loginToApply")}</a>
+                </Button>
               </CardContent>
             </Card>
           </div>

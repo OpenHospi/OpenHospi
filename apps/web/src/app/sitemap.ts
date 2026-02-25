@@ -6,7 +6,7 @@ import { getCitiesWithRoomCount } from "@/lib/discover";
 
 export const dynamic = "force-dynamic";
 
-const BASE_URL = "https://openhospi.nl";
+const BASE_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
 
 const staticPages = [
   "",

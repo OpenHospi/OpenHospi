@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://openhospi.nl"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl"),
   title: {
     template: `%s | ${APP_NAME}`,
     default: APP_NAME,

@@ -842,5 +842,8 @@
       "subject": "Subject",
       "body": "Message"
     }
+  },
+  "admin": {
+    "comingSoon": "Coming soon"
   }
 }

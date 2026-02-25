@@ -842,5 +842,8 @@
       "subject": "Onderwerp",
       "body": "Bericht"
     }
+  },
+  "admin": {
+    "comingSoon": "Binnenkort beschikbaar"
   }
 }

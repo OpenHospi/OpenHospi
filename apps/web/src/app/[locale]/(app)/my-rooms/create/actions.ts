@@ -1,12 +1,14 @@
 "use server";
 
+import { db } from "@openhospi/database";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
+import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
-import { pool } from "@/lib/db";
 import { createDraftRoom } from "@/lib/rooms";
-import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@/lib/schemas/room";
-import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@/lib/schemas/room";
+import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
+import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@openhospi/database/validators";
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
   const session = await requireSession("nl");
@@ -27,11 +29,16 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
   await requireRoomOwnership(roomId, session.user.id);
 
   const { title, description, city, neighborhood, address } = parsed.data;
-  await pool.query(
-    `UPDATE rooms SET title = $1, description = $2, city = $3, neighborhood = $4, address = $5
-     WHERE id = $6`,
-    [title, description || null, city, neighborhood || null, address || null, roomId],
-  );
+  await db
+    .update(rooms)
+    .set({
+      title,
+      description: description || null,
+      city,
+      neighborhood: neighborhood || null,
+      address: address || null,
+    })
+    .where(eq(rooms.id, roomId));
 
   return { success: true };
 }
@@ -43,39 +50,22 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  const {
-    rent_price,
-    deposit,
-    utilities_included,
-    room_size_m2,
-    available_from,
-    available_until,
-    rental_type,
-    house_type,
-    furnishing,
-    total_housemates,
-  } = parsed.data;
-
-  await pool.query(
-    `UPDATE rooms SET
-       rent_price = $1, deposit = $2, utilities_included = $3, room_size_m2 = $4,
-       available_from = $5, available_until = $6, rental_type = $7, house_type = $8,
-       furnishing = $9, total_housemates = $10
-     WHERE id = $11`,
-    [
-      rent_price,
-      deposit || null,
-      utilities_included ?? false,
-      room_size_m2 || null,
-      available_from,
-      rental_type === "vast" ? null : available_until || null,
-      rental_type,
-      house_type || null,
-      furnishing || null,
-      total_housemates || null,
-      roomId,
-    ],
-  );
+  const d = parsed.data;
+  await db
+    .update(rooms)
+    .set({
+      rentPrice: String(d.rentPrice),
+      deposit: d.deposit != null ? String(d.deposit) : null,
+      utilitiesIncluded: d.utilitiesIncluded ?? false,
+      roomSizeM2: d.roomSizeM2 || null,
+      availableFrom: d.availableFrom,
+      availableUntil: d.rentalType === "vast" ? null : d.availableUntil || null,
+      rentalType: d.rentalType,
+      houseType: d.houseType || null,
+      furnishing: d.furnishing || null,
+      totalHousemates: d.totalHousemates || null,
+    })
+    .where(eq(rooms.id, roomId));
 
   return { success: true };
 }
@@ -87,33 +77,19 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  const {
-    features,
-    location_tags,
-    preferred_gender,
-    preferred_age_min,
-    preferred_age_max,
-    preferred_lifestyle_tags,
-    room_vereniging,
-  } = parsed.data;
-
-  await pool.query(
-    `UPDATE rooms SET
-       features = $1, location_tags = $2, preferred_gender = $3,
-       preferred_age_min = $4, preferred_age_max = $5, preferred_lifestyle_tags = $6,
-       room_vereniging = $7
-     WHERE id = $8`,
-    [
-      features ?? [],
-      location_tags ?? [],
-      preferred_gender || "geen_voorkeur",
-      preferred_age_min || null,
-      preferred_age_max || null,
-      preferred_lifestyle_tags ?? [],
-      room_vereniging || null,
-      roomId,
-    ],
-  );
+  const d = parsed.data;
+  await db
+    .update(rooms)
+    .set({
+      features: d.features ?? [],
+      locationTags: d.locationTags ?? [],
+      preferredGender: d.preferredGender || "geen_voorkeur",
+      preferredAgeMin: d.preferredAgeMin || null,
+      preferredAgeMax: d.preferredAgeMax || null,
+      preferredLifestyleTags: d.preferredLifestyleTags ?? [],
+      roomVereniging: d.roomVereniging || null,
+    })
+    .where(eq(rooms.id, roomId));
 
   return { success: true };
 }
@@ -122,18 +98,18 @@ export async function publishRoom(roomId: string) {
   const session = await requireSession("nl");
   await requireRoomOwnership(roomId, session.user.id);
 
-  // Check at least 1 photo
-  const { rows: photoRows } = await pool.query(
-    "SELECT COUNT(*)::int AS count FROM room_photos WHERE room_id = $1",
-    [roomId],
-  );
-  if (photoRows[0].count === 0) {
+  const [photoCount] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(roomPhotos)
+    .where(eq(roomPhotos.roomId, roomId));
+  if (photoCount.count === 0) {
     return { error: "publishError" };
   }
 
-  await pool.query("UPDATE rooms SET status = 'active' WHERE id = $1 AND status = 'draft'", [
-    roomId,
-  ]);
+  await db
+    .update(rooms)
+    .set({ status: "active" })
+    .where(and(eq(rooms.id, roomId), eq(rooms.status, "draft")));
 
   revalidatePath("/my-rooms");
   return { success: true };

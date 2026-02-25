@@ -1,49 +1,43 @@
 "use server";
 
-import { MAX_ROOM_PHOTO_SIZE } from "@openhospi/shared/constants";
+import { db } from "@openhospi/database";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
+import type { RoomPhoto } from "@openhospi/database/types";
+import { and, eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
-import { pool } from "@/lib/db";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
-import type { RoomPhoto } from "@/lib/rooms";
+import { deletePhotoFromStorage } from "@/lib/photos";
 
-export async function uploadRoomPhoto(
-  formData: FormData,
+export async function saveRoomPhoto(
+  url: string,
+  roomId: string,
+  slot: number,
 ): Promise<{ error?: string; photo?: RoomPhoto }> {
   const session = await requireSession("nl");
-  const file = formData.get("file") as File | null;
-  const slotStr = formData.get("slot") as string | null;
-  const roomId = formData.get("roomId") as string | null;
 
-  if (!file || !slotStr || !roomId) return { error: "Missing file, slot, or roomId" };
-
-  const slot = Number.parseInt(slotStr, 10);
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
+  if (!url || !roomId) return { error: "Missing URL or roomId" };
 
   // Verify ownership
-  const { rows: ownerRows } = await pool.query(
-    "SELECT id FROM rooms WHERE id = $1 AND created_by = $2",
-    [roomId, session.user.id],
-  );
-  if (ownerRows.length === 0) return { error: "Room not found" };
-
-  const ext = file.name.split(".").pop() || "jpg";
-  const path = `${roomId}/${slot}.${ext}`;
+  const [room] = await db
+    .select({ id: rooms.id })
+    .from(rooms)
+    .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, session.user.id)));
+  if (!room) return { error: "Room not found" };
 
   try {
-    const url = await uploadPhotoToStorage("room-photos", path, file, MAX_ROOM_PHOTO_SIZE);
+    const [photo] = await db
+      .insert(roomPhotos)
+      .values({ roomId, slot, url })
+      .onConflictDoUpdate({
+        target: [roomPhotos.roomId, roomPhotos.slot],
+        set: { url, uploadedAt: new Date() },
+      })
+      .returning();
 
-    const { rows } = await pool.query(
-      `INSERT INTO room_photos (room_id, slot, url)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (room_id, slot) DO UPDATE SET url = EXCLUDED.url, uploaded_at = NOW()
-       RETURNING id, slot, url, caption`,
-      [roomId, slot, url],
-    );
-
-    return { photo: rows[0] };
+    return { photo };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Upload failed";
+    const message = e instanceof Error ? e.message : "Save failed";
     return { error: message };
   }
 }
@@ -54,27 +48,25 @@ export async function deleteRoomPhoto(roomId: string, slot: number): Promise<{ e
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
 
   // Verify ownership
-  const { rows: ownerRows } = await pool.query(
-    "SELECT id FROM rooms WHERE id = $1 AND created_by = $2",
-    [roomId, session.user.id],
-  );
-  if (ownerRows.length === 0) return { error: "Room not found" };
+  const [room] = await db
+    .select({ id: rooms.id })
+    .from(rooms)
+    .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, session.user.id)));
+  if (!room) return { error: "Room not found" };
 
   try {
-    const { rows } = await pool.query(
-      "SELECT url FROM room_photos WHERE room_id = $1 AND slot = $2",
-      [roomId, slot],
-    );
+    const [photo] = await db
+      .select({ url: roomPhotos.url })
+      .from(roomPhotos)
+      .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot)));
 
-    if (rows.length === 0) return { error: "Photo not found" };
+    if (!photo) return { error: "Photo not found" };
 
-    const url = rows[0].url as string;
-    const bucketPath = url.split("/storage/v1/object/public/room-photos/")[1];
-    if (bucketPath) {
-      await deletePhotoFromStorage("room-photos", bucketPath);
-    }
+    await deletePhotoFromStorage(photo.url);
 
-    await pool.query("DELETE FROM room_photos WHERE room_id = $1 AND slot = $2", [roomId, slot]);
+    await db
+      .delete(roomPhotos)
+      .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot)));
 
     return {};
   } catch (e) {

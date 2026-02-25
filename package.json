@@ -13,17 +13,15 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:start": "npx supabase start",
-    "db:stop": "npx supabase stop",
-    "db:reset": "npx supabase db reset",
-    "db:push": "npx supabase db push",
-    "db:gen-types": "npx supabase gen types typescript --local > packages/supabase/src/database.types.ts",
+    "db:generate": "pnpm --filter @openhospi/database db:generate",
+    "db:migrate": "pnpm --filter @openhospi/database db:migrate",
+    "db:push": "pnpm --filter @openhospi/database db:push",
+    "db:studio": "pnpm --filter @openhospi/database db:studio",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
-      "supabase",
       "@parcel/watcher",
       "@swc/core",
       "sharp",
@@ -37,7 +35,6 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.18",
     "dotenv": "^17.3.1",
-    "supabase": "^2.76.11",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   }

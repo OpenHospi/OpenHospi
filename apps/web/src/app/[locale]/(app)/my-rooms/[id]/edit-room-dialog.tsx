@@ -58,8 +58,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Room } from "@/lib/rooms";
-import type { EditRoomData } from "@/lib/schemas/room";
-import { editRoomSchema } from "@/lib/schemas/room";
+import type { EditRoomData } from "@openhospi/database/validators";
+import { editRoomSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { updateRoom } from "./actions";
@@ -84,33 +84,33 @@ export function EditRoomDialog({ room }: Props) {
       city: room.city as EditRoomData["city"],
       neighborhood: room.neighborhood ?? "",
       address: room.address ?? "",
-      rent_price: room.rent_price,
-      deposit: room.deposit ?? undefined,
-      utilities_included: room.utilities_included,
-      room_size_m2: room.room_size_m2 ?? undefined,
-      available_from: room.available_from ?? "",
-      available_until: room.available_until ?? "",
-      rental_type: room.rental_type as EditRoomData["rental_type"],
-      house_type: (room.house_type as EditRoomData["house_type"]) ?? undefined,
+      rentPrice: Number(room.rentPrice),
+      deposit: room.deposit ? Number(room.deposit) : undefined,
+      utilitiesIncluded: room.utilitiesIncluded ?? false,
+      roomSizeM2: room.roomSizeM2 ?? undefined,
+      availableFrom: room.availableFrom ?? "",
+      availableUntil: room.availableUntil ?? "",
+      rentalType: room.rentalType as EditRoomData["rentalType"],
+      houseType: (room.houseType as EditRoomData["houseType"]) ?? undefined,
       furnishing: (room.furnishing as EditRoomData["furnishing"]) ?? undefined,
-      total_housemates: room.total_housemates ?? undefined,
-      features: room.features as RoomFeature[],
-      location_tags: room.location_tags as LocationTag[],
-      preferred_gender: room.preferred_gender as EditRoomData["preferred_gender"],
-      preferred_age_min: room.preferred_age_min ?? undefined,
-      preferred_age_max: room.preferred_age_max ?? undefined,
-      preferred_lifestyle_tags: room.preferred_lifestyle_tags as LifestyleTag[],
-      room_vereniging: (room.room_vereniging as EditRoomData["room_vereniging"]) ?? undefined,
+      totalHousemates: room.totalHousemates ?? undefined,
+      features: (room.features as RoomFeature[]) ?? [],
+      locationTags: (room.locationTags as LocationTag[]) ?? [],
+      preferredGender: room.preferredGender as EditRoomData["preferredGender"],
+      preferredAgeMin: room.preferredAgeMin ?? undefined,
+      preferredAgeMax: room.preferredAgeMax ?? undefined,
+      preferredLifestyleTags: (room.preferredLifestyleTags as LifestyleTag[]) ?? [],
+      roomVereniging: (room.roomVereniging as EditRoomData["roomVereniging"]) ?? undefined,
     },
   });
 
-  const rentalType = form.watch("rental_type");
+  const rentalType = form.watch("rentalType");
   const selectedFeatures = form.watch("features") ?? [];
-  const selectedLocationTags = form.watch("location_tags") ?? [];
-  const selectedLifestyleTags = form.watch("preferred_lifestyle_tags") ?? [];
+  const selectedLocationTags = form.watch("locationTags") ?? [];
+  const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
 
   function toggleArrayField<T extends string>(
-    name: "features" | "location_tags" | "preferred_lifestyle_tags",
+    name: "features" | "locationTags" | "preferredLifestyleTags",
     value: T,
   ) {
     const current = (form.getValues(name) as T[]) ?? [];
@@ -147,8 +147,10 @@ export function EditRoomDialog({ room }: Props) {
           <DialogTitle>{t("actions.edit")}</DialogTitle>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <Form {...(form as any)}>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-5">
             <FormField
               control={form.control}
               name="title"
@@ -234,7 +236,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="rent_price"
+                name="rentPrice"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("fields.rentPrice")}</FormLabel>
@@ -262,7 +264,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="utilities_included"
+              name="utilitiesIncluded"
               render={({ field }) => (
                 <FormItem className="flex items-center justify-between rounded-lg border p-3">
                   <FormLabel className="cursor-pointer">{t("fields.utilitiesIncluded")}</FormLabel>
@@ -275,7 +277,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="room_size_m2"
+              name="roomSizeM2"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.roomSize")}</FormLabel>
@@ -289,7 +291,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="rental_type"
+              name="rentalType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.rentalType")}</FormLabel>
@@ -318,7 +320,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="available_from"
+                name="availableFrom"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("fields.availableFrom")}</FormLabel>
@@ -332,7 +334,7 @@ export function EditRoomDialog({ room }: Props) {
               {rentalType !== "vast" && (
                 <FormField
                   control={form.control}
-                  name="available_until"
+                  name="availableUntil"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t("fields.availableUntil")}</FormLabel>
@@ -348,7 +350,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="house_type"
+              name="houseType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.houseType")}</FormLabel>
@@ -398,7 +400,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="total_housemates"
+              name="totalHousemates"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.totalHousemates")}</FormLabel>
@@ -445,7 +447,7 @@ export function EditRoomDialog({ room }: Props) {
                         "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
                         isSelected && "bg-primary text-primary-foreground",
                       )}
-                      onClick={() => toggleArrayField("location_tags", tag)}
+                      onClick={() => toggleArrayField("locationTags", tag)}
                     >
                       {tEnums(`location_tag.${tag}`)}
                     </Badge>
@@ -456,7 +458,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="preferred_gender"
+              name="preferredGender"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.preferredGender")}</FormLabel>
@@ -485,7 +487,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="preferred_age_min"
+                name="preferredAgeMin"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("fields.preferredAgeMin")}</FormLabel>
@@ -498,7 +500,7 @@ export function EditRoomDialog({ room }: Props) {
               />
               <FormField
                 control={form.control}
-                name="preferred_age_max"
+                name="preferredAgeMax"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("fields.preferredAgeMax")}</FormLabel>
@@ -524,7 +526,7 @@ export function EditRoomDialog({ room }: Props) {
                         "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
                         isSelected && "bg-primary text-primary-foreground",
                       )}
-                      onClick={() => toggleArrayField("preferred_lifestyle_tags", tag)}
+                      onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
                     >
                       {tEnums(`lifestyle_tag.${tag}`)}
                     </Badge>
@@ -535,7 +537,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="room_vereniging"
+              name="roomVereniging"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>
@@ -569,7 +571,7 @@ export function EditRoomDialog({ room }: Props) {
                             <CommandItem
                               value="__none__"
                               onSelect={() => {
-                                form.setValue("room_vereniging", undefined, {
+                                form.setValue("roomVereniging", undefined, {
                                   shouldValidate: true,
                                 });
                               }}
@@ -587,7 +589,7 @@ export function EditRoomDialog({ room }: Props) {
                                 key={v}
                                 value={tEnums(`vereniging.${v}`)}
                                 onSelect={() => {
-                                  form.setValue("room_vereniging", v, { shouldValidate: true });
+                                  form.setValue("roomVereniging", v, { shouldValidate: true });
                                 }}
                               >
                                 <Check

@@ -52,11 +52,11 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
   const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
   const router = useRouter();
 
-  const myReview = applicant.reviews.find((r) => r.reviewer_id === currentUserId);
+  const myReview = applicant.reviews.find((r) => r.reviewerId === currentUserId);
 
   function handleReview(decision: ReviewDecision) {
     startTransition(async () => {
-      const result = await submitReview(roomId, applicant.user_id, {
+      const result = await submitReview(roomId, applicant.userId, {
         decision,
       });
       if (result?.error) {
@@ -69,7 +69,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
 
   function handleStatusChange(newStatus: ApplicationStatus) {
     startTransition(async () => {
-      const result = await updateApplicationStatus(roomId, applicant.application_id, newStatus);
+      const result = await updateApplicationStatus(roomId, applicant.applicationId, newStatus);
       if (result?.error) {
         toast.error(t("statusError"));
         return;
@@ -80,12 +80,12 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
   }
 
   const age = useMemo(() => {
-    if (!applicant.birth_date) return null;
+    if (!applicant.birthDate) return null;
     return Math.floor(
-      (new Date().getTime() - new Date(applicant.birth_date).getTime()) /
+      (new Date().getTime() - new Date(applicant.birthDate).getTime()) /
         (365.25 * 24 * 60 * 60 * 1000),
     );
-  }, [applicant.birth_date]);
+  }, [applicant.birthDate]);
 
   // Review summary from other housemates
   const likeCounts = { like: 0, maybe: 0, reject: 0 };
@@ -98,10 +98,10 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
           <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-muted">
-            {applicant.avatar_url ? (
+            {applicant.avatarUrl ? (
               <Image
-                src={applicant.avatar_url}
-                alt={applicant.first_name}
+                src={applicant.avatarUrl}
+                alt={applicant.firstName}
                 fill
                 className="object-cover"
               />
@@ -114,15 +114,15 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h3 className="truncate font-semibold">
-                {applicant.first_name} {applicant.last_name}
+                {applicant.firstName} {applicant.lastName}
               </h3>
               <Badge className={cn("shrink-0", statusColors[applicant.status])}>
                 {tEnums(`application_status.${applicant.status}`)}
               </Badge>
             </div>
             <p className="truncate text-sm text-muted-foreground">
-              {applicant.study_program}
-              {applicant.study_level && <> · {tEnums(`study_level.${applicant.study_level}`)}</>}
+              {applicant.studyProgram}
+              {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
               {age && <> · {age}</>}
             </p>
           </div>
@@ -135,25 +135,25 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
           )}
 
           {/* Lifestyle tags */}
-          {applicant.lifestyle_tags.length > 0 && (
+          {applicant.lifestyleTags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {applicant.lifestyle_tags.slice(0, 4).map((tag) => (
+              {applicant.lifestyleTags.slice(0, 4).map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">
                   {tEnums(`lifestyle_tag.${tag}`)}
                 </Badge>
               ))}
-              {applicant.lifestyle_tags.length > 4 && (
+              {applicant.lifestyleTags.length > 4 && (
                 <Badge variant="outline" className="text-xs">
-                  +{applicant.lifestyle_tags.length - 4}
+                  +{applicant.lifestyleTags.length - 4}
                 </Badge>
               )}
             </div>
           )}
 
           {/* Personal message preview */}
-          {applicant.personal_message && (
+          {applicant.personalMessage && (
             <p className="line-clamp-2 text-sm italic text-muted-foreground">
-              &ldquo;{applicant.personal_message}&rdquo;
+              &ldquo;{applicant.personalMessage}&rdquo;
             </p>
           )}
 
@@ -251,7 +251,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
             <AlertDialogTitle>{t("acceptConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
               {t("acceptConfirmDescription", {
-                name: applicant.first_name,
+                name: applicant.firstName,
               })}
             </AlertDialogDescription>
           </AlertDialogHeader>

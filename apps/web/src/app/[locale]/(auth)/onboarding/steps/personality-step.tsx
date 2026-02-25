@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { savePersonalityStep } from "../actions";
 
 type Props = {
-  defaultValues: { lifestyle_tags: string[] };
+  defaultValues: { lifestyleTags: string[] };
   onBack: () => void;
   onNext: () => void;
 };
@@ -24,7 +24,7 @@ export function PersonalityStep({ defaultValues, onBack, onNext }: Props) {
   const t = useTranslations("app.onboarding");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
-  const [selected, setSelected] = useState<Set<string>>(new Set(defaultValues.lifestyle_tags));
+  const [selected, setSelected] = useState<Set<string>>(new Set(defaultValues.lifestyleTags));
 
   function toggle(tag: string) {
     setSelected((prev) => {
@@ -45,7 +45,7 @@ export function PersonalityStep({ defaultValues, onBack, onNext }: Props) {
     }
     startTransition(async () => {
       const result = await savePersonalityStep({
-        lifestyle_tags: [...selected] as LifestyleTag[],
+        lifestyleTags: [...selected] as LifestyleTag[],
       });
       if (result?.error) {
         toast.error(result.error);

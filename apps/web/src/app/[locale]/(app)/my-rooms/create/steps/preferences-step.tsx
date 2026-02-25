@@ -36,8 +36,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { RoomPreferencesData } from "@/lib/schemas/room";
-import { roomPreferencesSchema } from "@/lib/schemas/room";
+import type { RoomPreferencesData } from "@openhospi/database/validators";
+import { roomPreferencesSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { savePreferences } from "../actions";
@@ -59,17 +59,17 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
     resolver: zodResolver(roomPreferencesSchema as any),
     defaultValues: {
       features: (defaultValues.features as RoomFeature[]) ?? [],
-      location_tags: (defaultValues.location_tags as LocationTag[]) ?? [],
-      preferred_gender: defaultValues.preferred_gender ?? "geen_voorkeur",
-      preferred_age_min: defaultValues.preferred_age_min ?? undefined,
-      preferred_age_max: defaultValues.preferred_age_max ?? undefined,
-      preferred_lifestyle_tags: (defaultValues.preferred_lifestyle_tags as LifestyleTag[]) ?? [],
-      room_vereniging: defaultValues.room_vereniging ?? undefined,
+      locationTags: (defaultValues.locationTags as LocationTag[]) ?? [],
+      preferredGender: defaultValues.preferredGender ?? "geen_voorkeur",
+      preferredAgeMin: defaultValues.preferredAgeMin ?? undefined,
+      preferredAgeMax: defaultValues.preferredAgeMax ?? undefined,
+      preferredLifestyleTags: (defaultValues.preferredLifestyleTags as LifestyleTag[]) ?? [],
+      roomVereniging: defaultValues.roomVereniging ?? undefined,
     },
   });
 
   function toggleArrayField<T extends string>(
-    name: "features" | "location_tags" | "preferred_lifestyle_tags",
+    name: "features" | "locationTags" | "preferredLifestyleTags",
     value: T,
   ) {
     const current = (form.getValues(name) as T[]) ?? [];
@@ -92,8 +92,8 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
   }
 
   const selectedFeatures = form.watch("features") ?? [];
-  const selectedLocationTags = form.watch("location_tags") ?? [];
-  const selectedLifestyleTags = form.watch("preferred_lifestyle_tags") ?? [];
+  const selectedLocationTags = form.watch("locationTags") ?? [];
+  const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
 
   return (
     <Form {...form}>
@@ -133,7 +133,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                     "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
                     isSelected && "bg-primary text-primary-foreground",
                   )}
-                  onClick={() => toggleArrayField("location_tags", tag)}
+                  onClick={() => toggleArrayField("locationTags", tag)}
                 >
                   {tEnums(`location_tag.${tag}`)}
                 </Badge>
@@ -144,7 +144,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
 
         <FormField
           control={form.control}
-          name="preferred_gender"
+          name="preferredGender"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.preferredGender")}</FormLabel>
@@ -173,7 +173,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
-            name="preferred_age_min"
+            name="preferredAgeMin"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("fields.preferredAgeMin")}</FormLabel>
@@ -187,7 +187,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
 
           <FormField
             control={form.control}
-            name="preferred_age_max"
+            name="preferredAgeMax"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("fields.preferredAgeMax")}</FormLabel>
@@ -213,7 +213,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                     "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
                     isSelected && "bg-primary text-primary-foreground",
                   )}
-                  onClick={() => toggleArrayField("preferred_lifestyle_tags", tag)}
+                  onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
                 >
                   {tEnums(`lifestyle_tag.${tag}`)}
                 </Badge>
@@ -224,7 +224,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
 
         <FormField
           control={form.control}
-          name="room_vereniging"
+          name="roomVereniging"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>
@@ -258,7 +258,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                         <CommandItem
                           value="__none__"
                           onSelect={() => {
-                            form.setValue("room_vereniging", undefined, { shouldValidate: true });
+                            form.setValue("roomVereniging", undefined, { shouldValidate: true });
                           }}
                         >
                           <Check
@@ -274,7 +274,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                             key={v}
                             value={tEnums(`vereniging.${v}`)}
                             onSelect={() => {
-                              form.setValue("room_vereniging", v, { shouldValidate: true });
+                              form.setValue("roomVereniging", v, { shouldValidate: true });
                             }}
                           >
                             <Check

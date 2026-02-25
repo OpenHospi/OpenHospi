@@ -27,9 +27,9 @@ export async function RoomCard({ room }: Props) {
     <Link href={`/my-rooms/${room.id}`}>
       <Card className="overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-video bg-muted">
-          {room.cover_photo_url ? (
+          {room.coverPhotoUrl ? (
             <Image
-              src={room.cover_photo_url}
+              src={room.coverPhotoUrl}
               alt={room.title || "Room"}
               fill
               className="object-cover"
@@ -49,13 +49,13 @@ export async function RoomCard({ room }: Props) {
         <CardContent className="flex items-center justify-between text-sm text-muted-foreground">
           <span>{tEnums(`city.${room.city}`)}</span>
           <span className="flex items-center gap-2">
-            {room.applicant_count > 0 && (
+            {room.applicantCount > 0 && (
               <span className="flex items-center gap-1">
                 <FileText className="size-3.5" />
-                {room.applicant_count}
+                {room.applicantCount}
               </span>
             )}
-            <span>€{room.rent_price}/mo</span>
+            <span>€{room.rentPrice}/mo</span>
           </span>
         </CardContent>
       </Card>

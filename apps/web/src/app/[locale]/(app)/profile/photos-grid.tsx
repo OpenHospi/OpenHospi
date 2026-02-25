@@ -8,9 +8,10 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import type { ProfilePhoto } from "@/lib/profile";
+import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
 
-import { deleteProfilePhoto, uploadProfilePhoto } from "./profile-actions";
+import { deleteProfilePhoto, saveProfilePhoto } from "./profile-actions";
 
 type Props = {
   photos: ProfilePhoto[];
@@ -38,20 +39,22 @@ export function PhotosGrid({ photos: initialPhotos, editable }: Props) {
   }
 
   async function performUpload(slot: number, file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("slot", String(slot));
+    try {
+      const url = await uploadPhotoToBlob(file, "profile-photos", slot, "profile");
+      const result = await saveProfilePhoto(url, slot);
+      setUploadingSlot(null);
 
-    const result = await uploadProfilePhoto(formData);
-    setUploadingSlot(null);
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
 
-    if (result.error) {
-      toast.error(result.error);
-      return;
-    }
-
-    if (result.photo) {
-      setPhotos((prev) => [...prev.filter((p) => p.slot !== slot), result.photo!]);
+      if (result.photo) {
+        setPhotos((prev) => [...prev.filter((p) => p.slot !== slot), result.photo!]);
+      }
+    } catch {
+      setUploadingSlot(null);
+      toast.error("Upload failed");
     }
   }
 

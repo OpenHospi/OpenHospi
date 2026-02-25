@@ -1,38 +1,41 @@
 "use server";
 
+import { db } from "@openhospi/database";
+import { applications, housemates, rooms } from "@openhospi/database/schema";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
-import { pool } from "@/lib/db";
-import type { ApplyToRoomData } from "@/lib/schemas/application";
-import { applyToRoomSchema } from "@/lib/schemas/application";
+import type { ApplyToRoomData } from "@openhospi/database/validators";
+import { applyToRoomSchema } from "@openhospi/database/validators";
 
 export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
   const session = await requireSession("nl");
   const parsed = applyToRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 
-  // Verify room is active
-  const { rows: roomRows } = await pool.query("SELECT status FROM rooms WHERE id = $1", [roomId]);
-  if (roomRows.length === 0 || roomRows[0].status !== "active") {
+  const [room] = await db
+    .select({ status: rooms.status })
+    .from(rooms)
+    .where(eq(rooms.id, roomId));
+  if (!room || room.status !== "active") {
     return { error: "room_not_active" };
   }
 
-  // Verify user is not a housemate of this room
-  const { rows: housemateRows } = await pool.query(
-    "SELECT 1 FROM housemates WHERE room_id = $1 AND user_id = $2",
-    [roomId, session.user.id],
-  );
-  if (housemateRows.length > 0) {
+  const [housemate] = await db
+    .select({ id: housemates.id })
+    .from(housemates)
+    .where(and(eq(housemates.roomId, roomId), eq(housemates.userId, session.user.id)));
+  if (housemate) {
     return { error: "is_housemate" };
   }
 
   try {
-    await pool.query(
-      `INSERT INTO applications (room_id, user_id, personal_message)
-       VALUES ($1, $2, $3)`,
-      [roomId, session.user.id, parsed.data.personal_message],
-    );
+    await db.insert(applications).values({
+      roomId,
+      userId: session.user.id,
+      personalMessage: parsed.data.personalMessage,
+    });
   } catch (e: unknown) {
     if (
       e instanceof Error &&

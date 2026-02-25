@@ -27,8 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { RoomDetailsData } from "@/lib/schemas/room";
-import { roomDetailsSchema } from "@/lib/schemas/room";
+import type { RoomDetailsData } from "@openhospi/database/validators";
+import { roomDetailsSchema } from "@openhospi/database/validators";
 
 import { saveDetails } from "../actions";
 
@@ -48,20 +48,20 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(roomDetailsSchema as any),
     defaultValues: {
-      rent_price: defaultValues.rent_price ?? undefined,
+      rentPrice: defaultValues.rentPrice ?? undefined,
       deposit: defaultValues.deposit ?? undefined,
-      utilities_included: defaultValues.utilities_included ?? false,
-      room_size_m2: defaultValues.room_size_m2 ?? undefined,
-      available_from: defaultValues.available_from ?? "",
-      available_until: defaultValues.available_until ?? "",
-      rental_type: defaultValues.rental_type ?? "vast",
-      house_type: defaultValues.house_type,
+      utilitiesIncluded: defaultValues.utilitiesIncluded ?? false,
+      roomSizeM2: defaultValues.roomSizeM2 ?? undefined,
+      availableFrom: defaultValues.availableFrom ?? "",
+      availableUntil: defaultValues.availableUntil ?? "",
+      rentalType: defaultValues.rentalType ?? "vast",
+      houseType: defaultValues.houseType,
       furnishing: defaultValues.furnishing,
-      total_housemates: defaultValues.total_housemates ?? undefined,
+      totalHousemates: defaultValues.totalHousemates ?? undefined,
     },
   });
 
-  const rentalType = form.watch("rental_type");
+  const rentalType = form.watch("rentalType");
 
   function onSubmit(data: RoomDetailsData) {
     startTransition(async () => {
@@ -80,7 +80,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
-            name="rent_price"
+            name="rentPrice"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("fields.rentPrice")}</FormLabel>
@@ -121,7 +121,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="utilities_included"
+          name="utilitiesIncluded"
           render={({ field }) => (
             <FormItem className="flex items-center justify-between rounded-lg border p-3">
               <FormLabel className="cursor-pointer">{t("fields.utilitiesIncluded")}</FormLabel>
@@ -134,7 +134,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="room_size_m2"
+          name="roomSizeM2"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.roomSize")}</FormLabel>
@@ -154,7 +154,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="rental_type"
+          name="rentalType"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.rentalType")}</FormLabel>
@@ -183,7 +183,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
-            name="available_from"
+            name="availableFrom"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("fields.availableFrom")}</FormLabel>
@@ -198,7 +198,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
           {rentalType !== "vast" && (
             <FormField
               control={form.control}
-              name="available_until"
+              name="availableUntil"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.availableUntil")}</FormLabel>
@@ -214,7 +214,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="house_type"
+          name="houseType"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.houseType")}</FormLabel>
@@ -264,7 +264,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="total_housemates"
+          name="totalHousemates"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.totalHousemates")}</FormLabel>

@@ -1,7 +1,9 @@
+import { db } from "@openhospi/database";
+import { rooms } from "@openhospi/database/schema";
 import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";
 
-import { pool } from "@/lib/db";
 import { getCitiesWithRoomCount } from "@/lib/discover";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +25,6 @@ const staticPages = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
-  // Static pages
   for (const page of staticPages) {
     for (const locale of SUPPORTED_LOCALES) {
       entries.push({
@@ -40,7 +41,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // City pages
   const cities = await getCitiesWithRoomCount();
   for (const { city } of cities) {
     for (const locale of SUPPORTED_LOCALES) {
@@ -58,15 +58,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Individual room pages (non-vereniging, active, limit 5000)
-  const { rows: rooms } = await pool.query(
-    `SELECT id FROM rooms
-     WHERE status = 'active' AND room_vereniging IS NULL
-     ORDER BY created_at DESC
-     LIMIT 5000`,
-  );
+  const publicRooms = await db
+    .select({ id: rooms.id })
+    .from(rooms)
+    .where(and(eq(rooms.status, "active"), isNull(rooms.roomVereniging)))
+    .orderBy(desc(rooms.createdAt))
+    .limit(5000);
 
-  for (const room of rooms) {
+  for (const room of publicRooms) {
     for (const locale of SUPPORTED_LOCALES) {
       entries.push({
         url: `${BASE_URL}/${locale}/rooms/${room.id}`,

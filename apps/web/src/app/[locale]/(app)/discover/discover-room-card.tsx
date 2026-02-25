@@ -19,9 +19,9 @@ export async function DiscoverRoomCard({ room }: Props) {
     <Link href={`/discover/${room.id}`}>
       <Card className="overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-video bg-muted">
-          {room.cover_photo_url ? (
+          {room.coverPhotoUrl ? (
             <Image
-              src={room.cover_photo_url}
+              src={room.coverPhotoUrl}
               alt={room.title}
               fill
               className="object-cover"
@@ -31,9 +31,9 @@ export async function DiscoverRoomCard({ room }: Props) {
               <Home className="size-8 text-muted-foreground" />
             </div>
           )}
-          {room.house_type && (
+          {room.houseType && (
             <Badge variant="secondary" className="absolute top-2 left-2">
-              {tEnums(`house_type.${room.house_type}`)}
+              {tEnums(`house_type.${room.houseType}`)}
             </Badge>
           )}
         </div>
@@ -45,16 +45,16 @@ export async function DiscoverRoomCard({ room }: Props) {
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">
-            €{room.rent_price}
+            €{room.rentPrice}
             <span className="font-normal text-muted-foreground">{t("perMonth")}</span>
           </span>
           <span className="flex items-center gap-1 text-muted-foreground">
-            {room.room_size_m2 && <span>{room.room_size_m2} m²</span>}
-            {room.total_housemates != null && (
+            {room.roomSizeM2 && <span>{room.roomSizeM2} m²</span>}
+            {room.totalHousemates != null && (
               <>
-                {room.room_size_m2 && <span>·</span>}
+                {room.roomSizeM2 && <span>·</span>}
                 <Users className="size-3.5" />
-                <span>{room.total_housemates}</span>
+                <span>{room.totalHousemates}</span>
               </>
             )}
           </span>

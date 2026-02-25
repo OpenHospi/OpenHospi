@@ -28,16 +28,16 @@ export async function ApplicationCard({ application }: Props) {
   const t = await getTranslations("app.applications");
   const tEnums = await getTranslations("enums");
 
-  const appliedDate = new Date(application.applied_at).toLocaleDateString();
+  const appliedDate = new Date(application.appliedAt).toLocaleDateString();
 
   return (
     <Link href={`/applications/${application.id}`}>
       <Card className="overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-video bg-muted">
-          {application.room_cover_photo_url ? (
+          {application.roomCoverPhotoUrl ? (
             <Image
-              src={application.room_cover_photo_url}
-              alt={application.room_title}
+              src={application.roomCoverPhotoUrl}
+              alt={application.roomTitle}
               fill
               className="object-cover"
             />
@@ -51,12 +51,12 @@ export async function ApplicationCard({ application }: Props) {
           </Badge>
         </div>
         <CardHeader className="pb-2">
-          <h3 className="truncate font-semibold">{application.room_title}</h3>
-          <p className="text-sm text-muted-foreground">{tEnums(`city.${application.room_city}`)}</p>
+          <h3 className="truncate font-semibold">{application.roomTitle}</h3>
+          <p className="text-sm text-muted-foreground">{tEnums(`city.${application.roomCity}`)}</p>
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">
-            €{application.room_rent_price}
+            €{application.roomRentPrice}
             <span className="font-normal text-muted-foreground">/mo</span>
           </span>
           <span className="text-muted-foreground">{t("appliedOn", { date: appliedDate })}</span>

@@ -32,7 +32,7 @@ export async function ApplicantsSection({ roomId, userId }: Props) {
         <div className="grid gap-4 sm:grid-cols-2">
           {applicants.map((applicant) => (
             <ApplicantCard
-              key={applicant.application_id}
+              key={applicant.applicationId}
               applicant={applicant}
               roomId={roomId}
               currentUserId={userId}

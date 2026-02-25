@@ -25,8 +25,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import type { RoomApplicant } from "@/lib/applicants";
-import type { ReviewData } from "@/lib/schemas/review";
-import { reviewSchema } from "@/lib/schemas/review";
+import type { ReviewData } from "@openhospi/database/validators";
+import { reviewSchema } from "@openhospi/database/validators";
 
 import { submitReview } from "./applicant-actions";
 
@@ -50,7 +50,7 @@ export function ApplicantProfileSheet({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const myReview = applicant.reviews.find((r) => r.reviewer_id === currentUserId);
+  const myReview = applicant.reviews.find((r) => r.reviewerId === currentUserId);
 
   const form = useForm<ReviewData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,7 +63,7 @@ export function ApplicantProfileSheet({
 
   function onSubmit(data: ReviewData) {
     startTransition(async () => {
-      const result = await submitReview(roomId, applicant.user_id, data);
+      const result = await submitReview(roomId, applicant.userId, data);
       if (result?.error) {
         toast.error(t("reviewError"));
         return;
@@ -74,19 +74,19 @@ export function ApplicantProfileSheet({
   }
 
   const age = useMemo(() => {
-    if (!applicant.birth_date) return null;
+    if (!applicant.birthDate) return null;
     return Math.floor(
-      (new Date().getTime() - new Date(applicant.birth_date).getTime()) /
+      (new Date().getTime() - new Date(applicant.birthDate).getTime()) /
         (365.25 * 24 * 60 * 60 * 1000),
     );
-  }, [applicant.birth_date]);
+  }, [applicant.birthDate]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>
-            {applicant.first_name} {applicant.last_name}
+            {applicant.firstName} {applicant.lastName}
           </SheetTitle>
         </SheetHeader>
 
@@ -101,7 +101,7 @@ export function ApplicantProfileSheet({
                 >
                   <Image
                     src={photo.url}
-                    alt={photo.caption ?? applicant.first_name}
+                    alt={photo.caption ?? applicant.firstName}
                     fill
                     className="object-cover"
                   />
@@ -124,10 +124,10 @@ export function ApplicantProfileSheet({
               )}
               {applicant.gender && <> · {tEnums(`gender.${applicant.gender}`)}</>}
             </p>
-            {applicant.study_program && (
+            {applicant.studyProgram && (
               <p className="text-sm">
-                {applicant.study_program}
-                {applicant.study_level && <> · {tEnums(`study_level.${applicant.study_level}`)}</>}
+                {applicant.studyProgram}
+                {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
               </p>
             )}
             {applicant.vereniging && (
@@ -135,8 +135,8 @@ export function ApplicantProfileSheet({
                 {tEnums(`vereniging.${applicant.vereniging}`)}
               </p>
             )}
-            {applicant.show_instagram && applicant.instagram_handle && (
-              <p className="text-sm text-muted-foreground">@{applicant.instagram_handle}</p>
+            {applicant.showInstagram && applicant.instagramHandle && (
+              <p className="text-sm text-muted-foreground">@{applicant.instagramHandle}</p>
             )}
           </div>
 
@@ -151,11 +151,11 @@ export function ApplicantProfileSheet({
           )}
 
           {/* Lifestyle tags */}
-          {applicant.lifestyle_tags.length > 0 && (
+          {applicant.lifestyleTags.length > 0 && (
             <div>
               <h3 className="text-sm font-semibold">{t("lifestyle")}</h3>
               <div className="mt-1 flex flex-wrap gap-1">
-                {applicant.lifestyle_tags.map((tag) => (
+                {applicant.lifestyleTags.map((tag) => (
                   <Badge key={tag} variant="outline" className="text-xs">
                     {tEnums(`lifestyle_tag.${tag}`)}
                   </Badge>
@@ -165,11 +165,11 @@ export function ApplicantProfileSheet({
           )}
 
           {/* Personal message */}
-          {applicant.personal_message && (
+          {applicant.personalMessage && (
             <div>
               <h3 className="text-sm font-semibold">{t("personalMessage")}</h3>
               <p className="mt-1 whitespace-pre-line text-sm italic text-muted-foreground">
-                {applicant.personal_message}
+                {applicant.personalMessage}
               </p>
             </div>
           )}

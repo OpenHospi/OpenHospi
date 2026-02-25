@@ -1,15 +1,29 @@
 import { sso } from "@better-auth/sso";
+import { db } from "@openhospi/database";
+import * as schema from "@openhospi/database/schema";
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 
-import { pool } from "./db";
 
 export const auth = betterAuth({
-  database: pool,
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user: schema.user,
+      session: schema.session,
+      account: schema.account,
+      verification: schema.verification,
+      ssoProvider: schema.ssoProvider,
+    },
+  }),
   advanced: {
     database: {
       generateId: "uuid",
     },
+  },
+  experimental: {
+    joins: true,
   },
   trustedOrigins: [
     process.env.BETTER_AUTH_URL!,
@@ -44,18 +58,27 @@ export const auth = betterAuth({
         const affiliations = (userInfo.eduperson_affiliation as string[]) || [];
         const affiliation = affiliations.includes("employee") ? "employee" : "student";
 
-        await pool.query(
-          `INSERT INTO profiles (id, first_name, last_name, email, institution_domain, affiliation)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           ON CONFLICT (id) DO UPDATE SET
-             email = EXCLUDED.email,
-             first_name = EXCLUDED.first_name,
-             last_name = EXCLUDED.last_name,
-             institution_domain = EXCLUDED.institution_domain,
-             affiliation = EXCLUDED.affiliation,
-             last_login_at = NOW()`,
-          [user.id, firstName, lastName, email, institution, affiliation],
-        );
+        await db
+          .insert(schema.profiles)
+          .values({
+            id: user.id,
+            firstName,
+            lastName,
+            email,
+            institutionDomain: institution,
+            affiliation: affiliation as "student" | "employee",
+          })
+          .onConflictDoUpdate({
+            target: schema.profiles.id,
+            set: {
+              email,
+              firstName,
+              lastName,
+              institutionDomain: institution,
+              affiliation: affiliation as "student" | "employee",
+              lastLoginAt: new Date(),
+            },
+          });
       },
     }),
     nextCookies(),

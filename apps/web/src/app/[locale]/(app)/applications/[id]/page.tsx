@@ -62,7 +62,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const isTerminal = terminalStatuses.has(application.status);
-  const appliedDate = new Date(application.applied_at).toLocaleDateString();
+  const appliedDate = new Date(application.appliedAt).toLocaleDateString();
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -70,10 +70,10 @@ export default async function ApplicationDetailPage({ params }: Props) {
       <Card>
         <div className="flex flex-col sm:flex-row">
           <div className="relative aspect-video w-full shrink-0 bg-muted sm:aspect-square sm:w-48">
-            {application.room_cover_photo_url ? (
+            {application.roomCoverPhotoUrl ? (
               <Image
-                src={application.room_cover_photo_url}
-                alt={application.room_title}
+                src={application.roomCoverPhotoUrl}
+                alt={application.roomTitle}
                 fill
                 className="object-cover sm:rounded-l-lg"
               />
@@ -84,26 +84,26 @@ export default async function ApplicationDetailPage({ params }: Props) {
             )}
           </div>
           <div className="flex-1 p-4">
-            <h2 className="text-xl font-semibold">{application.room_title}</h2>
+            <h2 className="text-xl font-semibold">{application.roomTitle}</h2>
             <p className="text-sm text-muted-foreground">
-              {tEnums(`city.${application.room_city}`)}
+              {tEnums(`city.${application.roomCity}`)}
             </p>
             <p className="mt-2 text-lg font-bold">
-              €{application.room_rent_price}
+              €{application.roomRentPrice}
               <span className="text-sm font-normal text-muted-foreground">/mo</span>
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
-              {application.room_house_type && (
-                <span>{tEnums(`house_type.${application.room_house_type}`)}</span>
+              {application.roomHouseType && (
+                <span>{tEnums(`house_type.${application.roomHouseType}`)}</span>
               )}
-              {application.room_size_m2 && <span>· {application.room_size_m2} m²</span>}
-              {application.room_total_housemates != null && (
-                <span>· {t("housemates", { count: application.room_total_housemates })}</span>
+              {application.roomSizeM2 && <span>· {application.roomSizeM2} m²</span>}
+              {application.roomTotalHousemates != null && (
+                <span>· {t("housemates", { count: application.roomTotalHousemates })}</span>
               )}
             </div>
             <div className="mt-3">
               <Button asChild variant="outline" size="sm">
-                <Link href={`/discover/${application.room_id}`}>{t("viewRoom")}</Link>
+                <Link href={`/discover/${application.roomId}`}>{t("viewRoom")}</Link>
               </Button>
             </div>
           </div>
@@ -135,14 +135,14 @@ export default async function ApplicationDetailPage({ params }: Props) {
       </Card>
 
       {/* Personal message */}
-      {application.personal_message && (
+      {application.personalMessage && (
         <Card>
           <CardHeader>
             <CardTitle>{t("yourMessage")}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="whitespace-pre-line text-muted-foreground">
-              {application.personal_message}
+              {application.personalMessage}
             </p>
           </CardContent>
         </Card>

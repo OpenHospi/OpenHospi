@@ -1,39 +1,35 @@
 "use server";
 
-import { requireSession } from "@/lib/auth-server";
-import { pool } from "@/lib/db";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
-import type { ProfilePhoto } from "@/lib/profile";
+import { db } from "@openhospi/database";
+import { profilePhotos } from "@openhospi/database/schema";
+import type { ProfilePhoto } from "@openhospi/database/types";
+import { and, eq } from "drizzle-orm";
 
-export async function uploadPhoto(
-  formData: FormData,
+import { requireSession } from "@/lib/auth-server";
+import { deletePhotoFromStorage } from "@/lib/photos";
+
+export async function savePhoto(
+  url: string,
+  slot: number,
 ): Promise<{ error?: string; photo?: ProfilePhoto }> {
   const session = await requireSession("nl");
-  const file = formData.get("file") as File | null;
-  const slotStr = formData.get("slot") as string | null;
 
-  if (!file || !slotStr) return { error: "Missing file or slot" };
-
-  const slot = Number.parseInt(slotStr, 10);
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
-
-  const ext = file.name.split(".").pop() || "jpg";
-  const path = `${session.user.id}/${slot}.${ext}`;
+  if (!url) return { error: "Missing URL" };
 
   try {
-    const url = await uploadPhotoToStorage("profile-photos", path, file);
+    const [photo] = await db
+      .insert(profilePhotos)
+      .values({ userId: session.user.id, slot, url })
+      .onConflictDoUpdate({
+        target: [profilePhotos.userId, profilePhotos.slot],
+        set: { url, uploadedAt: new Date() },
+      })
+      .returning();
 
-    const { rows } = await pool.query(
-      `INSERT INTO profile_photos (user_id, slot, url)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (user_id, slot) DO UPDATE SET url = EXCLUDED.url, uploaded_at = NOW()
-       RETURNING id, slot, url, caption`,
-      [session.user.id, slot, url],
-    );
-
-    return { photo: rows[0] };
+    return { photo };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Upload failed";
+    const message = e instanceof Error ? e.message : "Save failed";
     return { error: message };
   }
 }
@@ -44,26 +40,18 @@ export async function deletePhoto(slot: number): Promise<{ error?: string }> {
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
 
   try {
-    // Find the photo to get URL for storage path
-    const { rows } = await pool.query(
-      "SELECT url FROM profile_photos WHERE user_id = $1 AND slot = $2",
-      [session.user.id, slot],
-    );
+    const [photo] = await db
+      .select({ url: profilePhotos.url })
+      .from(profilePhotos)
+      .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot)));
 
-    if (rows.length === 0) return { error: "Photo not found" };
+    if (!photo) return { error: "Photo not found" };
 
-    // Extract path from URL and delete from storage
-    const url = rows[0].url as string;
-    const bucketPath = url.split("/storage/v1/object/public/profile-photos/")[1];
-    if (bucketPath) {
-      await deletePhotoFromStorage("profile-photos", bucketPath);
-    }
+    await deletePhotoFromStorage(photo.url);
 
-    // Delete from database
-    await pool.query("DELETE FROM profile_photos WHERE user_id = $1 AND slot = $2", [
-      session.user.id,
-      slot,
-    ]);
+    await db
+      .delete(profilePhotos)
+      .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot)));
 
     return {};
   } catch (e) {

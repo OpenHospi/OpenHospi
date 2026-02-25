@@ -29,8 +29,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { AboutStepData } from "@/lib/schemas/profile";
-import { aboutStepSchema } from "@/lib/schemas/profile";
+import type { AboutStepData } from "@openhospi/database/validators";
+import { aboutStepSchema } from "@openhospi/database/validators";
 
 import { saveAboutStep } from "../actions";
 
@@ -50,9 +50,9 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
     resolver: zodResolver(aboutStepSchema as any),
     defaultValues: {
       gender: defaultValues.gender,
-      birth_date: defaultValues.birth_date ?? "",
-      study_program: defaultValues.study_program ?? "",
-      study_level: defaultValues.study_level,
+      birthDate: defaultValues.birthDate ?? "",
+      studyProgram: defaultValues.studyProgram ?? "",
+      studyLevel: defaultValues.studyLevel,
       bio: defaultValues.bio ?? "",
     },
   });
@@ -101,7 +101,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="birth_date"
+          name="birthDate"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.birthDate")}</FormLabel>
@@ -115,7 +115,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="study_program"
+          name="studyProgram"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.studyProgram")}</FormLabel>
@@ -129,7 +129,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="study_level"
+          name="studyLevel"
           render={({ field }) => (
             <FormItem>
               <FormLabel>

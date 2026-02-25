@@ -22,7 +22,7 @@ export function ShareLinkSection({ room }: Props) {
   const [copied, setCopied] = useState(false);
   const router = useRouter();
 
-  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/room/${room.share_link}`;
+  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/room/${room.shareLink}`;
 
   async function handleCopy() {
     await navigator.clipboard.writeText(shareUrl);
@@ -58,13 +58,13 @@ export function ShareLinkSection({ room }: Props) {
       </div>
 
       <div className="flex gap-4 text-sm text-muted-foreground">
-        <span>{t("useCount", { count: room.share_link_use_count })}</span>
+        <span>{t("useCount", { count: room.shareLinkUseCount ?? 0 })}</span>
         <span>
-          {room.share_link_max_uses ? `${t("maxUses")}: ${room.share_link_max_uses}` : t("noLimit")}
+          {room.shareLinkMaxUses ? `${t("maxUses")}: ${room.shareLinkMaxUses}` : t("noLimit")}
         </span>
         <span>
-          {room.share_link_expires_at
-            ? `${t("expiry")}: ${new Date(room.share_link_expires_at).toLocaleDateString()}`
+          {room.shareLinkExpiresAt
+            ? `${t("expiry")}: ${new Date(room.shareLinkExpiresAt).toLocaleDateString()}`
             : t("noExpiry")}
         </span>
       </div>

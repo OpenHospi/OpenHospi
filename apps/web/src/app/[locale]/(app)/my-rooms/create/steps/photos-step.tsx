@@ -9,10 +9,11 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { RoomPhoto } from "@/lib/rooms";
+import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
 
 import { publishRoom } from "../actions";
-import { deleteRoomPhoto, uploadRoomPhoto } from "../photo-actions";
+import { deleteRoomPhoto, saveRoomPhoto } from "../photo-actions";
 
 type Props = {
   roomId: string;
@@ -49,21 +50,22 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
     setUploadingSlot(slot);
 
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("slot", String(slot));
-      formData.append("roomId", roomId);
+      try {
+        const url = await uploadPhotoToBlob(file, "room-photos", slot, "room", roomId);
+        const result = await saveRoomPhoto(url, roomId, slot);
+        setUploadingSlot(null);
 
-      const result = await uploadRoomPhoto(formData);
-      setUploadingSlot(null);
+        if (result.error) {
+          toast.error(result.error);
+          return;
+        }
 
-      if (result.error) {
-        toast.error(result.error);
-        return;
-      }
-
-      if (result.photo) {
-        onPhotosChange([...photos.filter((p) => p.slot !== slot), result.photo]);
+        if (result.photo) {
+          onPhotosChange([...photos.filter((p) => p.slot !== slot), result.photo]);
+        }
+      } catch {
+        setUploadingSlot(null);
+        toast.error("Upload failed");
       }
     });
 

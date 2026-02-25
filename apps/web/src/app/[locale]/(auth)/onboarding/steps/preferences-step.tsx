@@ -35,8 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { PreferencesStepData } from "@/lib/schemas/profile";
-import { preferencesStepSchema } from "@/lib/schemas/profile";
+import type { PreferencesStepData } from "@openhospi/database/validators";
+import { preferencesStepSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { finishOnboarding, savePreferencesStep } from "../actions";
@@ -55,12 +55,12 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(preferencesStepSchema as any),
     defaultValues: {
-      preferred_city: defaultValues.preferred_city,
-      max_rent: defaultValues.max_rent ?? undefined,
-      available_from: defaultValues.available_from ?? "",
+      preferredCity: defaultValues.preferredCity,
+      maxRent: defaultValues.maxRent ?? undefined,
+      availableFrom: defaultValues.availableFrom ?? "",
       vereniging: defaultValues.vereniging ?? undefined,
-      instagram_handle: defaultValues.instagram_handle ?? "",
-      show_instagram: defaultValues.show_instagram ?? false,
+      instagramHandle: defaultValues.instagramHandle ?? "",
+      showInstagram: defaultValues.showInstagram ?? false,
     },
   });
 
@@ -81,7 +81,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="preferred_city"
+          name="preferredCity"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.preferredCity")}</FormLabel>
@@ -106,7 +106,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
 
         <FormField
           control={form.control}
-          name="max_rent"
+          name="maxRent"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -130,7 +130,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
 
         <FormField
           control={form.control}
-          name="available_from"
+          name="availableFrom"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.availableFrom")}</FormLabel>
@@ -218,7 +218,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
 
         <FormField
           control={form.control}
-          name="instagram_handle"
+          name="instagramHandle"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -235,7 +235,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
 
         <FormField
           control={form.control}
-          name="show_instagram"
+          name="showInstagram"
           render={({ field }) => (
             <FormItem className="flex items-center justify-between rounded-lg border p-3">
               <FormLabel className="cursor-pointer">{t("fields.showInstagram")}</FormLabel>

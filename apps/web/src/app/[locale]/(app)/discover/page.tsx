@@ -80,8 +80,8 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   if (!hasSearchParams) {
     const profile = await getProfile(user.id);
     if (profile) {
-      if (profile.preferred_city) filters = { ...filters, city: profile.preferred_city };
-      if (profile.max_rent) filters = { ...filters, maxPrice: profile.max_rent };
+      if (profile.preferredCity) filters = { ...filters, city: profile.preferredCity };
+      if (profile.maxRent) filters = { ...filters, maxPrice: Number(profile.maxRent) };
     }
   }
 

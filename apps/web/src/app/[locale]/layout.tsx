@@ -2,6 +2,7 @@ import type { Locale } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -56,6 +57,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           </ThemeProvider>
         </NextIntlClientProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

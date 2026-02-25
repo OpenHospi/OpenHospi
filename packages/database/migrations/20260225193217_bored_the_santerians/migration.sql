@@ -23,60 +23,68 @@ CREATE TYPE "room_status_enum" AS ENUM('draft', 'active', 'paused', 'closed');--
 CREATE TYPE "study_level_enum" AS ENUM('mbo', 'hbo_propedeuse', 'hbo_bachelor', 'wo_propedeuse', 'wo_bachelor', 'pre_master', 'master', 'phd');--> statement-breakpoint
 CREATE TYPE "vereniging_enum" AS ENUM('omnivas', 'endzjin_sveia', 'sv_bazinga', 'asc_avsv', 'asv_gay', 'aegee_amsterdam', 'sib_amsterdam', 'sa_comitas', 'sv_cyclades', 'odd_selene', 'derm', 'lanx', 'sv_liber', 'svaa_nonomes', 'particolarte', 'ssra', 'unitas_sa', 'arboricultura', 'sv_creas', 'sv_campuscafe_lokaal_99', 'quercus', 'trolleystam', 'sv_maximus', 'sv_phileas_fogg', 'sv_virgo', 'aegee_delft', 'aldgillis', 'delftsch_studenten_corps', 'delftsche_studenten_bond', 'delftsche_zwervers', 'dsv_nieuwe_delft', 'dsv_sint_jansbrug', 'outsite', 'ksv_sanctus_virgilius', 'mv_wolbodo', 'moeder_delftsche', 'ojv_de_koornbeurs', 'sv_hezarfen', 'sv_nova', 'uknighted', 'vsstd', 'nescio', 'pro_deo', 'usra', 'aegee_eindhoven', 'atmos', 'br_beurs', 'cosmos', 'compass', 'esv_demos', 'estv_doppio', 'eindhovens_studenten_corps', 'jces_kinjin', 'sa_salaam', 'ssre', 'tuna_ciudad_de_luz', 'ledstam', 'audentis_et_virtutis', 'asv_taste', 'aegee_enschede', 'csv_alpha_enschede', 'radix', 'hsv', 'intac', 'la_confrerie', 'aegee_groningen', 'albertus_magnus', 'ffj_bernlef', 'cavv', 'cleopatra', 'asv_dizkartes', 'flanor', 'csg_gica', 'ganymedes', 'gsv_groningen', 'csv_ichthus_groningen', 'martinistam', 'unitas_sg', 'sib_groningen', 'vindicat', 'carpe_noctem', 'haerlems_studenten_gildt', 'volupia', 'woord_en_daad', 'animoso', 'gremio_unio', 'io_vivat', 'osiris', 'asvl_sempiternus', 'wolweze', 'luwt_stam', 'augustinus', 'catena', 'minerva', 'quintus', 'ssr_leiden', 'aegee_leiden', 'dac', 'sib_leiden', 'het_duivelsei', 'asv_prometheus', 'sleutelstam', 'gnsv_leiden', 'amphitryon', 'circumflex', 'sv_koko', 'tragos', 'aegee_nijmegen', 'nsv_carolus_magnus', 'asv_karpe_noktem', 'noviomagustam', 'nsba', 'nsv_ovum_novum', 'sv_sturad', 'vsa_nijmegen', 'gnsv_nijmegen', 'rsc_rvsv', 'rsv_sanctus_laurentius', 'ssr_rotterdam', 'rsg', 'nsr', 'vgsr', 'wbs', 'tsv_plato', 'sint_olof', 'totus', 'biton', 'sib_utrecht', 'ssr_nu', 'uhsv_anteros', 'umtc', 'unitas_srt', 'utrechtsch_studenten_corps', 'uvsv_nvvsu', 'veritas', 'ufo_stam', 'gnsv_utrecht', 'aqua_ad_vinum', 'marum_bibio', 'brabants_studenten_gilde', 'wsv_ceres', 'franciscus_xaverius', 't_noaberschop', 'dlv_nji_sri', 'ssr_w', 'unitas_wageningen', 'wsg_paragon', 'yggdrasilstam', 'zsv', 'gumbo_millennium', 'oikos_nomos', 'zhtc', 'anders');--> statement-breakpoint
 CREATE TABLE "account" (
-	"id" uuid PRIMARY KEY,
-	"userId" uuid NOT NULL,
-	"accountId" text NOT NULL,
-	"providerId" text NOT NULL,
-	"accessToken" text,
-	"refreshToken" text,
-	"accessTokenExpiresAt" timestamp with time zone,
-	"refreshTokenExpiresAt" timestamp with time zone,
+	"id" uuid PRIMARY KEY DEFAULT pg_catalog.gen_random_uuid(),
+	"account_id" text NOT NULL,
+	"provider_id" text NOT NULL,
+	"user_id" uuid NOT NULL,
+	"access_token" text,
+	"refresh_token" text,
+	"id_token" text,
+	"access_token_expires_at" timestamp,
+	"refresh_token_expires_at" timestamp,
 	"scope" text,
-	"idToken" text,
 	"password" text,
-	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
-	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "jwks" (
+	"id" uuid PRIMARY KEY DEFAULT pg_catalog.gen_random_uuid(),
+	"public_key" text NOT NULL,
+	"private_key" text NOT NULL,
+	"created_at" timestamp NOT NULL,
+	"expires_at" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
-	"id" uuid PRIMARY KEY,
-	"userId" uuid NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT pg_catalog.gen_random_uuid(),
+	"expires_at" timestamp NOT NULL,
 	"token" text NOT NULL UNIQUE,
-	"expiresAt" timestamp with time zone NOT NULL,
-	"ipAddress" text,
-	"userAgent" text,
-	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
-	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp NOT NULL,
+	"ip_address" text,
+	"user_agent" text,
+	"user_id" uuid NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "ssoProvider" (
-	"id" uuid PRIMARY KEY,
-	"issuer" text,
-	"domain" text,
-	"oidcConfig" text,
-	"samlConfig" text,
-	"userId" uuid,
-	"providerId" text NOT NULL UNIQUE,
-	"organizationId" text
+CREATE TABLE "sso_provider" (
+	"id" uuid PRIMARY KEY DEFAULT pg_catalog.gen_random_uuid(),
+	"issuer" text NOT NULL,
+	"oidc_config" text,
+	"saml_config" text,
+	"user_id" uuid,
+	"provider_id" text NOT NULL UNIQUE,
+	"organization_id" text,
+	"domain" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
-	"id" uuid PRIMARY KEY,
+	"id" uuid PRIMARY KEY DEFAULT pg_catalog.gen_random_uuid(),
 	"name" text NOT NULL,
 	"email" text NOT NULL UNIQUE,
-	"emailVerified" boolean DEFAULT false NOT NULL,
+	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
-	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
-	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "verification" (
-	"id" uuid PRIMARY KEY,
+	"id" uuid PRIMARY KEY DEFAULT pg_catalog.gen_random_uuid(),
 	"identifier" text NOT NULL,
 	"value" text NOT NULL,
-	"expiresAt" timestamp with time zone NOT NULL,
-	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
-	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL
+	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "profile_photos" (
@@ -358,6 +366,9 @@ CREATE TABLE "push_tokens" (
 );
 --> statement-breakpoint
 ALTER TABLE "push_tokens" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+CREATE INDEX "account_userId_idx" ON "account" ("user_id");--> statement-breakpoint
+CREATE INDEX "session_userId_idx" ON "session" ("user_id");--> statement-breakpoint
+CREATE INDEX "verification_identifier_idx" ON "verification" ("identifier");--> statement-breakpoint
 CREATE INDEX "idx_profile_photos_user" ON "profile_photos" ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_profiles_vereniging" ON "profiles" ("id","vereniging") WHERE ("vereniging" is not null);--> statement-breakpoint
 CREATE INDEX "idx_housemates_user_id" ON "housemates" ("user_id");--> statement-breakpoint
@@ -376,9 +387,9 @@ CREATE INDEX "idx_blocks_blocked_id" ON "blocks" ("blocked_id");--> statement-br
 CREATE INDEX "idx_reports_status" ON "reports" ("status");--> statement-breakpoint
 CREATE INDEX "idx_notifications_user_id" ON "notifications" ("user_id","created_at");--> statement-breakpoint
 CREATE INDEX "idx_push_tokens_user_id" ON "push_tokens" ("user_id");--> statement-breakpoint
-ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
-ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
-ALTER TABLE "ssoProvider" ADD CONSTRAINT "ssoProvider_userId_user_id_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE SET NULL;--> statement-breakpoint
+ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "sso_provider" ADD CONSTRAINT "sso_provider_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "profile_photos" ADD CONSTRAINT "profile_photos_user_id_profiles_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_id_user_id_fkey" FOREIGN KEY ("id") REFERENCES "user"("id");--> statement-breakpoint
 ALTER TABLE "housemates" ADD CONSTRAINT "housemates_room_id_rooms_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms"("id") ON DELETE CASCADE;--> statement-breakpoint
@@ -429,8 +440,8 @@ CREATE POLICY "crud-authenticated-policy-select" ON "room_photos" AS PERMISSIVE 
 CREATE POLICY "crud-authenticated-policy-insert" ON "room_photos" AS PERMISSIVE FOR INSERT TO "authenticated" WITH CHECK (exists(select 1 from rooms where rooms.id = "room_photos"."room_id" and rooms.created_by = (select auth.user_id())));--> statement-breakpoint
 CREATE POLICY "crud-authenticated-policy-update" ON "room_photos" AS PERMISSIVE FOR UPDATE TO "authenticated" USING (exists(select 1 from rooms where rooms.id = "room_photos"."room_id" and rooms.created_by = (select auth.user_id()))) WITH CHECK (exists(select 1 from rooms where rooms.id = "room_photos"."room_id" and rooms.created_by = (select auth.user_id())));--> statement-breakpoint
 CREATE POLICY "crud-authenticated-policy-delete" ON "room_photos" AS PERMISSIVE FOR DELETE TO "authenticated" USING (exists(select 1 from rooms where rooms.id = "room_photos"."room_id" and rooms.created_by = (select auth.user_id())));--> statement-breakpoint
-CREATE POLICY "rooms_select_anon" ON "rooms" AS PERMISSIVE FOR SELECT TO "anonymous" USING ("rooms"."status" = $1);--> statement-breakpoint
-CREATE POLICY "rooms_select_auth" ON "rooms" AS PERMISSIVE FOR SELECT TO "authenticated" USING (("rooms"."status" = $1 or (select auth.user_id() = "rooms"."created_by")));--> statement-breakpoint
+CREATE POLICY "rooms_select_anon" ON "rooms" AS PERMISSIVE FOR SELECT TO "anonymous" USING ("rooms"."status" = 'active');--> statement-breakpoint
+CREATE POLICY "rooms_select_auth" ON "rooms" AS PERMISSIVE FOR SELECT TO "authenticated" USING ("rooms"."status" = 'active' or (select auth.user_id() = "rooms"."created_by"));--> statement-breakpoint
 CREATE POLICY "rooms_insert_own" ON "rooms" AS PERMISSIVE FOR INSERT TO "authenticated" WITH CHECK ((select auth.user_id() = "rooms"."created_by"));--> statement-breakpoint
 CREATE POLICY "rooms_update_own" ON "rooms" AS PERMISSIVE FOR UPDATE TO "authenticated" USING ((select auth.user_id() = "rooms"."created_by")) WITH CHECK ((select auth.user_id() = "rooms"."created_by"));--> statement-breakpoint
 CREATE POLICY "applications_select" ON "applications" AS PERMISSIVE FOR SELECT TO "authenticated" USING ((select auth.user_id()) = "applications"."user_id" or exists(select 1 from housemates where housemates.room_id = "applications"."room_id" and housemates.user_id = (select auth.user_id())));--> statement-breakpoint

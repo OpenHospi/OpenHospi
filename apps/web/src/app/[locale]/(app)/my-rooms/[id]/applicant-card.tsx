@@ -1,0 +1,268 @@
+"use client";
+
+import type { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
+import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useMemo, useState, useTransition } from "react";
+import { toast } from "sonner";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import type { RoomApplicant } from "@/lib/applicants";
+import { cn } from "@/lib/utils";
+
+import { submitReview, updateApplicationStatus } from "./applicant-actions";
+import { ApplicantProfileSheet } from "./applicant-profile-sheet";
+
+const statusColors: Record<string, string> = {
+  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  seen: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
+  liked: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  invited: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+  accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
+  not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+};
+
+type Props = {
+  applicant: RoomApplicant;
+  roomId: string;
+  currentUserId: string;
+};
+
+export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
+  const t = useTranslations("app.rooms.applicants");
+  const tEnums = useTranslations("enums");
+  const [isPending, startTransition] = useTransition();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
+  const router = useRouter();
+
+  const myReview = applicant.reviews.find((r) => r.reviewer_id === currentUserId);
+
+  function handleReview(decision: ReviewDecision) {
+    startTransition(async () => {
+      const result = await submitReview(roomId, applicant.user_id, {
+        decision,
+      });
+      if (result?.error) {
+        toast.error(t("reviewError"));
+        return;
+      }
+      router.refresh();
+    });
+  }
+
+  function handleStatusChange(newStatus: ApplicationStatus) {
+    startTransition(async () => {
+      const result = await updateApplicationStatus(roomId, applicant.application_id, newStatus);
+      if (result?.error) {
+        toast.error(t("statusError"));
+        return;
+      }
+      toast.success(t("statusUpdated"));
+      router.refresh();
+    });
+  }
+
+  const age = useMemo(() => {
+    if (!applicant.birth_date) return null;
+    return Math.floor(
+      (new Date().getTime() - new Date(applicant.birth_date).getTime()) /
+        (365.25 * 24 * 60 * 60 * 1000),
+    );
+  }, [applicant.birth_date]);
+
+  // Review summary from other housemates
+  const likeCounts = { like: 0, maybe: 0, reject: 0 };
+  for (const r of applicant.reviews) {
+    likeCounts[r.decision]++;
+  }
+
+  return (
+    <>
+      <Card className="overflow-hidden">
+        <CardHeader className="flex flex-row items-start gap-3 pb-2">
+          <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-muted">
+            {applicant.avatar_url ? (
+              <Image
+                src={applicant.avatar_url}
+                alt={applicant.first_name}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex size-full items-center justify-center">
+                <UserCircle className="size-8 text-muted-foreground" />
+              </div>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="truncate font-semibold">
+                {applicant.first_name} {applicant.last_name}
+              </h3>
+              <Badge className={cn("shrink-0", statusColors[applicant.status])}>
+                {tEnums(`application_status.${applicant.status}`)}
+              </Badge>
+            </div>
+            <p className="truncate text-sm text-muted-foreground">
+              {applicant.study_program}
+              {applicant.study_level && <> · {tEnums(`study_level.${applicant.study_level}`)}</>}
+              {age && <> · {age}</>}
+            </p>
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-3">
+          {/* Bio excerpt */}
+          {applicant.bio && (
+            <p className="line-clamp-2 text-sm text-muted-foreground">{applicant.bio}</p>
+          )}
+
+          {/* Lifestyle tags */}
+          {applicant.lifestyle_tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {applicant.lifestyle_tags.slice(0, 4).map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  {tEnums(`lifestyle_tag.${tag}`)}
+                </Badge>
+              ))}
+              {applicant.lifestyle_tags.length > 4 && (
+                <Badge variant="outline" className="text-xs">
+                  +{applicant.lifestyle_tags.length - 4}
+                </Badge>
+              )}
+            </div>
+          )}
+
+          {/* Personal message preview */}
+          {applicant.personal_message && (
+            <p className="line-clamp-2 text-sm italic text-muted-foreground">
+              &ldquo;{applicant.personal_message}&rdquo;
+            </p>
+          )}
+
+          {/* Review summary */}
+          {applicant.reviews.length > 0 && (
+            <p className="text-xs text-muted-foreground">
+              {likeCounts.like > 0 && `${likeCounts.like} ${t("liked")} `}
+              {likeCounts.maybe > 0 && `· ${likeCounts.maybe} ${t("maybe")} `}
+              {likeCounts.reject > 0 && `· ${likeCounts.reject} ${t("rejected")}`}
+            </p>
+          )}
+
+          {/* Quick review buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant={myReview?.decision === "like" ? "default" : "outline"}
+              onClick={() => handleReview("like")}
+              disabled={isPending}
+            >
+              <ThumbsUp className="size-3.5" />
+            </Button>
+            <Button
+              size="sm"
+              variant={myReview?.decision === "maybe" ? "default" : "outline"}
+              onClick={() => handleReview("maybe")}
+              disabled={isPending}
+            >
+              <Minus className="size-3.5" />
+            </Button>
+            <Button
+              size="sm"
+              variant={myReview?.decision === "reject" ? "destructive" : "outline"}
+              onClick={() => handleReview("reject")}
+              disabled={isPending}
+            >
+              <ThumbsDown className="size-3.5" />
+            </Button>
+
+            <Button
+              size="sm"
+              variant="ghost"
+              className="ml-auto"
+              onClick={() => setSheetOpen(true)}
+            >
+              {t("viewProfile")}
+            </Button>
+          </div>
+
+          {/* Status action buttons (owner/admin) */}
+          <div className="flex flex-wrap gap-2">
+            {["seen", "liked", "maybe"].includes(applicant.status) && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleStatusChange("invited")}
+                disabled={isPending}
+              >
+                {isPending && <Loader2 className="animate-spin" />}
+                {t("invite")}
+              </Button>
+            )}
+            {applicant.status === "invited" && (
+              <>
+                <Button size="sm" onClick={() => setAcceptDialogOpen(true)} disabled={isPending}>
+                  <Check className="size-3.5" />
+                  {t("accept")}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleStatusChange("not_chosen")}
+                  disabled={isPending}
+                >
+                  <X className="size-3.5" />
+                  {t("notChosen")}
+                </Button>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <ApplicantProfileSheet
+        applicant={applicant}
+        roomId={roomId}
+        currentUserId={currentUserId}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
+
+      <AlertDialog open={acceptDialogOpen} onOpenChange={setAcceptDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("acceptConfirmTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("acceptConfirmDescription", {
+                name: applicant.first_name,
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => handleStatusChange("accepted")}>
+              {t("accept")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}

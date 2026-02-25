@@ -9,6 +9,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 
 const geistSans = Geist({
@@ -22,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://openhospi.nl"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl"),
   title: {
     template: `%s | ${APP_NAME}`,
     default: APP_NAME,
@@ -49,7 +50,10 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+            <Toaster />
+          </ThemeProvider>
         </NextIntlClientProvider>
         <Analytics />
       </body>

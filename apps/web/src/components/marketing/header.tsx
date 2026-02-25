@@ -4,19 +4,21 @@ import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Menu } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/urls";
 
 import { LanguageSwitcher } from "./language-switcher";
 
 const navLinks = [
   { href: "/find-a-room", key: "findRoom" },
   { href: "/list-a-room", key: "listRoom" },
+  { href: "/rooms", key: "browseRooms" },
   { href: "/safety", key: "safety" },
   { href: "/costs", key: "costs" },
   { href: "/about", key: "about" },
@@ -24,7 +26,9 @@ const navLinks = [
 
 export function MarketingHeader() {
   const t = useTranslations("header");
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
+  const loginUrl = getLoginUrl(locale);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,7 +56,7 @@ export function MarketingHeader() {
           <LanguageSwitcher />
           <ThemeToggle />
           <Button asChild size="sm">
-            <Link href="/api/auth/signin">{t("login")}</Link>
+            <a href={loginUrl}>{t("login")}</a>
           </Button>
         </div>
 
@@ -84,7 +88,7 @@ export function MarketingHeader() {
                 ))}
                 <div className="mt-4">
                   <Button className="w-full" asChild>
-                    <Link href="/api/auth/signin">{t("login")}</Link>
+                    <a href={loginUrl}>{t("login")}</a>
                   </Button>
                 </div>
               </div>

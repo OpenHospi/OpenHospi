@@ -1,12 +1,14 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/urls";
 
 export function CtaSection() {
   const t = useTranslations("home.cta");
+  const locale = useLocale();
+  const loginUrl = getLoginUrl(locale);
 
   return (
     <section className="bg-primary/5 py-24">
@@ -15,7 +17,7 @@ export function CtaSection() {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">{t("subtitle")}</p>
         <div className="mt-10">
           <Button size="lg" asChild>
-            <Link href="/api/auth/signin">{t("button")}</Link>
+            <a href={loginUrl}>{t("button")}</a>
           </Button>
         </div>
       </div>

@@ -11,13 +11,7 @@ interface DonateCardProps {
   ctaLabel: string;
 }
 
-export function DonateCard({
-  name,
-  price,
-  badge,
-  description,
-  ctaLabel,
-}: DonateCardProps) {
+export function DonateCard({ name, price, badge, description, ctaLabel }: DonateCardProps) {
   return (
     <Card className="border-primary/20">
       <CardHeader>
@@ -28,9 +22,7 @@ export function DonateCard({
         <p className="text-2xl font-bold text-primary">{price}</p>
       </CardHeader>
       <CardContent>
-        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
-          {badge}
-        </span>
+        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">{badge}</span>
         <p className="mt-3 text-sm text-muted-foreground">{description}</p>
         <div className="mt-6">
           <Button asChild variant="outline" className="w-full">

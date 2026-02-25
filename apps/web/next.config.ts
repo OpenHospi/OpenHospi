@@ -18,7 +18,14 @@ const cspHeader = `
   .replaceAll('\n', "")
   .trim();
 
+const supabaseHostname = supabaseUrl ? new URL(supabaseUrl).hostname : "";
+
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: supabaseHostname
+      ? [{ protocol: "https", hostname: supabaseHostname, pathname: "/storage/v1/object/public/**" }]
+      : [],
+  },
   transpilePackages: [
     "@openhospi/shared",
     "@openhospi/supabase",

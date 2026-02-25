@@ -12,18 +12,20 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { StepList } from "@/components/marketing/step-list";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { getLoginUrl } from "@/lib/urls";
 
 const whyIcons = [ShieldCheck, HandCoins, ClipboardList, Link2] as const;
 const stepIcons: LucideIcon[] = [LogIn, Home, Share2, Eye, ClipboardList, Sparkles];
 
 export default function ListARoomPage() {
   const t = useTranslations("listRoom");
+  const locale = useLocale();
+  const loginUrl = getLoginUrl(locale);
 
   const steps = Array.from({ length: 6 }, (_, i) => ({
     title: t(`steps.items.${i}.title`),
@@ -84,7 +86,7 @@ export default function ListARoomPage() {
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("cta.title")}</h2>
           <div className="mt-8">
             <Button size="lg" asChild>
-              <Link href="/api/auth/signin">{t("cta.button")}</Link>
+              <a href={loginUrl}>{t("cta.button")}</a>
             </Button>
           </div>
         </div>

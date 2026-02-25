@@ -236,8 +236,8 @@ describe.skipIf(!DB_URL)('RLS policies', () => {
         [SOPHIE],
       );
       await client.query(`
-        INSERT INTO rooms (id, created_by, title, city, rent_price, status, is_verenigingshuis, room_vereniging)
-        VALUES ($1, $2, 'SSR Room', 'utrecht', 400, 'active', true, 'ssr')
+        INSERT INTO rooms (id, created_by, title, city, rent_price, status, room_vereniging)
+        VALUES ($1, $2, 'SSR Room', 'utrecht', 400, 'active', 'ssr')
       `, [VERENIGING_ROOM, SOPHIE]);
     });
 

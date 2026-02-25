@@ -9,7 +9,8 @@
       "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
       "costs": "Kosten",
-      "about": "Über uns"
+      "about": "Über uns",
+      "browseRooms": "Zimmer durchsuchen"
     },
     "login": "Mit SURFconext anmelden",
     "menuOpen": "Menü öffnen"
@@ -22,10 +23,12 @@
       "findRoom": "Zimmer finden",
       "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
+      "browseRooms": "Zimmer durchsuchen",
       "costs": "Kosten",
       "privacy": "Datenschutz",
       "terms": "AGB",
-      "about": "Über uns"
+      "about": "Über uns",
+      "missingAssociation": "Vereinigung fehlt?"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
     "openSource": "Open Source",
@@ -249,7 +252,7 @@
     },
     "builtBy": {
       "title": "Wie es begann",
-      "description": "Ruben Talstra sah Mitstudierende, die mit Facebook-Gruppen, Instagram und kostenpflichtigen Plattformen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. So ist OpenHospi entstanden."
+      "description": "Ruben sah Mitstudierende, die mit Facebook-Gruppen, Instagram und kostenpflichtigen Plattformen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. So ist OpenHospi entstanden."
     },
     "openSource": {
       "title": "Open Source & Community",
@@ -320,6 +323,339 @@
         "content": "Diese Bedingungen unterliegen niederländischem Recht. Streitigkeiten werden vor niederländischen Gerichten verhandelt."
       }
     ]
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
+      "surfconextButton": "Anmelden mit SURFconext",
+      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule."
+    }
+  },
+  "app": {
+    "sidebar": {
+      "discover": "Entdecken",
+      "myRooms": "Meine Zimmer",
+      "applications": "Bewerbungen",
+      "profile": "Profil",
+      "settings": "Einstellungen",
+      "comingSoon": "Demnächst"
+    },
+    "userMenu": {
+      "profile": "Mein Profil",
+      "settings": "Einstellungen",
+      "logout": "Abmelden"
+    },
+    "discover": {
+      "title": "Zimmer entdecken",
+      "roomCount": "{showing} von {total} Zimmern",
+      "empty": "Keine Zimmer gefunden. Passe deine Filter an.",
+      "filters": {
+        "city": "Stadt",
+        "cityPlaceholder": "Alle Städte",
+        "minPrice": "Min Preis",
+        "maxPrice": "Max Preis",
+        "houseType": "Wohnungstyp",
+        "houseTypePlaceholder": "Alle Typen",
+        "furnishing": "Einrichtung",
+        "furnishingPlaceholder": "Alle",
+        "availableFrom": "Verfügbar ab",
+        "features": "Merkmale",
+        "featuresPlaceholder": "Merkmale auswählen...",
+        "locationTags": "Lage",
+        "locationTagsPlaceholder": "Tags auswählen...",
+        "sort": "Sortieren nach",
+        "sortNewest": "Neueste zuerst",
+        "sortCheapest": "Günstigste zuerst",
+        "sortMostExpensive": "Teuerste zuerst",
+        "clearFilters": "Filter löschen",
+        "selectedCount": "{count} ausgewählt",
+        "showFilters": "Filter anzeigen",
+        "hideFilters": "Filter ausblenden"
+      },
+      "card": {
+        "perMonth": "/Mo",
+        "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}"
+      }
+    },
+    "profile": {
+      "title": "Mein Profil",
+      "institution": "Einrichtung",
+      "edit": "Bearbeiten",
+      "editTitle": "Profil bearbeiten",
+      "editSuccess": "Profil aktualisiert",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "bio": "Über mich",
+      "studyInfo": "Studieninformation",
+      "studyProgram": "Studiengang",
+      "studyLevel": "Studienniveau",
+      "gender": "Geschlecht",
+      "birthDate": "Geburtsdatum",
+      "preferences": "Präferenzen",
+      "preferredCity": "Bevorzugte Stadt",
+      "maxRent": "Max Miete",
+      "availableFrom": "Verfügbar ab",
+      "lifestyleTags": "Lebensstil",
+      "completeness": {
+        "title": "Profil {completed}/{total} vollständig",
+        "photo": "Profilfoto",
+        "bio": "Bio",
+        "studyProgram": "Studiengang",
+        "birthDate": "Geburtsdatum",
+        "preferredCity": "Bevorzugte Stadt",
+        "lifestyleTags": "Lebensstil-Tags (2+)",
+        "vereniging": "Verein"
+      }
+    },
+    "onboarding": {
+      "title": "Vervollständige dein Profil",
+      "stepOf": "Schritt {current} von {total}",
+      "steps": {
+        "about": "Über dich",
+        "personality": "Persönlichkeit",
+        "photos": "Fotos",
+        "preferences": "Präferenzen"
+      },
+      "stepDescriptions": {
+        "step1": "Erzähl uns etwas über dich.",
+        "step2": "Was beschreibt dich am besten?",
+        "step3": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
+        "step4": "Was suchst du?"
+      },
+      "fields": {
+        "gender": "Geschlecht",
+        "birthDate": "Geburtsdatum",
+        "studyProgram": "Studiengang",
+        "studyLevel": "Studienniveau",
+        "bio": "Über mich",
+        "preferredCity": "Bevorzugte Stadt",
+        "maxRent": "Max Miete",
+        "availableFrom": "Verfügbar ab",
+        "vereniging": "Studentenverein",
+        "instagram": "Instagram",
+        "showInstagram": "Instagram im Profil anzeigen"
+      },
+      "placeholders": {
+        "studyProgram": "z.B. Informatik",
+        "studyLevel": "Wähle dein Niveau",
+        "bio": "Erzähl etwas über dich...",
+        "preferredCity": "Stadt auswählen",
+        "maxRent": "z.B. 600",
+        "vereniging": "z.B. Vindicat",
+        "searchVereniging": "Verein suchen..."
+      },
+      "photoSlots": {
+        "slot1": "Dein bestes Foto",
+        "slot2": "In deiner Freizeit",
+        "slot3": "Zeig deine Persönlichkeit",
+        "slot4": "Mit Freunden oder Mitbewohnern",
+        "slot5": "Dein Studium oder Arbeit"
+      },
+      "required": "Pflichtfeld",
+      "optional": "optional",
+      "next": "Weiter",
+      "back": "Zurück",
+      "complete": "Profil abschließen",
+      "noResults": "Keine Ergebnisse gefunden.",
+      "noSelection": "Keine Auswahl",
+      "tagCounter": "{count}/{max} ausgewählt (min {min})",
+      "validation": {
+        "minTags": "Wähle mindestens {min} Tags"
+      }
+    },
+    "rooms": {
+      "title": "Meine Zimmer",
+      "empty": "Du hast noch keine Zimmer erstellt.",
+      "createFirst": "Erstelle deine erste Anzeige",
+      "createNew": "Neues Zimmer",
+      "applicants": "{count, plural, =0 {Keine Bewerber} =1 {1 Bewerber} other {# Bewerber}}",
+      "wizard": {
+        "stepOf": "Schritt {current} von {total}",
+        "steps": {
+          "basicInfo": "Grunddaten",
+          "details": "Zimmerdetails",
+          "preferences": "Präferenzen",
+          "photos": "Fotos"
+        },
+        "stepDescriptions": {
+          "step1": "Gib deinem Zimmer einen Titel und Standort.",
+          "step2": "Füge Preis, Verfügbarkeit und Zimmerdetails hinzu.",
+          "step3": "Setze Präferenzen und Merkmale für dein Zimmer.",
+          "step4": "Lade Fotos hoch, um dein Zimmer zu zeigen."
+        }
+      },
+      "fields": {
+        "title": "Titel",
+        "description": "Beschreibung",
+        "city": "Stadt",
+        "neighborhood": "Stadtteil",
+        "address": "Adresse",
+        "rentPrice": "Monatliche Miete",
+        "deposit": "Kaution",
+        "utilitiesIncluded": "Nebenkosten inklusive",
+        "roomSize": "Zimmergröße (m²)",
+        "availableFrom": "Verfügbar ab",
+        "availableUntil": "Verfügbar bis",
+        "rentalType": "Mietart",
+        "houseType": "Wohnungstyp",
+        "furnishing": "Einrichtung",
+        "totalHousemates": "Anzahl Mitbewohner",
+        "features": "Merkmale",
+        "locationTags": "Lage",
+        "preferredGender": "Bevorzugtes Geschlecht",
+        "preferredAgeMin": "Mindestalter",
+        "preferredAgeMax": "Höchstalter",
+        "preferredLifestyleTags": "Gewünschter Lebensstil",
+        "roomVereniging": "Vereinigung"
+      },
+      "placeholders": {
+        "title": "z.B. Gemütliches Zimmer in WG",
+        "description": "Beschreibe das Zimmer und die WG...",
+        "neighborhood": "z.B. Zentrum",
+        "address": "z.B. Keizersgracht 1",
+        "rentPrice": "z.B. 450",
+        "deposit": "z.B. 450",
+        "roomSize": "z.B. 12",
+        "totalHousemates": "z.B. 5",
+        "searchVereniging": "Verein suchen..."
+      },
+      "photoSlots": {
+        "slot1": "Titelfoto",
+        "slot2": "Zimmerübersicht",
+        "slot3": "Bad/Küche",
+        "slot4": "Gemeinschaftsbereich",
+        "slot5": "Außen/Straße",
+        "slot6": "Extra",
+        "slot7": "Extra",
+        "slot8": "Extra",
+        "slot9": "Extra",
+        "slot10": "Extra"
+      },
+      "actions": {
+        "publish": "Zimmer veröffentlichen",
+        "saveDraft": "Als Entwurf speichern",
+        "pause": "Anzeige pausieren",
+        "activate": "Anzeige aktivieren",
+        "close": "Anzeige schließen",
+        "edit": "Zimmer bearbeiten",
+        "next": "Weiter",
+        "back": "Zurück"
+      },
+      "shareLink": {
+        "title": "Teilen-Link",
+        "copy": "Link kopieren",
+        "copied": "Link kopiert!",
+        "regenerate": "Link neu generieren",
+        "regenerateConfirm": "Dies macht den alten Link ungültig. Fortfahren?",
+        "expiry": "Läuft ab am",
+        "maxUses": "Max. Nutzungen",
+        "useCount": "{count} Mal genutzt",
+        "noExpiry": "Kein Ablauf",
+        "noLimit": "Kein Limit"
+      },
+      "status": {
+        "confirmClose": "Bist du sicher, dass du diese Anzeige schließen möchtest? Dies kann nicht rückgängig gemacht werden.",
+        "confirmCloseTitle": "Anzeige schließen",
+        "publishError": "Lade mindestens 1 Foto hoch, bevor du veröffentlichst.",
+        "published": "Zimmer veröffentlicht!",
+        "paused": "Zimmer pausiert",
+        "activated": "Zimmer aktiviert",
+        "closed": "Zimmer geschlossen",
+        "updated": "Zimmer aktualisiert",
+        "draftSaved": "Entwurf gespeichert"
+      },
+      "manage": {
+        "title": "Zimmerverwaltung",
+        "details": "Zimmerdetails",
+        "noDescription": "Keine Beschreibung"
+      },
+      "noResults": "Keine Ergebnisse gefunden.",
+      "noSelection": "Keine Auswahl",
+      "optional": "optional",
+      "applicants": {
+        "title": "Bewerbungen",
+        "empty": "Noch keine Bewerbungen. Teile dein Zimmer, um Bewerber anzuziehen.",
+        "viewProfile": "Profil ansehen",
+        "liked": "gefällt",
+        "maybe": "vielleicht",
+        "rejected": "abgelehnt",
+        "invite": "Einladen",
+        "accept": "Annehmen",
+        "notChosen": "Nicht gewählt",
+        "cancel": "Abbrechen",
+        "acceptConfirmTitle": "Bewerber annehmen",
+        "acceptConfirmDescription": "Bist du sicher, dass du {name} annehmen möchtest? Dies kann nicht rückgängig gemacht werden.",
+        "statusError": "Status konnte nicht aktualisiert werden",
+        "statusUpdated": "Status aktualisiert",
+        "reviewError": "Bewertung konnte nicht gespeichert werden",
+        "reviewSubmitted": "Bewertung gespeichert",
+        "aboutThem": "Über",
+        "lifestyle": "Lebensstil",
+        "personalMessage": "Persönliche Nachricht",
+        "yourReview": "Deine Bewertung",
+        "decision": "Entscheidung",
+        "notes": "Notizen",
+        "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
+        "optional": "optional",
+        "submitReview": "Bewertung speichern",
+        "yearsOld": "Jahre alt"
+      }
+    },
+    "roomDetail": {
+      "perMonth": "/Mo",
+      "details": "Zimmerdetails",
+      "description": "Beschreibung",
+      "features": "Merkmale",
+      "locationTags": "Lage",
+      "preferences": "Gesucht wird",
+      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
+      "availableFrom": "Verfügbar ab {date}",
+      "availableUntil": "bis {date}",
+      "deposit": "Kaution",
+      "utilitiesIncluded": "Nebenkosten inklusive",
+      "utilitiesExcluded": "Nebenkosten nicht inklusive",
+      "rentalType": "Mietart",
+      "notFound": "Zimmer nicht gefunden",
+      "notAvailable": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
+      "backToDiscover": "Zurück zur Suche",
+      "manageRoom": "Dieses Zimmer verwalten",
+      "viewApplication": "Deine Bewerbung ansehen",
+      "apply": "Für dieses Zimmer bewerben",
+      "applyTitle": "Für dieses Zimmer bewerben",
+      "personalMessage": "Persönliche Nachricht",
+      "personalMessagePlaceholder": "Erzähle den Mitbewohnern, warum du gut passen würdest...",
+      "personalMessageHint": "Mindestens {min} Zeichen",
+      "cancel": "Abbrechen",
+      "submitApplication": "Bewerbung absenden",
+      "applySuccess": "Bewerbung abgesendet!",
+      "errors": {
+        "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",
+        "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
+        "is_housemate": "Du bist bereits Mitbewohner dieses Zimmers.",
+        "already_applied": "Du hast dich bereits für dieses Zimmer beworben."
+      }
+    },
+    "applications": {
+      "title": "Meine Bewerbungen",
+      "empty": "Du hast dich noch für kein Zimmer beworben.",
+      "discoverRooms": "Zimmer entdecken",
+      "appliedOn": "Beworben am {date}",
+      "detailTitle": "Bewerbungsdetails",
+      "statusTitle": "Bewerbungsstatus",
+      "yourMessage": "Deine Nachricht",
+      "viewRoom": "Zimmer ansehen",
+      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
+      "withdraw": "Bewerbung zurückziehen",
+      "withdrawSuccess": "Bewerbung zurückgezogen",
+      "withdrawConfirmTitle": "Bewerbung zurückziehen",
+      "withdrawConfirmDescription": "Bist du sicher, dass du deine Bewerbung zurückziehen möchtest? Dies kann nicht rückgängig gemacht werden.",
+      "cancel": "Abbrechen",
+      "errors": {
+        "not_found": "Bewerbung nicht gefunden.",
+        "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."
+      }
+    }
   },
   "costs": {
     "title": "Kosten & Transparenz",
@@ -458,5 +794,56 @@
       "description": "100% der Spenden fließen in Infrastrukturkosten. Über Open Collective wird jede Transaktion öffentlich einsehbar. Keine Gehälter, kein Gewinn — nur die Plattform für Studierende am Laufen halten.",
       "badge": "OpenHospi auf Open Collective"
     }
+  },
+  "public": {
+    "rooms": {
+      "title": "Studentenzimmer in den Niederlanden",
+      "subtitle": "Durchsuche Studentenwohnungen in niederländischen Städten.",
+      "roomsAvailable": "{count, plural, =0 {Keine Zimmer} =1 {1 Zimmer} other {# Zimmer}} verfügbar",
+      "loginToBrowse": "Anmelden um alle Zimmer zu sehen"
+    },
+    "cityPage": {
+      "title": "Studentenzimmer in {city}",
+      "subtitle": "{count, plural, =0 {Keine Zimmer} =1 {1 Zimmer} other {# Zimmer}} verfügbar in {city}",
+      "featuredRooms": "Ausgewählte Zimmer",
+      "noRooms": "Noch keine Zimmer in dieser Stadt verfügbar.",
+      "loginCta": "Anmelden um alle Zimmer zu sehen und sich zu bewerben",
+      "browseOtherCities": "Andere Städte durchsuchen"
+    },
+    "room": {
+      "perMonth": "/Mo",
+      "details": "Zimmerdetails",
+      "description": "Beschreibung",
+      "features": "Merkmale",
+      "locationTags": "Lage",
+      "preferences": "Sucht",
+      "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
+      "goToApp": "In App ansehen",
+      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
+      "availableFrom": "Verfügbar ab {date}",
+      "availableUntil": "bis {date}",
+      "notFound": "Zimmer nicht gefunden",
+      "notFoundDescription": "Dieses Zimmer wurde möglicherweise entfernt oder ist nicht mehr verfügbar.",
+      "deposit": "Kaution",
+      "utilitiesIncluded": "Nebenkosten inklusive",
+      "utilitiesExcluded": "Nebenkosten nicht inklusive",
+      "roomSize": "{size} m²",
+      "rentalType": "Mietart"
+    }
+  },
+  "missingAssociation": {
+    "title": "Fehlt deine Vereinigung?",
+    "description": "Unsere Liste basiert auf Wikipedia und ist möglicherweise unvollständig. Lass es uns wissen und wir fügen deine Vereinigung hinzu!",
+    "cardTitle": "Schick uns eine E-Mail",
+    "emailSubject": "Fehlende Vereinigung hinzufügen",
+    "emailBody": "Hallo OpenHospi,\n\nIch möchte gerne die folgende Vereinigung hinzufügen lassen:\n\nName: [Name der Vereinigung]\nStadt: [Stadt]\nWebsite: [URL]\n\nDanke!",
+    "labels": {
+      "to": "An",
+      "subject": "Betreff",
+      "body": "Nachricht"
+    }
+  },
+  "admin": {
+    "comingSoon": "Demnächst verfügbar"
   }
 }

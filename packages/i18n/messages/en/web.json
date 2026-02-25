@@ -9,7 +9,8 @@
       "listRoom": "List a room",
       "safety": "Safety",
       "costs": "Costs",
-      "about": "About"
+      "about": "About",
+      "browseRooms": "Browse rooms"
     },
     "login": "Log in with SURFconext",
     "menuOpen": "Open menu"
@@ -22,10 +23,12 @@
       "findRoom": "Find a room",
       "listRoom": "List a room",
       "safety": "Safety",
+      "browseRooms": "Browse rooms",
       "costs": "Costs",
       "privacy": "Privacy policy",
       "terms": "Terms & conditions",
-      "about": "About"
+      "about": "About",
+      "missingAssociation": "Association missing?"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -249,7 +252,7 @@
     },
     "builtBy": {
       "title": "How it started",
-      "description": "Ruben Talstra saw fellow students struggling with Facebook groups, Instagram, and paid platforms. He didn't experience it himself, but saw many around him dealing with it. That's how OpenHospi was born."
+      "description": "Ruben saw fellow students struggling with Facebook groups, Instagram, and paid platforms. He didn't experience it himself, but saw many around him dealing with it. That's how OpenHospi was born."
     },
     "openSource": {
       "title": "Open source & community",
@@ -320,6 +323,339 @@
         "content": "These terms are governed by Dutch law. Any disputes will be resolved in the courts of the Netherlands."
       }
     ]
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "description": "Log in with your university account to access OpenHospi.",
+      "surfconextButton": "Log in with SURFconext",
+      "surfconextDescription": "Use your university or hogeschool account."
+    }
+  },
+  "app": {
+    "sidebar": {
+      "discover": "Discover",
+      "myRooms": "My Rooms",
+      "applications": "Applications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "comingSoon": "Coming soon"
+    },
+    "userMenu": {
+      "profile": "My profile",
+      "settings": "Settings",
+      "logout": "Log out"
+    },
+    "discover": {
+      "title": "Discover rooms",
+      "roomCount": "Showing {showing} of {total} rooms",
+      "empty": "No rooms match your filters. Try adjusting your search.",
+      "filters": {
+        "city": "City",
+        "cityPlaceholder": "All cities",
+        "minPrice": "Min price",
+        "maxPrice": "Max price",
+        "houseType": "House type",
+        "houseTypePlaceholder": "All types",
+        "furnishing": "Furnishing",
+        "furnishingPlaceholder": "All",
+        "availableFrom": "Available from",
+        "features": "Features",
+        "featuresPlaceholder": "Select features...",
+        "locationTags": "Location",
+        "locationTagsPlaceholder": "Select tags...",
+        "sort": "Sort by",
+        "sortNewest": "Newest first",
+        "sortCheapest": "Cheapest first",
+        "sortMostExpensive": "Most expensive first",
+        "clearFilters": "Clear filters",
+        "selectedCount": "{count} selected",
+        "showFilters": "Show filters",
+        "hideFilters": "Hide filters"
+      },
+      "card": {
+        "perMonth": "/mo",
+        "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}"
+      }
+    },
+    "profile": {
+      "title": "My profile",
+      "institution": "Institution",
+      "edit": "Edit",
+      "editTitle": "Edit profile",
+      "editSuccess": "Profile updated",
+      "save": "Save",
+      "cancel": "Cancel",
+      "bio": "About me",
+      "studyInfo": "Study info",
+      "studyProgram": "Study program",
+      "studyLevel": "Study level",
+      "gender": "Gender",
+      "birthDate": "Date of birth",
+      "preferences": "Preferences",
+      "preferredCity": "Preferred city",
+      "maxRent": "Max rent",
+      "availableFrom": "Available from",
+      "lifestyleTags": "Lifestyle",
+      "completeness": {
+        "title": "Profile {completed}/{total} complete",
+        "photo": "Profile photo",
+        "bio": "Bio",
+        "studyProgram": "Study program",
+        "birthDate": "Date of birth",
+        "preferredCity": "Preferred city",
+        "lifestyleTags": "Lifestyle tags (2+)",
+        "vereniging": "Association"
+      }
+    },
+    "onboarding": {
+      "title": "Complete your profile",
+      "stepOf": "Step {current} of {total}",
+      "steps": {
+        "about": "About you",
+        "personality": "Personality",
+        "photos": "Photos",
+        "preferences": "Preferences"
+      },
+      "stepDescriptions": {
+        "step1": "Tell us a bit about yourself.",
+        "step2": "What describes you best?",
+        "step3": "Add photos so houses get to know you.",
+        "step4": "What are you looking for?"
+      },
+      "fields": {
+        "gender": "Gender",
+        "birthDate": "Date of birth",
+        "studyProgram": "Study program",
+        "studyLevel": "Study level",
+        "bio": "About me",
+        "preferredCity": "Preferred city",
+        "maxRent": "Max rent",
+        "availableFrom": "Available from",
+        "vereniging": "Student association",
+        "instagram": "Instagram",
+        "showInstagram": "Show Instagram on profile"
+      },
+      "placeholders": {
+        "studyProgram": "e.g. Computer Science",
+        "studyLevel": "Select your level",
+        "bio": "Tell something about yourself...",
+        "preferredCity": "Select a city",
+        "maxRent": "e.g. 600",
+        "vereniging": "e.g. Vindicat",
+        "searchVereniging": "Search association..."
+      },
+      "photoSlots": {
+        "slot1": "Your best photo",
+        "slot2": "In your free time",
+        "slot3": "Show your personality",
+        "slot4": "With friends or housemates",
+        "slot5": "Your study or work"
+      },
+      "required": "Required",
+      "optional": "optional",
+      "next": "Next",
+      "back": "Back",
+      "complete": "Complete profile",
+      "noResults": "No results found.",
+      "noSelection": "No selection",
+      "tagCounter": "{count}/{max} selected (min {min})",
+      "validation": {
+        "minTags": "Select at least {min} tags"
+      }
+    },
+    "rooms": {
+      "title": "My Rooms",
+      "empty": "You haven't listed any rooms yet.",
+      "createFirst": "Create your first listing",
+      "createNew": "New room",
+      "applicants": "{count, plural, =0 {No applicants} =1 {1 applicant} other {# applicants}}",
+      "wizard": {
+        "stepOf": "Step {current} of {total}",
+        "steps": {
+          "basicInfo": "Basic info",
+          "details": "Room details",
+          "preferences": "Preferences",
+          "photos": "Photos"
+        },
+        "stepDescriptions": {
+          "step1": "Give your room a title and location.",
+          "step2": "Add pricing, availability, and room details.",
+          "step3": "Set preferences and features for your room.",
+          "step4": "Upload photos to show your room."
+        }
+      },
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "city": "City",
+        "neighborhood": "Neighborhood",
+        "address": "Address",
+        "rentPrice": "Monthly rent",
+        "deposit": "Deposit",
+        "utilitiesIncluded": "Utilities included",
+        "roomSize": "Room size (m²)",
+        "availableFrom": "Available from",
+        "availableUntil": "Available until",
+        "rentalType": "Rental type",
+        "houseType": "House type",
+        "furnishing": "Furnishing",
+        "totalHousemates": "Total housemates",
+        "features": "Features",
+        "locationTags": "Location",
+        "preferredGender": "Preferred gender",
+        "preferredAgeMin": "Min age",
+        "preferredAgeMax": "Max age",
+        "preferredLifestyleTags": "Preferred lifestyle",
+        "roomVereniging": "Association"
+      },
+      "placeholders": {
+        "title": "e.g. Cozy room in student house",
+        "description": "Describe the room and house...",
+        "neighborhood": "e.g. Centrum",
+        "address": "e.g. Keizersgracht 1",
+        "rentPrice": "e.g. 450",
+        "deposit": "e.g. 450",
+        "roomSize": "e.g. 12",
+        "totalHousemates": "e.g. 5",
+        "searchVereniging": "Search association..."
+      },
+      "photoSlots": {
+        "slot1": "Cover photo",
+        "slot2": "Room overview",
+        "slot3": "Bathroom/kitchen",
+        "slot4": "Common area",
+        "slot5": "Outside/street",
+        "slot6": "Extra",
+        "slot7": "Extra",
+        "slot8": "Extra",
+        "slot9": "Extra",
+        "slot10": "Extra"
+      },
+      "actions": {
+        "publish": "Publish room",
+        "saveDraft": "Save as draft",
+        "pause": "Pause listing",
+        "activate": "Activate listing",
+        "close": "Close listing",
+        "edit": "Edit room",
+        "next": "Next",
+        "back": "Back"
+      },
+      "shareLink": {
+        "title": "Share link",
+        "copy": "Copy link",
+        "copied": "Link copied!",
+        "regenerate": "Regenerate link",
+        "regenerateConfirm": "This will invalidate the old link. Continue?",
+        "expiry": "Expires at",
+        "maxUses": "Max uses",
+        "useCount": "{count} times used",
+        "noExpiry": "No expiry",
+        "noLimit": "No limit"
+      },
+      "status": {
+        "confirmClose": "Are you sure you want to close this listing? This cannot be undone.",
+        "confirmCloseTitle": "Close listing",
+        "publishError": "Upload at least 1 photo before publishing.",
+        "published": "Room published!",
+        "paused": "Room paused",
+        "activated": "Room activated",
+        "closed": "Room closed",
+        "updated": "Room updated",
+        "draftSaved": "Draft saved"
+      },
+      "manage": {
+        "title": "Room management",
+        "details": "Room details",
+        "noDescription": "No description"
+      },
+      "noResults": "No results found.",
+      "noSelection": "No selection",
+      "optional": "optional",
+      "applicants": {
+        "title": "Applicants",
+        "empty": "No applications yet. Share your room to attract applicants.",
+        "viewProfile": "View profile",
+        "liked": "liked",
+        "maybe": "maybe",
+        "rejected": "rejected",
+        "invite": "Invite",
+        "accept": "Accept",
+        "notChosen": "Not chosen",
+        "cancel": "Cancel",
+        "acceptConfirmTitle": "Accept applicant",
+        "acceptConfirmDescription": "Are you sure you want to accept {name}? This action cannot be undone.",
+        "statusError": "Could not update status",
+        "statusUpdated": "Status updated",
+        "reviewError": "Could not submit review",
+        "reviewSubmitted": "Review submitted",
+        "aboutThem": "About",
+        "lifestyle": "Lifestyle",
+        "personalMessage": "Personal message",
+        "yourReview": "Your review",
+        "decision": "Decision",
+        "notes": "Notes",
+        "notesPlaceholder": "Add optional notes about this applicant...",
+        "optional": "optional",
+        "submitReview": "Submit review",
+        "yearsOld": "years old"
+      }
+    },
+    "roomDetail": {
+      "perMonth": "/mo",
+      "details": "Room details",
+      "description": "Description",
+      "features": "Features",
+      "locationTags": "Location",
+      "preferences": "Looking for",
+      "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}",
+      "availableFrom": "Available from {date}",
+      "availableUntil": "until {date}",
+      "deposit": "Deposit",
+      "utilitiesIncluded": "Utilities included",
+      "utilitiesExcluded": "Utilities not included",
+      "rentalType": "Rental type",
+      "notFound": "Room not found",
+      "notAvailable": "This room is no longer accepting applications.",
+      "backToDiscover": "Back to discover",
+      "manageRoom": "Manage this room",
+      "viewApplication": "View your application",
+      "apply": "Apply to this room",
+      "applyTitle": "Apply to this room",
+      "personalMessage": "Personal message",
+      "personalMessagePlaceholder": "Tell the housemates why you'd be a great fit...",
+      "personalMessageHint": "Minimum {min} characters",
+      "cancel": "Cancel",
+      "submitApplication": "Submit application",
+      "applySuccess": "Application submitted!",
+      "errors": {
+        "invalid_data": "Please check your message and try again.",
+        "room_not_active": "This room is no longer accepting applications.",
+        "is_housemate": "You are already a housemate of this room.",
+        "already_applied": "You have already applied to this room."
+      }
+    },
+    "applications": {
+      "title": "My Applications",
+      "empty": "You haven't applied to any rooms yet.",
+      "discoverRooms": "Discover rooms",
+      "appliedOn": "Applied {date}",
+      "detailTitle": "Application details",
+      "statusTitle": "Application status",
+      "yourMessage": "Your message",
+      "viewRoom": "View room",
+      "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}",
+      "withdraw": "Withdraw application",
+      "withdrawSuccess": "Application withdrawn",
+      "withdrawConfirmTitle": "Withdraw application",
+      "withdrawConfirmDescription": "Are you sure you want to withdraw your application? This cannot be undone.",
+      "cancel": "Cancel",
+      "errors": {
+        "not_found": "Application not found.",
+        "cannot_withdraw": "This application can no longer be withdrawn."
+      }
+    }
   },
   "costs": {
     "title": "Costs & Transparency",
@@ -458,5 +794,56 @@
       "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students.",
       "badge": "OpenHospi on Open Collective"
     }
+  },
+  "public": {
+    "rooms": {
+      "title": "Student rooms in the Netherlands",
+      "subtitle": "Browse student housing across Dutch cities.",
+      "roomsAvailable": "{count, plural, =0 {No rooms} =1 {1 room} other {# rooms}} available",
+      "loginToBrowse": "Log in to browse all rooms"
+    },
+    "cityPage": {
+      "title": "Student rooms in {city}",
+      "subtitle": "{count, plural, =0 {No rooms} =1 {1 room} other {# rooms}} available in {city}",
+      "featuredRooms": "Featured rooms",
+      "noRooms": "No rooms available in this city yet.",
+      "loginCta": "Log in to see all rooms and apply",
+      "browseOtherCities": "Browse other cities"
+    },
+    "room": {
+      "perMonth": "/mo",
+      "details": "Room details",
+      "description": "Description",
+      "features": "Features",
+      "locationTags": "Location",
+      "preferences": "Looking for",
+      "loginToApply": "Log in with SURFconext to apply",
+      "goToApp": "View in app",
+      "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}",
+      "availableFrom": "Available from {date}",
+      "availableUntil": "until {date}",
+      "notFound": "Room not found",
+      "notFoundDescription": "This room may have been removed or is no longer available.",
+      "deposit": "Deposit",
+      "utilitiesIncluded": "Utilities included",
+      "utilitiesExcluded": "Utilities not included",
+      "roomSize": "{size} m²",
+      "rentalType": "Rental type"
+    }
+  },
+  "missingAssociation": {
+    "title": "Is your association missing?",
+    "description": "Our list is based on Wikipedia and may be incomplete. Let us know and we'll add your association!",
+    "cardTitle": "Send us an email",
+    "emailSubject": "Add missing association",
+    "emailBody": "Hello OpenHospi,\n\nI would like to request the following association to be added:\n\nName: [name of the association]\nCity: [city]\nWebsite: [url]\n\nThank you!",
+    "labels": {
+      "to": "To",
+      "subject": "Subject",
+      "body": "Message"
+    }
+  },
+  "admin": {
+    "comingSoon": "Coming soon"
   }
 }

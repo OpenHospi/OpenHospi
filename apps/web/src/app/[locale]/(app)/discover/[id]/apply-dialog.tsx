@@ -1,0 +1,122 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  MAX_PERSONAL_MESSAGE_LENGTH,
+  MIN_PERSONAL_MESSAGE_LENGTH,
+} from "@openhospi/shared/constants";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import type { ApplyToRoomData } from "@/lib/schemas/application";
+import { applyToRoomSchema } from "@/lib/schemas/application";
+
+import { applyToRoom } from "./actions";
+
+type Props = {
+  roomId: string;
+};
+
+export function ApplyDialog({ roomId }: Props) {
+  const t = useTranslations("app.roomDetail");
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const form = useForm<ApplyToRoomData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(applyToRoomSchema as any),
+    defaultValues: { personal_message: "" },
+  });
+
+  const messageLength = form.watch("personal_message")?.length ?? 0;
+
+  function onSubmit(data: ApplyToRoomData) {
+    startTransition(async () => {
+      const result = await applyToRoom(roomId, data);
+      if (result?.error) {
+        toast.error(t(`errors.${result.error}`));
+        return;
+      }
+      toast.success(t("applySuccess"));
+      setOpen(false);
+      router.refresh();
+    });
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="w-full">{t("apply")}</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{t("applyTitle")}</DialogTitle>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="personal_message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("personalMessage")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="min-h-32 resize-none"
+                      placeholder={t("personalMessagePlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <FormMessage />
+                    <span className="ml-auto">
+                      {messageLength}/{MAX_PERSONAL_MESSAGE_LENGTH}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("personalMessageHint", {
+                      min: MIN_PERSONAL_MESSAGE_LENGTH,
+                    })}
+                  </p>
+                </FormItem>
+              )}
+            />
+
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                {t("cancel")}
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2 className="animate-spin" />}
+                {t("submitApplication")}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}

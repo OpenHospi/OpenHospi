@@ -1,3 +1,4 @@
+import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
   boolean,
   index,
@@ -12,12 +13,15 @@ import { conversationTypeEnum, deliveryStatusEnum, messageTypeEnum } from "./enu
 import { profiles } from "./profiles";
 import { rooms } from "./rooms";
 
-export const conversations = pgTable("conversations", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  roomId: uuid("room_id").references(() => rooms.id, { onDelete: "cascade" }),
-  type: conversationTypeEnum("type").notNull().default("direct"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const conversations = pgTable(
+  "conversations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    roomId: uuid("room_id").references(() => rooms.id, { onDelete: "cascade" }),
+    type: conversationTypeEnum("type").notNull().default("direct"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+);
 
 export const conversationMembers = pgTable(
   "conversation_members",
@@ -34,6 +38,11 @@ export const conversationMembers = pgTable(
   (table) => [
     primaryKey({ columns: [table.conversationId, table.userId] }),
     index("idx_conversation_members_user_id").on(table.userId),
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.userId),
+      modify: authUid(table.userId),
+    }),
   ],
 );
 
@@ -54,6 +63,11 @@ export const messages = pgTable(
   },
   (table) => [
     index("idx_messages_conversation_created").on(table.conversationId, table.createdAt),
+    crudPolicy({
+      role: authenticatedRole,
+      read: null,
+      modify: authUid(table.senderId),
+    }),
   ],
 );
 
@@ -70,5 +84,12 @@ export const messageReceipts = pgTable(
     deliveredAt: timestamp("delivered_at", { withTimezone: true }),
     readAt: timestamp("read_at", { withTimezone: true }),
   },
-  (table) => [primaryKey({ columns: [table.messageId, table.userId] })],
+  (table) => [
+    primaryKey({ columns: [table.messageId, table.userId] }),
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.userId),
+      modify: authUid(table.userId),
+    }),
+  ],
 );

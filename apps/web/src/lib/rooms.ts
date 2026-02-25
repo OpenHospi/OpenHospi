@@ -21,24 +21,21 @@ export type RoomSummary = {
 export async function createDraftRoom(userId: string): Promise<string> {
   const roomId = crypto.randomUUID();
 
-  await db.batch([
-    db
-      .insert(rooms)
-      .values({
-        id: roomId,
-        ownerId: userId,
-        title: "",
-        city: "amsterdam",
-        rentPrice: "0",
-        status: "draft",
-      })
-      .returning(),
-    db.insert(housemates).values({
+  await db.transaction(async (tx) => {
+    await tx.insert(rooms).values({
+      id: roomId,
+      ownerId: userId,
+      title: "",
+      city: "amsterdam",
+      rentPrice: "0",
+      status: "draft",
+    });
+    await tx.insert(housemates).values({
       roomId,
       userId,
       role: "owner",
-    }),
-  ]);
+    });
+  });
 
   return roomId;
 }

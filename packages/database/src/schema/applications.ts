@@ -1,3 +1,4 @@
+import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import { index, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 import { applicationStatusEnum, reviewDecisionEnum } from "./enums";
@@ -26,6 +27,11 @@ export const applications = pgTable(
     unique("applications_room_id_user_id_key").on(table.roomId, table.userId),
     index("idx_applications_user_id").on(table.userId),
     index("idx_applications_room_id_status").on(table.roomId, table.status),
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.userId),
+      modify: authUid(table.userId),
+    }),
   ],
 );
 
@@ -52,5 +58,10 @@ export const reviews = pgTable(
       table.reviewerId,
       table.applicantId,
     ),
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.reviewerId),
+      modify: authUid(table.reviewerId),
+    }),
   ],
 );

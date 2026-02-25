@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { RoomPreferencesData } from "@openhospi/database/validators";
+import { roomPreferencesSchema } from "@openhospi/database/validators";
 import {
   GENDER_PREFERENCES,
   LIFESTYLE_TAGS,
@@ -36,8 +38,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { RoomPreferencesData } from "@openhospi/database/validators";
-import { roomPreferencesSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { savePreferences } from "../actions";

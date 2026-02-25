@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { InstitutionBadge } from "@/components/app/institution-badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -125,6 +126,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
               {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
               {age && <> · {age}</>}
             </p>
+            <InstitutionBadge domain={applicant.institutionDomain} />
           </div>
         </CardHeader>
 

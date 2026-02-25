@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { RoomBasicInfoData } from "@openhospi/database/validators";
+import { roomBasicInfoSchema } from "@openhospi/database/validators";
 import { CITIES } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -26,8 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { RoomBasicInfoData } from "@openhospi/database/validators";
-import { roomBasicInfoSchema } from "@openhospi/database/validators";
 
 import { saveBasicInfo } from "../actions";
 

@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { EditRoomData } from "@openhospi/database/validators";
+import { editRoomSchema } from "@openhospi/database/validators";
 import {
   CITIES,
   FURNISHINGS,
@@ -58,8 +60,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Room } from "@/lib/rooms";
-import type { EditRoomData } from "@openhospi/database/validators";
-import { editRoomSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { updateRoom } from "./actions";

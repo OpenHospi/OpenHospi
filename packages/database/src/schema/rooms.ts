@@ -1,4 +1,4 @@
-import { eq, isNotNull, or } from "drizzle-orm";
+import { eq, isNotNull, or, sql } from "drizzle-orm";
 import { anonymousRole, authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
   boolean,
@@ -122,10 +122,17 @@ export const roomPhotos = pgTable(
   },
   (table) => [
     unique("room_photos_room_id_slot_key").on(table.roomId, table.slot),
+    // Anonymous: can see photos of active rooms
+    pgPolicy("room_photos_select_anon", {
+      for: "select",
+      to: anonymousRole,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.status = 'active')`,
+    }),
+    // Authenticated: can see all room photos (rooms RLS already limits room visibility)
     crudPolicy({
       role: authenticatedRole,
-      read: null,
-      modify: null,
+      read: true,
+      modify: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
     }),
   ],
 );
@@ -147,10 +154,22 @@ export const housemates = pgTable(
     unique("housemates_room_id_user_id_key").on(table.roomId, table.userId),
     index("idx_housemates_user_id").on(table.userId),
     index("idx_housemates_room_id").on(table.roomId),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.userId),
-      modify: authUid(table.userId),
+    // See housemates in rooms where you are also a housemate
+    pgPolicy("housemates_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from housemates h2 where h2.room_id = ${table.roomId} and h2.user_id = (select auth.user_id()))`,
+    }),
+    // Only room owner can add/remove housemates
+    pgPolicy("housemates_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
+    }),
+    pgPolicy("housemates_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
     }),
   ],
 );

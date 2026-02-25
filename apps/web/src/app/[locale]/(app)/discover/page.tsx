@@ -1,14 +1,13 @@
-import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { requireSession } from "@/lib/auth-server";
-import type { DiscoverFilters, DiscoverSort } from "@/lib/discover";
+import type { DiscoverCursor, DiscoverFilters, DiscoverSort } from "@/lib/discover";
 import { getDiscoverRooms } from "@/lib/discover";
 import { getProfile } from "@/lib/profile";
 
 import { DiscoverFiltersPanel } from "./discover-filters";
-import { DiscoverPagination } from "./discover-pagination";
+import { DiscoverLoadMore } from "./discover-load-more";
 import { DiscoverRoomCard } from "./discover-room-card";
 
 export async function generateMetadata({
@@ -29,7 +28,7 @@ type Props = {
 function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
   filters: DiscoverFilters;
   sort: DiscoverSort;
-  page: number;
+  cursor: DiscoverCursor | undefined;
 } {
   const first = (key: string) => {
     const v = sp[key];
@@ -42,12 +41,15 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
     ? (rawSort as DiscoverSort)
     : "newest";
 
-  const page = Math.max(1, Number.parseInt(first("page") ?? "1", 10) || 1);
-
   const minPriceStr = first("minPrice");
   const maxPriceStr = first("maxPrice");
   const featuresStr = first("features");
   const locationTagsStr = first("locationTags");
+
+  const cursorCreatedAt = first("cursorCreatedAt");
+  const cursorId = first("cursorId");
+  const cursor =
+    cursorCreatedAt && cursorId ? { createdAt: cursorCreatedAt, id: cursorId } : undefined;
 
   return {
     filters: {
@@ -61,7 +63,7 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
       locationTags: locationTagsStr ? locationTagsStr.split(",") : undefined,
     },
     sort,
-    page,
+    cursor,
   };
 }
 
@@ -73,7 +75,7 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
 
   const hasSearchParams = Object.keys(sp).length > 0;
   const parsed = parseSearchParams(sp);
-  const { sort, page } = parsed;
+  const { sort, cursor } = parsed;
   let { filters } = parsed;
 
   // Pre-fill from profile when no search params
@@ -85,28 +87,20 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
     }
   }
 
-  const { rooms, total } = await getDiscoverRooms(user.id, filters, page, sort);
-  const totalPages = Math.ceil(total / ROOMS_PER_PAGE);
+  const { rooms, nextCursor } = await getDiscoverRooms(user.id, filters, sort, cursor);
   const t = await getTranslations({ locale, namespace: "app.discover" });
 
-  // Build plain searchParams record for pagination
+  // Build plain searchParams record for load more
   const plainParams: Record<string, string> = {};
   for (const [key, val] of Object.entries(sp)) {
-    if (typeof val === "string") plainParams[key] = val;
+    if (typeof val === "string" && key !== "cursorCreatedAt" && key !== "cursorId")
+      plainParams[key] = val;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-        {total > 0 && (
-          <p className="text-sm text-muted-foreground">
-            {t("roomCount", {
-              showing: rooms.length,
-              total,
-            })}
-          </p>
-        )}
       </div>
 
       <DiscoverFiltersPanel filters={filters} sort={sort} />
@@ -122,11 +116,9 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
               <DiscoverRoomCard key={room.id} room={room} />
             ))}
           </div>
-          <DiscoverPagination
-            currentPage={page}
-            totalPages={totalPages}
-            searchParams={plainParams}
-          />
+          {nextCursor && (
+            <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />
+          )}
         </>
       )}
     </div>

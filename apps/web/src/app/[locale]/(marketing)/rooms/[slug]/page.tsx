@@ -43,9 +43,9 @@ export async function generateMetadata({
 
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const cityName = tEnums(`city.${room.city}`);
-  const sizeSuffix = room.room_size_m2 ? ` · ${room.room_size_m2} m²` : "";
+  const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} — ${cityName} — ${APP_NAME}`;
-  const description = `€${room.rent_price}/mo · ${cityName}${sizeSuffix}`;
+  const description = `€${room.rentPrice}/mo · ${cityName}${sizeSuffix}`;
 
   return {
     title,
@@ -167,7 +167,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
     ...(coverPhoto && { image: coverPhoto.url }),
     offers: {
       "@type": "Offer",
-      price: room.rent_price,
+      price: room.rentPrice,
       priceCurrency: "EUR",
       availability: "https://schema.org/InStock",
     },
@@ -219,25 +219,25 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             {/* Quick stats */}
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-1.5">
-                <span className="text-2xl font-bold">€{room.rent_price}</span>
+                <span className="text-2xl font-bold">€{room.rentPrice}</span>
                 <span className="text-muted-foreground">{t("perMonth")}</span>
               </div>
-              {room.room_size_m2 && (
+              {room.roomSizeM2 && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Ruler className="size-4" />
-                  <span>{t("roomSize", { size: room.room_size_m2 })}</span>
+                  <span>{t("roomSize", { size: room.roomSizeM2 })}</span>
                 </div>
               )}
-              {room.total_housemates != null && (
+              {room.totalHousemates != null && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Users className="size-4" />
-                  <span>{t("housemates", { count: room.total_housemates })}</span>
+                  <span>{t("housemates", { count: room.totalHousemates })}</span>
                 </div>
               )}
-              {room.house_type && (
+              {room.houseType && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Home className="size-4" />
-                  <span>{tEnums(`house_type.${room.house_type}`)}</span>
+                  <span>{tEnums(`house_type.${room.houseType}`)}</span>
                 </div>
               )}
             </div>
@@ -263,7 +263,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                   </>
                 )}
                 <dt className="text-muted-foreground">{t("rentalType")}</dt>
-                <dd>{tEnums(`rental_type.${room.rental_type}`)}</dd>
+                <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
                 {room.deposit != null && (
                   <>
                     <dt className="text-muted-foreground">{t("deposit")}</dt>
@@ -271,14 +271,14 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                   </>
                 )}
                 <dt className="text-muted-foreground">
-                  {room.utilities_included ? t("utilitiesIncluded") : t("utilitiesExcluded")}
+                  {room.utilitiesIncluded ? t("utilitiesIncluded") : t("utilitiesExcluded")}
                 </dt>
                 <dd />
-                {room.available_from && (
+                {room.availableFrom && (
                   <>
-                    <dt className="text-muted-foreground">{t("availableFrom", { date: room.available_from })}</dt>
+                    <dt className="text-muted-foreground">{t("availableFrom", { date: room.availableFrom })}</dt>
                     <dd>
-                      {room.available_until && t("availableUntil", { date: room.available_until })}
+                      {room.availableUntil && t("availableUntil", { date: room.availableUntil })}
                     </dd>
                   </>
                 )}
@@ -300,11 +300,11 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Location tags */}
-            {room.location_tags.length > 0 && (
+            {room.locationTags.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold">{t("locationTags")}</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {room.location_tags.map((tag) => (
+                  {room.locationTags.map((tag) => (
                     <Badge key={tag} variant="outline">
                       {tEnums(`location_tag.${tag}`)}
                     </Badge>
@@ -314,20 +314,20 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Preferences */}
-            {(room.preferred_gender !== "geen_voorkeur" || room.preferred_lifestyle_tags.length > 0) && (
+            {(room.preferredGender !== "geen_voorkeur" || room.preferredLifestyleTags.length > 0) && (
               <div>
                 <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                 <div className="mt-2 space-y-2">
-                  {room.preferred_gender !== "geen_voorkeur" && (
+                  {room.preferredGender !== "geen_voorkeur" && (
                     <p className="text-sm text-muted-foreground">
-                      {tEnums(`gender_preference.${room.preferred_gender}`)}
-                      {room.preferred_age_min != null && room.preferred_age_max != null &&
-                        `, ${room.preferred_age_min}–${room.preferred_age_max}`}
+                      {tEnums(`gender_preference.${room.preferredGender}`)}
+                      {room.preferredAgeMin != null && room.preferredAgeMax != null &&
+                        `, ${room.preferredAgeMin}–${room.preferredAgeMax}`}
                     </p>
                   )}
-                  {room.preferred_lifestyle_tags.length > 0 && (
+                  {room.preferredLifestyleTags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
-                      {room.preferred_lifestyle_tags.map((tag) => (
+                      {room.preferredLifestyleTags.map((tag) => (
                         <Badge key={tag} variant="outline">
                           {tEnums(`lifestyle_tag.${tag}`)}
                         </Badge>
@@ -345,13 +345,13 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CalendarDays className="size-5" />
-                  €{room.rent_price}{t("perMonth")}
+                  €{room.rentPrice}{t("perMonth")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {room.available_from && (
+                {room.availableFrom && (
                   <p className="text-sm text-muted-foreground">
-                    {t("availableFrom", { date: room.available_from })}
+                    {t("availableFrom", { date: room.availableFrom })}
                   </p>
                 )}
                 <Button asChild className="w-full">

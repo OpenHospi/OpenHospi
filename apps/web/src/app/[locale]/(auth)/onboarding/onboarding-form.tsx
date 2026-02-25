@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
-import type { Profile, ProfilePhoto } from "@/lib/profile";
-import type { AboutStepData, PreferencesStepData } from "@/lib/schemas/profile";
+import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/profile";
+import type { AboutStepData, PreferencesStepData } from "@openhospi/database/validators";
 
 import { AboutStep } from "./steps/about-step";
 import { PersonalityStep } from "./steps/personality-step";
@@ -15,7 +15,7 @@ import { PreferencesStep } from "./steps/preferences-step";
 const TOTAL_STEPS = 4;
 
 type Props = {
-  initialData: Partial<Profile>;
+  initialData: Partial<ProfileWithPhotos>;
 };
 
 export function OnboardingForm({ initialData }: Props) {
@@ -49,12 +49,12 @@ export function OnboardingForm({ initialData }: Props) {
         <AboutStep
           defaultValues={{
             gender: (initialData.gender as AboutStepData["gender"]) ?? undefined,
-            birth_date: initialData.birth_date ?? "",
-            study_program: initialData.study_program ?? "",
-            study_level: (initialData.study_level as AboutStepData["study_level"]) ?? undefined,
+            birthDate: initialData.birthDate ?? "",
+            studyProgram: initialData.studyProgram ?? "",
+            studyLevel: (initialData.studyLevel as AboutStepData["studyLevel"]) ?? undefined,
             bio: initialData.bio ?? "",
           }}
-          institutionDomain={initialData.institution_domain}
+          institutionDomain={initialData.institutionDomain}
           onNext={() => setStep(2)}
         />
       )}
@@ -62,7 +62,7 @@ export function OnboardingForm({ initialData }: Props) {
       {step === 2 && (
         <PersonalityStep
           defaultValues={{
-            lifestyle_tags: (initialData.lifestyle_tags as string[]) ?? [],
+            lifestyleTags: (initialData.lifestyleTags as string[]) ?? [],
           }}
           onBack={() => setStep(1)}
           onNext={() => setStep(3)}
@@ -81,14 +81,14 @@ export function OnboardingForm({ initialData }: Props) {
       {step === 4 && (
         <PreferencesStep
           defaultValues={{
-            preferred_city:
-              (initialData.preferred_city as PreferencesStepData["preferred_city"]) ?? undefined,
-            max_rent: initialData.max_rent ?? undefined,
-            available_from: initialData.available_from ?? "",
+            preferredCity:
+              (initialData.preferredCity as PreferencesStepData["preferredCity"]) ?? undefined,
+            maxRent: initialData.maxRent ? Number(initialData.maxRent) : undefined,
+            availableFrom: initialData.availableFrom ?? "",
             vereniging:
               (initialData.vereniging as PreferencesStepData["vereniging"]) ?? undefined,
-            instagram_handle: initialData.instagram_handle ?? "",
-            show_instagram: initialData.show_instagram ?? false,
+            instagramHandle: initialData.instagramHandle ?? "",
+            showInstagram: initialData.showInstagram ?? false,
           }}
           onBack={() => setStep(3)}
         />

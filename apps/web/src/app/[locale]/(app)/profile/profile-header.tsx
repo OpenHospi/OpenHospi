@@ -3,17 +3,17 @@ import { getTranslations } from "next-intl/server";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import type { Profile } from "@/lib/profile";
+import type { ProfileWithPhotos } from "@/lib/profile";
 
 type Props = {
-  profile: Profile;
+  profile: ProfileWithPhotos;
 };
 
 export async function ProfileHeader({ profile }: Props) {
   const tEnums = await getTranslations("enums");
-  const institution = getInstitution(profile.institution_domain);
+  const institution = getInstitution(profile.institutionDomain);
 
-  const initials = `${profile.first_name[0] ?? ""}${profile.last_name[0] ?? ""}`
+  const initials = `${profile.firstName[0] ?? ""}${profile.lastName[0] ?? ""}`
     .toUpperCase()
     .slice(0, 2);
 
@@ -22,12 +22,12 @@ export async function ProfileHeader({ profile }: Props) {
   return (
     <div className="flex items-center gap-4">
       <Avatar size="lg">
-        {primaryPhoto && <AvatarImage src={primaryPhoto.url} alt={profile.first_name} />}
+        {primaryPhoto && <AvatarImage src={primaryPhoto.url} alt={profile.firstName} />}
         <AvatarFallback>{initials || "U"}</AvatarFallback>
       </Avatar>
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight">
-          {profile.first_name} {profile.last_name}
+          {profile.firstName} {profile.lastName}
         </h1>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{institution.short}</Badge>

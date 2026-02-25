@@ -26,8 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { RoomBasicInfoData } from "@/lib/schemas/room";
-import { roomBasicInfoSchema } from "@/lib/schemas/room";
+import type { RoomBasicInfoData } from "@openhospi/database/validators";
+import { roomBasicInfoSchema } from "@openhospi/database/validators";
 
 import { saveBasicInfo } from "../actions";
 

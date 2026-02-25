@@ -29,8 +29,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import type { ApplyToRoomData } from "@/lib/schemas/application";
-import { applyToRoomSchema } from "@/lib/schemas/application";
+import type { ApplyToRoomData } from "@openhospi/database/validators";
+import { applyToRoomSchema } from "@openhospi/database/validators";
 
 import { applyToRoom } from "./actions";
 
@@ -47,10 +47,10 @@ export function ApplyDialog({ roomId }: Props) {
   const form = useForm<ApplyToRoomData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(applyToRoomSchema as any),
-    defaultValues: { personal_message: "" },
+    defaultValues: { personalMessage: "" },
   });
 
-  const messageLength = form.watch("personal_message")?.length ?? 0;
+  const messageLength = form.watch("personalMessage")?.length ?? 0;
 
   function onSubmit(data: ApplyToRoomData) {
     startTransition(async () => {
@@ -79,7 +79,7 @@ export function ApplyDialog({ roomId }: Props) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="personal_message"
+              name="personalMessage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("personalMessage")}</FormLabel>

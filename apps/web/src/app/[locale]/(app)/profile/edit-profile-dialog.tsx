@@ -60,8 +60,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Profile } from "@/lib/profile";
-import type { EditProfileData } from "@/lib/schemas/profile";
-import { editProfileSchema } from "@/lib/schemas/profile";
+import type { EditProfileData } from "@openhospi/database/validators";
+import { editProfileSchema } from "@openhospi/database/validators";
 import { cn } from "@/lib/utils";
 
 import { updateProfile } from "./profile-actions";
@@ -82,17 +82,17 @@ export function EditProfileDialog({ profile }: Props) {
     resolver: zodResolver(editProfileSchema as any),
     defaultValues: {
       gender: (profile.gender as EditProfileData["gender"]) ?? undefined,
-      birth_date: profile.birth_date ?? "",
-      study_program: profile.study_program ?? "",
-      study_level: (profile.study_level as EditProfileData["study_level"]) ?? undefined,
+      birthDate: profile.birthDate ?? "",
+      studyProgram: profile.studyProgram ?? "",
+      studyLevel: (profile.studyLevel as EditProfileData["studyLevel"]) ?? undefined,
       bio: profile.bio ?? "",
-      lifestyle_tags: (profile.lifestyle_tags as LifestyleTag[]) ?? [],
-      preferred_city: (profile.preferred_city as EditProfileData["preferred_city"]) ?? undefined,
-      max_rent: profile.max_rent ?? undefined,
-      available_from: profile.available_from ?? "",
+      lifestyleTags: (profile.lifestyleTags as LifestyleTag[]) ?? [],
+      preferredCity: (profile.preferredCity as EditProfileData["preferredCity"]) ?? undefined,
+      maxRent: profile.maxRent ? Number(profile.maxRent) : undefined,
+      availableFrom: profile.availableFrom ?? "",
       vereniging: (profile.vereniging as EditProfileData["vereniging"]) ?? undefined,
-      instagram_handle: profile.instagram_handle ?? "",
-      show_instagram: profile.show_instagram ?? false,
+      instagramHandle: profile.instagramHandle ?? "",
+      showInstagram: profile.showInstagram ?? false,
     },
   });
 
@@ -108,18 +108,18 @@ export function EditProfileDialog({ profile }: Props) {
     });
   }
 
-  const selectedTags = form.watch("lifestyle_tags") ?? [];
+  const selectedTags = form.watch("lifestyleTags") ?? [];
 
   function toggleTag(tag: LifestyleTag) {
-    const current = form.getValues("lifestyle_tags") ?? [];
+    const current = form.getValues("lifestyleTags") ?? [];
     if (current.includes(tag)) {
       form.setValue(
-        "lifestyle_tags",
+        "lifestyleTags",
         current.filter((t) => t !== tag),
         { shouldValidate: true },
       );
     } else if (current.length < MAX_LIFESTYLE_TAGS) {
-      form.setValue("lifestyle_tags", [...current, tag], { shouldValidate: true });
+      form.setValue("lifestyleTags", [...current, tag], { shouldValidate: true });
     }
   }
 
@@ -136,8 +136,10 @@ export function EditProfileDialog({ profile }: Props) {
           <DialogTitle>{t("editTitle")}</DialogTitle>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <Form {...(form as any)}>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-5">
             <FormField
               control={form.control}
               name="gender"
@@ -168,7 +170,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="birth_date"
+              name="birthDate"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.birthDate")}</FormLabel>
@@ -182,7 +184,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="study_program"
+              name="studyProgram"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.studyProgram")}</FormLabel>
@@ -196,7 +198,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="study_level"
+              name="studyLevel"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.studyLevel")}</FormLabel>
@@ -207,9 +209,9 @@ export function EditProfileDialog({ profile }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {(profile.institution_domain
+                      {(profile.institutionDomain
                         ? getStudyLevelsForInstitutionType(
-                            getInstitution(profile.institution_domain).type,
+                            getInstitution(profile.institutionDomain).type,
                           )
                         : STUDY_LEVELS
                       ).map((level) => (
@@ -273,7 +275,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="preferred_city"
+              name="preferredCity"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.preferredCity")}</FormLabel>
@@ -298,7 +300,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="max_rent"
+              name="maxRent"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.maxRent")}</FormLabel>
@@ -312,7 +314,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="available_from"
+              name="availableFrom"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.availableFrom")}</FormLabel>
@@ -397,7 +399,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="instagram_handle"
+              name="instagramHandle"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.instagram")}</FormLabel>
@@ -411,7 +413,7 @@ export function EditProfileDialog({ profile }: Props) {
 
             <FormField
               control={form.control}
-              name="show_instagram"
+              name="showInstagram"
               render={({ field }) => (
                 <FormItem className="flex items-center justify-between rounded-lg border p-3">
                   <FormLabel className="cursor-pointer">

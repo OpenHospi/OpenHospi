@@ -10,7 +10,8 @@ OpenHospi is a free, open-source student housing/roommate platform for the Nethe
 - **Web:** Next.js 16 (Turbopack) + React 19 + Tailwind CSS v4 (oklch) + shadcn/ui + next-intl
 - **Mobile:** Expo SDK 55+ (planned, not yet started)
 - **Auth:** Better Auth + @better-auth/sso (SURFconext OIDC)
-- **Backend:** Supabase (PostgreSQL + Realtime + Storage + Edge Functions)
+- **Database:** Neon PostgreSQL (serverless) + Drizzle ORM
+- **Storage:** Vercel Blob
 - **i18n:** next-intl v4 — NL (default), EN, DE
 
 ## Coding Philosophy

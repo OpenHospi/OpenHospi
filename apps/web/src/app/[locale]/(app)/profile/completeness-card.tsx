@@ -3,10 +3,10 @@ import { CheckCircle2, Circle } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import type { Profile } from "@/lib/profile";
+import type { ProfileWithPhotos } from "@/lib/profile";
 
 type Props = {
-  profile: Profile;
+  profile: ProfileWithPhotos;
 };
 
 export async function CompletenessCard({ profile }: Props) {
@@ -15,10 +15,10 @@ export async function CompletenessCard({ profile }: Props) {
   const fields = [
     { key: "photo", complete: profile.photos.length > 0 },
     { key: "bio", complete: !!profile.bio },
-    { key: "studyProgram", complete: !!profile.study_program },
-    { key: "birthDate", complete: !!profile.birth_date },
-    { key: "preferredCity", complete: !!profile.preferred_city },
-    { key: "lifestyleTags", complete: (profile.lifestyle_tags?.length ?? 0) >= 2 },
+    { key: "studyProgram", complete: !!profile.studyProgram },
+    { key: "birthDate", complete: !!profile.birthDate },
+    { key: "preferredCity", complete: !!profile.preferredCity },
+    { key: "lifestyleTags", complete: (profile.lifestyleTags?.length ?? 0) >= 2 },
     { key: "vereniging", complete: !!profile.vereniging },
   ];
 

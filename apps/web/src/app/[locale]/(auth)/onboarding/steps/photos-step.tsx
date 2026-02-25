@@ -9,9 +9,10 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { ProfilePhoto } from "@/lib/profile";
+import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
 
-import { deletePhoto, uploadPhoto } from "../photo-actions";
+import { deletePhoto, savePhoto } from "../photo-actions";
 
 type Props = {
   photos: ProfilePhoto[];
@@ -47,20 +48,22 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
     setUploadingSlot(slot);
 
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("slot", String(slot));
+      try {
+        const url = await uploadPhotoToBlob(file, "profile-photos", slot, "profile");
+        const result = await savePhoto(url, slot);
+        setUploadingSlot(null);
 
-      const result = await uploadPhoto(formData);
-      setUploadingSlot(null);
+        if (result.error) {
+          toast.error(result.error);
+          return;
+        }
 
-      if (result.error) {
-        toast.error(result.error);
-        return;
-      }
-
-      if (result.photo) {
-        onPhotosChange([...photos.filter((p) => p.slot !== slot), result.photo]);
+        if (result.photo) {
+          onPhotosChange([...photos.filter((p) => p.slot !== slot), result.photo]);
+        }
+      } catch {
+        setUploadingSlot(null);
+        toast.error("Upload failed");
       }
     });
 

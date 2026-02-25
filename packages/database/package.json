@@ -1,0 +1,28 @@
+{
+  "name": "@openhospi/database",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./types": "./src/types.ts",
+    "./validators": "./src/validators/index.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@openhospi/shared": "workspace:*",
+    "drizzle-orm": "1.0.0-beta.15-859cf75",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "drizzle-kit": "1.0.0-beta.15-859cf75"
+  }
+}

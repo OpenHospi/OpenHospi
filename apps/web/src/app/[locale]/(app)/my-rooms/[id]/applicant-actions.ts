@@ -1,23 +1,24 @@
 "use server";
 
+import { db } from "@openhospi/database";
+import { applications, reviews } from "@openhospi/database/schema";
 import type { ApplicationStatus } from "@openhospi/shared/enums";
 import { isValidApplicationTransition } from "@openhospi/shared/enums";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireSession } from "@/lib/auth-server";
-import { pool } from "@/lib/db";
-import type { ReviewData } from "@/lib/schemas/review";
-import { reviewSchema } from "@/lib/schemas/review";
+import type { ReviewData } from "@openhospi/database/validators";
+import { reviewSchema } from "@openhospi/database/validators";
 
 export async function markApplicationsSeen(roomId: string) {
   const session = await requireSession("nl");
   await requireHousemate(roomId, session.user.id);
 
-  await pool.query(
-    `UPDATE applications SET status = 'seen', updated_at = NOW()
-     WHERE room_id = $1 AND status = 'sent'`,
-    [roomId],
-  );
+  await db
+    .update(applications)
+    .set({ status: "seen" })
+    .where(and(eq(applications.roomId, roomId), eq(applications.status, "sent")));
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };
@@ -30,13 +31,23 @@ export async function submitReview(roomId: string, applicantUserId: string, data
 
   await requireHousemate(roomId, session.user.id);
 
-  await pool.query(
-    `INSERT INTO reviews (room_id, reviewer_id, applicant_id, decision, notes)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (room_id, reviewer_id, applicant_id)
-     DO UPDATE SET decision = EXCLUDED.decision, notes = EXCLUDED.notes, reviewed_at = NOW()`,
-    [roomId, session.user.id, applicantUserId, parsed.data.decision, parsed.data.notes || null],
-  );
+  await db
+    .insert(reviews)
+    .values({
+      roomId,
+      reviewerId: session.user.id,
+      applicantId: applicantUserId,
+      decision: parsed.data.decision,
+      notes: parsed.data.notes || null,
+    })
+    .onConflictDoUpdate({
+      target: [reviews.roomId, reviews.reviewerId, reviews.applicantId],
+      set: {
+        decision: parsed.data.decision,
+        notes: parsed.data.notes || null,
+        reviewedAt: new Date(),
+      },
+    });
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };
@@ -50,21 +61,21 @@ export async function updateApplicationStatus(
   const session = await requireSession("nl");
   await requireHousemate(roomId, session.user.id, ["owner", "admin"]);
 
-  const { rows } = await pool.query(
-    "SELECT status FROM applications WHERE id = $1 AND room_id = $2",
-    [applicationId, roomId],
-  );
-  if (rows.length === 0) return { error: "not_found" };
+  const [app] = await db
+    .select({ status: applications.status })
+    .from(applications)
+    .where(and(eq(applications.id, applicationId), eq(applications.roomId, roomId)));
+  if (!app) return { error: "not_found" };
 
-  const currentStatus = rows[0].status as ApplicationStatus;
+  const currentStatus = app.status as ApplicationStatus;
   if (!isValidApplicationTransition(currentStatus, newStatus)) {
     return { error: "invalid_transition" };
   }
 
-  await pool.query("UPDATE applications SET status = $1, updated_at = NOW() WHERE id = $2", [
-    newStatus,
-    applicationId,
-  ]);
+  await db
+    .update(applications)
+    .set({ status: newStatus })
+    .where(eq(applications.id, applicationId));
 
   revalidatePath(`/my-rooms/${roomId}`);
   revalidatePath("/applications");

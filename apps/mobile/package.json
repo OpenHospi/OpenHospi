@@ -11,7 +11,7 @@
   "dependencies": {
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
-    "@openhospi/supabase": "workspace:*",
+    "@openhospi/database": "workspace:*",
     "@openhospi/surfconext": "workspace:*",
     "@expo/vector-icons": "^15.0.3",
     "@react-navigation/native": "^7.1.8",

@@ -1,21 +1,23 @@
+import { db } from "@openhospi/database";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
+import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
-
-import { pool } from "./db";
+import { and, asc, desc, eq, gte, isNull, lte, sql } from "drizzle-orm";
 
 export type DiscoverRoom = {
   id: string;
   title: string;
   city: string;
-  rent_price: number;
-  house_type: string | null;
+  rentPrice: number;
+  houseType: string | null;
   furnishing: string | null;
-  room_size_m2: number | null;
-  available_from: string | null;
-  total_housemates: number | null;
+  roomSizeM2: number | null;
+  availableFrom: string | null;
+  totalHousemates: number | null;
   features: string[];
-  location_tags: string[];
-  cover_photo_url: string | null;
-  created_at: string;
+  locationTags: string[];
+  coverPhotoUrl: string | null;
+  createdAt: Date;
 };
 
 export type DiscoverFilters = {
@@ -42,35 +44,29 @@ export type PublicRoom = {
   description: string | null;
   city: string;
   neighborhood: string | null;
-  rent_price: number;
+  rentPrice: number;
   deposit: number | null;
-  utilities_included: boolean;
-  room_size_m2: number | null;
-  available_from: string | null;
-  available_until: string | null;
-  rental_type: string;
-  house_type: string | null;
+  utilitiesIncluded: boolean | null;
+  roomSizeM2: number | null;
+  availableFrom: string | null;
+  availableUntil: string | null;
+  rentalType: string | null;
+  houseType: string | null;
   furnishing: string | null;
-  total_housemates: number | null;
+  totalHousemates: number | null;
   features: string[];
-  location_tags: string[];
-  preferred_gender: string;
-  preferred_age_min: number | null;
-  preferred_age_max: number | null;
-  preferred_lifestyle_tags: string[];
-  created_at: string;
-  photos: { id: string; slot: number; url: string; caption: string | null }[];
+  locationTags: string[];
+  preferredGender: string | null;
+  preferredAgeMin: number | null;
+  preferredAgeMax: number | null;
+  preferredLifestyleTags: string[];
+  createdAt: Date;
+  photos: Pick<RoomPhoto, "id" | "slot" | "url" | "caption">[];
 };
 
 export type CityWithCount = {
   city: string;
   count: number;
-};
-
-const ORDER_MAP: Record<DiscoverSort, string> = {
-  newest: "r.created_at DESC",
-  cheapest: "r.rent_price ASC",
-  most_expensive: "r.rent_price DESC",
 };
 
 export async function getDiscoverRooms(
@@ -79,135 +75,134 @@ export async function getDiscoverRooms(
   page: number,
   sort: DiscoverSort,
 ): Promise<DiscoverResult> {
-  const conditions: string[] = ["r.status = 'active'"];
-  const params: unknown[] = [];
-  let paramIndex = 1;
+  /* eslint-disable @typescript-eslint/no-explicit-any -- Dynamic filter values from URL params can't be statically typed as Drizzle enum values */
+  const conditions: ReturnType<typeof eq>[] = [eq(rooms.status, "active")];
 
   // Vereiniging visibility: show non-vereniging rooms + rooms matching user's vereniging
   conditions.push(
-    `(r.room_vereniging IS NULL OR r.room_vereniging = (SELECT vereniging FROM profiles WHERE id = $${paramIndex}))`,
+    sql`(${rooms.roomVereniging} IS NULL OR ${rooms.roomVereniging} = (SELECT vereniging FROM profiles WHERE id = ${userId}))` as any,
   );
-  params.push(userId);
-  paramIndex++;
 
   if (filters.city) {
-    conditions.push(`r.city = $${paramIndex}`);
-    params.push(filters.city);
-    paramIndex++;
+    conditions.push(eq(rooms.city, filters.city as any));
   }
-
   if (filters.minPrice != null) {
-    conditions.push(`r.rent_price >= $${paramIndex}`);
-    params.push(filters.minPrice);
-    paramIndex++;
+    conditions.push(gte(rooms.rentPrice, String(filters.minPrice)));
   }
-
   if (filters.maxPrice != null) {
-    conditions.push(`r.rent_price <= $${paramIndex}`);
-    params.push(filters.maxPrice);
-    paramIndex++;
+    conditions.push(lte(rooms.rentPrice, String(filters.maxPrice)));
   }
-
   if (filters.houseType) {
-    conditions.push(`r.house_type = $${paramIndex}`);
-    params.push(filters.houseType);
-    paramIndex++;
+    conditions.push(eq(rooms.houseType, filters.houseType as any));
   }
-
   if (filters.furnishing) {
-    conditions.push(`r.furnishing = $${paramIndex}`);
-    params.push(filters.furnishing);
-    paramIndex++;
+    conditions.push(eq(rooms.furnishing, filters.furnishing as any));
   }
-
   if (filters.availableFrom) {
-    conditions.push(`r.available_from <= $${paramIndex}`);
-    params.push(filters.availableFrom);
-    paramIndex++;
+    conditions.push(lte(rooms.availableFrom, filters.availableFrom));
   }
-
   if (filters.features && filters.features.length > 0) {
-    conditions.push(`r.features @> $${paramIndex}`);
-    params.push(filters.features);
-    paramIndex++;
+    conditions.push(sql`${rooms.features} @> ${filters.features}` as any);
   }
-
   if (filters.locationTags && filters.locationTags.length > 0) {
-    conditions.push(`r.location_tags @> $${paramIndex}`);
-    params.push(filters.locationTags);
-    paramIndex++;
+    conditions.push(sql`${rooms.locationTags} @> ${filters.locationTags}` as any);
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
-  const where = conditions.join(" AND ");
-  const orderBy = ORDER_MAP[sort] || ORDER_MAP.newest;
+  const where = and(...conditions);
   const offset = (page - 1) * ROOMS_PER_PAGE;
 
-  const countQuery = `SELECT COUNT(*)::int AS total FROM rooms r WHERE ${where}`;
-  const dataQuery = `
-    SELECT
-      r.id, r.title, r.city, r.rent_price, r.house_type, r.furnishing,
-      r.room_size_m2, r.available_from, r.total_housemates,
-      r.features, r.location_tags, r.created_at,
-      (SELECT url FROM room_photos WHERE room_id = r.id AND slot = 1 LIMIT 1) AS cover_photo_url
-    FROM rooms r
-    WHERE ${where}
-    ORDER BY ${orderBy}
-    LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
-  `;
+  let orderBy;
+  if (sort === "cheapest") {
+    orderBy = asc(rooms.rentPrice);
+  } else if (sort === "most_expensive") {
+    orderBy = desc(rooms.rentPrice);
+  } else {
+    orderBy = desc(rooms.createdAt);
+  }
 
   const [countResult, dataResult] = await Promise.all([
-    pool.query(countQuery, params),
-    pool.query(dataQuery, [...params, ROOMS_PER_PAGE, offset]),
+    db.select({ total: sql<number>`count(*)::int` }).from(rooms).where(where),
+    db
+      .select({
+        id: rooms.id,
+        title: rooms.title,
+        city: rooms.city,
+        rentPrice: rooms.rentPrice,
+        houseType: rooms.houseType,
+        furnishing: rooms.furnishing,
+        roomSizeM2: rooms.roomSizeM2,
+        availableFrom: rooms.availableFrom,
+        totalHousemates: rooms.totalHousemates,
+        features: rooms.features,
+        locationTags: rooms.locationTags,
+        createdAt: rooms.createdAt,
+        coverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
+      })
+      .from(rooms)
+      .where(where)
+      .orderBy(orderBy)
+      .limit(ROOMS_PER_PAGE)
+      .offset(offset),
   ]);
 
   return {
-    total: countResult.rows[0].total,
-    rooms: dataResult.rows.map((r) => ({
+    total: countResult[0]?.total ?? 0,
+    rooms: dataResult.map((r) => ({
       ...r,
-      rent_price: Number(r.rent_price),
-      available_from: r.available_from ? r.available_from.toISOString().split("T")[0] : null,
-      created_at: r.created_at.toISOString(),
+      rentPrice: Number(r.rentPrice),
       features: r.features ?? [],
-      location_tags: r.location_tags ?? [],
+      locationTags: r.locationTags ?? [],
     })),
   };
 }
 
 export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> {
-  const { rows } = await pool.query(
-    `SELECT
-       r.id, r.title, r.description, r.city, r.neighborhood,
-       r.rent_price, r.deposit, r.utilities_included,
-       r.room_size_m2, r.available_from, r.available_until,
-       r.rental_type, r.house_type, r.furnishing, r.total_housemates,
-       r.features, r.location_tags,
-       r.preferred_gender, r.preferred_age_min, r.preferred_age_max,
-       r.preferred_lifestyle_tags, r.created_at
-     FROM rooms r
-     WHERE r.id = $1 AND r.status = 'active' AND r.room_vereniging IS NULL`,
-    [roomId],
-  );
+  const [room] = await db
+    .select({
+      id: rooms.id,
+      title: rooms.title,
+      description: rooms.description,
+      city: rooms.city,
+      neighborhood: rooms.neighborhood,
+      rentPrice: rooms.rentPrice,
+      deposit: rooms.deposit,
+      utilitiesIncluded: rooms.utilitiesIncluded,
+      roomSizeM2: rooms.roomSizeM2,
+      availableFrom: rooms.availableFrom,
+      availableUntil: rooms.availableUntil,
+      rentalType: rooms.rentalType,
+      houseType: rooms.houseType,
+      furnishing: rooms.furnishing,
+      totalHousemates: rooms.totalHousemates,
+      features: rooms.features,
+      locationTags: rooms.locationTags,
+      preferredGender: rooms.preferredGender,
+      preferredAgeMin: rooms.preferredAgeMin,
+      preferredAgeMax: rooms.preferredAgeMax,
+      preferredLifestyleTags: rooms.preferredLifestyleTags,
+      createdAt: rooms.createdAt,
+    })
+    .from(rooms)
+    .where(
+      and(eq(rooms.id, roomId), eq(rooms.status, "active"), isNull(rooms.roomVereniging)),
+    );
 
-  if (rows.length === 0) return null;
+  if (!room) return null;
 
-  const room = rows[0];
-  const { rows: photos } = await pool.query(
-    `SELECT id, slot, url, caption FROM room_photos WHERE room_id = $1 ORDER BY slot`,
-    [roomId],
-  );
+  const photos = await db
+    .select({ id: roomPhotos.id, slot: roomPhotos.slot, url: roomPhotos.url, caption: roomPhotos.caption })
+    .from(roomPhotos)
+    .where(eq(roomPhotos.roomId, roomId))
+    .orderBy(roomPhotos.slot);
 
   return {
     ...room,
-    rent_price: Number(room.rent_price),
+    rentPrice: Number(room.rentPrice),
     deposit: room.deposit ? Number(room.deposit) : null,
-    available_from: room.available_from ? room.available_from.toISOString().split("T")[0] : null,
-    available_until: room.available_until
-      ? room.available_until.toISOString().split("T")[0]
-      : null,
-    created_at: room.created_at.toISOString(),
     features: room.features ?? [],
-    location_tags: room.location_tags ?? [],
-    preferred_lifestyle_tags: room.preferred_lifestyle_tags ?? [],
+    locationTags: room.locationTags ?? [],
+    preferredLifestyleTags: room.preferredLifestyleTags ?? [],
     photos,
   };
 }
@@ -216,37 +211,52 @@ export async function getPublicRoomsByCity(
   city: string,
   limit: number,
 ): Promise<DiscoverRoom[]> {
-  const { rows } = await pool.query(
-    `SELECT
-       r.id, r.title, r.city, r.rent_price, r.house_type, r.furnishing,
-       r.room_size_m2, r.available_from, r.total_housemates,
-       r.features, r.location_tags, r.created_at,
-       (SELECT url FROM room_photos WHERE room_id = r.id AND slot = 1 LIMIT 1) AS cover_photo_url
-     FROM rooms r
-     WHERE r.status = 'active' AND r.room_vereniging IS NULL AND r.city = $1
-     ORDER BY r.created_at DESC
-     LIMIT $2`,
-    [city, limit],
-  );
+  const rows = await db
+    .select({
+      id: rooms.id,
+      title: rooms.title,
+      city: rooms.city,
+      rentPrice: rooms.rentPrice,
+      houseType: rooms.houseType,
+      furnishing: rooms.furnishing,
+      roomSizeM2: rooms.roomSizeM2,
+      availableFrom: rooms.availableFrom,
+      totalHousemates: rooms.totalHousemates,
+      features: rooms.features,
+      locationTags: rooms.locationTags,
+      createdAt: rooms.createdAt,
+      coverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
+    })
+    .from(rooms)
+    .where(
+      and(
+        eq(rooms.status, "active"),
+        isNull(rooms.roomVereniging),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- city comes from URL slug
+        eq(rooms.city, city as any),
+      ),
+    )
+    .orderBy(desc(rooms.createdAt))
+    .limit(limit);
 
   return rows.map((r) => ({
     ...r,
-    rent_price: Number(r.rent_price),
-    available_from: r.available_from ? r.available_from.toISOString().split("T")[0] : null,
-    created_at: r.created_at.toISOString(),
+    rentPrice: Number(r.rentPrice),
     features: r.features ?? [],
-    location_tags: r.location_tags ?? [],
+    locationTags: r.locationTags ?? [],
   }));
 }
 
 export async function getCitiesWithRoomCount(): Promise<CityWithCount[]> {
-  const { rows } = await pool.query(
-    `SELECT city, COUNT(*)::int AS count
-     FROM rooms
-     WHERE status = 'active' AND room_vereniging IS NULL
-     GROUP BY city
-     ORDER BY count DESC, city ASC`,
-  );
+  const rows = await db
+    .select({
+      city: rooms.city,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(rooms)
+    .where(and(eq(rooms.status, "active"), isNull(rooms.roomVereniging)))
+    .groupBy(rooms.city)
+    .orderBy(sql`count(*) DESC, ${rooms.city} ASC`);
 
   return rows;
 }

@@ -29,7 +29,8 @@ OpenHospi is a free, open-source student housing platform built for the Netherla
 |---|---|
 | Web | Next.js 16, Tailwind CSS 4, shadcn/ui |
 | Mobile | Expo (React Native) |
-| Backend | Supabase (PostgreSQL, Realtime, Storage) |
+| Database | Neon PostgreSQL (serverless) + Drizzle ORM |
+| Storage | Vercel Blob |
 | Auth | Better Auth + SURFconext OIDC |
 | Monorepo | pnpm workspaces |
 

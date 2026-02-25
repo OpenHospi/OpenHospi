@@ -30,16 +30,16 @@ export async function ProfileDetails({ profile }: Props) {
           <CardTitle className="text-base">{t("studyInfo")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
-          {profile.study_program && (
+          {profile.studyProgram && (
             <div>
               <span className="text-muted-foreground">{t("studyProgram")}</span>
-              <p>{profile.study_program}</p>
+              <p>{profile.studyProgram}</p>
             </div>
           )}
-          {profile.study_level && (
+          {profile.studyLevel && (
             <div>
               <span className="text-muted-foreground">{t("studyLevel")}</span>
-              <p>{tEnums(`study_level.${profile.study_level}`)}</p>
+              <p>{tEnums(`study_level.${profile.studyLevel}`)}</p>
             </div>
           )}
           {profile.gender && (
@@ -48,10 +48,10 @@ export async function ProfileDetails({ profile }: Props) {
               <p>{tEnums(`gender.${profile.gender}`)}</p>
             </div>
           )}
-          {profile.birth_date && (
+          {profile.birthDate && (
             <div>
               <span className="text-muted-foreground">{t("birthDate")}</span>
-              <p>{profile.birth_date}</p>
+              <p>{profile.birthDate}</p>
             </div>
           )}
         </CardContent>
@@ -62,41 +62,41 @@ export async function ProfileDetails({ profile }: Props) {
           <CardTitle className="text-base">{t("preferences")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
-          {profile.preferred_city && (
+          {profile.preferredCity && (
             <div>
               <span className="text-muted-foreground">{t("preferredCity")}</span>
-              <p>{tEnums(`city.${profile.preferred_city}`)}</p>
+              <p>{tEnums(`city.${profile.preferredCity}`)}</p>
             </div>
           )}
-          {profile.max_rent && (
+          {profile.maxRent && (
             <div>
               <span className="text-muted-foreground">{t("maxRent")}</span>
-              <p>&euro;{profile.max_rent}/mo</p>
+              <p>&euro;{profile.maxRent}/mo</p>
             </div>
           )}
-          {profile.available_from && (
+          {profile.availableFrom && (
             <div>
               <span className="text-muted-foreground">{t("availableFrom")}</span>
-              <p>{profile.available_from}</p>
+              <p>{profile.availableFrom}</p>
             </div>
           )}
-          {profile.show_instagram && profile.instagram_handle && (
+          {profile.showInstagram && profile.instagramHandle && (
             <div>
               <span className="text-muted-foreground">Instagram</span>
-              <p>@{profile.instagram_handle}</p>
+              <p>@{profile.instagramHandle}</p>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {profile.lifestyle_tags && profile.lifestyle_tags.length > 0 && (
+      {profile.lifestyleTags && profile.lifestyleTags.length > 0 && (
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle className="text-base">{t("lifestyleTags")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {profile.lifestyle_tags.map((tag) => (
+              {profile.lifestyleTags.map((tag) => (
                 <Badge key={tag} variant="secondary">
                   {tEnums(`lifestyle_tag.${tag}`)}
                 </Badge>

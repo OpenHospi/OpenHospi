@@ -31,5 +31,5 @@ export const MIN_PERSONAL_MESSAGE_LENGTH = 50;
 
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB
-export const MAX_ROOM_PHOTO_SIZE = 5 * 1024 * 1024; // 5 MB
+export const MAX_ROOM_PHOTO_SIZE = 10 * 1024 * 1024; // 10 MB
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;

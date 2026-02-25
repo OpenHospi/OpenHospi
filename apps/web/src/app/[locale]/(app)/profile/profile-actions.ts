@@ -1,91 +1,67 @@
 "use server";
 
+import { db } from "@openhospi/database";
+import { profilePhotos, profiles } from "@openhospi/database/schema";
+import type { ProfilePhoto } from "@openhospi/database/types";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
-import { pool } from "@/lib/db";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
-import type { ProfilePhoto } from "@/lib/profile";
-import type { EditProfileData } from "@/lib/schemas/profile";
-import { editProfileSchema } from "@/lib/schemas/profile";
+import { deletePhotoFromStorage } from "@/lib/photos";
+import type { EditProfileData } from "@openhospi/database/validators";
+import { editProfileSchema } from "@openhospi/database/validators";
 
 export async function updateProfile(data: EditProfileData) {
   const session = await requireSession("nl");
   const parsed = editProfileSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  const {
-    gender,
-    birth_date,
-    study_program,
-    study_level,
-    bio,
-    lifestyle_tags,
-    preferred_city,
-    max_rent,
-    available_from,
-    vereniging,
-    instagram_handle,
-    show_instagram,
-  } = parsed.data;
-
-  await pool.query(
-    `UPDATE profiles SET
-       gender = $1, birth_date = $2, study_program = $3, study_level = $4, bio = $5,
-       lifestyle_tags = $6, preferred_city = $7, max_rent = $8, available_from = $9,
-       vereniging = $10, instagram_handle = $11, show_instagram = $12
-     WHERE id = $13`,
-    [
-      gender,
-      birth_date,
-      study_program,
-      study_level || null,
-      bio || null,
-      lifestyle_tags,
-      preferred_city,
-      max_rent || null,
-      available_from,
-      vereniging || null,
-      instagram_handle || null,
-      show_instagram,
-      session.user.id,
-    ],
-  );
+  const d = parsed.data;
+  await db
+    .update(profiles)
+    .set({
+      gender: d.gender,
+      birthDate: d.birthDate,
+      studyProgram: d.studyProgram,
+      studyLevel: d.studyLevel || null,
+      bio: d.bio || null,
+      lifestyleTags: d.lifestyleTags,
+      preferredCity: d.preferredCity,
+      maxRent: d.maxRent != null ? String(d.maxRent) : null,
+      availableFrom: d.availableFrom,
+      vereniging: d.vereniging || null,
+      instagramHandle: d.instagramHandle || null,
+      showInstagram: d.showInstagram,
+    })
+    .where(eq(profiles.id, session.user.id));
 
   revalidatePath("/profile");
   return { success: true };
 }
 
-export async function uploadProfilePhoto(
-  formData: FormData,
+export async function saveProfilePhoto(
+  url: string,
+  slot: number,
 ): Promise<{ error?: string; photo?: ProfilePhoto }> {
   const session = await requireSession("nl");
-  const file = formData.get("file") as File | null;
-  const slotStr = formData.get("slot") as string | null;
 
-  if (!file || !slotStr) return { error: "Missing file or slot" };
-
-  const slot = Number.parseInt(slotStr, 10);
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
-
-  const ext = file.name.split(".").pop() || "jpg";
-  const path = `${session.user.id}/${slot}.${ext}`;
+  if (!url) return { error: "Missing URL" };
 
   try {
-    const url = await uploadPhotoToStorage("profile-photos", path, file);
-
-    const { rows } = await pool.query(
-      `INSERT INTO profile_photos (user_id, slot, url)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (user_id, slot) DO UPDATE SET url = EXCLUDED.url, uploaded_at = NOW()
-       RETURNING id, slot, url, caption`,
-      [session.user.id, slot, url],
-    );
+    const [photo] = await db
+      .insert(profilePhotos)
+      .values({ userId: session.user.id, slot, url })
+      .onConflictDoUpdate({
+        target: [profilePhotos.userId, profilePhotos.slot],
+        set: { url, uploadedAt: new Date() },
+      })
+      .returning();
 
     revalidatePath("/profile");
-    return { photo: rows[0] };
+    return { photo };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Upload failed";
+    const message = e instanceof Error ? e.message : "Save failed";
     return { error: message };
   }
 }
@@ -96,23 +72,18 @@ export async function deleteProfilePhoto(slot: number): Promise<{ error?: string
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
 
   try {
-    const { rows } = await pool.query(
-      "SELECT url FROM profile_photos WHERE user_id = $1 AND slot = $2",
-      [session.user.id, slot],
-    );
+    const [photo] = await db
+      .select({ url: profilePhotos.url })
+      .from(profilePhotos)
+      .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot)));
 
-    if (rows.length === 0) return { error: "Photo not found" };
+    if (!photo) return { error: "Photo not found" };
 
-    const url = rows[0].url as string;
-    const bucketPath = url.split("/storage/v1/object/public/profile-photos/")[1];
-    if (bucketPath) {
-      await deletePhotoFromStorage("profile-photos", bucketPath);
-    }
+    await deletePhotoFromStorage(photo.url);
 
-    await pool.query("DELETE FROM profile_photos WHERE user_id = $1 AND slot = $2", [
-      session.user.id,
-      slot,
-    ]);
+    await db
+      .delete(profilePhotos)
+      .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot)));
 
     revalidatePath("/profile");
     return {};

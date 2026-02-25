@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth-server";
-import { getProfile, isProfileComplete, type Profile } from "@/lib/profile";
+import { getProfile, isProfileComplete, type ProfileWithPhotos } from "@/lib/profile";
 
 import { OnboardingForm } from "./onboarding-form";
 
@@ -32,20 +32,20 @@ export default async function OnboardingPage({ params }: Props) {
     redirect({ href: "/discover", locale });
   }
 
-  const initialData: Partial<Profile> = {
-    institution_domain: profile?.institution_domain,
+  const initialData: Partial<ProfileWithPhotos> = {
+    institutionDomain: profile?.institutionDomain,
     gender: profile?.gender,
-    birth_date: profile?.birth_date,
-    study_program: profile?.study_program,
-    study_level: profile?.study_level,
+    birthDate: profile?.birthDate,
+    studyProgram: profile?.studyProgram,
+    studyLevel: profile?.studyLevel,
     bio: profile?.bio,
-    lifestyle_tags: profile?.lifestyle_tags,
-    preferred_city: profile?.preferred_city,
-    max_rent: profile?.max_rent,
-    available_from: profile?.available_from,
+    lifestyleTags: profile?.lifestyleTags,
+    preferredCity: profile?.preferredCity,
+    maxRent: profile?.maxRent,
+    availableFrom: profile?.availableFrom,
     vereniging: profile?.vereniging,
-    instagram_handle: profile?.instagram_handle,
-    show_instagram: profile?.show_instagram ?? false,
+    instagramHandle: profile?.instagramHandle,
+    showInstagram: profile?.showInstagram ?? false,
     photos: profile?.photos ?? [],
   };
 

@@ -1,15 +1,13 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: ${supabaseUrl};
+  img-src 'self' blob: data: https://*.public.blob.vercel-storage.com;
   font-src 'self';
-  connect-src 'self' ${supabaseUrl} https://connect.surfconext.nl https://connect.test.surfconext.nl;
+  connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl;
   frame-ancestors 'none';
   form-action 'self';
   base-uri 'self';
@@ -18,17 +16,18 @@ const cspHeader = `
   .replaceAll('\n', "")
   .trim();
 
-const supabaseHostname = supabaseUrl ? new URL(supabaseUrl).hostname : "";
-
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: supabaseHostname
-      ? [{ protocol: "https", hostname: supabaseHostname, pathname: "/storage/v1/object/public/**" }]
-      : [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
   },
   transpilePackages: [
     "@openhospi/shared",
-    "@openhospi/supabase",
+    "@openhospi/database",
     "@openhospi/surfconext",
     "@openhospi/crypto",
     "@openhospi/i18n",

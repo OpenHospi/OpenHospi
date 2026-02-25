@@ -5,8 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
-import type { Room, RoomPhoto } from "@/lib/rooms";
-import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@/lib/schemas/room";
+import type { RoomPhoto, RoomWithPhotos } from "@/lib/rooms";
+import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 
 import { BasicInfoStep } from "./steps/basic-info-step";
 import { DetailsStep } from "./steps/details-step";
@@ -16,7 +16,7 @@ import { PreferencesStep } from "./steps/preferences-step";
 const TOTAL_STEPS = 4;
 
 type Props = {
-  room: Room;
+  room: RoomWithPhotos;
 };
 
 export function RoomCreateForm({ room }: Props) {
@@ -72,16 +72,16 @@ export function RoomCreateForm({ room }: Props) {
         <DetailsStep
           roomId={room.id}
           defaultValues={{
-            rent_price: room.rent_price || undefined,
-            deposit: room.deposit ?? undefined,
-            utilities_included: room.utilities_included,
-            room_size_m2: room.room_size_m2 ?? undefined,
-            available_from: room.available_from ?? "",
-            available_until: room.available_until ?? "",
-            rental_type: room.rental_type as RoomDetailsData["rental_type"],
-            house_type: (room.house_type as RoomDetailsData["house_type"]) ?? undefined,
+            rentPrice: Number(room.rentPrice) || undefined,
+            deposit: room.deposit ? Number(room.deposit) : undefined,
+            utilitiesIncluded: room.utilitiesIncluded ?? false,
+            roomSizeM2: room.roomSizeM2 ?? undefined,
+            availableFrom: room.availableFrom ?? "",
+            availableUntil: room.availableUntil ?? "",
+            rentalType: room.rentalType as RoomDetailsData["rentalType"],
+            houseType: (room.houseType as RoomDetailsData["houseType"]) ?? undefined,
             furnishing: (room.furnishing as RoomDetailsData["furnishing"]) ?? undefined,
-            total_housemates: room.total_housemates ?? undefined,
+            totalHousemates: room.totalHousemates ?? undefined,
           }}
           onBack={() => setStep(1)}
           onNext={() => setStep(3)}
@@ -92,15 +92,15 @@ export function RoomCreateForm({ room }: Props) {
         <PreferencesStep
           roomId={room.id}
           defaultValues={{
-            features: room.features as RoomPreferencesData["features"],
-            location_tags: room.location_tags as RoomPreferencesData["location_tags"],
-            preferred_gender: room.preferred_gender as RoomPreferencesData["preferred_gender"],
-            preferred_age_min: room.preferred_age_min ?? undefined,
-            preferred_age_max: room.preferred_age_max ?? undefined,
-            preferred_lifestyle_tags:
-              room.preferred_lifestyle_tags as RoomPreferencesData["preferred_lifestyle_tags"],
-            room_vereniging:
-              room.room_vereniging as RoomPreferencesData["room_vereniging"],
+            features: (room.features as RoomPreferencesData["features"]) ?? [],
+            locationTags: (room.locationTags as RoomPreferencesData["locationTags"]) ?? [],
+            preferredGender: room.preferredGender as RoomPreferencesData["preferredGender"],
+            preferredAgeMin: room.preferredAgeMin ?? undefined,
+            preferredAgeMax: room.preferredAgeMax ?? undefined,
+            preferredLifestyleTags:
+              (room.preferredLifestyleTags as RoomPreferencesData["preferredLifestyleTags"]) ?? [],
+            roomVereniging:
+              room.roomVereniging as RoomPreferencesData["roomVereniging"],
           }}
           onBack={() => setStep(2)}
           onNext={() => setStep(4)}

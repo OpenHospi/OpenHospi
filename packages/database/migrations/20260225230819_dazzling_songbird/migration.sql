@@ -1,3 +1,11 @@
+CREATE OR REPLACE FUNCTION public.text_eq_uuid(text, uuid) RETURNS boolean LANGUAGE SQL IMMUTABLE AS $$ SELECT $1::uuid = $2 $$;
+--> statement-breakpoint
+CREATE OR REPLACE FUNCTION public.uuid_eq_text(uuid, text) RETURNS boolean LANGUAGE SQL IMMUTABLE AS $$ SELECT $1 = $2::uuid $$;
+--> statement-breakpoint
+CREATE OPERATOR public.= (LEFTARG = text, RIGHTARG = uuid, FUNCTION = public.text_eq_uuid);
+--> statement-breakpoint
+CREATE OPERATOR public.= (LEFTARG = uuid, RIGHTARG = text, FUNCTION = public.uuid_eq_text);
+--> statement-breakpoint
 GRANT USAGE ON SCHEMA public TO authenticated;
 --> statement-breakpoint
 GRANT USAGE ON SCHEMA public TO anonymous;
@@ -36,9 +44,9 @@ CREATE POLICY "crud-authenticated-policy-update" ON "room_photos" AS PERMISSIVE 
 --> statement-breakpoint
 CREATE POLICY "crud-authenticated-policy-delete" ON "room_photos" AS PERMISSIVE FOR DELETE TO "authenticated" USING (exists(select 1 from rooms where rooms.id = "room_photos"."room_id" and rooms.created_by = (select auth.user_id())));
 --> statement-breakpoint
-CREATE POLICY "rooms_select_anon" ON "rooms" AS PERMISSIVE FOR SELECT TO "anonymous" USING ("rooms"."status" = $1);
+CREATE POLICY "rooms_select_anon" ON "rooms" AS PERMISSIVE FOR SELECT TO "anonymous" USING ("rooms"."status" = 'active');
 --> statement-breakpoint
-CREATE POLICY "rooms_select_auth" ON "rooms" AS PERMISSIVE FOR SELECT TO "authenticated" USING (("rooms"."status" = $1 or (select auth.user_id() = "rooms"."created_by")));
+CREATE POLICY "rooms_select_auth" ON "rooms" AS PERMISSIVE FOR SELECT TO "authenticated" USING (("rooms"."status" = 'active' or (select auth.user_id() = "rooms"."created_by")));
 --> statement-breakpoint
 CREATE POLICY "rooms_insert_own" ON "rooms" AS PERMISSIVE FOR INSERT TO "authenticated" WITH CHECK ((select auth.user_id() = "rooms"."created_by"));
 --> statement-breakpoint

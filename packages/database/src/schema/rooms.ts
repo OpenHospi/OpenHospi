@@ -1,4 +1,4 @@
-import { eq, isNotNull, or, sql } from "drizzle-orm";
+import { isNotNull, or, sql } from "drizzle-orm";
 import { anonymousRole, authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
   boolean,
@@ -84,13 +84,13 @@ export const rooms = pgTable(
     pgPolicy("rooms_select_anon", {
       for: "select",
       to: anonymousRole,
-      using: eq(table.status, "active"),
+      using: sql`${table.status} = 'active'`,
     }),
     pgPolicy("rooms_select_auth", {
       for: "select",
       to: authenticatedRole,
       using: or(
-        eq(table.status, "active"),
+        sql`${table.status} = 'active'`,
         authUid(table.ownerId)
       ),
     }),

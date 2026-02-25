@@ -68,7 +68,10 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 #### RLS (Row-Level Security) policies
 - Use `authUid(column)` and `crudPolicy()` from `drizzle-orm/neon` for simple ownership checks
 - Use `pgPolicy` with raw `sql` only for complex conditions (subqueries, joins, multi-table checks)
-- `withRLS(userId, fn)` in `packages/database/src/rls.ts` wraps queries in RLS-enforced transactions — use for all user-initiated queries
+- **Don't use `eq()` in policy expressions** — it generates `$1` parameter placeholders in migration SQL, which policies can't use. Use raw `sql` with string literals instead (e.g. `` sql`${table.status} = 'active'` ``)
+- `auth.user_id()` returns `text` but ID columns are `uuid` — custom `=(text, uuid)` and `=(uuid, text)` operators are installed in the DB to bridge this. `authUid()` works because of these operators.
+- Neon Data API (not Neon Authorize) provides the `auth.user_id()` function via `pg_session_jwt`. The `auth` schema is managed by Neon — don't modify it.
+- `withRLS(userId, fn)` in `packages/database/src/rls.ts` wraps queries in RLS-enforced transactions — sets `request.jwt.claims` and switches to `authenticated` role
 - Better Auth provisioning and admin operations use `db` directly (owner role, bypasses RLS)
 
 #### Migrations & commands
@@ -94,4 +97,5 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Don't install new dependencies without good reason — check if existing deps or built-in APIs solve the problem first
 - Don't use `db:push` for database changes — use `db:generate` + `db:migrate`
 - Don't replace ORM features with raw SQL workarounds — investigate the root cause instead
+- Don't use `eq()` in RLS policy expressions — use raw `sql` with string literals to avoid `$1` placeholder bugs
 - Don't touch working code outside the scope of what was asked

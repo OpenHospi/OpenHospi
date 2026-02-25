@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { redirect } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth-server";
 import { getProfile, isProfileComplete, type ProfileWithPhotos } from "@/lib/profile";
 
@@ -24,12 +24,12 @@ type Props = {
 export default async function OnboardingPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const profile = await getProfile(user.id);
 
   if (profile && isProfileComplete(profile)) {
-    redirect({ href: "/discover", locale });
+    redirect("/discover");
   }
 
   const initialData: Partial<ProfileWithPhotos> = {

@@ -2,7 +2,7 @@ import { FileQuestion } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 
 export default async function AppNotFound() {
   const t = await getTranslations("app.errors");

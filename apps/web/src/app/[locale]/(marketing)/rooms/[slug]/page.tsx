@@ -81,7 +81,7 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const cityName = tEnums(`city.${city}`);
   const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   // Safe: all values come from our DB and i18n — no user-supplied HTML
   const jsonLdScript = JSON.stringify({
@@ -146,7 +146,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
   if (!room) notFound();
 
   const t = await getTranslations({ locale, namespace: "public.room" });
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const cityName = tEnums(`city.${room.city}`);

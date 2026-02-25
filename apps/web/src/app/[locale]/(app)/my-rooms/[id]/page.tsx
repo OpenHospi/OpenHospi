@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { redirect } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";
 
@@ -30,11 +30,11 @@ type Props = {
 export default async function RoomDetailPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const room = await getRoom(id, user.id);
   if (!room) {
-    return redirect({ href: "/my-rooms", locale });
+    return redirect("/my-rooms");
   }
 
   return (

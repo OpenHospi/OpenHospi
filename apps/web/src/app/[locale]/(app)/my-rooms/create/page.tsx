@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { redirect } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";
 
@@ -26,7 +26,7 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { id } = await searchParams;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   if (!id) {
     const { createDraftRoomAction } = await import("./actions");
@@ -34,12 +34,12 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
     if (result.error || !result.id) {
       return <p>{result.error || "Failed to create draft"}</p>;
     }
-    return redirect({ href: `/my-rooms/create?id=${result.id}`, locale });
+    return redirect(`/my-rooms/create?id=${result.id}`);
   }
 
   const room = await getRoom(id, user.id);
   if (!room || room.status !== "draft") {
-    return redirect({ href: "/my-rooms", locale });
+    return redirect("/my-rooms");
   }
 
   return <RoomCreateForm room={room} />;

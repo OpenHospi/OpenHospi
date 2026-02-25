@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 import { getUserApplications } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 
@@ -26,7 +26,7 @@ type Props = {
 export default async function ApplicationsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { user } = await requireSession(locale);
+  const { user } = await requireSession();
 
   const applications = await getUserApplications(user.id);
   const t = await getTranslations({ locale, namespace: "app.applications" });

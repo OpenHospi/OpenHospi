@@ -12,7 +12,7 @@ export async function savePhoto(
   url: string,
   slot: number,
 ): Promise<{ error?: string; photo?: ProfilePhoto }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
   if (!url) return { error: "Missing URL" };
@@ -35,7 +35,7 @@ export async function savePhoto(
 }
 
 export async function deletePhoto(slot: number): Promise<{ error?: string }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
 

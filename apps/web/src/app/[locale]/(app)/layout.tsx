@@ -16,7 +16,7 @@ export default async function AppLayout({ children, params }: Props) {
   const session = await getSession();
 
   if (session) {
-    await requireCompleteProfile(session.user.id, locale);
+    await requireCompleteProfile(session.user.id);
   }
 
   const user = {

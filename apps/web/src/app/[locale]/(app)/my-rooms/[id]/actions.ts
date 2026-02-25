@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = editRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -52,7 +52,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
 }
 
 export async function updateRoomStatus(roomId: string, status: string) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   await requireRoomOwnership(roomId, session.user.id);
 
   return withRLS(session.user.id, async (tx) => {
@@ -92,7 +92,7 @@ export async function updateRoomStatus(roomId: string, status: string) {
 }
 
 export async function regenerateShareLink(roomId: string) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   await requireRoomOwnership(roomId, session.user.id);
 
   await withRLS(session.user.id, (tx) =>
@@ -110,7 +110,7 @@ export async function regenerateShareLink(roomId: string) {
 }
 
 export async function updateShareLinkSettings(roomId: string, data: ShareLinkSettingsData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = shareLinkSettingsSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 

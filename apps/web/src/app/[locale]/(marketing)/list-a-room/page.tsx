@@ -12,7 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { StepList } from "@/components/marketing/step-list";
@@ -24,8 +24,7 @@ const stepIcons: LucideIcon[] = [LogIn, Home, Share2, Eye, ClipboardList, Sparkl
 
 export default function ListARoomPage() {
   const t = useTranslations("listRoom");
-  const locale = useLocale();
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   const steps = Array.from({ length: 6 }, (_, i) => ({
     title: t(`steps.items.${i}.title`),

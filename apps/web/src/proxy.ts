@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
-import { routing } from "./i18n/routing";
+import { appRouting, marketingRouting } from "./i18n/routing";
 
-const intlMiddleware = createMiddleware(routing);
+const marketingMiddleware = createMiddleware(marketingRouting);
+const appMiddleware = createMiddleware(appRouting);
 
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
 const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL;
@@ -17,6 +18,8 @@ const appPaths = ["/discover", "/profile", "/applications", "/settings", "/my-ro
 const authPaths = ["/login", "/onboarding"];
 const adminPaths = ["/admin"];
 
+const localePattern = /^\/(?:nl|en|de)(\/|$)/;
+
 function getSubdomain(host: string): Subdomain | null {
   if (!ROOT_DOMAIN) return null;
   const lower = host.split(":")[0].toLowerCase();
@@ -26,24 +29,31 @@ function getSubdomain(host: string): Subdomain | null {
   return null;
 }
 
-function stripLocalePrefix(pathname: string): string {
-  return "/" + pathname.split("/").slice(2).join("/");
+function getBarePath(pathname: string): string {
+  if (localePattern.test(pathname)) {
+    return "/" + pathname.split("/").slice(2).join("/");
+  }
+  return pathname;
 }
 
-function getLocaleFromPath(pathname: string): string {
-  return pathname.split("/")[1] || routing.defaultLocale;
+function getLocaleFromPath(pathname: string): string | null {
+  const match = pathname.match(/^\/(nl|en|de)(\/|$)/);
+  return match ? match[1] : null;
 }
 
 function matchesPaths(path: string, paths: string[]): boolean {
   return paths.some((p) => path === p || path.startsWith(p + "/"));
 }
 
-function classifyPath(pathname: string): RouteType {
-  const path = stripLocalePrefix(pathname);
-  if (matchesPaths(path, appPaths)) return "app";
-  if (matchesPaths(path, authPaths)) return "auth";
-  if (matchesPaths(path, adminPaths)) return "admin";
+function classifyBarePath(barePath: string): RouteType {
+  if (matchesPaths(barePath, appPaths)) return "app";
+  if (matchesPaths(barePath, authPaths)) return "auth";
+  if (matchesPaths(barePath, adminPaths)) return "admin";
   return "marketing";
+}
+
+function isAppRoute(routeType: RouteType): boolean {
+  return routeType === "app" || routeType === "auth" || routeType === "admin";
 }
 
 // Maps each subdomain to which route types should redirect, and where
@@ -75,25 +85,31 @@ function enforceSubdomain(
   pathname: string,
   requestUrl: string,
 ): NextResponse | null {
+  const barePath = getBarePath(pathname);
   const locale = getLocaleFromPath(pathname);
-  const path = stripLocalePrefix(pathname);
 
   // Redirect root path on app/admin subdomains to their landing page
-  if ((path === "/" || path === "") && rootRedirects[subdomain]) {
-    return NextResponse.redirect(new URL(`/${locale}${rootRedirects[subdomain]}`, requestUrl));
+  if ((barePath === "/" || barePath === "") && rootRedirects[subdomain]) {
+    return NextResponse.redirect(new URL(rootRedirects[subdomain]!, requestUrl));
   }
 
   // Redirect mismatched route types to the correct subdomain
-  const routeType = classifyPath(pathname);
+  const routeType = classifyBarePath(barePath);
   const targetUrl = redirectMap[subdomain][routeType];
   if (targetUrl) {
-    return NextResponse.redirect(new URL(`/${locale}${path}`, targetUrl));
+    if (isAppRoute(routeType)) {
+      // App routes: no locale prefix
+      return NextResponse.redirect(new URL(barePath, targetUrl));
+    }
+    // Marketing routes: keep locale prefix
+    const prefixedPath = locale ? `/${locale}${barePath}` : barePath;
+    return NextResponse.redirect(new URL(prefixedPath, targetUrl));
   }
 
   return null;
 }
 
-export function proxy(request: Parameters<typeof intlMiddleware>[0]) {
+export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host") ?? "";
   const subdomain = getSubdomain(host);
@@ -104,13 +120,19 @@ export function proxy(request: Parameters<typeof intlMiddleware>[0]) {
     if (redirect) return redirect;
   }
 
-  // Auth check: protected routes require session cookie
-  if (classifyPath(pathname) === "app" && !request.cookies.get("better-auth.session_token")) {
-    const locale = getLocaleFromPath(pathname);
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+  const barePath = getBarePath(pathname);
+  const routeType = classifyBarePath(barePath);
+
+  // Auth check: protected app routes require session cookie
+  if (routeType === "app" && !request.cookies.get("better-auth.session_token")) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  return intlMiddleware(request);
+  if (isAppRoute(routeType)) {
+    return appMiddleware(request);
+  }
+
+  return marketingMiddleware(request);
 }
 
 export const config = {

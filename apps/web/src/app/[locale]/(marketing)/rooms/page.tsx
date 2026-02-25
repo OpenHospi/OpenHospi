@@ -35,7 +35,7 @@ export default async function RoomsIndexPage({ params }: Props) {
   const cities = await getCitiesWithRoomCount();
   const t = await getTranslations({ locale, namespace: "public.rooms" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const loginUrl = getLoginUrl(locale);
+  const loginUrl = getLoginUrl();
 
   return (
     <section className="py-24">

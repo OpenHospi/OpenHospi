@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 import type { RoomSummary } from "@/lib/rooms";
 import { cn } from "@/lib/utils";
 

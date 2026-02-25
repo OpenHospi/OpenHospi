@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { requireSession } from "@/lib/auth-server";
 
 export async function withdrawApplication(applicationId: string) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   return withRLS(session.user.id, async (tx) => {
     const [app] = await tx

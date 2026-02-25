@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { requireSession } from "@/lib/auth-server";
 
 export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = applyToRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 

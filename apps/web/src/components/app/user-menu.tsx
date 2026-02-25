@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { authClient } from "@/lib/auth-client";
 
 type UserMenuProps = {

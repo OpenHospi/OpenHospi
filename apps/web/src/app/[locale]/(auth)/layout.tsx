@@ -1,6 +1,6 @@
 import { APP_NAME } from "@openhospi/shared/constants";
 
-import { Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation-app";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

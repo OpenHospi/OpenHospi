@@ -11,12 +11,12 @@ import {
   type PreferencesStepData,
 } from "@openhospi/database/validators";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
-import { redirect } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth-server";
 
 export async function saveAboutStep(data: AboutStepData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = aboutStepSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -39,7 +39,7 @@ export async function saveAboutStep(data: AboutStepData) {
 }
 
 export async function savePersonalityStep(data: PersonalityStepData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = personalityStepSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -54,7 +54,7 @@ export async function savePersonalityStep(data: PersonalityStepData) {
 }
 
 export async function savePreferencesStep(data: PreferencesStepData) {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   const parsed = preferencesStepSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -79,7 +79,7 @@ export async function savePreferencesStep(data: PreferencesStepData) {
 }
 
 export async function finishOnboarding() {
-  const session = await requireSession("nl");
+  const session = await requireSession();
   if (!session) return;
-  redirect({ href: "/discover", locale: "nl" });
+  redirect("/discover");
 }

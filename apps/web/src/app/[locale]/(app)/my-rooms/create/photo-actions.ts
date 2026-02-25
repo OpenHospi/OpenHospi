@@ -13,7 +13,7 @@ export async function saveRoomPhoto(
   roomId: string,
   slot: number,
 ): Promise<{ error?: string; photo?: RoomPhoto }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
   if (!url || !roomId) return { error: "Missing URL or roomId" };
@@ -43,7 +43,7 @@ export async function saveRoomPhoto(
 }
 
 export async function deleteRoomPhoto(roomId: string, slot: number): Promise<{ error?: string }> {
-  const session = await requireSession("nl");
+  const session = await requireSession();
 
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
 

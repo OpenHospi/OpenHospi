@@ -33,6 +33,7 @@ export type RoomDetailForApply = {
   description: string | null;
   city: string;
   neighborhood: string | null;
+  address: string | null;
   rentPrice: number;
   deposit: number | null;
   utilitiesIncluded: boolean | null;
@@ -148,6 +149,7 @@ export async function getRoomDetailForApply(
         description: rooms.description,
         city: rooms.city,
         neighborhood: rooms.neighborhood,
+        address: rooms.address,
         rentPrice: rooms.rentPrice,
         deposit: rooms.deposit,
         utilitiesIncluded: rooms.utilitiesIncluded,

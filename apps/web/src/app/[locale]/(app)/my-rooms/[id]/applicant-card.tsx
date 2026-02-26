@@ -1,6 +1,7 @@
 "use client";
 
 import type { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
+import { INVITABLE_APPLICATION_STATUSES } from "@openhospi/shared/enums";
 import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -23,21 +24,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { RoomApplicant } from "@/lib/applicants";
+import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
 import { submitReview, updateApplicationStatus } from "./applicant-actions";
 import { ApplicantProfileSheet } from "./applicant-profile-sheet";
-
-const statusColors: Record<string, string> = {
-  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  seen: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
-  liked: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  invited: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-};
 
 type Props = {
   applicant: RoomApplicant;
@@ -117,7 +108,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
               <h3 className="truncate font-semibold">
                 {applicant.firstName} {applicant.lastName}
               </h3>
-              <Badge className={cn("shrink-0", statusColors[applicant.status])}>
+              <Badge className={cn("shrink-0", APPLICATION_STATUS_COLORS[applicant.status])}>
                 {tEnums(`application_status.${applicant.status}`)}
               </Badge>
             </div>
@@ -207,7 +198,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
 
           {/* Status action buttons (owner/admin) */}
           <div className="flex flex-wrap gap-2">
-            {["seen", "liked", "maybe"].includes(applicant.status) && (
+            {(INVITABLE_APPLICATION_STATUSES as readonly string[]).includes(applicant.status) && (
               <Button
                 size="sm"
                 variant="outline"

@@ -564,7 +564,8 @@
         "activated": "Zimmer aktiviert",
         "closed": "Zimmer geschlossen",
         "updated": "Zimmer aktualisiert",
-        "draftSaved": "Entwurf gespeichert"
+        "draftSaved": "Entwurf gespeichert",
+        "RATE_LIMITED": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut."
       },
       "manage": {
         "title": "Zimmerverwaltung",
@@ -634,12 +635,14 @@
         "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",
         "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
         "is_housemate": "Du bist bereits Mitbewohner dieses Zimmers.",
-        "already_applied": "Du hast dich bereits für dieses Zimmer beworben."
+        "already_applied": "Du hast dich bereits für dieses Zimmer beworben.",
+        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
       }
     },
     "settings": {
       "title": "Einstellungen",
       "exportSuccess": "Daten erfolgreich exportiert",
+      "exportRateLimited": "Zu viele Exportanfragen heute. Bitte versuche es später erneut.",
       "dataExport": {
         "title": "Deine Daten exportieren",
         "description": "Lade alle deine persönlichen Daten als JSON-Datei herunter. Dies umfasst dein Profil, Zimmer, Bewerbungen und Bewertungen.",
@@ -681,6 +684,23 @@
       "errors": {
         "not_found": "Bewerbung nicht gefunden.",
         "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."
+      }
+    },
+    "join": {
+      "title": "Diesem Haus beitreten",
+      "description": "Du wurdest eingeladen, als Mitbewohner beizutreten.",
+      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
+      "joinButton": "Diesem Haus beitreten",
+      "cancel": "Abbrechen",
+      "success": "Du bist dem Haus beigetreten!",
+      "errors": {
+        "INVALID_LINK": "Dieser Einladungslink ist ungültig oder das Zimmer existiert nicht mehr.",
+        "LINK_EXPIRED": "Dieser Einladungslink ist abgelaufen.",
+        "LINK_MAX_USED": "Dieser Einladungslink hat die maximale Anzahl von Nutzungen erreicht.",
+        "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses.",
+        "IS_OWNER": "Du bist der Eigentümer dieses Zimmers.",
+        "ROOM_NOT_ACTIVE": "Dieses Zimmer ist nicht mehr aktiv.",
+        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
       }
     }
   },

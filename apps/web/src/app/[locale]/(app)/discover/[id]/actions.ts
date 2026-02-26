@@ -8,11 +8,16 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
+import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
   const session = await requireSession();
   const parsed = applyToRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
+
+  if (!(await checkRateLimit(rateLimiters.apply, session.user.id))) {
+    return { error: "RATE_LIMITED" };
+  }
 
   return withRLS(session.user.id, async (tx) => {
     const [room] = await tx

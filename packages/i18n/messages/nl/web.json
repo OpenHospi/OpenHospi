@@ -564,7 +564,8 @@
         "activated": "Kamer geactiveerd",
         "closed": "Kamer gesloten",
         "updated": "Kamer bijgewerkt",
-        "draftSaved": "Concept opgeslagen"
+        "draftSaved": "Concept opgeslagen",
+        "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw."
       },
       "manage": {
         "title": "Kamerbeheer",
@@ -634,12 +635,14 @@
         "invalid_data": "Controleer je bericht en probeer opnieuw.",
         "room_not_active": "Deze kamer accepteert geen aanmeldingen meer.",
         "is_housemate": "Je bent al huisgenoot van deze kamer.",
-        "already_applied": "Je hebt je al aangemeld voor deze kamer."
+        "already_applied": "Je hebt je al aangemeld voor deze kamer.",
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
     },
     "settings": {
       "title": "Instellingen",
       "exportSuccess": "Gegevens succesvol geëxporteerd",
+      "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
       "dataExport": {
         "title": "Exporteer je gegevens",
         "description": "Download al je persoonlijke gegevens als JSON-bestand. Dit omvat je profiel, kamers, aanmeldingen en beoordelingen.",
@@ -681,6 +684,23 @@
       "errors": {
         "not_found": "Aanmelding niet gevonden.",
         "cannot_withdraw": "Deze aanmelding kan niet meer worden ingetrokken."
+      }
+    },
+    "join": {
+      "title": "Word huisgenoot",
+      "description": "Je bent uitgenodigd om als huisgenoot deel te nemen.",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "joinButton": "Word huisgenoot",
+      "cancel": "Annuleren",
+      "success": "Je bent toegevoegd aan het huis!",
+      "errors": {
+        "INVALID_LINK": "Deze deellink is ongeldig of de kamer bestaat niet meer.",
+        "LINK_EXPIRED": "Deze deellink is verlopen.",
+        "LINK_MAX_USED": "Deze deellink heeft het maximale aantal keren bereikt.",
+        "ALREADY_MEMBER": "Je bent al lid van dit huis.",
+        "IS_OWNER": "Je bent de eigenaar van deze kamer.",
+        "ROOM_NOT_ACTIVE": "Deze kamer is niet meer actief.",
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
     }
   },

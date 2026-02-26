@@ -4,14 +4,21 @@ import { withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@openhospi/database/validators";
+import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
 import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { createDraftRoom } from "@/lib/rooms";
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
   const session = await requireSession();
+
+  if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
+    return { error: "RATE_LIMITED" };
+  }
+
   try {
     const id = await createDraftRoom(session.user.id);
     return { id };
@@ -88,7 +95,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
       .set({
         features: d.features ?? [],
         locationTags: d.locationTags ?? [],
-        preferredGender: d.preferredGender || "geen_voorkeur",
+        preferredGender: d.preferredGender || DEFAULT_GENDER_PREFERENCE,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],

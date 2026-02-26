@@ -2,6 +2,7 @@ import { db, withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
+import type { DiscoverSort } from "@openhospi/shared/enums";
 import { and, asc, desc, eq, gte, isNull, lte, sql } from "drizzle-orm";
 
 export type DiscoverRoom = {
@@ -31,7 +32,7 @@ export type DiscoverFilters = {
   locationTags?: string[];
 };
 
-export type DiscoverSort = "newest" | "cheapest" | "most_expensive";
+export type { DiscoverSort };
 
 export type DiscoverCursor = {
   createdAt: string;

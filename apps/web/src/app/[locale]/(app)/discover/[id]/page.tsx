@@ -1,3 +1,4 @@
+import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
 import { Home, MapPin, Ruler, Settings, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -10,20 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation-app";
 import { getApplicationForRoom, getRoomDetailForApply } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
-
+import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { ApplyDialog } from "./apply-dialog";
-
-const applicationStatusColors: Record<string, string> = {
-  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  seen: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
-  liked: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  invited: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  withdrawn: "bg-muted text-muted-foreground",
-};
 
 export async function generateMetadata({
   params,
@@ -111,6 +100,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
               <MapPin className="size-4" />
               <span>{cityName}</span>
               {room.neighborhood && <span>· {room.neighborhood}</span>}
+              {room.address && <span>· {room.address}</span>}
             </div>
           </div>
 
@@ -214,12 +204,12 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
           )}
 
           {/* Preferences */}
-          {(room.preferredGender !== "geen_voorkeur" ||
+          {(room.preferredGender !== DEFAULT_GENDER_PREFERENCE ||
             room.preferredLifestyleTags.length > 0) && (
             <div>
               <h2 className="text-lg font-semibold">{t("preferences")}</h2>
               <div className="mt-2 space-y-2">
-                {room.preferredGender !== "geen_voorkeur" && (
+                {room.preferredGender !== DEFAULT_GENDER_PREFERENCE && (
                   <p className="text-sm text-muted-foreground">
                     {tEnums(`gender_preference.${room.preferredGender}`)}
                     {room.preferredAgeMin != null &&
@@ -268,7 +258,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
               {!isOwner && existingApplication && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Badge className={applicationStatusColors[existingApplication.status]}>
+                    <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
                       {tEnums(`application_status.${existingApplication.status}`)}
                     </Badge>
                   </div>

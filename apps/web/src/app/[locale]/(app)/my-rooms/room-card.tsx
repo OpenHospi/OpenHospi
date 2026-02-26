@@ -6,14 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
 import type { RoomSummary } from "@/lib/rooms";
+import { ROOM_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
-
-const statusColors: Record<string, string> = {
-  draft: "bg-muted text-muted-foreground",
-  active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  paused: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  closed: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-};
 
 type Props = {
   room: RoomSummary;
@@ -39,7 +33,7 @@ export async function RoomCard({ room }: Props) {
               <Home className="size-8 text-muted-foreground" />
             </div>
           )}
-          <Badge className={cn("absolute top-2 right-2", statusColors[room.status])}>
+          <Badge className={cn("absolute top-2 right-2", ROOM_STATUS_COLORS[room.status])}>
             {tEnums(`room_status.${room.status}`)}
           </Badge>
         </div>

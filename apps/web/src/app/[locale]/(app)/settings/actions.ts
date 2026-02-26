@@ -15,10 +15,15 @@ import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage } from "@/lib/photos";
+import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 export async function exportData() {
   const session = await requireSession();
   const userId = session.user.id;
+
+  if (!(await checkRateLimit(rateLimiters.exportData, userId))) {
+    return { error: "RATE_LIMITED" };
+  }
 
   const data = await withRLS(userId, async (tx) => {
     const [profile] = await tx.select().from(profiles).where(eq(profiles.id, userId));

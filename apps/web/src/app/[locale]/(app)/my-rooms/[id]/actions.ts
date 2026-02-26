@@ -4,6 +4,9 @@ import { withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
 import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
+import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
+import { isValidRoomTransition } from "@openhospi/shared/enums";
+import type { RoomStatus } from "@openhospi/shared/enums";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -38,7 +41,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
         totalHousemates: d.totalHousemates || null,
         features: d.features ?? [],
         locationTags: d.locationTags ?? [],
-        preferredGender: d.preferredGender || "geen_voorkeur",
+        preferredGender: d.preferredGender || DEFAULT_GENDER_PREFERENCE,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],
@@ -60,15 +63,9 @@ export async function updateRoomStatus(roomId: string, status: string) {
       .select({ status: rooms.status })
       .from(rooms)
       .where(eq(rooms.id, roomId));
-    const current = room?.status;
+    const current = room?.status as RoomStatus;
 
-    const validTransitions: Record<string, string[]> = {
-      draft: ["active"],
-      active: ["paused", "closed"],
-      paused: ["active", "closed"],
-    };
-
-    if (!validTransitions[current!]?.includes(status)) {
+    if (!isValidRoomTransition(current, status as RoomStatus)) {
       return { error: "Invalid status transition" };
     }
 

@@ -1,6 +1,7 @@
 import { withRLS } from "@openhospi/database";
 import { housemates, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
+import { DEFAULT_ROOM_STATUS, ROOM_CREATOR_ROLE } from "@openhospi/shared/constants";
 import { eq, sql } from "drizzle-orm";
 
 export type { Room, RoomPhoto };
@@ -28,12 +29,12 @@ export async function createDraftRoom(userId: string): Promise<string> {
       title: "",
       city: "amsterdam",
       rentPrice: "0",
-      status: "draft",
+      status: DEFAULT_ROOM_STATUS,
     });
     await tx.insert(housemates).values({
       roomId,
       userId,
-      role: "owner",
+      role: ROOM_CREATOR_ROLE,
     });
   });
 

@@ -311,6 +311,35 @@ export function isValidApplicationTransition(
   return VALID_APPLICATION_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
+// Room status transitions
+export const VALID_ROOM_TRANSITIONS: Record<RoomStatus, readonly RoomStatus[]> = {
+  draft: ["active"],
+  active: ["paused", "closed"],
+  paused: ["active", "closed"],
+  closed: [],
+} as const;
+
+export function isValidRoomTransition(from: RoomStatus, to: RoomStatus): boolean {
+  return VALID_ROOM_TRANSITIONS[from]?.includes(to) ?? false;
+}
+
+// Application status categories
+export const TERMINAL_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
+  "rejected", "accepted", "not_chosen", "withdrawn", "not_attending",
+] as const;
+
+export function isTerminalApplicationStatus(status: ApplicationStatus): boolean {
+  return (TERMINAL_APPLICATION_STATUSES as readonly string[]).includes(status);
+}
+
+export const INVITABLE_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
+  "seen", "liked", "maybe",
+] as const;
+
+// Discover sort
+export const DISCOVER_SORTS = ["newest", "cheapest", "most_expensive"] as const;
+export type DiscoverSort = (typeof DISCOVER_SORTS)[number];
+
 export const VERENIGINGEN = [
   // Alkmaar
   "omnivas",

@@ -1,6 +1,8 @@
 "use client";
 
+import { DEFAULT_DISCOVER_SORT } from "@openhospi/shared/constants";
 import { CITIES, FURNISHINGS, HOUSE_TYPES, LOCATION_TAGS, ROOM_FEATURES } from "@openhospi/shared/enums";
+import type { DiscoverSort } from "@openhospi/shared/enums";
 import { Check, ChevronsUpDown, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { usePathname, useRouter } from "@/i18n/navigation-app";
-import type { DiscoverFilters, DiscoverSort } from "@/lib/discover";
+import type { DiscoverFilters } from "@/lib/discover";
 import { cn } from "@/lib/utils";
 
 type FilterValue = string | string[] | undefined;
@@ -47,7 +49,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
         availableFrom: filters.availableFrom,
         features: filters.features,
         locationTags: filters.locationTags,
-        sort: sort !== "newest" ? sort : undefined,
+        sort: sort !== DEFAULT_DISCOVER_SORT ? sort : undefined,
         ...overrides,
       };
 
@@ -104,7 +106,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
     setMinPrice("");
     setMaxPrice("");
     const params = new URLSearchParams();
-    if (sort !== "newest") params.set("sort", sort);
+    if (sort !== DEFAULT_DISCOVER_SORT) params.set("sort", sort);
     const qs = params.toString();
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
@@ -115,7 +117,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
       <div className="flex flex-wrap items-center gap-3">
         <Select
           value={sort}
-          onValueChange={(v) => updateFilter("sort", v === "newest" ? undefined : v)}
+          onValueChange={(v) => updateFilter("sort", v === DEFAULT_DISCOVER_SORT ? undefined : v)}
         >
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder={t("sort")} />

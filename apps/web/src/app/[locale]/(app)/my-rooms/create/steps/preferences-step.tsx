@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomPreferencesData } from "@openhospi/database/validators";
 import { roomPreferencesSchema } from "@openhospi/database/validators";
+import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
 import {
   GENDER_PREFERENCES,
   LIFESTYLE_TAGS,
@@ -60,7 +61,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
     defaultValues: {
       features: (defaultValues.features as RoomFeature[]) ?? [],
       locationTags: (defaultValues.locationTags as LocationTag[]) ?? [],
-      preferredGender: defaultValues.preferredGender ?? "geen_voorkeur",
+      preferredGender: defaultValues.preferredGender ?? DEFAULT_GENDER_PREFERENCE,
       preferredAgeMin: defaultValues.preferredAgeMin ?? undefined,
       preferredAgeMax: defaultValues.preferredAgeMax ?? undefined,
       preferredLifestyleTags: (defaultValues.preferredLifestyleTags as LifestyleTag[]) ?? [],

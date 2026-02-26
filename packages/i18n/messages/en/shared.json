@@ -24,41 +24,41 @@
     },
     "gender": {
       "man": "Man",
-      "vrouw": "Woman",
-      "zeg_ik_liever_niet": "Prefer not to say"
+      "vrouw": "Vrouw",
+      "zeg_ik_liever_niet": "Zeg ik liever niet"
     },
     "lifestyle_tag": {
-      "gezellig": "Sociable",
-      "rustig": "Calm",
+      "gezellig": "Gezellig",
+      "rustig": "Rustig",
       "introvert": "Introvert",
-      "extravert": "Extrovert",
-      "sporten": "Sports",
-      "koken": "Cooking",
-      "gamen": "Gaming",
-      "muziek": "Music",
-      "uitgaan": "Going out",
-      "feesten": "Parties",
-      "studeren": "Studying",
-      "lezen": "Reading",
-      "reizen": "Traveling",
-      "filmavond": "Movie night",
-      "creatief": "Creative",
-      "vroege_vogel": "Early bird",
-      "nachtbraker": "Night owl",
-      "schoon": "Clean",
-      "relaxed_met_schoonmaken": "Relaxed about cleaning",
-      "vegetarisch": "Vegetarian",
+      "extravert": "Extravert",
+      "sporten": "Sporten",
+      "koken": "Koken",
+      "gamen": "Gamen",
+      "muziek": "Muziek",
+      "uitgaan": "Uitgaan",
+      "feesten": "Feesten",
+      "studeren": "Studeren",
+      "lezen": "Lezen",
+      "reizen": "Reizen",
+      "filmavond": "Filmavond",
+      "creatief": "Creatief",
+      "vroege_vogel": "Vroege vogel",
+      "nachtbraker": "Nachtbraker",
+      "schoon": "Schoon",
+      "relaxed_met_schoonmaken": "Relaxed met schoonmaken",
+      "vegetarisch": "Vegetarisch",
       "vegan": "Vegan",
-      "duurzaam": "Sustainable",
-      "inclusief": "Inclusive",
-      "internationaal": "International",
-      "huisdieren": "Pets"
+      "duurzaam": "Duurzaam",
+      "inclusief": "Inclusief",
+      "internationaal": "Internationaal",
+      "huisdieren": "Huisdieren"
     },
     "study_level": {
       "mbo": "MBO",
-      "hbo_propedeuse": "HBO Foundation year",
+      "hbo_propedeuse": "HBO Propedeuse",
       "hbo_bachelor": "HBO Bachelor",
-      "wo_propedeuse": "WO Foundation year",
+      "wo_propedeuse": "WO Propedeuse",
       "wo_bachelor": "WO Bachelor",
       "pre_master": "Pre-master",
       "master": "Master",
@@ -67,7 +67,7 @@
     "city": {
       "amsterdam": "Amsterdam",
       "rotterdam": "Rotterdam",
-      "den_haag": "The Hague",
+      "den_haag": "Den Haag",
       "utrecht": "Utrecht",
       "groningen": "Groningen",
       "eindhoven": "Eindhoven",
@@ -127,64 +127,64 @@
       "terschelling": "Terschelling"
     },
     "house_type": {
-      "studentenhuis": "Student house",
-      "appartement": "Apartment",
+      "studentenhuis": "Studentenhuis",
+      "appartement": "Appartement",
       "studio": "Studio",
-      "woongroep": "Shared living group",
-      "anti_kraak": "Anti-squat"
+      "woongroep": "Woongroep",
+      "anti_kraak": "Anti-kraak"
     },
     "room_status": {
-      "draft": "Draft",
-      "active": "Active",
-      "paused": "Paused",
-      "closed": "Closed"
+      "draft": "Concept",
+      "active": "Actief",
+      "paused": "Gepauzeerd",
+      "closed": "Gesloten"
     },
     "furnishing": {
-      "kaal": "Unfurnished",
-      "gestoffeerd": "Floored & curtained",
-      "gemeubileerd": "Furnished"
+      "kaal": "Kaal",
+      "gestoffeerd": "Gestoffeerd",
+      "gemeubileerd": "Gemeubileerd"
     },
     "room_feature": {
-      "eigen_badkamer": "Private bathroom",
-      "gedeelde_badkamer": "Shared bathroom",
-      "eigen_keuken": "Private kitchen",
-      "gedeelde_keuken": "Shared kitchen",
-      "balkon": "Balcony",
-      "tuin": "Garden",
-      "terras": "Terrace",
-      "berging": "Storage",
-      "parkeerplaats": "Parking spot",
-      "fietsenstalling": "Bike storage",
-      "wasmachine": "Washing machine",
-      "droger": "Dryer",
-      "vaatwasser": "Dishwasher",
-      "wifi_inbegrepen": "Wi-Fi included",
-      "huisdieren_toegestaan": "Pets allowed",
-      "roken_toegestaan": "Smoking allowed",
-      "geen_huisdieren": "No pets",
-      "niet_roken": "No smoking"
+      "eigen_badkamer": "Eigen badkamer",
+      "gedeelde_badkamer": "Gedeelde badkamer",
+      "eigen_keuken": "Eigen keuken",
+      "gedeelde_keuken": "Gedeelde keuken",
+      "balkon": "Balkon",
+      "tuin": "Tuin",
+      "terras": "Terras",
+      "berging": "Berging",
+      "parkeerplaats": "Parkeerplaats",
+      "fietsenstalling": "Fietsenstalling",
+      "wasmachine": "Wasmachine",
+      "droger": "Droger",
+      "vaatwasser": "Vaatwasser",
+      "wifi_inbegrepen": "Wifi inbegrepen",
+      "huisdieren_toegestaan": "Huisdieren toegestaan",
+      "roken_toegestaan": "Roken toegestaan",
+      "geen_huisdieren": "Geen huisdieren",
+      "niet_roken": "Niet roken"
     },
     "rental_type": {
-      "vast": "Permanent",
-      "onderhuur": "Sublet",
-      "tijdelijk": "Temporary"
+      "vast": "Vast",
+      "onderhuur": "Onderhuur",
+      "tijdelijk": "Tijdelijk"
     },
     "location_tag": {
-      "dichtbij_universiteit": "Near university",
-      "dichtbij_station": "Near train station",
-      "dichtbij_ov": "Near public transport",
-      "dichtbij_centrum": "Near city center",
-      "dichtbij_supermarkt": "Near supermarket",
-      "dichtbij_uitgaan": "Near nightlife",
-      "dichtbij_sportcentrum": "Near sports center",
-      "dichtbij_park": "Near park",
-      "rustige_buurt": "Quiet neighborhood",
-      "levendige_buurt": "Lively neighborhood"
+      "dichtbij_universiteit": "Dichtbij universiteit",
+      "dichtbij_station": "Dichtbij station",
+      "dichtbij_ov": "Dichtbij OV",
+      "dichtbij_centrum": "Dichtbij centrum",
+      "dichtbij_supermarkt": "Dichtbij supermarkt",
+      "dichtbij_uitgaan": "Dichtbij uitgaan",
+      "dichtbij_sportcentrum": "Dichtbij sportcentrum",
+      "dichtbij_park": "Dichtbij park",
+      "rustige_buurt": "Rustige buurt",
+      "levendige_buurt": "Levendige buurt"
     },
     "gender_preference": {
       "man": "Man",
-      "vrouw": "Woman",
-      "geen_voorkeur": "No preference"
+      "vrouw": "Vrouw",
+      "geen_voorkeur": "Geen voorkeur"
     },
     "vereniging": {
       "omnivas": "Omnivas",
@@ -206,7 +206,7 @@
       "unitas_sa": "Unitas SA",
       "arboricultura": "Arboricultura",
       "sv_creas": "SV Creas",
-      "sv_campuscafe_lokaal_99": "SV Campuscaf\u00e9 Lokaal 99",
+      "sv_campuscafe_lokaal_99": "SV Campuscafé Lokaal 99",
       "quercus": "Quercus",
       "trolleystam": "Trolleystam",
       "sv_maximus": "SV Maximus",
@@ -251,7 +251,7 @@
       "radix": "Radix",
       "hsv": "HSV",
       "intac": "Intac",
-      "la_confrerie": "La Confr\u00e9rie",
+      "la_confrerie": "La Confrérie",
       "aegee_groningen": "AEGEE Groningen",
       "albertus_magnus": "Albertus Magnus",
       "ffj_bernlef": "FFJ Bernlef",
@@ -339,29 +339,29 @@
       "gumbo_millennium": "Gumbo Millennium",
       "oikos_nomos": "Oikos Nomos",
       "zhtc": "ZHTC",
-      "anders": "Other"
+      "anders": "Anders"
     },
     "application_status": {
-      "sent": "Sent",
-      "seen": "Seen",
-      "liked": "Liked",
-      "maybe": "Maybe",
-      "rejected": "Rejected",
-      "invited": "Invited",
-      "attending": "Attending",
-      "not_attending": "Not attending",
-      "accepted": "Accepted",
-      "not_chosen": "Not chosen",
-      "withdrawn": "Withdrawn"
+      "sent": "Verstuurd",
+      "seen": "Gezien",
+      "liked": "Leuk",
+      "maybe": "Misschien",
+      "rejected": "Afgewezen",
+      "invited": "Uitgenodigd",
+      "attending": "Komt",
+      "not_attending": "Komt niet",
+      "accepted": "Geaccepteerd",
+      "not_chosen": "Niet gekozen",
+      "withdrawn": "Ingetrokken"
     },
     "review_decision": {
-      "like": "Like",
-      "maybe": "Maybe",
-      "reject": "Reject"
+      "like": "Leuk",
+      "maybe": "Misschien",
+      "reject": "Afwijzen"
     },
     "houseMemberRole": {
-      "owner": "Manager",
-      "member": "Housemate"
+      "owner": "Beheerder",
+      "member": "Huisgenoot"
     }
   }
 }

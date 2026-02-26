@@ -7,18 +7,19 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, jwt } from "better-auth/plugins";
 
 function createAuth() {
-  const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
-
+  // baseURL is intentionally omitted — derived per-request from
+  // X-Forwarded-Host/Proto (Vercel), falling back to request origin (localhost).
+  // BETTER_AUTH_URL must also be unset on Vercel for this to work.
   return betterAuth({
     secret:
       process.env.BETTER_AUTH_SECRET ??
       "build-placeholder-secret-not-for-production-use",
-    baseURL,
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: { ...schema },
     }),
     advanced: {
+      trustedProxyHeaders: true,
       database: {
         generateId: "uuid",
       },
@@ -26,7 +27,6 @@ function createAuth() {
     // NOTE: experimental.joins is disabled due to incompatibility between
     // Better Auth and drizzle-orm v1.0.0-beta (Unknown relational filter: "decoder")
     trustedOrigins: [
-      baseURL,
       "https://*.openhospi.nl",
       "https://connect.test.surfconext.nl",
       "https://connect.surfconext.nl",

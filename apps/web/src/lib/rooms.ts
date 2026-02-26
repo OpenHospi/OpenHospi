@@ -2,6 +2,7 @@ import { withRLS } from "@openhospi/database";
 import { housemates, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
 import { DEFAULT_ROOM_STATUS, ROOM_CREATOR_ROLE } from "@openhospi/shared/constants";
+import type { RoomStatus } from "@openhospi/shared/enums";
 import { eq, sql } from "drizzle-orm";
 
 export type { Room, RoomPhoto };
@@ -13,7 +14,7 @@ export type RoomSummary = {
   title: string;
   city: string;
   rentPrice: number;
-  status: string;
+  status: RoomStatus;
   coverPhotoUrl: string | null;
   applicantCount: number;
   createdAt: Date;

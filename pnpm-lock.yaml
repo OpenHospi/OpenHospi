@@ -7,6 +7,7 @@ settings:
 overrides:
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
+  drizzle-orm: 1.0.0-beta.15-859cf75
 
 importers:
 
@@ -3856,7 +3857,7 @@ packages:
       '@tanstack/solid-start': ^1.0.0
       better-sqlite3: ^12.0.0
       drizzle-kit: '>=0.31.4'
-      drizzle-orm: '>=0.41.0'
+      drizzle-orm: 1.0.0-beta.15-859cf75
       mongodb: ^6.0.0 || ^7.0.0
       mysql2: ^3.0.0
       next: ^14.0.0 || ^15.0.0 || ^16.0.0

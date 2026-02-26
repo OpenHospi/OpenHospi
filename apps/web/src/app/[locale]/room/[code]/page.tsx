@@ -1,5 +1,5 @@
 import { db } from "@openhospi/database";
-import { housemates, rooms } from "@openhospi/database/schema";
+import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { count, eq } from "drizzle-orm";
 import { Home, MapPin, Users } from "lucide-react";
@@ -10,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
 import { requireSession } from "@/lib/auth-server";
-
-import { JoinButton } from "./join-button";
 
 export async function generateMetadata({
   params,
@@ -34,6 +32,7 @@ async function getRoomByShareLink(code: string) {
       title: rooms.title,
       city: rooms.city,
       status: rooms.status,
+      houseId: rooms.houseId,
     })
     .from(rooms)
     .where(eq(rooms.shareLink, code));
@@ -44,8 +43,9 @@ async function getRoomByShareLink(code: string) {
     .select({
       count: count(),
     })
-    .from(housemates)
-    .where(eq(housemates.roomId, room.id));
+    .from(houseMembers)
+    .innerJoin(houses, eq(houseMembers.houseId, houses.id))
+    .where(eq(houseMembers.houseId, room.houseId));
 
   return { ...room, housemateCount: result?.count ?? 0 };
 }
@@ -107,9 +107,6 @@ export default async function JoinRoomPage({ params }: Props) {
             <Button asChild variant="outline" className="flex-1">
               <Link href="/discover">{t("cancel")}</Link>
             </Button>
-            <div className="flex-1">
-              <JoinButton code={code} />
-            </div>
           </div>
         </CardContent>
       </Card>

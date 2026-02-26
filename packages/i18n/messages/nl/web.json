@@ -707,6 +707,38 @@
         "ROOM_NOT_ACTIVE": "Deze kamer is niet meer actief.",
         "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
+    },
+    "house": {
+      "create": {
+        "title": "Huis aanmaken",
+        "description": "Maak je huis aan om kamers te kunnen aanbieden.",
+        "nameLabel": "Huisnaam",
+        "namePlaceholder": "bijv. Keizersgracht 42 of Villa Volta",
+        "submit": "Huis aanmaken"
+      },
+      "members": {
+        "title": "Huisgenoten",
+        "description": "De bewoners van je huis."
+      },
+      "invite": {
+        "title": "Huisgenoten uitnodigen",
+        "description": "Deel deze link met je huisgenoten zodat ze kunnen deelnemen."
+      },
+      "rooms": {
+        "title": "Kamers",
+        "untitled": "Naamloze kamer"
+      }
+    },
+    "joinHouse": {
+      "title": "Word huisgenoot",
+      "description": "Je bent uitgenodigd om lid te worden van {name}.",
+      "joinButton": "Word lid",
+      "cancel": "Annuleren",
+      "success": "Je bent toegevoegd aan het huis!",
+      "errors": {
+        "INVALID_LINK": "Deze uitnodigingslink is ongeldig.",
+        "ALREADY_MEMBER": "Je bent al lid van dit huis."
+      }
     }
   },
   "costs": {
@@ -899,6 +931,12 @@
     }
   },
   "admin": {
-    "comingSoon": "Binnenkort beschikbaar"
+    "comingSoon": "Binnenkort beschikbaar",
+    "login": {
+      "title": "Admin inloggen",
+      "description": "Log in met je GitHub-account om toegang te krijgen tot het beheerpaneel.",
+      "githubButton": "Inloggen met GitHub",
+      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft."
+    }
   }
 }

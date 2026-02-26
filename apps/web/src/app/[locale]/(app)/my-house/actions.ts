@@ -1,0 +1,50 @@
+"use server";
+
+import { db, withRLS } from "@openhospi/database";
+import { houseMembers, houses } from "@openhospi/database/schema";
+import { HouseMemberRole } from "@openhospi/shared/enums";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+import { requireSession } from "@/lib/auth-server";
+
+export async function createHouse(formData: FormData): Promise<void> {
+  const session = await requireSession();
+  const name = formData.get("name") as string;
+
+  if (!name || name.trim().length < 2) {
+    throw new Error("invalid_name");
+  }
+
+  const houseId = crypto.randomUUID();
+
+  await withRLS(session.user.id, async (tx) => {
+    await tx.insert(houses).values({
+      id: houseId,
+      name: name.trim(),
+      createdBy: session.user.id,
+    });
+
+    await tx.insert(houseMembers).values({
+      houseId,
+      userId: session.user.id,
+      role: HouseMemberRole.owner,
+    });
+  });
+
+  redirect("/my-house");
+}
+
+export async function regenerateInviteCode() {
+  const session = await requireSession();
+
+  // Uses db directly — owner needs to update their own house
+  await db
+    .update(houses)
+    .set({ inviteCode: crypto.randomUUID() })
+    .where(eq(houses.createdBy, session.user.id));
+
+  revalidatePath("/my-house");
+  return { success: true };
+}

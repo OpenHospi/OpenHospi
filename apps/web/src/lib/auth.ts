@@ -4,8 +4,7 @@ import * as schema from "@openhospi/database/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { jwt } from "better-auth/plugins";
-
+import { admin, jwt } from "better-auth/plugins";
 
 function createAuth() {
   const baseURL = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
@@ -33,15 +32,26 @@ function createAuth() {
       "https://connect.test.surfconext.nl",
       "https://connect.surfconext.nl",
     ],
-    accountLinking: { enabled: false },
+    accountLinking: { enabled: true, trustedProviders: ["github"] },
+    socialProviders: {
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID!,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        disableSignUp: process.env.GITHUB_DISABLE_SIGNUP !== "false",
+      },
+    },
     databaseHooks: {
       user: {
         create: {
           before: async (user) => {
+            // During GitHub bootstrap (GITHUB_DISABLE_SIGNUP=false), keep the real
+            // email so account linking works after promoting to admin.
+            // Normal operation: always replace with placeholder.
+            const keepRealEmail = process.env.GITHUB_DISABLE_SIGNUP === "false";
             return {
               data: {
                 ...user,
-                email: `${user.id}@id.openhospi.nl`,
+                email: keepRealEmail ? user.email : `${user.id}@id.openhospi.nl`,
                 emailVerified: true,
               },
             };
@@ -83,6 +93,7 @@ function createAuth() {
             });
         },
       }),
+      admin(),
       jwt(),
       nextCookies(),
     ],

@@ -358,6 +358,10 @@
       "like": "Like",
       "maybe": "Maybe",
       "reject": "Reject"
+    },
+    "houseMemberRole": {
+      "owner": "Manager",
+      "member": "Housemate"
     }
   }
 }

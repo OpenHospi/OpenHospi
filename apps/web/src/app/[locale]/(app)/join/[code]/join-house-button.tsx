@@ -8,26 +8,26 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 
-import { joinViaShareLink } from "./actions";
+import { joinHouse } from "./actions";
 
 type Props = {
   code: string;
 };
 
-export function JoinButton({ code }: Props) {
-  const t = useTranslations("app.join");
+export function JoinHouseButton({ code }: Props) {
+  const t = useTranslations("app.joinHouse");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   function handleJoin() {
     startTransition(async () => {
-      const result = await joinViaShareLink(code);
+      const result = await joinHouse(code);
       if ("error" in result) {
         toast.error(t(`errors.${result.error}`));
         return;
       }
       toast.success(t("success"));
-      router.push(`/my-rooms/${result.roomId}`);
+      router.push("/my-house");
     });
   }
 

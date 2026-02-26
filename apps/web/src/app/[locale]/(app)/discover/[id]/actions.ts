@@ -1,7 +1,7 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { applications, housemates, rooms } from "@openhospi/database/schema";
+import { applications, houseMembers, houses, rooms } from "@openhospi/database/schema";
 import type { ApplyToRoomData } from "@openhospi/database/validators";
 import { applyToRoomSchema } from "@openhospi/database/validators";
 import { RoomStatus } from "@openhospi/shared/enums";
@@ -22,18 +22,19 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
 
   return withRLS(session.user.id, async (tx) => {
     const [room] = await tx
-      .select({ status: rooms.status })
+      .select({ status: rooms.status, houseId: rooms.houseId })
       .from(rooms)
       .where(eq(rooms.id, roomId));
     if (!room || room.status !== RoomStatus.active) {
       return { error: "room_not_active" };
     }
 
-    const [housemate] = await tx
-      .select({ id: housemates.id })
-      .from(housemates)
-      .where(and(eq(housemates.roomId, roomId), eq(housemates.userId, session.user.id)));
-    if (housemate) {
+    const [member] = await tx
+      .select({ id: houseMembers.id })
+      .from(houseMembers)
+      .innerJoin(houses, eq(houseMembers.houseId, houses.id))
+      .where(and(eq(houseMembers.houseId, room.houseId), eq(houseMembers.userId, session.user.id)));
+    if (member) {
       return { error: "is_housemate" };
     }
 

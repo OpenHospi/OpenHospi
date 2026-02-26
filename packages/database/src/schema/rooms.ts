@@ -47,6 +47,9 @@ export const rooms = pgTable(
     rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),
     deposit: numeric("deposit", { precision: 7, scale: 2 }),
     utilitiesIncluded: boolean("utilities_included").default(false),
+    serviceCosts: numeric("service_costs", { precision: 7, scale: 2 }),
+    totalCost: numeric("total_cost", { precision: 7, scale: 2 })
+      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0)`),
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),

@@ -495,6 +495,7 @@
         "rentPrice": "Monatliche Miete",
         "deposit": "Kaution",
         "utilitiesIncluded": "Nebenkosten inklusive",
+        "serviceCosts": "Nebenkosten",
         "roomSize": "Zimmergröße (m²)",
         "availableFrom": "Verfügbar ab",
         "availableUntil": "Verfügbar bis",
@@ -517,6 +518,7 @@
         "address": "z.B. Keizersgracht 1",
         "rentPrice": "z.B. 450",
         "deposit": "z.B. 450",
+        "serviceCosts": "z.B. 75",
         "roomSize": "z.B. 12",
         "totalHousemates": "z.B. 5",
         "searchVereniging": "Verein suchen..."
@@ -617,6 +619,9 @@
       "deposit": "Kaution",
       "utilitiesIncluded": "Nebenkosten inklusive",
       "utilitiesExcluded": "Nebenkosten nicht inklusive",
+      "serviceCosts": "Nebenkosten",
+      "rent": "Kaltmiete",
+      "totalCost": "Gesamt",
       "rentalType": "Mietart",
       "notFound": "Zimmer nicht gefunden",
       "notAvailable": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
@@ -874,6 +879,9 @@
       "deposit": "Kaution",
       "utilitiesIncluded": "Nebenkosten inklusive",
       "utilitiesExcluded": "Nebenkosten nicht inklusive",
+      "serviceCosts": "Nebenkosten",
+      "rent": "Kaltmiete",
+      "totalCost": "Gesamt",
       "roomSize": "{size} m²",
       "rentalType": "Mietart"
     }

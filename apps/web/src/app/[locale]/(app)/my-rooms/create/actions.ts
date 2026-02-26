@@ -67,6 +67,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
         rentPrice: String(d.rentPrice),
         deposit: d.deposit != null ? String(d.deposit) : null,
         utilitiesIncluded: d.utilitiesIncluded ?? false,
+        serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
         availableUntil: d.rentalType === RentalType.vast ? null : d.availableUntil || null,

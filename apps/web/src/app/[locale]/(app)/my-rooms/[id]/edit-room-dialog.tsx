@@ -88,6 +88,7 @@ export function EditRoomDialog({ room }: Props) {
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : undefined,
       utilitiesIncluded: room.utilitiesIncluded ?? false,
+      serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
       roomSizeM2: room.roomSizeM2 ?? undefined,
       availableFrom: room.availableFrom ?? "",
       availableUntil: room.availableUntil ?? "",
@@ -106,6 +107,7 @@ export function EditRoomDialog({ room }: Props) {
   });
 
   const rentalType = form.watch("rentalType");
+  const utilitiesIncluded = form.watch("utilitiesIncluded");
   const selectedFeatures = form.watch("features") ?? [];
   const selectedLocationTags = form.watch("locationTags") ?? [];
   const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
@@ -275,6 +277,28 @@ export function EditRoomDialog({ room }: Props) {
                 </FormItem>
               )}
             />
+
+            {!utilitiesIncluded && (
+              <FormField
+                control={form.control}
+                name="serviceCosts"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.serviceCosts")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        placeholder={t("placeholders.serviceCosts")}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}

@@ -45,7 +45,7 @@ export async function DiscoverRoomCard({ room }: Props) {
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">
-            €{room.rentPrice}
+            €{room.totalCost}
             <span className="font-normal text-muted-foreground">{t("perMonth")}</span>
           </span>
           <span className="flex items-center gap-1 text-muted-foreground">

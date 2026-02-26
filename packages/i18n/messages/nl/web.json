@@ -495,6 +495,7 @@
         "rentPrice": "Maandelijkse huur",
         "deposit": "Borg",
         "utilitiesIncluded": "Inclusief gas/water/licht",
+        "serviceCosts": "Servicekosten",
         "roomSize": "Kamergrootte (m²)",
         "availableFrom": "Beschikbaar vanaf",
         "availableUntil": "Beschikbaar tot",
@@ -517,6 +518,7 @@
         "address": "bijv. Keizersgracht 1",
         "rentPrice": "bijv. 450",
         "deposit": "bijv. 450",
+        "serviceCosts": "bijv. 75",
         "roomSize": "bijv. 12",
         "totalHousemates": "bijv. 5",
         "searchVereniging": "Zoek vereniging..."
@@ -617,6 +619,9 @@
       "deposit": "Borg",
       "utilitiesIncluded": "Inclusief nutsvoorzieningen",
       "utilitiesExcluded": "Exclusief nutsvoorzieningen",
+      "serviceCosts": "Servicekosten",
+      "rent": "Kale huur",
+      "totalCost": "Totaal",
       "rentalType": "Huurtype",
       "notFound": "Kamer niet gevonden",
       "notAvailable": "Deze kamer accepteert geen aanmeldingen meer.",
@@ -874,6 +879,9 @@
       "deposit": "Borg",
       "utilitiesIncluded": "Inclusief gas/water/licht",
       "utilitiesExcluded": "Exclusief gas/water/licht",
+      "serviceCosts": "Servicekosten",
+      "rent": "Kale huur",
+      "totalCost": "Totaal",
       "roomSize": "{size} m²",
       "rentalType": "Huurtype"
     }

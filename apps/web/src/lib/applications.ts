@@ -2,7 +2,6 @@ import { withRLS } from "@openhospi/database";
 import { applications, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import { RoomStatus } from "@openhospi/shared/enums";
 import type { ApplicationStatus } from "@openhospi/shared/enums";
-
 import { and, desc, eq, isNull, or } from "drizzle-orm";
 
 export type UserApplication = {
@@ -39,6 +38,8 @@ export type RoomDetailForApply = {
   rentPrice: number;
   deposit: number | null;
   utilitiesIncluded: boolean | null;
+  serviceCosts: number | null;
+  totalCost: number;
   roomSizeM2: number | null;
   availableFrom: string | null;
   availableUntil: string | null;
@@ -166,6 +167,8 @@ export async function getRoomDetailForApply(
         rentPrice: rooms.rentPrice,
         deposit: rooms.deposit,
         utilitiesIncluded: rooms.utilitiesIncluded,
+        serviceCosts: rooms.serviceCosts,
+        totalCost: rooms.totalCost,
         roomSizeM2: rooms.roomSizeM2,
         availableFrom: rooms.availableFrom,
         availableUntil: rooms.availableUntil,
@@ -198,6 +201,8 @@ export async function getRoomDetailForApply(
       ...room,
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : null,
+      serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
+      totalCost: Number(room.totalCost),
       features: room.features ?? [],
       locationTags: room.locationTags ?? [],
       preferredLifestyleTags: room.preferredLifestyleTags ?? [],

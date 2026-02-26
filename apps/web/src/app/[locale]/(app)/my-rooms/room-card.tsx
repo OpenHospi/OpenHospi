@@ -49,7 +49,7 @@ export async function RoomCard({ room }: Props) {
                 {room.applicantCount}
               </span>
             )}
-            <span>€{room.rentPrice}/mo</span>
+            <span>€{room.totalCost}/mo</span>
           </span>
         </CardContent>
       </Card>

@@ -13,6 +13,8 @@ export type RoomSummary = {
   title: string;
   city: string;
   rentPrice: number;
+  serviceCosts: number | null;
+  totalCost: number;
   status: RoomStatus;
   coverPhotoUrl: string | null;
   applicantCount: number;
@@ -68,6 +70,8 @@ export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
         title: rooms.title,
         city: rooms.city,
         rentPrice: rooms.rentPrice,
+        serviceCosts: rooms.serviceCosts,
+        totalCost: rooms.totalCost,
         status: rooms.status,
         createdAt: rooms.createdAt,
         coverPhotoUrl: roomPhotos.url,
@@ -90,6 +94,8 @@ export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
     return rows.map((r) => ({
       ...r,
       rentPrice: Number(r.rentPrice),
+      serviceCosts: r.serviceCosts ? Number(r.serviceCosts) : null,
+      totalCost: Number(r.totalCost),
       applicantCount: countMap.get(r.id) ?? 0,
     }));
   });

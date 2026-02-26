@@ -107,7 +107,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
           {/* Quick stats */}
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-1.5">
-              <span className="text-2xl font-bold">€{room.rentPrice}</span>
+              <span className="text-2xl font-bold">€{room.totalCost}</span>
               <span className="text-muted-foreground">{t("perMonth")}</span>
             </div>
             {room.roomSizeM2 && (
@@ -158,10 +158,28 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
                   <dd>€{room.deposit}</dd>
                 </>
               )}
-              <dt className="text-muted-foreground">
-                {room.utilitiesIncluded ? t("utilitiesIncluded") : t("utilitiesExcluded")}
-              </dt>
-              <dd />
+              {room.utilitiesIncluded && (
+                <>
+                  <dt className="text-muted-foreground">{t("utilitiesIncluded")}</dt>
+                  <dd />
+                </>
+              )}
+              {!room.utilitiesIncluded && room.serviceCosts != null && (
+                <>
+                  <dt className="text-muted-foreground">{t("rent")}</dt>
+                  <dd>€{room.rentPrice}</dd>
+                  <dt className="text-muted-foreground">{t("serviceCosts")}</dt>
+                  <dd>€{room.serviceCosts}</dd>
+                  <dt className="text-muted-foreground">{t("totalCost")}</dt>
+                  <dd>€{room.totalCost}</dd>
+                </>
+              )}
+              {!room.utilitiesIncluded && room.serviceCosts == null && (
+                <>
+                  <dt className="text-muted-foreground">{t("utilitiesExcluded")}</dt>
+                  <dd />
+                </>
+              )}
               {room.availableFrom && (
                 <>
                   <dt className="text-muted-foreground">
@@ -236,7 +254,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
           <Card className="sticky top-24">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                €{room.rentPrice}
+                €{room.totalCost}
                 {t("perMonth")}
               </CardTitle>
             </CardHeader>

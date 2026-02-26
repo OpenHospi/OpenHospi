@@ -75,6 +75,7 @@ export function RoomCreateForm({ room }: Props) {
             rentPrice: Number(room.rentPrice) || undefined,
             deposit: room.deposit ? Number(room.deposit) : undefined,
             utilitiesIncluded: room.utilitiesIncluded ?? false,
+            serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
             roomSizeM2: room.roomSizeM2 ?? undefined,
             availableFrom: room.availableFrom ?? "",
             availableUntil: room.availableUntil ?? "",

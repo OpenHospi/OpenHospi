@@ -1,19 +1,42 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
+import { houseMembers, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@openhospi/database/validators";
-import { and, eq, sql } from "drizzle-orm";
+import { GenderPreference, HouseMemberRole, RentalType, RoomStatus } from "@openhospi/shared/enums";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { createDraftRoom } from "@/lib/rooms";
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
   const session = await requireSession();
+
+  if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
+    return { error: "RATE_LIMITED" };
+  }
+
+  // Find user's house where they are owner
+  const membership = await withRLS(session.user.id, async (tx) => {
+    const [row] = await tx
+      .select({ houseId: houseMembers.houseId })
+      .from(houseMembers)
+      .where(and(
+        eq(houseMembers.userId, session.user.id),
+        eq(houseMembers.role, HouseMemberRole.owner),
+      ));
+    return row;
+  });
+
+  if (!membership) {
+    return { error: "NO_HOUSE" };
+  }
+
   try {
-    const id = await createDraftRoom(session.user.id);
+    const id = await createDraftRoom(session.user.id, membership.houseId);
     return { id };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to create room";
@@ -60,9 +83,10 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
         rentPrice: String(d.rentPrice),
         deposit: d.deposit != null ? String(d.deposit) : null,
         utilitiesIncluded: d.utilitiesIncluded ?? false,
+        serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
-        availableUntil: d.rentalType === "vast" ? null : d.availableUntil || null,
+        availableUntil: d.rentalType === RentalType.vast ? null : d.availableUntil || null,
         rentalType: d.rentalType,
         houseType: d.houseType || null,
         furnishing: d.furnishing || null,
@@ -88,7 +112,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
       .set({
         features: d.features ?? [],
         locationTags: d.locationTags ?? [],
-        preferredGender: d.preferredGender || "geen_voorkeur",
+        preferredGender: d.preferredGender || GenderPreference.geen_voorkeur,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],
@@ -106,7 +130,7 @@ export async function publishRoom(roomId: string) {
 
   return withRLS(session.user.id, async (tx) => {
     const [photoCount] = await tx
-      .select({ count: sql<number>`count(*)::int` })
+      .select({ count: count() })
       .from(roomPhotos)
       .where(eq(roomPhotos.roomId, roomId));
     if (photoCount.count === 0) {
@@ -115,8 +139,8 @@ export async function publishRoom(roomId: string) {
 
     await tx
       .update(rooms)
-      .set({ status: "active" })
-      .where(and(eq(rooms.id, roomId), eq(rooms.status, "draft")));
+      .set({ status: RoomStatus.active })
+      .where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.draft)));
 
     revalidatePath("/my-rooms");
     return { success: true };

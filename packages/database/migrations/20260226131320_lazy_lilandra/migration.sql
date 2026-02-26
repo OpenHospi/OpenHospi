@@ -1,0 +1,1 @@
+ALTER TABLE "rooms" ADD COLUMN "service_costs" numeric(7,2);

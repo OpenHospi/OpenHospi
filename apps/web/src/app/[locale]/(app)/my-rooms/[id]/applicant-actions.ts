@@ -4,8 +4,7 @@ import { withRLS } from "@openhospi/database";
 import { applications, reviews } from "@openhospi/database/schema";
 import type { ReviewData } from "@openhospi/database/validators";
 import { reviewSchema } from "@openhospi/database/validators";
-import type { ApplicationStatus } from "@openhospi/shared/enums";
-import { isValidApplicationTransition } from "@openhospi/shared/enums";
+import { ApplicationStatus, isValidApplicationTransition } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -18,8 +17,8 @@ export async function markApplicationsSeen(roomId: string) {
   await withRLS(session.user.id, (tx) =>
     tx
       .update(applications)
-      .set({ status: "seen" })
-      .where(and(eq(applications.roomId, roomId), eq(applications.status, "sent"))),
+      .set({ status: ApplicationStatus.seen })
+      .where(and(eq(applications.roomId, roomId), eq(applications.status, ApplicationStatus.sent))),
   );
 
   revalidatePath(`/my-rooms/${roomId}`);

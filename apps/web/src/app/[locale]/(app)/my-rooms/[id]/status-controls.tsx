@@ -1,5 +1,6 @@
 "use client";
 
+import { RoomStatus } from "@openhospi/shared/enums";
 import { Loader2, Pause, Play, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -40,32 +41,32 @@ export function StatusControls({ room }: Props) {
         return;
       }
       let messageKey = "closed";
-      if (status === "active") messageKey = "activated";
-      else if (status === "paused") messageKey = "paused";
+      if (status === RoomStatus.active) messageKey = "activated";
+      else if (status === RoomStatus.paused) messageKey = "paused";
       toast.success(t(`status.${messageKey}`));
       router.refresh();
     });
   }
 
-  if (room.status === "closed") return null;
+  if (room.status === RoomStatus.closed) return null;
 
   return (
     <div className="flex flex-wrap gap-2">
-      {room.status === "active" && (
-        <Button variant="outline" onClick={() => handleStatusChange("paused")} disabled={isPending}>
+      {room.status === RoomStatus.active && (
+        <Button variant="outline" onClick={() => handleStatusChange(RoomStatus.paused)} disabled={isPending}>
           {isPending ? <Loader2 className="animate-spin" /> : <Pause className="size-4" />}
           {t("actions.pause")}
         </Button>
       )}
 
-      {room.status === "paused" && (
-        <Button variant="outline" onClick={() => handleStatusChange("active")} disabled={isPending}>
+      {room.status === RoomStatus.paused && (
+        <Button variant="outline" onClick={() => handleStatusChange(RoomStatus.active)} disabled={isPending}>
           {isPending ? <Loader2 className="animate-spin" /> : <Play className="size-4" />}
           {t("actions.activate")}
         </Button>
       )}
 
-      {(room.status === "active" || room.status === "paused") && (
+      {(room.status === RoomStatus.active || room.status === RoomStatus.paused) && (
         <AlertDialog open={closeOpen} onOpenChange={setCloseOpen}>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" disabled={isPending}>
@@ -81,7 +82,7 @@ export function StatusControls({ room }: Props) {
             <AlertDialogFooter>
               <AlertDialogCancel>{t("actions.back")}</AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => handleStatusChange("closed")}
+                onClick={() => handleStatusChange(RoomStatus.closed)}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 {t("actions.close")}

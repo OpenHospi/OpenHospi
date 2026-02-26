@@ -6,19 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
 import type { UserApplication } from "@/lib/applications";
+import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
-
-const statusColors: Record<string, string> = {
-  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  seen: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
-  liked: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  invited: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  withdrawn: "bg-muted text-muted-foreground",
-};
 
 type Props = {
   application: UserApplication;
@@ -46,7 +35,7 @@ export async function ApplicationCard({ application }: Props) {
               <Home className="size-8 text-muted-foreground" />
             </div>
           )}
-          <Badge className={cn("absolute top-2 right-2", statusColors[application.status])}>
+          <Badge className={cn("absolute top-2 right-2", APPLICATION_STATUS_COLORS[application.status])}>
             {tEnums(`application_status.${application.status}`)}
           </Badge>
         </div>

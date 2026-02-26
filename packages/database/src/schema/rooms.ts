@@ -1,3 +1,4 @@
+import { RoomStatus } from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
 import { anonymousRole, authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
@@ -19,7 +20,6 @@ import {
   cityEnum,
   furnishingEnum,
   genderPreferenceEnum,
-  housemateRoleEnum,
   houseTypeEnum,
   languageEnum,
   lifestyleTagEnum,
@@ -29,6 +29,7 @@ import {
   roomStatusEnum,
   verenigingEnum,
 } from "./enums";
+import { houses } from "./houses";
 import { profiles } from "./profiles";
 
 export const rooms = pgTable(
@@ -38,6 +39,9 @@ export const rooms = pgTable(
     ownerId: uuid("created_by")
       .notNull()
       .references(() => profiles.id),
+    houseId: uuid("house_id")
+      .notNull()
+      .references(() => houses.id),
     title: text("title").notNull(),
     description: text("description"),
     city: cityEnum("city").notNull(),
@@ -46,6 +50,9 @@ export const rooms = pgTable(
     rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),
     deposit: numeric("deposit", { precision: 7, scale: 2 }),
     utilitiesIncluded: boolean("utilities_included").default(false),
+    serviceCosts: numeric("service_costs", { precision: 7, scale: 2 }),
+    totalCost: numeric("total_cost", { precision: 7, scale: 2 })
+      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0)`),
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),
@@ -84,13 +91,13 @@ export const rooms = pgTable(
     pgPolicy("rooms_select_anon", {
       for: "select",
       to: anonymousRole,
-      using: sql`${table.status} = 'active'`,
+      using: sql`${table.status} = '${sql.raw(RoomStatus.active)}'`,
     }),
     pgPolicy("rooms_select_auth", {
       for: "select",
       to: authenticatedRole,
       using: or(
-        sql`${table.status} = 'active'`,
+        sql`${table.status} = '${sql.raw(RoomStatus.active)}'`,
         authUid(table.ownerId)
       ),
     }),
@@ -126,50 +133,13 @@ export const roomPhotos = pgTable(
     pgPolicy("room_photos_select_anon", {
       for: "select",
       to: anonymousRole,
-      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.status = 'active')`,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.status = '${sql.raw(RoomStatus.active)}')`,
     }),
     // Authenticated: can see all room photos (rooms RLS already limits room visibility)
     crudPolicy({
       role: authenticatedRole,
       read: true,
       modify: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
-    }),
-  ],
-);
-
-export const housemates = pgTable(
-  "housemates",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    roomId: uuid("room_id")
-      .notNull()
-      .references(() => rooms.id, { onDelete: "cascade" }),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => profiles.id),
-    role: housemateRoleEnum("role").default("member"),
-    joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow(),
-  },
-  (table) => [
-    unique("housemates_room_id_user_id_key").on(table.roomId, table.userId),
-    index("idx_housemates_user_id").on(table.userId),
-    index("idx_housemates_room_id").on(table.roomId),
-    // See housemates in rooms where you are also a housemate (uses view to avoid infinite recursion)
-    pgPolicy("housemates_select", {
-      for: "select",
-      to: authenticatedRole,
-      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
-    }),
-    // Only room owner can add/remove housemates
-    pgPolicy("housemates_insert", {
-      for: "insert",
-      to: authenticatedRole,
-      withCheck: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
-    }),
-    pgPolicy("housemates_delete", {
-      for: "delete",
-      to: authenticatedRole,
-      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
     }),
   ],
 );

@@ -1,8 +1,9 @@
 import { withRLS } from "@openhospi/database";
 import { applications, profilePhotos, profiles, reviews } from "@openhospi/database/schema";
 import { MAX_APPLICANTS_PER_PAGE } from "@openhospi/shared/constants";
-import type { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
-import { and, asc, eq, ne, sql } from "drizzle-orm";
+import { ApplicationStatus } from "@openhospi/shared/enums";
+import type { ReviewDecision } from "@openhospi/shared/enums";
+import { and, asc, eq, inArray, ne } from "drizzle-orm";
 
 export type ApplicantReview = {
   reviewerId: string;
@@ -59,7 +60,7 @@ export async function getRoomApplicants(roomId: string, userId: string): Promise
       })
       .from(applications)
       .innerJoin(profiles, eq(profiles.id, applications.userId))
-      .where(and(eq(applications.roomId, roomId), ne(applications.status, "withdrawn")))
+      .where(and(eq(applications.roomId, roomId), ne(applications.status, ApplicationStatus.withdrawn)))
       .orderBy(asc(applications.appliedAt))
       .limit(MAX_APPLICANTS_PER_PAGE);
 
@@ -77,7 +78,7 @@ export async function getRoomApplicants(roomId: string, userId: string): Promise
         caption: profilePhotos.caption,
       })
       .from(profilePhotos)
-      .where(sql`${profilePhotos.userId} = ANY(${userIds})`)
+      .where(inArray(profilePhotos.userId, userIds))
       .orderBy(profilePhotos.slot);
 
     // Batch fetch reviews for all applicants
@@ -94,7 +95,7 @@ export async function getRoomApplicants(roomId: string, userId: string): Promise
       .where(
         and(
           eq(reviews.roomId, roomId),
-          sql`${reviews.applicantId} = ANY(${userIds})`,
+          inArray(reviews.applicantId, userIds),
         ),
       );
 

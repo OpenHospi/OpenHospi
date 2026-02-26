@@ -5,6 +5,7 @@ import type { RoomPreferencesData } from "@openhospi/database/validators";
 import { roomPreferencesSchema } from "@openhospi/database/validators";
 import {
   GENDER_PREFERENCES,
+  GenderPreference,
   LIFESTYLE_TAGS,
   LOCATION_TAGS,
   ROOM_FEATURES,
@@ -60,7 +61,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
     defaultValues: {
       features: (defaultValues.features as RoomFeature[]) ?? [],
       locationTags: (defaultValues.locationTags as LocationTag[]) ?? [],
-      preferredGender: defaultValues.preferredGender ?? "geen_voorkeur",
+      preferredGender: defaultValues.preferredGender ?? GenderPreference.geen_voorkeur,
       preferredAgeMin: defaultValues.preferredAgeMin ?? undefined,
       preferredAgeMax: defaultValues.preferredAgeMax ?? undefined,
       preferredLifestyleTags: (defaultValues.preferredLifestyleTags as LifestyleTag[]) ?? [],

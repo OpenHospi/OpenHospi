@@ -10,7 +10,7 @@ import {
   FURNISHINGS,
   GENDER_PREFERENCES,
   GENDERS,
-  HOUSEMATE_ROLES,
+  HOUSE_MEMBER_ROLES,
   HOUSE_TYPES,
   INVITATION_STATUSES,
   LANGUAGES,
@@ -43,7 +43,7 @@ export const cityEnum = pgEnum("city_enum", CITIES);
 export const applicationStatusEnum = pgEnum("application_status_enum", APPLICATION_STATUSES);
 export const reviewDecisionEnum = pgEnum("review_decision_enum", REVIEW_DECISIONS);
 export const invitationStatusEnum = pgEnum("invitation_status_enum", INVITATION_STATUSES);
-export const housemateRoleEnum = pgEnum("housemate_role_enum", HOUSEMATE_ROLES);
+export const houseMemberRoleEnum = pgEnum("house_member_role_enum", HOUSE_MEMBER_ROLES);
 export const conversationTypeEnum = pgEnum("conversation_type_enum", CONVERSATION_TYPES);
 export const messageTypeEnum = pgEnum("message_type_enum", MESSAGE_TYPES);
 export const deliveryStatusEnum = pgEnum("delivery_status_enum", DELIVERY_STATUSES);

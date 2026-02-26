@@ -1,14 +1,18 @@
 import { db, withRLS } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
+import { profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
-import { and, asc, desc, eq, gte, isNull, lte, sql } from "drizzle-orm";
+import type { LocationTag, RoomFeature } from "@openhospi/shared/enums";
+import { DiscoverSort, GenderPreference, RoomStatus } from "@openhospi/shared/enums";
+import { and, arrayContains, asc, count, desc, eq, gt, gte, isNull, lt, lte, or } from "drizzle-orm";
 
 export type DiscoverRoom = {
   id: string;
   title: string;
   city: string;
   rentPrice: number;
+  serviceCosts: number | null;
+  totalCost: number;
   houseType: string | null;
   furnishing: string | null;
   roomSizeM2: number | null;
@@ -31,7 +35,7 @@ export type DiscoverFilters = {
   locationTags?: string[];
 };
 
-export type DiscoverSort = "newest" | "cheapest" | "most_expensive";
+export type { DiscoverSort };
 
 export type DiscoverCursor = {
   createdAt: string;
@@ -52,6 +56,8 @@ export type PublicRoom = {
   rentPrice: number;
   deposit: number | null;
   utilitiesIncluded: boolean | null;
+  serviceCosts: number | null;
+  totalCost: number;
   roomSizeM2: number | null;
   availableFrom: string | null;
   availableUntil: string | null;
@@ -75,42 +81,58 @@ export type CityWithCount = {
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- Dynamic filter values from URL params can't be statically typed as Drizzle enum values */
+function buildCursorCondition(sort: DiscoverSort, cursor: DiscoverCursor) {
+  if (sort === DiscoverSort.cheapest) {
+    return or(
+      gt(rooms.totalCost, cursor.createdAt),
+      and(eq(rooms.totalCost, cursor.createdAt), gt(rooms.id, cursor.id)),
+    );
+  }
+  if (sort === DiscoverSort.most_expensive) {
+    return or(
+      lt(rooms.totalCost, cursor.createdAt),
+      and(eq(rooms.totalCost, cursor.createdAt), lt(rooms.id, cursor.id)),
+    );
+  }
+  return or(
+    lt(rooms.createdAt, new Date(cursor.createdAt)),
+    and(eq(rooms.createdAt, new Date(cursor.createdAt)), lt(rooms.id, cursor.id)),
+  );
+}
+
 function buildDiscoverConditions(
-  userId: string,
   filters: DiscoverFilters,
   sort: DiscoverSort,
+  userVereniging: string | null,
+  userGender: string | null,
   cursor?: DiscoverCursor,
 ): ReturnType<typeof eq>[] {
-  const conditions: ReturnType<typeof eq>[] = [eq(rooms.status, "active")];
+  const conditions: ReturnType<typeof eq>[] = [eq(rooms.status, RoomStatus.active)];
 
-  // Vereiniging visibility: show non-vereniging rooms + rooms matching user's vereniging
-  conditions.push(
-    sql`(${rooms.roomVereniging} IS NULL OR ${rooms.roomVereniging} = (SELECT vereniging FROM profiles WHERE id = ${userId}))` as any,
-  );
+  // Vereniging visibility: show non-vereniging rooms + rooms matching user's vereniging
+  if (userVereniging) {
+    conditions.push(or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging as any))!);
+  } else {
+    conditions.push(isNull(rooms.roomVereniging));
+  }
 
   // Gender matching: rooms with a preference only shown to matching profiles
-  conditions.push(
-    sql`(${rooms.preferredGender} = 'geen_voorkeur' OR ${rooms.preferredGender}::text = (SELECT gender FROM profiles WHERE id = ${userId}))` as any,
-  );
+  if (userGender) {
+    conditions.push(or(eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any), eq(rooms.preferredGender, userGender as any))!);
+  } else {
+    conditions.push(eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any));
+  }
 
   if (filters.city) conditions.push(eq(rooms.city, filters.city as any));
-  if (filters.minPrice != null) conditions.push(gte(rooms.rentPrice, String(filters.minPrice)));
-  if (filters.maxPrice != null) conditions.push(lte(rooms.rentPrice, String(filters.maxPrice)));
+  if (filters.minPrice != null) conditions.push(gte(rooms.totalCost, String(filters.minPrice)));
+  if (filters.maxPrice != null) conditions.push(lte(rooms.totalCost, String(filters.maxPrice)));
   if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType as any));
   if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing as any));
   if (filters.availableFrom) conditions.push(lte(rooms.availableFrom, filters.availableFrom));
-  if (filters.features?.length) conditions.push(sql`${rooms.features} @> ${filters.features}` as any);
-  if (filters.locationTags?.length) conditions.push(sql`${rooms.locationTags} @> ${filters.locationTags}` as any);
+  if (filters.features?.length) conditions.push(arrayContains(rooms.features, filters.features as RoomFeature[]));
+  if (filters.locationTags?.length) conditions.push(arrayContains(rooms.locationTags, filters.locationTags as LocationTag[]));
 
-  if (cursor) {
-    if (sort === "cheapest") {
-      conditions.push(sql`(${rooms.rentPrice}, ${rooms.id}) > (${cursor.createdAt}, ${cursor.id})` as any);
-    } else if (sort === "most_expensive") {
-      conditions.push(sql`(${rooms.rentPrice}, ${rooms.id}) < (${cursor.createdAt}, ${cursor.id})` as any);
-    } else {
-      conditions.push(sql`(${rooms.createdAt}, ${rooms.id}) < (${cursor.createdAt}, ${cursor.id})` as any);
-    }
-  }
+  if (cursor) conditions.push(buildCursorCondition(sort, cursor) as any);
 
   return conditions;
 }
@@ -123,14 +145,25 @@ export async function getDiscoverRooms(
   cursor?: DiscoverCursor,
 ): Promise<DiscoverResult> {
   return withRLS(userId, async (tx) => {
-    const conditions = buildDiscoverConditions(userId, filters, sort, cursor);
+    const [userProfile] = await tx
+      .select({ vereniging: profiles.vereniging, gender: profiles.gender })
+      .from(profiles)
+      .where(eq(profiles.id, userId));
+
+    const conditions = buildDiscoverConditions(
+      filters,
+      sort,
+      userProfile?.vereniging ?? null,
+      userProfile?.gender ?? null,
+      cursor,
+    );
     const where = and(...conditions);
 
     let orderBy;
-    if (sort === "cheapest") {
-      orderBy = [asc(rooms.rentPrice), asc(rooms.id)];
-    } else if (sort === "most_expensive") {
-      orderBy = [desc(rooms.rentPrice), desc(rooms.id)];
+    if (sort === DiscoverSort.cheapest) {
+      orderBy = [asc(rooms.totalCost), asc(rooms.id)];
+    } else if (sort === DiscoverSort.most_expensive) {
+      orderBy = [desc(rooms.totalCost), desc(rooms.id)];
     } else {
       orderBy = [desc(rooms.createdAt), desc(rooms.id)];
     }
@@ -141,6 +174,8 @@ export async function getDiscoverRooms(
         title: rooms.title,
         city: rooms.city,
         rentPrice: rooms.rentPrice,
+        serviceCosts: rooms.serviceCosts,
+        totalCost: rooms.totalCost,
         houseType: rooms.houseType,
         furnishing: rooms.furnishing,
         roomSizeM2: rooms.roomSizeM2,
@@ -149,9 +184,10 @@ export async function getDiscoverRooms(
         features: rooms.features,
         locationTags: rooms.locationTags,
         createdAt: rooms.createdAt,
-        coverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
+        coverPhotoUrl: roomPhotos.url,
       })
       .from(rooms)
+      .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
       .where(where)
       .orderBy(...orderBy)
       .limit(ROOMS_PER_PAGE + 1);
@@ -162,19 +198,21 @@ export async function getDiscoverRooms(
     const mappedRooms = resultRows.map((r) => ({
       ...r,
       rentPrice: Number(r.rentPrice),
+      serviceCosts: r.serviceCosts ? Number(r.serviceCosts) : null,
+      totalCost: Number(r.totalCost),
       features: r.features ?? [],
       locationTags: r.locationTags ?? [],
     }));
 
-    const lastRow = resultRows[resultRows.length - 1];
+    const lastMapped = mappedRooms[mappedRooms.length - 1];
     const nextCursor: DiscoverCursor | null =
-      hasMore && lastRow
+      hasMore && lastMapped
         ? {
             createdAt:
-              sort === "newest"
-                ? lastRow.createdAt.toISOString()
-                : String(lastRow.rentPrice),
-            id: lastRow.id,
+              sort === DiscoverSort.newest
+                ? lastMapped.createdAt.toISOString()
+                : String(lastMapped.totalCost),
+            id: lastMapped.id,
           }
         : null;
 
@@ -193,6 +231,8 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
       rentPrice: rooms.rentPrice,
       deposit: rooms.deposit,
       utilitiesIncluded: rooms.utilitiesIncluded,
+      serviceCosts: rooms.serviceCosts,
+      totalCost: rooms.totalCost,
       roomSizeM2: rooms.roomSizeM2,
       availableFrom: rooms.availableFrom,
       availableUntil: rooms.availableUntil,
@@ -210,7 +250,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
     })
     .from(rooms)
     .where(
-      and(eq(rooms.id, roomId), eq(rooms.status, "active"), isNull(rooms.roomVereniging)),
+      and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging)),
     );
 
   if (!room) return null;
@@ -225,6 +265,8 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
     ...room,
     rentPrice: Number(room.rentPrice),
     deposit: room.deposit ? Number(room.deposit) : null,
+    serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
+    totalCost: Number(room.totalCost),
     features: room.features ?? [],
     locationTags: room.locationTags ?? [],
     preferredLifestyleTags: room.preferredLifestyleTags ?? [],
@@ -242,6 +284,8 @@ export async function getPublicRoomsByCity(
       title: rooms.title,
       city: rooms.city,
       rentPrice: rooms.rentPrice,
+      serviceCosts: rooms.serviceCosts,
+      totalCost: rooms.totalCost,
       houseType: rooms.houseType,
       furnishing: rooms.furnishing,
       roomSizeM2: rooms.roomSizeM2,
@@ -250,12 +294,13 @@ export async function getPublicRoomsByCity(
       features: rooms.features,
       locationTags: rooms.locationTags,
       createdAt: rooms.createdAt,
-      coverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
+      coverPhotoUrl: roomPhotos.url,
     })
     .from(rooms)
+    .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
     .where(
       and(
-        eq(rooms.status, "active"),
+        eq(rooms.status, RoomStatus.active),
         isNull(rooms.roomVereniging),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- city comes from URL slug
         eq(rooms.city, city as any),
@@ -267,6 +312,8 @@ export async function getPublicRoomsByCity(
   return rows.map((r) => ({
     ...r,
     rentPrice: Number(r.rentPrice),
+    serviceCosts: r.serviceCosts ? Number(r.serviceCosts) : null,
+    totalCost: Number(r.totalCost),
     features: r.features ?? [],
     locationTags: r.locationTags ?? [],
   }));
@@ -276,12 +323,12 @@ export async function getCitiesWithRoomCount(): Promise<CityWithCount[]> {
   const rows = await db
     .select({
       city: rooms.city,
-      count: sql<number>`count(*)::int`,
+      count: count(),
     })
     .from(rooms)
-    .where(and(eq(rooms.status, "active"), isNull(rooms.roomVereniging)))
+    .where(and(eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging)))
     .groupBy(rooms.city)
-    .orderBy(sql`count(*) DESC, ${rooms.city} ASC`);
+    .orderBy(desc(count()), asc(rooms.city));
 
   return rows;
 }

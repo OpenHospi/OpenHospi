@@ -4,9 +4,10 @@ import { applications, reviews } from "./schema/applications";
 import { account, session, ssoProvider, user, verification } from "./schema/auth";
 import { conversationMembers, conversations, messageReceipts, messages } from "./schema/chat";
 import { hospiEvents, hospiInvitations, votes } from "./schema/events";
+import { houseMembers, houses } from "./schema/houses";
 import { adminAuditLog, notifications, pushTokens } from "./schema/notifications";
 import { profilePhotos, profiles } from "./schema/profiles";
-import { housemates, roomPhotos, rooms } from "./schema/rooms";
+import { roomPhotos, rooms } from "./schema/rooms";
 import { blocks, privateKeyBackups, publicKeys, reports } from "./schema/security";
 
 // Auth
@@ -23,13 +24,17 @@ export type NewProfile = InferInsertModel<typeof profiles>;
 export type ProfilePhoto = InferSelectModel<typeof profilePhotos>;
 export type NewProfilePhoto = InferInsertModel<typeof profilePhotos>;
 
+// Houses
+export type House = InferSelectModel<typeof houses>;
+export type NewHouse = InferInsertModel<typeof houses>;
+export type HouseMember = InferSelectModel<typeof houseMembers>;
+export type NewHouseMember = InferInsertModel<typeof houseMembers>;
+
 // Rooms
 export type Room = InferSelectModel<typeof rooms>;
 export type NewRoom = InferInsertModel<typeof rooms>;
 export type RoomPhoto = InferSelectModel<typeof roomPhotos>;
 export type NewRoomPhoto = InferInsertModel<typeof roomPhotos>;
-export type Housemate = InferSelectModel<typeof housemates>;
-export type NewHousemate = InferInsertModel<typeof housemates>;
 
 // Applications
 export type Application = InferSelectModel<typeof applications>;

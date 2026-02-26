@@ -2,8 +2,7 @@
 
 import { withRLS } from "@openhospi/database";
 import { applications } from "@openhospi/database/schema";
-import type { ApplicationStatus } from "@openhospi/shared/enums";
-import { isValidApplicationTransition } from "@openhospi/shared/enums";
+import { ApplicationStatus, isValidApplicationTransition } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -19,13 +18,13 @@ export async function withdrawApplication(applicationId: string) {
       .where(and(eq(applications.id, applicationId), eq(applications.userId, session.user.id)));
     if (!app) return { error: "not_found" };
 
-    if (!isValidApplicationTransition(app.status as ApplicationStatus, "withdrawn")) {
+    if (!isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.withdrawn)) {
       return { error: "cannot_withdraw" };
     }
 
     await tx
       .update(applications)
-      .set({ status: "withdrawn" })
+      .set({ status: ApplicationStatus.withdrawn })
       .where(eq(applications.id, applicationId));
 
     revalidatePath(`/applications/${applicationId}`);

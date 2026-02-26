@@ -1,5 +1,5 @@
 import { APP_NAME } from "@openhospi/shared/constants";
-import { CITIES } from "@openhospi/shared/enums";
+import { CITIES, GenderPreference } from "@openhospi/shared/enums";
 import { ArrowLeft, CalendarDays, Home, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -45,7 +45,7 @@ export async function generateMetadata({
   const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} — ${cityName} — ${APP_NAME}`;
-  const description = `€${room.rentPrice}/mo · ${cityName}${sizeSuffix}`;
+  const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
 
   return {
     title,
@@ -167,7 +167,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
     ...(coverPhoto && { image: coverPhoto.url }),
     offers: {
       "@type": "Offer",
-      price: room.rentPrice,
+      price: room.totalCost,
       priceCurrency: "EUR",
       availability: "https://schema.org/InStock",
     },
@@ -219,7 +219,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             {/* Quick stats */}
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-1.5">
-                <span className="text-2xl font-bold">€{room.rentPrice}</span>
+                <span className="text-2xl font-bold">€{room.totalCost}</span>
                 <span className="text-muted-foreground">{t("perMonth")}</span>
               </div>
               {room.roomSizeM2 && (
@@ -270,10 +270,28 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                     <dd>€{room.deposit}</dd>
                   </>
                 )}
-                <dt className="text-muted-foreground">
-                  {room.utilitiesIncluded ? t("utilitiesIncluded") : t("utilitiesExcluded")}
-                </dt>
-                <dd />
+                {room.utilitiesIncluded && (
+                  <>
+                    <dt className="text-muted-foreground">{t("utilitiesIncluded")}</dt>
+                    <dd />
+                  </>
+                )}
+                {!room.utilitiesIncluded && room.serviceCosts != null && (
+                  <>
+                    <dt className="text-muted-foreground">{t("rent")}</dt>
+                    <dd>€{room.rentPrice}</dd>
+                    <dt className="text-muted-foreground">{t("serviceCosts")}</dt>
+                    <dd>€{room.serviceCosts}</dd>
+                    <dt className="text-muted-foreground">{t("totalCost")}</dt>
+                    <dd>€{room.totalCost}</dd>
+                  </>
+                )}
+                {!room.utilitiesIncluded && room.serviceCosts == null && (
+                  <>
+                    <dt className="text-muted-foreground">{t("utilitiesExcluded")}</dt>
+                    <dd />
+                  </>
+                )}
                 {room.availableFrom && (
                   <>
                     <dt className="text-muted-foreground">{t("availableFrom", { date: room.availableFrom })}</dt>
@@ -314,11 +332,11 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Preferences */}
-            {(room.preferredGender !== "geen_voorkeur" || room.preferredLifestyleTags.length > 0) && (
+            {(room.preferredGender !== GenderPreference.geen_voorkeur || room.preferredLifestyleTags.length > 0) && (
               <div>
                 <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                 <div className="mt-2 space-y-2">
-                  {room.preferredGender !== "geen_voorkeur" && (
+                  {room.preferredGender !== GenderPreference.geen_voorkeur && (
                     <p className="text-sm text-muted-foreground">
                       {tEnums(`gender_preference.${room.preferredGender}`)}
                       {room.preferredAgeMin != null && room.preferredAgeMax != null &&
@@ -345,7 +363,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CalendarDays className="size-5" />
-                  €{room.rentPrice}{t("perMonth")}
+                  €{room.totalCost}{t("perMonth")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
+import { ApplicationStatus, INVITABLE_APPLICATION_STATUSES, ReviewDecision } from "@openhospi/shared/enums";
 import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -23,21 +23,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { RoomApplicant } from "@/lib/applicants";
+import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
 import { submitReview, updateApplicationStatus } from "./applicant-actions";
 import { ApplicantProfileSheet } from "./applicant-profile-sheet";
-
-const statusColors: Record<string, string> = {
-  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  seen: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
-  liked: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  invited: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-};
 
 type Props = {
   applicant: RoomApplicant;
@@ -117,7 +107,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
               <h3 className="truncate font-semibold">
                 {applicant.firstName} {applicant.lastName}
               </h3>
-              <Badge className={cn("shrink-0", statusColors[applicant.status])}>
+              <Badge className={cn("shrink-0", APPLICATION_STATUS_COLORS[applicant.status])}>
                 {tEnums(`application_status.${applicant.status}`)}
               </Badge>
             </div>
@@ -172,24 +162,24 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
           <div className="flex items-center gap-2">
             <Button
               size="sm"
-              variant={myReview?.decision === "like" ? "default" : "outline"}
-              onClick={() => handleReview("like")}
+              variant={myReview?.decision === ReviewDecision.like ? "default" : "outline"}
+              onClick={() => handleReview(ReviewDecision.like)}
               disabled={isPending}
             >
               <ThumbsUp className="size-3.5" />
             </Button>
             <Button
               size="sm"
-              variant={myReview?.decision === "maybe" ? "default" : "outline"}
-              onClick={() => handleReview("maybe")}
+              variant={myReview?.decision === ReviewDecision.maybe ? "default" : "outline"}
+              onClick={() => handleReview(ReviewDecision.maybe)}
               disabled={isPending}
             >
               <Minus className="size-3.5" />
             </Button>
             <Button
               size="sm"
-              variant={myReview?.decision === "reject" ? "destructive" : "outline"}
-              onClick={() => handleReview("reject")}
+              variant={myReview?.decision === ReviewDecision.reject ? "destructive" : "outline"}
+              onClick={() => handleReview(ReviewDecision.reject)}
               disabled={isPending}
             >
               <ThumbsDown className="size-3.5" />
@@ -207,18 +197,18 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
 
           {/* Status action buttons (owner/admin) */}
           <div className="flex flex-wrap gap-2">
-            {["seen", "liked", "maybe"].includes(applicant.status) && (
+            {(INVITABLE_APPLICATION_STATUSES as readonly string[]).includes(applicant.status) && (
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleStatusChange("invited")}
+                onClick={() => handleStatusChange(ApplicationStatus.invited)}
                 disabled={isPending}
               >
                 {isPending && <Loader2 className="animate-spin" />}
                 {t("invite")}
               </Button>
             )}
-            {applicant.status === "invited" && (
+            {applicant.status === ApplicationStatus.invited && (
               <>
                 <Button size="sm" onClick={() => setAcceptDialogOpen(true)} disabled={isPending}>
                   <Check className="size-3.5" />
@@ -227,7 +217,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => handleStatusChange("not_chosen")}
+                  onClick={() => handleStatusChange(ApplicationStatus.not_chosen)}
                   disabled={isPending}
                 >
                   <X className="size-3.5" />
@@ -259,7 +249,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleStatusChange("accepted")}>
+            <AlertDialogAction onClick={() => handleStatusChange(ApplicationStatus.accepted)}>
               {t("accept")}
             </AlertDialogAction>
           </AlertDialogFooter>

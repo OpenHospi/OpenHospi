@@ -48,6 +48,12 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Auth client at `src/lib/auth-client.ts`
 - Tailwind v4 with `@theme inline` block, oklch color space
 
+### Enums & shared types
+- All enums live in `packages/shared/src/enums.ts` — arrays (`ROOM_STATUSES`) + types (`RoomStatus`) + companion objects (`RoomStatus.active`)
+- Always use companion objects for enum values — never hardcode string literals (e.g. use `RoomStatus.active` not `"active"`)
+- In RLS policies, use `sql.raw(RoomStatus.active)` to inline enum values into raw SQL
+- Config constants (limits, lengths, page sizes) belong in `constants.ts` — enum values do NOT
+
 ### File structure (apps/web)
 - `src/components/ui/` — shadcn/ui components (don't modify unless necessary)
 - `src/components/marketing/` — custom marketing components
@@ -98,4 +104,6 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Don't use `db:push` for database changes — use `db:generate` + `db:migrate`
 - Don't replace ORM features with raw SQL workarounds — investigate the root cause instead
 - Don't use `eq()` in RLS policy expressions — use raw `sql` with string literals to avoid `$1` placeholder bugs
+- Don't create constants that alias enum values (e.g. `DEFAULT_ROOM_STATUS = "draft"`) — use enum companion objects instead (`RoomStatus.draft`)
+- Don't use hardcoded enum string literals in queries or runtime checks — use the companion objects from `@openhospi/shared/enums`
 - Don't touch working code outside the scope of what was asked

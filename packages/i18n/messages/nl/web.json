@@ -495,6 +495,7 @@
         "rentPrice": "Maandelijkse huur",
         "deposit": "Borg",
         "utilitiesIncluded": "Inclusief gas/water/licht",
+        "serviceCosts": "Servicekosten",
         "roomSize": "Kamergrootte (m²)",
         "availableFrom": "Beschikbaar vanaf",
         "availableUntil": "Beschikbaar tot",
@@ -517,6 +518,7 @@
         "address": "bijv. Keizersgracht 1",
         "rentPrice": "bijv. 450",
         "deposit": "bijv. 450",
+        "serviceCosts": "bijv. 75",
         "roomSize": "bijv. 12",
         "totalHousemates": "bijv. 5",
         "searchVereniging": "Zoek vereniging..."
@@ -564,7 +566,8 @@
         "activated": "Kamer geactiveerd",
         "closed": "Kamer gesloten",
         "updated": "Kamer bijgewerkt",
-        "draftSaved": "Concept opgeslagen"
+        "draftSaved": "Concept opgeslagen",
+        "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw."
       },
       "manage": {
         "title": "Kamerbeheer",
@@ -616,6 +619,9 @@
       "deposit": "Borg",
       "utilitiesIncluded": "Inclusief nutsvoorzieningen",
       "utilitiesExcluded": "Exclusief nutsvoorzieningen",
+      "serviceCosts": "Servicekosten",
+      "rent": "Kale huur",
+      "totalCost": "Totaal",
       "rentalType": "Huurtype",
       "notFound": "Kamer niet gevonden",
       "notAvailable": "Deze kamer accepteert geen aanmeldingen meer.",
@@ -634,12 +640,14 @@
         "invalid_data": "Controleer je bericht en probeer opnieuw.",
         "room_not_active": "Deze kamer accepteert geen aanmeldingen meer.",
         "is_housemate": "Je bent al huisgenoot van deze kamer.",
-        "already_applied": "Je hebt je al aangemeld voor deze kamer."
+        "already_applied": "Je hebt je al aangemeld voor deze kamer.",
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
     },
     "settings": {
       "title": "Instellingen",
       "exportSuccess": "Gegevens succesvol geëxporteerd",
+      "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
       "dataExport": {
         "title": "Exporteer je gegevens",
         "description": "Download al je persoonlijke gegevens als JSON-bestand. Dit omvat je profiel, kamers, aanmeldingen en beoordelingen.",
@@ -681,6 +689,55 @@
       "errors": {
         "not_found": "Aanmelding niet gevonden.",
         "cannot_withdraw": "Deze aanmelding kan niet meer worden ingetrokken."
+      }
+    },
+    "join": {
+      "title": "Word huisgenoot",
+      "description": "Je bent uitgenodigd om als huisgenoot deel te nemen.",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "joinButton": "Word huisgenoot",
+      "cancel": "Annuleren",
+      "success": "Je bent toegevoegd aan het huis!",
+      "errors": {
+        "INVALID_LINK": "Deze deellink is ongeldig of de kamer bestaat niet meer.",
+        "LINK_EXPIRED": "Deze deellink is verlopen.",
+        "LINK_MAX_USED": "Deze deellink heeft het maximale aantal keren bereikt.",
+        "ALREADY_MEMBER": "Je bent al lid van dit huis.",
+        "IS_OWNER": "Je bent de eigenaar van deze kamer.",
+        "ROOM_NOT_ACTIVE": "Deze kamer is niet meer actief.",
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
+      }
+    },
+    "house": {
+      "create": {
+        "title": "Huis aanmaken",
+        "description": "Maak je huis aan om kamers te kunnen aanbieden.",
+        "nameLabel": "Huisnaam",
+        "namePlaceholder": "bijv. Keizersgracht 42 of Villa Volta",
+        "submit": "Huis aanmaken"
+      },
+      "members": {
+        "title": "Huisgenoten",
+        "description": "De bewoners van je huis."
+      },
+      "invite": {
+        "title": "Huisgenoten uitnodigen",
+        "description": "Deel deze link met je huisgenoten zodat ze kunnen deelnemen."
+      },
+      "rooms": {
+        "title": "Kamers",
+        "untitled": "Naamloze kamer"
+      }
+    },
+    "joinHouse": {
+      "title": "Word huisgenoot",
+      "description": "Je bent uitgenodigd om lid te worden van {name}.",
+      "joinButton": "Word lid",
+      "cancel": "Annuleren",
+      "success": "Je bent toegevoegd aan het huis!",
+      "errors": {
+        "INVALID_LINK": "Deze uitnodigingslink is ongeldig.",
+        "ALREADY_MEMBER": "Je bent al lid van dit huis."
       }
     }
   },
@@ -854,6 +911,9 @@
       "deposit": "Borg",
       "utilitiesIncluded": "Inclusief gas/water/licht",
       "utilitiesExcluded": "Exclusief gas/water/licht",
+      "serviceCosts": "Servicekosten",
+      "rent": "Kale huur",
+      "totalCost": "Totaal",
       "roomSize": "{size} m²",
       "rentalType": "Huurtype"
     }
@@ -871,6 +931,12 @@
     }
   },
   "admin": {
-    "comingSoon": "Binnenkort beschikbaar"
+    "comingSoon": "Binnenkort beschikbaar",
+    "login": {
+      "title": "Admin inloggen",
+      "description": "Log in met je GitHub-account om toegang te krijgen tot het beheerpaneel.",
+      "githubButton": "Inloggen met GitHub",
+      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft."
+    }
   }
 }

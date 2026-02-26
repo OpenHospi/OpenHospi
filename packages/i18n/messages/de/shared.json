@@ -358,6 +358,10 @@
       "like": "Gefällt mir",
       "maybe": "Vielleicht",
       "reject": "Ablehnen"
+    },
+    "houseMemberRole": {
+      "owner": "Verwalter",
+      "member": "Mitbewohner"
     }
   }
 }

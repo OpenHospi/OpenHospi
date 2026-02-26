@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { RoomStatus } from "@openhospi/shared/enums";
+
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";
 
@@ -50,11 +52,11 @@ export default async function RoomDetailPage({ params }: Props) {
 
       <StatusControls room={room} />
 
-      {room.status !== "draft" && (
+      {room.status !== RoomStatus.draft && (
         <ApplicantsSection roomId={room.id} userId={user.id} />
       )}
 
-      {room.status !== "draft" && <ShareLinkSection room={room} />}
+      {room.status !== RoomStatus.draft && <ShareLinkSection room={room} />}
     </div>
   );
 }

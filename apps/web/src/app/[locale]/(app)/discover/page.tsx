@@ -1,8 +1,9 @@
+import { DISCOVER_SORTS, DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { requireSession } from "@/lib/auth-server";
-import type { DiscoverCursor, DiscoverFilters, DiscoverSort } from "@/lib/discover";
+import type { DiscoverCursor, DiscoverFilters } from "@/lib/discover";
 import { getDiscoverRooms } from "@/lib/discover";
 import { getProfile } from "@/lib/profile";
 
@@ -35,11 +36,10 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
     return typeof v === "string" ? v : undefined;
   };
 
-  const validSorts = ["newest", "cheapest", "most_expensive"] as const;
   const rawSort = first("sort");
-  const sort: DiscoverSort = validSorts.includes(rawSort as DiscoverSort)
+  const sort: DiscoverSort = (DISCOVER_SORTS as readonly string[]).includes(rawSort ?? "")
     ? (rawSort as DiscoverSort)
-    : "newest";
+    : DiscoverSort.newest;
 
   const minPriceStr = first("minPrice");
   const maxPriceStr = first("maxPrice");

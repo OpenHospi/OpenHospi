@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomDetailsData } from "@openhospi/database/validators";
 import { roomDetailsSchema } from "@openhospi/database/validators";
-import { FURNISHINGS, HOUSE_TYPES, RENTAL_TYPES } from "@openhospi/shared/enums";
+import { FURNISHINGS, HOUSE_TYPES, RENTAL_TYPES, RentalType } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -51,10 +51,11 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
       rentPrice: defaultValues.rentPrice ?? undefined,
       deposit: defaultValues.deposit ?? undefined,
       utilitiesIncluded: defaultValues.utilitiesIncluded ?? false,
+      serviceCosts: defaultValues.serviceCosts ?? undefined,
       roomSizeM2: defaultValues.roomSizeM2 ?? undefined,
       availableFrom: defaultValues.availableFrom ?? "",
       availableUntil: defaultValues.availableUntil ?? "",
-      rentalType: defaultValues.rentalType ?? "vast",
+      rentalType: defaultValues.rentalType ?? RentalType.vast,
       houseType: defaultValues.houseType,
       furnishing: defaultValues.furnishing,
       totalHousemates: defaultValues.totalHousemates ?? undefined,
@@ -62,6 +63,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
   });
 
   const rentalType = form.watch("rentalType");
+  const utilitiesIncluded = form.watch("utilitiesIncluded");
 
   function onSubmit(data: RoomDetailsData) {
     startTransition(async () => {
@@ -132,6 +134,28 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
           )}
         />
 
+        {!utilitiesIncluded && (
+          <FormField
+            control={form.control}
+            name="serviceCosts"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("fields.serviceCosts")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    placeholder={t("placeholders.serviceCosts")}
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
           name="roomSizeM2"
@@ -195,7 +219,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
             )}
           />
 
-          {rentalType !== "vast" && (
+          {rentalType !== RentalType.vast && (
             <FormField
               control={form.control}
               name="availableUntil"

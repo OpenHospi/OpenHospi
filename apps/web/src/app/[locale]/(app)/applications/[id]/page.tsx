@@ -1,3 +1,4 @@
+import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Home } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -11,29 +12,10 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation-app";
 import { getApplicationDetail } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
+import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
 import { WithdrawButton } from "./withdraw-button";
-
-const statusColors: Record<string, string> = {
-  sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  seen: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
-  liked: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  invited: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
-  not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  withdrawn: "bg-muted text-muted-foreground",
-};
-
-const terminalStatuses = new Set([
-  "rejected",
-  "accepted",
-  "not_chosen",
-  "withdrawn",
-  "not_attending",
-]);
 
 export async function generateMetadata({
   params,
@@ -62,7 +44,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "app.applications" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
-  const isTerminal = terminalStatuses.has(application.status);
+  const isTerminal = isTerminalApplicationStatus(application.status);
   const appliedDate = new Date(application.appliedAt).toLocaleDateString();
 
   return (
@@ -118,7 +100,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-3">
-            <Badge className={cn("text-sm", statusColors[application.status])}>
+            <Badge className={cn("text-sm", APPLICATION_STATUS_COLORS[application.status])}>
               {tEnums(`application_status.${application.status}`)}
             </Badge>
             <span className="text-sm text-muted-foreground">

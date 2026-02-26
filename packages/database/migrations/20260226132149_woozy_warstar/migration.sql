@@ -1,0 +1,1 @@
+ALTER TABLE "rooms" ADD COLUMN "total_cost" numeric(7,2) GENERATED ALWAYS AS (rent_price + COALESCE(service_costs, 0)) STORED;

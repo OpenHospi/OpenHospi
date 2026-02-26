@@ -936,7 +936,8 @@
       "title": "Admin-Anmeldung",
       "description": "Melde dich mit deinem GitHub-Account an, um auf das Admin-Panel zuzugreifen.",
       "githubButton": "Mit GitHub anmelden",
-      "error": "Anmeldung fehlgeschlagen. Überprüfe, ob dein Konto Administratorrechte hat."
+      "error": "Anmeldung fehlgeschlagen. Überprüfe, ob dein Konto Administratorrechte hat.",
+      "footer": "Nur autorisierte Administratoren haben Zugang zu diesem Panel."
     }
   }
 }

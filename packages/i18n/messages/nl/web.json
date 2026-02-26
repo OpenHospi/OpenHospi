@@ -936,7 +936,8 @@
       "title": "Admin inloggen",
       "description": "Log in met je GitHub-account om toegang te krijgen tot het beheerpaneel.",
       "githubButton": "Inloggen met GitHub",
-      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft."
+      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
+      "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
     }
   }
 }

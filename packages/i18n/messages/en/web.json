@@ -936,7 +936,8 @@
       "title": "Admin login",
       "description": "Log in with your GitHub account to access the admin panel.",
       "githubButton": "Log in with GitHub",
-      "error": "Login failed. Check that your account has admin privileges."
+      "error": "Login failed. Check that your account has admin privileges.",
+      "footer": "Only authorized administrators can access this panel."
     }
   }
 }

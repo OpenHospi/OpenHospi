@@ -1,5 +1,8 @@
+import { ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+
+import { APP_NAME } from "@openhospi/shared/constants";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSession } from "@/lib/auth-server";
@@ -22,7 +25,14 @@ export default async function AdminLoginPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "admin.login" });
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center p-4">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center p-4">
+      <div className="mb-6 flex items-center gap-2">
+        <ShieldCheck className="text-primary size-7" />
+        <span className="text-xl font-semibold tracking-tight">
+          {APP_NAME} <span className="text-muted-foreground font-normal">Admin</span>
+        </span>
+      </div>
+
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">{t("title")}</CardTitle>
@@ -32,6 +42,8 @@ export default async function AdminLoginPage({ params }: Props) {
           <AdminLoginButton />
         </CardContent>
       </Card>
+
+      <p className="text-muted-foreground mt-6 text-center text-sm">{t("footer")}</p>
     </div>
   );
 }

@@ -115,6 +115,13 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
 
   // Subdomain enforcement (production only)
   if (subdomain) {
+    // Rewrite /login on admin subdomain to serve the admin login page (GitHub)
+    // instead of the default auth login page (SURFconext)
+    if (subdomain === "admin" && getBarePath(pathname) === "/login") {
+      request.nextUrl.pathname = "/admin/login";
+      return appMiddleware(request);
+    }
+
     const redirect = enforceSubdomain(subdomain, pathname, request.url);
     if (redirect) return redirect;
   }

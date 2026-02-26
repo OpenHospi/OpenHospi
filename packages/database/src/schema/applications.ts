@@ -32,7 +32,7 @@ export const applications = pgTable(
     pgPolicy("applications_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from housemates where housemates.room_id = ${table.roomId} and housemates.user_id = (select auth.user_id()))`,
+      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Only applicant can create
     pgPolicy("applications_insert", {
@@ -44,7 +44,7 @@ export const applications = pgTable(
     pgPolicy("applications_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from housemates where housemates.room_id = ${table.roomId} and housemates.user_id = (select auth.user_id()) and housemates.role in ('owner', 'admin'))`,
+      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()) and room_members_rls.role in ('owner', 'admin'))`,
     }),
   ],
 );
@@ -76,13 +76,13 @@ export const reviews = pgTable(
     pgPolicy("reviews_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from housemates where housemates.room_id = ${table.roomId} and housemates.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Housemates can insert their own reviews
     pgPolicy("reviews_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${authUid(table.reviewerId)} and exists(select 1 from housemates where housemates.room_id = ${table.roomId} and housemates.user_id = (select auth.user_id()))`,
+      withCheck: sql`${authUid(table.reviewerId)} and exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Reviewer can update their own review
     pgPolicy("reviews_update", {

@@ -154,11 +154,11 @@ export const housemates = pgTable(
     unique("housemates_room_id_user_id_key").on(table.roomId, table.userId),
     index("idx_housemates_user_id").on(table.userId),
     index("idx_housemates_room_id").on(table.roomId),
-    // See housemates in rooms where you are also a housemate
+    // See housemates in rooms where you are also a housemate (uses view to avoid infinite recursion)
     pgPolicy("housemates_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from housemates h2 where h2.room_id = ${table.roomId} and h2.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Only room owner can add/remove housemates
     pgPolicy("housemates_insert", {

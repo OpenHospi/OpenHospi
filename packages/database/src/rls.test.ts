@@ -1,0 +1,403 @@
+import { eq, sql } from "drizzle-orm";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
+import { db } from "./db";
+import { withRLS } from "./rls";
+import {
+  conversations,
+  conversationMembers,
+  hospiEvents,
+  hospiInvitations,
+  housemates,
+  messageReceipts,
+  messages,
+  profiles,
+  rooms,
+  user,
+  votes,
+} from "./schema";
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+/** Run a query as the anonymous role (no JWT claims, no auth). */
+async function withAnonymous<T>(fn: (tx: Transaction) => Promise<T>): Promise<T> {
+  return db.transaction(async (tx) => {
+    try {
+      await tx.execute(sql`set local role anonymous`);
+      return await fn(tx);
+    } finally {
+      await tx.execute(sql`reset role`);
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Deterministic test IDs (prefixed to avoid collision with real data)
+// ---------------------------------------------------------------------------
+
+const USER_A = "a0000000-0000-4000-a000-000000000001"; // room owner, event creator
+const USER_B = "a0000000-0000-4000-a000-000000000002"; // housemate of room
+const USER_C = "a0000000-0000-4000-a000-000000000003"; // outsider
+
+const ACTIVE_ROOM = "a0000000-0000-4000-b000-000000000001";
+const DRAFT_ROOM = "a0000000-0000-4000-b000-000000000002";
+const EVENT_ID = "a0000000-0000-4000-c000-000000000001";
+const INVITATION_ID = "a0000000-0000-4000-d000-000000000001";
+const CONVERSATION_ID = "a0000000-0000-4000-e000-000000000001";
+const MESSAGE_ID = "a0000000-0000-4000-f000-000000000001";
+const VOTE_ID = "a0000000-0000-4000-f100-000000000001";
+
+const NOW = new Date();
+
+// ---------------------------------------------------------------------------
+// Seed & Cleanup
+// ---------------------------------------------------------------------------
+
+/** Delete all test data (safe to call even if data doesn't exist). */
+async function cleanup() {
+  await db.delete(votes).where(eq(votes.id, VOTE_ID));
+  await db.delete(conversations).where(eq(conversations.id, CONVERSATION_ID));
+  await db.delete(hospiEvents).where(eq(hospiEvents.id, EVENT_ID));
+  await db.delete(rooms).where(eq(rooms.id, ACTIVE_ROOM));
+  await db.delete(rooms).where(eq(rooms.id, DRAFT_ROOM));
+  for (const id of [USER_A, USER_B, USER_C]) {
+    await db.delete(profiles).where(eq(profiles.id, id));
+    await db.delete(user).where(eq(user.id, id));
+  }
+}
+
+describe("RLS policies (integration)", () => {
+  beforeAll(async () => {
+    // Clean up any leftovers from a previous failed run
+    await cleanup();
+
+    // Seed using owner role (bypasses RLS)
+    await db.insert(user).values([
+      { id: USER_A, name: "User A", email: "rls-a@test.openhospi.nl", emailVerified: true, createdAt: NOW, updatedAt: NOW },
+      { id: USER_B, name: "User B", email: "rls-b@test.openhospi.nl", emailVerified: true, createdAt: NOW, updatedAt: NOW },
+      { id: USER_C, name: "User C", email: "rls-c@test.openhospi.nl", emailVerified: true, createdAt: NOW, updatedAt: NOW },
+    ]);
+
+    await db.insert(profiles).values([
+      { id: USER_A, firstName: "User", lastName: "A", email: "rls-a@test.openhospi.nl", institutionDomain: "test.nl" },
+      { id: USER_B, firstName: "User", lastName: "B", email: "rls-b@test.openhospi.nl", institutionDomain: "test.nl" },
+      { id: USER_C, firstName: "User", lastName: "C", email: "rls-c@test.openhospi.nl", institutionDomain: "test.nl" },
+    ]);
+
+    await db.insert(rooms).values([
+      { id: ACTIVE_ROOM, ownerId: USER_A, title: "RLS Active Room", city: "amsterdam", status: "active" },
+      { id: DRAFT_ROOM, ownerId: USER_A, title: "RLS Draft Room", city: "amsterdam", status: "draft" },
+    ]);
+
+    await db.insert(housemates).values([
+      { roomId: ACTIVE_ROOM, userId: USER_A, role: "admin" },
+      { roomId: ACTIVE_ROOM, userId: USER_B, role: "member" },
+    ]);
+
+    await db.insert(hospiEvents).values({
+      id: EVENT_ID, roomId: ACTIVE_ROOM, createdBy: USER_A,
+      title: "RLS Test Event", eventDate: "2026-03-01", timeStart: "10:00",
+    });
+
+    await db.insert(hospiInvitations).values({
+      id: INVITATION_ID, eventId: EVENT_ID, userId: USER_B,
+    });
+
+    await db.insert(conversations).values({ id: CONVERSATION_ID, type: "direct" });
+    await db.insert(conversationMembers).values([
+      { conversationId: CONVERSATION_ID, userId: USER_A },
+      { conversationId: CONVERSATION_ID, userId: USER_B },
+    ]);
+
+    await db.insert(messages).values({
+      id: MESSAGE_ID, conversationId: CONVERSATION_ID, senderId: USER_A,
+      ciphertext: "encrypted-test", iv: "iv-test", messageType: "text",
+    });
+
+    await db.insert(messageReceipts).values({
+      messageId: MESSAGE_ID, userId: USER_A, status: "delivered",
+    });
+
+    await db.insert(votes).values({
+      id: VOTE_ID, roomId: ACTIVE_ROOM, voterId: USER_A, applicantId: USER_B, rank: 1, round: 1,
+    });
+  });
+
+  afterAll(async () => {
+    await cleanup();
+  });
+
+  // -------------------------------------------------------------------------
+  // Profiles — any authenticated can read, only own can update
+  // -------------------------------------------------------------------------
+
+  describe("profiles", () => {
+    it("authenticated user can read all profiles", async () => {
+      const rows = await withRLS(USER_C, (tx) => tx.select().from(profiles));
+      const ids = rows.map((r) => r.id);
+      expect(ids).toContain(USER_A);
+      expect(ids).toContain(USER_B);
+      expect(ids).toContain(USER_C);
+    });
+
+    it("user can update own profile", async () => {
+      const [updated] = await withRLS(USER_A, (tx) =>
+        tx.update(profiles).set({ bio: "rls-test" }).where(eq(profiles.id, USER_A)).returning(),
+      );
+      expect(updated.bio).toBe("rls-test");
+      // Reset
+      await db.update(profiles).set({ bio: null }).where(eq(profiles.id, USER_A));
+    });
+
+    it("user cannot update another user's profile", async () => {
+      const result = await withRLS(USER_B, (tx) =>
+        tx.update(profiles).set({ bio: "hacked" }).where(eq(profiles.id, USER_A)).returning(),
+      );
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Rooms — anonymous sees active only, owner sees all own, non-owner cannot update
+  // -------------------------------------------------------------------------
+
+  describe("rooms", () => {
+    it("anonymous can see active rooms", async () => {
+      const rows = await withAnonymous((tx) => tx.select().from(rooms));
+      const ids = rows.map((r) => r.id);
+      expect(ids).toContain(ACTIVE_ROOM);
+    });
+
+    it("anonymous cannot see draft rooms", async () => {
+      const rows = await withAnonymous((tx) => tx.select().from(rooms));
+      const ids = rows.map((r) => r.id);
+      expect(ids).not.toContain(DRAFT_ROOM);
+    });
+
+    it("owner can see own draft rooms", async () => {
+      const rows = await withRLS(USER_A, (tx) => tx.select().from(rooms));
+      const ids = rows.map((r) => r.id);
+      expect(ids).toContain(ACTIVE_ROOM);
+      expect(ids).toContain(DRAFT_ROOM);
+    });
+
+    it("non-owner cannot see others' draft rooms", async () => {
+      const rows = await withRLS(USER_C, (tx) => tx.select().from(rooms));
+      const ids = rows.map((r) => r.id);
+      expect(ids).toContain(ACTIVE_ROOM);
+      expect(ids).not.toContain(DRAFT_ROOM);
+    });
+
+    it("owner can update own room", async () => {
+      const [updated] = await withRLS(USER_A, (tx) =>
+        tx.update(rooms).set({ description: "rls-update" }).where(eq(rooms.id, ACTIVE_ROOM)).returning(),
+      );
+      expect(updated.description).toBe("rls-update");
+      await db.update(rooms).set({ description: null }).where(eq(rooms.id, ACTIVE_ROOM));
+    });
+
+    it("non-owner cannot update room", async () => {
+      const result = await withRLS(USER_B, (tx) =>
+        tx.update(rooms).set({ description: "hacked" }).where(eq(rooms.id, ACTIVE_ROOM)).returning(),
+      );
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Housemates — co-housemates visible, outsiders blocked, owner-only insert
+  // -------------------------------------------------------------------------
+
+  describe("housemates", () => {
+    it("housemate can see co-housemates in same room", async () => {
+      const rows = await withRLS(USER_B, (tx) =>
+        tx.select().from(housemates).where(eq(housemates.roomId, ACTIVE_ROOM)),
+      );
+      expect(rows).toHaveLength(2);
+    });
+
+    it("outsider cannot see housemates", async () => {
+      const rows = await withRLS(USER_C, (tx) =>
+        tx.select().from(housemates).where(eq(housemates.roomId, ACTIVE_ROOM)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+
+    it("non-owner cannot add housemates", async () => {
+      await expect(
+        withRLS(USER_B, (tx) =>
+          tx.insert(housemates).values({ roomId: ACTIVE_ROOM, userId: USER_C }),
+        ),
+      ).rejects.toThrow();
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Events — housemates can view, only creator can modify
+  // -------------------------------------------------------------------------
+
+  describe("hospiEvents", () => {
+    it("housemate can see events in their room", async () => {
+      const rows = await withRLS(USER_B, (tx) =>
+        tx.select().from(hospiEvents).where(eq(hospiEvents.roomId, ACTIVE_ROOM)),
+      );
+      expect(rows).toHaveLength(1);
+      expect(rows[0].id).toBe(EVENT_ID);
+    });
+
+    it("outsider cannot see events", async () => {
+      const rows = await withRLS(USER_C, (tx) =>
+        tx.select().from(hospiEvents).where(eq(hospiEvents.roomId, ACTIVE_ROOM)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+
+    it("creator can update event", async () => {
+      const [updated] = await withRLS(USER_A, (tx) =>
+        tx.update(hospiEvents).set({ notes: "rls-note" }).where(eq(hospiEvents.id, EVENT_ID)).returning(),
+      );
+      expect(updated.notes).toBe("rls-note");
+      await db.update(hospiEvents).set({ notes: null }).where(eq(hospiEvents.id, EVENT_ID));
+    });
+
+    it("non-creator housemate cannot update event", async () => {
+      const result = await withRLS(USER_B, (tx) =>
+        tx.update(hospiEvents).set({ notes: "hacked" }).where(eq(hospiEvents.id, EVENT_ID)).returning(),
+      );
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Invitations — invitee OR event creator can view, outsider blocked
+  // -------------------------------------------------------------------------
+
+  describe("hospiInvitations", () => {
+    it("invitee can see own invitation", async () => {
+      const rows = await withRLS(USER_B, (tx) =>
+        tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, INVITATION_ID)),
+      );
+      expect(rows).toHaveLength(1);
+    });
+
+    it("event creator can see invitation", async () => {
+      const rows = await withRLS(USER_A, (tx) =>
+        tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, INVITATION_ID)),
+      );
+      expect(rows).toHaveLength(1);
+    });
+
+    it("outsider cannot see invitation", async () => {
+      const rows = await withRLS(USER_C, (tx) =>
+        tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, INVITATION_ID)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Conversations — member-only access
+  // -------------------------------------------------------------------------
+
+  describe("conversations", () => {
+    it("member can see conversation", async () => {
+      const rows = await withRLS(USER_A, (tx) =>
+        tx.select().from(conversations).where(eq(conversations.id, CONVERSATION_ID)),
+      );
+      expect(rows).toHaveLength(1);
+    });
+
+    it("non-member cannot see conversation", async () => {
+      const rows = await withRLS(USER_C, (tx) =>
+        tx.select().from(conversations).where(eq(conversations.id, CONVERSATION_ID)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Messages — member can read, sender-only delete, non-member blocked
+  // -------------------------------------------------------------------------
+
+  describe("messages", () => {
+    it("conversation member can see messages", async () => {
+      const rows = await withRLS(USER_B, (tx) =>
+        tx.select().from(messages).where(eq(messages.conversationId, CONVERSATION_ID)),
+      );
+      expect(rows).toHaveLength(1);
+      expect(rows[0].id).toBe(MESSAGE_ID);
+    });
+
+    it("non-member cannot see messages", async () => {
+      const rows = await withRLS(USER_C, (tx) =>
+        tx.select().from(messages).where(eq(messages.conversationId, CONVERSATION_ID)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+
+    it("sender can delete own message", async () => {
+      // Insert a temporary message then delete it
+      const [msg] = await withRLS(USER_A, (tx) =>
+        tx.insert(messages).values({
+          conversationId: CONVERSATION_ID, senderId: USER_A,
+          ciphertext: "temp", iv: "temp-iv",
+        }).returning(),
+      );
+      const deleted = await withRLS(USER_A, (tx) =>
+        tx.delete(messages).where(eq(messages.id, msg.id)).returning(),
+      );
+      expect(deleted).toHaveLength(1);
+    });
+
+    it("non-sender cannot delete message", async () => {
+      const result = await withRLS(USER_B, (tx) =>
+        tx.delete(messages).where(eq(messages.id, MESSAGE_ID)).returning(),
+      );
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Votes — voter-only via crudPolicy
+  // -------------------------------------------------------------------------
+
+  describe("votes", () => {
+    it("voter can see own votes", async () => {
+      const rows = await withRLS(USER_A, (tx) =>
+        tx.select().from(votes).where(eq(votes.id, VOTE_ID)),
+      );
+      expect(rows).toHaveLength(1);
+    });
+
+    it("other user cannot see votes", async () => {
+      const rows = await withRLS(USER_B, (tx) =>
+        tx.select().from(votes).where(eq(votes.id, VOTE_ID)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Message Receipts — user-only via crudPolicy
+  // -------------------------------------------------------------------------
+
+  describe("messageReceipts", () => {
+    it("recipient can see own receipts", async () => {
+      const rows = await withRLS(USER_A, (tx) =>
+        tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, MESSAGE_ID)),
+      );
+      expect(rows).toHaveLength(1);
+    });
+
+    it("other user cannot see receipts", async () => {
+      const rows = await withRLS(USER_B, (tx) =>
+        tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, MESSAGE_ID)),
+      );
+      expect(rows).toHaveLength(0);
+    });
+  });
+});

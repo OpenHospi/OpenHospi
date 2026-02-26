@@ -45,11 +45,11 @@ export const hospiEvents = pgTable(
       .$onUpdateFn(() => new Date()),
   },
   (table) => [
-    // All housemates of the room can view events
+    // All housemates of the room can view events (uses view to avoid recursion through housemates RLS)
     pgPolicy("hospi_events_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from housemates where housemates.room_id = ${table.roomId} and housemates.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Only event creator can insert
     pgPolicy("hospi_events_insert", {

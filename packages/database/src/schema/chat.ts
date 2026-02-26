@@ -24,11 +24,11 @@ export const conversations = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    // Only conversation members can view
+    // Only conversation members can view (uses view to avoid recursion through conversation_members RLS)
     pgPolicy("conversations_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members where conversation_members.conversation_id = ${table.id} and conversation_members.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.id} and conversation_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Any authenticated user can create a conversation
     pgPolicy("conversations_insert", {
@@ -54,17 +54,17 @@ export const conversationMembers = pgTable(
   (table) => [
     primaryKey({ columns: [table.conversationId, table.userId] }),
     index("idx_conversation_members_user_id").on(table.userId),
-    // All members of the same conversation can see each other
+    // All members of the same conversation can see each other (uses view to avoid infinite recursion)
     pgPolicy("conversation_members_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members cm2 where cm2.conversation_id = ${table.conversationId} and cm2.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
     }),
-    // Self-add or existing member can add others
+    // Self-add or existing member can add others (uses view to avoid recursion)
     pgPolicy("conversation_members_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.userId} = (select auth.user_id()) or exists(select 1 from conversation_members cm2 where cm2.conversation_id = ${table.conversationId} and cm2.user_id = (select auth.user_id()))`,
+      withCheck: sql`${table.userId} = (select auth.user_id()) or exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Own membership only (e.g. mute toggle)
     pgPolicy("conversation_members_update", {
@@ -98,17 +98,17 @@ export const messages = pgTable(
   },
   (table) => [
     index("idx_messages_conversation_created").on(table.conversationId, table.createdAt),
-    // Conversation members can read messages
+    // Conversation members can read messages (uses view to avoid recursion through conversation_members RLS)
     pgPolicy("messages_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members where conversation_members.conversation_id = ${table.conversationId} and conversation_members.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
     }),
-    // Sender must be conversation member
+    // Sender must be conversation member (uses view to avoid recursion)
     pgPolicy("messages_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.senderId} = (select auth.user_id()) and exists(select 1 from conversation_members where conversation_members.conversation_id = ${table.conversationId} and conversation_members.user_id = (select auth.user_id()))`,
+      withCheck: sql`${table.senderId} = (select auth.user_id()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
     }),
     // Sender only can update
     pgPolicy("messages_update", {

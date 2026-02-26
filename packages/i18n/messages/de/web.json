@@ -10,7 +10,7 @@
       "safety": "Sicherheit",
       "costs": "Kosten",
       "about": "Über uns",
-      "browseRooms": "Zimmer durchsuchen"
+      "browseRooms": "Kamers bekijken"
     },
     "login": "Mit SURFconext anmelden",
     "menuOpen": "Menü öffnen"
@@ -23,12 +23,12 @@
       "findRoom": "Zimmer finden",
       "listRoom": "Zimmer anbieten",
       "safety": "Sicherheit",
-      "browseRooms": "Zimmer durchsuchen",
+      "browseRooms": "Kamers bekijken",
       "costs": "Kosten",
       "privacy": "Datenschutz",
       "terms": "AGB",
       "about": "Über uns",
-      "missingAssociation": "Vereinigung fehlt?"
+      "missingAssociation": "Vereniging mist?"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
     "openSource": "Open Source",
@@ -252,7 +252,7 @@
     },
     "builtBy": {
       "title": "Wie es begann",
-      "description": "Ruben sah Mitstudierende, die mit Facebook-Gruppen, Instagram und kostenpflichtigen Plattformen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. So ist OpenHospi entstanden."
+      "description": "Ruben zag medestudenten worstelen met Facebook-groepen, Instagram en betaalde platforms. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. Zo is OpenHospi ontstaan."
     },
     "openSource": {
       "title": "Open Source & Community",
@@ -326,209 +326,236 @@
   },
   "auth": {
     "login": {
-      "title": "Anmelden",
-      "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
-      "surfconextButton": "Anmelden mit SURFconext",
-      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule."
+      "title": "Inloggen",
+      "description": "Log in met je universiteitsaccount om toegang te krijgen tot OpenHospi.",
+      "surfconextButton": "Inloggen met SURFconext",
+      "surfconextDescription": "Gebruik het account van je universiteit of hogeschool."
     }
   },
   "app": {
     "sidebar": {
-      "discover": "Entdecken",
-      "myRooms": "Meine Zimmer",
-      "applications": "Bewerbungen",
-      "profile": "Profil",
-      "settings": "Einstellungen",
-      "comingSoon": "Demnächst"
+      "discover": "Ontdekken",
+      "myRooms": "Mijn kamers",
+      "applications": "Reacties",
+      "profile": "Profiel",
+      "settings": "Instellingen",
+      "comingSoon": "Binnenkort"
     },
     "userMenu": {
-      "profile": "Mein Profil",
-      "settings": "Einstellungen",
-      "logout": "Abmelden"
+      "profile": "Mijn profiel",
+      "settings": "Instellingen",
+      "logout": "Uitloggen"
     },
     "discover": {
-      "title": "Zimmer entdecken",
-      "roomCount": "{showing} von {total} Zimmern",
-      "empty": "Keine Zimmer gefunden. Passe deine Filter an.",
+      "title": "Kamers ontdekken",
+      "roomCount": "{showing} van {total} kamers",
+      "empty": "Geen kamers gevonden met deze filters. Pas je zoekopdracht aan.",
       "filters": {
-        "city": "Stadt",
-        "cityPlaceholder": "Alle Städte",
-        "minPrice": "Min Preis",
-        "maxPrice": "Max Preis",
-        "houseType": "Wohnungstyp",
-        "houseTypePlaceholder": "Alle Typen",
-        "furnishing": "Einrichtung",
+        "city": "Stad",
+        "cityPlaceholder": "Alle steden",
+        "minPrice": "Min prijs",
+        "maxPrice": "Max prijs",
+        "houseType": "Woningtype",
+        "houseTypePlaceholder": "Alle types",
+        "furnishing": "Inrichting",
         "furnishingPlaceholder": "Alle",
-        "availableFrom": "Verfügbar ab",
-        "features": "Merkmale",
-        "featuresPlaceholder": "Merkmale auswählen...",
-        "locationTags": "Lage",
-        "locationTagsPlaceholder": "Tags auswählen...",
-        "sort": "Sortieren nach",
-        "sortNewest": "Neueste zuerst",
-        "sortCheapest": "Günstigste zuerst",
-        "sortMostExpensive": "Teuerste zuerst",
-        "clearFilters": "Filter löschen",
-        "selectedCount": "{count} ausgewählt",
-        "showFilters": "Filter anzeigen",
-        "hideFilters": "Filter ausblenden"
+        "availableFrom": "Beschikbaar vanaf",
+        "features": "Kenmerken",
+        "featuresPlaceholder": "Selecteer kenmerken...",
+        "locationTags": "Locatie",
+        "locationTagsPlaceholder": "Selecteer tags...",
+        "sort": "Sorteer op",
+        "sortNewest": "Nieuwste eerst",
+        "sortCheapest": "Goedkoopste eerst",
+        "sortMostExpensive": "Duurste eerst",
+        "clearFilters": "Filters wissen",
+        "selectedCount": "{count} geselecteerd",
+        "showFilters": "Toon filters",
+        "hideFilters": "Verberg filters"
       },
       "card": {
-        "perMonth": "/Mo",
-        "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}"
+        "perMonth": "/mnd",
+        "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}"
       },
-      "loadMore": "Mehr laden"
+      "loadMore": "Meer laden"
     },
     "profile": {
-      "title": "Mein Profil",
-      "institution": "Einrichtung",
-      "edit": "Bearbeiten",
-      "editTitle": "Profil bearbeiten",
-      "editSuccess": "Profil aktualisiert",
-      "save": "Speichern",
-      "cancel": "Abbrechen",
-      "bio": "Über mich",
-      "studyInfo": "Studieninformation",
-      "studyProgram": "Studiengang",
-      "studyLevel": "Studienniveau",
-      "gender": "Geschlecht",
-      "birthDate": "Geburtsdatum",
-      "preferences": "Präferenzen",
-      "preferredCity": "Bevorzugte Stadt",
-      "maxRent": "Max Miete",
-      "availableFrom": "Verfügbar ab",
-      "lifestyleTags": "Lebensstil",
+      "title": "Mijn profiel",
+      "institution": "Instelling",
+      "edit": "Bewerken",
+      "editTitle": "Profiel bewerken",
+      "editSuccess": "Profiel bijgewerkt",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "bio": "Over mij",
+      "studyInfo": "Studie-informatie",
+      "studyProgram": "Studie",
+      "studyLevel": "Studieniveau",
+      "gender": "Geslacht",
+      "birthDate": "Geboortedatum",
+      "preferences": "Voorkeuren",
+      "preferredCity": "Voorkeursstad",
+      "maxRent": "Max huur",
+      "availableFrom": "Beschikbaar vanaf",
+      "lifestyleTags": "Levensstijl",
       "completeness": {
-        "title": "Profil {completed}/{total} vollständig",
-        "photo": "Profilfoto",
+        "title": "Profiel {completed}/{total} compleet",
+        "photo": "Profielfoto",
         "bio": "Bio",
-        "studyProgram": "Studiengang",
-        "birthDate": "Geburtsdatum",
-        "preferredCity": "Bevorzugte Stadt",
-        "lifestyleTags": "Lebensstil-Tags (2+)",
-        "vereniging": "Verein"
+        "studyProgram": "Studie",
+        "birthDate": "Geboortedatum",
+        "preferredCity": "Voorkeursstad",
+        "lifestyleTags": "Levensstijl tags (2+)",
+        "vereniging": "Vereniging"
       }
     },
     "onboarding": {
-      "title": "Vervollständige dein Profil",
-      "stepOf": "Schritt {current} von {total}",
+      "title": "Maak je profiel compleet",
+      "stepOf": "Stap {current} van {total}",
       "steps": {
-        "about": "Über dich",
-        "personality": "Persönlichkeit",
-        "photos": "Fotos",
-        "preferences": "Präferenzen"
+        "about": "Over jou",
+        "personality": "Persoonlijkheid",
+        "photos": "Foto's",
+        "preferences": "Voorkeuren"
       },
       "stepDescriptions": {
-        "step1": "Erzähl uns etwas über dich.",
-        "step2": "Was beschreibt dich am besten?",
-        "step3": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
-        "step4": "Was suchst du?"
+        "step1": "Vertel iets over jezelf.",
+        "step2": "Wat past het beste bij jou?",
+        "step3": "Voeg foto's toe zodat huizen je leren kennen.",
+        "step4": "Wat zoek je?"
       },
       "fields": {
-        "gender": "Geschlecht",
-        "birthDate": "Geburtsdatum",
-        "studyProgram": "Studiengang",
-        "studyLevel": "Studienniveau",
-        "bio": "Über mich",
-        "preferredCity": "Bevorzugte Stadt",
-        "maxRent": "Max Miete",
-        "availableFrom": "Verfügbar ab",
-        "vereniging": "Studentenverein",
+        "gender": "Geslacht",
+        "birthDate": "Geboortedatum",
+        "studyProgram": "Studie",
+        "studyLevel": "Studieniveau",
+        "bio": "Over mij",
+        "preferredCity": "Voorkeursstad",
+        "maxRent": "Max huur",
+        "availableFrom": "Beschikbaar vanaf",
+        "vereniging": "Vereniging",
         "instagram": "Instagram",
-        "showInstagram": "Instagram im Profil anzeigen"
+        "showInstagram": "Instagram tonen op profiel"
       },
       "placeholders": {
-        "studyProgram": "z.B. Informatik",
-        "studyLevel": "Wähle dein Niveau",
-        "bio": "Erzähl etwas über dich...",
-        "preferredCity": "Stadt auswählen",
-        "maxRent": "z.B. 600",
-        "vereniging": "z.B. Vindicat",
-        "searchVereniging": "Verein suchen..."
+        "studyProgram": "bijv. Informatica",
+        "studyLevel": "Selecteer je niveau",
+        "bio": "Vertel iets over jezelf...",
+        "preferredCity": "Selecteer een stad",
+        "maxRent": "bijv. 600",
+        "vereniging": "bijv. Vindicat",
+        "searchVereniging": "Zoek vereniging..."
       },
       "photoSlots": {
-        "slot1": "Dein bestes Foto",
-        "slot2": "In deiner Freizeit",
-        "slot3": "Zeig deine Persönlichkeit",
-        "slot4": "Mit Freunden oder Mitbewohnern",
-        "slot5": "Dein Studium oder Arbeit"
+        "slot1": "Je beste foto",
+        "slot2": "In je vrije tijd",
+        "slot3": "Laat je persoonlijkheid zien",
+        "slot4": "Met vrienden of huisgenoten",
+        "slot5": "Je studie of werk"
       },
-      "required": "Pflichtfeld",
-      "optional": "optional",
-      "next": "Weiter",
-      "back": "Zurück",
-      "complete": "Profil abschließen",
-      "noResults": "Keine Ergebnisse gefunden.",
-      "noSelection": "Keine Auswahl",
-      "tagCounter": "{count}/{max} ausgewählt (min {min})",
+      "required": "Verplicht",
+      "optional": "optioneel",
+      "next": "Volgende",
+      "back": "Vorige",
+      "complete": "Profiel afronden",
+      "noResults": "Geen resultaten gevonden.",
+      "noSelection": "Geen selectie",
+      "tagCounter": "{count}/{max} geselecteerd (min {min})",
       "validation": {
-        "minTags": "Wähle mindestens {min} Tags"
+        "minTags": "Selecteer minimaal {min} tags"
       }
     },
     "rooms": {
-      "title": "Meine Zimmer",
-      "empty": "Du hast noch keine Zimmer erstellt.",
-      "createFirst": "Erstelle deine erste Anzeige",
-      "createNew": "Neues Zimmer",
-      "applicants": "{count, plural, =0 {Keine Bewerber} =1 {1 Bewerber} other {# Bewerber}}",
+      "title": "Mijn kamers",
+      "empty": "Je hebt nog geen kamers aangemaakt.",
+      "createFirst": "Maak je eerste advertentie",
+      "createNew": "Nieuwe kamer",
+      "applicants": {
+        "title": "Aanmeldingen",
+        "empty": "Nog geen aanmeldingen. Deel je kamer om kandidaten aan te trekken.",
+        "viewProfile": "Bekijk profiel",
+        "liked": "leuk",
+        "maybe": "misschien",
+        "rejected": "afgewezen",
+        "invite": "Uitnodigen",
+        "accept": "Accepteren",
+        "notChosen": "Niet gekozen",
+        "cancel": "Annuleren",
+        "acceptConfirmTitle": "Kandidaat accepteren",
+        "acceptConfirmDescription": "Weet je zeker dat je {name} wilt accepteren? Dit kan niet ongedaan worden gemaakt.",
+        "statusError": "Kon status niet bijwerken",
+        "statusUpdated": "Status bijgewerkt",
+        "reviewError": "Kon beoordeling niet opslaan",
+        "reviewSubmitted": "Beoordeling opgeslagen",
+        "aboutThem": "Over",
+        "lifestyle": "Levensstijl",
+        "personalMessage": "Persoonlijk bericht",
+        "yourReview": "Jouw beoordeling",
+        "decision": "Beslissing",
+        "notes": "Notities",
+        "notesPlaceholder": "Voeg optionele notities toe over deze kandidaat...",
+        "optional": "optioneel",
+        "submitReview": "Beoordeling opslaan",
+        "yearsOld": "jaar oud"
+      },
       "wizard": {
-        "stepOf": "Schritt {current} von {total}",
+        "stepOf": "Stap {current} van {total}",
         "steps": {
-          "basicInfo": "Grunddaten",
-          "details": "Zimmerdetails",
-          "preferences": "Präferenzen",
-          "photos": "Fotos"
+          "basicInfo": "Basisgegevens",
+          "details": "Kamerdetails",
+          "preferences": "Voorkeuren",
+          "photos": "Foto's"
         },
         "stepDescriptions": {
-          "step1": "Gib deinem Zimmer einen Titel und Standort.",
-          "step2": "Füge Preis, Verfügbarkeit und Zimmerdetails hinzu.",
-          "step3": "Setze Präferenzen und Merkmale für dein Zimmer.",
-          "step4": "Lade Fotos hoch, um dein Zimmer zu zeigen."
+          "step1": "Geef je kamer een titel en locatie.",
+          "step2": "Voeg prijs, beschikbaarheid en kamerdetails toe.",
+          "step3": "Stel voorkeuren en kenmerken in voor je kamer.",
+          "step4": "Upload foto's om je kamer te laten zien."
         }
       },
       "fields": {
         "title": "Titel",
-        "description": "Beschreibung",
-        "city": "Stadt",
-        "neighborhood": "Stadtteil",
-        "address": "Adresse",
-        "rentPrice": "Monatliche Miete",
-        "deposit": "Kaution",
-        "utilitiesIncluded": "Nebenkosten inklusive",
-        "serviceCosts": "Nebenkosten",
-        "roomSize": "Zimmergröße (m²)",
-        "availableFrom": "Verfügbar ab",
-        "availableUntil": "Verfügbar bis",
-        "rentalType": "Mietart",
-        "houseType": "Wohnungstyp",
-        "furnishing": "Einrichtung",
-        "totalHousemates": "Anzahl Mitbewohner",
-        "features": "Merkmale",
-        "locationTags": "Lage",
-        "preferredGender": "Bevorzugtes Geschlecht",
-        "preferredAgeMin": "Mindestalter",
-        "preferredAgeMax": "Höchstalter",
-        "preferredLifestyleTags": "Gewünschter Lebensstil",
-        "roomVereniging": "Vereinigung"
+        "description": "Beschrijving",
+        "city": "Stad",
+        "neighborhood": "Wijk",
+        "address": "Adres",
+        "rentPrice": "Maandelijkse huur",
+        "deposit": "Borg",
+        "utilitiesIncluded": "Inclusief gas/water/licht",
+        "serviceCosts": "Servicekosten",
+        "roomSize": "Kamergrootte (m²)",
+        "availableFrom": "Beschikbaar vanaf",
+        "availableUntil": "Beschikbaar tot",
+        "rentalType": "Huurtype",
+        "houseType": "Woningtype",
+        "furnishing": "Inrichting",
+        "totalHousemates": "Aantal huisgenoten",
+        "features": "Kenmerken",
+        "locationTags": "Locatie",
+        "preferredGender": "Voorkeur geslacht",
+        "preferredAgeMin": "Min leeftijd",
+        "preferredAgeMax": "Max leeftijd",
+        "preferredLifestyleTags": "Gewenste levensstijl",
+        "roomVereniging": "Vereniging"
       },
       "placeholders": {
-        "title": "z.B. Gemütliches Zimmer in WG",
-        "description": "Beschreibe das Zimmer und die WG...",
-        "neighborhood": "z.B. Zentrum",
-        "address": "z.B. Keizersgracht 1",
-        "rentPrice": "z.B. 450",
-        "deposit": "z.B. 450",
-        "serviceCosts": "z.B. 75",
-        "roomSize": "z.B. 12",
-        "totalHousemates": "z.B. 5",
-        "searchVereniging": "Verein suchen..."
+        "title": "bijv. Gezellige kamer in studentenhuis",
+        "description": "Beschrijf de kamer en het huis...",
+        "neighborhood": "bijv. Centrum",
+        "address": "bijv. Keizersgracht 1",
+        "rentPrice": "bijv. 450",
+        "deposit": "bijv. 450",
+        "serviceCosts": "bijv. 75",
+        "roomSize": "bijv. 12",
+        "totalHousemates": "bijv. 5",
+        "searchVereniging": "Zoek vereniging..."
       },
       "photoSlots": {
-        "slot1": "Titelfoto",
-        "slot2": "Zimmerübersicht",
-        "slot3": "Bad/Küche",
-        "slot4": "Gemeinschaftsbereich",
-        "slot5": "Außen/Straße",
+        "slot1": "Hoofdfoto",
+        "slot2": "Kameroverzicht",
+        "slot3": "Badkamer/keuken",
+        "slot4": "Gemeenschappelijke ruimte",
+        "slot5": "Buitenkant/straat",
         "slot6": "Extra",
         "slot7": "Extra",
         "slot8": "Extra",
@@ -536,208 +563,180 @@
         "slot10": "Extra"
       },
       "actions": {
-        "publish": "Zimmer veröffentlichen",
-        "saveDraft": "Als Entwurf speichern",
-        "pause": "Anzeige pausieren",
-        "activate": "Anzeige aktivieren",
-        "close": "Anzeige schließen",
-        "edit": "Zimmer bearbeiten",
-        "next": "Weiter",
-        "back": "Zurück"
+        "publish": "Kamer publiceren",
+        "saveDraft": "Opslaan als concept",
+        "pause": "Pauzeer advertentie",
+        "activate": "Activeer advertentie",
+        "close": "Sluit advertentie",
+        "edit": "Bewerk kamer",
+        "next": "Volgende",
+        "back": "Vorige"
       },
       "shareLink": {
-        "title": "Teilen-Link",
-        "copy": "Link kopieren",
-        "copied": "Link kopiert!",
-        "regenerate": "Link neu generieren",
-        "regenerateConfirm": "Dies macht den alten Link ungültig. Fortfahren?",
-        "expiry": "Läuft ab am",
-        "maxUses": "Max. Nutzungen",
-        "useCount": "{count} Mal genutzt",
-        "noExpiry": "Kein Ablauf",
-        "noLimit": "Kein Limit"
+        "title": "Deellink",
+        "copy": "Link kopiëren",
+        "copied": "Link gekopieerd!",
+        "regenerate": "Link opnieuw genereren",
+        "regenerateConfirm": "Dit maakt de oude link ongeldig. Doorgaan?",
+        "expiry": "Vervalt op",
+        "maxUses": "Max gebruik",
+        "useCount": "{count} keer gebruikt",
+        "noExpiry": "Geen vervaldatum",
+        "noLimit": "Geen limiet"
       },
       "status": {
-        "confirmClose": "Bist du sicher, dass du diese Anzeige schließen möchtest? Dies kann nicht rückgängig gemacht werden.",
-        "confirmCloseTitle": "Anzeige schließen",
-        "publishError": "Lade mindestens 1 Foto hoch, bevor du veröffentlichst.",
-        "published": "Zimmer veröffentlicht!",
-        "paused": "Zimmer pausiert",
-        "activated": "Zimmer aktiviert",
-        "closed": "Zimmer geschlossen",
-        "updated": "Zimmer aktualisiert",
-        "draftSaved": "Entwurf gespeichert",
-        "RATE_LIMITED": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut."
+        "confirmClose": "Weet je zeker dat je deze advertentie wilt sluiten? Dit kan niet ongedaan worden.",
+        "confirmCloseTitle": "Advertentie sluiten",
+        "publishError": "Upload minstens 1 foto voordat je publiceert.",
+        "published": "Kamer gepubliceerd!",
+        "paused": "Kamer gepauzeerd",
+        "activated": "Kamer geactiveerd",
+        "closed": "Kamer gesloten",
+        "updated": "Kamer bijgewerkt",
+        "draftSaved": "Concept opgeslagen",
+        "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw."
       },
       "manage": {
-        "title": "Zimmerverwaltung",
-        "details": "Zimmerdetails",
-        "noDescription": "Keine Beschreibung"
+        "title": "Kamerbeheer",
+        "details": "Kamerdetails",
+        "noDescription": "Geen beschrijving"
       },
-      "noResults": "Keine Ergebnisse gefunden.",
-      "noSelection": "Keine Auswahl",
-      "optional": "optional",
-      "applicants": {
-        "title": "Bewerbungen",
-        "empty": "Noch keine Bewerbungen. Teile dein Zimmer, um Bewerber anzuziehen.",
-        "viewProfile": "Profil ansehen",
-        "liked": "gefällt",
-        "maybe": "vielleicht",
-        "rejected": "abgelehnt",
-        "invite": "Einladen",
-        "accept": "Annehmen",
-        "notChosen": "Nicht gewählt",
-        "cancel": "Abbrechen",
-        "acceptConfirmTitle": "Bewerber annehmen",
-        "acceptConfirmDescription": "Bist du sicher, dass du {name} annehmen möchtest? Dies kann nicht rückgängig gemacht werden.",
-        "statusError": "Status konnte nicht aktualisiert werden",
-        "statusUpdated": "Status aktualisiert",
-        "reviewError": "Bewertung konnte nicht gespeichert werden",
-        "reviewSubmitted": "Bewertung gespeichert",
-        "aboutThem": "Über",
-        "lifestyle": "Lebensstil",
-        "personalMessage": "Persönliche Nachricht",
-        "yourReview": "Deine Bewertung",
-        "decision": "Entscheidung",
-        "notes": "Notizen",
-        "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
-        "optional": "optional",
-        "submitReview": "Bewertung speichern",
-        "yearsOld": "Jahre alt"
-      }
+      "noResults": "Geen resultaten gevonden.",
+      "noSelection": "Geen selectie",
+      "optional": "optioneel"
     },
     "roomDetail": {
-      "perMonth": "/Mo",
-      "details": "Zimmerdetails",
-      "description": "Beschreibung",
-      "features": "Merkmale",
-      "locationTags": "Lage",
-      "preferences": "Gesucht wird",
-      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
-      "availableFrom": "Verfügbar ab {date}",
-      "availableUntil": "bis {date}",
-      "deposit": "Kaution",
-      "utilitiesIncluded": "Nebenkosten inklusive",
-      "utilitiesExcluded": "Nebenkosten nicht inklusive",
-      "serviceCosts": "Nebenkosten",
-      "rent": "Kaltmiete",
-      "totalCost": "Gesamt",
-      "rentalType": "Mietart",
-      "notFound": "Zimmer nicht gefunden",
-      "notAvailable": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
-      "backToDiscover": "Zurück zur Suche",
-      "manageRoom": "Dieses Zimmer verwalten",
-      "viewApplication": "Deine Bewerbung ansehen",
-      "apply": "Für dieses Zimmer bewerben",
-      "applyTitle": "Für dieses Zimmer bewerben",
-      "personalMessage": "Persönliche Nachricht",
-      "personalMessagePlaceholder": "Erzähle den Mitbewohnern, warum du gut passen würdest...",
-      "personalMessageHint": "Mindestens {min} Zeichen",
-      "cancel": "Abbrechen",
-      "submitApplication": "Bewerbung absenden",
-      "applySuccess": "Bewerbung abgesendet!",
+      "perMonth": "/mnd",
+      "details": "Kamerdetails",
+      "description": "Beschrijving",
+      "features": "Kenmerken",
+      "locationTags": "Locatie",
+      "preferences": "Op zoek naar",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "availableFrom": "Beschikbaar vanaf {date}",
+      "availableUntil": "tot {date}",
+      "deposit": "Borg",
+      "utilitiesIncluded": "Inclusief nutsvoorzieningen",
+      "utilitiesExcluded": "Exclusief nutsvoorzieningen",
+      "serviceCosts": "Servicekosten",
+      "rent": "Kale huur",
+      "totalCost": "Totaal",
+      "rentalType": "Huurtype",
+      "notFound": "Kamer niet gevonden",
+      "notAvailable": "Deze kamer accepteert geen aanmeldingen meer.",
+      "backToDiscover": "Terug naar ontdekken",
+      "manageRoom": "Beheer deze kamer",
+      "viewApplication": "Bekijk je aanmelding",
+      "apply": "Aanmelden voor deze kamer",
+      "applyTitle": "Aanmelden voor deze kamer",
+      "personalMessage": "Persoonlijk bericht",
+      "personalMessagePlaceholder": "Vertel de huisgenoten waarom jij goed past...",
+      "personalMessageHint": "Minimaal {min} tekens",
+      "cancel": "Annuleren",
+      "submitApplication": "Aanmelding versturen",
+      "applySuccess": "Aanmelding verstuurd!",
       "errors": {
-        "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",
-        "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
-        "is_housemate": "Du bist bereits Mitbewohner dieses Zimmers.",
-        "already_applied": "Du hast dich bereits für dieses Zimmer beworben.",
-        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
+        "invalid_data": "Controleer je bericht en probeer opnieuw.",
+        "room_not_active": "Deze kamer accepteert geen aanmeldingen meer.",
+        "is_housemate": "Je bent al huisgenoot van deze kamer.",
+        "already_applied": "Je hebt je al aangemeld voor deze kamer.",
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
     },
     "settings": {
-      "title": "Einstellungen",
-      "exportSuccess": "Daten erfolgreich exportiert",
-      "exportRateLimited": "Zu viele Exportanfragen heute. Bitte versuche es später erneut.",
+      "title": "Instellingen",
+      "exportSuccess": "Gegevens succesvol geëxporteerd",
+      "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
       "dataExport": {
-        "title": "Deine Daten exportieren",
-        "description": "Lade alle deine persönlichen Daten als JSON-Datei herunter. Dies umfasst dein Profil, Zimmer, Bewerbungen und Bewertungen.",
-        "button": "Daten exportieren"
+        "title": "Exporteer je gegevens",
+        "description": "Download al je persoonlijke gegevens als JSON-bestand. Dit omvat je profiel, kamers, aanmeldingen en beoordelingen.",
+        "button": "Gegevens exporteren"
       },
       "dangerZone": {
-        "title": "Gefahrenzone",
-        "description": "Lösche dein Konto und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
-        "deleteButton": "Konto löschen",
-        "confirmTitle": "Bist du sicher?",
-        "confirmDescription": "Dies löscht dauerhaft dein Konto, Profil, Zimmer, Bewerbungen und alle zugehörigen Daten. Diese Aktion kann nicht rückgängig gemacht werden.",
-        "cancel": "Abbrechen",
-        "confirmDelete": "Mein Konto löschen"
+        "title": "Gevarenzone",
+        "description": "Verwijder je account en alle bijbehorende gegevens permanent. Deze actie kan niet ongedaan worden gemaakt.",
+        "deleteButton": "Account verwijderen",
+        "confirmTitle": "Weet je het zeker?",
+        "confirmDescription": "Dit verwijdert permanent je account, profiel, kamers, aanmeldingen en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt.",
+        "cancel": "Annuleren",
+        "confirmDelete": "Mijn account verwijderen"
       }
     },
     "errors": {
-      "title": "Etwas ist schiefgelaufen",
-      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
-      "retry": "Erneut versuchen",
-      "notFoundTitle": "Seite nicht gefunden",
-      "notFoundDescription": "Die Seite, die du suchst, existiert nicht oder wurde verschoben.",
-      "backToDiscover": "Zurück zur Suche"
+      "title": "Er ging iets mis",
+      "description": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+      "retry": "Opnieuw proberen",
+      "notFoundTitle": "Pagina niet gevonden",
+      "notFoundDescription": "De pagina die je zoekt bestaat niet of is verplaatst.",
+      "backToDiscover": "Terug naar ontdekken"
     },
     "applications": {
-      "title": "Meine Bewerbungen",
-      "empty": "Du hast dich noch für kein Zimmer beworben.",
-      "discoverRooms": "Zimmer entdecken",
-      "appliedOn": "Beworben am {date}",
-      "detailTitle": "Bewerbungsdetails",
-      "statusTitle": "Bewerbungsstatus",
-      "yourMessage": "Deine Nachricht",
-      "viewRoom": "Zimmer ansehen",
-      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
-      "withdraw": "Bewerbung zurückziehen",
-      "withdrawSuccess": "Bewerbung zurückgezogen",
-      "withdrawConfirmTitle": "Bewerbung zurückziehen",
-      "withdrawConfirmDescription": "Bist du sicher, dass du deine Bewerbung zurückziehen möchtest? Dies kann nicht rückgängig gemacht werden.",
-      "cancel": "Abbrechen",
+      "title": "Mijn aanmeldingen",
+      "empty": "Je hebt je nog niet aangemeld voor een kamer.",
+      "discoverRooms": "Kamers ontdekken",
+      "appliedOn": "Aangemeld op {date}",
+      "detailTitle": "Aanmeldingsdetails",
+      "statusTitle": "Status",
+      "yourMessage": "Jouw bericht",
+      "viewRoom": "Bekijk kamer",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "withdraw": "Aanmelding intrekken",
+      "withdrawSuccess": "Aanmelding ingetrokken",
+      "withdrawConfirmTitle": "Aanmelding intrekken",
+      "withdrawConfirmDescription": "Weet je zeker dat je je aanmelding wilt intrekken? Dit kan niet ongedaan worden gemaakt.",
+      "cancel": "Annuleren",
       "errors": {
-        "not_found": "Bewerbung nicht gefunden.",
-        "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."
+        "not_found": "Aanmelding niet gevonden.",
+        "cannot_withdraw": "Deze aanmelding kan niet meer worden ingetrokken."
       }
     },
     "join": {
-      "title": "Diesem Haus beitreten",
-      "description": "Du wurdest eingeladen, als Mitbewohner beizutreten.",
-      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
-      "joinButton": "Diesem Haus beitreten",
-      "cancel": "Abbrechen",
-      "success": "Du bist dem Haus beigetreten!",
+      "title": "Word huisgenoot",
+      "description": "Je bent uitgenodigd om als huisgenoot deel te nemen.",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "joinButton": "Word huisgenoot",
+      "cancel": "Annuleren",
+      "success": "Je bent toegevoegd aan het huis!",
       "errors": {
-        "INVALID_LINK": "Dieser Einladungslink ist ungültig oder das Zimmer existiert nicht mehr.",
-        "LINK_EXPIRED": "Dieser Einladungslink ist abgelaufen.",
-        "LINK_MAX_USED": "Dieser Einladungslink hat die maximale Anzahl von Nutzungen erreicht.",
-        "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses.",
-        "IS_OWNER": "Du bist der Eigentümer dieses Zimmers.",
-        "ROOM_NOT_ACTIVE": "Dieses Zimmer ist nicht mehr aktiv.",
-        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
+        "INVALID_LINK": "Deze deellink is ongeldig of de kamer bestaat niet meer.",
+        "LINK_EXPIRED": "Deze deellink is verlopen.",
+        "LINK_MAX_USED": "Deze deellink heeft het maximale aantal keren bereikt.",
+        "ALREADY_MEMBER": "Je bent al lid van dit huis.",
+        "IS_OWNER": "Je bent de eigenaar van deze kamer.",
+        "ROOM_NOT_ACTIVE": "Deze kamer is niet meer actief.",
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
     },
     "house": {
       "create": {
-        "title": "Haus erstellen",
-        "description": "Erstelle dein Haus, um Zimmer anbieten zu können.",
-        "nameLabel": "Hausname",
-        "namePlaceholder": "z.B. Keizersgracht 42 oder Villa Volta",
-        "submit": "Haus erstellen"
+        "title": "Huis aanmaken",
+        "description": "Maak je huis aan om kamers te kunnen aanbieden.",
+        "nameLabel": "Huisnaam",
+        "namePlaceholder": "bijv. Keizersgracht 42 of Villa Volta",
+        "submit": "Huis aanmaken"
       },
       "members": {
-        "title": "Mitbewohner",
-        "description": "Die Bewohner deines Hauses."
+        "title": "Huisgenoten",
+        "description": "De bewoners van je huis."
       },
       "invite": {
-        "title": "Mitbewohner einladen",
-        "description": "Teile diesen Link mit deinen Mitbewohnern, damit sie beitreten können."
+        "title": "Huisgenoten uitnodigen",
+        "description": "Deel deze link met je huisgenoten zodat ze kunnen deelnemen."
       },
       "rooms": {
-        "title": "Zimmer",
-        "untitled": "Unbenanntes Zimmer"
+        "title": "Kamers",
+        "untitled": "Naamloze kamer"
       }
     },
     "joinHouse": {
-      "title": "Diesem Haus beitreten",
-      "description": "Du wurdest eingeladen, Mitglied von {name} zu werden.",
-      "joinButton": "Beitreten",
-      "cancel": "Abbrechen",
-      "success": "Du bist dem Haus beigetreten!",
+      "title": "Word huisgenoot",
+      "description": "Je bent uitgenodigd om lid te worden van {name}.",
+      "joinButton": "Word lid",
+      "cancel": "Annuleren",
+      "success": "Je bent toegevoegd aan het huis!",
       "errors": {
-        "INVALID_LINK": "Dieser Einladungslink ist ungültig.",
-        "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses."
+        "INVALID_LINK": "Deze uitnodigingslink is ongeldig.",
+        "ALREADY_MEMBER": "Je bent al lid van dit huis."
       }
     }
   },
@@ -757,15 +756,15 @@
           "items": [
             {
               "name": "Vercel",
-              "description": "Website-Hosting, CDN und Dateispeicher",
+              "description": "Website hosting, CDN en bestandsopslag",
               "current": "€0/Mo (Hobby)",
               "atScale": "~€18,50/Mo (Pro)"
             },
             {
               "name": "Neon",
-              "description": "Serverless PostgreSQL-Datenbank",
+              "description": "Serverless PostgreSQL database",
               "current": "€0/Mo (Free)",
-              "atScale": "~€15/Mo (Launch)"
+              "atScale": "~€15/mnd (Launch)"
             },
             {
               "name": "SURFconext",
@@ -821,16 +820,40 @@
       "perYear": "/Jahr",
       "perMonth": "/Mo",
       "rows": [
-        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Neon", "current": "€0", "atScale": "~€180" },
-        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
-        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
-        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
-        { "name": "Google Play", "current": "€25", "atScale": "—" }
+        {
+          "name": "Vercel",
+          "current": "€0",
+          "atScale": "~€222"
+        },
+        {
+          "name": "Neon",
+          "current": "€0",
+          "atScale": "~€180"
+        },
+        {
+          "name": "SURFconext",
+          "current": "€0",
+          "atScale": "€0"
+        },
+        {
+          "name": "Domains (3x)",
+          "current": "~€50",
+          "atScale": "~€50"
+        },
+        {
+          "name": "Apple Developer",
+          "current": "€99",
+          "atScale": "€99"
+        },
+        {
+          "name": "Google Play",
+          "current": "€25",
+          "atScale": "—"
+        }
       ],
       "totalLabel": "Gesamt pro Jahr",
       "currentTotal": "~€174/Jahr",
-      "atScaleTotal": "~€551/Jahr (~€46/Mo)"
+      "atScaleTotal": "~€551/jr (~€46/mnd)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",
@@ -881,62 +904,63 @@
   },
   "public": {
     "rooms": {
-      "title": "Studentenzimmer in den Niederlanden",
-      "subtitle": "Durchsuche Studentenwohnungen in niederländischen Städten.",
-      "roomsAvailable": "{count, plural, =0 {Keine Zimmer} =1 {1 Zimmer} other {# Zimmer}} verfügbar",
-      "loginToBrowse": "Anmelden um alle Zimmer zu sehen"
+      "title": "Studentenkamers in Nederland",
+      "subtitle": "Bekijk studentenhuisvesting door heel Nederland.",
+      "roomsAvailable": "{count, plural, =0 {Geen kamers} =1 {1 kamer} other {# kamers}} beschikbaar",
+      "loginToBrowse": "Log in om alle kamers te bekijken"
     },
     "cityPage": {
-      "title": "Studentenzimmer in {city}",
-      "subtitle": "{count, plural, =0 {Keine Zimmer} =1 {1 Zimmer} other {# Zimmer}} verfügbar in {city}",
-      "featuredRooms": "Ausgewählte Zimmer",
-      "noRooms": "Noch keine Zimmer in dieser Stadt verfügbar.",
-      "loginCta": "Anmelden um alle Zimmer zu sehen und sich zu bewerben",
-      "browseOtherCities": "Andere Städte durchsuchen"
+      "title": "Studentenkamers in {city}",
+      "subtitle": "{count, plural, =0 {Geen kamers} =1 {1 kamer} other {# kamers}} beschikbaar in {city}",
+      "featuredRooms": "Uitgelichte kamers",
+      "noRooms": "Nog geen kamers beschikbaar in deze stad.",
+      "loginCta": "Log in om alle kamers te bekijken en te reageren",
+      "browseOtherCities": "Bekijk andere steden"
     },
     "room": {
-      "perMonth": "/Mo",
-      "details": "Zimmerdetails",
-      "description": "Beschreibung",
-      "features": "Merkmale",
-      "locationTags": "Lage",
-      "preferences": "Sucht",
-      "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
-      "goToApp": "In App ansehen",
-      "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
-      "availableFrom": "Verfügbar ab {date}",
-      "availableUntil": "bis {date}",
-      "notFound": "Zimmer nicht gefunden",
-      "notFoundDescription": "Dieses Zimmer wurde möglicherweise entfernt oder ist nicht mehr verfügbar.",
-      "deposit": "Kaution",
-      "utilitiesIncluded": "Nebenkosten inklusive",
-      "utilitiesExcluded": "Nebenkosten nicht inklusive",
-      "serviceCosts": "Nebenkosten",
-      "rent": "Kaltmiete",
-      "totalCost": "Gesamt",
+      "perMonth": "/mnd",
+      "details": "Kamerdetails",
+      "description": "Beschrijving",
+      "features": "Kenmerken",
+      "locationTags": "Locatie",
+      "preferences": "Zoekt",
+      "loginToApply": "Log in met SURFconext om te reageren",
+      "goToApp": "Bekijk in app",
+      "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
+      "availableFrom": "Beschikbaar vanaf {date}",
+      "availableUntil": "tot {date}",
+      "notFound": "Kamer niet gevonden",
+      "notFoundDescription": "Deze kamer is mogelijk verwijderd of niet meer beschikbaar.",
+      "deposit": "Borg",
+      "utilitiesIncluded": "Inclusief gas/water/licht",
+      "utilitiesExcluded": "Exclusief gas/water/licht",
+      "serviceCosts": "Servicekosten",
+      "rent": "Kale huur",
+      "totalCost": "Totaal",
       "roomSize": "{size} m²",
-      "rentalType": "Mietart"
+      "rentalType": "Huurtype"
     }
   },
   "missingAssociation": {
-    "title": "Fehlt deine Vereinigung?",
-    "description": "Unsere Liste basiert auf Wikipedia und ist möglicherweise unvollständig. Lass es uns wissen und wir fügen deine Vereinigung hinzu!",
-    "cardTitle": "Schick uns eine E-Mail",
-    "emailSubject": "Fehlende Vereinigung hinzufügen",
-    "emailBody": "Hallo OpenHospi,\n\nIch möchte gerne die folgende Vereinigung hinzufügen lassen:\n\nName: [Name der Vereinigung]\nStadt: [Stadt]\nWebsite: [URL]\n\nDanke!",
+    "title": "Staat jouw vereniging er niet bij?",
+    "description": "Onze lijst is gebaseerd op Wikipedia en kan onvolledig zijn. Laat het ons weten en we voegen jouw vereniging toe!",
+    "cardTitle": "Stuur ons een e-mail",
+    "emailSubject": "Ontbrekende vereniging toevoegen",
+    "emailBody": "Hallo OpenHospi,\n\nIk wil graag de volgende vereniging laten toevoegen:\n\nNaam: [naam van de vereniging]\nStad: [stad]\nWebsite: [url]\n\nBedankt!",
     "labels": {
-      "to": "An",
-      "subject": "Betreff",
-      "body": "Nachricht"
+      "to": "Aan",
+      "subject": "Onderwerp",
+      "body": "Bericht"
     }
   },
   "admin": {
-    "comingSoon": "Demnächst verfügbar",
+    "comingSoon": "Binnenkort beschikbaar",
     "login": {
-      "title": "Admin-Anmeldung",
-      "description": "Melde dich mit deinem GitHub-Account an, um auf das Admin-Panel zuzugreifen.",
-      "githubButton": "Mit GitHub anmelden",
-      "error": "Anmeldung fehlgeschlagen. Überprüfe, ob dein Konto Administratorrechte hat."
+      "title": "Admin inloggen",
+      "description": "Log in met je GitHub-account om toegang te krijgen tot het beheerpaneel.",
+      "githubButton": "Inloggen met GitHub",
+      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
+      "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
     }
   }
 }

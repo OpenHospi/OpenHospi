@@ -23,9 +23,8 @@ function createAuth() {
         generateId: "uuid",
       },
     },
-    experimental: {
-      joins: true,
-    },
+    // NOTE: experimental.joins is disabled due to incompatibility between
+    // Better Auth and drizzle-orm v1.0.0-beta (Unknown relational filter: "decoder")
     trustedOrigins: [
       baseURL,
       "https://*.openhospi.nl",

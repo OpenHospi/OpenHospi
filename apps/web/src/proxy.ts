@@ -69,7 +69,6 @@ const redirectMap: Record<Subdomain, Partial<Record<RouteType, string | undefine
   },
   admin: {
     app: APP_URL,
-    auth: APP_URL,
     marketing: MARKETING_URL,
   },
 };

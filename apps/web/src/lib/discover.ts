@@ -2,6 +2,7 @@ import { db, withRLS } from "@openhospi/database";
 import { profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
+import type { LocationTag, RoomFeature } from "@openhospi/shared/enums";
 import { DiscoverSort, GenderPreference, RoomStatus } from "@openhospi/shared/enums";
 import { and, arrayContains, asc, count, desc, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
 
@@ -105,8 +106,8 @@ function buildDiscoverConditions(
   if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType as any));
   if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing as any));
   if (filters.availableFrom) conditions.push(lte(rooms.availableFrom, filters.availableFrom));
-  if (filters.features?.length) conditions.push(arrayContains(rooms.features, filters.features) as any);
-  if (filters.locationTags?.length) conditions.push(arrayContains(rooms.locationTags, filters.locationTags) as any);
+  if (filters.features?.length) conditions.push(arrayContains(rooms.features, filters.features as RoomFeature[]));
+  if (filters.locationTags?.length) conditions.push(arrayContains(rooms.locationTags, filters.locationTags as LocationTag[]));
 
   if (cursor) {
     if (sort === DiscoverSort.cheapest) {

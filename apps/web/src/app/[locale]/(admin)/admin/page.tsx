@@ -1,6 +1,8 @@
 import { APP_NAME } from "@openhospi/shared/constants";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { requireAdmin } from "@/lib/auth-server";
+
 type Props = {
   params: Promise<{ locale: string }>;
 };
@@ -8,6 +10,7 @@ type Props = {
 export default async function AdminPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  await requireAdmin();
 
   const t = await getTranslations({ locale, namespace: "admin" });
 

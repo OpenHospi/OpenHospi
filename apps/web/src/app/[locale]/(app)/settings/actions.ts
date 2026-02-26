@@ -3,7 +3,7 @@
 import { db, withRLS } from "@openhospi/database";
 import {
   applications,
-  housemates,
+  houseMembers,
   profilePhotos,
   profiles,
   reviews,
@@ -39,10 +39,10 @@ export async function exportData() {
       .from(applications)
       .where(eq(applications.userId, userId));
     const userReviews = await tx.select().from(reviews).where(eq(reviews.reviewerId, userId));
-    const userHousemates = await tx
+    const userHouseMembers = await tx
       .select()
-      .from(housemates)
-      .where(eq(housemates.userId, userId));
+      .from(houseMembers)
+      .where(eq(houseMembers.userId, userId));
 
     return {
       profile,
@@ -51,7 +51,7 @@ export async function exportData() {
       roomPhotos: userRoomPhotos,
       applications: userApplications,
       reviews: userReviews,
-      housemates: userHousemates,
+      houseMembers: userHouseMembers,
       exportedAt: new Date().toISOString(),
     };
   });

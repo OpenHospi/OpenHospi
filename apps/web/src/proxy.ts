@@ -14,7 +14,7 @@ const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
 type Subdomain = "www" | "app" | "admin";
 type RouteType = "app" | "auth" | "admin" | "marketing";
 
-const appPaths = ["/discover", "/profile", "/applications", "/settings", "/my-rooms"];
+const appPaths = ["/discover", "/profile", "/applications", "/settings", "/my-rooms", "/my-house", "/join"];
 const authPaths = ["/login", "/onboarding"];
 const adminPaths = ["/admin"];
 

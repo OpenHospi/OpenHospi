@@ -1,7 +1,7 @@
 import { withRLS } from "@openhospi/database";
-import { applications, housemates, roomPhotos, rooms } from "@openhospi/database/schema";
+import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
-import { HousemateRole, RoomStatus } from "@openhospi/shared/enums";
+import { RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 
 export type { Room, RoomPhoto };
@@ -21,22 +21,18 @@ export type RoomSummary = {
   createdAt: Date;
 };
 
-export async function createDraftRoom(userId: string): Promise<string> {
+export async function createDraftRoom(userId: string, houseId: string): Promise<string> {
   const roomId = crypto.randomUUID();
 
   await withRLS(userId, async (tx) => {
     await tx.insert(rooms).values({
       id: roomId,
       ownerId: userId,
+      houseId,
       title: "",
       city: "amsterdam",
       rentPrice: "0",
       status: RoomStatus.draft,
-    });
-    await tx.insert(housemates).values({
-      roomId,
-      userId,
-      role: HousemateRole.owner,
     });
   });
 

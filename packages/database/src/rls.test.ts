@@ -8,7 +8,8 @@ import {
   conversationMembers,
   hospiEvents,
   hospiInvitations,
-  housemates,
+  houseMembers,
+  houses,
   messageReceipts,
   messages,
   profiles,
@@ -43,6 +44,7 @@ const USER_A = "a0000000-0000-4000-a000-000000000001"; // room owner, event crea
 const USER_B = "a0000000-0000-4000-a000-000000000002"; // housemate of room
 const USER_C = "a0000000-0000-4000-a000-000000000003"; // outsider
 
+const HOUSE_ID = "a0000000-0000-4000-a100-000000000001";
 const ACTIVE_ROOM = "a0000000-0000-4000-b000-000000000001";
 const DRAFT_ROOM = "a0000000-0000-4000-b000-000000000002";
 const EVENT_ID = "a0000000-0000-4000-c000-000000000001";
@@ -64,6 +66,7 @@ async function cleanup() {
   await db.delete(hospiEvents).where(eq(hospiEvents.id, EVENT_ID));
   await db.delete(rooms).where(eq(rooms.id, ACTIVE_ROOM));
   await db.delete(rooms).where(eq(rooms.id, DRAFT_ROOM));
+  await db.delete(houses).where(eq(houses.id, HOUSE_ID));
   for (const id of [USER_A, USER_B, USER_C]) {
     await db.delete(profiles).where(eq(profiles.id, id));
     await db.delete(user).where(eq(user.id, id));
@@ -88,14 +91,20 @@ describe("RLS policies (integration)", () => {
       { id: USER_C, firstName: "User", lastName: "C", email: "rls-c@test.openhospi.nl", institutionDomain: "test.nl" },
     ]);
 
-    await db.insert(rooms).values([
-      { id: ACTIVE_ROOM, ownerId: USER_A, title: "RLS Active Room", city: "amsterdam", status: "active" },
-      { id: DRAFT_ROOM, ownerId: USER_A, title: "RLS Draft Room", city: "amsterdam", status: "draft" },
+    await db.insert(houses).values({
+      id: HOUSE_ID,
+      name: "RLS Test House",
+      createdBy: USER_A,
+    });
+
+    await db.insert(houseMembers).values([
+      { houseId: HOUSE_ID, userId: USER_A, role: "owner" },
+      { houseId: HOUSE_ID, userId: USER_B, role: "member" },
     ]);
 
-    await db.insert(housemates).values([
-      { roomId: ACTIVE_ROOM, userId: USER_A, role: "admin" },
-      { roomId: ACTIVE_ROOM, userId: USER_B, role: "member" },
+    await db.insert(rooms).values([
+      { id: ACTIVE_ROOM, ownerId: USER_A, houseId: HOUSE_ID, title: "RLS Active Room", city: "amsterdam", status: "active" },
+      { id: DRAFT_ROOM, ownerId: USER_A, houseId: HOUSE_ID, title: "RLS Draft Room", city: "amsterdam", status: "draft" },
     ]);
 
     await db.insert(hospiEvents).values({
@@ -209,39 +218,39 @@ describe("RLS policies (integration)", () => {
   });
 
   // -------------------------------------------------------------------------
-  // Housemates — co-housemates visible, outsiders blocked, owner-only insert
+  // House members — co-members visible, outsiders blocked, owner-only insert
   // -------------------------------------------------------------------------
 
-  describe("housemates", () => {
-    it("housemate can see co-housemates in same room", async () => {
+  describe("houseMembers", () => {
+    it("house member can see co-members in same house", async () => {
       const rows = await withRLS(USER_B, (tx) =>
-        tx.select().from(housemates).where(eq(housemates.roomId, ACTIVE_ROOM)),
+        tx.select().from(houseMembers).where(eq(houseMembers.houseId, HOUSE_ID)),
       );
       expect(rows).toHaveLength(2);
     });
 
-    it("outsider cannot see housemates", async () => {
+    it("outsider cannot see house members", async () => {
       const rows = await withRLS(USER_C, (tx) =>
-        tx.select().from(housemates).where(eq(housemates.roomId, ACTIVE_ROOM)),
+        tx.select().from(houseMembers).where(eq(houseMembers.houseId, HOUSE_ID)),
       );
       expect(rows).toHaveLength(0);
     });
 
-    it("non-owner cannot add housemates", async () => {
+    it("non-owner cannot add house members", async () => {
       await expect(
         withRLS(USER_B, (tx) =>
-          tx.insert(housemates).values({ roomId: ACTIVE_ROOM, userId: USER_C }),
+          tx.insert(houseMembers).values({ houseId: HOUSE_ID, userId: USER_C }),
         ),
       ).rejects.toThrow();
     });
   });
 
   // -------------------------------------------------------------------------
-  // Events — housemates can view, only creator can modify
+  // Events — house members can view, only creator can modify
   // -------------------------------------------------------------------------
 
   describe("hospiEvents", () => {
-    it("housemate can see events in their room", async () => {
+    it("house member can see events in their room", async () => {
       const rows = await withRLS(USER_B, (tx) =>
         tx.select().from(hospiEvents).where(eq(hospiEvents.roomId, ACTIVE_ROOM)),
       );
@@ -264,7 +273,7 @@ describe("RLS policies (integration)", () => {
       await db.update(hospiEvents).set({ notes: null }).where(eq(hospiEvents.id, EVENT_ID));
     });
 
-    it("non-creator housemate cannot update event", async () => {
+    it("non-creator house member cannot update event", async () => {
       const result = await withRLS(USER_B, (tx) =>
         tx.update(hospiEvents).set({ notes: "hacked" }).where(eq(hospiEvents.id, EVENT_ID)).returning(),
       );

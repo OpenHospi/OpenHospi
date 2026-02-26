@@ -358,6 +358,10 @@
       "like": "Leuk",
       "maybe": "Misschien",
       "reject": "Afwijzen"
+    },
+    "houseMemberRole": {
+      "owner": "Beheerder",
+      "member": "Huisgenoot"
     }
   }
 }

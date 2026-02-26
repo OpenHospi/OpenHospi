@@ -1,11 +1,13 @@
 import { withRLS } from "@openhospi/database";
-import { housemates, profilePhotos, profiles, rooms } from "@openhospi/database/schema";
-import type { HousemateRole } from "@openhospi/shared/enums";
+import { houseMembers, houses, profilePhotos, profiles, rooms } from "@openhospi/database/schema";
+import type { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "./auth";
+import type { HousePermission } from "./permissions";
+import { hasPermission } from "./permissions";
 
 export async function getSession() {
   return auth.api.getSession({ headers: await headers() });
@@ -14,6 +16,13 @@ export async function getSession() {
 export async function requireSession() {
   const session = await getSession();
   if (!session) redirect("/login");
+  return session;
+}
+
+export async function requireAdmin() {
+  const session = await requireSession();
+  const userWithRole = session.user as typeof session.user & { role?: string };
+  if (userWithRole.role !== "admin") redirect("/");
   return session;
 }
 
@@ -34,19 +43,35 @@ export async function requireHousemate(
   roles?: string[],
 ): Promise<string> {
   const row = await withRLS(userId, async (tx) => {
-    const conditions = [eq(housemates.roomId, roomId), eq(housemates.userId, userId)];
+    const conditions = [
+      eq(rooms.id, roomId),
+      eq(houseMembers.userId, userId),
+    ];
     if (roles) {
-      conditions.push(inArray(housemates.role, roles as HousemateRole[]));
+      conditions.push(inArray(houseMembers.role, roles as HouseMemberRole[]));
     }
 
     const [r] = await tx
-      .select({ role: housemates.role })
-      .from(housemates)
+      .select({ role: houseMembers.role })
+      .from(houseMembers)
+      .innerJoin(houses, eq(houseMembers.houseId, houses.id))
+      .innerJoin(rooms, eq(rooms.houseId, houses.id))
       .where(and(...conditions));
     return r;
   });
   if (!row) throw new Error("Not a housemate");
   return row.role!;
+}
+
+export async function requireHousePermission(
+  roomId: string,
+  userId: string,
+  permission: HousePermission,
+): Promise<void> {
+  const role = await requireHousemate(roomId, userId);
+  if (!hasPermission(role as HouseMemberRole, permission)) {
+    throw new Error("Forbidden");
+  }
 }
 
 export async function requireCompleteProfile(userId: string) {

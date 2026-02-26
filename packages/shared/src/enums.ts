@@ -280,13 +280,12 @@ export const INVITATION_STATUSES = [
 ] as const;
 export type InvitationStatus = (typeof INVITATION_STATUSES)[number];
 
-export const HOUSEMATE_ROLES = ["owner", "admin", "member"] as const;
-export type HousemateRole = (typeof HOUSEMATE_ROLES)[number];
-export const HousemateRole = {
+export const HOUSE_MEMBER_ROLES = ["owner", "member"] as const;
+export type HouseMemberRole = (typeof HOUSE_MEMBER_ROLES)[number];
+export const HouseMemberRole = {
   owner: "owner",
-  admin: "admin",
   member: "member",
-} as const satisfies Record<HousemateRole, HousemateRole>;
+} as const satisfies Record<HouseMemberRole, HouseMemberRole>;
 
 export const CONVERSATION_TYPES = ["direct", "group", "house"] as const;
 export type ConversationType = (typeof CONVERSATION_TYPES)[number];

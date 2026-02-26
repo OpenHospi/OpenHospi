@@ -1,4 +1,4 @@
-import { HousemateRole } from "@openhospi/shared/enums";
+import { HouseMemberRole } from "@openhospi/shared/enums";
 import { sql } from "drizzle-orm";
 import { authUid, authenticatedRole } from "drizzle-orm/neon";
 import { index, pgPolicy, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
@@ -45,7 +45,7 @@ export const applications = pgTable(
     pgPolicy("applications_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()) and room_members_rls.role in ('${sql.raw(HousemateRole.owner)}', '${sql.raw(HousemateRole.admin)}'))`,
+      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()) and room_members_rls.role = '${sql.raw(HouseMemberRole.owner)}')`,
     }),
   ],
 );

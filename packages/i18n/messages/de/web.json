@@ -707,6 +707,38 @@
         "ROOM_NOT_ACTIVE": "Dieses Zimmer ist nicht mehr aktiv.",
         "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
       }
+    },
+    "house": {
+      "create": {
+        "title": "Haus erstellen",
+        "description": "Erstelle dein Haus, um Zimmer anbieten zu können.",
+        "nameLabel": "Hausname",
+        "namePlaceholder": "z.B. Keizersgracht 42 oder Villa Volta",
+        "submit": "Haus erstellen"
+      },
+      "members": {
+        "title": "Mitbewohner",
+        "description": "Die Bewohner deines Hauses."
+      },
+      "invite": {
+        "title": "Mitbewohner einladen",
+        "description": "Teile diesen Link mit deinen Mitbewohnern, damit sie beitreten können."
+      },
+      "rooms": {
+        "title": "Zimmer",
+        "untitled": "Unbenanntes Zimmer"
+      }
+    },
+    "joinHouse": {
+      "title": "Diesem Haus beitreten",
+      "description": "Du wurdest eingeladen, Mitglied von {name} zu werden.",
+      "joinButton": "Beitreten",
+      "cancel": "Abbrechen",
+      "success": "Du bist dem Haus beigetreten!",
+      "errors": {
+        "INVALID_LINK": "Dieser Einladungslink ist ungültig.",
+        "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses."
+      }
     }
   },
   "costs": {
@@ -899,6 +931,12 @@
     }
   },
   "admin": {
-    "comingSoon": "Demnächst verfügbar"
+    "comingSoon": "Demnächst verfügbar",
+    "login": {
+      "title": "Admin-Anmeldung",
+      "description": "Melde dich mit deinem GitHub-Account an, um auf das Admin-Panel zuzugreifen.",
+      "githubButton": "Mit GitHub anmelden",
+      "error": "Anmeldung fehlgeschlagen. Überprüfe, ob dein Konto Administratorrechte hat."
+    }
   }
 }

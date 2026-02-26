@@ -707,6 +707,38 @@
         "ROOM_NOT_ACTIVE": "This room is no longer active.",
         "RATE_LIMITED": "Too many attempts. Please try again later."
       }
+    },
+    "house": {
+      "create": {
+        "title": "Create house",
+        "description": "Create your house to start listing rooms.",
+        "nameLabel": "House name",
+        "namePlaceholder": "e.g. Keizersgracht 42 or Villa Volta",
+        "submit": "Create house"
+      },
+      "members": {
+        "title": "Housemates",
+        "description": "The members of your house."
+      },
+      "invite": {
+        "title": "Invite housemates",
+        "description": "Share this link with your housemates so they can join."
+      },
+      "rooms": {
+        "title": "Rooms",
+        "untitled": "Untitled room"
+      }
+    },
+    "joinHouse": {
+      "title": "Join this house",
+      "description": "You've been invited to join {name}.",
+      "joinButton": "Join",
+      "cancel": "Cancel",
+      "success": "You've joined the house!",
+      "errors": {
+        "INVALID_LINK": "This invite link is invalid.",
+        "ALREADY_MEMBER": "You are already a member of this house."
+      }
     }
   },
   "costs": {
@@ -899,6 +931,12 @@
     }
   },
   "admin": {
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "login": {
+      "title": "Admin login",
+      "description": "Log in with your GitHub account to access the admin panel.",
+      "githubButton": "Log in with GitHub",
+      "error": "Login failed. Check that your account has admin privileges."
+    }
   }
 }

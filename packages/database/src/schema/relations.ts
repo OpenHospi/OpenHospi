@@ -4,9 +4,10 @@ import { applications, reviews } from "./applications";
 import { account, jwks, session, ssoProvider, user, verification } from "./auth";
 import { conversationMembers, conversations, messageReceipts, messages } from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
+import { houseMembers, houses } from "./houses";
 import { notifications, pushTokens } from "./notifications";
 import { profilePhotos, profiles } from "./profiles";
-import { housemates, roomPhotos, rooms } from "./rooms";
+import { roomPhotos, rooms } from "./rooms";
 import { blocks, privateKeyBackups, publicKeys, reports } from "./security";
 
 export const relations = defineRelations(
@@ -21,10 +22,12 @@ export const relations = defineRelations(
     // Profiles
     profiles,
     profilePhotos,
+    // Houses
+    houses,
+    houseMembers,
     // Rooms
     rooms,
     roomPhotos,
-    housemates,
     // Applications
     applications,
     reviews,
@@ -73,12 +76,32 @@ export const relations = defineRelations(
       }),
       photos: r.many.profilePhotos(),
       rooms: r.many.rooms(),
-      housemates: r.many.housemates(),
+      houseMembers: r.many.houseMembers(),
       applications: r.many.applications(),
     },
     profilePhotos: {
       profile: r.one.profiles({
         from: r.profilePhotos.userId,
+        to: r.profiles.id,
+      }),
+    },
+
+    // ── House relations ──
+    houses: {
+      creator: r.one.profiles({
+        from: r.houses.createdBy,
+        to: r.profiles.id,
+      }),
+      members: r.many.houseMembers(),
+      rooms: r.many.rooms(),
+    },
+    houseMembers: {
+      house: r.one.houses({
+        from: r.houseMembers.houseId,
+        to: r.houses.id,
+      }),
+      user: r.one.profiles({
+        from: r.houseMembers.userId,
         to: r.profiles.id,
       }),
     },
@@ -89,8 +112,11 @@ export const relations = defineRelations(
         from: r.rooms.ownerId,
         to: r.profiles.id,
       }),
+      house: r.one.houses({
+        from: r.rooms.houseId,
+        to: r.houses.id,
+      }),
       photos: r.many.roomPhotos(),
-      housemates: r.many.housemates(),
       applications: r.many.applications(),
       reviews: r.many.reviews(),
       events: r.many.hospiEvents(),
@@ -100,16 +126,6 @@ export const relations = defineRelations(
       room: r.one.rooms({
         from: r.roomPhotos.roomId,
         to: r.rooms.id,
-      }),
-    },
-    housemates: {
-      room: r.one.rooms({
-        from: r.housemates.roomId,
-        to: r.rooms.id,
-      }),
-      user: r.one.profiles({
-        from: r.housemates.userId,
-        to: r.profiles.id,
       }),
     },
 

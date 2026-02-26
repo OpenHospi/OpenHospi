@@ -20,7 +20,6 @@ import {
   cityEnum,
   furnishingEnum,
   genderPreferenceEnum,
-  housemateRoleEnum,
   houseTypeEnum,
   languageEnum,
   lifestyleTagEnum,
@@ -30,6 +29,7 @@ import {
   roomStatusEnum,
   verenigingEnum,
 } from "./enums";
+import { houses } from "./houses";
 import { profiles } from "./profiles";
 
 export const rooms = pgTable(
@@ -39,6 +39,9 @@ export const rooms = pgTable(
     ownerId: uuid("created_by")
       .notNull()
       .references(() => profiles.id),
+    houseId: uuid("house_id")
+      .notNull()
+      .references(() => houses.id),
     title: text("title").notNull(),
     description: text("description"),
     city: cityEnum("city").notNull(),
@@ -137,43 +140,6 @@ export const roomPhotos = pgTable(
       role: authenticatedRole,
       read: true,
       modify: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
-    }),
-  ],
-);
-
-export const housemates = pgTable(
-  "housemates",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    roomId: uuid("room_id")
-      .notNull()
-      .references(() => rooms.id, { onDelete: "cascade" }),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => profiles.id),
-    role: housemateRoleEnum("role").default("member"),
-    joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow(),
-  },
-  (table) => [
-    unique("housemates_room_id_user_id_key").on(table.roomId, table.userId),
-    index("idx_housemates_user_id").on(table.userId),
-    index("idx_housemates_room_id").on(table.roomId),
-    // See housemates in rooms where you are also a housemate (uses view to avoid infinite recursion)
-    pgPolicy("housemates_select", {
-      for: "select",
-      to: authenticatedRole,
-      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
-    }),
-    // Only room owner can add/remove housemates
-    pgPolicy("housemates_insert", {
-      for: "insert",
-      to: authenticatedRole,
-      withCheck: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
-    }),
-    pgPolicy("housemates_delete", {
-      for: "delete",
-      to: authenticatedRole,
-      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
     }),
   ],
 );

@@ -1,10 +1,10 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
+import { houseMembers, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@openhospi/database/validators";
-import { GenderPreference, RentalType, RoomStatus } from "@openhospi/shared/enums";
+import { GenderPreference, HouseMemberRole, RentalType, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -19,8 +19,24 @@ export async function createDraftRoomAction(): Promise<{ id?: string; error?: st
     return { error: "RATE_LIMITED" };
   }
 
+  // Find user's house where they are owner
+  const membership = await withRLS(session.user.id, async (tx) => {
+    const [row] = await tx
+      .select({ houseId: houseMembers.houseId })
+      .from(houseMembers)
+      .where(and(
+        eq(houseMembers.userId, session.user.id),
+        eq(houseMembers.role, HouseMemberRole.owner),
+      ));
+    return row;
+  });
+
+  if (!membership) {
+    return { error: "NO_HOUSE" };
+  }
+
   try {
-    const id = await createDraftRoom(session.user.id);
+    const id = await createDraftRoom(session.user.id, membership.houseId);
     return { id };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to create room";

@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "3dff5cbc-7c02-496d-8788-08d49494bf2a",
+  "id": "301beaa7-beae-46a7-96ca-fddb7836b288",
   "prevIds": [
-    "da8f0f9e-2586-4006-b707-4ff8b04e7d9c"
+    "e39a1f07-da4e-4c07-a791-0956e7282618"
   ],
   "ddl": [
     {
@@ -5363,7 +5363,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from housemates h2 where h2.room_id = \"housemates\".\"room_id\" and h2.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"housemates\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "housemates_select",
       "entityType": "policies",
@@ -5467,7 +5467,7 @@
       "roles": [
         "anonymous"
       ],
-      "using": "\"rooms\".\"status\" = $1",
+      "using": "\"rooms\".\"status\" = 'active'",
       "withCheck": null,
       "name": "rooms_select_anon",
       "entityType": "policies",
@@ -5480,7 +5480,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(\"rooms\".\"status\" = $1 or (select auth.user_id() = \"rooms\".\"created_by\"))",
+      "using": "(\"rooms\".\"status\" = 'active' or (select auth.user_id() = \"rooms\".\"created_by\"))",
       "withCheck": null,
       "name": "rooms_select_auth",
       "entityType": "policies",
@@ -5519,7 +5519,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id()) = \"applications\".\"user_id\" or exists(select 1 from housemates where housemates.room_id = \"applications\".\"room_id\" and housemates.user_id = (select auth.user_id()))",
+      "using": "(select auth.user_id()) = \"applications\".\"user_id\" or exists(select 1 from room_members_rls where room_members_rls.room_id = \"applications\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "applications_select",
       "entityType": "policies",
@@ -5545,7 +5545,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id()) = \"applications\".\"user_id\" or exists(select 1 from housemates where housemates.room_id = \"applications\".\"room_id\" and housemates.user_id = (select auth.user_id()) and housemates.role in ('owner', 'admin'))",
+      "using": "(select auth.user_id()) = \"applications\".\"user_id\" or exists(select 1 from room_members_rls where room_members_rls.room_id = \"applications\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()) and room_members_rls.role in ('owner', 'admin'))",
       "withCheck": null,
       "name": "applications_update",
       "entityType": "policies",
@@ -5558,7 +5558,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from housemates where housemates.room_id = \"reviews\".\"room_id\" and housemates.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"reviews\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "reviews_select",
       "entityType": "policies",
@@ -5572,7 +5572,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"reviews\".\"reviewer_id\") and exists(select 1 from housemates where housemates.room_id = \"reviews\".\"room_id\" and housemates.user_id = (select auth.user_id()))",
+      "withCheck": "(select auth.user_id() = \"reviews\".\"reviewer_id\") and exists(select 1 from room_members_rls where room_members_rls.room_id = \"reviews\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
       "name": "reviews_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5597,7 +5597,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from housemates where housemates.room_id = \"hospi_events\".\"room_id\" and housemates.user_id = (select auth.user_id())::uuid)",
+      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"hospi_events\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "hospi_events_select",
       "entityType": "policies",
@@ -5611,7 +5611,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id())::uuid = \"hospi_events\".\"created_by\"",
+      "withCheck": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
       "name": "hospi_events_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5623,8 +5623,8 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"hospi_events\".\"created_by\"",
-      "withCheck": "(select auth.user_id())::uuid = \"hospi_events\".\"created_by\"",
+      "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
+      "withCheck": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
       "name": "hospi_events_update",
       "entityType": "policies",
       "schema": "public",
@@ -5636,7 +5636,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"hospi_events\".\"created_by\"",
+      "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
       "withCheck": null,
       "name": "hospi_events_delete",
       "entityType": "policies",
@@ -5649,7 +5649,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id())::uuid or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id())::uuid)",
+      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
       "withCheck": null,
       "name": "hospi_invitations_select",
       "entityType": "policies",
@@ -5663,7 +5663,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id())::uuid)",
+      "withCheck": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
       "name": "hospi_invitations_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5675,7 +5675,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id())::uuid or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id())::uuid)",
+      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
       "withCheck": null,
       "name": "hospi_invitations_update",
       "entityType": "policies",
@@ -5688,7 +5688,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id())::uuid)",
+      "using": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
       "withCheck": null,
       "name": "hospi_invitations_delete",
       "entityType": "policies",
@@ -5701,9 +5701,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"votes\".\"voter_id\"",
+      "using": "(select auth.user_id() = \"votes\".\"voter_id\")",
       "withCheck": null,
-      "name": "votes_select",
+      "name": "crud-authenticated-policy-select",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5715,8 +5715,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id())::uuid = \"votes\".\"voter_id\"",
-      "name": "votes_insert",
+      "withCheck": "(select auth.user_id() = \"votes\".\"voter_id\")",
+      "name": "crud-authenticated-policy-insert",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5727,9 +5727,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"votes\".\"voter_id\"",
-      "withCheck": "(select auth.user_id())::uuid = \"votes\".\"voter_id\"",
-      "name": "votes_update",
+      "using": "(select auth.user_id() = \"votes\".\"voter_id\")",
+      "withCheck": "(select auth.user_id() = \"votes\".\"voter_id\")",
+      "name": "crud-authenticated-policy-update",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5740,9 +5740,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"votes\".\"voter_id\"",
+      "using": "(select auth.user_id() = \"votes\".\"voter_id\")",
       "withCheck": null,
-      "name": "votes_delete",
+      "name": "crud-authenticated-policy-delete",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5753,7 +5753,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from conversation_members cm2 where cm2.conversation_id = \"conversation_members\".\"conversation_id\" and cm2.user_id = (select auth.user_id())::uuid)",
+      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversation_members\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "conversation_members_select",
       "entityType": "policies",
@@ -5767,7 +5767,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "\"conversation_members\".\"user_id\" = (select auth.user_id())::uuid or exists(select 1 from conversation_members cm2 where cm2.conversation_id = \"conversation_members\".\"conversation_id\" and cm2.user_id = (select auth.user_id())::uuid)",
+      "withCheck": "\"conversation_members\".\"user_id\" = (select auth.user_id()) or exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversation_members\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
       "name": "conversation_members_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5779,7 +5779,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"conversation_members\".\"user_id\"",
+      "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
       "withCheck": null,
       "name": "conversation_members_update",
       "entityType": "policies",
@@ -5792,7 +5792,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"conversation_members\".\"user_id\"",
+      "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
       "withCheck": null,
       "name": "conversation_members_delete",
       "entityType": "policies",
@@ -5805,7 +5805,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from conversation_members where conversation_members.conversation_id = \"conversations\".\"id\" and conversation_members.user_id = (select auth.user_id())::uuid)",
+      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversations\".\"id\" and conversation_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "conversations_select",
       "entityType": "policies",
@@ -5831,9 +5831,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"message_receipts\".\"user_id\"",
+      "using": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
       "withCheck": null,
-      "name": "message_receipts_select",
+      "name": "crud-authenticated-policy-select",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5845,8 +5845,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id())::uuid = \"message_receipts\".\"user_id\"",
-      "name": "message_receipts_insert",
+      "withCheck": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
+      "name": "crud-authenticated-policy-insert",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5857,9 +5857,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"message_receipts\".\"user_id\"",
-      "withCheck": null,
-      "name": "message_receipts_update",
+      "using": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
+      "withCheck": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
+      "name": "crud-authenticated-policy-update",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5870,9 +5870,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"message_receipts\".\"user_id\"",
+      "using": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
       "withCheck": null,
-      "name": "message_receipts_delete",
+      "name": "crud-authenticated-policy-delete",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5883,7 +5883,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from conversation_members where conversation_members.conversation_id = \"messages\".\"conversation_id\" and conversation_members.user_id = (select auth.user_id())::uuid)",
+      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"messages\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
       "withCheck": null,
       "name": "messages_select",
       "entityType": "policies",
@@ -5897,7 +5897,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "\"messages\".\"sender_id\" = (select auth.user_id())::uuid and exists(select 1 from conversation_members where conversation_members.conversation_id = \"messages\".\"conversation_id\" and conversation_members.user_id = (select auth.user_id())::uuid)",
+      "withCheck": "\"messages\".\"sender_id\" = (select auth.user_id()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"messages\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
       "name": "messages_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5909,7 +5909,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"messages\".\"sender_id\"",
+      "using": "(select auth.user_id() = \"messages\".\"sender_id\")",
       "withCheck": null,
       "name": "messages_update",
       "entityType": "policies",
@@ -5922,7 +5922,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id())::uuid = \"messages\".\"sender_id\"",
+      "using": "(select auth.user_id() = \"messages\".\"sender_id\")",
       "withCheck": null,
       "name": "messages_delete",
       "entityType": "policies",
@@ -6175,6 +6175,28 @@
       "entityType": "policies",
       "schema": "public",
       "table": "push_tokens"
+    },
+    {
+      "definition": "select \"conversation_id\", \"user_id\" from \"conversation_members\"",
+      "with": null,
+      "withNoData": null,
+      "using": null,
+      "tablespace": null,
+      "materialized": false,
+      "name": "conversation_members_rls",
+      "entityType": "views",
+      "schema": "public"
+    },
+    {
+      "definition": "select \"room_id\", \"user_id\", \"role\" from \"housemates\"",
+      "with": null,
+      "withNoData": null,
+      "using": null,
+      "tablespace": null,
+      "materialized": false,
+      "name": "room_members_rls",
+      "entityType": "views",
+      "schema": "public"
     }
   ],
   "renames": []

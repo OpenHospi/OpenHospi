@@ -1,6 +1,7 @@
 import { db } from "@openhospi/database";
 import { housemates, rooms } from "@openhospi/database/schema";
-import { eq, sql } from "drizzle-orm";
+import { RoomStatus } from "@openhospi/shared/enums";
+import { count, eq } from "drizzle-orm";
 import { Home, MapPin, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -41,7 +42,7 @@ async function getRoomByShareLink(code: string) {
 
   const [result] = await db
     .select({
-      count: sql<number>`count(*)::int`,
+      count: count(),
     })
     .from(housemates)
     .where(eq(housemates.roomId, room.id));
@@ -59,7 +60,7 @@ export default async function JoinRoomPage({ params }: Props) {
 
   const room = await getRoomByShareLink(code);
 
-  if (!room || room.status !== "active") {
+  if (!room || room.status !== RoomStatus.active) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-4">
         <Card className="w-full max-w-lg text-center">

@@ -1,8 +1,6 @@
 "use client";
 
-import { DEFAULT_DISCOVER_SORT } from "@openhospi/shared/constants";
-import { CITIES, FURNISHINGS, HOUSE_TYPES, LOCATION_TAGS, ROOM_FEATURES } from "@openhospi/shared/enums";
-import type { DiscoverSort } from "@openhospi/shared/enums";
+import { CITIES, DiscoverSort, FURNISHINGS, HOUSE_TYPES, LOCATION_TAGS, ROOM_FEATURES } from "@openhospi/shared/enums";
 import { Check, ChevronsUpDown, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -49,7 +47,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
         availableFrom: filters.availableFrom,
         features: filters.features,
         locationTags: filters.locationTags,
-        sort: sort !== DEFAULT_DISCOVER_SORT ? sort : undefined,
+        sort: sort !== DiscoverSort.newest ? sort : undefined,
         ...overrides,
       };
 
@@ -106,7 +104,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
     setMinPrice("");
     setMaxPrice("");
     const params = new URLSearchParams();
-    if (sort !== DEFAULT_DISCOVER_SORT) params.set("sort", sort);
+    if (sort !== DiscoverSort.newest) params.set("sort", sort);
     const qs = params.toString();
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
@@ -117,7 +115,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
       <div className="flex flex-wrap items-center gap-3">
         <Select
           value={sort}
-          onValueChange={(v) => updateFilter("sort", v === DEFAULT_DISCOVER_SORT ? undefined : v)}
+          onValueChange={(v) => updateFilter("sort", v === DiscoverSort.newest ? undefined : v)}
         >
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder={t("sort")} />

@@ -1,7 +1,9 @@
 import { withRLS } from "@openhospi/database";
-import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
+import { applications, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
+import { RoomStatus } from "@openhospi/shared/enums";
 import type { ApplicationStatus } from "@openhospi/shared/enums";
-import { and, desc, eq, sql } from "drizzle-orm";
+
+import { and, desc, eq, isNull, or } from "drizzle-orm";
 
 export type UserApplication = {
   id: string;
@@ -69,10 +71,11 @@ export async function getUserApplications(userId: string): Promise<UserApplicati
         roomTitle: rooms.title,
         roomCity: rooms.city,
         roomRentPrice: rooms.rentPrice,
-        roomCoverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
+        roomCoverPhotoUrl: roomPhotos.url,
       })
       .from(applications)
       .innerJoin(rooms, eq(rooms.id, applications.roomId))
+      .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
       .where(eq(applications.userId, userId))
       .orderBy(desc(applications.appliedAt)),
   );
@@ -107,10 +110,11 @@ export async function getApplicationDetail(
         roomAvailableFrom: rooms.availableFrom,
         roomFeatures: rooms.features,
         roomLocationTags: rooms.locationTags,
-        roomCoverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
+        roomCoverPhotoUrl: roomPhotos.url,
       })
       .from(applications)
       .innerJoin(rooms, eq(rooms.id, applications.roomId))
+      .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
       .where(and(eq(applications.id, applicationId), eq(applications.userId, userId)));
 
     if (!row) return null;
@@ -142,6 +146,15 @@ export async function getRoomDetailForApply(
   userId: string,
 ): Promise<RoomDetailForApply | null> {
   return withRLS(userId, async (tx) => {
+    const [userProfile] = await tx
+      .select({ vereniging: profiles.vereniging })
+      .from(profiles)
+      .where(eq(profiles.id, userId));
+
+    const verenigingCondition = userProfile?.vereniging
+      ? or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userProfile.vereniging))!
+      : isNull(rooms.roomVereniging);
+
     const [room] = await tx
       .select({
         id: rooms.id,
@@ -171,13 +184,7 @@ export async function getRoomDetailForApply(
         createdAt: rooms.createdAt,
       })
       .from(rooms)
-      .where(
-        and(
-          eq(rooms.id, roomId),
-          eq(rooms.status, "active"),
-          sql`(${rooms.roomVereniging} IS NULL OR ${rooms.roomVereniging} = (SELECT vereniging FROM profiles WHERE id = ${userId}))`,
-        ),
-      );
+      .where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.active), verenigingCondition));
 
     if (!room) return null;
 

@@ -1,5 +1,5 @@
-import { APP_NAME, DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
-import { CITIES } from "@openhospi/shared/enums";
+import { APP_NAME } from "@openhospi/shared/constants";
+import { CITIES, GenderPreference } from "@openhospi/shared/enums";
 import { ArrowLeft, CalendarDays, Home, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -314,11 +314,11 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Preferences */}
-            {(room.preferredGender !== DEFAULT_GENDER_PREFERENCE || room.preferredLifestyleTags.length > 0) && (
+            {(room.preferredGender !== GenderPreference.geen_voorkeur || room.preferredLifestyleTags.length > 0) && (
               <div>
                 <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                 <div className="mt-2 space-y-2">
-                  {room.preferredGender !== DEFAULT_GENDER_PREFERENCE && (
+                  {room.preferredGender !== GenderPreference.geen_voorkeur && (
                     <p className="text-sm text-muted-foreground">
                       {tEnums(`gender_preference.${room.preferredGender}`)}
                       {room.preferredAgeMin != null && room.preferredAgeMax != null &&

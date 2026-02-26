@@ -1,9 +1,8 @@
 import { withRLS } from "@openhospi/database";
-import { housemates, roomPhotos, rooms } from "@openhospi/database/schema";
+import { applications, housemates, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
-import { DEFAULT_ROOM_STATUS, ROOM_CREATOR_ROLE } from "@openhospi/shared/constants";
-import type { RoomStatus } from "@openhospi/shared/enums";
-import { eq, sql } from "drizzle-orm";
+import { HousemateRole, RoomStatus } from "@openhospi/shared/enums";
+import { and, count, desc, eq, inArray } from "drizzle-orm";
 
 export type { Room, RoomPhoto };
 
@@ -30,12 +29,12 @@ export async function createDraftRoom(userId: string): Promise<string> {
       title: "",
       city: "amsterdam",
       rentPrice: "0",
-      status: DEFAULT_ROOM_STATUS,
+      status: RoomStatus.draft,
     });
     await tx.insert(housemates).values({
       roomId,
       userId,
-      role: ROOM_CREATOR_ROLE,
+      role: HousemateRole.owner,
     });
   });
 
@@ -47,7 +46,7 @@ export async function getRoom(roomId: string, userId: string): Promise<RoomWithP
     const [room] = await tx
       .select()
       .from(rooms)
-      .where(sql`${rooms.id} = ${roomId} AND ${rooms.ownerId} = ${userId}`);
+      .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, userId)));
 
     if (!room) return null;
 
@@ -62,8 +61,8 @@ export async function getRoom(roomId: string, userId: string): Promise<RoomWithP
 }
 
 export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
-  const rows = await withRLS(userId, (tx) =>
-    tx
+  return withRLS(userId, async (tx) => {
+    const rows = await tx
       .select({
         id: rooms.id,
         title: rooms.title,
@@ -71,19 +70,29 @@ export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
         rentPrice: rooms.rentPrice,
         status: rooms.status,
         createdAt: rooms.createdAt,
-        coverPhotoUrl: sql<string | null>`(SELECT url FROM room_photos WHERE room_id = ${rooms.id} AND slot = 1 LIMIT 1)`,
-        applicantCount: sql<number>`(SELECT COUNT(*)::int FROM applications WHERE room_id = ${rooms.id})`,
+        coverPhotoUrl: roomPhotos.url,
       })
       .from(rooms)
+      .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
       .where(eq(rooms.ownerId, userId))
-      .orderBy(sql`${rooms.createdAt} DESC`),
-  );
+      .orderBy(desc(rooms.createdAt));
 
-  return rows.map((r) => ({
-    ...r,
-    rentPrice: Number(r.rentPrice),
-    applicantCount: Number(r.applicantCount),
-  }));
+    const roomIds = rows.map((r) => r.id);
+    const countRows = roomIds.length
+      ? await tx
+          .select({ roomId: applications.roomId, count: count() })
+          .from(applications)
+          .where(inArray(applications.roomId, roomIds))
+          .groupBy(applications.roomId)
+      : [];
+    const countMap = new Map(countRows.map((c) => [c.roomId, c.count]));
+
+    return rows.map((r) => ({
+      ...r,
+      rentPrice: Number(r.rentPrice),
+      applicantCount: countMap.get(r.id) ?? 0,
+    }));
+  });
 }
 
 export async function getRoomPhotos(roomId: string, userId: string): Promise<RoomPhoto[]> {

@@ -1,3 +1,4 @@
+import { RoomStatus } from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
 import { anonymousRole, authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
@@ -84,13 +85,13 @@ export const rooms = pgTable(
     pgPolicy("rooms_select_anon", {
       for: "select",
       to: anonymousRole,
-      using: sql`${table.status} = 'active'`,
+      using: sql`${table.status} = '${sql.raw(RoomStatus.active)}'`,
     }),
     pgPolicy("rooms_select_auth", {
       for: "select",
       to: authenticatedRole,
       using: or(
-        sql`${table.status} = 'active'`,
+        sql`${table.status} = '${sql.raw(RoomStatus.active)}'`,
         authUid(table.ownerId)
       ),
     }),
@@ -126,7 +127,7 @@ export const roomPhotos = pgTable(
     pgPolicy("room_photos_select_anon", {
       for: "select",
       to: anonymousRole,
-      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.status = 'active')`,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.status = '${sql.raw(RoomStatus.active)}')`,
     }),
     // Authenticated: can see all room photos (rooms RLS already limits room visibility)
     crudPolicy({

@@ -1,6 +1,7 @@
 import { db } from "@openhospi/database";
 import { rooms } from "@openhospi/database/schema";
 import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import { RoomStatus } from "@openhospi/shared/enums";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";
 
@@ -61,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const publicRooms = await db
     .select({ id: rooms.id })
     .from(rooms)
-    .where(and(eq(rooms.status, "active"), isNull(rooms.roomVereniging)))
+    .where(and(eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging)))
     .orderBy(desc(rooms.createdAt))
     .limit(5000);
 

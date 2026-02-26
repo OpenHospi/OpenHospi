@@ -29,13 +29,6 @@ export const MAX_APPLICANTS_PER_PAGE = 100;
 // Application
 export const MIN_PERSONAL_MESSAGE_LENGTH = 50;
 
-// Default values
-export const DEFAULT_GENDER_PREFERENCE = "geen_voorkeur" as const;
-export const DEFAULT_ROOM_STATUS = "draft" as const;
-export const DEFAULT_HOUSEMATE_ROLE = "member" as const;
-export const ROOM_CREATOR_ROLE = "owner" as const;
-export const DEFAULT_DISCOVER_SORT = "newest" as const;
-
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB
 export const MAX_ROOM_PHOTO_SIZE = 10 * 1024 * 1024; // 10 MB

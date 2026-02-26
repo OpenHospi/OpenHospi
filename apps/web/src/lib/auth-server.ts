@@ -1,5 +1,6 @@
 import { withRLS } from "@openhospi/database";
 import { housemates, profilePhotos, profiles, rooms } from "@openhospi/database/schema";
+import type { HousemateRole } from "@openhospi/shared/enums";
 import { and, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -35,7 +36,7 @@ export async function requireHousemate(
   const row = await withRLS(userId, async (tx) => {
     const conditions = [eq(housemates.roomId, roomId), eq(housemates.userId, userId)];
     if (roles) {
-      conditions.push(inArray(housemates.role, roles as ("owner" | "admin" | "member")[]));
+      conditions.push(inArray(housemates.role, roles as HousemateRole[]));
     }
 
     const [r] = await tx

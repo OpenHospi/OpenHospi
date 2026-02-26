@@ -4,6 +4,7 @@ import { withRLS } from "@openhospi/database";
 import { applications, housemates, rooms } from "@openhospi/database/schema";
 import type { ApplyToRoomData } from "@openhospi/database/validators";
 import { applyToRoomSchema } from "@openhospi/database/validators";
+import { RoomStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -24,7 +25,7 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
       .select({ status: rooms.status })
       .from(rooms)
       .where(eq(rooms.id, roomId));
-    if (!room || room.status !== "active") {
+    if (!room || room.status !== RoomStatus.active) {
       return { error: "room_not_active" };
     }
 

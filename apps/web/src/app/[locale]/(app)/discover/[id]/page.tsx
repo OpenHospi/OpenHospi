@@ -1,4 +1,4 @@
-import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
+import { GenderPreference } from "@openhospi/shared/enums";
 import { Home, MapPin, Ruler, Settings, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -204,12 +204,12 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
           )}
 
           {/* Preferences */}
-          {(room.preferredGender !== DEFAULT_GENDER_PREFERENCE ||
+          {(room.preferredGender !== GenderPreference.geen_voorkeur ||
             room.preferredLifestyleTags.length > 0) && (
             <div>
               <h2 className="text-lg font-semibold">{t("preferences")}</h2>
               <div className="mt-2 space-y-2">
-                {room.preferredGender !== DEFAULT_GENDER_PREFERENCE && (
+                {room.preferredGender !== GenderPreference.geen_voorkeur && (
                   <p className="text-sm text-muted-foreground">
                     {tEnums(`gender_preference.${room.preferredGender}`)}
                     {room.preferredAgeMin != null &&

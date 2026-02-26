@@ -6,6 +6,11 @@ export type Gender = (typeof GENDERS)[number];
 
 export const GENDER_PREFERENCES = ["man", "vrouw", "geen_voorkeur"] as const;
 export type GenderPreference = (typeof GENDER_PREFERENCES)[number];
+export const GenderPreference = {
+  man: "man",
+  vrouw: "vrouw",
+  geen_voorkeur: "geen_voorkeur",
+} as const satisfies Record<GenderPreference, GenderPreference>;
 
 export const LANGUAGES = [
   "nl",
@@ -113,6 +118,12 @@ export type HouseType = (typeof HOUSE_TYPES)[number];
 
 export const ROOM_STATUSES = ["draft", "active", "paused", "closed"] as const;
 export type RoomStatus = (typeof ROOM_STATUSES)[number];
+export const RoomStatus = {
+  draft: "draft",
+  active: "active",
+  paused: "paused",
+  closed: "closed",
+} as const satisfies Record<RoomStatus, RoomStatus>;
 
 export const FURNISHINGS = ["kaal", "gestoffeerd", "gemeubileerd"] as const;
 export type Furnishing = (typeof FURNISHINGS)[number];
@@ -141,6 +152,11 @@ export type RoomFeature = (typeof ROOM_FEATURES)[number];
 
 export const RENTAL_TYPES = ["vast", "onderhuur", "tijdelijk"] as const;
 export type RentalType = (typeof RENTAL_TYPES)[number];
+export const RentalType = {
+  vast: "vast",
+  onderhuur: "onderhuur",
+  tijdelijk: "tijdelijk",
+} as const satisfies Record<RentalType, RentalType>;
 
 export const LOCATION_TAGS = [
   "dichtbij_universiteit",
@@ -234,9 +250,27 @@ export const APPLICATION_STATUSES = [
   "withdrawn",
 ] as const;
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
+export const ApplicationStatus = {
+  sent: "sent",
+  seen: "seen",
+  liked: "liked",
+  maybe: "maybe",
+  rejected: "rejected",
+  invited: "invited",
+  attending: "attending",
+  not_attending: "not_attending",
+  accepted: "accepted",
+  not_chosen: "not_chosen",
+  withdrawn: "withdrawn",
+} as const satisfies Record<ApplicationStatus, ApplicationStatus>;
 
 export const REVIEW_DECISIONS = ["like", "maybe", "reject"] as const;
 export type ReviewDecision = (typeof REVIEW_DECISIONS)[number];
+export const ReviewDecision = {
+  like: "like",
+  maybe: "maybe",
+  reject: "reject",
+} as const satisfies Record<ReviewDecision, ReviewDecision>;
 
 export const INVITATION_STATUSES = [
   "pending",
@@ -248,6 +282,11 @@ export type InvitationStatus = (typeof INVITATION_STATUSES)[number];
 
 export const HOUSEMATE_ROLES = ["owner", "admin", "member"] as const;
 export type HousemateRole = (typeof HOUSEMATE_ROLES)[number];
+export const HousemateRole = {
+  owner: "owner",
+  admin: "admin",
+  member: "member",
+} as const satisfies Record<HousemateRole, HousemateRole>;
 
 export const CONVERSATION_TYPES = ["direct", "group", "house"] as const;
 export type ConversationType = (typeof CONVERSATION_TYPES)[number];
@@ -339,6 +378,11 @@ export const INVITABLE_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
 // Discover sort
 export const DISCOVER_SORTS = ["newest", "cheapest", "most_expensive"] as const;
 export type DiscoverSort = (typeof DISCOVER_SORTS)[number];
+export const DiscoverSort = {
+  newest: "newest",
+  cheapest: "cheapest",
+  most_expensive: "most_expensive",
+} as const satisfies Record<DiscoverSort, DiscoverSort>;
 
 export const VERENIGINGEN = [
   // Alkmaar

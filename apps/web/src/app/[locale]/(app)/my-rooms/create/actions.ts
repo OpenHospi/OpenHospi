@@ -4,8 +4,8 @@ import { withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@openhospi/database/validators";
-import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
-import { and, eq, sql } from "drizzle-orm";
+import { GenderPreference, RentalType, RoomStatus } from "@openhospi/shared/enums";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
@@ -69,7 +69,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
         utilitiesIncluded: d.utilitiesIncluded ?? false,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
-        availableUntil: d.rentalType === "vast" ? null : d.availableUntil || null,
+        availableUntil: d.rentalType === RentalType.vast ? null : d.availableUntil || null,
         rentalType: d.rentalType,
         houseType: d.houseType || null,
         furnishing: d.furnishing || null,
@@ -95,7 +95,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
       .set({
         features: d.features ?? [],
         locationTags: d.locationTags ?? [],
-        preferredGender: d.preferredGender || DEFAULT_GENDER_PREFERENCE,
+        preferredGender: d.preferredGender || GenderPreference.geen_voorkeur,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],
@@ -113,7 +113,7 @@ export async function publishRoom(roomId: string) {
 
   return withRLS(session.user.id, async (tx) => {
     const [photoCount] = await tx
-      .select({ count: sql<number>`count(*)::int` })
+      .select({ count: count() })
       .from(roomPhotos)
       .where(eq(roomPhotos.roomId, roomId));
     if (photoCount.count === 0) {
@@ -122,8 +122,8 @@ export async function publishRoom(roomId: string) {
 
     await tx
       .update(rooms)
-      .set({ status: "active" })
-      .where(and(eq(rooms.id, roomId), eq(rooms.status, "draft")));
+      .set({ status: RoomStatus.active })
+      .where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.draft)));
 
     revalidatePath("/my-rooms");
     return { success: true };

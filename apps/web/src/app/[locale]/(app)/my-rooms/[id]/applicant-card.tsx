@@ -1,7 +1,6 @@
 "use client";
 
-import type { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
-import { INVITABLE_APPLICATION_STATUSES } from "@openhospi/shared/enums";
+import { ApplicationStatus, INVITABLE_APPLICATION_STATUSES, ReviewDecision } from "@openhospi/shared/enums";
 import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -163,24 +162,24 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
           <div className="flex items-center gap-2">
             <Button
               size="sm"
-              variant={myReview?.decision === "like" ? "default" : "outline"}
-              onClick={() => handleReview("like")}
+              variant={myReview?.decision === ReviewDecision.like ? "default" : "outline"}
+              onClick={() => handleReview(ReviewDecision.like)}
               disabled={isPending}
             >
               <ThumbsUp className="size-3.5" />
             </Button>
             <Button
               size="sm"
-              variant={myReview?.decision === "maybe" ? "default" : "outline"}
-              onClick={() => handleReview("maybe")}
+              variant={myReview?.decision === ReviewDecision.maybe ? "default" : "outline"}
+              onClick={() => handleReview(ReviewDecision.maybe)}
               disabled={isPending}
             >
               <Minus className="size-3.5" />
             </Button>
             <Button
               size="sm"
-              variant={myReview?.decision === "reject" ? "destructive" : "outline"}
-              onClick={() => handleReview("reject")}
+              variant={myReview?.decision === ReviewDecision.reject ? "destructive" : "outline"}
+              onClick={() => handleReview(ReviewDecision.reject)}
               disabled={isPending}
             >
               <ThumbsDown className="size-3.5" />
@@ -202,14 +201,14 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleStatusChange("invited")}
+                onClick={() => handleStatusChange(ApplicationStatus.invited)}
                 disabled={isPending}
               >
                 {isPending && <Loader2 className="animate-spin" />}
                 {t("invite")}
               </Button>
             )}
-            {applicant.status === "invited" && (
+            {applicant.status === ApplicationStatus.invited && (
               <>
                 <Button size="sm" onClick={() => setAcceptDialogOpen(true)} disabled={isPending}>
                   <Check className="size-3.5" />
@@ -218,7 +217,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => handleStatusChange("not_chosen")}
+                  onClick={() => handleStatusChange(ApplicationStatus.not_chosen)}
                   disabled={isPending}
                 >
                   <X className="size-3.5" />
@@ -250,7 +249,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleStatusChange("accepted")}>
+            <AlertDialogAction onClick={() => handleStatusChange(ApplicationStatus.accepted)}>
               {t("accept")}
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { RoomStatus } from "@openhospi/shared/enums";
+
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";
 
@@ -38,7 +40,7 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
   }
 
   const room = await getRoom(id, user.id);
-  if (!room || room.status !== "draft") {
+  if (!room || room.status !== RoomStatus.draft) {
     return redirect("/my-rooms");
   }
 

@@ -1,6 +1,4 @@
-import { DEFAULT_DISCOVER_SORT } from "@openhospi/shared/constants";
-import { DISCOVER_SORTS } from "@openhospi/shared/enums";
-import type { DiscoverSort } from "@openhospi/shared/enums";
+import { DISCOVER_SORTS, DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -41,7 +39,7 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
   const rawSort = first("sort");
   const sort: DiscoverSort = (DISCOVER_SORTS as readonly string[]).includes(rawSort ?? "")
     ? (rawSort as DiscoverSort)
-    : DEFAULT_DISCOVER_SORT;
+    : DiscoverSort.newest;
 
   const minPriceStr = first("minPrice");
   const maxPriceStr = first("maxPrice");

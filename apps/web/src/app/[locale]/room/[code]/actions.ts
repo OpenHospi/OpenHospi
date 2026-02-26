@@ -2,8 +2,8 @@
 
 import { db } from "@openhospi/database";
 import { housemates, rooms } from "@openhospi/database/schema";
-import { DEFAULT_HOUSEMATE_ROLE } from "@openhospi/shared/constants";
-import { eq, sql } from "drizzle-orm";
+import { HousemateRole, RoomStatus } from "@openhospi/shared/enums";
+import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
@@ -37,7 +37,7 @@ export async function joinViaShareLink(code: string): Promise<JoinResult> {
       .for("update");
 
     if (!room) return { error: "INVALID_LINK" };
-    if (room.status !== "active") return { error: "ROOM_NOT_ACTIVE" };
+    if (room.status !== RoomStatus.active) return { error: "ROOM_NOT_ACTIVE" };
     if (room.ownerId === userId) return { error: "IS_OWNER" };
 
     if (room.shareLinkExpiresAt && new Date() > new Date(room.shareLinkExpiresAt)) {
@@ -53,7 +53,7 @@ export async function joinViaShareLink(code: string): Promise<JoinResult> {
       .select({ id: housemates.id })
       .from(housemates)
       .where(
-        sql`${housemates.roomId} = ${room.id} AND ${housemates.userId} = ${userId}`,
+        and(eq(housemates.roomId, room.id), eq(housemates.userId, userId)),
       );
     if (existing) return { error: "ALREADY_MEMBER" };
 
@@ -61,7 +61,7 @@ export async function joinViaShareLink(code: string): Promise<JoinResult> {
     await tx.insert(housemates).values({
       roomId: room.id,
       userId,
-      role: DEFAULT_HOUSEMATE_ROLE,
+      role: HousemateRole.member,
     });
 
     await tx

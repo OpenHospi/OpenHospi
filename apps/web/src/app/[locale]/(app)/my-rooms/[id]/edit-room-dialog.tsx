@@ -11,6 +11,7 @@ import {
   LIFESTYLE_TAGS,
   LOCATION_TAGS,
   RENTAL_TYPES,
+  RentalType,
   ROOM_FEATURES,
   VERENIGINGEN,
 } from "@openhospi/shared/enums";
@@ -331,7 +332,7 @@ export function EditRoomDialog({ room }: Props) {
                   </FormItem>
                 )}
               />
-              {rentalType !== "vast" && (
+              {rentalType !== RentalType.vast && (
                 <FormField
                   control={form.control}
                   name="availableUntil"

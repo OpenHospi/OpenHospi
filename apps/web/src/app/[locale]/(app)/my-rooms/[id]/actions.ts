@@ -4,10 +4,8 @@ import { withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
 import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
-import { DEFAULT_GENDER_PREFERENCE } from "@openhospi/shared/constants";
-import { isValidRoomTransition } from "@openhospi/shared/enums";
-import type { RoomStatus } from "@openhospi/shared/enums";
-import { eq, sql } from "drizzle-orm";
+import { GenderPreference, isValidRoomTransition, RentalType, RoomStatus } from "@openhospi/shared/enums";
+import { count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
@@ -34,14 +32,14 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
         utilitiesIncluded: d.utilitiesIncluded ?? false,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
-        availableUntil: d.rentalType === "vast" ? null : d.availableUntil || null,
+        availableUntil: d.rentalType === RentalType.vast ? null : d.availableUntil || null,
         rentalType: d.rentalType,
         houseType: d.houseType || null,
         furnishing: d.furnishing || null,
         totalHousemates: d.totalHousemates || null,
         features: d.features ?? [],
         locationTags: d.locationTags ?? [],
-        preferredGender: d.preferredGender || DEFAULT_GENDER_PREFERENCE,
+        preferredGender: d.preferredGender || GenderPreference.geen_voorkeur,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],
@@ -69,9 +67,9 @@ export async function updateRoomStatus(roomId: string, status: string) {
       return { error: "Invalid status transition" };
     }
 
-    if (current === "draft" && status === "active") {
+    if (current === RoomStatus.draft && status === RoomStatus.active) {
       const [photoCount] = await tx
-        .select({ count: sql<number>`count(*)::int` })
+        .select({ count: count() })
         .from(roomPhotos)
         .where(eq(roomPhotos.roomId, roomId));
       if (photoCount.count === 0) return { error: "publishError" };
@@ -79,7 +77,7 @@ export async function updateRoomStatus(roomId: string, status: string) {
 
     await tx
       .update(rooms)
-      .set({ status: status as "draft" | "active" | "paused" | "closed" })
+      .set({ status: status as RoomStatus })
       .where(eq(rooms.id, roomId));
 
     revalidatePath(`/my-rooms/${roomId}`);

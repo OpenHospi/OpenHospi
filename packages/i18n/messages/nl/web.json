@@ -901,10 +901,10 @@
               "atScale": "~€18,50/mnd (Pro)"
             },
             {
-              "name": "Neon",
-              "description": "Serverless PostgreSQL database",
+              "name": "Supabase",
+              "description": "PostgreSQL database, auth & realtime",
               "current": "€0/mnd (Free)",
-              "atScale": "~€15/mnd (Launch)"
+              "atScale": "~€23/mnd (Pro)"
             },
             {
               "name": "SURFconext",
@@ -966,9 +966,9 @@
           "atScale": "~€222"
         },
         {
-          "name": "Neon",
+          "name": "Supabase",
           "current": "€0",
-          "atScale": "~€180"
+          "atScale": "~€276"
         },
         {
           "name": "SURFconext",
@@ -993,7 +993,7 @@
       ],
       "totalLabel": "Totaal per jaar",
       "currentTotal": "~€174/jr",
-      "atScaleTotal": "~€551/jr (~€46/mnd)"
+      "atScaleTotal": "~€647/jr (~€54/mnd)"
     },
     "keepFree": {
       "title": "Hoe houden we het gratis?",

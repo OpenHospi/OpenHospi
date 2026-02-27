@@ -45,7 +45,7 @@ The following areas are in scope for security reports:
 
 ## Out of Scope
 
-- Issues in third-party services (Neon, Vercel, SURFconext) — report those to the respective providers
+- Issues in third-party services (Supabase, Vercel, SURFconext) — report those to the respective providers
 - Denial of service attacks
 - Social engineering
 - Issues that require physical access to a user's device

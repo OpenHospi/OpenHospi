@@ -2,20 +2,50 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+OpenHospi is currently in active early development. Security updates are applied to the latest version on the `main`
+branch only.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Version | Supported          | 
+|---------|--------------------|
+| latest  | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability in OpenHospi, please report it responsibly.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+**Do NOT open a public GitHub issue for security vulnerabilities.**
+
+Instead, please use [GitHub Security Advisories](https://github.com/rubentalstra/OpenHospi/security/advisories/new) to
+report the vulnerability privately.
+
+### What to include
+
+- A description of the vulnerability
+- Steps to reproduce the issue
+- The potential impact
+- Any suggested fixes (optional)
+
+### What to expect
+
+- **Acknowledgement:** We will acknowledge your report within 48 hours.
+- **Updates:** We will provide status updates as we investigate and work on a fix.
+- **Resolution:** Once the vulnerability is confirmed and fixed, we will release a patch and credit you (unless you
+  prefer to remain anonymous).
+- **Declined reports:** If the reported issue is not considered a vulnerability, we will explain why.
+
+## Scope
+
+The following areas are in scope for security reports:
+
+- Authentication and session management (Better Auth, SURFconext SSO)
+- Row-Level Security (RLS) policy bypasses
+- Data exposure or unauthorized access to user data
+- Cross-site scripting (XSS), injection, or CSRF vulnerabilities
+- Dependencies with known vulnerabilities
+
+## Out of Scope
+
+- Issues in third-party services (Neon, Vercel, SURFconext) — report those to the respective providers
+- Denial of service attacks
+- Social engineering
+- Issues that require physical access to a user's device

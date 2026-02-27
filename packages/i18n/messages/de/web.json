@@ -329,7 +329,8 @@
       "title": "Anmelden",
       "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
       "surfconextButton": "Anmelden mit SURFconext",
-      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule."
+      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule.",
+      "error": "Inloggen mislukt. Probeer het opnieuw."
     }
   },
   "app": {
@@ -1120,6 +1121,10 @@
       "reports": "Meldingen",
       "auditLog": "Auditlog",
       "backToApp": "Terug naar app"
+    },
+    "userMenu": {
+      "backToApp": "Terug naar app",
+      "logout": "Uitloggen"
     },
     "dashboard": "Dashboard",
     "dashboardDescription": "Platformoverzicht en belangrijke statistieken.",

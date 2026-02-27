@@ -368,6 +368,29 @@
     "houseMemberRole": {
       "owner": "Verwalter",
       "member": "Mitbewohner"
+    },
+    "report_reason": {
+      "spam": "Spam",
+      "harassment": "Belästigung",
+      "fake_profile": "Fake-Profil",
+      "inappropriate_content": "Unangemessener Inhalt",
+      "scam": "Betrug",
+      "discrimination": "Diskriminierung",
+      "other": "Sonstiges"
+    },
+    "report_status": {
+      "pending": "Ausstehend",
+      "reviewing": "In Bearbeitung",
+      "resolved": "Erledigt",
+      "dismissed": "Abgelehnt"
+    },
+    "admin_action": {
+      "view_report": "Meldung ansehen",
+      "suspend_user": "Benutzer sperren",
+      "unsuspend_user": "Sperre aufheben",
+      "remove_listing": "Anzeige entfernen",
+      "remove_message": "Nachricht entfernen",
+      "dismiss_report": "Meldung ablehnen"
     }
   },
   "notifications": {

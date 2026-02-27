@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireSession } from "@/lib/auth-server";
 import { getConversationMembers, getMessages } from "@/lib/chat";
 
+import { getBlockedUsers } from "../block-actions";
 import { ChatView } from "./chat-view";
 
 type Props = {
@@ -20,9 +21,10 @@ export default async function ConversationPage({ params }: Props) {
   setRequestLocale(locale);
   const { user } = await requireSession();
 
-  const [initialMessages, members] = await Promise.all([
+  const [initialMessages, members, blockedUserIds] = await Promise.all([
     getMessages(user.id, conversationId),
     getConversationMembers(user.id, conversationId),
+    getBlockedUsers(),
   ]);
 
   return (
@@ -31,6 +33,7 @@ export default async function ConversationPage({ params }: Props) {
       currentUserId={user.id}
       initialMessages={initialMessages}
       members={members}
+      blockedUserIds={blockedUserIds}
     />
   );
 }

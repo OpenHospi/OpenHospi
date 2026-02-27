@@ -4,6 +4,8 @@ import { RoomStatus } from "@openhospi/shared/enums";
 import type { ApplicationStatus } from "@openhospi/shared/enums";
 import { and, desc, eq, isNull, or } from "drizzle-orm";
 
+import { notBlockedBy } from "@/lib/block-filter";
+
 export type UserApplication = {
   id: string;
   roomId: string;
@@ -77,7 +79,8 @@ export async function getUserApplications(userId: string): Promise<UserApplicati
       .from(applications)
       .innerJoin(rooms, eq(rooms.id, applications.roomId))
       .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
-      .where(eq(applications.userId, userId))
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- SQL subquery condition
+      .where(and(eq(applications.userId, userId), notBlockedBy(rooms.ownerId, userId) as any))
       .orderBy(desc(applications.appliedAt)),
   );
 

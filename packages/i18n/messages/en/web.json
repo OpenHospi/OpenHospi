@@ -857,6 +857,7 @@
       "block_user": "Block user",
       "unblock_user": "Unblock",
       "report_message": "Report message",
+      "report_user": "Report {name}",
       "blocked": "You have blocked this user"
     },
     "invitations": {
@@ -1055,6 +1056,19 @@
       "totalCost": "Total",
       "roomSize": "{size} m²",
       "rentalType": "Rental type"
+    },
+    "report": {
+      "button": "Report",
+      "title": "Submit a report",
+      "description": "Help us keep OpenHospi safe. Reports are reviewed by our admin team.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "Select a reason...",
+      "descriptionLabel": "Additional details (optional)",
+      "descriptionPlaceholder": "Tell us what happened...",
+      "cancel": "Cancel",
+      "submit": "Submit report",
+      "success": "Report submitted. Thank you.",
+      "error": "Failed to submit report. Please try again."
     }
   },
   "missingAssociation": {
@@ -1077,6 +1091,71 @@
       "githubButton": "Log in with GitHub",
       "error": "Login failed. Check that your account has admin privileges.",
       "footer": "Only authorized administrators can access this panel."
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "reports": "Reports",
+      "auditLog": "Audit log",
+      "backToApp": "Back to app"
+    },
+    "dashboard": "Dashboard",
+    "dashboardDescription": "Platform overview and key metrics.",
+    "stats": {
+      "totalUsers": "Total users",
+      "activeUsers7d": "Active (7 days)",
+      "activeUsers30d": "Active (30 days)",
+      "newSignupsWeek": "New signups (week)",
+      "activeListings": "Active listings",
+      "pendingReports": "Pending reports",
+      "listingsByCity": "Listings by city"
+    },
+    "reports": {
+      "title": "Reports",
+      "description": "Review and moderate user reports.",
+      "filterAll": "All",
+      "empty": "No reports found.",
+      "colType": "Type",
+      "colReporter": "Reporter",
+      "colReason": "Reason",
+      "colStatus": "Status",
+      "colDate": "Date",
+      "typeMessage": "Message",
+      "typeRoom": "Room",
+      "typeUser": "User",
+      "typeUnknown": "Unknown",
+      "detailTitle": "Report details",
+      "details": "Report info",
+      "content": "Content",
+      "reportedUser": "Reported user",
+      "reportedRoom": "Reported room",
+      "userDescription": "Reporter's description",
+      "reportedMessage": "Reported message",
+      "noContent": "No additional content provided.",
+      "banned": "Banned",
+      "resolution": "Resolution",
+      "resolvedAt": "Resolved at {date}",
+      "actions": "Admin actions",
+      "actionReason": "Reason for action",
+      "actionReasonPlaceholder": "Describe why you're taking this action...",
+      "dismiss": "Dismiss report",
+      "banUser": "Ban user",
+      "unbanUser": "Unban user",
+      "removeListing": "Remove listing",
+      "dismissed": "Report dismissed",
+      "userBanned": "User banned",
+      "userUnbanned": "User unbanned",
+      "listingRemoved": "Listing removed",
+      "error": "An error occurred"
+    },
+    "auditLog": {
+      "title": "Audit log",
+      "description": "Record of all admin actions.",
+      "empty": "No audit log entries.",
+      "colTimestamp": "Timestamp",
+      "colAdmin": "Admin",
+      "colAction": "Action",
+      "colReason": "Reason",
+      "total": "{count, plural, one {# entry} other {# entries}} total"
     }
   }
 }

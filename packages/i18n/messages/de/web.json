@@ -857,6 +857,7 @@
       "block_user": "Benutzer blockieren",
       "unblock_user": "Entblocken",
       "report_message": "Nachricht melden",
+      "report_user": "{name} melden",
       "blocked": "Du hast diesen Benutzer blockiert"
     },
     "invitations": {
@@ -1055,6 +1056,19 @@
       "totalCost": "Gesamt",
       "roomSize": "{size} m²",
       "rentalType": "Mietart"
+    },
+    "report": {
+      "button": "Melden",
+      "title": "Meldung einreichen",
+      "description": "Hilf uns, OpenHospi sicher zu halten. Meldungen werden von unserem Admin-Team geprüft.",
+      "reasonLabel": "Grund",
+      "reasonPlaceholder": "Wähle einen Grund...",
+      "descriptionLabel": "Weitere Details (optional)",
+      "descriptionPlaceholder": "Erzähl uns, was passiert ist...",
+      "cancel": "Abbrechen",
+      "submit": "Meldung einreichen",
+      "success": "Meldung eingereicht. Danke.",
+      "error": "Meldung konnte nicht eingereicht werden. Bitte versuche es erneut."
     }
   },
   "missingAssociation": {
@@ -1077,6 +1091,71 @@
       "githubButton": "Mit GitHub anmelden",
       "error": "Anmeldung fehlgeschlagen. Überprüfe, ob dein Konto Administratorrechte hat.",
       "footer": "Nur autorisierte Administratoren haben Zugang zu diesem Panel."
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "reports": "Meldungen",
+      "auditLog": "Auditprotokoll",
+      "backToApp": "Zurück zur App"
+    },
+    "dashboard": "Dashboard",
+    "dashboardDescription": "Plattformübersicht und wichtige Kennzahlen.",
+    "stats": {
+      "totalUsers": "Benutzer gesamt",
+      "activeUsers7d": "Aktiv (7 Tage)",
+      "activeUsers30d": "Aktiv (30 Tage)",
+      "newSignupsWeek": "Neue Registrierungen (Woche)",
+      "activeListings": "Aktive Anzeigen",
+      "pendingReports": "Offene Meldungen",
+      "listingsByCity": "Anzeigen nach Stadt"
+    },
+    "reports": {
+      "title": "Meldungen",
+      "description": "Benutzermeldungen prüfen und moderieren.",
+      "filterAll": "Alle",
+      "empty": "Keine Meldungen gefunden.",
+      "colType": "Typ",
+      "colReporter": "Melder",
+      "colReason": "Grund",
+      "colStatus": "Status",
+      "colDate": "Datum",
+      "typeMessage": "Nachricht",
+      "typeRoom": "Zimmer",
+      "typeUser": "Benutzer",
+      "typeUnknown": "Unbekannt",
+      "detailTitle": "Meldungsdetails",
+      "details": "Meldungsinfo",
+      "content": "Inhalt",
+      "reportedUser": "Gemeldeter Benutzer",
+      "reportedRoom": "Gemeldetes Zimmer",
+      "userDescription": "Beschreibung des Melders",
+      "reportedMessage": "Gemeldete Nachricht",
+      "noContent": "Keine zusätzlichen Informationen angegeben.",
+      "banned": "Gesperrt",
+      "resolution": "Entscheidung",
+      "resolvedAt": "Erledigt am {date}",
+      "actions": "Admin-Aktionen",
+      "actionReason": "Grund für Aktion",
+      "actionReasonPlaceholder": "Beschreibe, warum du diese Aktion durchführst...",
+      "dismiss": "Meldung ablehnen",
+      "banUser": "Benutzer sperren",
+      "unbanUser": "Sperre aufheben",
+      "removeListing": "Anzeige entfernen",
+      "dismissed": "Meldung abgelehnt",
+      "userBanned": "Benutzer gesperrt",
+      "userUnbanned": "Sperre aufgehoben",
+      "listingRemoved": "Anzeige entfernt",
+      "error": "Ein Fehler ist aufgetreten"
+    },
+    "auditLog": {
+      "title": "Auditprotokoll",
+      "description": "Protokoll aller Admin-Aktionen.",
+      "empty": "Keine Auditprotokoll-Einträge.",
+      "colTimestamp": "Zeitstempel",
+      "colAdmin": "Admin",
+      "colAction": "Aktion",
+      "colReason": "Grund",
+      "total": "{count, plural, one {# Eintrag} other {# Einträge}} insgesamt"
     }
   }
 }

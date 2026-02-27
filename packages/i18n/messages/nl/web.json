@@ -857,6 +857,7 @@
       "block_user": "Gebruiker blokkeren",
       "unblock_user": "Deblokkeren",
       "report_message": "Bericht melden",
+      "report_user": "{name} melden",
       "blocked": "Je hebt deze gebruiker geblokkeerd"
     },
     "invitations": {
@@ -878,6 +879,19 @@
         "deadline_passed": "De RSVP-deadline is verstreken",
         "event_full": "Dit evenement is vol"
       }
+    },
+    "report": {
+      "button": "Melden",
+      "title": "Melding indienen",
+      "description": "Help ons OpenHospi veilig te houden. Meldingen worden beoordeeld door ons adminteam.",
+      "reasonLabel": "Reden",
+      "reasonPlaceholder": "Selecteer een reden...",
+      "descriptionLabel": "Extra details (optioneel)",
+      "descriptionPlaceholder": "Vertel ons wat er is gebeurd...",
+      "cancel": "Annuleren",
+      "submit": "Melding indienen",
+      "success": "Melding ingediend. Bedankt.",
+      "error": "Melding indienen mislukt. Probeer het opnieuw."
     }
   },
   "costs": {
@@ -1101,6 +1115,71 @@
       "githubButton": "Inloggen met GitHub",
       "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
       "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "reports": "Meldingen",
+      "auditLog": "Auditlog",
+      "backToApp": "Terug naar app"
+    },
+    "dashboard": "Dashboard",
+    "dashboardDescription": "Platformoverzicht en belangrijke statistieken.",
+    "stats": {
+      "totalUsers": "Totaal gebruikers",
+      "activeUsers7d": "Actief (7 dagen)",
+      "activeUsers30d": "Actief (30 dagen)",
+      "newSignupsWeek": "Nieuwe aanmeldingen (week)",
+      "activeListings": "Actieve advertenties",
+      "pendingReports": "Openstaande meldingen",
+      "listingsByCity": "Advertenties per stad"
+    },
+    "reports": {
+      "title": "Meldingen",
+      "description": "Bekijk en modereer gebruikersmeldingen.",
+      "filterAll": "Alle",
+      "empty": "Geen meldingen gevonden.",
+      "colType": "Type",
+      "colReporter": "Melder",
+      "colReason": "Reden",
+      "colStatus": "Status",
+      "colDate": "Datum",
+      "typeMessage": "Bericht",
+      "typeRoom": "Kamer",
+      "typeUser": "Gebruiker",
+      "typeUnknown": "Onbekend",
+      "detailTitle": "Meldingsdetails",
+      "details": "Meldingsinfo",
+      "content": "Inhoud",
+      "reportedUser": "Gemelde gebruiker",
+      "reportedRoom": "Gemelde kamer",
+      "userDescription": "Beschrijving van melder",
+      "reportedMessage": "Gemeld bericht",
+      "noContent": "Geen aanvullende inhoud opgegeven.",
+      "banned": "Geblokkeerd",
+      "resolution": "Besluit",
+      "resolvedAt": "Afgehandeld op {date}",
+      "actions": "Beheerdersacties",
+      "actionReason": "Reden voor actie",
+      "actionReasonPlaceholder": "Beschrijf waarom je deze actie onderneemt...",
+      "dismiss": "Melding afwijzen",
+      "banUser": "Gebruiker blokkeren",
+      "unbanUser": "Blokkering opheffen",
+      "removeListing": "Advertentie verwijderen",
+      "dismissed": "Melding afgewezen",
+      "userBanned": "Gebruiker geblokkeerd",
+      "userUnbanned": "Blokkering opgeheven",
+      "listingRemoved": "Advertentie verwijderd",
+      "error": "Er is een fout opgetreden"
+    },
+    "auditLog": {
+      "title": "Auditlog",
+      "description": "Overzicht van alle beheerdersacties.",
+      "empty": "Geen auditlog-items.",
+      "colTimestamp": "Tijdstip",
+      "colAdmin": "Beheerder",
+      "colAction": "Actie",
+      "colReason": "Reden",
+      "total": "{count, plural, one {# item} other {# items}} totaal"
     }
   }
 }

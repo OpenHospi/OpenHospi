@@ -36,9 +36,14 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
     .toUpperCase()
     .slice(0, 2);
 
-  async function handleLogout() {
-    await authClient.signOut();
-    router.push("/");
+  function handleLogout() {
+    authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
   }
 
   return (

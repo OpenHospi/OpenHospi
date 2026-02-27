@@ -781,6 +781,8 @@
       "withdrawConfirmTitle": "Aanmelding intrekken",
       "withdrawConfirmDescription": "Weet je zeker dat je je aanmelding wilt intrekken? Dit kan niet ongedaan worden gemaakt.",
       "cancel": "Annuleren",
+      "eventInvitation": "Evenementuitnodiging",
+      "eventInvitationDescription": "Je bent uitgenodigd voor een hospi-evenement voor deze kamer.",
       "errors": {
         "not_found": "Aanmelding niet gevonden.",
         "cannot_withdraw": "Deze aanmelding kan niet meer worden ingetrokken."

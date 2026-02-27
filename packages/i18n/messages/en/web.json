@@ -781,6 +781,8 @@
       "withdrawConfirmTitle": "Withdraw application",
       "withdrawConfirmDescription": "Are you sure you want to withdraw your application? This cannot be undone.",
       "cancel": "Cancel",
+      "eventInvitation": "Event Invitation",
+      "eventInvitationDescription": "You've been invited to a hospi event for this room.",
       "errors": {
         "not_found": "Application not found.",
         "cannot_withdraw": "This application can no longer be withdrawn."

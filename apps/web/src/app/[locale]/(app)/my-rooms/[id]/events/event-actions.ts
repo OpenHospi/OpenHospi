@@ -1,13 +1,15 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { hospiEvents } from "@openhospi/database/schema";
+import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import type { CreateEventData } from "@openhospi/database/validators";
 import { createEventSchema } from "@openhospi/database/validators";
-import { and, eq } from "drizzle-orm";
+import { InvitationStatus } from "@openhospi/shared/enums";
+import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { notifyUser } from "@/lib/notifications";
 
 export async function createEvent(roomId: string, data: CreateEventData) {
   const session = await requireSession();
@@ -70,12 +72,37 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
 export async function cancelEvent(eventId: string, roomId: string) {
   const session = await requireSession();
 
-  await withRLS(session.user.id, async (tx) => {
-    await tx
+  const result = await withRLS(session.user.id, async (tx) => {
+    const [event] = await tx
       .update(hospiEvents)
       .set({ cancelledAt: new Date() })
-      .where(and(eq(hospiEvents.id, eventId), eq(hospiEvents.createdBy, session.user.id)));
+      .where(and(eq(hospiEvents.id, eventId), eq(hospiEvents.createdBy, session.user.id)))
+      .returning({ title: hospiEvents.title });
+
+    if (!event) return null;
+
+    // Fetch all invitees who haven't declined
+    const invitees = await tx
+      .select({ userId: hospiInvitations.userId })
+      .from(hospiInvitations)
+      .where(
+        and(
+          eq(hospiInvitations.eventId, eventId),
+          ne(hospiInvitations.status, InvitationStatus.not_attending),
+        ),
+      );
+
+    return { eventTitle: event.title, invitees };
   });
+
+  // Notify invitees outside the RLS transaction (same pattern as rsvp-actions)
+  if (result) {
+    for (const invitee of result.invitees) {
+      await notifyUser(invitee.userId, "notifications.eventCancelled", {
+        eventTitle: result.eventTitle,
+      });
+    }
+  }
 
   revalidatePath(`/my-rooms/${roomId}`);
   revalidatePath(`/my-rooms/${roomId}/events/${eventId}`);

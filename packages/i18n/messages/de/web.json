@@ -781,6 +781,8 @@
       "withdrawConfirmTitle": "Bewerbung zurückziehen",
       "withdrawConfirmDescription": "Bist du sicher, dass du deine Bewerbung zurückziehen möchtest? Dies kann nicht rückgängig gemacht werden.",
       "cancel": "Abbrechen",
+      "eventInvitation": "Veranstaltungseinladung",
+      "eventInvitationDescription": "Du wurdest zu einem Hospi-Event für dieses Zimmer eingeladen.",
       "errors": {
         "not_found": "Bewerbung nicht gefunden.",
         "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."

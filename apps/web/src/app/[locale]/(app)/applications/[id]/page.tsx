@@ -5,6 +5,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { InvitationCard } from "@/app/[locale]/(app)/invitations/invitation-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation-app";
 import { getApplicationDetail } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
+import { getInvitationForApplication } from "@/lib/invitations";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +42,8 @@ export default async function ApplicationDetailPage({ params }: Props) {
   if (!application) {
     return redirect("/applications");
   }
+
+  const invitation = await getInvitationForApplication(id, user.id);
 
   const t = await getTranslations({ locale, namespace: "app.applications" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
@@ -116,6 +120,19 @@ export default async function ApplicationDetailPage({ params }: Props) {
           )}
         </CardContent>
       </Card>
+
+      {/* Event invitation */}
+      {invitation && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-muted-foreground">
+            {t("eventInvitation")}
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            {t("eventInvitationDescription")}
+          </p>
+          <InvitationCard invitation={invitation} />
+        </div>
+      )}
 
       {/* Personal message */}
       {application.personalMessage && (

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
 import { FeatureCard } from "@/components/marketing/feature-card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -167,15 +168,16 @@ export default function CostsPage() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold sm:text-3xl">{t("transparency.title")}</h2>
             <p className="mt-4 text-muted-foreground">{t("transparency.description")}</p>
-            <a
-              href="https://opencollective.com/openhospi"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              <ExternalLink className="size-4" />
-              {t("transparency.badge")}
-            </a>
+            <Button variant="outline" asChild className="mt-6">
+              <a
+                href="https://opencollective.com/openhospi"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="size-4" />
+                {t("transparency.badge")}
+              </a>
+            </Button>
           </div>
         </div>
       </section>

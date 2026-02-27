@@ -1,5 +1,6 @@
 import { Heart } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -22,7 +23,7 @@ export function DonateCard({ name, price, badge, description, ctaLabel }: Donate
         <p className="text-2xl font-bold text-primary">{price}</p>
       </CardHeader>
       <CardContent>
-        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">{badge}</span>
+        <Badge variant="secondary" className="rounded-full">{badge}</Badge>
         <p className="mt-3 text-sm text-muted-foreground">{description}</p>
         <div className="mt-6">
           <Button asChild variant="outline" className="w-full">

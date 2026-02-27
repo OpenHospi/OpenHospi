@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import type { RoomPhoto } from "@/lib/rooms";
 import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
@@ -114,21 +115,22 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
                     fill
                     className="object-cover"
                   />
-                  <button
-                    type="button"
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDelete(slot)}
-                    className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white transition-opacity hover:bg-black/80"
+                    className="absolute top-1 right-1 size-auto rounded-full bg-black/60 p-1 text-white hover:bg-black/80 hover:text-white"
                     disabled={isPending}
                   >
                     <X className="size-4" />
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
                   onClick={() => handleUploadClick(slot)}
                   disabled={isUploading || isPending}
-                  className="flex size-full flex-col items-center justify-center gap-1 p-2 text-center"
+                  className="size-full flex-col gap-1 p-2"
                 >
                   {isUploading ? (
                     <Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -138,7 +140,7 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
                   <span className="text-xs text-muted-foreground">
                     {t(`photoSlots.slot${slot}`)}
                   </span>
-                </button>
+                </Button>
               )}
             </div>
           );

@@ -113,21 +113,22 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
                     fill
                     className="object-cover"
                   />
-                  <button
-                    type="button"
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDelete(slot)}
-                    className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white transition-opacity hover:bg-black/80"
+                    className="absolute top-1 right-1 size-auto rounded-full bg-black/60 p-1 text-white hover:bg-black/80 hover:text-white"
                     disabled={isPending}
                   >
                     <X className="size-4" />
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
                   onClick={() => handleUploadClick(slot)}
                   disabled={isUploading || isPending}
-                  className="flex size-full flex-col items-center justify-center gap-1 p-2 text-center transition-colors hover:bg-muted/50"
+                  className="size-full flex-col gap-1 p-2 hover:bg-muted/50"
                 >
                   {isUploading ? (
                     <Loader2 className="size-6 animate-spin text-muted-foreground" />
@@ -140,7 +141,7 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
                   {slot === 1 && (
                     <span className="text-xs font-medium text-primary">{t("required")}</span>
                   )}
-                </button>
+                </Button>
               )}
             </div>
           );

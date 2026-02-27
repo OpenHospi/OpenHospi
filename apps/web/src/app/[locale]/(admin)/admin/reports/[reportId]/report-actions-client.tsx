@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 import { banUser, dismissReport, removeListing, unbanUser } from "../../actions";
@@ -18,7 +19,12 @@ type Props = {
   reportedUserBanned: boolean;
 };
 
-export function ReportActions({ reportId, reportedUserId, reportedRoomId, reportedUserBanned }: Props) {
+export function ReportActions({
+  reportId,
+  reportedUserId,
+  reportedRoomId,
+  reportedUserBanned,
+}: Props) {
   const t = useTranslations("admin.reports");
   const [reason, setReason] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -78,7 +84,7 @@ export function ReportActions({ reportId, reportedUserId, reportedRoomId, report
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium">{t("actionReason")}</label>
+          <Label>{t("actionReason")}</Label>
           <Textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
@@ -88,11 +94,7 @@ export function ReportActions({ reportId, reportedUserId, reportedRoomId, report
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            onClick={handleDismiss}
-            disabled={!reason.trim() || isPending}
-          >
+          <Button variant="outline" onClick={handleDismiss} disabled={!reason.trim() || isPending}>
             <XCircle className="mr-2 size-4" />
             {t("dismiss")}
           </Button>
@@ -109,11 +111,7 @@ export function ReportActions({ reportId, reportedUserId, reportedRoomId, report
           )}
 
           {reportedUserId && reportedUserBanned && (
-            <Button
-              variant="outline"
-              onClick={handleUnban}
-              disabled={!reason.trim() || isPending}
-            >
+            <Button variant="outline" onClick={handleUnban} disabled={!reason.trim() || isPending}>
               <ShieldCheck className="mr-2 size-4" />
               {t("unbanUser")}
             </Button>

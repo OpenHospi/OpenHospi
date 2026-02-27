@@ -1,10 +1,10 @@
 import { ArrowLeft, Calendar, Clock, MapPin, Users, UserCircle } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -125,20 +125,15 @@ export default async function EventDetailPage({ params }: Props) {
                       <div className="space-y-2">
                         {grouped[status].map((invitee) => (
                           <div key={invitee.invitationId} className="flex items-center gap-3">
-                            <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-muted">
+                            <Avatar>
                               {invitee.avatarUrl ? (
-                                <Image
-                                  src={invitee.avatarUrl}
-                                  alt={invitee.firstName}
-                                  fill
-                                  className="object-cover"
-                                />
+                                <AvatarImage src={invitee.avatarUrl} alt={invitee.firstName} />
                               ) : (
-                                <div className="flex size-full items-center justify-center">
-                                  <UserCircle className="size-5 text-muted-foreground" />
-                                </div>
+                                <AvatarFallback>
+                                  <UserCircle className="size-5" />
+                                </AvatarFallback>
                               )}
-                            </div>
+                            </Avatar>
                             <span className="text-sm font-medium">
                               {invitee.firstName} {invitee.lastName}
                             </span>

@@ -104,18 +104,10 @@ export function InviteApplicantsDialog({ eventId, roomId, applicants }: Props) {
                 for (const r of applicant.reviews) likeCounts[r.decision]++;
 
                 return (
-                  <div
+                  // eslint-disable-next-line jsx-a11y/label-has-associated-control -- Radix Checkbox renders as <button role="checkbox">, not a native <input>
+                  <label
                     key={applicant.applicationId}
-                    role="button"
-                    tabIndex={0}
                     className="flex cursor-pointer items-center gap-3 p-3 hover:bg-muted/50"
-                    onClick={() => toggleApplication(applicant.applicationId)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        toggleApplication(applicant.applicationId);
-                      }
-                    }}
                   >
                     <Checkbox
                       checked={selected.has(applicant.applicationId)}
@@ -162,7 +154,7 @@ export function InviteApplicantsDialog({ eventId, roomId, applicants }: Props) {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </label>
                 );
               })}
             </div>

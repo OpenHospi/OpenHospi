@@ -6,6 +6,7 @@ import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { getStoredPrivateKey } from "@/lib/crypto-store";
 import { supabase } from "@/lib/supabase-client";
 
@@ -82,7 +83,7 @@ export function ChatInput({ conversationId, currentUserId, members }: Props) {
   return (
     <div className="border-t p-4">
       <div className="flex items-end gap-2">
-        <textarea
+        <Textarea
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -94,7 +95,7 @@ export function ChatInput({ conversationId, currentUserId, members }: Props) {
           }}
           placeholder={t("message_placeholder")}
           rows={1}
-          className="border-input bg-background placeholder:text-muted-foreground flex-1 resize-none rounded-lg border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="flex-1 resize-none"
         />
         <Button
           onClick={handleSubmit}

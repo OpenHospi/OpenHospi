@@ -834,6 +834,31 @@
         "INVALID_LINK": "This invite link is invalid.",
         "ALREADY_MEMBER": "You are already a member of this house."
       }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications yet",
+      "markAllRead": "Mark all as read"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
+      "cancelled": "Cancelled",
+      "attend": "Attend",
+      "maybe": "Maybe",
+      "decline": "Decline",
+      "declineReasonLabel": "Why can't you attend?",
+      "declineReasonPlaceholder": "Please share why you can't make it...",
+      "confirmDecline": "Confirm decline",
+      "cancelDecline": "Cancel",
+      "rsvpSuccess": "Response saved",
+      "errors": {
+        "not_found": "Invitation not found",
+        "invalid_transition": "This response is no longer available",
+        "event_cancelled": "This event has been cancelled",
+        "deadline_passed": "The RSVP deadline has passed",
+        "event_full": "This event is full"
+      }
     }
   },
   "costs": {
@@ -1033,31 +1058,6 @@
       "githubButton": "Log in with GitHub",
       "error": "Login failed. Check that your account has admin privileges.",
       "footer": "Only authorized administrators can access this panel."
-    },
-    "notifications": {
-      "title": "Notifications",
-      "empty": "No notifications yet",
-      "markAllRead": "Mark all as read"
-    },
-    "invitations": {
-      "title": "Invitations",
-      "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
-      "cancelled": "Cancelled",
-      "attend": "Attend",
-      "maybe": "Maybe",
-      "decline": "Decline",
-      "declineReasonLabel": "Why can't you attend?",
-      "declineReasonPlaceholder": "Please share why you can't make it...",
-      "confirmDecline": "Confirm decline",
-      "cancelDecline": "Cancel",
-      "rsvpSuccess": "Response saved",
-      "errors": {
-        "not_found": "Invitation not found",
-        "invalid_transition": "This response is no longer available",
-        "event_cancelled": "This event has been cancelled",
-        "deadline_passed": "The RSVP deadline has passed",
-        "event_full": "This event is full"
-      }
     }
   }
 }

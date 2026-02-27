@@ -834,6 +834,31 @@
         "INVALID_LINK": "Deze uitnodigingslink is ongeldig.",
         "ALREADY_MEMBER": "Je bent al lid van dit huis."
       }
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "empty": "Nog geen meldingen",
+      "markAllRead": "Alles als gelezen markeren"
+    },
+    "invitations": {
+      "title": "Uitnodigingen",
+      "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
+      "cancelled": "Geannuleerd",
+      "attend": "Aanwezig",
+      "maybe": "Misschien",
+      "decline": "Afwijzen",
+      "declineReasonLabel": "Waarom kun je niet komen?",
+      "declineReasonPlaceholder": "Deel alsjeblieft waarom je niet kunt komen...",
+      "confirmDecline": "Afwijzing bevestigen",
+      "cancelDecline": "Annuleren",
+      "rsvpSuccess": "Reactie opgeslagen",
+      "errors": {
+        "not_found": "Uitnodiging niet gevonden",
+        "invalid_transition": "Deze reactie is niet meer beschikbaar",
+        "event_cancelled": "Dit evenement is geannuleerd",
+        "deadline_passed": "De RSVP-deadline is verstreken",
+        "event_full": "Dit evenement is vol"
+      }
     }
   },
   "costs": {
@@ -916,12 +941,36 @@
       "perYear": "/jr",
       "perMonth": "/mnd",
       "rows": [
-        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Neon", "current": "€0", "atScale": "~€180" },
-        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
-        { "name": "Domeinen (3x)", "current": "~€50", "atScale": "~€50" },
-        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
-        { "name": "Google Play", "current": "€25", "atScale": "—" }
+        {
+          "name": "Vercel",
+          "current": "€0",
+          "atScale": "~€222"
+        },
+        {
+          "name": "Neon",
+          "current": "€0",
+          "atScale": "~€180"
+        },
+        {
+          "name": "SURFconext",
+          "current": "€0",
+          "atScale": "€0"
+        },
+        {
+          "name": "Domeinen (3x)",
+          "current": "~€50",
+          "atScale": "~€50"
+        },
+        {
+          "name": "Apple Developer",
+          "current": "€99",
+          "atScale": "€99"
+        },
+        {
+          "name": "Google Play",
+          "current": "€25",
+          "atScale": "—"
+        }
       ],
       "totalLabel": "Totaal per jaar",
       "currentTotal": "~€174/jr",
@@ -1033,31 +1082,6 @@
       "githubButton": "Inloggen met GitHub",
       "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
       "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
-    },
-    "notifications": {
-      "title": "Meldingen",
-      "empty": "Nog geen meldingen",
-      "markAllRead": "Alles als gelezen markeren"
-    },
-    "invitations": {
-      "title": "Uitnodigingen",
-      "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
-      "cancelled": "Geannuleerd",
-      "attend": "Aanwezig",
-      "maybe": "Misschien",
-      "decline": "Afwijzen",
-      "declineReasonLabel": "Waarom kun je niet komen?",
-      "declineReasonPlaceholder": "Deel alsjeblieft waarom je niet kunt komen...",
-      "confirmDecline": "Afwijzing bevestigen",
-      "cancelDecline": "Annuleren",
-      "rsvpSuccess": "Reactie opgeslagen",
-      "errors": {
-        "not_found": "Uitnodiging niet gevonden",
-        "invalid_transition": "Deze reactie is niet meer beschikbaar",
-        "event_cancelled": "Dit evenement is geannuleerd",
-        "deadline_passed": "De RSVP-deadline is verstreken",
-        "event_full": "Dit evenement is vol"
-      }
     }
   }
 }

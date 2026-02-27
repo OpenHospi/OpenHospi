@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   index,
   jsonb,
@@ -27,10 +27,26 @@ export const publicKeys = pgTable(
     rotatedAt: timestamp("rotated_at", { withTimezone: true }),
   },
   (table) => [
-    crudPolicy({
-      role: authenticatedRole,
-      read: sql`true`,
-      modify: authUid(table.userId),
+    pgPolicy("public_keys_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`true`,
+    }),
+    pgPolicy("public_keys_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("public_keys_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("public_keys_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
@@ -47,10 +63,26 @@ export const privateKeyBackups = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.userId),
-      modify: authUid(table.userId),
+    pgPolicy("private_key_backups_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("private_key_backups_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("private_key_backups_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("private_key_backups_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
@@ -75,16 +107,15 @@ export const reports = pgTable(
   },
   (table) => [
     index("idx_reports_status").on(table.status),
-    // Only own reports: insert and read
     pgPolicy("reports_insert_own", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: authUid(table.reporterId),
+      withCheck: sql`${table.reporterId} = ${authUid}`,
     }),
     pgPolicy("reports_select_own", {
       for: "select",
       to: authenticatedRole,
-      using: authUid(table.reporterId),
+      using: sql`${table.reporterId} = ${authUid}`,
     }),
   ],
 );
@@ -103,10 +134,26 @@ export const blocks = pgTable(
   (table) => [
     primaryKey({ columns: [table.blockerId, table.blockedId] }),
     index("idx_blocks_blocked_id").on(table.blockedId),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.blockerId),
-      modify: authUid(table.blockerId),
+    pgPolicy("blocks_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.blockerId} = ${authUid}`,
+    }),
+    pgPolicy("blocks_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.blockerId} = ${authUid}`,
+    }),
+    pgPolicy("blocks_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.blockerId} = ${authUid}`,
+      withCheck: sql`${table.blockerId} = ${authUid}`,
+    }),
+    pgPolicy("blocks_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.blockerId} = ${authUid}`,
     }),
   ],
 );

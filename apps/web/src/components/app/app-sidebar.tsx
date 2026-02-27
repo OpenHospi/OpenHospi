@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Calendar, FileText, Home, Search, Settings, User } from "lucide-react";
+import { Building2, Calendar, FileText, Home, MessageCircle, Search, Settings, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
@@ -55,6 +55,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
       label: t("invitations"),
       href: "/invitations" as const,
       icon: Calendar,
+      disabled: false,
+    },
+    {
+      label: t("chat"),
+      href: "/chat" as const,
+      icon: MessageCircle,
       disabled: false,
     },
     {

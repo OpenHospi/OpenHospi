@@ -21,20 +21,22 @@
 
 ## About
 
-OpenHospi is a free, open-source student housing platform built for the Netherlands. Authentication is handled exclusively through SURFconext, ensuring every user is a verified student at a Dutch institution. No paywalls, no middlemen — just a clean platform with end-to-end encrypted chat and full transparency through open source.
+OpenHospi is a free, open-source student housing platform built for the Netherlands. Authentication is handled
+exclusively through SURFconext, ensuring every user is a verified student at a Dutch institution. No paywalls, no
+middlemen — just a clean platform with end-to-end encrypted chat and full transparency through open source.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Web | Next.js 16, Tailwind CSS 4, shadcn/ui |
-| Mobile | Expo (React Native) |
-| Database | Neon PostgreSQL (serverless) + Drizzle ORM |
-| Storage | Vercel Blob |
-| Auth | Better Auth + SURFconext OIDC |
-| Monorepo | pnpm workspaces |
+| Layer    | Technology                            |
+|----------|---------------------------------------|
+| Web      | Next.js 16, Tailwind CSS 4, shadcn/ui |
+| Mobile   | Expo (React Native)                   |
+| Database | Supabase PostgreSQL + Drizzle ORM     |
+| Storage  | Vercel Blob                           |
+| Auth     | Better Auth + SURFconext OIDC         |
+| Monorepo | pnpm workspaces                       |
 
-## Getting Started 
+## Getting Started
 
 OpenHospi is in early development.
 

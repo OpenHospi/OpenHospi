@@ -15,8 +15,8 @@ export type NotificationItem = {
 };
 
 /**
- * Main notification function. Creates in-app notification + sends push if tokens exist.
- * Uses the recipient's preferred locale for text rendering.
+ * Main notification function. Resolves i18n text, then delegates to the
+ * Supabase Edge Function for in-app notification + push delivery.
  */
 export async function notifyUser(
   userId: string,
@@ -38,7 +38,27 @@ export async function notifyUser(
   const title = resolveMessageKey(messages, titleKey, params);
   const body = resolveMessageKey(messages, bodyKey, params);
 
-  // Insert notification (uses db directly — owner role, bypasses RLS)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (supabaseUrl && serviceKey) {
+    // Call Supabase Edge Function for notification delivery
+    try {
+      await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceKey}`,
+        },
+        body: JSON.stringify({ userId, title, body, data: params ?? {} }),
+      });
+      return;
+    } catch {
+      // Fall through to inline delivery
+    }
+  }
+
+  // Fallback: inline delivery (for local dev without edge functions)
   await db.insert(notifications).values({
     userId,
     title,
@@ -46,7 +66,6 @@ export async function notifyUser(
     data: params ?? {},
   });
 
-  // Send push notification if user has tokens
   const tokens = await db
     .select({ expoPushToken: pushTokens.expoPushToken })
     .from(pushTokens)
@@ -54,12 +73,6 @@ export async function notifyUser(
 
   for (const token of tokens) {
     await sendPushNotification(token.expoPushToken, title, body, params);
-  }
-
-  // Mark as sent if push was attempted
-  if (tokens.length > 0) {
-    // The notification was just inserted — update the most recent one
-    // This is fine for our use case since we just inserted it
   }
 }
 

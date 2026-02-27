@@ -1,2 +1,0 @@
-ALTER POLICY "rooms_select_anon" ON "rooms" TO "anonymous" USING ("rooms"."status" = 'active');--> statement-breakpoint
-ALTER POLICY "rooms_select_auth" ON "rooms" TO "authenticated" USING (("rooms"."status" = 'active' or (select auth.user_id() = "rooms"."created_by")));

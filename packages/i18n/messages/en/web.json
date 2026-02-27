@@ -338,6 +338,7 @@
       "myRooms": "My Rooms",
       "applications": "Applications",
       "invitations": "Invitations",
+      "chat": "Chat",
       "profile": "Profile",
       "settings": "Settings",
       "comingSoon": "Coming soon"
@@ -842,6 +843,22 @@
       "empty": "No notifications yet",
       "markAllRead": "Mark all as read"
     },
+    "chat": {
+      "title": "Chat",
+      "empty": "No conversations yet. Conversations are created when you're invited to a hospi.",
+      "conversation": "Conversation",
+      "encrypted_message": "Encrypted message",
+      "no_messages": "No messages yet",
+      "members_count": "{count, plural, one {# member} other {# members}}",
+      "message_placeholder": "Write a message...",
+      "decrypting": "Decrypting messages...",
+      "decryption_failed": "Could not decrypt message",
+      "send": "Send",
+      "block_user": "Block user",
+      "unblock_user": "Unblock",
+      "report_message": "Report message",
+      "blocked": "You have blocked this user"
+    },
     "invitations": {
       "title": "Invitations",
       "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
@@ -884,10 +901,10 @@
               "atScale": "~€18.50/mo (Pro)"
             },
             {
-              "name": "Neon",
-              "description": "Serverless PostgreSQL database",
+              "name": "Supabase",
+              "description": "PostgreSQL database, auth & realtime",
               "current": "€0/mo (Free)",
-              "atScale": "~€15/mo (Launch)"
+              "atScale": "~€23/mo (Pro)"
             },
             {
               "name": "SURFconext",
@@ -944,7 +961,7 @@
       "perMonth": "/mo",
       "rows": [
         { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Neon", "current": "€0", "atScale": "~€180" },
+        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
         { "name": "SURFconext", "current": "€0", "atScale": "€0" },
         { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
         { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
@@ -952,7 +969,7 @@
       ],
       "totalLabel": "Total per year",
       "currentTotal": "~€174/yr",
-      "atScaleTotal": "~€551/yr (~€46/mo)"
+      "atScaleTotal": "~€647/yr (~€54/mo)"
     },
     "keepFree": {
       "title": "How do we keep it free?",

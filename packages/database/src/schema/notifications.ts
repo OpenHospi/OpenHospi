@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   index,
@@ -34,10 +34,26 @@ export const pushTokens = pgTable(
   (table) => [
     unique("push_tokens_user_id_expo_push_token_key").on(table.userId, table.expoPushToken),
     index("idx_push_tokens_user_id").on(table.userId),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.userId),
-      modify: authUid(table.userId),
+    pgPolicy("push_tokens_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("push_tokens_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("push_tokens_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("push_tokens_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
@@ -58,23 +74,20 @@ export const notifications = pgTable(
   },
   (table) => [
     index("idx_notifications_user_id").on(table.userId, table.createdAt),
-    // Own notifications: read only (server creates them via owner connection)
     pgPolicy("notifications_select_own", {
       for: "select",
       to: authenticatedRole,
-      using: authUid(table.userId),
+      using: sql`${table.userId} = ${authUid}`,
     }),
-    // User can mark own notifications as read
     pgPolicy("notifications_update_own", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.userId),
-      withCheck: authUid(table.userId),
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
 
-// Admin audit log — no RLS (admin-only, accessed via owner connection)
 export const adminAuditLog = pgTable("admin_audit_log", {
   id: uuid("id").defaultRandom().primaryKey(),
   adminUserId: uuid("admin_user_id").notNull(),

@@ -16,11 +16,7 @@
     },
     "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=scxsdqxpbvlgxkttvajg"
-    },
-    "neon": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
+      "url": "https://mcp.supabase.com/mcp?project_ref=hvirymwzncllkjudtdsi"
     }
   }
 }

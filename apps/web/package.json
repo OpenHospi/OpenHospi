@@ -16,7 +16,9 @@
   "dependencies": {
     "@better-auth/sso": "^1.4.19",
     "@hookform/resolvers": "^5.2.2",
+    "@openhospi/crypto": "workspace:*",
     "@openhospi/database": "workspace:*",
+    "@supabase/supabase-js": "^2.49.8",
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "@openhospi/surfconext": "workspace:*",

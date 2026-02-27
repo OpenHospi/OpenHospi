@@ -338,6 +338,7 @@
       "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
       "invitations": "Einladungen",
+      "chat": "Chat",
       "profile": "Profil",
       "settings": "Einstellungen",
       "comingSoon": "Demnächst"
@@ -842,6 +843,22 @@
       "empty": "Noch keine Benachrichtigungen",
       "markAllRead": "Alle als gelesen markieren"
     },
+    "chat": {
+      "title": "Chat",
+      "empty": "Noch keine Gespräche. Gespräche werden erstellt, wenn du zu einem Hospi eingeladen wirst.",
+      "conversation": "Gespräch",
+      "encrypted_message": "Verschlüsselte Nachricht",
+      "no_messages": "Noch keine Nachrichten",
+      "members_count": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
+      "message_placeholder": "Nachricht schreiben...",
+      "decrypting": "Nachrichten entschlüsseln...",
+      "decryption_failed": "Nachricht konnte nicht entschlüsselt werden",
+      "send": "Senden",
+      "block_user": "Benutzer blockieren",
+      "unblock_user": "Entblocken",
+      "report_message": "Nachricht melden",
+      "blocked": "Du hast diesen Benutzer blockiert"
+    },
     "invitations": {
       "title": "Einladungen",
       "empty": "Noch keine Einladungen. Bewirb dich auf Zimmer, um Hospi-Einladungen zu erhalten.",
@@ -884,10 +901,10 @@
               "atScale": "~€18,50/Mo (Pro)"
             },
             {
-              "name": "Neon",
-              "description": "Serverless PostgreSQL-Datenbank",
+              "name": "Supabase",
+              "description": "PostgreSQL-Datenbank, Auth & Realtime",
               "current": "€0/Mo (Free)",
-              "atScale": "~€15/Mo (Launch)"
+              "atScale": "~€23/Mo (Pro)"
             },
             {
               "name": "SURFconext",
@@ -944,7 +961,7 @@
       "perMonth": "/Mo",
       "rows": [
         { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Neon", "current": "€0", "atScale": "~€180" },
+        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
         { "name": "SURFconext", "current": "€0", "atScale": "€0" },
         { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
         { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
@@ -952,7 +969,7 @@
       ],
       "totalLabel": "Gesamt pro Jahr",
       "currentTotal": "~€174/Jahr",
-      "atScaleTotal": "~€551/Jahr (~€46/Mo)"
+      "atScaleTotal": "~€647/Jahr (~€54/Mo)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",

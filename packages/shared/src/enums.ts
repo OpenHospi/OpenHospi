@@ -279,6 +279,29 @@ export const INVITATION_STATUSES = [
   "maybe",
 ] as const;
 export type InvitationStatus = (typeof INVITATION_STATUSES)[number];
+export const InvitationStatus = {
+  pending: "pending",
+  attending: "attending",
+  not_attending: "not_attending",
+  maybe: "maybe",
+} as const satisfies Record<InvitationStatus, InvitationStatus>;
+
+export const VALID_INVITATION_TRANSITIONS: Record<
+  InvitationStatus,
+  readonly InvitationStatus[]
+> = {
+  pending: ["attending", "not_attending", "maybe"],
+  attending: ["not_attending"],
+  maybe: ["attending", "not_attending"],
+  not_attending: [],
+} as const;
+
+export function isValidInvitationTransition(
+  from: InvitationStatus,
+  to: InvitationStatus,
+): boolean {
+  return VALID_INVITATION_TRANSITIONS[from]?.includes(to) ?? false;
+}
 
 export const HOUSE_MEMBER_ROLES = ["owner", "member"] as const;
 export type HouseMemberRole = (typeof HOUSE_MEMBER_ROLES)[number];
@@ -334,7 +357,7 @@ export const VALID_APPLICATION_TRANSITIONS: Record<
   liked: ["invited", "maybe", "rejected", "withdrawn"],
   maybe: ["liked", "invited", "rejected", "withdrawn"],
   rejected: [],
-  invited: ["accepted", "not_chosen", "withdrawn"],
+  invited: ["attending", "not_attending", "accepted", "not_chosen", "withdrawn"],
   attending: ["accepted", "not_chosen"],
   not_attending: [],
   accepted: [],

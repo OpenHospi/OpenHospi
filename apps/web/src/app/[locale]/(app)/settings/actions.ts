@@ -11,6 +11,7 @@ import {
   rooms,
   user,
 } from "@openhospi/database/schema";
+import { SUPPORTED_LOCALES, type SupportedLocale } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
@@ -57,6 +58,20 @@ export async function exportData() {
   });
 
   return { data };
+}
+
+export async function updatePreferredLocale(locale: SupportedLocale) {
+  if (!SUPPORTED_LOCALES.includes(locale)) {
+    return { error: "INVALID_LOCALE" };
+  }
+  const session = await requireSession();
+  await withRLS(session.user.id, async (tx) => {
+    await tx
+      .update(profiles)
+      .set({ preferredLocale: locale })
+      .where(eq(profiles.id, session.user.id));
+  });
+  return { success: true };
 }
 
 export async function deleteAccount() {

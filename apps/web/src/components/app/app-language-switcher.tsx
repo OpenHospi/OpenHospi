@@ -1,8 +1,10 @@
 "use client";
 
+import type { SupportedLocale } from "@openhospi/shared/constants";
 import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
 
+import { updatePreferredLocale } from "@/app/[locale]/(app)/settings/actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,6 +34,7 @@ export function AppLanguageSwitcher() {
 
   function switchLocale(newLocale: string) {
     router.replace(pathname, { locale: newLocale as "nl" | "en" | "de" });
+    updatePreferredLocale(newLocale as SupportedLocale);
   }
 
   return (

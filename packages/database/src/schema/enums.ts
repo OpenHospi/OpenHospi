@@ -1,5 +1,6 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
+import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
 import {
   ADMIN_ACTIONS,
   AFFILIATIONS,
@@ -51,3 +52,4 @@ export const adminActionEnum = pgEnum("admin_action_enum", ADMIN_ACTIONS);
 export const reportReasonEnum = pgEnum("report_reason_enum", REPORT_REASONS);
 export const reportStatusEnum = pgEnum("report_status_enum", REPORT_STATUSES);
 export const verenigingEnum = pgEnum("vereniging_enum", VERENIGINGEN);
+export const localeEnum = pgEnum("locale_enum", SUPPORTED_LOCALES);

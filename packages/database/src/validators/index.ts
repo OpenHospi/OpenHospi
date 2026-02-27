@@ -26,3 +26,5 @@ export {
 export { applyToRoomSchema, type ApplyToRoomData } from "./application";
 
 export { reviewSchema, type ReviewData } from "./review";
+
+export { createEventSchema, rsvpSchema, type CreateEventData, type RsvpData } from "./event";

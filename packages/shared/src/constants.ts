@@ -2,6 +2,7 @@ export const APP_NAME = 'OpenHospi';
 
 export const DEFAULT_LOCALE = 'nl' as const;
 export const SUPPORTED_LOCALES = ['nl', 'en', 'de'] as const;
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 // Length limits (match SQL CHECK constraints)
 export const MAX_BIO_LENGTH = 1000;
@@ -28,6 +29,18 @@ export const MAX_APPLICANTS_PER_PAGE = 100;
 
 // Application
 export const MIN_PERSONAL_MESSAGE_LENGTH = 50;
+
+// Hospi events
+export const MAX_EVENT_TITLE_LENGTH = 200;
+export const MAX_EVENT_DESCRIPTION_LENGTH = 2000;
+export const MAX_EVENT_LOCATION_LENGTH = 300;
+export const MAX_EVENT_NOTES_LENGTH = 2000;
+export const MAX_DECLINE_REASON_LENGTH = 500;
+export const MAX_INVITATIONS_PER_EVENT = 20;
+
+// Reminders & notifications
+export const REMINDER_HOURS_BEFORE_EVENT = 24;
+export const NOTIFICATIONS_PER_PAGE = 20;
 
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB

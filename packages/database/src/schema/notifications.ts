@@ -52,6 +52,7 @@ export const notifications = pgTable(
     body: text("body").notNull(),
     data: jsonb("data").default({}),
     sent: boolean("sent").default(false),
+    readAt: timestamp("read_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

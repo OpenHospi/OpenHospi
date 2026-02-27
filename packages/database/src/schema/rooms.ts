@@ -1,6 +1,6 @@
 import { RoomStatus } from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
-import { anonymousRole, authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   date,
@@ -90,7 +90,7 @@ export const rooms = pgTable(
       .where(isNotNull(table.roomVereniging)),
     pgPolicy("rooms_select_anon", {
       for: "select",
-      to: anonymousRole,
+      to: anonRole,
       using: sql`${table.status} = '${sql.raw(RoomStatus.active)}'`,
     }),
     pgPolicy("rooms_select_auth", {
@@ -98,19 +98,19 @@ export const rooms = pgTable(
       to: authenticatedRole,
       using: or(
         sql`${table.status} = '${sql.raw(RoomStatus.active)}'`,
-        authUid(table.ownerId)
+        sql`${table.ownerId} = ${authUid}`,
       ),
     }),
     pgPolicy("rooms_insert_own", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: authUid(table.ownerId),
+      withCheck: sql`${table.ownerId} = ${authUid}`,
     }),
     pgPolicy("rooms_update_own", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.ownerId),
-      withCheck: authUid(table.ownerId),
+      using: sql`${table.ownerId} = ${authUid}`,
+      withCheck: sql`${table.ownerId} = ${authUid}`,
     }),
   ],
 );
@@ -129,17 +129,31 @@ export const roomPhotos = pgTable(
   },
   (table) => [
     unique("room_photos_room_id_slot_key").on(table.roomId, table.slot),
-    // Anonymous: can see photos of active rooms
     pgPolicy("room_photos_select_anon", {
       for: "select",
-      to: anonymousRole,
+      to: anonRole,
       using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.status = '${sql.raw(RoomStatus.active)}')`,
     }),
-    // Authenticated: can see all room photos (rooms RLS already limits room visibility)
-    crudPolicy({
-      role: authenticatedRole,
-      read: true,
-      modify: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.user_id()))`,
+    pgPolicy("room_photos_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`true`,
+    }),
+    pgPolicy("room_photos_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.uid()))`,
+    }),
+    pgPolicy("room_photos_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.uid()))`,
+      withCheck: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.uid()))`,
+    }),
+    pgPolicy("room_photos_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and rooms.created_by = (select auth.uid()))`,
     }),
   ],
 );

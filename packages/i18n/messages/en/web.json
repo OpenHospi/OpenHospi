@@ -338,6 +338,7 @@
       "myRooms": "My Rooms",
       "applications": "Applications",
       "invitations": "Invitations",
+      "chat": "Chat",
       "profile": "Profile",
       "settings": "Settings",
       "comingSoon": "Coming soon"
@@ -841,6 +842,22 @@
       "title": "Notifications",
       "empty": "No notifications yet",
       "markAllRead": "Mark all as read"
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "No conversations yet. Conversations are created when you're invited to a hospi.",
+      "conversation": "Conversation",
+      "encrypted_message": "Encrypted message",
+      "no_messages": "No messages yet",
+      "members_count": "{count, plural, one {# member} other {# members}}",
+      "message_placeholder": "Write a message...",
+      "decrypting": "Decrypting messages...",
+      "decryption_failed": "Could not decrypt message",
+      "send": "Send",
+      "block_user": "Block user",
+      "unblock_user": "Unblock",
+      "report_message": "Report message",
+      "blocked": "You have blocked this user"
     },
     "invitations": {
       "title": "Invitations",

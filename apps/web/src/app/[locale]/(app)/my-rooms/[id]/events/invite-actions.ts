@@ -1,7 +1,13 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { applications, hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema";
+import {
+  applications,
+  houseMembers,
+  hospiEvents,
+  hospiInvitations,
+  rooms,
+} from "@openhospi/database/schema";
 import {
   ApplicationStatus,
   INVITABLE_APPLICATION_STATUSES,
@@ -11,6 +17,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { getOrCreateHospiConversation } from "@/lib/chat";
 import { notifyUser } from "@/lib/notifications";
 
 export async function batchInviteApplicants(
@@ -76,6 +83,29 @@ export async function batchInviteApplicants(
         eventTitle: event.title,
         roomTitle: room?.title ?? "",
       });
+    }
+
+    // Auto-create chat conversations for each invitee
+    // Get all house member user IDs
+    const [roomData] = await tx
+      .select({ houseId: rooms.houseId })
+      .from(rooms)
+      .where(eq(rooms.id, roomId));
+
+    if (roomData) {
+      const members = await tx
+        .select({ userId: houseMembers.userId })
+        .from(houseMembers)
+        .where(eq(houseMembers.houseId, roomData.houseId));
+
+      const memberIds = members.map((m) => m.userId);
+
+      for (const app of apps) {
+        await getOrCreateHospiConversation(roomId, app.userId, [
+          ...memberIds,
+          app.userId,
+        ]);
+      }
     }
   });
 

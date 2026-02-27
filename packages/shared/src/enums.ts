@@ -310,10 +310,10 @@ export const HouseMemberRole = {
   member: "member",
 } as const satisfies Record<HouseMemberRole, HouseMemberRole>;
 
-export const CONVERSATION_TYPES = ["direct", "group", "house"] as const;
+export const CONVERSATION_TYPES = ["direct", "house"] as const;
 export type ConversationType = (typeof CONVERSATION_TYPES)[number];
 
-export const MESSAGE_TYPES = ["text", "image", "system"] as const;
+export const MESSAGE_TYPES = ["text", "system"] as const;
 export type MessageType = (typeof MESSAGE_TYPES)[number];
 
 export const DELIVERY_STATUSES = ["sent", "delivered", "read"] as const;

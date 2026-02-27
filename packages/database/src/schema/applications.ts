@@ -1,6 +1,6 @@
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import { index, pgPolicy, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 import { applicationStatusEnum, reviewDecisionEnum } from "./enums";
@@ -29,23 +29,20 @@ export const applications = pgTable(
     unique("applications_room_id_user_id_key").on(table.roomId, table.userId),
     index("idx_applications_user_id").on(table.userId),
     index("idx_applications_room_id_status").on(table.roomId, table.status),
-    // Applicant sees own + housemates see applications for their rooms
     pgPolicy("applications_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`(select auth.uid()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Only applicant can create
     pgPolicy("applications_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: authUid(table.userId),
+      withCheck: sql`${table.userId} = ${authUid}`,
     }),
-    // Applicant can update own (withdraw), housemates owner/admin can update status
     pgPolicy("applications_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`(select auth.user_id()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()) and room_members_rls.role = '${sql.raw(HouseMemberRole.owner)}')`,
+      using: sql`(select auth.uid()) = ${table.userId} or exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid()) and room_members_rls.role = '${sql.raw(HouseMemberRole.owner)}')`,
     }),
   ],
 );
@@ -73,23 +70,20 @@ export const reviews = pgTable(
       table.reviewerId,
       table.applicantId,
     ),
-    // All housemates of the room can see reviews
     pgPolicy("reviews_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Housemates can insert their own reviews
     pgPolicy("reviews_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${authUid(table.reviewerId)} and exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
+      withCheck: sql`${table.reviewerId} = ${authUid} and exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Reviewer can update their own review
     pgPolicy("reviews_update", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.reviewerId),
+      using: sql`${table.reviewerId} = ${authUid}`,
     }),
   ],
 );

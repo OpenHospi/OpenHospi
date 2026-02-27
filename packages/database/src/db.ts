@@ -1,17 +1,17 @@
-import { drizzle, type NeonDatabase } from "drizzle-orm/neon-serverless";
-import { Pool } from "@neondatabase/serverless";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 import * as schema from "./schema";
 import { relations } from "./schema/relations";
 
-type DB = NeonDatabase<typeof schema, typeof relations>;
+type DB = PostgresJsDatabase<typeof schema, typeof relations>;
 
 let _db: DB | null = null;
 
 function getDb(): DB {
   if (!_db) {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
-    _db = drizzle({ client: pool, schema, relations });
+    const client = postgres(process.env.POSTGRES_URL!, { prepare: false });
+    _db = drizzle({ client, schema, relations });
   }
   return _db;
 }

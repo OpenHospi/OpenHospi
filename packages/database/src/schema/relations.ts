@@ -206,6 +206,11 @@ export const relations = defineRelations(
         from: r.conversations.roomId,
         to: r.rooms.id,
       }),
+      seeker: r.one.profiles({
+        from: r.conversations.seekerUserId,
+        to: r.profiles.id,
+        alias: "seeker",
+      }),
       members: r.many.conversationMembers(),
       messages: r.many.messages(),
     },

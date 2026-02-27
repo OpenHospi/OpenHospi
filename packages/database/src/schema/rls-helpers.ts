@@ -8,7 +8,7 @@ import { rooms } from "./rooms";
 /**
  * Internal views used by RLS policy subqueries.
  *
- * Without `securityInvoker`, these views run as the view owner (neondb_owner)
+ * Without `securityInvoker`, these views run as the view owner (postgres)
  * which bypasses RLS — preventing infinite recursion when a policy on
  * `house_members` or `conversation_members` needs to subquery the same table.
  */

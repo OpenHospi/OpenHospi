@@ -1,5 +1,5 @@
 import { isNotNull, sql } from "drizzle-orm";
-import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   date,
@@ -75,8 +75,8 @@ export const profiles = pgTable(
     pgPolicy("profiles_update_own", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.id),
-      withCheck: authUid(table.id),
+      using: sql`${table.id} = ${authUid}`,
+      withCheck: sql`${table.id} = ${authUid}`,
     }),
   ],
 );
@@ -96,10 +96,26 @@ export const profilePhotos = pgTable(
   (table) => [
     unique("profile_photos_user_id_slot_key").on(table.userId, table.slot),
     index("idx_profile_photos_user").on(table.userId),
-    crudPolicy({
-      role: authenticatedRole,
-      read: sql`true`,
-      modify: authUid(table.userId),
+    pgPolicy("profile_photos_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`true`,
+    }),
+    pgPolicy("profile_photos_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("profile_photos_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("profile_photos_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );

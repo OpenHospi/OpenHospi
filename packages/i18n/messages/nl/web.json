@@ -338,6 +338,7 @@
       "myRooms": "Mijn kamers",
       "applications": "Reacties",
       "invitations": "Uitnodigingen",
+      "chat": "Chat",
       "profile": "Profiel",
       "settings": "Instellingen",
       "comingSoon": "Binnenkort"
@@ -841,6 +842,22 @@
       "title": "Meldingen",
       "empty": "Nog geen meldingen",
       "markAllRead": "Alles als gelezen markeren"
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "Nog geen gesprekken. Gesprekken worden aangemaakt wanneer je wordt uitgenodigd voor een hospi.",
+      "conversation": "Gesprek",
+      "encrypted_message": "Versleuteld bericht",
+      "no_messages": "Nog geen berichten",
+      "members_count": "{count, plural, one {# lid} other {# leden}}",
+      "message_placeholder": "Schrijf een bericht...",
+      "decrypting": "Berichten ontsleutelen...",
+      "decryption_failed": "Kon bericht niet ontsleutelen",
+      "send": "Versturen",
+      "block_user": "Gebruiker blokkeren",
+      "unblock_user": "Deblokkeren",
+      "report_message": "Bericht melden",
+      "blocked": "Je hebt deze gebruiker geblokkeerd"
     },
     "invitations": {
       "title": "Uitnodigingen",

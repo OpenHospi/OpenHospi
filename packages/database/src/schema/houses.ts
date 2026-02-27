@@ -1,5 +1,5 @@
 import { or, sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import { index, pgPolicy, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 import { houseMemberRoleEnum } from "./enums";
@@ -25,20 +25,20 @@ export const houses = pgTable(
       for: "select",
       to: authenticatedRole,
       using: or(
-        authUid(table.createdBy),
-        sql`exists(select 1 from house_members_rls where house_members_rls.house_id = ${table.id} and house_members_rls.user_id = (select auth.user_id()))`,
+        sql`${table.createdBy} = ${authUid}`,
+        sql`exists(select 1 from house_members_rls where house_members_rls.house_id = ${table.id} and house_members_rls.user_id = (select auth.uid()))`,
       ),
     }),
     pgPolicy("houses_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: authUid(table.createdBy),
+      withCheck: sql`${table.createdBy} = ${authUid}`,
     }),
     pgPolicy("houses_update", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.createdBy),
-      withCheck: authUid(table.createdBy),
+      using: sql`${table.createdBy} = ${authUid}`,
+      withCheck: sql`${table.createdBy} = ${authUid}`,
     }),
   ],
 );
@@ -63,17 +63,17 @@ export const houseMembers = pgTable(
     pgPolicy("house_members_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from house_members_rls where house_members_rls.house_id = ${table.houseId} and house_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from house_members_rls where house_members_rls.house_id = ${table.houseId} and house_members_rls.user_id = (select auth.uid()))`,
     }),
     pgPolicy("house_members_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`exists(select 1 from houses where houses.id = ${table.houseId} and houses.created_by = (select auth.user_id()))`,
+      withCheck: sql`exists(select 1 from houses where houses.id = ${table.houseId} and houses.created_by = (select auth.uid()))`,
     }),
     pgPolicy("house_members_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`exists(select 1 from houses where houses.id = ${table.houseId} and houses.created_by = (select auth.user_id()))`,
+      using: sql`exists(select 1 from houses where houses.id = ${table.houseId} and houses.created_by = (select auth.uid()))`,
     }),
   ],
 );

@@ -338,6 +338,7 @@
       "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
       "invitations": "Einladungen",
+      "chat": "Chat",
       "profile": "Profil",
       "settings": "Einstellungen",
       "comingSoon": "Demnächst"
@@ -841,6 +842,22 @@
       "title": "Benachrichtigungen",
       "empty": "Noch keine Benachrichtigungen",
       "markAllRead": "Alle als gelesen markieren"
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "Noch keine Gespräche. Gespräche werden erstellt, wenn du zu einem Hospi eingeladen wirst.",
+      "conversation": "Gespräch",
+      "encrypted_message": "Verschlüsselte Nachricht",
+      "no_messages": "Noch keine Nachrichten",
+      "members_count": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
+      "message_placeholder": "Nachricht schreiben...",
+      "decrypting": "Nachrichten entschlüsseln...",
+      "decryption_failed": "Nachricht konnte nicht entschlüsselt werden",
+      "send": "Senden",
+      "block_user": "Benutzer blockieren",
+      "unblock_user": "Entblocken",
+      "report_message": "Nachricht melden",
+      "blocked": "Du hast diesen Benutzer blockiert"
     },
     "invitations": {
       "title": "Einladungen",

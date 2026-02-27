@@ -1,13 +1,15 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   index,
+  jsonb,
   pgPolicy,
   pgTable,
   primaryKey,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -20,17 +22,17 @@ export const conversations = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     roomId: uuid("room_id").references(() => rooms.id, { onDelete: "cascade" }),
+    seekerUserId: uuid("seeker_user_id").references(() => profiles.id),
     type: conversationTypeEnum("type").notNull().default("direct"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    // Only conversation members can view (uses view to avoid recursion through conversation_members RLS)
+    unique("conversations_room_id_seeker_user_id_key").on(table.roomId, table.seekerUserId),
     pgPolicy("conversations_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.id} and conversation_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.id} and conversation_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Any authenticated user can create a conversation
     pgPolicy("conversations_insert", {
       for: "insert",
       to: authenticatedRole,
@@ -54,29 +56,25 @@ export const conversationMembers = pgTable(
   (table) => [
     primaryKey({ columns: [table.conversationId, table.userId] }),
     index("idx_conversation_members_user_id").on(table.userId),
-    // All members of the same conversation can see each other (uses view to avoid infinite recursion)
     pgPolicy("conversation_members_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Self-add or existing member can add others (uses view to avoid recursion)
     pgPolicy("conversation_members_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.userId} = (select auth.user_id()) or exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
+      withCheck: sql`${table.userId} = (select auth.uid()) or exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Own membership only (e.g. mute toggle)
     pgPolicy("conversation_members_update", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.userId),
+      using: sql`${table.userId} = ${authUid}`,
     }),
-    // Own membership only (leave)
     pgPolicy("conversation_members_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: authUid(table.userId),
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
@@ -93,34 +91,31 @@ export const messages = pgTable(
       .references(() => profiles.id),
     ciphertext: text("ciphertext").notNull(),
     iv: text("iv").notNull(),
+    encryptedKeys: jsonb("encrypted_keys"),
     messageType: messageTypeEnum("message_type").notNull().default("text"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     index("idx_messages_conversation_created").on(table.conversationId, table.createdAt),
-    // Conversation members can read messages (uses view to avoid recursion through conversation_members RLS)
     pgPolicy("messages_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Sender must be conversation member (uses view to avoid recursion)
     pgPolicy("messages_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.senderId} = (select auth.user_id()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.user_id()))`,
+      withCheck: sql`${table.senderId} = (select auth.uid()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Sender only can update
     pgPolicy("messages_update", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.senderId),
+      using: sql`${table.senderId} = ${authUid}`,
     }),
-    // Sender only can delete
     pgPolicy("messages_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: authUid(table.senderId),
+      using: sql`${table.senderId} = ${authUid}`,
     }),
   ],
 );
@@ -140,10 +135,26 @@ export const messageReceipts = pgTable(
   },
   (table) => [
     primaryKey({ columns: [table.messageId, table.userId] }),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.userId),
-      modify: authUid(table.userId),
+    pgPolicy("message_receipts_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("message_receipts_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("message_receipts_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("message_receipts_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );

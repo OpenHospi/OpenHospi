@@ -11,12 +11,12 @@ export default defineConfig({
   out: "./migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL_UNPOOLED!,
+    url: process.env.POSTGRES_URL_NON_POOLING!,
   },
   schemaFilter: ["public"],
   entities: {
     roles: {
-      provider: "neon"
+      provider: "supabase"
     }
   },
 });

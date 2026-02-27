@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   date,
   index,
@@ -45,30 +45,26 @@ export const hospiEvents = pgTable(
       .$onUpdateFn(() => new Date()),
   },
   (table) => [
-    // All housemates of the room can view events (uses view to avoid recursion through housemates RLS)
     pgPolicy("hospi_events_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Only event creator can insert
     pgPolicy("hospi_events_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: authUid(table.createdBy),
+      withCheck: sql`${table.createdBy} = ${authUid}`,
     }),
-    // Only event creator can update
     pgPolicy("hospi_events_update", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.createdBy),
-      withCheck: authUid(table.createdBy),
+      using: sql`${table.createdBy} = ${authUid}`,
+      withCheck: sql`${table.createdBy} = ${authUid}`,
     }),
-    // Only event creator can delete
     pgPolicy("hospi_events_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: authUid(table.createdBy),
+      using: sql`${table.createdBy} = ${authUid}`,
     }),
   ],
 );
@@ -94,29 +90,25 @@ export const hospiInvitations = pgTable(
     unique("hospi_invitations_event_id_user_id_key").on(table.eventId, table.userId),
     index("idx_hospi_invitations_event_id").on(table.eventId),
     index("idx_hospi_invitations_user_id").on(table.userId),
-    // Invitee OR event creator can view
     pgPolicy("hospi_invitations_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${table.userId} = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id()))`,
+      using: sql`${table.userId} = (select auth.uid()) or exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.uid()))`,
     }),
-    // Only event creator can invite
     pgPolicy("hospi_invitations_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id()))`,
+      withCheck: sql`exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.uid()))`,
     }),
-    // Invitee (RSVP) or event creator can update
     pgPolicy("hospi_invitations_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`${table.userId} = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id()))`,
+      using: sql`${table.userId} = (select auth.uid()) or exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.uid()))`,
     }),
-    // Only event creator can delete
     pgPolicy("hospi_invitations_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.user_id()))`,
+      using: sql`exists(select 1 from hospi_events where hospi_events.id = ${table.eventId} and hospi_events.created_by = (select auth.uid()))`,
     }),
   ],
 );
@@ -145,30 +137,26 @@ export const votes = pgTable(
       table.applicantId,
       table.round,
     ),
-    // All housemates of the room can view votes (transparency)
     pgPolicy("votes_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid()))`,
     }),
-    // Only the voter can insert
     pgPolicy("votes_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: authUid(table.voterId),
+      withCheck: sql`${table.voterId} = ${authUid}`,
     }),
-    // Only the voter can update
     pgPolicy("votes_update", {
       for: "update",
       to: authenticatedRole,
-      using: authUid(table.voterId),
-      withCheck: authUid(table.voterId),
+      using: sql`${table.voterId} = ${authUid}`,
+      withCheck: sql`${table.voterId} = ${authUid}`,
     }),
-    // Only the voter can delete
     pgPolicy("votes_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: authUid(table.voterId),
+      using: sql`${table.voterId} = ${authUid}`,
     }),
   ],
 );

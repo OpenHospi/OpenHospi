@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "0f96bb0a-eabc-46af-be0f-a3efa8c34f45",
+  "id": "d41fcd14-397b-4f29-b259-b70e3879075c",
   "prevIds": [
-    "7277edaa-89b5-464f-865f-95ef17f244bb"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -117,7 +117,6 @@
     {
       "values": [
         "direct",
-        "group",
         "house"
       ],
       "name": "conversation_type_enum",
@@ -166,6 +165,15 @@
     },
     {
       "values": [
+        "owner",
+        "member"
+      ],
+      "name": "house_member_role_enum",
+      "entityType": "enums",
+      "schema": "public"
+    },
+    {
+      "values": [
         "studentenhuis",
         "appartement",
         "studio",
@@ -173,16 +181,6 @@
         "anti_kraak"
       ],
       "name": "house_type_enum",
-      "entityType": "enums",
-      "schema": "public"
-    },
-    {
-      "values": [
-        "owner",
-        "admin",
-        "member"
-      ],
-      "name": "housemate_role_enum",
       "entityType": "enums",
       "schema": "public"
     },
@@ -252,6 +250,16 @@
     },
     {
       "values": [
+        "nl",
+        "en",
+        "de"
+      ],
+      "name": "locale_enum",
+      "entityType": "enums",
+      "schema": "public"
+    },
+    {
+      "values": [
         "dichtbij_universiteit",
         "dichtbij_station",
         "dichtbij_ov",
@@ -270,7 +278,6 @@
     {
       "values": [
         "text",
-        "image",
         "system"
       ],
       "name": "message_type_enum",
@@ -583,7 +590,13 @@
     },
     {
       "isRlsEnabled": true,
-      "name": "housemates",
+      "name": "house_members",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": true,
+      "name": "houses",
       "entityType": "tables",
       "schema": "public"
     },
@@ -1034,6 +1047,19 @@
       "table": "session"
     },
     {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "impersonated_by",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "session"
+    },
+    {
       "type": "uuid",
       "typeSchema": null,
       "notNull": true,
@@ -1198,6 +1224,58 @@
       "generated": null,
       "identity": null,
       "name": "image",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": "'user'",
+      "generated": null,
+      "identity": null,
+      "name": "role",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "banned",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "ban_reason",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "ban_expires",
       "entityType": "columns",
       "schema": "public",
       "table": "user"
@@ -1671,6 +1749,19 @@
       "table": "profiles"
     },
     {
+      "type": "locale_enum",
+      "typeSchema": "public",
+      "notNull": false,
+      "dimensions": 0,
+      "default": "'nl'",
+      "generated": null,
+      "identity": null,
+      "name": "preferred_locale",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "profiles"
+    },
+    {
       "type": "jsonb",
       "typeSchema": null,
       "notNull": false,
@@ -1733,7 +1824,7 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "type": "uuid",
@@ -1743,10 +1834,10 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "room_id",
+      "name": "house_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "type": "uuid",
@@ -1759,12 +1850,12 @@
       "name": "user_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
-      "type": "housemate_role_enum",
+      "type": "house_member_role_enum",
       "typeSchema": "public",
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
       "default": "'member'",
       "generated": null,
@@ -1772,7 +1863,7 @@
       "name": "role",
       "entityType": "columns",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "type": "timestamp with time zone",
@@ -1785,7 +1876,85 @@
       "name": "joined_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "invite_code",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "created_by",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "houses"
     },
     {
       "type": "uuid",
@@ -1887,6 +2056,19 @@
       "generated": null,
       "identity": null,
       "name": "created_by",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "rooms"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "house_id",
       "entityType": "columns",
       "schema": "public",
       "table": "rooms"
@@ -2974,6 +3156,19 @@
       "table": "conversations"
     },
     {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "seeker_user_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "conversations"
+    },
+    {
       "type": "conversation_type_enum",
       "typeSchema": "public",
       "notNull": true,
@@ -3125,6 +3320,19 @@
       "generated": null,
       "identity": null,
       "name": "iv",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "messages"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "encrypted_keys",
       "entityType": "columns",
       "schema": "public",
       "table": "messages"
@@ -3652,6 +3860,19 @@
     {
       "type": "timestamp with time zone",
       "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "read_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "notifications"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
       "default": "now()",
@@ -3881,16 +4102,16 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_housemates_user_id",
+      "name": "idx_house_members_user_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "nameExplicit": true,
       "columns": [
         {
-          "value": "room_id",
+          "value": "house_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3902,10 +4123,10 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_housemates_room_id",
+      "name": "idx_house_members_house_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "nameExplicit": true,
@@ -4317,19 +4538,19 @@
     {
       "nameExplicit": false,
       "columns": [
-        "room_id"
+        "house_id"
       ],
       "schemaTo": "public",
-      "tableTo": "rooms",
+      "tableTo": "houses",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "housemates_room_id_rooms_id_fkey",
+      "name": "house_members_house_id_houses_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "nameExplicit": false,
@@ -4343,10 +4564,27 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "housemates_user_id_profiles_id_fkey",
+      "name": "house_members_user_id_profiles_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "created_by"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "houses_created_by_profiles_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "houses"
     },
     {
       "nameExplicit": false,
@@ -4378,6 +4616,23 @@
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "name": "rooms_created_by_profiles_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "rooms"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "house_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "houses",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "rooms_house_id_houses_id_fkey",
       "entityType": "fks",
       "schema": "public",
       "table": "rooms"
@@ -4650,6 +4905,23 @@
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "conversations_room_id_rooms_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "conversations"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "seeker_user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "conversations_seeker_user_id_profiles_id_fkey",
       "entityType": "fks",
       "schema": "public",
       "table": "conversations"
@@ -5010,9 +5282,19 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "housemates_pkey",
+      "name": "house_members_pkey",
       "schema": "public",
-      "table": "housemates",
+      "table": "house_members",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "houses_pkey",
+      "schema": "public",
+      "table": "houses",
       "entityType": "pks"
     },
     {
@@ -5180,14 +5462,14 @@
     {
       "nameExplicit": true,
       "columns": [
-        "room_id",
+        "house_id",
         "user_id"
       ],
       "nullsNotDistinct": false,
-      "name": "housemates_room_id_user_id_key",
+      "name": "house_members_house_id_user_id_key",
       "entityType": "uniques",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "nameExplicit": true,
@@ -5255,6 +5537,18 @@
     {
       "nameExplicit": true,
       "columns": [
+        "room_id",
+        "seeker_user_id"
+      ],
+      "nullsNotDistinct": false,
+      "name": "conversations_room_id_seeker_user_id_key",
+      "entityType": "uniques",
+      "schema": "public",
+      "table": "conversations"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
         "user_id",
         "expo_push_token"
       ],
@@ -5300,6 +5594,17 @@
     {
       "nameExplicit": false,
       "columns": [
+        "invite_code"
+      ],
+      "nullsNotDistinct": false,
+      "name": "houses_invite_code_key",
+      "schema": "public",
+      "table": "houses",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
         "share_link"
       ],
       "nullsNotDistinct": false,
@@ -5316,7 +5621,7 @@
       ],
       "using": "true",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "profile_photos_select",
       "entityType": "policies",
       "schema": "public",
       "table": "profile_photos"
@@ -5328,8 +5633,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"profile_photos\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"profile_photos\".\"user_id\" = (select auth.uid())",
+      "name": "profile_photos_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "profile_photos"
@@ -5340,9 +5645,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"profile_photos\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"profile_photos\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"profile_photos\".\"user_id\" = (select auth.uid())",
+      "withCheck": "\"profile_photos\".\"user_id\" = (select auth.uid())",
+      "name": "profile_photos_update",
       "entityType": "policies",
       "schema": "public",
       "table": "profile_photos"
@@ -5353,9 +5658,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"profile_photos\".\"user_id\")",
+      "using": "\"profile_photos\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "profile_photos_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "profile_photos"
@@ -5379,8 +5684,8 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"profiles\".\"id\")",
-      "withCheck": "(select auth.user_id() = \"profiles\".\"id\")",
+      "using": "\"profiles\".\"id\" = (select auth.uid())",
+      "withCheck": "\"profiles\".\"id\" = (select auth.uid())",
       "name": "profiles_update_own",
       "entityType": "policies",
       "schema": "public",
@@ -5392,12 +5697,12 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"housemates\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from house_members_rls where house_members_rls.house_id = \"house_members\".\"house_id\" and house_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
-      "name": "housemates_select",
+      "name": "house_members_select",
       "entityType": "policies",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "as": "PERMISSIVE",
@@ -5406,11 +5711,11 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "exists(select 1 from rooms where rooms.id = \"housemates\".\"room_id\" and rooms.created_by = (select auth.user_id()))",
-      "name": "housemates_insert",
+      "withCheck": "exists(select 1 from houses where houses.id = \"house_members\".\"house_id\" and houses.created_by = (select auth.uid()))",
+      "name": "house_members_insert",
       "entityType": "policies",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "as": "PERMISSIVE",
@@ -5418,18 +5723,57 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from rooms where rooms.id = \"housemates\".\"room_id\" and rooms.created_by = (select auth.user_id()))",
+      "using": "exists(select 1 from houses where houses.id = \"house_members\".\"house_id\" and houses.created_by = (select auth.uid()))",
       "withCheck": null,
-      "name": "housemates_delete",
+      "name": "house_members_delete",
       "entityType": "policies",
       "schema": "public",
-      "table": "housemates"
+      "table": "house_members"
     },
     {
       "as": "PERMISSIVE",
       "for": "SELECT",
       "roles": [
-        "anonymous"
+        "authenticated"
+      ],
+      "using": "(\"houses\".\"created_by\" = (select auth.uid()) or exists(select 1 from house_members_rls where house_members_rls.house_id = \"houses\".\"id\" and house_members_rls.user_id = (select auth.uid())))",
+      "withCheck": null,
+      "name": "houses_select",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "INSERT",
+      "roles": [
+        "authenticated"
+      ],
+      "using": null,
+      "withCheck": "\"houses\".\"created_by\" = (select auth.uid())",
+      "name": "houses_insert",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "UPDATE",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "\"houses\".\"created_by\" = (select auth.uid())",
+      "withCheck": "\"houses\".\"created_by\" = (select auth.uid())",
+      "name": "houses_update",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "houses"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "SELECT",
+      "roles": [
+        "anon"
       ],
       "using": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.status = 'active')",
       "withCheck": null,
@@ -5446,7 +5790,7 @@
       ],
       "using": "true",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "room_photos_select",
       "entityType": "policies",
       "schema": "public",
       "table": "room_photos"
@@ -5458,8 +5802,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.user_id()))",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.uid()))",
+      "name": "room_photos_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "room_photos"
@@ -5470,9 +5814,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.user_id()))",
-      "withCheck": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.user_id()))",
-      "name": "crud-authenticated-policy-update",
+      "using": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.uid()))",
+      "withCheck": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.uid()))",
+      "name": "room_photos_update",
       "entityType": "policies",
       "schema": "public",
       "table": "room_photos"
@@ -5483,9 +5827,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.user_id()))",
+      "using": "exists(select 1 from rooms where rooms.id = \"room_photos\".\"room_id\" and rooms.created_by = (select auth.uid()))",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "room_photos_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "room_photos"
@@ -5494,7 +5838,7 @@
       "as": "PERMISSIVE",
       "for": "SELECT",
       "roles": [
-        "anonymous"
+        "anon"
       ],
       "using": "\"rooms\".\"status\" = 'active'",
       "withCheck": null,
@@ -5509,7 +5853,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(\"rooms\".\"status\" = 'active' or (select auth.user_id() = \"rooms\".\"created_by\"))",
+      "using": "(\"rooms\".\"status\" = 'active' or \"rooms\".\"created_by\" = (select auth.uid()))",
       "withCheck": null,
       "name": "rooms_select_auth",
       "entityType": "policies",
@@ -5523,7 +5867,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"rooms\".\"created_by\")",
+      "withCheck": "\"rooms\".\"created_by\" = (select auth.uid())",
       "name": "rooms_insert_own",
       "entityType": "policies",
       "schema": "public",
@@ -5535,8 +5879,8 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"rooms\".\"created_by\")",
-      "withCheck": "(select auth.user_id() = \"rooms\".\"created_by\")",
+      "using": "\"rooms\".\"created_by\" = (select auth.uid())",
+      "withCheck": "\"rooms\".\"created_by\" = (select auth.uid())",
       "name": "rooms_update_own",
       "entityType": "policies",
       "schema": "public",
@@ -5548,7 +5892,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id()) = \"applications\".\"user_id\" or exists(select 1 from room_members_rls where room_members_rls.room_id = \"applications\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
+      "using": "(select auth.uid()) = \"applications\".\"user_id\" or exists(select 1 from room_members_rls where room_members_rls.room_id = \"applications\".\"room_id\" and room_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
       "name": "applications_select",
       "entityType": "policies",
@@ -5562,7 +5906,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"applications\".\"user_id\")",
+      "withCheck": "\"applications\".\"user_id\" = (select auth.uid())",
       "name": "applications_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5574,7 +5918,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id()) = \"applications\".\"user_id\" or exists(select 1 from room_members_rls where room_members_rls.room_id = \"applications\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()) and room_members_rls.role in ('owner', 'admin'))",
+      "using": "(select auth.uid()) = \"applications\".\"user_id\" or exists(select 1 from room_members_rls where room_members_rls.room_id = \"applications\".\"room_id\" and room_members_rls.user_id = (select auth.uid()) and room_members_rls.role = 'owner')",
       "withCheck": null,
       "name": "applications_update",
       "entityType": "policies",
@@ -5587,7 +5931,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"reviews\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"reviews\".\"room_id\" and room_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
       "name": "reviews_select",
       "entityType": "policies",
@@ -5601,7 +5945,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"reviews\".\"reviewer_id\") and exists(select 1 from room_members_rls where room_members_rls.room_id = \"reviews\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
+      "withCheck": "\"reviews\".\"reviewer_id\" = (select auth.uid()) and exists(select 1 from room_members_rls where room_members_rls.room_id = \"reviews\".\"room_id\" and room_members_rls.user_id = (select auth.uid()))",
       "name": "reviews_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5613,7 +5957,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"reviews\".\"reviewer_id\")",
+      "using": "\"reviews\".\"reviewer_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "reviews_update",
       "entityType": "policies",
@@ -5626,7 +5970,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"hospi_events\".\"room_id\" and room_members_rls.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"hospi_events\".\"room_id\" and room_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
       "name": "hospi_events_select",
       "entityType": "policies",
@@ -5640,7 +5984,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
+      "withCheck": "\"hospi_events\".\"created_by\" = (select auth.uid())",
       "name": "hospi_events_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5652,8 +5996,8 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
-      "withCheck": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
+      "using": "\"hospi_events\".\"created_by\" = (select auth.uid())",
+      "withCheck": "\"hospi_events\".\"created_by\" = (select auth.uid())",
       "name": "hospi_events_update",
       "entityType": "policies",
       "schema": "public",
@@ -5665,7 +6009,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"hospi_events\".\"created_by\")",
+      "using": "\"hospi_events\".\"created_by\" = (select auth.uid())",
       "withCheck": null,
       "name": "hospi_events_delete",
       "entityType": "policies",
@@ -5678,7 +6022,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
+      "using": "\"hospi_invitations\".\"user_id\" = (select auth.uid()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.uid()))",
       "withCheck": null,
       "name": "hospi_invitations_select",
       "entityType": "policies",
@@ -5692,7 +6036,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
+      "withCheck": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.uid()))",
       "name": "hospi_invitations_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5704,7 +6048,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "\"hospi_invitations\".\"user_id\" = (select auth.user_id()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
+      "using": "\"hospi_invitations\".\"user_id\" = (select auth.uid()) or exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.uid()))",
       "withCheck": null,
       "name": "hospi_invitations_update",
       "entityType": "policies",
@@ -5717,7 +6061,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.user_id()))",
+      "using": "exists(select 1 from hospi_events where hospi_events.id = \"hospi_invitations\".\"event_id\" and hospi_events.created_by = (select auth.uid()))",
       "withCheck": null,
       "name": "hospi_invitations_delete",
       "entityType": "policies",
@@ -5730,9 +6074,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"votes\".\"voter_id\")",
+      "using": "exists(select 1 from room_members_rls where room_members_rls.room_id = \"votes\".\"room_id\" and room_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "votes_select",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5744,8 +6088,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"votes\".\"voter_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"votes\".\"voter_id\" = (select auth.uid())",
+      "name": "votes_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5756,9 +6100,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"votes\".\"voter_id\")",
-      "withCheck": "(select auth.user_id() = \"votes\".\"voter_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"votes\".\"voter_id\" = (select auth.uid())",
+      "withCheck": "\"votes\".\"voter_id\" = (select auth.uid())",
+      "name": "votes_update",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5769,9 +6113,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"votes\".\"voter_id\")",
+      "using": "\"votes\".\"voter_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "votes_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "votes"
@@ -5782,7 +6126,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversation_members\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversation_members\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
       "name": "conversation_members_select",
       "entityType": "policies",
@@ -5796,7 +6140,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "\"conversation_members\".\"user_id\" = (select auth.user_id()) or exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversation_members\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
+      "withCheck": "\"conversation_members\".\"user_id\" = (select auth.uid()) or exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversation_members\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.uid()))",
       "name": "conversation_members_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5808,7 +6152,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
+      "using": "\"conversation_members\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "conversation_members_update",
       "entityType": "policies",
@@ -5821,7 +6165,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"conversation_members\".\"user_id\")",
+      "using": "\"conversation_members\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "conversation_members_delete",
       "entityType": "policies",
@@ -5834,7 +6178,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversations\".\"id\" and conversation_members_rls.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"conversations\".\"id\" and conversation_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
       "name": "conversations_select",
       "entityType": "policies",
@@ -5860,9 +6204,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
+      "using": "\"message_receipts\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "message_receipts_select",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5874,8 +6218,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"message_receipts\".\"user_id\" = (select auth.uid())",
+      "name": "message_receipts_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5886,9 +6230,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"message_receipts\".\"user_id\" = (select auth.uid())",
+      "withCheck": "\"message_receipts\".\"user_id\" = (select auth.uid())",
+      "name": "message_receipts_update",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5899,9 +6243,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"message_receipts\".\"user_id\")",
+      "using": "\"message_receipts\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "message_receipts_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "message_receipts"
@@ -5912,7 +6256,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"messages\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
+      "using": "exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"messages\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.uid()))",
       "withCheck": null,
       "name": "messages_select",
       "entityType": "policies",
@@ -5926,7 +6270,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "\"messages\".\"sender_id\" = (select auth.user_id()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"messages\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.user_id()))",
+      "withCheck": "\"messages\".\"sender_id\" = (select auth.uid()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = \"messages\".\"conversation_id\" and conversation_members_rls.user_id = (select auth.uid()))",
       "name": "messages_insert",
       "entityType": "policies",
       "schema": "public",
@@ -5938,7 +6282,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"messages\".\"sender_id\")",
+      "using": "\"messages\".\"sender_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "messages_update",
       "entityType": "policies",
@@ -5951,7 +6295,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"messages\".\"sender_id\")",
+      "using": "\"messages\".\"sender_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "messages_delete",
       "entityType": "policies",
@@ -5964,9 +6308,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"blocks\".\"blocker_id\")",
+      "using": "\"blocks\".\"blocker_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "blocks_select",
       "entityType": "policies",
       "schema": "public",
       "table": "blocks"
@@ -5978,8 +6322,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"blocks\".\"blocker_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"blocks\".\"blocker_id\" = (select auth.uid())",
+      "name": "blocks_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "blocks"
@@ -5990,9 +6334,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"blocks\".\"blocker_id\")",
-      "withCheck": "(select auth.user_id() = \"blocks\".\"blocker_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"blocks\".\"blocker_id\" = (select auth.uid())",
+      "withCheck": "\"blocks\".\"blocker_id\" = (select auth.uid())",
+      "name": "blocks_update",
       "entityType": "policies",
       "schema": "public",
       "table": "blocks"
@@ -6003,9 +6347,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"blocks\".\"blocker_id\")",
+      "using": "\"blocks\".\"blocker_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "blocks_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "blocks"
@@ -6016,9 +6360,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"private_key_backups\".\"user_id\")",
+      "using": "\"private_key_backups\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "private_key_backups_select",
       "entityType": "policies",
       "schema": "public",
       "table": "private_key_backups"
@@ -6030,8 +6374,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"private_key_backups\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"private_key_backups\".\"user_id\" = (select auth.uid())",
+      "name": "private_key_backups_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "private_key_backups"
@@ -6042,9 +6386,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"private_key_backups\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"private_key_backups\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"private_key_backups\".\"user_id\" = (select auth.uid())",
+      "withCheck": "\"private_key_backups\".\"user_id\" = (select auth.uid())",
+      "name": "private_key_backups_update",
       "entityType": "policies",
       "schema": "public",
       "table": "private_key_backups"
@@ -6055,9 +6399,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"private_key_backups\".\"user_id\")",
+      "using": "\"private_key_backups\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "private_key_backups_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "private_key_backups"
@@ -6070,7 +6414,7 @@
       ],
       "using": "true",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "public_keys_select",
       "entityType": "policies",
       "schema": "public",
       "table": "public_keys"
@@ -6082,8 +6426,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"public_keys\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"public_keys\".\"user_id\" = (select auth.uid())",
+      "name": "public_keys_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "public_keys"
@@ -6094,9 +6438,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"public_keys\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"public_keys\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"public_keys\".\"user_id\" = (select auth.uid())",
+      "withCheck": "\"public_keys\".\"user_id\" = (select auth.uid())",
+      "name": "public_keys_update",
       "entityType": "policies",
       "schema": "public",
       "table": "public_keys"
@@ -6107,9 +6451,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"public_keys\".\"user_id\")",
+      "using": "\"public_keys\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "public_keys_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "public_keys"
@@ -6121,7 +6465,7 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"reports\".\"reporter_id\")",
+      "withCheck": "\"reports\".\"reporter_id\" = (select auth.uid())",
       "name": "reports_insert_own",
       "entityType": "policies",
       "schema": "public",
@@ -6133,7 +6477,7 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"reports\".\"reporter_id\")",
+      "using": "\"reports\".\"reporter_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "reports_select_own",
       "entityType": "policies",
@@ -6146,9 +6490,22 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"notifications\".\"user_id\")",
+      "using": "\"notifications\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
       "name": "notifications_select_own",
+      "entityType": "policies",
+      "schema": "public",
+      "table": "notifications"
+    },
+    {
+      "as": "PERMISSIVE",
+      "for": "UPDATE",
+      "roles": [
+        "authenticated"
+      ],
+      "using": "\"notifications\".\"user_id\" = (select auth.uid())",
+      "withCheck": "\"notifications\".\"user_id\" = (select auth.uid())",
+      "name": "notifications_update_own",
       "entityType": "policies",
       "schema": "public",
       "table": "notifications"
@@ -6159,9 +6516,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"push_tokens\".\"user_id\")",
+      "using": "\"push_tokens\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-select",
+      "name": "push_tokens_select",
       "entityType": "policies",
       "schema": "public",
       "table": "push_tokens"
@@ -6173,8 +6530,8 @@
         "authenticated"
       ],
       "using": null,
-      "withCheck": "(select auth.user_id() = \"push_tokens\".\"user_id\")",
-      "name": "crud-authenticated-policy-insert",
+      "withCheck": "\"push_tokens\".\"user_id\" = (select auth.uid())",
+      "name": "push_tokens_insert",
       "entityType": "policies",
       "schema": "public",
       "table": "push_tokens"
@@ -6185,9 +6542,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"push_tokens\".\"user_id\")",
-      "withCheck": "(select auth.user_id() = \"push_tokens\".\"user_id\")",
-      "name": "crud-authenticated-policy-update",
+      "using": "\"push_tokens\".\"user_id\" = (select auth.uid())",
+      "withCheck": "\"push_tokens\".\"user_id\" = (select auth.uid())",
+      "name": "push_tokens_update",
       "entityType": "policies",
       "schema": "public",
       "table": "push_tokens"
@@ -6198,9 +6555,9 @@
       "roles": [
         "authenticated"
       ],
-      "using": "(select auth.user_id() = \"push_tokens\".\"user_id\")",
+      "using": "\"push_tokens\".\"user_id\" = (select auth.uid())",
       "withCheck": null,
-      "name": "crud-authenticated-policy-delete",
+      "name": "push_tokens_delete",
       "entityType": "policies",
       "schema": "public",
       "table": "push_tokens"
@@ -6217,7 +6574,18 @@
       "schema": "public"
     },
     {
-      "definition": "select \"room_id\", \"user_id\", \"role\" from \"housemates\"",
+      "definition": "select \"house_id\", \"user_id\", \"role\" from \"house_members\"",
+      "with": null,
+      "withNoData": null,
+      "using": null,
+      "tablespace": null,
+      "materialized": false,
+      "name": "house_members_rls",
+      "entityType": "views",
+      "schema": "public"
+    },
+    {
+      "definition": "select \"rooms\".\"id\", \"house_members\".\"user_id\", \"house_members\".\"role\" from \"house_members\" inner join \"rooms\" on \"rooms\".\"house_id\" = \"house_members\".\"house_id\"",
       "with": null,
       "withNoData": null,
       "using": null,

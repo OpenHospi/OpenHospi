@@ -41,6 +41,7 @@ export const MAX_INVITATIONS_PER_EVENT = 20;
 // Reminders & notifications
 export const REMINDER_HOURS_BEFORE_EVENT = 24;
 export const NOTIFICATIONS_PER_PAGE = 20;
+export const MESSAGES_PER_PAGE = 50;
 
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB

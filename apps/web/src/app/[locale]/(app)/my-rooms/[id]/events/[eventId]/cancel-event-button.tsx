@@ -33,14 +33,14 @@ export function CancelEventButton({ eventId, roomId }: Props) {
 
   function handleCancel() {
     startTransition(async () => {
-      const result = await cancelEvent(eventId, roomId);
-      if (result?.error) {
+      try {
+        await cancelEvent(eventId, roomId);
+        toast.success(t("cancelledSuccess"));
+        setOpen(false);
+        router.refresh();
+      } catch {
         toast.error(t("cancelError"));
-        return;
       }
-      toast.success(t("cancelledSuccess"));
-      setOpen(false);
-      router.refresh();
     });
   }
 

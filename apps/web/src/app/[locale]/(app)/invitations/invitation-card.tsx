@@ -1,6 +1,7 @@
 "use client";
 
 import { MAX_DECLINE_REASON_LENGTH } from "@openhospi/shared/constants";
+import type { InvitationStatus as InvitationStatusType } from "@openhospi/shared/enums";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { Calendar, Check, Clock, Loader2, MapPin, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -34,7 +35,7 @@ export function InvitationCard({ invitation }: Props) {
   const isCancelled = !!invitation.cancelledAt;
   const isTerminal = invitation.status === InvitationStatus.not_attending;
 
-  function handleRsvp(status: string) {
+  function handleRsvp(status: InvitationStatusType) {
     if (status === InvitationStatus.not_attending) {
       setShowDeclineForm(true);
       return;

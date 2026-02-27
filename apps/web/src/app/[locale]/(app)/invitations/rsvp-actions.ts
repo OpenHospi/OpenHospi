@@ -12,15 +12,15 @@ import {
 } from "@openhospi/shared/enums";
 import type { InvitationStatus as InvitationStatusType } from "@openhospi/shared/enums";
 import { and, eq, ne, sql } from "drizzle-orm";
-import type { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
 
+type RLSTransaction = Parameters<Parameters<typeof withRLS>[1]>[0];
+
 async function tryUpdateApplicationStatus(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tx: NeonHttpDatabase<any>,
+  tx: RLSTransaction,
   applicationId: string,
   targetStatus: ApplicationStatus,
 ) {
@@ -38,8 +38,7 @@ async function tryUpdateApplicationStatus(
 }
 
 async function handleApplicationStatusOnRsvp(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tx: NeonHttpDatabase<any>,
+  tx: RLSTransaction,
   newStatus: InvitationStatusType,
   applicationId: string,
   userId: string,

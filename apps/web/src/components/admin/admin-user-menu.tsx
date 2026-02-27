@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
+import { ChevronsUpDown, Home, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,18 +15,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
-import { useRouter } from "@/i18n/navigation-app";
 import { authClient } from "@/lib/auth-client";
 
-type UserMenuProps = {
+type AdminUserMenuProps = {
   user: {
     name: string;
     image?: string | null;
   };
 };
 
-export function UserMenu({ user }: UserMenuProps) {
-  const t = useTranslations("app.userMenu");
+export function AdminUserMenu({ user }: AdminUserMenuProps) {
+  const t = useTranslations("admin.userMenu");
   const router = useRouter();
   const { isMobile } = useSidebar();
 
@@ -77,13 +77,9 @@ export function UserMenu({ user }: UserMenuProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/profile")}>
-            <User />
-            {t("profile")}
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/settings")}>
-            <Settings />
-            {t("settings")}
+          <DropdownMenuItem onClick={() => router.push("/discover")}>
+            <Home />
+            {t("backToApp")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

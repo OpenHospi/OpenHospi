@@ -337,6 +337,7 @@
       "discover": "Entdecken",
       "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
+      "invitations": "Uitnodigingen",
       "profile": "Profil",
       "settings": "Einstellungen",
       "comingSoon": "Demnächst"
@@ -496,7 +497,8 @@
         "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
         "optional": "optional",
         "submitReview": "Bewertung speichern",
-        "yearsOld": "Jahre alt"
+        "yearsOld": "Jahre alt",
+        "reviewMode": "Beoordelingsmodus"
       },
       "wizard": {
         "stepOf": "Schritt {current} von {total}",
@@ -603,7 +605,100 @@
       },
       "noResults": "Keine Ergebnisse gefunden.",
       "noSelection": "Keine Auswahl",
-      "optional": "optional"
+      "optional": "optional",
+      "reviewMode": {
+        "title": "Beoordelingsmodus",
+        "backToOverview": "Terug naar overzicht",
+        "about": "Over",
+        "personalMessage": "Persoonlijk bericht",
+        "housemateReviews": "Huisgenootbeoordelingen",
+        "reviewError": "Kon beoordeling niet opslaan",
+        "allReviewed": "Alle kandidaten beoordeeld!",
+        "previous": "Vorige",
+        "next": "Volgende"
+      },
+      "events": {
+        "title": "Hospi-evenementen",
+        "empty": "Nog geen evenementen. Maak er een aan om kandidaten uit te nodigen.",
+        "create": "Evenement maken",
+        "createTitle": "Hospi-evenement maken",
+        "createSubmit": "Evenement maken",
+        "createError": "Kon evenement niet maken",
+        "created": "Evenement aangemaakt",
+        "cancelled": "Geannuleerd",
+        "cancelEvent": "Evenement annuleren",
+        "cancelConfirmTitle": "Evenement annuleren",
+        "cancelConfirmDescription": "Weet je zeker dat je dit evenement wilt annuleren? Alle genodigden worden op de hoogte gebracht.",
+        "keepEvent": "Evenement behouden",
+        "confirmCancel": "Annuleren",
+        "cancelError": "Kon evenement niet annuleren",
+        "cancelledSuccess": "Evenement geannuleerd",
+        "addToCalendar": "Toevoegen aan agenda",
+        "detailTitle": "Evenementdetails",
+        "backToRoom": "Terug naar kamer",
+        "invitees": "Genodigden",
+        "noInvitees": "Nog geen genodigden. Gebruik de uitnodigknop om kandidaten toe te voegen.",
+        "attendingCount": "{attending} / {total} aanwezig",
+        "maxAttendees": "Max {count} deelnemers",
+        "optional": "optioneel",
+        "fields": {
+          "title": "Titel",
+          "date": "Datum",
+          "startTime": "Starttijd",
+          "endTime": "Eindtijd",
+          "duration": "Duur",
+          "customEndTime": "Aangepaste eindtijd instellen",
+          "location": "Locatie",
+          "description": "Beschrijving",
+          "maxAttendees": "Max deelnemers",
+          "notes": "Interne notities"
+        }
+      },
+      "invite": {
+        "inviteApplicants": "Kandidaten uitnodigen",
+        "title": "Kandidaten uitnodigen voor evenement",
+        "noInvitable": "Geen kandidaten beschikbaar om uit te nodigen.",
+        "selected": "{count} geselecteerd",
+        "selectAllLiked": "Alle gelikete selecteren",
+        "submit": "{count} kandidaten uitnodigen",
+        "error": "Kon uitnodigingen niet versturen",
+        "success": "{count} kandidaten uitgenodigd"
+      },
+      "voting": {
+        "title": "Stemming",
+        "description": "Rangschik kandidaten op voorkeur. Alle huisgenoten kunnen elkaars stemmen zien.",
+        "backToRoom": "Terug naar kamer",
+        "yourRanking": "Jouw rangschikking",
+        "moveUp": "Omhoog",
+        "moveDown": "Omlaag",
+        "submitVotes": "Stemmen indienen",
+        "updateVotes": "Stemmen bijwerken",
+        "submitted": "Stemmen ingediend",
+        "submitError": "Kon stemmen niet indienen",
+        "noApplicants": "Nog geen kandidaten beschikbaar om op te stemmen. Kandidaten moeten eerst uitgenodigd zijn en een evenement hebben bijgewoond.",
+        "voteBoard": "Stembord",
+        "applicant": "Kandidaat",
+        "total": "Totaal",
+        "openVoting": "Stemming openen",
+        "sectionDescription": "Rangschik kandidaten samen en bekijk elkaars stemmen transparant."
+      },
+      "closeRoom": {
+        "title": "Advertentie sluiten",
+        "description": "Kies een nieuwe huisgenoot of sluit de advertentie zonder iemand te kiezen. Alle kandidaten worden op de hoogte gebracht.",
+        "chooseApplicant": "Kies nieuwe huisgenoot",
+        "chooseHint": "Klik om een kandidaat te selecteren, of sluit zonder te kiezen.",
+        "noApplicants": "Geen actieve kandidaten. De advertentie wordt gewoon gesloten.",
+        "rankScore": "Stemscore: {score}",
+        "closeWithChoice": "Sluiten en accepteren",
+        "closeWithoutChoice": "Sluiten zonder te kiezen",
+        "confirmTitle": "Weet je het zeker?",
+        "confirmWithChoice": "De geselecteerde kandidaat wordt als geaccepteerd gemeld. Alle anderen worden als niet gekozen gemeld. Dit kan niet ongedaan worden gemaakt.",
+        "confirmWithoutChoice": "Alle kandidaten worden als niet gekozen gemeld. Dit kan niet ongedaan worden gemaakt.",
+        "cancel": "Annuleren",
+        "confirm": "Advertentie sluiten",
+        "success": "Advertentie gesloten",
+        "error": "Kon advertentie niet sluiten"
+      }
     },
     "roomDetail": {
       "perMonth": "/Mo",
@@ -685,6 +780,8 @@
       "withdrawConfirmTitle": "Bewerbung zurückziehen",
       "withdrawConfirmDescription": "Bist du sicher, dass du deine Bewerbung zurückziehen möchtest? Dies kann nicht rückgängig gemacht werden.",
       "cancel": "Abbrechen",
+      "eventInvitation": "Evenementuitnodiging",
+      "eventInvitationDescription": "Je bent uitgenodigd voor een hospi-evenement voor deze kamer.",
       "errors": {
         "not_found": "Bewerbung nicht gefunden.",
         "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."
@@ -737,6 +834,31 @@
       "errors": {
         "INVALID_LINK": "Dieser Einladungslink ist ungültig.",
         "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses."
+      }
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "empty": "Nog geen meldingen",
+      "markAllRead": "Alles als gelezen markeren"
+    },
+    "invitations": {
+      "title": "Uitnodigingen",
+      "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
+      "cancelled": "Geannuleerd",
+      "attend": "Aanwezig",
+      "maybe": "Misschien",
+      "decline": "Afwijzen",
+      "declineReasonLabel": "Waarom kun je niet komen?",
+      "declineReasonPlaceholder": "Deel alsjeblieft waarom je niet kunt komen...",
+      "confirmDecline": "Afwijzing bevestigen",
+      "cancelDecline": "Annuleren",
+      "rsvpSuccess": "Reactie opgeslagen",
+      "errors": {
+        "not_found": "Uitnodiging niet gevonden",
+        "invalid_transition": "Deze reactie is niet meer beschikbaar",
+        "event_cancelled": "Dit evenement is geannuleerd",
+        "deadline_passed": "De RSVP-deadline is verstreken",
+        "event_full": "Dit evenement is vol"
       }
     }
   },

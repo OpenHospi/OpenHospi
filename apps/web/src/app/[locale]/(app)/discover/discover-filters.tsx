@@ -1,17 +1,37 @@
 "use client";
 
-import { CITIES, DiscoverSort, FURNISHINGS, HOUSE_TYPES, LOCATION_TAGS, ROOM_FEATURES } from "@openhospi/shared/enums";
+import {
+  CITIES,
+  DiscoverSort,
+  FURNISHINGS,
+  HOUSE_TYPES,
+  LOCATION_TAGS,
+  ROOM_FEATURES,
+} from "@openhospi/shared/enums";
 import { Check, ChevronsUpDown, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { usePathname, useRouter } from "@/i18n/navigation-app";
 import type { DiscoverFilters } from "@/lib/discover";
 import { cn } from "@/lib/utils";
@@ -146,7 +166,9 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
       </div>
 
       {/* Filter grid */}
-      <div className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", !showFilters && "hidden md:grid")}>
+      <div
+        className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", !showFilters && "hidden md:grid")}
+      >
         {/* City */}
         <div className="space-y-1.5">
           <Label>{t("city")}</Label>
@@ -329,7 +351,9 @@ function MultiSelect({
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem key={option} value={option} onSelect={() => toggle(option)}>
-                  <Check className={cn("size-4", values.includes(option) ? "opacity-100" : "opacity-0")} />
+                  <Check
+                    className={cn("size-4", values.includes(option) ? "opacity-100" : "opacity-0")}
+                  />
                   {renderLabel(option)}
                 </CommandItem>
               ))}

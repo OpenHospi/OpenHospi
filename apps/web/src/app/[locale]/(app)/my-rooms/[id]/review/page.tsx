@@ -35,11 +35,5 @@ export default async function ReviewModePage({ params }: Props) {
     return redirect(`/my-rooms/${id}`);
   }
 
-  return (
-    <ReviewModeClient
-      applicants={reviewable}
-      roomId={id}
-      currentUserId={user.id}
-    />
-  );
+  return <ReviewModeClient applicants={reviewable} roomId={id} currentUserId={user.id} />;
 }

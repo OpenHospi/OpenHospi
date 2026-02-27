@@ -664,6 +664,41 @@
         "submit": "{count} kandidaten uitnodigen",
         "error": "Kon uitnodigingen niet versturen",
         "success": "{count} kandidaten uitgenodigd"
+      },
+      "voting": {
+        "title": "Stemming",
+        "description": "Rangschik kandidaten op voorkeur. Alle huisgenoten kunnen elkaars stemmen zien.",
+        "backToRoom": "Terug naar kamer",
+        "yourRanking": "Jouw rangschikking",
+        "moveUp": "Omhoog",
+        "moveDown": "Omlaag",
+        "submitVotes": "Stemmen indienen",
+        "updateVotes": "Stemmen bijwerken",
+        "submitted": "Stemmen ingediend",
+        "submitError": "Kon stemmen niet indienen",
+        "noApplicants": "Nog geen kandidaten beschikbaar om op te stemmen. Kandidaten moeten eerst uitgenodigd zijn en een evenement hebben bijgewoond.",
+        "voteBoard": "Stembord",
+        "applicant": "Kandidaat",
+        "total": "Totaal",
+        "openVoting": "Stemming openen",
+        "sectionDescription": "Rangschik kandidaten samen en bekijk elkaars stemmen transparant."
+      },
+      "closeRoom": {
+        "title": "Advertentie sluiten",
+        "description": "Kies een nieuwe huisgenoot of sluit de advertentie zonder iemand te kiezen. Alle kandidaten worden op de hoogte gebracht.",
+        "chooseApplicant": "Kies nieuwe huisgenoot",
+        "chooseHint": "Klik om een kandidaat te selecteren, of sluit zonder te kiezen.",
+        "noApplicants": "Geen actieve kandidaten. De advertentie wordt gewoon gesloten.",
+        "rankScore": "Stemscore: {score}",
+        "closeWithChoice": "Sluiten en accepteren",
+        "closeWithoutChoice": "Sluiten zonder te kiezen",
+        "confirmTitle": "Weet je het zeker?",
+        "confirmWithChoice": "De geselecteerde kandidaat wordt als geaccepteerd gemeld. Alle anderen worden als niet gekozen gemeld. Dit kan niet ongedaan worden gemaakt.",
+        "confirmWithoutChoice": "Alle kandidaten worden als niet gekozen gemeld. Dit kan niet ongedaan worden gemaakt.",
+        "cancel": "Annuleren",
+        "confirm": "Advertentie sluiten",
+        "success": "Advertentie gesloten",
+        "error": "Kon advertentie niet sluiten"
       }
     },
     "roomDetail": {

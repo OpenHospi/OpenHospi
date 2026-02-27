@@ -33,7 +33,12 @@ export async function EventsSection({ roomId, userId }: Props) {
         <div className="grid gap-4 sm:grid-cols-2">
           {events.map((event) => (
             <Link key={event.id} href={`/my-rooms/${roomId}/events/${event.id}`}>
-              <Card className={cn("transition-colors hover:bg-muted/50", event.cancelledAt && "opacity-60")}>
+              <Card
+                className={cn(
+                  "transition-colors hover:bg-muted/50",
+                  event.cancelledAt && "opacity-60",
+                )}
+              >
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
                     <CardTitle className="text-base">{event.title}</CardTitle>

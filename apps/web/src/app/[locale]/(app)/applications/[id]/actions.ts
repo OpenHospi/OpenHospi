@@ -18,7 +18,9 @@ export async function withdrawApplication(applicationId: string) {
       .where(and(eq(applications.id, applicationId), eq(applications.userId, session.user.id)));
     if (!app) return { error: "not_found" };
 
-    if (!isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.withdrawn)) {
+    if (
+      !isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.withdrawn)
+    ) {
       return { error: "cannot_withdraw" };
     }
 

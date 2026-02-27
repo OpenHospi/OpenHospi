@@ -69,15 +69,9 @@ export async function getRoomEvents(roomId: string, userId: string): Promise<Eve
   });
 }
 
-export async function getEventDetail(
-  eventId: string,
-  userId: string,
-): Promise<EventDetail | null> {
+export async function getEventDetail(eventId: string, userId: string): Promise<EventDetail | null> {
   return withRLS(userId, async (tx) => {
-    const [event] = await tx
-      .select()
-      .from(hospiEvents)
-      .where(eq(hospiEvents.id, eventId));
+    const [event] = await tx.select().from(hospiEvents).where(eq(hospiEvents.id, eventId));
 
     if (!event) return null;
 

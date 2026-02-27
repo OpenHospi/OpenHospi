@@ -1,12 +1,9 @@
 import { withRLS } from "@openhospi/database";
 import { applications, profiles, votes } from "@openhospi/database/schema";
-import { ApplicationStatus } from "@openhospi/shared/enums";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { ApplicationStatus, isTerminalApplicationStatus } from "@openhospi/shared/enums";
+import { and, asc, eq, inArray, ne, sum } from "drizzle-orm";
 
-const VOTABLE_STATUSES = [
-  ApplicationStatus.invited,
-  ApplicationStatus.attending,
-] as const;
+const VOTABLE_STATUSES = [ApplicationStatus.invited, ApplicationStatus.attending] as const;
 
 export type VotableApplicant = {
   applicationId: string;
@@ -46,10 +43,7 @@ export async function getVotableApplicants(
       .from(applications)
       .innerJoin(profiles, eq(profiles.id, applications.userId))
       .where(
-        and(
-          eq(applications.roomId, roomId),
-          inArray(applications.status, [...VOTABLE_STATUSES]),
-        ),
+        and(eq(applications.roomId, roomId), inArray(applications.status, [...VOTABLE_STATUSES])),
       )
       .orderBy(asc(profiles.firstName));
   });
@@ -115,6 +109,74 @@ export async function getRoomVotes(
   });
 }
 
+export type CloseRoomApplicant = {
+  applicationId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+  totalRank: number | null;
+};
+
+export async function getCloseRoomApplicants(
+  roomId: string,
+  userId: string,
+): Promise<CloseRoomApplicant[]> {
+  return withRLS(userId, async (tx) => {
+    // Get non-terminal applicants
+    const rows = await tx
+      .select({
+        applicationId: applications.id,
+        userId: applications.userId,
+        firstName: profiles.firstName,
+        lastName: profiles.lastName,
+        avatarUrl: profiles.avatarUrl,
+        status: applications.status,
+      })
+      .from(applications)
+      .innerJoin(profiles, eq(profiles.id, applications.userId))
+      .where(
+        and(eq(applications.roomId, roomId), ne(applications.status, ApplicationStatus.withdrawn)),
+      )
+      .orderBy(asc(profiles.firstName));
+
+    const nonTerminal = rows.filter(
+      (r) => !isTerminalApplicationStatus(r.status as ApplicationStatus),
+    );
+    if (nonTerminal.length === 0) return [];
+
+    // Get vote rank sums for these applicants
+    const userIds = nonTerminal.map((r) => r.userId);
+    const voteRows = await tx
+      .select({
+        applicantId: votes.applicantId,
+        totalRank: sum(votes.rank),
+      })
+      .from(votes)
+      .where(and(eq(votes.roomId, roomId), inArray(votes.applicantId, userIds)))
+      .groupBy(votes.applicantId);
+
+    const rankMap = new Map(voteRows.map((v) => [v.applicantId, Number(v.totalRank)]));
+
+    return nonTerminal
+      .map((r) => ({
+        applicationId: r.applicationId,
+        userId: r.userId,
+        firstName: r.firstName,
+        lastName: r.lastName,
+        avatarUrl: r.avatarUrl,
+        totalRank: rankMap.get(r.userId) ?? null,
+      }))
+      .sort((a, b) => {
+        // Sort by rank (lowest first), null ranks at the end
+        if (a.totalRank == null && b.totalRank == null) return 0;
+        if (a.totalRank == null) return 1;
+        if (b.totalRank == null) return -1;
+        return a.totalRank - b.totalRank;
+      });
+  });
+}
+
 async function getVotableApplicantsInTx(
   tx: Parameters<Parameters<typeof withRLS>[1]>[0],
   roomId: string,
@@ -131,10 +193,7 @@ async function getVotableApplicantsInTx(
     .from(applications)
     .innerJoin(profiles, eq(profiles.id, applications.userId))
     .where(
-      and(
-        eq(applications.roomId, roomId),
-        inArray(applications.status, [...VOTABLE_STATUSES]),
-      ),
+      and(eq(applications.roomId, roomId), inArray(applications.status, [...VOTABLE_STATUSES])),
     )
     .orderBy(asc(profiles.firstName));
 }

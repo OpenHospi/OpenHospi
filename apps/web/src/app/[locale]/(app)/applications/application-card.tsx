@@ -35,7 +35,9 @@ export async function ApplicationCard({ application }: Props) {
               <Home className="size-8 text-muted-foreground" />
             </div>
           )}
-          <Badge className={cn("absolute top-2 right-2", APPLICATION_STATUS_COLORS[application.status])}>
+          <Badge
+            className={cn("absolute top-2 right-2", APPLICATION_STATUS_COLORS[application.status])}
+          >
             {tEnums(`application_status.${application.status}`)}
           </Badge>
         </div>

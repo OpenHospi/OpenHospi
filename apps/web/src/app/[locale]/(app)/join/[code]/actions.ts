@@ -8,9 +8,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
 
-type JoinResult =
-  | { success: true }
-  | { error: "INVALID_LINK" | "ALREADY_MEMBER" };
+type JoinResult = { success: true } | { error: "INVALID_LINK" | "ALREADY_MEMBER" };
 
 export async function joinHouse(inviteCode: string): Promise<JoinResult> {
   const session = await requireSession();

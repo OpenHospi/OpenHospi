@@ -20,12 +20,7 @@ export async function PublicRoomCard({ room }: Props) {
       <Card className="overflow-hidden transition-shadow hover:shadow-md">
         <div className="relative aspect-video bg-muted">
           {room.coverPhotoUrl ? (
-            <Image
-              src={room.coverPhotoUrl}
-              alt={room.title}
-              fill
-              className="object-cover"
-            />
+            <Image src={room.coverPhotoUrl} alt={room.title} fill className="object-cover" />
           ) : (
             <div className="flex size-full items-center justify-center">
               <Home className="size-8 text-muted-foreground" />
@@ -39,9 +34,7 @@ export async function PublicRoomCard({ room }: Props) {
         </div>
         <CardHeader className="pb-2">
           <h3 className="truncate font-semibold">{room.title}</h3>
-          <p className="text-sm text-muted-foreground">
-            {tEnums(`city.${room.city}`)}
-          </p>
+          <p className="text-sm text-muted-foreground">{tEnums(`city.${room.city}`)}</p>
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">

@@ -195,8 +195,16 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             {otherPhotos.length > 0 && (
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
                 {otherPhotos.map((photo) => (
-                  <div key={photo.id} className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-                    <Image src={photo.url} alt={photo.caption ?? room.title} fill className="object-cover" />
+                  <div
+                    key={photo.id}
+                    className="relative aspect-video overflow-hidden rounded-lg bg-muted"
+                  >
+                    <Image
+                      src={photo.url}
+                      alt={photo.caption ?? room.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 ))}
               </div>
@@ -294,7 +302,9 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                 )}
                 {room.availableFrom && (
                   <>
-                    <dt className="text-muted-foreground">{t("availableFrom", { date: room.availableFrom })}</dt>
+                    <dt className="text-muted-foreground">
+                      {t("availableFrom", { date: room.availableFrom })}
+                    </dt>
                     <dd>
                       {room.availableUntil && t("availableUntil", { date: room.availableUntil })}
                     </dd>
@@ -332,14 +342,16 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Preferences */}
-            {(room.preferredGender !== GenderPreference.geen_voorkeur || room.preferredLifestyleTags.length > 0) && (
+            {(room.preferredGender !== GenderPreference.geen_voorkeur ||
+              room.preferredLifestyleTags.length > 0) && (
               <div>
                 <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                 <div className="mt-2 space-y-2">
                   {room.preferredGender !== GenderPreference.geen_voorkeur && (
                     <p className="text-sm text-muted-foreground">
                       {tEnums(`gender_preference.${room.preferredGender}`)}
-                      {room.preferredAgeMin != null && room.preferredAgeMax != null &&
+                      {room.preferredAgeMin != null &&
+                        room.preferredAgeMax != null &&
                         `, ${room.preferredAgeMin}–${room.preferredAgeMax}`}
                     </p>
                   )}
@@ -362,8 +374,8 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             <Card className="sticky top-24">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CalendarDays className="size-5" />
-                  €{room.totalCost}{t("perMonth")}
+                  <CalendarDays className="size-5" />€{room.totalCost}
+                  {t("perMonth")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">

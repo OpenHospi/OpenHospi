@@ -664,6 +664,41 @@
         "submit": "{count} Bewerber einladen",
         "error": "Einladungen konnten nicht gesendet werden",
         "success": "{count} Bewerber eingeladen"
+      },
+      "voting": {
+        "title": "Abstimmung",
+        "description": "Bewerber nach Präferenz ordnen. Alle Mitbewohner können die Stimmen der anderen sehen.",
+        "backToRoom": "Zurück zum Zimmer",
+        "yourRanking": "Deine Rangfolge",
+        "moveUp": "Nach oben",
+        "moveDown": "Nach unten",
+        "submitVotes": "Stimmen abgeben",
+        "updateVotes": "Stimmen aktualisieren",
+        "submitted": "Stimmen abgegeben",
+        "submitError": "Stimmen konnten nicht abgegeben werden",
+        "noApplicants": "Noch keine Bewerber zum Abstimmen verfügbar. Bewerber müssen zuerst eingeladen werden und an einer Veranstaltung teilgenommen haben.",
+        "voteBoard": "Stimmentafel",
+        "applicant": "Bewerber",
+        "total": "Gesamt",
+        "openVoting": "Abstimmung öffnen",
+        "sectionDescription": "Bewerber gemeinsam bewerten und die Stimmen der anderen transparent einsehen."
+      },
+      "closeRoom": {
+        "title": "Anzeige schließen",
+        "description": "Wähle einen neuen Mitbewohner oder schließe die Anzeige ohne Auswahl. Alle Bewerber werden benachrichtigt.",
+        "chooseApplicant": "Neuen Mitbewohner wählen",
+        "chooseHint": "Klicke, um einen Bewerber auszuwählen, oder schließe ohne Auswahl.",
+        "noApplicants": "Keine aktiven Bewerber. Die Anzeige wird einfach geschlossen.",
+        "rankScore": "Stimmenwert: {score}",
+        "closeWithChoice": "Schließen und akzeptieren",
+        "closeWithoutChoice": "Schließen ohne Auswahl",
+        "confirmTitle": "Bist du sicher?",
+        "confirmWithChoice": "Der ausgewählte Bewerber wird als akzeptiert benachrichtigt. Alle anderen werden als nicht gewählt benachrichtigt. Dies kann nicht rückgängig gemacht werden.",
+        "confirmWithoutChoice": "Alle Bewerber werden als nicht gewählt benachrichtigt. Dies kann nicht rückgängig gemacht werden.",
+        "cancel": "Abbrechen",
+        "confirm": "Anzeige schließen",
+        "success": "Anzeige geschlossen",
+        "error": "Anzeige konnte nicht geschlossen werden"
       }
     },
     "roomDetail": {

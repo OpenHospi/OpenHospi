@@ -46,10 +46,7 @@ export async function getUserInvitations(userId: string): Promise<UserInvitation
     // Apply location privacy: only show full address when attending or maybe
     return rows.map((row) => ({
       ...row,
-      location:
-        row.status === IS.attending || row.status === IS.maybe
-          ? row.location
-          : null,
+      location: row.status === IS.attending || row.status === IS.maybe ? row.location : null,
     }));
   });
 }

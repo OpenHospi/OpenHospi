@@ -29,10 +29,7 @@ export default async function MyHousePage({ params }: Props) {
 
     if (!membership) return null;
 
-    const [house] = await tx
-      .select()
-      .from(houses)
-      .where(eq(houses.id, membership.houseId));
+    const [house] = await tx.select().from(houses).where(eq(houses.id, membership.houseId));
 
     if (!house) return null;
 
@@ -72,13 +69,14 @@ export default async function MyHousePage({ params }: Props) {
         <CardContent>
           <ul className="space-y-2">
             {data.members.map((member) => (
-              <li key={member.id} className="flex items-center justify-between rounded-lg border p-3">
+              <li
+                key={member.id}
+                className="flex items-center justify-between rounded-lg border p-3"
+              >
                 <span className="font-medium">
                   {member.firstName} {member.lastName}
                 </span>
-                <span className="text-sm text-muted-foreground">
-                  {tRoles(member.role!)}
-                </span>
+                <span className="text-sm text-muted-foreground">{tRoles(member.role!)}</span>
               </li>
             ))}
           </ul>
@@ -93,7 +91,8 @@ export default async function MyHousePage({ params }: Props) {
           </CardHeader>
           <CardContent>
             <code className="block rounded bg-muted p-3 text-sm break-all">
-              {process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/join/{data.house.inviteCode}
+              {process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/join/
+              {data.house.inviteCode}
             </code>
           </CardContent>
         </Card>
@@ -107,7 +106,10 @@ export default async function MyHousePage({ params }: Props) {
           <CardContent>
             <ul className="space-y-2">
               {data.rooms.map((room) => (
-                <li key={room.id} className="flex items-center justify-between rounded-lg border p-3">
+                <li
+                  key={room.id}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
                   <span>{room.title || t("rooms.untitled")}</span>
                   <span className="text-sm text-muted-foreground">{room.status}</span>
                 </li>

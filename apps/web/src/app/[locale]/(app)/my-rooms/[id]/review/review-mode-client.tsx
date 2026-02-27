@@ -183,16 +183,15 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
                   className={cn(
                     "shrink-0",
                     rv.decision === "like" && "border-green-500 text-green-700 dark:text-green-400",
-                    rv.decision === "maybe" && "border-yellow-500 text-yellow-700 dark:text-yellow-400",
+                    rv.decision === "maybe" &&
+                      "border-yellow-500 text-yellow-700 dark:text-yellow-400",
                     rv.decision === "reject" && "border-red-500 text-red-700 dark:text-red-400",
                   )}
                 >
                   {tEnums(`review_decision.${rv.decision}`)}
                 </Badge>
                 <span className="font-medium">{rv.reviewerName}</span>
-                {rv.notes && (
-                  <span className="text-muted-foreground">— {rv.notes}</span>
-                )}
+                {rv.notes && <span className="text-muted-foreground">— {rv.notes}</span>}
               </div>
             ))}
           </div>

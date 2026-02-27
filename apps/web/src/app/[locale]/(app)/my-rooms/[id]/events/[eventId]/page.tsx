@@ -143,10 +143,7 @@ export default async function EventDetailPage({ params }: Props) {
                               {invitee.firstName} {invitee.lastName}
                             </span>
                             <Badge
-                              className={cn(
-                                "ml-auto shrink-0",
-                                INVITATION_STATUS_COLORS[status],
-                              )}
+                              className={cn("ml-auto shrink-0", INVITATION_STATUS_COLORS[status])}
                             >
                               {tEnums(`invitation_status.${status}`)}
                             </Badge>
@@ -164,11 +161,7 @@ export default async function EventDetailPage({ params }: Props) {
       {/* Actions */}
       {!isCancelled && (
         <div className="flex flex-wrap gap-2">
-          <InviteApplicantsDialog
-            eventId={eventId}
-            roomId={roomId}
-            applicants={applicants}
-          />
+          <InviteApplicantsDialog eventId={eventId} roomId={roomId} applicants={applicants} />
           <AddToCalendarButton
             uid={eventId}
             title={event.title}

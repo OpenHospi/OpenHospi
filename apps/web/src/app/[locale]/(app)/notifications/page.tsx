@@ -5,11 +5,7 @@ import { getUserNotifications } from "@/lib/notifications";
 
 import { NotificationsList } from "./notifications-list";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "app.notifications" });
   return { title: t("title") };

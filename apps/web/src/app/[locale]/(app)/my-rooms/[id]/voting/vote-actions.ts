@@ -18,13 +18,7 @@ export async function submitVotes(
     // Delete existing votes for this voter+room+round
     await tx
       .delete(votes)
-      .where(
-        and(
-          eq(votes.roomId, roomId),
-          eq(votes.voterId, user.id),
-          eq(votes.round, round),
-        ),
-      );
+      .where(and(eq(votes.roomId, roomId), eq(votes.voterId, user.id), eq(votes.round, round)));
 
     // Insert new votes
     if (rankings.length > 0) {

@@ -32,10 +32,7 @@ export async function batchInviteApplicants(
     if (!event) throw new Error("Event not found");
 
     // Get room title for notification
-    const [room] = await tx
-      .select({ title: rooms.title })
-      .from(rooms)
-      .where(eq(rooms.id, roomId));
+    const [room] = await tx.select({ title: rooms.title }).from(rooms).where(eq(rooms.id, roomId));
 
     // Verify and invite each application
     const apps = await tx
@@ -65,7 +62,9 @@ export async function batchInviteApplicants(
         .onConflictDoNothing();
 
       // Update application status to invited
-      if (isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.invited)) {
+      if (
+        isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.invited)
+      ) {
         await tx
           .update(applications)
           .set({ status: ApplicationStatus.invited })
@@ -89,9 +88,7 @@ export async function removeInvitation(invitationId: string, roomId: string) {
   const session = await requireSession();
 
   await withRLS(session.user.id, async (tx) => {
-    await tx
-      .delete(hospiInvitations)
-      .where(eq(hospiInvitations.id, invitationId));
+    await tx.delete(hospiInvitations).where(eq(hospiInvitations.id, invitationId));
   });
 
   revalidatePath(`/my-rooms/${roomId}`);

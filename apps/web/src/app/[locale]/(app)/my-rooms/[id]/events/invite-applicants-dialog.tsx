@@ -128,17 +128,35 @@ export function InviteApplicantsDialog({ eventId, roomId, applicants }: Props) {
                       </p>
                       <div className="flex gap-1.5 text-xs text-muted-foreground">
                         {likeCounts.like > 0 && (
-                          <Badge variant="outline" className={cn("h-5 text-[10px]", "border-green-500 text-green-700 dark:text-green-400")}>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "h-5 text-[10px]",
+                              "border-green-500 text-green-700 dark:text-green-400",
+                            )}
+                          >
                             {likeCounts.like} {tEnums("review_decision.like")}
                           </Badge>
                         )}
                         {likeCounts.maybe > 0 && (
-                          <Badge variant="outline" className={cn("h-5 text-[10px]", "border-yellow-500 text-yellow-700 dark:text-yellow-400")}>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "h-5 text-[10px]",
+                              "border-yellow-500 text-yellow-700 dark:text-yellow-400",
+                            )}
+                          >
                             {likeCounts.maybe} {tEnums("review_decision.maybe")}
                           </Badge>
                         )}
                         {likeCounts.reject > 0 && (
-                          <Badge variant="outline" className={cn("h-5 text-[10px]", "border-red-500 text-red-700 dark:text-red-400")}>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "h-5 text-[10px]",
+                              "border-red-500 text-red-700 dark:text-red-400",
+                            )}
+                          >
                             {likeCounts.reject} {tEnums("review_decision.reject")}
                           </Badge>
                         )}

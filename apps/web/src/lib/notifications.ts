@@ -112,10 +112,7 @@ async function sendPushNotification(
   }
 }
 
-export async function getUserNotifications(
-  userId: string,
-  page = 1,
-): Promise<NotificationItem[]> {
+export async function getUserNotifications(userId: string, page = 1): Promise<NotificationItem[]> {
   return withRLS(userId, async (tx) => {
     return tx
       .select({

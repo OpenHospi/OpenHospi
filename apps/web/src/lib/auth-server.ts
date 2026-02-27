@@ -43,10 +43,7 @@ export async function requireHousemate(
   roles?: string[],
 ): Promise<string> {
   const row = await withRLS(userId, async (tx) => {
-    const conditions = [
-      eq(rooms.id, roomId),
-      eq(houseMembers.userId, userId),
-    ];
+    const conditions = [eq(rooms.id, roomId), eq(houseMembers.userId, userId)];
     if (roles) {
       conditions.push(inArray(houseMembers.role, roles as HouseMemberRole[]));
     }

@@ -664,6 +664,41 @@
         "submit": "Invite {count} applicants",
         "error": "Could not send invitations",
         "success": "Invited {count} applicants"
+      },
+      "voting": {
+        "title": "Voting",
+        "description": "Rank applicants by preference. All housemates can see each other's votes.",
+        "backToRoom": "Back to room",
+        "yourRanking": "Your ranking",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "submitVotes": "Submit votes",
+        "updateVotes": "Update votes",
+        "submitted": "Votes submitted",
+        "submitError": "Could not submit votes",
+        "noApplicants": "No applicants available for voting yet. Applicants need to be invited and attend an event first.",
+        "voteBoard": "Vote board",
+        "applicant": "Applicant",
+        "total": "Total",
+        "openVoting": "Open voting",
+        "sectionDescription": "Rank applicants together and view each other's votes transparently."
+      },
+      "closeRoom": {
+        "title": "Close listing",
+        "description": "Choose a new housemate or close the listing without selecting anyone. All applicants will be notified.",
+        "chooseApplicant": "Choose new housemate",
+        "chooseHint": "Click to select an applicant, or close without choosing anyone.",
+        "noApplicants": "No active applicants. The listing will simply be closed.",
+        "rankScore": "Vote score: {score}",
+        "closeWithChoice": "Close and accept",
+        "closeWithoutChoice": "Close without choosing",
+        "confirmTitle": "Are you sure?",
+        "confirmWithChoice": "The selected applicant will be notified as accepted. All others will be notified as not chosen. This cannot be undone.",
+        "confirmWithoutChoice": "All applicants will be notified as not chosen. This cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Close listing",
+        "success": "Listing closed",
+        "error": "Could not close listing"
       }
     },
     "roomDetail": {

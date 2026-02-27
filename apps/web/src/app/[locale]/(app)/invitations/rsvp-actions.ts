@@ -144,8 +144,12 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
     // Update application status
     if (invitation.applicationId) {
       await handleApplicationStatusOnRsvp(
-        tx, newStatus, invitation.applicationId,
-        session.user.id, event.roomId, invitationId,
+        tx,
+        newStatus,
+        invitation.applicationId,
+        session.user.id,
+        event.roomId,
+        invitationId,
       );
     }
 

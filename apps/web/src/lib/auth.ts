@@ -11,9 +11,7 @@ function createAuth() {
   // X-Forwarded-Host/Proto (Vercel), falling back to request origin (localhost).
   // BETTER_AUTH_URL must also be unset on Vercel for this to work.
   return betterAuth({
-    secret:
-      process.env.BETTER_AUTH_SECRET ??
-      "build-placeholder-secret-not-for-production-use",
+    secret: process.env.BETTER_AUTH_SECRET ?? "build-placeholder-secret-not-for-production-use",
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: { ...schema },

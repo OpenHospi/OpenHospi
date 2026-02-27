@@ -470,7 +470,34 @@
       "empty": "Du hast noch keine Zimmer erstellt.",
       "createFirst": "Erstelle deine erste Anzeige",
       "createNew": "Neues Zimmer",
-      "applicants": "{count, plural, =0 {Keine Bewerber} =1 {1 Bewerber} other {# Bewerber}}",
+      "applicants": {
+        "title": "Bewerbungen",
+        "empty": "Noch keine Bewerbungen. Teile dein Zimmer, um Bewerber anzuziehen.",
+        "viewProfile": "Profil ansehen",
+        "liked": "gefällt",
+        "maybe": "vielleicht",
+        "rejected": "abgelehnt",
+        "invite": "Einladen",
+        "accept": "Annehmen",
+        "notChosen": "Nicht gewählt",
+        "cancel": "Abbrechen",
+        "acceptConfirmTitle": "Bewerber annehmen",
+        "acceptConfirmDescription": "Bist du sicher, dass du {name} annehmen möchtest? Dies kann nicht rückgängig gemacht werden.",
+        "statusError": "Status konnte nicht aktualisiert werden",
+        "statusUpdated": "Status aktualisiert",
+        "reviewError": "Bewertung konnte nicht gespeichert werden",
+        "reviewSubmitted": "Bewertung gespeichert",
+        "aboutThem": "Über",
+        "lifestyle": "Lebensstil",
+        "personalMessage": "Persönliche Nachricht",
+        "yourReview": "Deine Bewertung",
+        "decision": "Entscheidung",
+        "notes": "Notizen",
+        "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
+        "optional": "optional",
+        "submitReview": "Bewertung speichern",
+        "yearsOld": "Jahre alt"
+      },
       "wizard": {
         "stepOf": "Schritt {current} von {total}",
         "steps": {
@@ -576,35 +603,7 @@
       },
       "noResults": "Keine Ergebnisse gefunden.",
       "noSelection": "Keine Auswahl",
-      "optional": "optional",
-      "applicants": {
-        "title": "Bewerbungen",
-        "empty": "Noch keine Bewerbungen. Teile dein Zimmer, um Bewerber anzuziehen.",
-        "viewProfile": "Profil ansehen",
-        "liked": "gefällt",
-        "maybe": "vielleicht",
-        "rejected": "abgelehnt",
-        "invite": "Einladen",
-        "accept": "Annehmen",
-        "notChosen": "Nicht gewählt",
-        "cancel": "Abbrechen",
-        "acceptConfirmTitle": "Bewerber annehmen",
-        "acceptConfirmDescription": "Bist du sicher, dass du {name} annehmen möchtest? Dies kann nicht rückgängig gemacht werden.",
-        "statusError": "Status konnte nicht aktualisiert werden",
-        "statusUpdated": "Status aktualisiert",
-        "reviewError": "Bewertung konnte nicht gespeichert werden",
-        "reviewSubmitted": "Bewertung gespeichert",
-        "aboutThem": "Über",
-        "lifestyle": "Lebensstil",
-        "personalMessage": "Persönliche Nachricht",
-        "yourReview": "Deine Bewertung",
-        "decision": "Entscheidung",
-        "notes": "Notizen",
-        "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
-        "optional": "optional",
-        "submitReview": "Bewertung speichern",
-        "yearsOld": "Jahre alt"
-      }
+      "optional": "optional"
     },
     "roomDetail": {
       "perMonth": "/Mo",
@@ -821,12 +820,36 @@
       "perYear": "/Jahr",
       "perMonth": "/Mo",
       "rows": [
-        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Neon", "current": "€0", "atScale": "~€180" },
-        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
-        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
-        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
-        { "name": "Google Play", "current": "€25", "atScale": "—" }
+        {
+          "name": "Vercel",
+          "current": "€0",
+          "atScale": "~€222"
+        },
+        {
+          "name": "Neon",
+          "current": "€0",
+          "atScale": "~€180"
+        },
+        {
+          "name": "SURFconext",
+          "current": "€0",
+          "atScale": "€0"
+        },
+        {
+          "name": "Domains (3x)",
+          "current": "~€50",
+          "atScale": "~€50"
+        },
+        {
+          "name": "Apple Developer",
+          "current": "€99",
+          "atScale": "€99"
+        },
+        {
+          "name": "Google Play",
+          "current": "€25",
+          "atScale": "—"
+        }
       ],
       "totalLabel": "Gesamt pro Jahr",
       "currentTotal": "~€174/Jahr",

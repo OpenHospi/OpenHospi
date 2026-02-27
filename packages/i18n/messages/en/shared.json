@@ -368,6 +368,29 @@
     "houseMemberRole": {
       "owner": "Manager",
       "member": "Housemate"
+    },
+    "report_reason": {
+      "spam": "Spam",
+      "harassment": "Intimidatie",
+      "fake_profile": "Nepprofiel",
+      "inappropriate_content": "Ongepaste inhoud",
+      "scam": "Oplichting",
+      "discrimination": "Discriminatie",
+      "other": "Anders"
+    },
+    "report_status": {
+      "pending": "In afwachting",
+      "reviewing": "In behandeling",
+      "resolved": "Afgehandeld",
+      "dismissed": "Afgewezen"
+    },
+    "admin_action": {
+      "view_report": "Melding bekijken",
+      "suspend_user": "Gebruiker schorsen",
+      "unsuspend_user": "Schorsing opheffen",
+      "remove_listing": "Advertentie verwijderen",
+      "remove_message": "Bericht verwijderen",
+      "dismiss_report": "Melding afwijzen"
     }
   },
   "notifications": {

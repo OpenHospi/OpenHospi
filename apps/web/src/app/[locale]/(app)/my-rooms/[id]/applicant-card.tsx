@@ -6,7 +6,6 @@ import {
   ReviewDecision,
 } from "@openhospi/shared/enums";
 import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
@@ -23,6 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -92,20 +92,15 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
     <>
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
-          <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-muted">
+          <Avatar className="size-12">
             {applicant.avatarUrl ? (
-              <Image
-                src={applicant.avatarUrl}
-                alt={applicant.firstName}
-                fill
-                className="object-cover"
-              />
+              <AvatarImage src={applicant.avatarUrl} alt={applicant.firstName} />
             ) : (
-              <div className="flex size-full items-center justify-center">
-                <UserCircle className="size-8 text-muted-foreground" />
-              </div>
+              <AvatarFallback>
+                <UserCircle className="size-8" />
+              </AvatarFallback>
             )}
-          </div>
+          </Avatar>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h3 className="truncate font-semibold">

@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -107,7 +108,7 @@ export function ReportDialog({
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t("reasonLabel")}</label>
+            <Label>{t("reasonLabel")}</Label>
             <Select value={reason} onValueChange={(v) => setReason(v as ReportReason)}>
               <SelectTrigger>
                 <SelectValue placeholder={t("reasonPlaceholder")} />
@@ -123,7 +124,7 @@ export function ReportDialog({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">{t("descriptionLabel")}</label>
+            <Label>{t("descriptionLabel")}</Label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}

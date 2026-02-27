@@ -346,6 +346,7 @@
     "userMenu": {
       "profile": "My profile",
       "settings": "Settings",
+
       "logout": "Log out"
     },
     "discover": {
@@ -1097,6 +1098,10 @@
       "reports": "Reports",
       "auditLog": "Audit log",
       "backToApp": "Back to app"
+    },
+    "userMenu": {
+      "backToApp": "Back to app",
+      "logout": "Log out"
     },
     "dashboard": "Dashboard",
     "dashboardDescription": "Platform overview and key metrics.",

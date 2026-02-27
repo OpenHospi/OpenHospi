@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import type { ConversationListItem } from "@/lib/chat";
 
 type Props = {
@@ -36,9 +38,9 @@ export function ConversationList({ conversations, currentUserId }: Props) {
             href={`/chat/${conv.id}`}
             className="hover:bg-muted/50 flex items-center gap-3 p-4 transition-colors"
           >
-            <div className="bg-muted flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium">
-              {displayName.charAt(0).toUpperCase()}
-            </div>
+            <Avatar>
+              <AvatarFallback>{displayName.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between">
                 <span className="truncate font-medium">{displayName}</span>
@@ -53,9 +55,9 @@ export function ConversationList({ conversations, currentUserId }: Props) {
                   {conv.lastMessage ? t("encrypted_message") : t("no_messages")}
                 </span>
                 {conv.unreadCount > 0 && (
-                  <span className="bg-primary text-primary-foreground ml-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-medium">
+                  <Badge className="ml-2 h-5 min-w-5 justify-center rounded-full px-1.5 font-medium">
                     {conv.unreadCount}
-                  </span>
+                  </Badge>
                 )}
               </div>
             </div>

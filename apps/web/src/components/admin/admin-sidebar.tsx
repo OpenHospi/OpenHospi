@@ -1,11 +1,10 @@
 "use client";
 
-import { BarChart3, ClipboardList, Home, ScrollText, ShieldCheck } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { BarChart3, ClipboardList, ScrollText, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
-import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -16,11 +15,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
+import { AdminUserMenu } from "./admin-user-menu";
+
 type Props = {
-  user: { name: string };
+  user: {
+    name: string;
+    image?: string | null;
+  };
 };
 
 export function AdminSidebar({ user }: Props) {
@@ -78,21 +81,11 @@ export function AdminSidebar({ user }: Props) {
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="flex items-center gap-1 px-2">
-          <ThemeToggle />
-        </div>
-        <SidebarSeparator />
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/discover">
-                <Home className="size-4" />
-                <span>{t("backToApp")}</span>
-              </Link>
-            </SidebarMenuButton>
+            <AdminUserMenu user={user} />
           </SidebarMenuItem>
         </SidebarMenu>
-        <p className="text-muted-foreground truncate px-3 pb-2 text-xs">{user.name}</p>
       </SidebarFooter>
     </Sidebar>
   );

@@ -3,8 +3,6 @@
 import { Building2, Calendar, FileText, Home, MessageCircle, Search, Settings, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -15,7 +13,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Link, usePathname } from "@/i18n/navigation-app";
 
@@ -124,11 +121,6 @@ export function AppSidebar({ user }: AppSidebarProps) {
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="flex items-center gap-1 px-2">
-          <ThemeToggle />
-          <AppLanguageSwitcher />
-        </div>
-        <SidebarSeparator />
         <SidebarMenu>
           <SidebarMenuItem>
             <UserMenu user={user} />

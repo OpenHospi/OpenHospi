@@ -37,6 +37,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
@@ -156,13 +157,13 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                   className="flex flex-wrap gap-3"
                 >
                   {GENDER_PREFERENCES.map((g) => (
-                    <label
+                    <Label
                       key={g}
                       className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                     >
                       <RadioGroupItem value={g} />
                       {tEnums(`gender_preference.${g}`)}
-                    </label>
+                    </Label>
                   ))}
                 </RadioGroup>
               </FormControl>

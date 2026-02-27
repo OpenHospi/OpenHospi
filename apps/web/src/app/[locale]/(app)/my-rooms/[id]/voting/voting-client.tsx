@@ -1,14 +1,22 @@
 "use client";
 
 import { ArrowDown, ArrowUp, Check, Loader2, UserCircle } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { VotableApplicant, VoteBoard } from "@/lib/votes";
 
@@ -91,20 +99,15 @@ export function VotingClient({ roomId, currentUserId, voteBoard }: Props) {
               <span className="w-6 text-center text-sm font-bold text-muted-foreground">
                 {index + 1}
               </span>
-              <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-muted">
+              <Avatar>
                 {applicant.avatarUrl ? (
-                  <Image
-                    src={applicant.avatarUrl}
-                    alt={applicant.firstName}
-                    fill
-                    className="object-cover"
-                  />
+                  <AvatarImage src={applicant.avatarUrl} alt={applicant.firstName} />
                 ) : (
-                  <div className="flex size-full items-center justify-center">
-                    <UserCircle className="size-5 text-muted-foreground" />
-                  </div>
+                  <AvatarFallback>
+                    <UserCircle className="size-5" />
+                  </AvatarFallback>
                 )}
-              </div>
+              </Avatar>
               <span className="flex-1 text-sm font-medium">
                 {applicant.firstName} {applicant.lastName}
               </span>
@@ -148,47 +151,47 @@ export function VotingClient({ roomId, currentUserId, voteBoard }: Props) {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="pb-2 text-left font-medium">{t("applicant")}</th>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("applicant")}</TableHead>
                     {voteBoard.ballots.map((ballot) => (
-                      <th key={ballot.voterId} className="pb-2 text-center font-medium">
+                      <TableHead key={ballot.voterId} className="text-center">
                         {ballot.voterName}
-                      </th>
+                      </TableHead>
                     ))}
-                    <th className="pb-2 text-center font-medium">{t("total")}</th>
-                  </tr>
-                </thead>
-                <tbody>
+                    <TableHead className="text-center">{t("total")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {voteBoard.aggregated.map((row) => {
                     const applicant = voteBoard.applicants.find(
                       (a) => a.userId === row.applicantId,
                     );
                     if (!applicant) return null;
                     return (
-                      <tr key={row.applicantId} className="border-b last:border-0">
-                        <td className="py-2 font-medium">
+                      <TableRow key={row.applicantId}>
+                        <TableCell className="font-medium">
                           {applicant.firstName} {applicant.lastName}
-                        </td>
+                        </TableCell>
                         {voteBoard.ballots.map((ballot) => {
                           const ranking = ballot.rankings.find(
                             (r) => r.applicantId === row.applicantId,
                           );
                           return (
-                            <td key={ballot.voterId} className="py-2 text-center">
+                            <TableCell key={ballot.voterId} className="text-center">
                               {ranking ? ranking.rank : "–"}
-                            </td>
+                            </TableCell>
                           );
                         })}
-                        <td className="py-2 text-center">
+                        <TableCell className="text-center">
                           <Badge variant="secondary">{row.totalRank}</Badge>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     );
                   })}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </CardContent>
         </Card>

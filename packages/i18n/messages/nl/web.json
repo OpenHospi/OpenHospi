@@ -346,6 +346,7 @@
     "userMenu": {
       "profile": "Mijn profiel",
       "settings": "Instellingen",
+
       "logout": "Uitloggen"
     },
     "discover": {
@@ -1121,6 +1122,10 @@
       "reports": "Meldingen",
       "auditLog": "Auditlog",
       "backToApp": "Terug naar app"
+    },
+    "userMenu": {
+      "backToApp": "Terug naar app",
+      "logout": "Uitloggen"
     },
     "dashboard": "Dashboard",
     "dashboardDescription": "Platformoverzicht en belangrijke statistieken.",

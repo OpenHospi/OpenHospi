@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
 
 import { AppSidebar } from "@/components/app/app-sidebar";
+import { NotificationBell } from "@/components/app/notification-bell";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getSession, requireCompleteProfile } from "@/lib/auth-server";
 
@@ -30,6 +32,13 @@ export default async function AppLayout({ children, params }: Props) {
       <SidebarInset>
         <header className="flex h-14 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
+          {session && (
+            <div className="ml-auto">
+              <Suspense>
+                <NotificationBell userId={session.user.id} />
+              </Suspense>
+            </div>
+          )}
         </header>
         <main className="flex-1 p-6">{children}</main>
       </SidebarInset>

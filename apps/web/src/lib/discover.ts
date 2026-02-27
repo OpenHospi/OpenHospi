@@ -4,7 +4,20 @@ import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
 import type { LocationTag, RoomFeature } from "@openhospi/shared/enums";
 import { DiscoverSort, GenderPreference, RoomStatus } from "@openhospi/shared/enums";
-import { and, arrayContains, asc, count, desc, eq, gt, gte, isNull, lt, lte, or } from "drizzle-orm";
+import {
+  and,
+  arrayContains,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  gte,
+  isNull,
+  lt,
+  lte,
+  or,
+} from "drizzle-orm";
 
 export type DiscoverRoom = {
   id: string;
@@ -111,14 +124,21 @@ function buildDiscoverConditions(
 
   // Vereniging visibility: show non-vereniging rooms + rooms matching user's vereniging
   if (userVereniging) {
-    conditions.push(or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging as any))!);
+    conditions.push(
+      or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging as any))!,
+    );
   } else {
     conditions.push(isNull(rooms.roomVereniging));
   }
 
   // Gender matching: rooms with a preference only shown to matching profiles
   if (userGender) {
-    conditions.push(or(eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any), eq(rooms.preferredGender, userGender as any))!);
+    conditions.push(
+      or(
+        eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any),
+        eq(rooms.preferredGender, userGender as any),
+      )!,
+    );
   } else {
     conditions.push(eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any));
   }
@@ -129,8 +149,10 @@ function buildDiscoverConditions(
   if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType as any));
   if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing as any));
   if (filters.availableFrom) conditions.push(lte(rooms.availableFrom, filters.availableFrom));
-  if (filters.features?.length) conditions.push(arrayContains(rooms.features, filters.features as RoomFeature[]));
-  if (filters.locationTags?.length) conditions.push(arrayContains(rooms.locationTags, filters.locationTags as LocationTag[]));
+  if (filters.features?.length)
+    conditions.push(arrayContains(rooms.features, filters.features as RoomFeature[]));
+  if (filters.locationTags?.length)
+    conditions.push(arrayContains(rooms.locationTags, filters.locationTags as LocationTag[]));
 
   if (cursor) conditions.push(buildCursorCondition(sort, cursor) as any);
 
@@ -256,7 +278,12 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
   if (!room) return null;
 
   const photos = await db
-    .select({ id: roomPhotos.id, slot: roomPhotos.slot, url: roomPhotos.url, caption: roomPhotos.caption })
+    .select({
+      id: roomPhotos.id,
+      slot: roomPhotos.slot,
+      url: roomPhotos.url,
+      caption: roomPhotos.caption,
+    })
     .from(roomPhotos)
     .where(eq(roomPhotos.roomId, roomId))
     .orderBy(roomPhotos.slot);
@@ -274,10 +301,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
   };
 }
 
-export async function getPublicRoomsByCity(
-  city: string,
-  limit: number,
-): Promise<DiscoverRoom[]> {
+export async function getPublicRoomsByCity(city: string, limit: number): Promise<DiscoverRoom[]> {
   const rows = await db
     .select({
       id: rooms.id,

@@ -28,10 +28,7 @@ export const rateLimiters = {
  * Check rate limit. Returns false if exceeded.
  * No-ops (returns true) when Upstash is not configured (local dev).
  */
-export async function checkRateLimit(
-  rl: Ratelimit | null,
-  identifier: string,
-): Promise<boolean> {
+export async function checkRateLimit(rl: Ratelimit | null, identifier: string): Promise<boolean> {
   if (!rl) return true;
   const { success } = await rl.limit(identifier);
   return success;

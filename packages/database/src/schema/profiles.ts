@@ -22,6 +22,7 @@ import {
   genderEnum,
   languageEnum,
   lifestyleTagEnum,
+  localeEnum,
   studyLevelEnum,
   verenigingEnum,
 } from "./enums";
@@ -53,6 +54,7 @@ export const profiles = pgTable(
     showInstagram: boolean("show_instagram").default(false),
     lifestyleTags: lifestyleTagEnum("lifestyle_tags").array().default([]),
     languages: languageEnum("languages").array().default([]),
+    preferredLocale: localeEnum("preferred_locale").default("nl"),
     notificationPreferences: jsonb("notification_preferences"),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

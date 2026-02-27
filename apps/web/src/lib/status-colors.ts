@@ -1,4 +1,4 @@
-import type { ApplicationStatus, RoomStatus } from "@openhospi/shared/enums";
+import type { ApplicationStatus, InvitationStatus, RoomStatus } from "@openhospi/shared/enums";
 
 export const APPLICATION_STATUS_COLORS: Record<ApplicationStatus, string> = {
   sent: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -12,6 +12,13 @@ export const APPLICATION_STATUS_COLORS: Record<ApplicationStatus, string> = {
   accepted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
   not_chosen: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
   withdrawn: "bg-muted text-muted-foreground",
+};
+
+export const INVITATION_STATUS_COLORS: Record<InvitationStatus, string> = {
+  pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+  attending: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  not_attending: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
+  maybe: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
 };
 
 export const ROOM_STATUS_COLORS: Record<RoomStatus, string> = {

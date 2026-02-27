@@ -116,9 +116,7 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
               <DiscoverRoomCard key={room.id} room={room} />
             ))}
           </div>
-          {nextCursor && (
-            <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />
-          )}
+          {nextCursor && <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />}
         </>
       )}
     </div>

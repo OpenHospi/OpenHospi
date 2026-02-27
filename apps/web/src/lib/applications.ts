@@ -192,7 +192,12 @@ export async function getRoomDetailForApply(
     if (!room) return null;
 
     const photos = await tx
-      .select({ id: roomPhotos.id, slot: roomPhotos.slot, url: roomPhotos.url, caption: roomPhotos.caption })
+      .select({
+        id: roomPhotos.id,
+        slot: roomPhotos.slot,
+        url: roomPhotos.url,
+        caption: roomPhotos.caption,
+      })
       .from(roomPhotos)
       .where(eq(roomPhotos.roomId, roomId))
       .orderBy(roomPhotos.slot);

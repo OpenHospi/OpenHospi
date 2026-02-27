@@ -25,9 +25,7 @@ export async function RoomDetails({ room }: Props) {
         {room.serviceCosts != null && (
           <Detail label={t("fields.serviceCosts")} value={`€${room.serviceCosts}`} />
         )}
-        {room.roomSizeM2 && (
-          <Detail label={t("fields.roomSize")} value={`${room.roomSizeM2} m²`} />
-        )}
+        {room.roomSizeM2 && <Detail label={t("fields.roomSize")} value={`${room.roomSizeM2} m²`} />}
         {room.availableFrom && (
           <Detail label={t("fields.availableFrom")} value={room.availableFrom} />
         )}

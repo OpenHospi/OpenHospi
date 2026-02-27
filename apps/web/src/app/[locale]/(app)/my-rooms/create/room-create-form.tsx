@@ -1,6 +1,10 @@
 "use client";
 
-import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
+import type {
+  RoomBasicInfoData,
+  RoomDetailsData,
+  RoomPreferencesData,
+} from "@openhospi/database/validators";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -100,8 +104,7 @@ export function RoomCreateForm({ room }: Props) {
             preferredAgeMax: room.preferredAgeMax ?? undefined,
             preferredLifestyleTags:
               (room.preferredLifestyleTags as RoomPreferencesData["preferredLifestyleTags"]) ?? [],
-            roomVereniging:
-              room.roomVereniging as RoomPreferencesData["roomVereniging"],
+            roomVereniging: room.roomVereniging as RoomPreferencesData["roomVereniging"],
           }}
           onBack={() => setStep(2)}
           onNext={() => setStep(4)}

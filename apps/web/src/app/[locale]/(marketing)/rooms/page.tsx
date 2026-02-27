@@ -66,7 +66,9 @@ export default async function RoomsIndexPage({ params }: Props) {
         </div>
 
         {cities.length === 0 && (
-          <p className="mt-16 text-center text-muted-foreground">{t("roomsAvailable", { count: 0 })}</p>
+          <p className="mt-16 text-center text-muted-foreground">
+            {t("roomsAvailable", { count: 0 })}
+          </p>
         )}
 
         {/* CTA */}

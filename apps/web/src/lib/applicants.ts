@@ -60,7 +60,9 @@ export async function getRoomApplicants(roomId: string, userId: string): Promise
       })
       .from(applications)
       .innerJoin(profiles, eq(profiles.id, applications.userId))
-      .where(and(eq(applications.roomId, roomId), ne(applications.status, ApplicationStatus.withdrawn)))
+      .where(
+        and(eq(applications.roomId, roomId), ne(applications.status, ApplicationStatus.withdrawn)),
+      )
       .orderBy(asc(applications.appliedAt))
       .limit(MAX_APPLICANTS_PER_PAGE);
 
@@ -92,12 +94,7 @@ export async function getRoomApplicants(roomId: string, userId: string): Promise
       })
       .from(reviews)
       .innerJoin(profiles, eq(profiles.id, reviews.reviewerId))
-      .where(
-        and(
-          eq(reviews.roomId, roomId),
-          inArray(reviews.applicantId, userIds),
-        ),
-      );
+      .where(and(eq(reviews.roomId, roomId), inArray(reviews.applicantId, userIds)));
 
     // Group photos by userId
     const photosByUser = new Map<

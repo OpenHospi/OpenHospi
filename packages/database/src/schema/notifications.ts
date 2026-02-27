@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
 import {
   boolean,
@@ -52,6 +53,7 @@ export const notifications = pgTable(
     body: text("body").notNull(),
     data: jsonb("data").default({}),
     sent: boolean("sent").default(false),
+    readAt: timestamp("read_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
@@ -61,6 +63,13 @@ export const notifications = pgTable(
       for: "select",
       to: authenticatedRole,
       using: authUid(table.userId),
+    }),
+    // User can mark own notifications as read
+    pgPolicy("notifications_update_own", {
+      for: "update",
+      to: authenticatedRole,
+      using: authUid(table.userId),
+      withCheck: authUid(table.userId),
     }),
   ],
 );

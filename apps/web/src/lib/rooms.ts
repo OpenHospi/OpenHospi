@@ -99,10 +99,6 @@ export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
 
 export async function getRoomPhotos(roomId: string, userId: string): Promise<RoomPhoto[]> {
   return withRLS(userId, (tx) =>
-    tx
-      .select()
-      .from(roomPhotos)
-      .where(eq(roomPhotos.roomId, roomId))
-      .orderBy(roomPhotos.slot),
+    tx.select().from(roomPhotos).where(eq(roomPhotos.roomId, roomId)).orderBy(roomPhotos.slot),
   );
 }

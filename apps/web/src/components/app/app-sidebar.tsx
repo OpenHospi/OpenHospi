@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, FileText, Home, Search, Settings, User } from "lucide-react";
+import { Building2, Calendar, FileText, Home, Search, Settings, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
@@ -52,6 +52,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
       disabled: false,
     },
     {
+      label: t("invitations"),
+      href: "/invitations" as const,
+      icon: Calendar,
+      disabled: false,
+    },
+    {
       label: t("profile"),
       href: "/profile" as const,
       icon: User,
@@ -87,8 +93,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
-                const isActive =
-                  pathname === item.href || pathname.startsWith(item.href + "/");
+                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
                   <SidebarMenuItem key={item.href}>
                     {item.disabled ? (

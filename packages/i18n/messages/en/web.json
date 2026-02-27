@@ -337,6 +337,7 @@
       "discover": "Discover",
       "myRooms": "My Rooms",
       "applications": "Applications",
+      "invitations": "Invitations",
       "profile": "Profile",
       "settings": "Settings",
       "comingSoon": "Coming soon"
@@ -603,7 +604,101 @@
         "notesPlaceholder": "Add optional notes about this applicant...",
         "optional": "optional",
         "submitReview": "Submit review",
-        "yearsOld": "years old"
+        "yearsOld": "years old",
+        "reviewMode": "Review mode"
+      },
+      "reviewMode": {
+        "title": "Review mode",
+        "backToOverview": "Back to overview",
+        "about": "About",
+        "personalMessage": "Personal message",
+        "housemateReviews": "Housemate reviews",
+        "reviewError": "Could not submit review",
+        "allReviewed": "All applicants reviewed!",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "events": {
+        "title": "Hospi Events",
+        "empty": "No events yet. Create one to invite applicants.",
+        "create": "Create event",
+        "createTitle": "Create hospi event",
+        "createSubmit": "Create event",
+        "createError": "Could not create event",
+        "created": "Event created",
+        "cancelled": "Cancelled",
+        "cancelEvent": "Cancel event",
+        "cancelConfirmTitle": "Cancel event",
+        "cancelConfirmDescription": "Are you sure you want to cancel this event? All invitees will be notified.",
+        "keepEvent": "Keep event",
+        "confirmCancel": "Cancel event",
+        "cancelError": "Could not cancel event",
+        "cancelledSuccess": "Event cancelled",
+        "addToCalendar": "Add to calendar",
+        "detailTitle": "Event details",
+        "backToRoom": "Back to room",
+        "invitees": "Invitees",
+        "noInvitees": "No invitees yet. Use the invite button to add applicants.",
+        "attendingCount": "{attending} / {total} attending",
+        "maxAttendees": "Max {count} attendees",
+        "optional": "optional",
+        "fields": {
+          "title": "Title",
+          "date": "Date",
+          "startTime": "Start time",
+          "endTime": "End time",
+          "duration": "Duration",
+          "customEndTime": "Set custom end time",
+          "location": "Location",
+          "description": "Description",
+          "maxAttendees": "Max attendees",
+          "notes": "Internal notes"
+        }
+      },
+      "invite": {
+        "inviteApplicants": "Invite applicants",
+        "title": "Invite applicants to event",
+        "noInvitable": "No applicants available to invite.",
+        "selected": "{count} selected",
+        "selectAllLiked": "Select all liked",
+        "submit": "Invite {count} applicants",
+        "error": "Could not send invitations",
+        "success": "Invited {count} applicants"
+      },
+      "voting": {
+        "title": "Voting",
+        "description": "Rank applicants by preference. All housemates can see each other's votes.",
+        "backToRoom": "Back to room",
+        "yourRanking": "Your ranking",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "submitVotes": "Submit votes",
+        "updateVotes": "Update votes",
+        "submitted": "Votes submitted",
+        "submitError": "Could not submit votes",
+        "noApplicants": "No applicants available for voting yet. Applicants need to be invited and attend an event first.",
+        "voteBoard": "Vote board",
+        "applicant": "Applicant",
+        "total": "Total",
+        "openVoting": "Open voting",
+        "sectionDescription": "Rank applicants together and view each other's votes transparently."
+      },
+      "closeRoom": {
+        "title": "Close listing",
+        "description": "Choose a new housemate or close the listing without selecting anyone. All applicants will be notified.",
+        "chooseApplicant": "Choose new housemate",
+        "chooseHint": "Click to select an applicant, or close without choosing anyone.",
+        "noApplicants": "No active applicants. The listing will simply be closed.",
+        "rankScore": "Vote score: {score}",
+        "closeWithChoice": "Close and accept",
+        "closeWithoutChoice": "Close without choosing",
+        "confirmTitle": "Are you sure?",
+        "confirmWithChoice": "The selected applicant will be notified as accepted. All others will be notified as not chosen. This cannot be undone.",
+        "confirmWithoutChoice": "All applicants will be notified as not chosen. This cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Close listing",
+        "success": "Listing closed",
+        "error": "Could not close listing"
       }
     },
     "roomDetail": {
@@ -738,6 +833,31 @@
       "errors": {
         "INVALID_LINK": "This invite link is invalid.",
         "ALREADY_MEMBER": "You are already a member of this house."
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications yet",
+      "markAllRead": "Mark all as read"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
+      "cancelled": "Cancelled",
+      "attend": "Attend",
+      "maybe": "Maybe",
+      "decline": "Decline",
+      "declineReasonLabel": "Why can't you attend?",
+      "declineReasonPlaceholder": "Please share why you can't make it...",
+      "confirmDecline": "Confirm decline",
+      "cancelDecline": "Cancel",
+      "rsvpSuccess": "Response saved",
+      "errors": {
+        "not_found": "Invitation not found",
+        "invalid_transition": "This response is no longer available",
+        "event_cancelled": "This event has been cancelled",
+        "deadline_passed": "The RSVP deadline has passed",
+        "event_full": "This event is full"
       }
     }
   },

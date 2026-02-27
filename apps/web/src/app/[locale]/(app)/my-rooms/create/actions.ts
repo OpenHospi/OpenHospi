@@ -2,8 +2,16 @@
 
 import { withRLS } from "@openhospi/database";
 import { houseMembers, roomPhotos, rooms } from "@openhospi/database/schema";
-import type { RoomBasicInfoData, RoomDetailsData, RoomPreferencesData } from "@openhospi/database/validators";
-import { roomBasicInfoSchema, roomDetailsSchema, roomPreferencesSchema } from "@openhospi/database/validators";
+import type {
+  RoomBasicInfoData,
+  RoomDetailsData,
+  RoomPreferencesData,
+} from "@openhospi/database/validators";
+import {
+  roomBasicInfoSchema,
+  roomDetailsSchema,
+  roomPreferencesSchema,
+} from "@openhospi/database/validators";
 import { GenderPreference, HouseMemberRole, RentalType, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -24,10 +32,9 @@ export async function createDraftRoomAction(): Promise<{ id?: string; error?: st
     const [row] = await tx
       .select({ houseId: houseMembers.houseId })
       .from(houseMembers)
-      .where(and(
-        eq(houseMembers.userId, session.user.id),
-        eq(houseMembers.role, HouseMemberRole.owner),
-      ));
+      .where(
+        and(eq(houseMembers.userId, session.user.id), eq(houseMembers.role, HouseMemberRole.owner)),
+      );
     return row;
   });
 

@@ -359,9 +359,41 @@
       "maybe": "Vielleicht",
       "reject": "Ablehnen"
     },
+    "invitation_status": {
+      "pending": "Ausstehend",
+      "attending": "Teilnehmend",
+      "not_attending": "Nicht teilnehmend",
+      "maybe": "Vielleicht"
+    },
     "houseMemberRole": {
       "owner": "Verwalter",
       "member": "Mitbewohner"
+    }
+  },
+  "notifications": {
+    "invited": {
+      "title": "Du bist zu einem Hospi-Event eingeladen!",
+      "body": "Du wurdest zu {eventTitle} für {roomTitle} eingeladen"
+    },
+    "rsvpReceived": {
+      "title": "RSVP erhalten",
+      "body": "{name} hat geantwortet: {status}"
+    },
+    "eventCancelled": {
+      "title": "Veranstaltung abgesagt",
+      "body": "{eventTitle} wurde abgesagt"
+    },
+    "accepted": {
+      "title": "Herzlichen Glückwunsch! Du wurdest gewählt!",
+      "body": "Du wurdest für {roomTitle} angenommen"
+    },
+    "notChosen": {
+      "title": "Bewerbungsupdate",
+      "body": "Das Zimmer {roomTitle} wurde vergeben. Viel Erfolg bei deiner Suche!"
+    },
+    "reminder": {
+      "title": "Veranstaltungserinnerung",
+      "body": "{eventTitle} beginnt um {time}"
     }
   }
 }

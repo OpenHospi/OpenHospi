@@ -1,6 +1,10 @@
 "use client";
 
-import { ApplicationStatus, INVITABLE_APPLICATION_STATUSES, ReviewDecision } from "@openhospi/shared/enums";
+import {
+  ApplicationStatus,
+  INVITABLE_APPLICATION_STATUSES,
+  ReviewDecision,
+} from "@openhospi/shared/enums";
 import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole, crudPolicy } from "drizzle-orm/neon";
+import { authUid, authenticatedRole } from "drizzle-orm/neon";
 import {
   date,
   index,
@@ -145,10 +145,30 @@ export const votes = pgTable(
       table.applicantId,
       table.round,
     ),
-    crudPolicy({
-      role: authenticatedRole,
-      read: authUid(table.voterId),
-      modify: authUid(table.voterId),
+    // All housemates of the room can view votes (transparency)
+    pgPolicy("votes_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.user_id()))`,
+    }),
+    // Only the voter can insert
+    pgPolicy("votes_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: authUid(table.voterId),
+    }),
+    // Only the voter can update
+    pgPolicy("votes_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: authUid(table.voterId),
+      withCheck: authUid(table.voterId),
+    }),
+    // Only the voter can delete
+    pgPolicy("votes_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: authUid(table.voterId),
     }),
   ],
 );

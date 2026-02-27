@@ -337,6 +337,7 @@
       "discover": "Entdecken",
       "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
+      "invitations": "Einladungen",
       "profile": "Profil",
       "settings": "Einstellungen",
       "comingSoon": "Demnächst"
@@ -603,7 +604,66 @@
         "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
         "optional": "optional",
         "submitReview": "Bewertung speichern",
-        "yearsOld": "Jahre alt"
+        "yearsOld": "Jahre alt",
+        "reviewMode": "Überprüfungsmodus"
+      },
+      "reviewMode": {
+        "title": "Überprüfungsmodus",
+        "backToOverview": "Zurück zur Übersicht",
+        "about": "Über",
+        "personalMessage": "Persönliche Nachricht",
+        "housemateReviews": "Mitbewohner-Bewertungen",
+        "reviewError": "Bewertung konnte nicht gespeichert werden",
+        "allReviewed": "Alle Bewerber bewertet!",
+        "previous": "Vorherige",
+        "next": "Nächste"
+      },
+      "events": {
+        "title": "Hospi-Veranstaltungen",
+        "empty": "Noch keine Veranstaltungen. Erstelle eine, um Bewerber einzuladen.",
+        "create": "Veranstaltung erstellen",
+        "createTitle": "Hospi-Veranstaltung erstellen",
+        "createSubmit": "Veranstaltung erstellen",
+        "createError": "Veranstaltung konnte nicht erstellt werden",
+        "created": "Veranstaltung erstellt",
+        "cancelled": "Abgesagt",
+        "cancelEvent": "Veranstaltung absagen",
+        "cancelConfirmTitle": "Veranstaltung absagen",
+        "cancelConfirmDescription": "Bist du sicher, dass du diese Veranstaltung absagen möchtest? Alle Eingeladenen werden benachrichtigt.",
+        "keepEvent": "Veranstaltung behalten",
+        "confirmCancel": "Absagen",
+        "cancelError": "Veranstaltung konnte nicht abgesagt werden",
+        "cancelledSuccess": "Veranstaltung abgesagt",
+        "addToCalendar": "Zum Kalender hinzufügen",
+        "detailTitle": "Veranstaltungsdetails",
+        "backToRoom": "Zurück zum Zimmer",
+        "invitees": "Eingeladene",
+        "noInvitees": "Noch keine Eingeladenen. Nutze die Einladungsfunktion, um Bewerber hinzuzufügen.",
+        "attendingCount": "{attending} / {total} teilnehmend",
+        "maxAttendees": "Max {count} Teilnehmer",
+        "optional": "optional",
+        "fields": {
+          "title": "Titel",
+          "date": "Datum",
+          "startTime": "Startzeit",
+          "endTime": "Endzeit",
+          "duration": "Dauer",
+          "customEndTime": "Benutzerdefinierte Endzeit festlegen",
+          "location": "Ort",
+          "description": "Beschreibung",
+          "maxAttendees": "Max Teilnehmer",
+          "notes": "Interne Notizen"
+        }
+      },
+      "invite": {
+        "inviteApplicants": "Bewerber einladen",
+        "title": "Bewerber zur Veranstaltung einladen",
+        "noInvitable": "Keine Bewerber zum Einladen verfügbar.",
+        "selected": "{count} ausgewählt",
+        "selectAllLiked": "Alle gelikten auswählen",
+        "submit": "{count} Bewerber einladen",
+        "error": "Einladungen konnten nicht gesendet werden",
+        "success": "{count} Bewerber eingeladen"
       }
     },
     "roomDetail": {
@@ -938,6 +998,31 @@
       "githubButton": "Mit GitHub anmelden",
       "error": "Anmeldung fehlgeschlagen. Überprüfe, ob dein Konto Administratorrechte hat.",
       "footer": "Nur autorisierte Administratoren haben Zugang zu diesem Panel."
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "empty": "Noch keine Benachrichtigungen",
+      "markAllRead": "Alle als gelesen markieren"
+    },
+    "invitations": {
+      "title": "Einladungen",
+      "empty": "Noch keine Einladungen. Bewirb dich auf Zimmer, um Hospi-Einladungen zu erhalten.",
+      "cancelled": "Abgesagt",
+      "attend": "Teilnehmen",
+      "maybe": "Vielleicht",
+      "decline": "Absagen",
+      "declineReasonLabel": "Warum kannst du nicht teilnehmen?",
+      "declineReasonPlaceholder": "Bitte teile mit, warum du nicht kommen kannst...",
+      "confirmDecline": "Absage bestätigen",
+      "cancelDecline": "Abbrechen",
+      "rsvpSuccess": "Antwort gespeichert",
+      "errors": {
+        "not_found": "Einladung nicht gefunden",
+        "invalid_transition": "Diese Antwort ist nicht mehr verfügbar",
+        "event_cancelled": "Diese Veranstaltung wurde abgesagt",
+        "deadline_passed": "Die RSVP-Frist ist abgelaufen",
+        "event_full": "Diese Veranstaltung ist voll"
+      }
     }
   }
 }

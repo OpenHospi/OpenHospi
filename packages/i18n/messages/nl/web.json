@@ -337,6 +337,7 @@
       "discover": "Ontdekken",
       "myRooms": "Mijn kamers",
       "applications": "Reacties",
+      "invitations": "Uitnodigingen",
       "profile": "Profiel",
       "settings": "Instellingen",
       "comingSoon": "Binnenkort"
@@ -603,7 +604,66 @@
         "notesPlaceholder": "Voeg optionele notities toe over deze kandidaat...",
         "optional": "optioneel",
         "submitReview": "Beoordeling opslaan",
-        "yearsOld": "jaar oud"
+        "yearsOld": "jaar oud",
+        "reviewMode": "Beoordelingsmodus"
+      },
+      "reviewMode": {
+        "title": "Beoordelingsmodus",
+        "backToOverview": "Terug naar overzicht",
+        "about": "Over",
+        "personalMessage": "Persoonlijk bericht",
+        "housemateReviews": "Huisgenootbeoordelingen",
+        "reviewError": "Kon beoordeling niet opslaan",
+        "allReviewed": "Alle kandidaten beoordeeld!",
+        "previous": "Vorige",
+        "next": "Volgende"
+      },
+      "events": {
+        "title": "Hospi-evenementen",
+        "empty": "Nog geen evenementen. Maak er een aan om kandidaten uit te nodigen.",
+        "create": "Evenement maken",
+        "createTitle": "Hospi-evenement maken",
+        "createSubmit": "Evenement maken",
+        "createError": "Kon evenement niet maken",
+        "created": "Evenement aangemaakt",
+        "cancelled": "Geannuleerd",
+        "cancelEvent": "Evenement annuleren",
+        "cancelConfirmTitle": "Evenement annuleren",
+        "cancelConfirmDescription": "Weet je zeker dat je dit evenement wilt annuleren? Alle genodigden worden op de hoogte gebracht.",
+        "keepEvent": "Evenement behouden",
+        "confirmCancel": "Annuleren",
+        "cancelError": "Kon evenement niet annuleren",
+        "cancelledSuccess": "Evenement geannuleerd",
+        "addToCalendar": "Toevoegen aan agenda",
+        "detailTitle": "Evenementdetails",
+        "backToRoom": "Terug naar kamer",
+        "invitees": "Genodigden",
+        "noInvitees": "Nog geen genodigden. Gebruik de uitnodigknop om kandidaten toe te voegen.",
+        "attendingCount": "{attending} / {total} aanwezig",
+        "maxAttendees": "Max {count} deelnemers",
+        "optional": "optioneel",
+        "fields": {
+          "title": "Titel",
+          "date": "Datum",
+          "startTime": "Starttijd",
+          "endTime": "Eindtijd",
+          "duration": "Duur",
+          "customEndTime": "Aangepaste eindtijd instellen",
+          "location": "Locatie",
+          "description": "Beschrijving",
+          "maxAttendees": "Max deelnemers",
+          "notes": "Interne notities"
+        }
+      },
+      "invite": {
+        "inviteApplicants": "Kandidaten uitnodigen",
+        "title": "Kandidaten uitnodigen voor evenement",
+        "noInvitable": "Geen kandidaten beschikbaar om uit te nodigen.",
+        "selected": "{count} geselecteerd",
+        "selectAllLiked": "Alle gelikete selecteren",
+        "submit": "{count} kandidaten uitnodigen",
+        "error": "Kon uitnodigingen niet versturen",
+        "success": "{count} kandidaten uitgenodigd"
       }
     },
     "roomDetail": {
@@ -938,6 +998,31 @@
       "githubButton": "Inloggen met GitHub",
       "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
       "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "empty": "Nog geen meldingen",
+      "markAllRead": "Alles als gelezen markeren"
+    },
+    "invitations": {
+      "title": "Uitnodigingen",
+      "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
+      "cancelled": "Geannuleerd",
+      "attend": "Aanwezig",
+      "maybe": "Misschien",
+      "decline": "Afwijzen",
+      "declineReasonLabel": "Waarom kun je niet komen?",
+      "declineReasonPlaceholder": "Deel alsjeblieft waarom je niet kunt komen...",
+      "confirmDecline": "Afwijzing bevestigen",
+      "cancelDecline": "Annuleren",
+      "rsvpSuccess": "Reactie opgeslagen",
+      "errors": {
+        "not_found": "Uitnodiging niet gevonden",
+        "invalid_transition": "Deze reactie is niet meer beschikbaar",
+        "event_cancelled": "Dit evenement is geannuleerd",
+        "deadline_passed": "De RSVP-deadline is verstreken",
+        "event_full": "Dit evenement is vol"
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, FileText, Home, Search, Settings, User } from "lucide-react";
+import { Building2, Calendar, FileText, Home, Search, Settings, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
@@ -49,6 +49,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
       label: t("applications"),
       href: "/applications" as const,
       icon: FileText,
+      disabled: false,
+    },
+    {
+      label: t("invitations"),
+      href: "/invitations" as const,
+      icon: Calendar,
       disabled: false,
     },
     {

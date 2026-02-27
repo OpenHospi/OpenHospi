@@ -9,6 +9,7 @@ import { getRoom } from "@/lib/rooms";
 
 import { ApplicantsSection } from "./applicants-section";
 import { EditRoomDialog } from "./edit-room-dialog";
+import { EventsSection } from "./events-section";
 import { RoomDetails } from "./room-details";
 import { RoomHeader } from "./room-header";
 import { RoomPhotosGrid } from "./room-photos-grid";
@@ -54,6 +55,10 @@ export default async function RoomDetailPage({ params }: Props) {
 
       {room.status !== RoomStatus.draft && (
         <ApplicantsSection roomId={room.id} userId={user.id} />
+      )}
+
+      {room.status !== RoomStatus.draft && (
+        <EventsSection roomId={room.id} userId={user.id} />
       )}
 
       {room.status !== RoomStatus.draft && <ShareLinkSection room={room} />}

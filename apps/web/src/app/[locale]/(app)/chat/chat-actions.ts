@@ -2,11 +2,12 @@
 
 import { db, withRLS } from "@openhospi/database";
 import {
+  blocks,
   conversationMembers,
   messageReceipts,
   messages,
 } from "@openhospi/database/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
@@ -23,6 +24,31 @@ export async function sendMessage(
   const session = await requireSession();
   const userId = session.user.id;
 
+  // Check for bidirectional blocks with any conversation member
+  const members = await db
+    .select({ userId: conversationMembers.userId })
+    .from(conversationMembers)
+    .where(eq(conversationMembers.conversationId, conversationId));
+
+  const otherMemberIds = members.filter((m) => m.userId !== userId).map((m) => m.userId);
+
+  if (otherMemberIds.length > 0) {
+    const blockExists = await db
+      .select({ blockerId: blocks.blockerId })
+      .from(blocks)
+      .where(
+        or(
+          and(eq(blocks.blockerId, userId), inArray(blocks.blockedId, otherMemberIds)),
+          and(inArray(blocks.blockerId, otherMemberIds), eq(blocks.blockedId, userId)),
+        ),
+      )
+      .limit(1);
+
+    if (blockExists.length > 0) {
+      throw new Error("Cannot send message — a block exists between you and a conversation member");
+    }
+  }
+
   const [message] = await withRLS(userId, async (tx) => {
     return tx
       .insert(messages)
@@ -38,11 +64,6 @@ export async function sendMessage(
   });
 
   // Create receipts for all members except sender
-  const members = await db
-    .select({ userId: conversationMembers.userId })
-    .from(conversationMembers)
-    .where(eq(conversationMembers.conversationId, conversationId));
-
   const receipts = members
     .filter((m) => m.userId !== userId)
     .map((m) => ({

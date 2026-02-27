@@ -1,11 +1,25 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { blocks } from "@openhospi/database/schema";
-import { and, eq } from "drizzle-orm";
+import { db, withRLS } from "@openhospi/database";
+import {
+  applications,
+  blocks,
+  houseMembers,
+  houses,
+  rooms,
+} from "@openhospi/database/schema";
+import { ApplicationStatus } from "@openhospi/shared/enums";
+import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
+
+const REJECTABLE_STATUSES = [
+  ApplicationStatus.sent,
+  ApplicationStatus.seen,
+  ApplicationStatus.liked,
+  ApplicationStatus.maybe,
+] as const;
 
 export async function blockUser(blockedId: string) {
   const session = await requireSession();
@@ -20,7 +34,32 @@ export async function blockUser(blockedId: string) {
       .onConflictDoNothing();
   });
 
+  // Cascade: auto-reject pending applications from blocked user to blocker's rooms
+  // Use db directly since we need cross-table access beyond RLS scope
+  const blockerRooms = await db
+    .select({ roomId: rooms.id })
+    .from(rooms)
+    .innerJoin(houses, eq(rooms.houseId, houses.id))
+    .innerJoin(houseMembers, eq(houseMembers.houseId, houses.id))
+    .where(eq(houseMembers.userId, userId));
+
+  const roomIds = blockerRooms.map((r) => r.roomId);
+
+  if (roomIds.length > 0) {
+    await db
+      .update(applications)
+      .set({ status: ApplicationStatus.rejected })
+      .where(
+        and(
+          eq(applications.userId, blockedId),
+          inArray(applications.roomId, roomIds),
+          inArray(applications.status, [...REJECTABLE_STATUSES]),
+        ),
+      );
+  }
+
   revalidatePath("/chat");
+  revalidatePath("/discover");
 }
 
 export async function unblockUser(blockedId: string) {
@@ -34,6 +73,7 @@ export async function unblockUser(blockedId: string) {
   });
 
   revalidatePath("/chat");
+  revalidatePath("/discover");
 }
 
 export async function getBlockedUsers(): Promise<string[]> {
@@ -48,4 +88,32 @@ export async function getBlockedUsers(): Promise<string[]> {
   });
 
   return result.map((r) => r.blockedId);
+}
+
+export async function isBlocked(userId: string, otherUserId: string): Promise<boolean> {
+  const [row] = await db
+    .select({ blockerId: blocks.blockerId })
+    .from(blocks)
+    .where(
+      inArray(
+        blocks.blockerId,
+        [userId, otherUserId],
+      ),
+    )
+    .limit(1);
+
+  // Check bidirectional: either userId blocked otherUserId OR otherUserId blocked userId
+  if (!row) return false;
+
+  const results = await db
+    .select({ blockerId: blocks.blockerId, blockedId: blocks.blockedId })
+    .from(blocks)
+    .where(
+      and(
+        inArray(blocks.blockerId, [userId, otherUserId]),
+        inArray(blocks.blockedId, [userId, otherUserId]),
+      ),
+    );
+
+  return results.length > 0;
 }

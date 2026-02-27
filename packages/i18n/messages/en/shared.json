@@ -368,6 +368,29 @@
     "houseMemberRole": {
       "owner": "Manager",
       "member": "Housemate"
+    },
+    "report_reason": {
+      "spam": "Spam",
+      "harassment": "Harassment",
+      "fake_profile": "Fake profile",
+      "inappropriate_content": "Inappropriate content",
+      "scam": "Scam",
+      "discrimination": "Discrimination",
+      "other": "Other"
+    },
+    "report_status": {
+      "pending": "Pending",
+      "reviewing": "Reviewing",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "admin_action": {
+      "view_report": "View report",
+      "suspend_user": "Suspend user",
+      "unsuspend_user": "Unsuspend user",
+      "remove_listing": "Remove listing",
+      "remove_message": "Remove message",
+      "dismiss_report": "Dismiss report"
     }
   },
   "notifications": {

@@ -117,6 +117,18 @@ export const reports = pgTable(
       to: authenticatedRole,
       using: sql`${table.reporterId} = ${authUid}`,
     }),
+    // Admin can see all reports (defense-in-depth; admin queries use db directly)
+    pgPolicy("reports_select_admin", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from "user" where "user".id = ${authUid} and "user".role = 'admin')`,
+    }),
+    // Admin can update reports (for resolving/dismissing via RLS-based access)
+    pgPolicy("reports_update_admin", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from "user" where "user".id = ${authUid} and "user".role = 'admin')`,
+    }),
   ],
 );
 

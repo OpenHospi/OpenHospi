@@ -1,5 +1,6 @@
 import { db, withRLS } from "@openhospi/database";
 import {
+  blocks,
   conversationMembers,
   conversations,
   messageReceipts,
@@ -8,7 +9,7 @@ import {
   rooms,
 } from "@openhospi/database/schema";
 import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
-import { and, count, desc, eq, isNull, lt } from "drizzle-orm";
+import { and, count, desc, eq, exists, isNull, lt, or, sql } from "drizzle-orm";
 
 export async function getOrCreateHospiConversation(
   roomId: string,
@@ -71,9 +72,46 @@ export async function getConversations(userId: string): Promise<ConversationList
       .where(eq(conversationMembers.userId, userId))
       .orderBy(desc(conversations.createdAt));
 
+    // Filter out conversations where any other member has a block relationship with current user
+    const filteredConvos = [];
+    for (const conv of convos) {
+      const otherMembers = await tx
+        .select({ userId: conversationMembers.userId })
+        .from(conversationMembers)
+        .where(
+          and(
+            eq(conversationMembers.conversationId, conv.id),
+            sql`${conversationMembers.userId} != ${userId}`,
+          ),
+        );
+
+      const hasBlock = otherMembers.length > 0
+        ? await tx
+            .select({ blockerId: blocks.blockerId })
+            .from(blocks)
+            .where(
+              or(
+                and(
+                  eq(blocks.blockerId, userId),
+                  sql`${blocks.blockedId} IN (${sql.join(otherMembers.map((m) => sql`${m.userId}`), sql`, `)})`,
+                ),
+                and(
+                  eq(blocks.blockedId, userId),
+                  sql`${blocks.blockerId} IN (${sql.join(otherMembers.map((m) => sql`${m.userId}`), sql`, `)})`,
+                ),
+              ),
+            )
+            .limit(1)
+        : [];
+
+      if (hasBlock.length === 0) {
+        filteredConvos.push(conv);
+      }
+    }
+
     const result: ConversationListItem[] = [];
 
-    for (const conv of convos) {
+    for (const conv of filteredConvos) {
       // Get room title if applicable
       let roomTitle: string | null = null;
       if (conv.roomId) {

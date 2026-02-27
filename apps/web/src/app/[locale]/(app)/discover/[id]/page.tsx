@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { ReportDialog } from "@/components/app/report-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -288,6 +289,11 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
                 </div>
               )}
               {!isOwner && !existingApplication && <ApplyDialog roomId={room.id} />}
+              {!isOwner && (
+                <div className="pt-2">
+                  <ReportDialog type="room" targetId={room.id} />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

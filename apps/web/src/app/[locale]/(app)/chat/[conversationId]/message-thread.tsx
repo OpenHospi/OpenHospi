@@ -171,7 +171,9 @@ export function MessageThread({
       {decryptedMessages.map((msg) => (
         <MessageBubble
           key={msg.id}
+          id={msg.id}
           isOwn={msg.senderId === currentUserId}
+          senderId={msg.senderId}
           senderName={msg.senderFirstName}
           senderAvatar={msg.senderAvatarUrl}
           plaintext={msg.plaintext}

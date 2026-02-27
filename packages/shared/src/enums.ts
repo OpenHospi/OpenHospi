@@ -328,6 +328,14 @@ export const ADMIN_ACTIONS = [
   "dismiss_report",
 ] as const;
 export type AdminAction = (typeof ADMIN_ACTIONS)[number];
+export const AdminAction = {
+  view_report: "view_report",
+  suspend_user: "suspend_user",
+  unsuspend_user: "unsuspend_user",
+  remove_listing: "remove_listing",
+  remove_message: "remove_message",
+  dismiss_report: "dismiss_report",
+} as const satisfies Record<AdminAction, AdminAction>;
 
 export const REPORT_REASONS = [
   "spam",
@@ -339,6 +347,15 @@ export const REPORT_REASONS = [
   "other",
 ] as const;
 export type ReportReason = (typeof REPORT_REASONS)[number];
+export const ReportReason = {
+  spam: "spam",
+  harassment: "harassment",
+  fake_profile: "fake_profile",
+  inappropriate_content: "inappropriate_content",
+  scam: "scam",
+  discrimination: "discrimination",
+  other: "other",
+} as const satisfies Record<ReportReason, ReportReason>;
 
 export const REPORT_STATUSES = [
   "pending",
@@ -347,6 +364,12 @@ export const REPORT_STATUSES = [
   "dismissed",
 ] as const;
 export type ReportStatus = (typeof REPORT_STATUSES)[number];
+export const ReportStatus = {
+  pending: "pending",
+  reviewing: "reviewing",
+  resolved: "resolved",
+  dismissed: "dismissed",
+} as const satisfies Record<ReportStatus, ReportStatus>;
 
 export const VALID_APPLICATION_TRANSITIONS: Record<
   ApplicationStatus,

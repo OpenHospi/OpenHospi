@@ -88,13 +88,33 @@ export const notifications = pgTable(
   ],
 );
 
-export const adminAuditLog = pgTable("admin_audit_log", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  adminUserId: uuid("admin_user_id").notNull(),
-  action: adminActionEnum("action").notNull(),
-  targetType: text("target_type"),
-  targetId: uuid("target_id"),
-  reason: text("reason").notNull(),
-  metadata: jsonb("metadata").default({}),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
+export const adminAuditLog = pgTable(
+  "admin_audit_log",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    adminUserId: uuid("admin_user_id").notNull(),
+    action: adminActionEnum("action").notNull(),
+    targetType: text("target_type"),
+    targetId: uuid("target_id"),
+    reason: text("reason").notNull(),
+    metadata: jsonb("metadata").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("idx_admin_audit_log_created_at").on(table.createdAt),
+    // Defense-in-depth: admin-only insert/select via RLS
+    // Admin actions use db directly (postgres role), so these policies
+    // only guard against unexpected authenticated (non-admin) access
+    pgPolicy("admin_audit_log_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`exists(select 1 from "user" where "user".id = ${authUid} and "user".role = 'admin')`,
+    }),
+    pgPolicy("admin_audit_log_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from "user" where "user".id = ${authUid} and "user".role = 'admin')`,
+    }),
+    // No UPDATE or DELETE policies — audit log is immutable
+  ],
+);

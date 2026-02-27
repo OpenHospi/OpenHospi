@@ -10,7 +10,7 @@ OpenHospi is a free, open-source student housing/roommate platform for the Nethe
 - **Web:** Next.js 16 (Turbopack) + React 19 + Tailwind CSS v4 (oklch) + shadcn/ui + next-intl
 - **Mobile:** Expo SDK 55+ (planned, not yet started)
 - **Auth:** Better Auth + @better-auth/sso (SURFconext OIDC)
-- **Database:** Neon PostgreSQL (serverless) + Drizzle ORM
+- **Database:** Supabase PostgreSQL + Drizzle ORM
 - **Storage:** Vercel Blob
 - **i18n:** next-intl v4 — NL (default), EN, DE
 
@@ -72,20 +72,18 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Connection: Lazy proxy in `packages/database/src/db.ts` (defers until first use — required for Next.js build)
 
 #### RLS (Row-Level Security) policies
-- Use `authUid(column)` and `crudPolicy()` from `drizzle-orm/neon` for simple ownership checks
-- Use `pgPolicy` with raw `sql` only for complex conditions (subqueries, joins, multi-table checks)
-- **Don't use `eq()` in policy expressions** — it generates `$1` parameter placeholders in migration SQL, which policies can't use. Use raw `sql` with string literals instead (e.g. `` sql`${table.status} = 'active'` ``)
-- `auth.user_id()` returns `text` but ID columns are `uuid` — custom `=(text, uuid)` and `=(uuid, text)` operators are installed in the DB to bridge this. `authUid()` works because of these operators.
-- Neon Data API (not Neon Authorize) provides the `auth.user_id()` function via `pg_session_jwt`. The `auth` schema is managed by Neon — don't modify it.
+- Use `authUid`, `authenticatedRole`, `anonRole` from `drizzle-orm/supabase` with explicit `pgPolicy()` calls (no `crudPolicy()`)
+- `authUid` is a raw SQL fragment — use it as `` sql`${column} = ${authUid}` `` in policy expressions
+- Use `pgPolicy` with raw `sql` for complex conditions (subqueries, joins, multi-table checks)
+- **Don't use `eq()` in policy expressions** — use raw `sql` with string literals to avoid `$1` placeholder bugs
+- `auth.uid()` is the Supabase function for the current user ID. The `auth` schema is managed by Supabase — don't modify it
 - `withRLS(userId, fn)` in `packages/database/src/rls.ts` wraps queries in RLS-enforced transactions — sets `request.jwt.claims` and switches to `authenticated` role
-- Better Auth provisioning and admin operations use `db` directly (owner role, bypasses RLS)
+- Better Auth provisioning and admin operations use `db` directly (postgres role, bypasses RLS)
 
-#### Migrations & commands
-- Run pnpm scripts from the **repo root**: `pnpm db:generate`, `pnpm db:migrate`
-- **NEVER use `db:push`** — it has a known bug with Neon RLS policies. Always use `db:generate` + `db:migrate`
-- `db:generate` creates new migration files (diffs) — never delete existing migration files
-- `db:generate` is interactive when renaming/creating policies — it prompts for choices
-- `drizzle.config.ts` has `schemaFilter: ["public"]` — Neon's `auth` schema is managed by Neon, not Drizzle
+#### Schema commands
+- Run pnpm scripts from the **repo root**: `pnpm db:push`
+- `db:push` is the standard workflow — pushes schema directly to the database (no migration files)
+- `drizzle.config.ts` has `schemaFilter: ["public"]` and `entities.roles.provider: "supabase"`
 
 ### Git
 - Branch from `dev`, PR into `dev`, merge `dev` into `main` for releases
@@ -101,7 +99,7 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Don't use feature flags or backwards-compatibility shims when you can just change the code
 - Don't leave TODO comments — either fix it now or create an issue
 - Don't install new dependencies without good reason — check if existing deps or built-in APIs solve the problem first
-- Don't use `db:push` for database changes — use `db:generate` + `db:migrate`
+- Don't use `db:generate` or `db:migrate` — use `db:push` for all schema changes
 - Don't replace ORM features with raw SQL workarounds — investigate the root cause instead
 - Don't use `eq()` in RLS policy expressions — use raw `sql` with string literals to avoid `$1` placeholder bugs
 - Don't create constants that alias enum values (e.g. `DEFAULT_ROOM_STATUS = "draft"`) — use enum companion objects instead (`RoomStatus.draft`)

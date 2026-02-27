@@ -8,15 +8,9 @@ if (existsSync(envPath)) dotenv.config({path: envPath});
 
 export default defineConfig({
     schema: "./src/schema/index.ts",
-    out: "./migrations",
     dialect: "postgresql",
     dbCredentials: {
-        host: process.env.POSTGRES_HOST!,
-        port: 5432,
-        user: process.env.POSTGRES_USER!,
-        password: process.env.POSTGRES_PASSWORD!,
-        database: process.env.POSTGRES_DATABASE!,
-        ssl: "require",
+        url: process.env.DATABASE_URL!
     },
     schemaFilter: ["public"],
     entities: {

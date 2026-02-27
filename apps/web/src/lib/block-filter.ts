@@ -1,5 +1,5 @@
 import { blocks } from "@openhospi/database/schema";
-import { eq, or, sql, type SQL } from "drizzle-orm";
+import { type AnyColumn, eq, or, sql, type SQL } from "drizzle-orm";
 
 /**
  * Returns a SQL subquery that selects all user IDs blocked by or blocking the current user.
@@ -18,6 +18,6 @@ export function getBlockedUserIds(currentUserId: string): SQL {
  * Returns a Drizzle SQL condition: `column NOT IN (blocked user IDs)`.
  * Use this to filter out rows associated with blocked users.
  */
-export function notBlockedBy(column: SQL | ReturnType<typeof eq>, currentUserId: string): SQL {
+export function notBlockedBy(column: AnyColumn | SQL, currentUserId: string): SQL {
   return sql`${column} NOT IN ${getBlockedUserIds(currentUserId)}`;
 }

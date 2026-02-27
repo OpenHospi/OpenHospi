@@ -43,7 +43,7 @@ export async function getUserInvitations(userId: string): Promise<UserInvitation
             .from(hospiInvitations)
             .innerJoin(hospiEvents, eq(hospiEvents.id, hospiInvitations.eventId))
             .innerJoin(rooms, eq(rooms.id, hospiEvents.roomId))
-            .where(and(eq(hospiInvitations.userId, userId), notBlockedBy(rooms.ownerId, userId) as any));
+            .where(and(eq(hospiInvitations.userId, userId), notBlockedBy(rooms.ownerId, userId)));
 
         // status has .default("pending") so it's never null in practice
         return rows.map((row) => ({

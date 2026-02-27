@@ -79,8 +79,7 @@ export async function getUserApplications(userId: string): Promise<UserApplicati
       .from(applications)
       .innerJoin(rooms, eq(rooms.id, applications.roomId))
       .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- SQL subquery condition
-      .where(and(eq(applications.userId, userId), notBlockedBy(rooms.ownerId, userId) as any))
+      .where(and(eq(applications.userId, userId), notBlockedBy(rooms.ownerId, userId)))
       .orderBy(desc(applications.appliedAt)),
   );
 

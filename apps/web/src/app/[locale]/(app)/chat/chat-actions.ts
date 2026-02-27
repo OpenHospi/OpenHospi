@@ -64,11 +64,6 @@ export async function sendMessage(
   });
 
   // Create receipts for all members except sender
-  const members = await db
-    .select({ userId: conversationMembers.userId })
-    .from(conversationMembers)
-    .where(eq(conversationMembers.conversationId, conversationId));
-
   const receipts = members
     .filter((m) => m.userId !== userId)
     .map((m) => ({

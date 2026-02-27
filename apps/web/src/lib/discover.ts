@@ -17,6 +17,7 @@ import {
     lt,
     lte,
     or,
+    type SQL,
 } from "drizzle-orm";
 
 import {notBlockedBy} from "@/lib/block-filter";
@@ -122,11 +123,11 @@ function buildDiscoverConditions(
     userGender: string | null,
     userId: string,
     cursor?: DiscoverCursor,
-): ReturnType<typeof eq>[] {
-    const conditions: ReturnType<typeof eq>[] = [eq(rooms.status, RoomStatus.active)];
+): SQL[] {
+    const conditions: SQL[] = [eq(rooms.status, RoomStatus.active)];
 
     // Exclude rooms from blocked/blocking users
-    conditions.push(notBlockedBy(rooms.ownerId, userId) as any);
+    conditions.push(notBlockedBy(rooms.ownerId, userId));
 
     // Vereniging visibility: show non-vereniging rooms + rooms matching user's vereniging
     if (userVereniging) {

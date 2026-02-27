@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "db:generate": "pnpm --filter @openhospi/database db:generate",
     "db:migrate": "pnpm --filter @openhospi/database db:migrate",
+    "db:push": "pnpm --filter @openhospi/database db:push",
     "db:studio": "pnpm --filter @openhospi/database db:studio",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
   },

@@ -359,9 +359,41 @@
       "maybe": "Maybe",
       "reject": "Reject"
     },
+    "invitation_status": {
+      "pending": "In afwachting",
+      "attending": "Aanwezig",
+      "not_attending": "Niet aanwezig",
+      "maybe": "Misschien"
+    },
     "houseMemberRole": {
       "owner": "Manager",
       "member": "Housemate"
+    }
+  },
+  "notifications": {
+    "invited": {
+      "title": "Je bent uitgenodigd voor een hospi-evenement!",
+      "body": "Je bent uitgenodigd voor {eventTitle} voor {roomTitle}"
+    },
+    "rsvpReceived": {
+      "title": "RSVP ontvangen",
+      "body": "{name} heeft gereageerd: {status}"
+    },
+    "eventCancelled": {
+      "title": "Evenement geannuleerd",
+      "body": "{eventTitle} is geannuleerd"
+    },
+    "accepted": {
+      "title": "Gefeliciteerd! Je bent gekozen!",
+      "body": "Je bent geaccepteerd voor {roomTitle}"
+    },
+    "notChosen": {
+      "title": "Update aanmelding",
+      "body": "De kamer {roomTitle} is vergeven. Veel succes met je zoektocht!"
+    },
+    "reminder": {
+      "title": "Evenementherinering",
+      "body": "{eventTitle} begint om {time}"
     }
   }
 }

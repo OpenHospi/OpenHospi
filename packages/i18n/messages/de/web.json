@@ -329,7 +329,8 @@
       "title": "Anmelden",
       "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
       "surfconextButton": "Anmelden mit SURFconext",
-      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule."
+      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule.",
+      "error": "Anmeldung fehlgeschlagen. Bitte versuche es erneut."
     }
   },
   "app": {

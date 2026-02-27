@@ -1,7 +1,17 @@
+import logo from "@openhospi/shared/assets/logo.svg";
+import { APP_NAME } from "@openhospi/shared/constants";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getSession } from "@/lib/auth-server";
 
 import { LoginButton } from "./login-button";
@@ -30,13 +40,24 @@ export default async function LoginPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "auth.login" });
 
   return (
-    <div className="flex flex-col items-center gap-6 text-center">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground text-sm">{t("description")}</p>
+    <>
+      <div className="mb-6 flex items-center justify-center gap-2">
+        <Image src={logo} alt="" width={28} height={28} className="size-7" />
+        <span className="text-primary text-xl font-semibold tracking-tight">{APP_NAME}</span>
       </div>
 
-      <LoginButton label={t("surfconextButton")} description={t("surfconextDescription")} />
-    </div>
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LoginButton />
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            {t("surfconextDescription")}
+          </p>
+        </CardContent>
+      </Card>
+    </>
   );
 }

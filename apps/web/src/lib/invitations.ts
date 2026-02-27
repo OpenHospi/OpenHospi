@@ -43,10 +43,10 @@ export async function getUserInvitations(userId: string): Promise<UserInvitation
       .innerJoin(rooms, eq(rooms.id, hospiEvents.roomId))
       .where(eq(hospiInvitations.userId, userId));
 
-    // Apply location privacy: only show full address when attending or maybe
+    // status has .default("pending") so it's never null in practice
     return rows.map((row) => ({
       ...row,
-      location: row.status === IS.attending || row.status === IS.maybe ? row.location : null,
+      status: (row.status ?? IS.pending) as InvitationStatus,
     }));
   });
 }

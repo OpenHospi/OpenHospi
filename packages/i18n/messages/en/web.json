@@ -338,6 +338,7 @@
       "myRooms": "My Rooms",
       "applications": "Applications",
       "invitations": "Uitnodigingen",
+      "chat": "Chat",
       "profile": "Profile",
       "settings": "Settings",
       "comingSoon": "Coming soon"
@@ -841,6 +842,22 @@
       "empty": "Nog geen meldingen",
       "markAllRead": "Alles als gelezen markeren"
     },
+    "chat": {
+      "title": "Chat",
+      "empty": "Nog geen gesprekken. Gesprekken worden aangemaakt wanneer je wordt uitgenodigd voor een hospi.",
+      "conversation": "Gesprek",
+      "encrypted_message": "Versleuteld bericht",
+      "no_messages": "Nog geen berichten",
+      "members_count": "{count, plural, one {# lid} other {# leden}}",
+      "message_placeholder": "Schrijf een bericht...",
+      "decrypting": "Berichten ontsleutelen...",
+      "decryption_failed": "Kon bericht niet ontsleutelen",
+      "send": "Versturen",
+      "block_user": "Gebruiker blokkeren",
+      "unblock_user": "Deblokkeren",
+      "report_message": "Bericht melden",
+      "blocked": "Je hebt deze gebruiker geblokkeerd"
+    },
     "invitations": {
       "title": "Uitnodigingen",
       "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
@@ -883,10 +900,10 @@
               "atScale": "~€18.50/mo (Pro)"
             },
             {
-              "name": "Neon",
-              "description": "Serverless PostgreSQL database",
+              "name": "Supabase",
+              "description": "PostgreSQL database, auth & realtime",
               "current": "€0/mo (Free)",
-              "atScale": "~€15/mo (Launch)"
+              "atScale": "~€23/mnd (Pro)"
             },
             {
               "name": "SURFconext",
@@ -948,9 +965,9 @@
           "atScale": "~€222"
         },
         {
-          "name": "Neon",
+          "name": "Supabase",
           "current": "€0",
-          "atScale": "~€180"
+          "atScale": "~€276"
         },
         {
           "name": "SURFconext",
@@ -975,7 +992,7 @@
       ],
       "totalLabel": "Total per year",
       "currentTotal": "~€174/yr",
-      "atScaleTotal": "~€551/yr (~€46/mo)"
+      "atScaleTotal": "~€647/jr (~€54/mnd)"
     },
     "keepFree": {
       "title": "How do we keep it free?",

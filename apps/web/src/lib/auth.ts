@@ -5,6 +5,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, jwt } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 
 function createAuth() {
   // baseURL is intentionally omitted — derived per-request from
@@ -41,10 +42,11 @@ function createAuth() {
       user: {
         create: {
           before: async (user) => {
-            // During GitHub bootstrap (GITHUB_DISABLE_SIGNUP=false), keep the real
-            // email so account linking works after promoting to admin.
+            // Keep real email in dev (GitHub login) or during admin bootstrap.
             // Normal operation: always replace with placeholder.
-            const keepRealEmail = process.env.GITHUB_DISABLE_SIGNUP === "false";
+            const keepRealEmail =
+              process.env.GITHUB_DISABLE_SIGNUP === "false" ||
+              process.env.NODE_ENV === "development";
             return {
               data: {
                 ...user,
@@ -52,6 +54,27 @@ function createAuth() {
                 emailVerified: true,
               },
             };
+          },
+          after: async (user) => {
+            if (process.env.NODE_ENV !== "development") return;
+
+            const [existing] = await db
+              .select({ id: schema.profiles.id })
+              .from(schema.profiles)
+              .where(eq(schema.profiles.id, user.id));
+            if (existing) return;
+
+            const nameParts = (user.name ?? "Dev User").split(" ");
+            await db
+              .insert(schema.profiles)
+              .values({
+                id: user.id,
+                firstName: nameParts[0] || "Dev",
+                lastName: nameParts.slice(1).join(" ") || "User",
+                email: user.email,
+                institutionDomain: "hanze.nl",
+              })
+              .onConflictDoNothing();
           },
         },
       },
@@ -64,8 +87,6 @@ function createAuth() {
           const sub = userInfo.sub as string;
           const email = (userInfo.email as string) || `${sub}@surfconext.openhospi.nl`;
           const institution = (userInfo.schac_home_organization as string) || "unknown";
-          const affiliations = (userInfo.eduperson_affiliation as string[]) || [];
-          const affiliation = affiliations.includes("employee") ? "employee" : "student";
 
           await db
             .insert(schema.profiles)
@@ -75,7 +96,6 @@ function createAuth() {
               lastName,
               email,
               institutionDomain: institution,
-              affiliation: affiliation as "student" | "employee",
             })
             .onConflictDoUpdate({
               target: schema.profiles.id,
@@ -84,7 +104,6 @@ function createAuth() {
                 firstName,
                 lastName,
                 institutionDomain: institution,
-                affiliation: affiliation as "student" | "employee",
                 lastLoginAt: new Date(),
               },
             });

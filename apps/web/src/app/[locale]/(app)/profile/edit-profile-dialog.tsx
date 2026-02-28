@@ -5,13 +5,16 @@ import type { EditProfileData } from "@openhospi/database/validators";
 import { editProfileSchema } from "@openhospi/database/validators";
 import {
   MAX_BIO_LENGTH,
+  MAX_LANGUAGES,
   MAX_LIFESTYLE_TAGS,
+  MIN_LANGUAGES,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
 import {
   City,
   Gender,
   getStudyLevelsForInstitutionType,
+  Language,
   LifestyleTag,
   StudyLevel,
   Vereniging,
@@ -87,6 +90,7 @@ export function EditProfileDialog({ profile }: Props) {
       studyLevel: (profile.studyLevel as EditProfileData["studyLevel"]) ?? undefined,
       bio: profile.bio ?? "",
       lifestyleTags: (profile.lifestyleTags as LifestyleTag[]) ?? [],
+      languages: (profile.languages as Language[]) ?? [],
       preferredCity: (profile.preferredCity as EditProfileData["preferredCity"]) ?? undefined,
       maxRent: profile.maxRent ? Number(profile.maxRent) : undefined,
       availableFrom: profile.availableFrom ?? "",
@@ -109,6 +113,7 @@ export function EditProfileDialog({ profile }: Props) {
   }
 
   const selectedTags = form.watch("lifestyleTags") ?? [];
+  const selectedLanguages = form.watch("languages") ?? [];
 
   function toggleTag(tag: LifestyleTag) {
     const current = form.getValues("lifestyleTags") ?? [];
@@ -120,6 +125,19 @@ export function EditProfileDialog({ profile }: Props) {
       );
     } else if (current.length < MAX_LIFESTYLE_TAGS) {
       form.setValue("lifestyleTags", [...current, tag], { shouldValidate: true });
+    }
+  }
+
+  function toggleLanguage(lang: Language) {
+    const current = form.getValues("languages") ?? [];
+    if (current.includes(lang)) {
+      form.setValue(
+        "languages",
+        current.filter((l) => l !== lang),
+        { shouldValidate: true },
+      );
+    } else if (current.length < MAX_LANGUAGES) {
+      form.setValue("languages", [...current, lang], { shouldValidate: true });
     }
   }
 
@@ -248,6 +266,35 @@ export function EditProfileDialog({ profile }: Props) {
                 </FormItem>
               )}
             />
+
+            <div className="space-y-2">
+              <FormLabel>{t("languages")}</FormLabel>
+              <p className="text-xs text-muted-foreground">
+                {tOnboarding("languageCounter", {
+                  count: selectedLanguages.length,
+                  min: MIN_LANGUAGES,
+                  max: MAX_LANGUAGES,
+                })}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {Language.values.map((lang) => {
+                  const isSelected = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleLanguage(lang)}
+                    >
+                      {tEnums(`language_enum.${lang}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
 
             <div className="space-y-2">
               <FormLabel>{t("lifestyleTags")}</FormLabel>

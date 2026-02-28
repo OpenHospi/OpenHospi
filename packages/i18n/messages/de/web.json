@@ -270,7 +270,7 @@
       },
       {
         "title": "SURFconext-Daten",
-        "content": "Wenn du dich über SURFconext anmeldest, erhalten wir deinen Namen, deine E-Mail-Adresse, deine Institution und deine Zugehörigkeit (Student/Mitarbeiter). Wir nutzen diese Daten zur Identitätsverifizierung und Kontoerstellung."
+        "content": "Wenn du dich über SURFconext anmeldest, erhalten wir deinen Namen, deine E-Mail-Adresse und deine Institution. Wir nutzen diese Daten zur Identitätsverifizierung und Kontoerstellung."
       },
       {
         "title": "Wie wir deine Daten verwenden",
@@ -330,7 +330,10 @@
       "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
       "surfconextButton": "Anmelden mit SURFconext",
       "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule.",
-      "error": "Anmeldung fehlgeschlagen. Bitte versuche es erneut."
+      "error": "Anmeldung fehlgeschlagen. Bitte versuche es erneut.",
+      "devOrDivider": "oder",
+      "devGithubButton": "Anmelden mit GitHub (Dev)",
+      "devGithubDescription": "Nur für Entwicklung. Verwendet GitHub zum lokalen Testen."
     }
   },
   "app": {
@@ -402,6 +405,7 @@
       "maxRent": "Max Miete",
       "availableFrom": "Verfügbar ab",
       "lifestyleTags": "Lebensstil",
+      "languages": "Gesprochene Sprachen",
       "completeness": {
         "title": "Profil {completed}/{total} vollständig",
         "photo": "Profilfoto",
@@ -419,14 +423,16 @@
       "steps": {
         "about": "Über dich",
         "personality": "Persönlichkeit",
+        "languages": "Sprachen",
         "photos": "Fotos",
         "preferences": "Präferenzen"
       },
       "stepDescriptions": {
         "step1": "Erzähl uns etwas über dich.",
         "step2": "Was beschreibt dich am besten?",
-        "step3": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
-        "step4": "Was suchst du?"
+        "step3": "Welche Sprachen sprichst du?",
+        "step4": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
+        "step5": "Was suchst du?"
       },
       "fields": {
         "gender": "Geschlecht",
@@ -466,8 +472,10 @@
       "noResults": "Keine Ergebnisse gefunden.",
       "noSelection": "Keine Auswahl",
       "tagCounter": "{count}/{max} ausgewählt (min {min})",
+      "languageCounter": "{count} von {min}–{max} Sprachen",
       "validation": {
-        "minTags": "Wähle mindestens {min} Tags"
+        "minTags": "Wähle mindestens {min} Tags",
+        "minLanguages": "Wähle mindestens {min} Sprache"
       }
     },
     "rooms": {

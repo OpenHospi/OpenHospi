@@ -5,5 +5,4 @@ export interface SURFconextUser {
   email?: string;
   locale?: string;
   schac_home_organization?: string;
-  eduperson_affiliation?: string[];
 }

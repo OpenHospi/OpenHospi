@@ -270,7 +270,7 @@
       },
       {
         "title": "SURFconext-gegevens",
-        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres, instelling en affiliatie (student/medewerker). We gebruiken dit om je identiteit te verifiëren en je account aan te maken."
+        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres en instelling. We gebruiken dit om je identiteit te verifiëren en je account aan te maken."
       },
       {
         "title": "Hoe we je gegevens gebruiken",
@@ -330,7 +330,10 @@
       "description": "Log in met je universiteitsaccount om toegang te krijgen tot OpenHospi.",
       "surfconextButton": "Inloggen met SURFconext",
       "surfconextDescription": "Gebruik het account van je universiteit of hogeschool.",
-      "error": "Inloggen mislukt. Probeer het opnieuw."
+      "error": "Inloggen mislukt. Probeer het opnieuw.",
+      "devOrDivider": "of",
+      "devGithubButton": "Inloggen met GitHub (Dev)",
+      "devGithubDescription": "Alleen voor ontwikkeling. Gebruikt GitHub voor lokaal testen."
     }
   },
   "app": {
@@ -401,6 +404,7 @@
       "maxRent": "Max huur",
       "availableFrom": "Beschikbaar vanaf",
       "lifestyleTags": "Levensstijl",
+      "languages": "Gesproken talen",
       "completeness": {
         "title": "Profiel {completed}/{total} compleet",
         "photo": "Profielfoto",
@@ -418,14 +422,16 @@
       "steps": {
         "about": "Over jou",
         "personality": "Persoonlijkheid",
+        "languages": "Talen",
         "photos": "Foto's",
         "preferences": "Voorkeuren"
       },
       "stepDescriptions": {
         "step1": "Vertel iets over jezelf.",
         "step2": "Wat past het beste bij jou?",
-        "step3": "Voeg foto's toe zodat huizen je leren kennen.",
-        "step4": "Wat zoek je?"
+        "step3": "Welke talen spreek je?",
+        "step4": "Voeg foto's toe zodat huizen je leren kennen.",
+        "step5": "Wat zoek je?"
       },
       "fields": {
         "gender": "Geslacht",
@@ -465,8 +471,10 @@
       "noResults": "Geen resultaten gevonden.",
       "noSelection": "Geen selectie",
       "tagCounter": "{count}/{max} geselecteerd (min {min})",
+      "languageCounter": "{count} van {min}–{max} talen",
       "validation": {
-        "minTags": "Selecteer minimaal {min} tags"
+        "minTags": "Selecteer minimaal {min} tags",
+        "minLanguages": "Selecteer minimaal {min} taal"
       }
     },
     "rooms": {

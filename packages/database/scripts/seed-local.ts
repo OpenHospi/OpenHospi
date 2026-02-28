@@ -78,7 +78,6 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "um.nl",
         ],
       }),
-      affiliation: f.default({ defaultValue: "student" }),
       bio: f.loremIpsum(),
       studyProgram: f.valuesFromArray({
         values: [
@@ -101,20 +100,6 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "master",
           "pre_master",
           "wo_propedeuse",
-        ],
-      }),
-      role: f.valuesFromArray({
-        values: [
-          "seeker",
-          "hospi",
-          "hospi",
-          "seeker",
-          "seeker",
-          "hospi",
-          "seeker",
-          "seeker",
-          "hospi",
-          "admin",
         ],
       }),
       maxRent: f.number({ minValue: 300, maxValue: 800, precision: 100 }),
@@ -418,7 +403,6 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       metadata: f.default({ defaultValue: {} }),
     },
   },
-
 }));
 
 // ── Photo seeding ────────────────────────────────────────────────────
@@ -452,10 +436,7 @@ async function downloadImage(
   throw new Error("unreachable");
 }
 
-async function seedProfilePhoto(
-  userId: string,
-  slot: number,
-): Promise<string> {
+async function seedProfilePhoto(userId: string, slot: number): Promise<string> {
   const imageData = await downloadImage(
     `profile-${userId.slice(0, 8)}-${slot}`,
     400,
@@ -558,9 +539,7 @@ for (let i = 0; i < allRooms.length; i++) {
 
   const roomId = allRooms[i].id;
   await Promise.all(
-    Array.from({ length: count }, (_, slot) =>
-      seedRoomPhoto(roomId, slot + 1),
-    ),
+    Array.from({ length: count }, (_, slot) => seedRoomPhoto(roomId, slot + 1)),
   );
 
   console.log(`  Room ${i + 1}: ${count} photos`);

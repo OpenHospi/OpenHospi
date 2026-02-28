@@ -45,13 +45,6 @@ export const Language = defineEnum([
 ] as const);
 export type Language = (typeof Language.values)[number];
 
-export const Affiliation = defineEnum([
-  "student",
-  "employee",
-  "staff",
-] as const);
-export type Affiliation = (typeof Affiliation.values)[number];
-
 export const StudyLevel = defineEnum([
   "mbo",
   "hbo_propedeuse",
@@ -280,11 +273,7 @@ export const ApplicationStatus = defineEnum([
 ] as const);
 export type ApplicationStatus = (typeof ApplicationStatus.values)[number];
 
-export const ReviewDecision = defineEnum([
-  "like",
-  "maybe",
-  "reject",
-] as const);
+export const ReviewDecision = defineEnum(["like", "maybe", "reject"] as const);
 export type ReviewDecision = (typeof ReviewDecision.values)[number];
 
 export const InvitationStatus = defineEnum([
@@ -593,15 +582,13 @@ export function isValidApplicationTransition(
   return VALID_APPLICATION_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
-export const VALID_ROOM_TRANSITIONS: Record<
-  RoomStatus,
-  readonly RoomStatus[]
-> = {
-  draft: ["active"],
-  active: ["paused", "closed"],
-  paused: ["active", "closed"],
-  closed: [],
-} as const;
+export const VALID_ROOM_TRANSITIONS: Record<RoomStatus, readonly RoomStatus[]> =
+  {
+    draft: ["active"],
+    active: ["paused", "closed"],
+    paused: ["active", "closed"],
+    closed: [],
+  } as const;
 
 export function isValidRoomTransition(
   from: RoomStatus,

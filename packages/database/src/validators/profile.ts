@@ -1,11 +1,20 @@
 import {
   MAX_BIO_LENGTH,
   MAX_INSTAGRAM_HANDLE_LENGTH,
+  MAX_LANGUAGES,
   MAX_LIFESTYLE_TAGS,
   MAX_STUDY_PROGRAM_LENGTH,
+  MIN_LANGUAGES,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
-import { City, Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
+import {
+  City,
+  Gender,
+  Language,
+  LifestyleTag,
+  StudyLevel,
+  Vereniging,
+} from "@openhospi/shared/enums";
 import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
 
@@ -17,7 +26,14 @@ const baseProfileSchema = createInsertSchema(profiles, {
   studyProgram: z.string().min(1).max(MAX_STUDY_PROGRAM_LENGTH),
   studyLevel: z.enum(StudyLevel.values).optional(),
   bio: z.string().max(MAX_BIO_LENGTH).optional(),
-  lifestyleTags: z.array(z.enum(LifestyleTag.values)).min(MIN_LIFESTYLE_TAGS).max(MAX_LIFESTYLE_TAGS),
+  lifestyleTags: z
+    .array(z.enum(LifestyleTag.values))
+    .min(MIN_LIFESTYLE_TAGS)
+    .max(MAX_LIFESTYLE_TAGS),
+  languages: z
+    .array(z.enum(Language.values))
+    .min(MIN_LANGUAGES)
+    .max(MAX_LANGUAGES),
   preferredCity: z.enum(City.values),
   maxRent: z.coerce.number().int().min(0).max(5000).optional(),
   availableFrom: z.string().min(1),
@@ -38,6 +54,10 @@ export const personalityStepSchema = baseProfileSchema.pick({
   lifestyleTags: true,
 });
 
+export const languagesStepSchema = baseProfileSchema.pick({
+  languages: true,
+});
+
 export const preferencesStepSchema = baseProfileSchema.pick({
   preferredCity: true,
   maxRent: true,
@@ -54,6 +74,7 @@ export const editProfileSchema = baseProfileSchema.pick({
   studyLevel: true,
   bio: true,
   lifestyleTags: true,
+  languages: true,
   preferredCity: true,
   maxRent: true,
   availableFrom: true,
@@ -64,5 +85,6 @@ export const editProfileSchema = baseProfileSchema.pick({
 
 export type AboutStepData = z.infer<typeof aboutStepSchema>;
 export type PersonalityStepData = z.infer<typeof personalityStepSchema>;
+export type LanguagesStepData = z.infer<typeof languagesStepSchema>;
 export type PreferencesStepData = z.infer<typeof preferencesStepSchema>;
 export type EditProfileData = z.infer<typeof editProfileSchema>;

@@ -270,7 +270,7 @@
       },
       {
         "title": "SURFconext data",
-        "content": "When you log in via SURFconext, we receive your name, email address, institution, and affiliation (student/employee). We use this to verify your identity and create your account."
+        "content": "When you log in via SURFconext, we receive your name, email address, and institution. We use this to verify your identity and create your account."
       },
       {
         "title": "How we use your data",
@@ -330,7 +330,10 @@
       "description": "Log in with your university account to access OpenHospi.",
       "surfconextButton": "Log in with SURFconext",
       "surfconextDescription": "Use your university or hogeschool account.",
-      "error": "Login failed. Please try again."
+      "error": "Login failed. Please try again.",
+      "devOrDivider": "or",
+      "devGithubButton": "Log in with GitHub (Dev)",
+      "devGithubDescription": "Development only. Uses GitHub for local testing."
     }
   },
   "app": {
@@ -401,6 +404,7 @@
       "maxRent": "Max rent",
       "availableFrom": "Available from",
       "lifestyleTags": "Lifestyle",
+      "languages": "Spoken languages",
       "completeness": {
         "title": "Profile {completed}/{total} complete",
         "photo": "Profile photo",
@@ -418,14 +422,16 @@
       "steps": {
         "about": "About you",
         "personality": "Personality",
+        "languages": "Languages",
         "photos": "Photos",
         "preferences": "Preferences"
       },
       "stepDescriptions": {
         "step1": "Tell us a bit about yourself.",
         "step2": "What describes you best?",
-        "step3": "Add photos so houses get to know you.",
-        "step4": "What are you looking for?"
+        "step3": "Which languages do you speak?",
+        "step4": "Add photos so houses get to know you.",
+        "step5": "What are you looking for?"
       },
       "fields": {
         "gender": "Gender",
@@ -465,8 +471,10 @@
       "noResults": "No results found.",
       "noSelection": "No selection",
       "tagCounter": "{count}/{max} selected (min {min})",
+      "languageCounter": "{count} of {min}–{max} languages",
       "validation": {
-        "minTags": "Select at least {min} tags"
+        "minTags": "Select at least {min} tags",
+        "minLanguages": "Select at least {min} language"
       }
     },
     "rooms": {

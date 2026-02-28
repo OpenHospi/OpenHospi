@@ -3,7 +3,19 @@
     "appName": "OpenHospi",
     "loading": "Loading...",
     "error": "Something went wrong",
-    "retry": "Try again"
+    "retry": "Try again",
+    "labels": {
+      "title": "Titel",
+      "city": "Stad",
+      "status": "Status",
+      "bio": "Bio",
+      "institution": "Instelling",
+      "cancel": "Annuleren",
+      "owner": "Eigenaar",
+      "studyProgramme": "Opleiding",
+      "memberSince": "Lid sinds",
+      "rentPrice": "Huurprijs"
+    }
   },
   "enums": {
     "language_enum": {
@@ -377,6 +389,11 @@
       "scam": "Oplichting",
       "discrimination": "Discriminatie",
       "other": "Anders"
+    },
+    "report_type": {
+      "message": "Bericht",
+      "user": "Gebruikersprofiel",
+      "room": "Kameraanbod"
     },
     "report_status": {
       "pending": "In afwachting",

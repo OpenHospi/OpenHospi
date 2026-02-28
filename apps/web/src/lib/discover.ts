@@ -249,6 +249,37 @@ export async function getDiscoverRooms(
     });
 }
 
+export type RoomMetadata = {
+    title: string;
+    description: string | null;
+    city: string;
+    totalCost: number;
+    roomSizeM2: number | null;
+    coverPhotoPath: string | null;
+};
+
+export async function getRoomMetadata(roomId: string): Promise<RoomMetadata | null> {
+    const [row] = await db
+        .select({
+            title: rooms.title,
+            description: rooms.description,
+            city: rooms.city,
+            totalCost: rooms.totalCost,
+            roomSizeM2: rooms.roomSizeM2,
+            coverPhotoPath: roomPhotos.url,
+        })
+        .from(rooms)
+        .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
+        .where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.active)));
+
+    if (!row) return null;
+
+    return {
+        ...row,
+        totalCost: Number(row.totalCost),
+    };
+}
+
 export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> {
     const [room] = await db
         .select({

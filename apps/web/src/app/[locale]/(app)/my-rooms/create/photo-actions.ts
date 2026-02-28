@@ -74,9 +74,7 @@ export async function deleteRoomPhoto(roomId: string, slot: number): Promise<{ e
     await deletePhotoFromStorage(photo.url);
 
     await withRLS(userId, (tx) =>
-      tx
-        .delete(roomPhotos)
-        .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
+      tx.delete(roomPhotos).where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
     );
 
     revalidatePath(`/my-rooms/${roomId}`);

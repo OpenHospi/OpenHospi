@@ -14,7 +14,9 @@ import {UserAvatar} from "@/components/user-avatar";
 import {Link} from "@/i18n/navigation-app";
 import {getApplicationForRoom, getRoomDetailForApply} from "@/lib/applications";
 import {requireSession} from "@/lib/auth-server";
+import {getRoomMetadata} from "@/lib/discover";
 import {APPLICATION_STATUS_COLORS} from "@/lib/status-colors";
+import {getStoragePublicUrl} from "@/lib/storage-url";
 
 import {ApplyDialog} from "./apply-dialog";
 
@@ -25,9 +27,34 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     const {locale, id} = await params;
     const t = await getTranslations({locale, namespace: "app.roomDetail"});
-    const room = await getRoomDetailForApply(id, "").catch(() => null);
+    const tEnums = await getTranslations({locale, namespace: "enums"});
+
+    const room = await getRoomMetadata(id);
     if (!room) return {title: t("notFound")};
-    return {title: room.title};
+
+    const cityName = tEnums(`city.${room.city}`);
+    const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
+    const title = `${room.title} — ${cityName}`;
+    const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
+    const ogImage = room.coverPhotoPath
+        ? getStoragePublicUrl(room.coverPhotoPath, "room-photos")
+        : undefined;
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            ...(ogImage && {images: [{url: ogImage}]}),
+        },
+        twitter: {
+            card: ogImage ? "summary_large_image" : "summary",
+            title,
+            description,
+            ...(ogImage && {images: [ogImage]}),
+        },
+    };
 }
 
 type Props = {

@@ -1,18 +1,18 @@
-import { APP_NAME } from "@openhospi/shared/constants";
 import { City, GenderPreference } from "@openhospi/shared/enums";
 import { ArrowLeft, CalendarDays, Home, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PublicRoomCard } from "@/components/marketing/public-room-card";
+import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
+import { getStoragePublicUrl } from "@/lib/storage-url";
 import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +33,7 @@ export async function generateMetadata({
     const t = await getTranslations({ locale, namespace: "public.cityPage" });
     const cityName = tEnums(`city.${slug}`);
     return {
-      title: `${t("title", { city: cityName })} — ${APP_NAME}`,
+      title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
     };
   }
@@ -44,8 +44,11 @@ export async function generateMetadata({
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
-  const title = `${room.title} — ${cityName} — ${APP_NAME}`;
+  const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
+  const ogImage = room.photos[0]?.url
+    ? getStoragePublicUrl(room.photos[0].url, "room-photos")
+    : undefined;
 
   return {
     title,
@@ -53,7 +56,13 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: room.photos[0]?.url ? [{ url: room.photos[0].url }] : [],
+      ...(ogImage && { images: [{ url: ogImage }] }),
+    },
+    twitter: {
+      card: ogImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(ogImage && { images: [ogImage] }),
     },
   };
 }
@@ -164,7 +173,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
       addressLocality: cityName,
       addressCountry: "NL",
     },
-    ...(coverPhoto && { image: coverPhoto.url }),
+    ...(coverPhoto && { image: getStoragePublicUrl(coverPhoto.url, "room-photos") }),
     offers: {
       "@type": "Offer",
       price: room.totalCost,
@@ -183,9 +192,10 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
           <div className="mb-8 space-y-2">
             {coverPhoto && (
               <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-                <Image
+                <StorageImage
                   src={coverPhoto.url}
                   alt={room.title}
+                  bucket="room-photos"
                   fill
                   className="object-cover"
                   priority
@@ -199,9 +209,10 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                     key={photo.id}
                     className="relative aspect-video overflow-hidden rounded-lg bg-muted"
                   >
-                    <Image
+                    <StorageImage
                       src={photo.url}
                       alt={photo.caption ?? room.title}
+                      bucket="room-photos"
                       fill
                       className="object-cover"
                     />

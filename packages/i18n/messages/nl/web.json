@@ -482,6 +482,38 @@
       "createFirst": "Maak je eerste advertentie",
       "createNew": "Nieuwe kamer",
       "applicants": "{count, plural, =0 {Geen reacties} =1 {1 reactie} other {# reacties}}",
+      "houseSetup": {
+        "title": "Stel eerst je woning in",
+        "description": "Voordat je een kamer kunt plaatsen, moet je een huis aanmaken. Een huis groepeert je kamers en laat je huisgenoten uitnodigen.",
+        "benefits": {
+          "rooms": {
+            "title": "Groepeer je kamers",
+            "description": "Organiseer al je kamers onder één huis voor een duidelijk overzicht."
+          },
+          "housemates": {
+            "title": "Nodig huisgenoten uit",
+            "description": "Voeg huidige huisgenoten toe zodat zij kunnen helpen bij het beoordelen van kandidaten."
+          }
+        },
+        "form": {
+          "title": "Maak je huis aan",
+          "description": "Geef je huis een herkenbare naam — je kunt dit later wijzigen.",
+          "nameLabel": "Huisnaam",
+          "namePlaceholder": "bijv. Keizersgracht 42",
+          "submit": "Huis aanmaken & doorgaan"
+        },
+        "errors": {
+          "INVALID_NAME": "Naam moet minstens 2 tekens bevatten.",
+          "RATE_LIMITED": "Te veel verzoeken. Probeer het later opnieuw."
+        }
+      },
+      "housePicker": {
+        "title": "In welk huis is deze kamer?",
+        "description": "Selecteer het huis waar deze kamer zich bevindt.",
+        "roomCount": "{count, plural, =0 {Nog geen kamers} =1 {1 kamer} other {# kamers}}",
+        "createNew": "Een nieuw huis aanmaken",
+        "continue": "Doorgaan"
+      },
       "wizard": {
         "stepOf": "Stap {current} van {total}",
         "steps": {
@@ -495,7 +527,27 @@
           "step2": "Voeg prijs, beschikbaarheid en kamerdetails toe.",
           "step3": "Stel voorkeuren en kenmerken in voor je kamer.",
           "step4": "Upload foto's om je kamer te laten zien."
-        }
+        },
+        "sections": {
+          "location": "Locatie",
+          "pricing": "Prijs",
+          "property": "Woningdetails",
+          "availability": "Beschikbaarheid",
+          "features": "Kamereigenschappen & locatie",
+          "preferences": "Huisgenotenvoorkeuren",
+          "association": "Vereniging"
+        },
+        "sectionDescriptions": {
+          "features": "Laat zien wat je kamer en locatie bijzonder maakt.",
+          "preferences": "Beschrijf wie je zoekt als nieuwe huisgenoot.",
+          "association": "Koppel deze kamer optioneel aan een studentenvereniging."
+        },
+        "helpers": {
+          "title": "Een pakkende titel helpt je kamer op te vallen.",
+          "description": "Beschrijf wat deze kamer en dit huis bijzonder maakt."
+        },
+        "photoGuidance": "Upload minstens 1 foto om te publiceren. De eerste foto is je omslagfoto.",
+        "photoCount": "{count}/{max} foto's"
       },
       "fields": {
         "title": "Titel",

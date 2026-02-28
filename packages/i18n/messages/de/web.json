@@ -483,6 +483,38 @@
       "createFirst": "Erstelle deine erste Anzeige",
       "createNew": "Neues Zimmer",
       "applicants": "{count, plural, =0 {Keine Bewerber} =1 {1 Bewerber} other {# Bewerber}}",
+      "houseSetup": {
+        "title": "Richte zuerst dein Haus ein",
+        "description": "Bevor du ein Zimmer einstellen kannst, musst du ein Haus erstellen. Ein Haus gruppiert deine Zimmer und ermöglicht es dir, Mitbewohner einzuladen.",
+        "benefits": {
+          "rooms": {
+            "title": "Gruppiere deine Zimmer",
+            "description": "Organisiere alle Zimmer unter einem Haus für eine klare Übersicht."
+          },
+          "housemates": {
+            "title": "Lade Mitbewohner ein",
+            "description": "Füge aktuelle Mitbewohner hinzu, damit sie bei der Bewertung von Bewerbern helfen können."
+          }
+        },
+        "form": {
+          "title": "Erstelle dein Haus",
+          "description": "Gib deinem Haus einen erkennbaren Namen — du kannst ihn später ändern.",
+          "nameLabel": "Hausname",
+          "namePlaceholder": "z.B. Keizersgracht 42",
+          "submit": "Haus erstellen & weiter"
+        },
+        "errors": {
+          "INVALID_NAME": "Der Name muss mindestens 2 Zeichen lang sein.",
+          "RATE_LIMITED": "Zu viele Anfragen. Bitte versuche es später erneut."
+        }
+      },
+      "housePicker": {
+        "title": "In welchem Haus ist dieses Zimmer?",
+        "description": "Wähle das Haus aus, in dem sich dieses Zimmer befindet.",
+        "roomCount": "{count, plural, =0 {Noch keine Zimmer} =1 {1 Zimmer} other {# Zimmer}}",
+        "createNew": "Ein neues Haus erstellen",
+        "continue": "Weiter"
+      },
       "wizard": {
         "stepOf": "Schritt {current} von {total}",
         "steps": {
@@ -496,7 +528,27 @@
           "step2": "Füge Preis, Verfügbarkeit und Zimmerdetails hinzu.",
           "step3": "Setze Präferenzen und Merkmale für dein Zimmer.",
           "step4": "Lade Fotos hoch, um dein Zimmer zu zeigen."
-        }
+        },
+        "sections": {
+          "location": "Standort",
+          "pricing": "Preis",
+          "property": "Immobiliendetails",
+          "availability": "Verfügbarkeit",
+          "features": "Zimmermerkmale & Lage",
+          "preferences": "Mitbewohner-Präferenzen",
+          "association": "Vereinigung"
+        },
+        "sectionDescriptions": {
+          "features": "Hebe hervor, was dein Zimmer und die Lage besonders macht.",
+          "preferences": "Beschreibe, wen du als neuen Mitbewohner suchst.",
+          "association": "Verknüpfe dieses Zimmer optional mit einer Studentenvereinigung."
+        },
+        "helpers": {
+          "title": "Ein ansprechender Titel hilft deinem Zimmer aufzufallen.",
+          "description": "Beschreibe, was dieses Zimmer und Haus besonders macht."
+        },
+        "photoGuidance": "Lade mindestens 1 Foto hoch, um zu veröffentlichen. Das erste Foto ist dein Titelbild.",
+        "photoCount": "{count}/{max} Fotos"
       },
       "fields": {
         "title": "Titel",

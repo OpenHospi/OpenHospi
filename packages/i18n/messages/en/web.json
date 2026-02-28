@@ -482,6 +482,38 @@
       "createFirst": "Create your first listing",
       "createNew": "New room",
       "applicants": "{count, plural, =0 {No applicants} =1 {1 applicant} other {# applicants}}",
+      "houseSetup": {
+        "title": "Set up your property first",
+        "description": "Before you can list a room, you need to create a house. A house groups your rooms together and lets you invite housemates.",
+        "benefits": {
+          "rooms": {
+            "title": "Group your rooms",
+            "description": "Organise all rooms under one house for a clear overview."
+          },
+          "housemates": {
+            "title": "Invite housemates",
+            "description": "Add current housemates so they can help review applicants."
+          }
+        },
+        "form": {
+          "title": "Create your house",
+          "description": "Give your house a recognisable name — you can change it later.",
+          "nameLabel": "House name",
+          "namePlaceholder": "e.g. Keizersgracht 42",
+          "submit": "Create house & continue"
+        },
+        "errors": {
+          "INVALID_NAME": "Name must be at least 2 characters.",
+          "RATE_LIMITED": "Too many requests. Please try again later."
+        }
+      },
+      "housePicker": {
+        "title": "Which house is this room in?",
+        "description": "Select the house where this room is located.",
+        "roomCount": "{count, plural, =0 {No rooms yet} =1 {1 room} other {# rooms}}",
+        "createNew": "Create a new house",
+        "continue": "Continue"
+      },
       "wizard": {
         "stepOf": "Step {current} of {total}",
         "steps": {
@@ -495,7 +527,27 @@
           "step2": "Add pricing, availability, and room details.",
           "step3": "Set preferences and features for your room.",
           "step4": "Upload photos to show your room."
-        }
+        },
+        "sections": {
+          "location": "Location",
+          "pricing": "Pricing",
+          "property": "Property details",
+          "availability": "Availability",
+          "features": "Room features & location",
+          "preferences": "Tenant preferences",
+          "association": "Association"
+        },
+        "sectionDescriptions": {
+          "features": "Highlight what makes your room and location special.",
+          "preferences": "Describe who you're looking for as a new housemate.",
+          "association": "Optionally link this room to a student association."
+        },
+        "helpers": {
+          "title": "A catchy title helps your room stand out.",
+          "description": "Describe what makes this room and house special."
+        },
+        "photoGuidance": "Upload at least 1 photo to publish. The first photo is your cover.",
+        "photoCount": "{count}/{max} photos"
       },
       "fields": {
         "title": "Title",

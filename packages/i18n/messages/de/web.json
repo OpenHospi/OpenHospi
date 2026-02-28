@@ -343,8 +343,6 @@
       "applications": "Bewerbungen",
       "invitations": "Einladungen",
       "chat": "Chat",
-      "profile": "Profil",
-      "settings": "Einstellungen",
       "comingSoon": "Demnächst"
     },
     "userMenu": {
@@ -754,6 +752,10 @@
     },
     "settings": {
       "title": "Einstellungen",
+      "pushNotifications": {
+        "title": "Push-Benachrichtigungen",
+        "description": "Verwalte Browser-Push-Benachrichtigungen, um über neue Nachrichten, Bewerbungen und Veranstaltungen informiert zu bleiben."
+      },
       "exportSuccess": "Daten erfolgreich exportiert",
       "exportRateLimited": "Zu viele Exportanfragen heute. Bitte versuche es später erneut.",
       "dataExport": {

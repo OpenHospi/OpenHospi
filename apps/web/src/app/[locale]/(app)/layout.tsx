@@ -4,7 +4,6 @@ import { setRequestLocale } from "next-intl/server";
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
 import { AppSidebar } from "@/components/app/app-sidebar";
 import { NotificationBell } from "@/components/app/notification-bell";
-import { PushNotificationManager } from "@/components/app/push-notification-manager";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getSession, requireCompleteProfile } from "@/lib/auth-server";
@@ -39,12 +38,9 @@ export default async function AppLayout({ children, params }: Props) {
             <AppLanguageSwitcher />
             <ThemeToggle />
             {session && (
-              <>
-                <PushNotificationManager />
-                <Suspense>
-                  <NotificationBell userId={session.user.id} />
-                </Suspense>
-              </>
+              <Suspense>
+                <NotificationBell userId={session.user.id} />
+              </Suspense>
             )}
           </div>
         </header>

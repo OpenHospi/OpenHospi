@@ -343,8 +343,6 @@
       "applications": "Reacties",
       "invitations": "Uitnodigingen",
       "chat": "Chat",
-      "profile": "Profiel",
-      "settings": "Instellingen",
       "comingSoon": "Binnenkort"
     },
     "userMenu": {
@@ -753,6 +751,10 @@
     },
     "settings": {
       "title": "Instellingen",
+      "pushNotifications": {
+        "title": "Pushmeldingen",
+        "description": "Beheer browserpushmeldingen om op de hoogte te blijven van nieuwe berichten, reacties en evenementen."
+      },
       "exportSuccess": "Gegevens succesvol geëxporteerd",
       "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
       "dataExport": {

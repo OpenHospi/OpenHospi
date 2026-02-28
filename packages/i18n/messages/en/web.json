@@ -343,8 +343,6 @@
       "applications": "Applications",
       "invitations": "Invitations",
       "chat": "Chat",
-      "profile": "Profile",
-      "settings": "Settings",
       "comingSoon": "Coming soon"
     },
     "userMenu": {
@@ -753,6 +751,10 @@
     },
     "settings": {
       "title": "Settings",
+      "pushNotifications": {
+        "title": "Push notifications",
+        "description": "Manage browser push notifications to stay updated on new messages, applications, and events."
+      },
       "exportSuccess": "Data exported successfully",
       "exportRateLimited": "Too many export requests today. Please try again later.",
       "dataExport": {

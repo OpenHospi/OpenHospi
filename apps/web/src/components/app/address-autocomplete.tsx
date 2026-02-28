@@ -101,7 +101,7 @@ export function AddressAutocomplete({
 
       const result: AddressResult = {
         streetName: doc.straatnaam ?? "",
-        houseNumber: doc.huisnummer ?? "",
+        houseNumber: String(doc.huisnummer ?? ""),
         postalCode: doc.postcode ?? "",
         city: doc.woonplaatsnaam ?? "",
         latitude: coords.latitude,

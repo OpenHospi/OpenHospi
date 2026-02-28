@@ -21,6 +21,13 @@
       "studyProgramme": "Opleiding",
       "memberSince": "Lid sinds",
       "rentPrice": "Huurprijs"
+    },
+    "gallery": {
+      "lightboxTitle": "Fotogalerij",
+      "close": "Galerij sluiten",
+      "previous": "Vorige foto",
+      "next": "Volgende foto",
+      "counter": "{current} van {total}"
     }
   },
   "enums": {

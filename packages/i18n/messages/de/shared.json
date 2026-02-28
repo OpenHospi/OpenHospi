@@ -21,6 +21,13 @@
       "studyProgramme": "Studiengang",
       "memberSince": "Mitglied seit",
       "rentPrice": "Mietpreis"
+    },
+    "gallery": {
+      "lightboxTitle": "Fotogalerie",
+      "close": "Galerie schließen",
+      "previous": "Vorheriges Foto",
+      "next": "Nächstes Foto",
+      "counter": "{current} von {total}"
     }
   },
   "enums": {

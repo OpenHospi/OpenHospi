@@ -811,6 +811,7 @@
       "postedBy": "Gepostet von",
       "photoCount": "{count, plural, one {1 Foto} other {# Fotos}}",
       "photoIndex": "Foto {index}",
+      "showAllPhotos": "Alle {count} Fotos anzeigen",
       "availability": "Verfügbarkeit",
       "errors": {
         "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",

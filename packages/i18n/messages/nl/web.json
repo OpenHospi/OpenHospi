@@ -810,6 +810,7 @@
       "postedBy": "Geplaatst door",
       "photoCount": "{count, plural, one {1 foto} other {# foto's}}",
       "photoIndex": "Foto {index}",
+      "showAllPhotos": "Toon alle {count} foto's",
       "availability": "Beschikbaarheid",
       "errors": {
         "invalid_data": "Controleer je bericht en probeer opnieuw.",

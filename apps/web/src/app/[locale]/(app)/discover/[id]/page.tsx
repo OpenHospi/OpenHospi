@@ -1,11 +1,11 @@
 import { GenderPreference } from "@openhospi/shared/enums";
-import { Camera, Check, Globe, Home, MapPin, Ruler, Settings, Users } from "lucide-react";
+import { Check, Globe, Home, MapPin, Ruler, Settings, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { InstitutionBadge } from "@/components/app/institution-badge";
 import { ReportDialog } from "@/components/app/report-dialog";
-import { StorageImage } from "@/components/storage-image";
+import { RoomGalleryHero } from "@/components/app/room-gallery-hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -144,8 +144,6 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
   }
 
   const isOwner = room.ownerId === user.id;
-  const coverPhoto = room.photos[0];
-  const otherPhotos = room.photos.slice(1);
   const cityName = tEnums(`city.${room.city}`);
 
   // Format address for header
@@ -164,44 +162,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
     <div className="space-y-8">
       {/* Photo gallery */}
       {room.photos.length > 0 && (
-        <div className="space-y-2">
-          {coverPhoto && (
-            <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-              <StorageImage
-                src={coverPhoto.url}
-                alt={room.title}
-                bucket="room-photos"
-                fill
-                className="object-cover"
-                priority
-              />
-              {room.photos.length > 1 && (
-                <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-md bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
-                  <Camera className="size-3.5" />
-                  {t("photoCount", { count: room.photos.length })}
-                </div>
-              )}
-            </div>
-          )}
-          {otherPhotos.length > 0 && (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-              {otherPhotos.map((photo) => (
-                <div
-                  key={photo.id}
-                  className="relative aspect-video overflow-hidden rounded-lg bg-muted"
-                >
-                  <StorageImage
-                    src={photo.url}
-                    alt={`${room.title} — ${t("photoIndex", { index: photo.slot })}`}
-                    bucket="room-photos"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <RoomGalleryHero photos={room.photos} roomTitle={room.title} />
       )}
 
       <div className="grid gap-8 lg:grid-cols-3">

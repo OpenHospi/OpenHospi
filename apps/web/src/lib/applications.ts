@@ -1,7 +1,7 @@
 import { withRLS } from "@openhospi/database";
 import { applications, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
-import { and, desc, eq, isNull, or } from "drizzle-orm";
+import { and, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 
 import { notBlockedBy } from "@/lib/block-filter";
 
@@ -12,6 +12,7 @@ export type UserApplication = {
   roomCity: string;
   roomRentPrice: number;
   roomCoverPhotoUrl: string | null;
+  roomPhotoCount: number;
   personalMessage: string | null;
   status: ApplicationStatus;
   appliedAt: Date;
@@ -74,6 +75,8 @@ export type RoomDetailForApply = {
 };
 
 export async function getUserApplications(userId: string): Promise<UserApplication[]> {
+  const photoCountSq = sql<string>`(select ${count()} from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id})`.as("room_photo_count");
+
   const rows = await withRLS(userId, (tx) =>
     tx
       .select({
@@ -87,6 +90,7 @@ export async function getUserApplications(userId: string): Promise<UserApplicati
         roomCity: rooms.city,
         roomRentPrice: rooms.rentPrice,
         roomCoverPhotoUrl: roomPhotos.url,
+        roomPhotoCount: photoCountSq,
       })
       .from(applications)
       .innerJoin(rooms, eq(rooms.id, applications.roomId))
@@ -98,6 +102,7 @@ export async function getUserApplications(userId: string): Promise<UserApplicati
   return rows.map((r) => ({
     ...r,
     roomRentPrice: Number(r.roomRentPrice),
+    roomPhotoCount: Number(r.roomPhotoCount),
   }));
 }
 
@@ -105,6 +110,8 @@ export async function getApplicationDetail(
   applicationId: string,
   userId: string,
 ): Promise<ApplicationDetail | null> {
+  const photoCountSq = sql<string>`(select ${count()} from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id})`.as("room_photo_count");
+
   return withRLS(userId, async (tx) => {
     const [row] = await tx
       .select({
@@ -126,6 +133,7 @@ export async function getApplicationDetail(
         roomFeatures: rooms.features,
         roomLocationTags: rooms.locationTags,
         roomCoverPhotoUrl: roomPhotos.url,
+        roomPhotoCount: photoCountSq,
       })
       .from(applications)
       .innerJoin(rooms, eq(rooms.id, applications.roomId))
@@ -137,6 +145,7 @@ export async function getApplicationDetail(
     return {
       ...row,
       roomRentPrice: Number(row.roomRentPrice),
+      roomPhotoCount: Number(row.roomPhotoCount),
       roomFeatures: row.roomFeatures ?? [],
       roomLocationTags: row.roomLocationTags ?? [],
     };

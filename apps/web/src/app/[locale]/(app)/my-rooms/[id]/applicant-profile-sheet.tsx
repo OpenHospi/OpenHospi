@@ -13,7 +13,7 @@ import {useForm} from "react-hook-form";
 import {toast} from "sonner";
 
 import {InstitutionBadge} from "@/components/app/institution-badge";
-import {StorageImage} from "@/components/storage-image";
+import {ProfilePhotoCarousel} from "@/components/app/profile-photo-carousel";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
@@ -95,22 +95,7 @@ export function ApplicantProfileSheet({
                 <div className="mt-6 space-y-6">
                     {/* Profile photos */}
                     {applicant.photos.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-2">
-                            {applicant.photos.map((photo) => (
-                                <div
-                                    key={photo.id}
-                                    className="relative aspect-square overflow-hidden rounded-lg bg-muted"
-                                >
-                                    <StorageImage
-                                        src={photo.url}
-                                        alt={photo.caption ?? applicant.firstName}
-                                        bucket="profile-photos"
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
-                            ))}
-                        </div>
+                        <ProfilePhotoCarousel photos={applicant.photos} userName={applicant.firstName} />
                     ) : (
                         <div className="flex items-center justify-center rounded-lg bg-muted p-8">
                             <UserCircle className="size-16 text-muted-foreground"/>

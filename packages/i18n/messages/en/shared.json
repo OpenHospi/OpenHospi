@@ -21,6 +21,13 @@
       "studyProgramme": "Study programme",
       "memberSince": "Member since",
       "rentPrice": "Rent price"
+    },
+    "gallery": {
+      "lightboxTitle": "Photo gallery",
+      "close": "Close gallery",
+      "previous": "Previous photo",
+      "next": "Next photo",
+      "counter": "{current} of {total}"
     }
   },
   "enums": {

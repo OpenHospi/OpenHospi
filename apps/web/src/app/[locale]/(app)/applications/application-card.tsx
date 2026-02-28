@@ -1,4 +1,4 @@
-import {Home} from "lucide-react";
+import {Camera, Home} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 
 import {StorageImage} from "@/components/storage-image";
@@ -41,6 +41,12 @@ export async function ApplicationCard({application}: Props) {
                     >
                         {tEnums(`application_status.${application.status}`)}
                     </Badge>
+                    {application.roomPhotoCount > 1 && (
+                        <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-0.5 text-xs font-medium text-white">
+                            <Camera className="size-3" />
+                            {application.roomPhotoCount}
+                        </div>
+                    )}
                 </div>
                 <CardHeader className="pb-2">
                     <h3 className="truncate font-semibold">{application.roomTitle}</h3>

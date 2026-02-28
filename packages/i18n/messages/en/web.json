@@ -844,6 +844,11 @@
       "empty": "No notifications yet",
       "markAllRead": "Mark all as read"
     },
+    "push": {
+      "enable": "Enable push notifications",
+      "disable": "Disable push notifications",
+      "unsupported": "Push notifications are not supported in this browser"
+    },
     "chat": {
       "title": "Chat",
       "empty": "No conversations yet. Conversations are created when you're invited to a hospi.",

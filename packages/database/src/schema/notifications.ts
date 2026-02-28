@@ -88,6 +88,39 @@ export const notifications = pgTable(
   ],
 );
 
+export const pushSubscriptions = pgTable(
+  "push_subscriptions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    endpoint: text("endpoint").notNull(),
+    p256dh: text("p256dh").notNull(),
+    auth: text("auth").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    unique("push_subscriptions_endpoint_key").on(table.endpoint),
+    index("idx_push_subscriptions_user_id").on(table.userId),
+    pgPolicy("push_subscriptions_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("push_subscriptions_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("push_subscriptions_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+  ],
+);
+
 export const adminAuditLog = pgTable(
   "admin_audit_log",
   {

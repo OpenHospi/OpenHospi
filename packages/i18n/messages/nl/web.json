@@ -844,6 +844,11 @@
       "empty": "Nog geen meldingen",
       "markAllRead": "Alles als gelezen markeren"
     },
+    "push": {
+      "enable": "Pushmeldingen inschakelen",
+      "disable": "Pushmeldingen uitschakelen",
+      "unsupported": "Pushmeldingen worden niet ondersteund in deze browser"
+    },
     "chat": {
       "title": "Chat",
       "empty": "Nog geen gesprekken. Gesprekken worden aangemaakt wanneer je wordt uitgenodigd voor een hospi.",

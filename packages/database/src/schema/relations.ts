@@ -5,7 +5,7 @@ import { account, jwks, session, ssoProvider, user, verification } from "./auth"
 import { conversationMembers, conversations, messageReceipts, messages } from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
-import { notifications, pushTokens } from "./notifications";
+import { notifications, pushSubscriptions, pushTokens } from "./notifications";
 import { profilePhotos, profiles } from "./profiles";
 import { roomPhotos, rooms } from "./rooms";
 import { blocks, privateKeyBackups, publicKeys, reports } from "./security";
@@ -47,6 +47,7 @@ export const relations = defineRelations(
     blocks,
     // Notifications
     pushTokens,
+    pushSubscriptions,
     notifications,
   },
   (r) => ({
@@ -296,6 +297,12 @@ export const relations = defineRelations(
     pushTokens: {
       user: r.one.profiles({
         from: r.pushTokens.userId,
+        to: r.profiles.id,
+      }),
+    },
+    pushSubscriptions: {
+      user: r.one.profiles({
+        from: r.pushSubscriptions.userId,
         to: r.profiles.id,
       }),
     },

@@ -845,6 +845,11 @@
       "empty": "Noch keine Benachrichtigungen",
       "markAllRead": "Alle als gelesen markieren"
     },
+    "push": {
+      "enable": "Push-Benachrichtigungen aktivieren",
+      "disable": "Push-Benachrichtigungen deaktivieren",
+      "unsupported": "Push-Benachrichtigungen werden in diesem Browser nicht unterstützt"
+    },
     "chat": {
       "title": "Chat",
       "empty": "Noch keine Gespräche. Gespräche werden erstellt, wenn du zu einem Hospi eingeladen wirst.",

@@ -157,6 +157,7 @@
       "paused": "Paused",
       "closed": "Closed"
     },
+    "furnishing_label": "Furnishing",
     "furnishing": {
       "unfurnished": "Unfurnished",
       "semi_furnished": "Floored & curtained",

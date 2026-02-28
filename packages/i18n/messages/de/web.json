@@ -898,6 +898,19 @@
         "deadline_passed": "Die RSVP-Frist ist abgelaufen",
         "event_full": "Diese Veranstaltung ist voll"
       }
+    },
+    "report": {
+      "button": "Melden",
+      "title": "Meldung einreichen",
+      "description": "Hilf uns, OpenHospi sicher zu halten. Meldungen werden von unserem Admin-Team geprüft.",
+      "reasonLabel": "Grund",
+      "reasonPlaceholder": "Wähle einen Grund...",
+      "descriptionLabel": "Zusätzliche Details (optional)",
+      "descriptionPlaceholder": "Erzähl uns, was passiert ist...",
+      "cancel": "Abbrechen",
+      "submit": "Meldung einreichen",
+      "success": "Meldung eingereicht. Vielen Dank.",
+      "error": "Meldung konnte nicht eingereicht werden. Bitte versuche es erneut."
     }
   },
   "costs": {

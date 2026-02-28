@@ -897,6 +897,19 @@
         "deadline_passed": "The RSVP deadline has passed",
         "event_full": "This event is full"
       }
+    },
+    "report": {
+      "button": "Report",
+      "title": "Submit a report",
+      "description": "Help us keep OpenHospi safe. Reports are reviewed by our admin team.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "Select a reason...",
+      "descriptionLabel": "Additional details (optional)",
+      "descriptionPlaceholder": "Tell us what happened...",
+      "cancel": "Cancel",
+      "submit": "Submit report",
+      "success": "Report submitted. Thank you.",
+      "error": "Failed to submit report. Please try again."
     }
   },
   "costs": {

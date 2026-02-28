@@ -21,11 +21,9 @@ export async function generateMetadata({
     params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
     const {locale, id} = await params;
-    const room = await getRoomDetailForApply(id, "");
-    if (!room) {
-        const t = await getTranslations({locale, namespace: "app.roomDetail"});
-        return {title: t("notFound")};
-    }
+    const t = await getTranslations({locale, namespace: "app.roomDetail"});
+    const room = await getRoomDetailForApply(id, "").catch(() => null);
+    if (!room) return {title: t("notFound")};
     return {title: room.title};
 }
 

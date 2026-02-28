@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { ProfilePhoto } from "@/lib/profile";
-import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
 
 import { deleteProfilePhoto, saveProfilePhoto } from "./profile-actions";
@@ -41,8 +40,10 @@ export function PhotosGrid({ photos: initialPhotos, editable }: Props) {
 
   async function performUpload(slot: number, file: File) {
     try {
-      const url = await uploadPhotoToBlob(file, "profile-photos", slot, "profile");
-      const result = await saveProfilePhoto(url, slot);
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("slot", String(slot));
+      const result = await saveProfilePhoto(formData);
       setUploadingSlot(null);
 
       if (result.error) {
@@ -89,7 +90,7 @@ export function PhotosGrid({ photos: initialPhotos, editable }: Props) {
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp"
+          accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
           className="hidden"
           onChange={handleFileChange}
         />

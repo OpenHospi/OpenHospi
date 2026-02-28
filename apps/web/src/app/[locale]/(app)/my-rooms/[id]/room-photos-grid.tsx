@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { RoomPhoto } from "@/lib/rooms";
-import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
 
 import { deleteRoomPhoto, saveRoomPhoto } from "../create/photo-actions";
@@ -40,8 +39,11 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
 
   async function performUpload(slot: number, file: File) {
     try {
-      const url = await uploadPhotoToBlob(file, "room-photos", slot, "room", roomId);
-      const result = await saveRoomPhoto(url, roomId, slot);
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("roomId", roomId);
+      formData.set("slot", String(slot));
+      const result = await saveRoomPhoto(formData);
       setUploadingSlot(null);
 
       if (result.error) {
@@ -87,7 +89,7 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
         className="hidden"
         onChange={handleFileChange}
       />

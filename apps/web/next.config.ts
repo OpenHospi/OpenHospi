@@ -5,7 +5,7 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: https://*.public.blob.vercel-storage.com;
+  img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321;
   font-src 'self';
   connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl;
   frame-ancestors 'none';
@@ -21,7 +21,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "54321",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },

@@ -12,6 +12,7 @@
   "scripts": {
     "db:push": "drizzle-kit push",
     "db:push:local": "drizzle-kit push --config=drizzle.local.config.ts",
+    "db:setup:storage:local": "tsx scripts/setup-storage-policies.ts",
     "db:studio": "drizzle-kit studio",
     "db:studio:local": "drizzle-kit studio --config=drizzle.local.config.ts",
     "db:seed:local": "tsx scripts/seed-local.ts",

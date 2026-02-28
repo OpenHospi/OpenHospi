@@ -1175,7 +1175,14 @@
       "userBanned": "Gebruiker geblokkeerd",
       "userUnbanned": "Blokkering opgeheven",
       "listingRemoved": "Advertentie verwijderd",
-      "error": "Er is een fout opgetreden"
+      "error": "Er is een fout opgetreden",
+      "backToList": "Terug naar meldingen",
+      "roomDetails": "Kamerdetails",
+      "userDetails": "Gebruikersdetails",
+      "confirmBanTitle": "Gebruiker blokkeren?",
+      "confirmBanDescription": "Dit trekt de toegang van de gebruiker direct in. Ze kunnen niet meer inloggen totdat de blokkering wordt opgeheven.",
+      "confirmRemoveTitle": "Advertentie verwijderen?",
+      "confirmRemoveDescription": "Dit sluit de kameradvertentie en deze is niet meer zichtbaar voor andere gebruikers."
     },
     "auditLog": {
       "title": "Auditlog",

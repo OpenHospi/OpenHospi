@@ -3,7 +3,19 @@
     "appName": "OpenHospi",
     "loading": "Laden...",
     "error": "Er is iets misgegaan",
-    "retry": "Opnieuw proberen"
+    "retry": "Opnieuw proberen",
+    "labels": {
+      "title": "Titel",
+      "city": "Stad",
+      "status": "Status",
+      "bio": "Bio",
+      "institution": "Instelling",
+      "cancel": "Annuleren",
+      "owner": "Eigenaar",
+      "studyProgramme": "Opleiding",
+      "memberSince": "Lid sinds",
+      "rentPrice": "Huurprijs"
+    }
   },
   "enums": {
     "language_enum": {

@@ -1,12 +1,17 @@
+import { ArrowLeft } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-import { getReportDetail } from "../../actions";
+import { getReportDetail, getRoomDetail, getUserDetail } from "../../actions";
 import { ReportActions } from "./report-actions-client";
+import { RoomDetailDialog } from "./room-detail-dialog";
+import { UserDetailDialog } from "./user-detail-dialog";
 
 type Props = {
   params: Promise<{ locale: string; reportId: string }>;
@@ -22,11 +27,22 @@ export default async function ReportDetailPage({ params }: Props) {
   const report = await getReportDetail(reportId);
   if (!report) notFound();
 
+  const [roomDetail, userDetail] = await Promise.all([
+    report.reportedRoomId ? getRoomDetail(report.reportedRoomId) : null,
+    report.reportedUserId ? getUserDetail(report.reportedUserId) : null,
+  ]);
+
   const isPending = report.status === "pending" || report.status === "reviewing";
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href={`/${locale}/admin/reports`}>
+            <ArrowLeft className="size-5" />
+            <span className="sr-only">{t("reports.backToList")}</span>
+          </Link>
+        </Button>
         <h1 className="text-3xl font-bold tracking-tight">{t("reports.detailTitle")}</h1>
       </div>
 
@@ -48,21 +64,40 @@ export default async function ReportDetailPage({ params }: Props) {
               <p className="text-muted-foreground text-sm">{t("reports.colReporter")}</p>
               <p className="font-medium">{report.reporterName}</p>
             </div>
-            {report.reportedUserName && (
+            {report.reportedUserId && (
               <div>
                 <p className="text-muted-foreground text-sm">{t("reports.reportedUser")}</p>
-                <p className="font-medium">
-                  {report.reportedUserName}
-                  {report.reportedUserBanned && (
-                    <Badge variant="destructive" className="ml-2">{t("reports.banned")}</Badge>
-                  )}
-                </p>
+                {userDetail ? (
+                  <UserDetailDialog user={userDetail}>
+                    <button className="text-primary hover:underline cursor-pointer font-medium">
+                      {report.reportedUserName ?? "Unknown"}
+                      {report.reportedUserBanned && (
+                        <Badge variant="destructive" className="ml-2">{t("reports.banned")}</Badge>
+                      )}
+                    </button>
+                  </UserDetailDialog>
+                ) : (
+                  <p className="font-medium">
+                    {report.reportedUserName ?? "Unknown"}
+                    {report.reportedUserBanned && (
+                      <Badge variant="destructive" className="ml-2">{t("reports.banned")}</Badge>
+                    )}
+                  </p>
+                )}
               </div>
             )}
             {report.reportedRoomId && (
               <div>
                 <p className="text-muted-foreground text-sm">{t("reports.reportedRoom")}</p>
-                <p className="font-mono text-sm">{report.reportedRoomId}</p>
+                {roomDetail ? (
+                  <RoomDetailDialog room={roomDetail}>
+                    <button className="text-primary hover:underline cursor-pointer font-medium">
+                      {roomDetail.title}
+                    </button>
+                  </RoomDetailDialog>
+                ) : (
+                  <p className="font-mono text-sm">{report.reportedRoomId}</p>
+                )}
               </div>
             )}
             <div>

@@ -16,13 +16,14 @@
     "test:e2e:db": "vitest run packages/database/src/e2e.test.ts",
     "db:push": "pnpm --filter @openhospi/database db:push",
     "db:push:local": "pnpm --filter @openhospi/database db:push:local",
+    "db:setup:storage:local": "pnpm --filter @openhospi/database db:setup:storage:local",
     "db:studio": "pnpm --filter @openhospi/database db:studio",
     "db:studio:local": "pnpm --filter @openhospi/database db:studio:local",
     "db:seed:local": "pnpm --filter @openhospi/database db:seed:local",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
-    "supabase:reset": "supabase db reset && pnpm db:push:local && pnpm db:seed:local",
+    "supabase:reset": "supabase db reset && pnpm db:push:local && pnpm db:setup:storage:local && pnpm db:seed:local",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
   },
   "pnpm": {

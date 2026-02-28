@@ -3,8 +3,10 @@
 import {db} from "@openhospi/database";
 import {
     adminAuditLog,
+    profilePhotos,
     profiles,
     reports,
+    roomPhotos,
     rooms,
     session,
     user,
@@ -179,6 +181,118 @@ export async function getReportDetail(reportId: string): Promise<ReportDetail | 
         reporterName: row.reporterName ?? "Unknown",
         reportedUserName,
         reportedUserBanned,
+    };
+}
+
+export type RoomDetail = {
+    id: string;
+    title: string;
+    city: string;
+    rentPrice: string;
+    status: string;
+    description: string | null;
+    ownerName: string;
+    coverPhotoUrl: string | null;
+    createdAt: Date;
+};
+
+export async function getRoomDetail(roomId: string): Promise<RoomDetail | null> {
+    await requireAdmin();
+
+    const [row] = await db
+        .select({
+            id: rooms.id,
+            title: rooms.title,
+            city: rooms.city,
+            rentPrice: rooms.rentPrice,
+            status: rooms.status,
+            description: rooms.description,
+            ownerFirstName: profiles.firstName,
+            ownerLastName: profiles.lastName,
+            createdAt: rooms.createdAt,
+        })
+        .from(rooms)
+        .leftJoin(profiles, eq(profiles.id, rooms.ownerId))
+        .where(eq(rooms.id, roomId));
+
+    if (!row) return null;
+
+    const [coverPhoto] = await db
+        .select({ url: roomPhotos.url })
+        .from(roomPhotos)
+        .where(eq(roomPhotos.roomId, roomId))
+        .orderBy(roomPhotos.slot)
+        .limit(1);
+
+    return {
+        id: row.id,
+        title: row.title,
+        city: row.city,
+        rentPrice: row.rentPrice,
+        status: row.status,
+        description: row.description,
+        ownerName: [row.ownerFirstName, row.ownerLastName].filter(Boolean).join(" ") || "Unknown",
+        coverPhotoUrl: coverPhoto?.url ?? null,
+        createdAt: row.createdAt,
+    };
+}
+
+export type UserDetail = {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl: string | null;
+    bio: string | null;
+    institutionDomain: string;
+    studyProgram: string | null;
+    createdAt: Date;
+    banned: boolean | null;
+};
+
+export async function getUserDetail(userId: string): Promise<UserDetail | null> {
+    await requireAdmin();
+
+    const [row] = await db
+        .select({
+            id: profiles.id,
+            firstName: profiles.firstName,
+            lastName: profiles.lastName,
+            email: profiles.email,
+            avatarUrl: profiles.avatarUrl,
+            bio: profiles.bio,
+            institutionDomain: profiles.institutionDomain,
+            studyProgram: profiles.studyProgram,
+            createdAt: profiles.createdAt,
+            banned: user.banned,
+        })
+        .from(profiles)
+        .leftJoin(user, eq(user.id, profiles.id))
+        .where(eq(profiles.id, userId));
+
+    if (!row) return null;
+
+    // Get first profile photo as avatar fallback
+    let avatarUrl = row.avatarUrl;
+    if (!avatarUrl) {
+        const [photo] = await db
+            .select({ url: profilePhotos.url })
+            .from(profilePhotos)
+            .where(eq(profilePhotos.userId, userId))
+            .orderBy(profilePhotos.slot)
+            .limit(1);
+        avatarUrl = photo?.url ?? null;
+    }
+
+    return {
+        id: row.id,
+        name: `${row.firstName} ${row.lastName}`,
+        email: row.email,
+        avatarUrl,
+        bio: row.bio,
+        institutionDomain: row.institutionDomain,
+        studyProgram: row.studyProgram,
+        createdAt: row.createdAt,
+        banned: row.banned,
     };
 }
 

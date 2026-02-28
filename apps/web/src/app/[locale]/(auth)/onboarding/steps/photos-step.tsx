@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { ProfilePhoto } from "@/lib/profile";
-import { uploadPhotoToBlob } from "@/lib/upload-photo";
 import { cn } from "@/lib/utils";
 
 import { deletePhoto, savePhoto } from "../photo-actions";
@@ -49,8 +48,10 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
 
     startTransition(async () => {
       try {
-        const url = await uploadPhotoToBlob(file, "profile-photos", slot, "profile");
-        const result = await savePhoto(url, slot);
+        const formData = new FormData();
+        formData.set("file", file);
+        formData.set("slot", String(slot));
+        const result = await savePhoto(formData);
         setUploadingSlot(null);
 
         if (result.error) {
@@ -86,7 +87,7 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
         className="hidden"
         onChange={handleFileChange}
       />

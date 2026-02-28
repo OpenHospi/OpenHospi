@@ -9,7 +9,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth-server";
-import { deletePhotoFromStorage } from "@/lib/photos";
+import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
 
 export async function updateProfile(data: EditProfileData) {
   const session = await requireSession();
@@ -42,15 +42,21 @@ export async function updateProfile(data: EditProfileData) {
 }
 
 export async function saveProfilePhoto(
-  url: string,
-  slot: number,
+  formData: FormData,
 ): Promise<{ error?: string; photo?: ProfilePhoto }> {
   const session = await requireSession();
 
+  const file = formData.get("file") as File | null;
+  const slot = Number(formData.get("slot"));
+
+  if (!file) return { error: "Missing file" };
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
-  if (!url) return { error: "Missing URL" };
 
   try {
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${session.user.id}/slot-${slot}.${ext}`;
+    const url = await uploadPhotoToStorage(file, "profile-photos", path);
+
     const [photo] = await withRLS(session.user.id, (tx) =>
       tx
         .insert(profilePhotos)

@@ -1151,7 +1151,14 @@
       "userBanned": "User banned",
       "userUnbanned": "User unbanned",
       "listingRemoved": "Listing removed",
-      "error": "An error occurred"
+      "error": "An error occurred",
+      "backToList": "Back to reports",
+      "roomDetails": "Room details",
+      "userDetails": "User details",
+      "confirmBanTitle": "Ban this user?",
+      "confirmBanDescription": "This will immediately revoke the user's access. They will not be able to log in until unbanned.",
+      "confirmRemoveTitle": "Remove this listing?",
+      "confirmRemoveDescription": "This will close the room listing and it will no longer be visible to other users."
     },
     "auditLog": {
       "title": "Audit log",

@@ -3,7 +3,19 @@
     "appName": "OpenHospi",
     "loading": "Laden...",
     "error": "Etwas ist schiefgelaufen",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "labels": {
+      "title": "Titel",
+      "city": "Stadt",
+      "status": "Status",
+      "bio": "Bio",
+      "institution": "Einrichtung",
+      "cancel": "Abbrechen",
+      "owner": "Eigentümer",
+      "studyProgramme": "Studiengang",
+      "memberSince": "Mitglied seit",
+      "rentPrice": "Mietpreis"
+    }
   },
   "enums": {
     "language_enum": {

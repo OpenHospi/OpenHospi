@@ -2,7 +2,6 @@
 
 import {useTranslations} from "next-intl";
 
-import {StorageImage} from "@/components/storage-image";
 import {Badge} from "@/components/ui/badge";
 import {
     Dialog,
@@ -11,6 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {UserAvatar} from "@/components/user-avatar";
 
 import type {UserDetail} from "../../actions";
 
@@ -32,22 +32,7 @@ export function UserDetailDialog({user, children}: Props) {
                 </DialogHeader>
                 <div className="space-y-4">
                     <div className="flex items-center gap-4">
-                        {user.avatarUrl && user.avatarUrl.trim() ? (
-                            <div className="relative size-16 shrink-0 overflow-hidden rounded-full">
-                                <StorageImage
-                                    src={user.avatarUrl}
-                                    alt={user.name}
-                                    fill
-                                    className="object-cover"
-                                    bucket="profile-photos"
-                                />
-                            </div>
-                        ) : (
-                            <div
-                                className="bg-primary/10 flex size-16 shrink-0 items-center justify-center rounded-full text-lg font-semibold text-primary">
-                                {user.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2) || user.name.charAt(0).toUpperCase()}
-                            </div>
-                        )}
+                        <UserAvatar avatarUrl={user.avatarUrl} userName={user.name} size="lg"/>
                         <div>
                             <p className="font-medium">
                                 {user.name}
@@ -60,6 +45,7 @@ export function UserDetailDialog({user, children}: Props) {
                             <p className="text-muted-foreground text-sm">{user.email}</p>
                         </div>
                     </div>
+                    {/* ...existing code... */}
                     <div className="space-y-3">
                         <div>
                             <p className="text-muted-foreground text-sm">{tCommon("institution")}</p>

@@ -5,6 +5,7 @@ import {notFound} from "next/navigation";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 
 import {StorageImage} from "@/components/storage-image";
+import {UserAvatar} from "@/components/user-avatar";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
@@ -30,9 +31,10 @@ export default async function ReportDetailPage({params}: Props) {
     const report = await getReportDetail(reportId);
     if (!report) notFound();
 
-    const [roomDetail, userDetail] = await Promise.all([
+    const [roomDetail, userDetail, reporterDetail] = await Promise.all([
         report.reportedRoomId ? getRoomDetail(report.reportedRoomId) : null,
         report.reportedUserId ? getUserDetail(report.reportedUserId) : null,
+        report.reporterId ? getUserDetail(report.reporterId) : null,
     ]);
 
     const isPending = report.status === "pending" || report.status === "reviewing";
@@ -64,8 +66,27 @@ export default async function ReportDetailPage({params}: Props) {
                             <p className="font-medium">{tEnums(`report_reason.${report.reason}`)}</p>
                         </div>
                         <div>
-                            <p className="text-muted-foreground text-sm">{t("reports.colReporter")}</p>
-                            <p className="font-medium">{report.reporterName}</p>
+                            <p className="text-muted-foreground text-sm mb-2">{t("reports.colReporter")}</p>
+                            {reporterDetail ? (
+                                <UserDetailDialog user={reporterDetail}>
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-3 w-full text-left p-3 rounded-lg border-2 border-border hover:border-primary hover:bg-accent transition-all duration-200 cursor-pointer group">
+                                        <UserAvatar
+                                            avatarUrl={reporterDetail.avatarUrl}
+                                            userName={reporterDetail.name}
+                                            className="group-hover:ring-2 group-hover:ring-primary/20 transition-all"
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-foreground group-hover:text-primary transition-colors duration-200">
+                                                {reporterDetail.name}
+                                            </p>
+                                        </div>
+                                    </button>
+                                </UserDetailDialog>
+                            ) : (
+                                <p className="font-medium">{report.reporterName}</p>
+                            )}
                         </div>
                         {report.reportedUserId && (
                             <div>
@@ -75,23 +96,11 @@ export default async function ReportDetailPage({params}: Props) {
                                         <button
                                             type="button"
                                             className="flex items-center gap-3 w-full text-left p-3 rounded-lg border-2 border-border hover:border-primary hover:bg-accent transition-all duration-200 cursor-pointer group">
-                                            {userDetail.avatarUrl && userDetail.avatarUrl.trim() ? (
-                                                <div
-                                                    className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
-                                                    <StorageImage
-                                                        src={userDetail.avatarUrl}
-                                                        alt={userDetail.name}
-                                                        bucket="profile-photos"
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div
-                                                    className="bg-primary/10 group-hover:bg-primary/20 flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-primary transition-all duration-200">
-                                                    {userDetail.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2) || userDetail.name.charAt(0).toUpperCase()}
-                                                </div>
-                                            )}
+                                            <UserAvatar
+                                                avatarUrl={userDetail.avatarUrl}
+                                                userName={userDetail.name}
+                                                className="group-hover:ring-2 group-hover:ring-primary/20 transition-all"
+                                            />
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-foreground group-hover:text-primary transition-colors duration-200">
                                                     {userDetail.name}

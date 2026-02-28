@@ -258,36 +258,28 @@ export async function getUserDetail(userId: string): Promise<UserDetail | null> 
             firstName: profiles.firstName,
             lastName: profiles.lastName,
             email: profiles.email,
-            avatarUrl: profiles.avatarUrl,
             bio: profiles.bio,
             institutionDomain: profiles.institutionDomain,
             studyProgram: profiles.studyProgram,
             createdAt: profiles.createdAt,
             banned: user.banned,
+            avatarUrl: profilePhotos.url,
         })
         .from(profiles)
         .leftJoin(user, eq(user.id, profiles.id))
+        .leftJoin(profilePhotos, and(
+            eq(profilePhotos.userId, profiles.id),
+            eq(profilePhotos.slot, 1)
+        ))
         .where(eq(profiles.id, userId));
 
     if (!row) return null;
-
-    // Get first profile photo as avatar fallback
-    let avatarUrl = row.avatarUrl;
-    if (!avatarUrl) {
-        const [photo] = await db
-            .select({url: profilePhotos.url})
-            .from(profilePhotos)
-            .where(eq(profilePhotos.userId, userId))
-            .orderBy(profilePhotos.slot)
-            .limit(1);
-        avatarUrl = photo?.url ?? null;
-    }
 
     return {
         id: row.id,
         name: `${row.firstName} ${row.lastName}`,
         email: row.email,
-        avatarUrl,
+        avatarUrl: row.avatarUrl,
         bio: row.bio,
         institutionDomain: row.institutionDomain,
         studyProgram: row.studyProgram,
@@ -333,7 +325,11 @@ export async function updateReportStatus(
     const adminSession = await requireAdmin();
     const adminUserId = adminSession.user.id;
 
-    const updateData: any = {status: newStatus};
+    const updateData: {
+        status: ReportStatusType;
+        resolvedAt?: Date;
+        resolvedBy?: string;
+    } = {status: newStatus};
 
     // If moving to resolved or dismissed, set resolved fields
     if (newStatus === ReportStatus.resolved || newStatus === ReportStatus.dismissed) {

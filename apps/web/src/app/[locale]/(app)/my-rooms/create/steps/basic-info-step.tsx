@@ -10,6 +10,7 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { AddressAutocomplete } from "@/components/app/address-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -54,11 +55,21 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
       description: defaultValues.description ?? "",
       city: defaultValues.city,
       neighborhood: defaultValues.neighborhood ?? "",
-      address: defaultValues.address ?? "",
+      streetName: defaultValues.streetName ?? "",
+      houseNumber: defaultValues.houseNumber ?? "",
+      postalCode: defaultValues.postalCode ?? "",
+      latitude: defaultValues.latitude ?? undefined,
+      longitude: defaultValues.longitude ?? undefined,
     },
   });
 
   const descriptionValue = form.watch("description") ?? "";
+
+  let addressDisplay = "";
+  if (defaultValues.streetName) {
+    const street = [defaultValues.streetName, defaultValues.houseNumber].filter(Boolean).join(" ");
+    addressDisplay = defaultValues.postalCode ? `${street}, ${defaultValues.postalCode}` : street;
+  }
 
   function onSubmit(data: RoomBasicInfoData) {
     startTransition(async () => {
@@ -164,19 +175,27 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.address")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t("placeholders.address")} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-2">
+              <FormLabel>{t("fields.address")}</FormLabel>
+              <AddressAutocomplete
+                defaultDisplayValue={addressDisplay}
+                onSelect={(result) => {
+                  form.setValue("streetName", result.streetName, { shouldValidate: true });
+                  form.setValue("houseNumber", result.houseNumber, { shouldValidate: true });
+                  form.setValue("postalCode", result.postalCode, { shouldValidate: true });
+                  form.setValue("latitude", result.latitude, { shouldValidate: true });
+                  form.setValue("longitude", result.longitude, { shouldValidate: true });
+                }}
+                onClear={() => {
+                  form.setValue("streetName", "", { shouldValidate: true });
+                  form.setValue("houseNumber", "", { shouldValidate: true });
+                  form.setValue("postalCode", "", { shouldValidate: true });
+                  form.setValue("latitude", undefined, { shouldValidate: true });
+                  form.setValue("longitude", undefined, { shouldValidate: true });
+                }}
+                placeholder={t("placeholders.searchAddress")}
+              />
+            </div>
           </CardContent>
         </Card>
 

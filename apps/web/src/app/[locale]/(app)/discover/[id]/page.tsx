@@ -1,6 +1,7 @@
 import {GenderPreference} from "@openhospi/shared/enums";
-import {Camera, Check, Home, MapPin, Ruler, Settings, Users} from "lucide-react";
+import {Camera, Check, Globe, Home, MapPin, Ruler, Settings, Users} from "lucide-react";
 import type {Metadata} from "next";
+import dynamic from "next/dynamic";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 
 import {InstitutionBadge} from "@/components/app/institution-badge";
@@ -19,6 +20,8 @@ import {APPLICATION_STATUS_COLORS} from "@/lib/status-colors";
 import {getStoragePublicUrl} from "@/lib/storage-url";
 
 import {ApplyDialog} from "./apply-dialog";
+
+const RoomLocationMap = dynamic(() => import("./room-location-map"), {ssr: false});
 
 export async function generateMetadata({
                                            params,
@@ -90,6 +93,18 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
     const otherPhotos = room.photos.slice(1);
     const cityName = tEnums(`city.${room.city}`);
 
+    // Format address for header
+    const addressParts = [cityName];
+    if (room.neighborhood) addressParts.push(room.neighborhood);
+    if (room.streetName) {
+        const street = [room.streetName, room.houseNumber].filter(Boolean).join(" ");
+        if (room.postalCode) {
+            addressParts.push(`${street}, ${room.postalCode}`);
+        } else {
+            addressParts.push(street);
+        }
+    }
+
     return (
         <div className="space-y-8">
             {/* Photo gallery */}
@@ -141,9 +156,7 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                         <h1 className="text-3xl font-bold tracking-tight">{room.title}</h1>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground">
                             <MapPin className="size-4"/>
-                            <span>{cityName}</span>
-                            {room.neighborhood && <span>· {room.neighborhood}</span>}
-                            {room.address && <span>· {room.address}</span>}
+                            <span>{addressParts.join(" · ")}</span>
                         </div>
                     </div>
 
@@ -195,34 +208,6 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                             )}
                             <dt className="text-muted-foreground">{t("rentalType")}</dt>
                             <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
-                            {room.deposit != null && (
-                                <>
-                                    <dt className="text-muted-foreground">{t("deposit")}</dt>
-                                    <dd>€{room.deposit}</dd>
-                                </>
-                            )}
-                            {room.utilitiesIncluded && (
-                                <>
-                                    <dt className="text-muted-foreground">{t("utilitiesIncluded")}</dt>
-                                    <dd><Check className="size-4 text-green-600"/></dd>
-                                </>
-                            )}
-                            {!room.utilitiesIncluded && room.serviceCosts != null && (
-                                <>
-                                    <dt className="text-muted-foreground">{t("rent")}</dt>
-                                    <dd>€{room.rentPrice}</dd>
-                                    <dt className="text-muted-foreground">{t("serviceCosts")}</dt>
-                                    <dd>€{room.serviceCosts}</dd>
-                                    <dt className="text-muted-foreground">{t("totalCost")}</dt>
-                                    <dd>€{room.totalCost}</dd>
-                                </>
-                            )}
-                            {!room.utilitiesIncluded && room.serviceCosts == null && (
-                                <>
-                                    <dt className="text-muted-foreground">{t("utilitiesExcluded")}</dt>
-                                    <dd className="text-muted-foreground">—</dd>
-                                </>
-                            )}
                             {room.availableFrom && (
                                 <>
                                     <dt className="text-muted-foreground">{t("availability")}</dt>
@@ -263,32 +248,61 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                         </div>
                     )}
 
-                    {/* Preferences */}
-                    {(room.preferredGender !== GenderPreference.no_preference ||
-                        room.preferredLifestyleTags.length > 0) && (
+                    {/* Map */}
+                    {room.latitude != null && room.longitude != null && (
                         <div>
-                            <h2 className="text-lg font-semibold">{t("preferences")}</h2>
-                            <div className="mt-2 space-y-2">
-                                {room.preferredGender !== GenderPreference.no_preference && (
-                                    <p className="text-sm text-muted-foreground">
-                                        {tEnums(`gender_preference.${room.preferredGender}`)}
-                                        {room.preferredAgeMin != null &&
-                                            room.preferredAgeMax != null &&
-                                            `, ${room.preferredAgeMin}–${room.preferredAgeMax}`}
-                                    </p>
+                            <h2 className="text-lg font-semibold">{t("location")}</h2>
+                            <div className="mt-2">
+                                <RoomLocationMap latitude={room.latitude} longitude={room.longitude}/>
+                            </div>
+                            <p className="mt-2 text-xs text-muted-foreground">{t("approximateLocation")}</p>
+                        </div>
+                    )}
+
+                    {/* Preferences */}
+                    <div>
+                        <h2 className="text-lg font-semibold">{t("whoWereLookingFor")}</h2>
+                        <div className="mt-3 space-y-3">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <Badge variant={room.preferredGender === GenderPreference.no_preference ? "secondary" : "default"}>
+                                    {room.preferredGender === GenderPreference.no_preference
+                                        ? t("everyoneWelcome")
+                                        : tEnums(`gender_preference.${room.preferredGender}`)}
+                                </Badge>
+                                {room.preferredAgeMin != null && room.preferredAgeMax != null && (
+                                    <span className="text-sm text-muted-foreground">
+                                        {t("ageRange", {min: room.preferredAgeMin, max: room.preferredAgeMax})}
+                                    </span>
                                 )}
-                                {room.preferredLifestyleTags.length > 0 && (
+                            </div>
+
+                            {room.acceptedLanguages.length > 0 && (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                                        <Globe className="size-4"/>
+                                        <span>{t("acceptedLanguages")}</span>
+                                    </div>
                                     <div className="flex flex-wrap gap-2">
-                                        {room.preferredLifestyleTags.map((tag) => (
-                                            <Badge key={tag} variant="outline">
-                                                {tEnums(`lifestyle_tag.${tag}`)}
+                                        {room.acceptedLanguages.map((lang) => (
+                                            <Badge key={lang} variant="outline">
+                                                {tEnums(`language_enum.${lang}`)}
                                             </Badge>
                                         ))}
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
+
+                            {room.preferredLifestyleTags.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {room.preferredLifestyleTags.map((tag) => (
+                                        <Badge key={tag} variant="outline">
+                                            {tEnums(`lifestyle_tag.${tag}`)}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
 
                 {/* Sidebar */}
@@ -319,14 +333,65 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                             </CardContent>
                         </Card>
                     )}
+
+                    {/* Cost breakdown card */}
                     <Card className="sticky top-24">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                €{room.totalCost}
-                                {t("perMonth")}
+                        <CardHeader className="pb-3">
+                            <CardTitle>
+                                <span className="text-2xl">€{room.totalCost}</span>
+                                <span className="text-base font-normal text-muted-foreground">{t("perMonth")}</span>
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
+                            {/* Cost breakdown */}
+                            <div className="space-y-1.5 text-sm">
+                                {room.utilitiesIncluded ? (
+                                    <>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">{t("rentAllIn")}</span>
+                                            <span>€{room.totalCost}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-green-600">
+                                            <Check className="size-3.5"/>
+                                            <span className="text-xs">{t("utilitiesIncluded")}</span>
+                                        </div>
+                                    </>
+                                ) : room.serviceCosts != null ? (
+                                    <>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">{t("rent")}</span>
+                                            <span>€{room.rentPrice}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">{t("serviceCosts")}</span>
+                                            <span>€{room.serviceCosts}</span>
+                                        </div>
+                                        <Separator/>
+                                        <div className="flex justify-between font-medium">
+                                            <span>{t("total")}</span>
+                                            <span>€{room.totalCost}</span>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="flex justify-between">
+                                            <span className="text-muted-foreground">{t("rent")}</span>
+                                            <span>€{room.rentPrice}</span>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">{t("utilitiesNotIncluded")}</p>
+                                    </>
+                                )}
+
+                                {room.deposit != null && (
+                                    <div className="flex justify-between pt-1">
+                                        <span className="text-muted-foreground">{t("deposit")}</span>
+                                        <span>€{room.deposit}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Separator/>
+
                             {room.availableFrom && (
                                 <p className="text-sm text-muted-foreground">
                                     {t("availableFrom", {date: room.availableFrom})}

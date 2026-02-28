@@ -116,7 +116,11 @@ export function RoomCreateForm({ room }: Props) {
               description: room.description ?? undefined,
               city: room.city as RoomBasicInfoData["city"],
               neighborhood: room.neighborhood ?? undefined,
-              address: room.address ?? undefined,
+              streetName: room.streetName ?? undefined,
+              houseNumber: room.houseNumber ?? undefined,
+              postalCode: room.postalCode ?? undefined,
+              latitude: room.latitude ?? undefined,
+              longitude: room.longitude ?? undefined,
             }}
             onNext={() => setStep(2)}
           />
@@ -155,6 +159,8 @@ export function RoomCreateForm({ room }: Props) {
               preferredLifestyleTags:
                 (room.preferredLifestyleTags as RoomPreferencesData["preferredLifestyleTags"]) ??
                 [],
+              acceptedLanguages:
+                (room.acceptedLanguages as RoomPreferencesData["acceptedLanguages"]) ?? [],
               roomVereniging: room.roomVereniging as RoomPreferencesData["roomVereniging"],
             }}
             onBack={() => setStep(2)}

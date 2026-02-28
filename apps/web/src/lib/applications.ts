@@ -35,7 +35,11 @@ export type RoomDetailForApply = {
     description: string | null;
     city: string;
     neighborhood: string | null;
-    address: string | null;
+    streetName: string | null;
+    houseNumber: string | null;
+    postalCode: string | null;
+    latitude: number | null;
+    longitude: number | null;
     rentPrice: number;
     deposit: number | null;
     utilitiesIncluded: boolean | null;
@@ -55,6 +59,7 @@ export type RoomDetailForApply = {
     preferredAgeMin: number | null;
     preferredAgeMax: number | null;
     preferredLifestyleTags: string[];
+    acceptedLanguages: string[];
     ownerId: string;
     createdAt: Date;
     photos: { id: string; slot: number; url: string; caption: string | null }[];
@@ -172,7 +177,11 @@ export async function getRoomDetailForApply(
                 description: rooms.description,
                 city: rooms.city,
                 neighborhood: rooms.neighborhood,
-                address: rooms.address,
+                streetName: rooms.streetName,
+                houseNumber: rooms.houseNumber,
+                postalCode: rooms.postalCode,
+                latitude: rooms.latitude,
+                longitude: rooms.longitude,
                 rentPrice: rooms.rentPrice,
                 deposit: rooms.deposit,
                 utilitiesIncluded: rooms.utilitiesIncluded,
@@ -192,6 +201,7 @@ export async function getRoomDetailForApply(
                 preferredAgeMin: rooms.preferredAgeMin,
                 preferredAgeMax: rooms.preferredAgeMax,
                 preferredLifestyleTags: rooms.preferredLifestyleTags,
+                acceptedLanguages: rooms.acceptedLanguages,
                 ownerId: rooms.ownerId,
                 createdAt: rooms.createdAt,
             })
@@ -232,6 +242,7 @@ export async function getRoomDetailForApply(
             features: room.features ?? [],
             locationTags: room.locationTags ?? [],
             preferredLifestyleTags: room.preferredLifestyleTags ?? [],
+            acceptedLanguages: room.acceptedLanguages ?? [],
             photos,
             owner: ownerProfile ?? null,
         };

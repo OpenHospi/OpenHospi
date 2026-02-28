@@ -8,6 +8,7 @@ import {
     Furnishing,
     GenderPreference,
     HouseType,
+    Language,
     LifestyleTag,
     LocationTag,
     RentalType,
@@ -21,6 +22,7 @@ import {useState, useTransition} from "react";
 import {useForm} from "react-hook-form";
 import {toast} from "sonner";
 
+import {AddressAutocomplete} from "@/components/app/address-autocomplete";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
@@ -82,7 +84,11 @@ export function EditRoomDialog({room}: Props) {
             description: room.description ?? "",
             city: room.city as EditRoomData["city"],
             neighborhood: room.neighborhood ?? "",
-            address: room.address ?? "",
+            streetName: room.streetName ?? "",
+            houseNumber: room.houseNumber ?? "",
+            postalCode: room.postalCode ?? "",
+            latitude: room.latitude ?? undefined,
+            longitude: room.longitude ?? undefined,
             rentPrice: Number(room.rentPrice),
             deposit: room.deposit ? Number(room.deposit) : undefined,
             utilitiesIncluded: room.utilitiesIncluded ?? false,
@@ -100,6 +106,7 @@ export function EditRoomDialog({room}: Props) {
             preferredAgeMin: room.preferredAgeMin ?? undefined,
             preferredAgeMax: room.preferredAgeMax ?? undefined,
             preferredLifestyleTags: (room.preferredLifestyleTags as LifestyleTag[]) ?? [],
+            acceptedLanguages: (room.acceptedLanguages as Language[]) ?? [],
             roomVereniging: (room.roomVereniging as EditRoomData["roomVereniging"]) ?? undefined,
         },
     });
@@ -109,9 +116,10 @@ export function EditRoomDialog({room}: Props) {
     const selectedFeatures = form.watch("features") ?? [];
     const selectedLocationTags = form.watch("locationTags") ?? [];
     const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
+    const selectedLanguages = form.watch("acceptedLanguages") ?? [];
 
     function toggleArrayField<T extends string>(
-        name: "features" | "locationTags" | "preferredLifestyleTags",
+        name: "features" | "locationTags" | "preferredLifestyleTags" | "acceptedLanguages",
         value: T,
     ) {
         const current = (form.getValues(name) as T[]) ?? [];
@@ -209,32 +217,44 @@ export function EditRoomDialog({room}: Props) {
                             )}
                         />
 
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <FormField
-                                control={form.control}
-                                name="neighborhood"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>{t("fields.neighborhood")}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="address"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>{t("fields.address")}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage/>
-                                    </FormItem>
-                                )}
+                        <FormField
+                            control={form.control}
+                            name="neighborhood"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>{t("fields.neighborhood")}</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="space-y-2">
+                            <FormLabel>{t("fields.address")}</FormLabel>
+                            <AddressAutocomplete
+                                defaultDisplayValue={
+                                    room.streetName
+                                        ? [room.streetName, room.houseNumber].filter(Boolean).join(" ") +
+                                          (room.postalCode ? `, ${room.postalCode}` : "")
+                                        : ""
+                                }
+                                onSelect={(result) => {
+                                    form.setValue("streetName", result.streetName, {shouldValidate: true});
+                                    form.setValue("houseNumber", result.houseNumber, {shouldValidate: true});
+                                    form.setValue("postalCode", result.postalCode, {shouldValidate: true});
+                                    form.setValue("latitude", result.latitude, {shouldValidate: true});
+                                    form.setValue("longitude", result.longitude, {shouldValidate: true});
+                                }}
+                                onClear={() => {
+                                    form.setValue("streetName", "", {shouldValidate: true});
+                                    form.setValue("houseNumber", "", {shouldValidate: true});
+                                    form.setValue("postalCode", "", {shouldValidate: true});
+                                    form.setValue("latitude", undefined, {shouldValidate: true});
+                                    form.setValue("longitude", undefined, {shouldValidate: true});
+                                }}
+                                placeholder={t("placeholders.searchAddress")}
                             />
                         </div>
 
@@ -558,6 +578,28 @@ export function EditRoomDialog({room}: Props) {
                                             onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
                                         >
                                             {tEnums(`lifestyle_tag.${tag}`)}
+                                        </Badge>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <FormLabel>{t("fields.acceptedLanguages")}</FormLabel>
+                            <div className="flex flex-wrap gap-2">
+                                {Language.values.map((lang) => {
+                                    const isSelected = selectedLanguages.includes(lang);
+                                    return (
+                                        <Badge
+                                            key={lang}
+                                            variant={isSelected ? "default" : "outline"}
+                                            className={cn(
+                                                "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                                                isSelected && "bg-primary text-primary-foreground",
+                                            )}
+                                            onClick={() => toggleArrayField("acceptedLanguages", lang)}
+                                        >
+                                            {tEnums(`language_enum.${lang}`)}
                                         </Badge>
                                     );
                                 })}

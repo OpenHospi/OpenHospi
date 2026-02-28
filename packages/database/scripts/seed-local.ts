@@ -522,36 +522,97 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "Centrum",
         ],
       }),
-      address: f.valuesFromArray({
+      streetName: f.valuesFromArray({
         values: [
           // Groningen (7)
-          "Zonnelaan 12",
-          "Nieuwe Boteringestraat 45",
-          "Gelkingestraat 8a",
-          "Oosterstraat 62",
-          "Zernikelaan 3",
-          "Irisweg 21",
-          "Folkingestraat 17",
+          "Zonnelaan", "Nieuwe Boteringestraat", "Gelkingestraat", "Oosterstraat",
+          "Zernikelaan", "Irisweg", "Folkingestraat",
           // Amsterdam (3)
-          "Van Baerlestraat 88",
-          "Ferdinand Bolstraat 34",
-          "Bloemgracht 52",
+          "Van Baerlestraat", "Ferdinand Bolstraat", "Bloemgracht",
           // Utrecht (3)
-          "Oudegracht 142",
-          "Heidelberglaan 5",
-          "Kanaalstraat 78",
+          "Oudegracht", "Heidelberglaan", "Kanaalstraat",
           // Rotterdam (2)
-          "Boompjes 29",
-          "Kralingse Plaslaan 16",
+          "Boompjes", "Kralingse Plaslaan",
           // Leiden (2)
-          "Rapenburg 33",
-          "Stationsweg 11",
+          "Rapenburg", "Stationsweg",
           // Eindhoven (1)
-          "Torenallee 24",
+          "Torenallee",
           // Nijmegen (1)
-          "Heyendaalseweg 95",
+          "Heyendaalseweg",
           // Delft (1)
-          "Mekelweg 7",
+          "Mekelweg",
+        ],
+      }),
+      houseNumber: f.valuesFromArray({
+        values: [
+          "12", "45", "8a", "62", "3", "21", "17",
+          "88", "34", "52",
+          "142", "5", "78",
+          "29", "16",
+          "33", "11",
+          "24",
+          "95",
+          "7",
+        ],
+      }),
+      postalCode: f.valuesFromArray({
+        values: [
+          // Groningen (7)
+          "9742 GR", "9712 SG", "9711 NE", "9711 NR", "9747 AA", "9742 JE", "9711 JW",
+          // Amsterdam (3)
+          "1071 BB", "1072 MH", "1015 TM",
+          // Utrecht (3)
+          "3511 LP", "3584 CS", "3531 CJ",
+          // Rotterdam (2)
+          "3011 XZ", "3061 ME",
+          // Leiden (2)
+          "2311 GJ", "2312 AS",
+          // Eindhoven (1)
+          "5617 BC",
+          // Nijmegen (1)
+          "6525 AJ",
+          // Delft (1)
+          "2628 CD",
+        ],
+      }),
+      latitude: f.valuesFromArray({
+        values: [
+          // Groningen (7)
+          53.2254, 53.2190, 53.2174, 53.2138, 53.2405, 53.2280, 53.2148,
+          // Amsterdam (3)
+          52.3579, 52.3548, 52.3751,
+          // Utrecht (3)
+          52.0907, 52.0852, 52.0933,
+          // Rotterdam (2)
+          51.9185, 51.9267,
+          // Leiden (2)
+          52.1583, 52.1660,
+          // Eindhoven (1)
+          51.4484,
+          // Nijmegen (1)
+          51.8206,
+          // Delft (1)
+          52.0024,
+        ],
+      }),
+      longitude: f.valuesFromArray({
+        values: [
+          // Groningen (7)
+          6.5488, 6.5620, 6.5685, 6.5720, 6.5335, 6.5450, 6.5695,
+          // Amsterdam (3)
+          4.8776, 4.8938, 4.8788,
+          // Utrecht (3)
+          5.1214, 5.1747, 5.1031,
+          // Rotterdam (2)
+          4.4890, 4.4930,
+          // Leiden (2)
+          4.4889, 4.4865,
+          // Eindhoven (1)
+          5.4533,
+          // Nijmegen (1)
+          5.8713,
+          // Delft (1)
+          4.3735,
         ],
       }),
       rentPrice: f.valuesFromArray({

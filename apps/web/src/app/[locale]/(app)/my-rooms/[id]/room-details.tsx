@@ -18,7 +18,12 @@ export async function RoomDetails({ room }: Props) {
       <div className="grid gap-4 sm:grid-cols-2">
         <Detail label={t("fields.city")} value={tEnums(`city.${room.city}`)} />
         {room.neighborhood && <Detail label={t("fields.neighborhood")} value={room.neighborhood} />}
-        {room.address && <Detail label={t("fields.address")} value={room.address} />}
+        {room.streetName && (
+          <Detail
+            label={t("fields.address")}
+            value={[room.streetName, room.houseNumber].filter(Boolean).join(" ") + (room.postalCode ? `, ${room.postalCode}` : "")}
+          />
+        )}
         <Detail label={t("fields.rentPrice")} value={`€${room.rentPrice}`} />
         {room.deposit != null && <Detail label={t("fields.deposit")} value={`€${room.deposit}`} />}
         <Detail label={t("fields.utilitiesIncluded")} value={room.utilitiesIncluded ? "✓" : "✗"} />

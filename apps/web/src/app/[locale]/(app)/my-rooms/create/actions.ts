@@ -132,7 +132,7 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  const { title, description, city, neighborhood, address } = parsed.data;
+  const { title, description, city, neighborhood, streetName, houseNumber, postalCode, latitude, longitude } = parsed.data;
   await withRLS(session.user.id, (tx) =>
     tx
       .update(rooms)
@@ -141,7 +141,11 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
         description: description || null,
         city,
         neighborhood: neighborhood || null,
-        address: address || null,
+        streetName: streetName || null,
+        houseNumber: houseNumber || null,
+        postalCode: postalCode || null,
+        latitude: latitude ?? null,
+        longitude: longitude ?? null,
       })
       .where(eq(rooms.id, roomId)),
   );
@@ -197,6 +201,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],
+        acceptedLanguages: d.acceptedLanguages ?? [],
         roomVereniging: d.roomVereniging || null,
       })
       .where(eq(rooms.id, roomId)),

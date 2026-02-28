@@ -8,6 +8,7 @@ import {
   Furnishing,
   GenderPreference,
   HouseType,
+  Language,
   LifestyleTag,
   LocationTag,
   RentalType,
@@ -19,12 +20,18 @@ import { z } from "zod";
 
 import { roomPhotos, rooms } from "../schema/rooms";
 
+const DUTCH_POSTAL_CODE_REGEX = /^\d{4}\s?[A-Za-z]{2}$/;
+
 const baseRoomSchema = createInsertSchema(rooms, {
   title: z.string().min(1).max(MAX_ROOM_TITLE_LENGTH),
   description: z.string().max(MAX_ROOM_DESCRIPTION_LENGTH).optional(),
   city: z.enum(City.values),
   neighborhood: z.string().max(100).optional(),
-  address: z.string().max(200).optional(),
+  streetName: z.string().max(100).optional(),
+  houseNumber: z.string().max(20).optional(),
+  postalCode: z.string().regex(DUTCH_POSTAL_CODE_REGEX, "Invalid postal code").optional(),
+  latitude: z.coerce.number().min(-90).max(90).optional(),
+  longitude: z.coerce.number().min(-180).max(180).optional(),
   rentPrice: z.coerce.number().min(0).max(99999),
   deposit: z.coerce.number().min(0).max(99999).optional(),
   utilitiesIncluded: z.boolean().optional(),
@@ -42,6 +49,7 @@ const baseRoomSchema = createInsertSchema(rooms, {
   preferredAgeMin: z.coerce.number().int().min(16).max(99).optional(),
   preferredAgeMax: z.coerce.number().int().min(16).max(99).optional(),
   preferredLifestyleTags: z.array(z.enum(LifestyleTag.values)).optional(),
+  acceptedLanguages: z.array(z.enum(Language.values)).optional(),
   roomVereniging: z.enum(Vereniging.values).optional(),
   shareLinkExpiresAt: z.string().optional(),
   shareLinkMaxUses: z.coerce.number().int().min(1).max(10000).optional(),
@@ -52,7 +60,11 @@ export const roomBasicInfoSchema = baseRoomSchema.pick({
   description: true,
   city: true,
   neighborhood: true,
-  address: true,
+  streetName: true,
+  houseNumber: true,
+  postalCode: true,
+  latitude: true,
+  longitude: true,
 });
 
 export const roomDetailsSchema = baseRoomSchema
@@ -84,6 +96,7 @@ export const roomPreferencesSchema = baseRoomSchema.pick({
   preferredAgeMin: true,
   preferredAgeMax: true,
   preferredLifestyleTags: true,
+  acceptedLanguages: true,
   roomVereniging: true,
 });
 
@@ -93,7 +106,11 @@ export const editRoomSchema = baseRoomSchema
     description: true,
     city: true,
     neighborhood: true,
-    address: true,
+    streetName: true,
+    houseNumber: true,
+    postalCode: true,
+    latitude: true,
+    longitude: true,
     rentPrice: true,
     deposit: true,
     utilitiesIncluded: true,
@@ -111,6 +128,7 @@ export const editRoomSchema = baseRoomSchema
     preferredAgeMin: true,
     preferredAgeMax: true,
     preferredLifestyleTags: true,
+    acceptedLanguages: true,
     roomVereniging: true,
   })
   .refine(

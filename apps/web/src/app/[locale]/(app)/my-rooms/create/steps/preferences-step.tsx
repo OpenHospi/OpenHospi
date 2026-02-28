@@ -5,6 +5,7 @@ import type { RoomPreferencesData } from "@openhospi/database/validators";
 import { roomPreferencesSchema } from "@openhospi/database/validators";
 import {
   GenderPreference,
+  Language,
   LifestyleTag,
   LocationTag,
   RoomFeature,
@@ -64,12 +65,13 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
       preferredAgeMin: defaultValues.preferredAgeMin ?? undefined,
       preferredAgeMax: defaultValues.preferredAgeMax ?? undefined,
       preferredLifestyleTags: (defaultValues.preferredLifestyleTags as LifestyleTag[]) ?? [],
+      acceptedLanguages: (defaultValues.acceptedLanguages as Language[]) ?? [],
       roomVereniging: defaultValues.roomVereniging ?? undefined,
     },
   });
 
   function toggleArrayField<T extends string>(
-    name: "features" | "locationTags" | "preferredLifestyleTags",
+    name: "features" | "locationTags" | "preferredLifestyleTags" | "acceptedLanguages",
     value: T,
   ) {
     const current = (form.getValues(name) as T[]) ?? [];
@@ -94,6 +96,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
   const selectedFeatures = form.watch("features") ?? [];
   const selectedLocationTags = form.watch("locationTags") ?? [];
   const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
+  const selectedLanguages = form.watch("acceptedLanguages") ?? [];
 
   return (
     <Form {...form}>
@@ -232,6 +235,28 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
                     >
                       {tEnums(`lifestyle_tag.${tag}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>{t("fields.acceptedLanguages")}</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {Language.values.map((lang) => {
+                  const isSelected = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleArrayField("acceptedLanguages", lang)}
+                    >
+                      {tEnums(`language_enum.${lang}`)}
                     </Badge>
                   );
                 })}

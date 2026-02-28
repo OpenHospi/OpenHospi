@@ -68,6 +68,8 @@ export type PublicRoom = {
     description: string | null;
     city: string;
     neighborhood: string | null;
+    latitude: number | null;
+    longitude: number | null;
     rentPrice: number;
     deposit: number | null;
     utilitiesIncluded: boolean | null;
@@ -288,6 +290,8 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
             description: rooms.description,
             city: rooms.city,
             neighborhood: rooms.neighborhood,
+            latitude: rooms.latitude,
+            longitude: rooms.longitude,
             rentPrice: rooms.rentPrice,
             deposit: rooms.deposit,
             utilitiesIncluded: rooms.utilitiesIncluded,

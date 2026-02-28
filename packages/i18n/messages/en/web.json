@@ -1141,7 +1141,6 @@
     "reports": {
       "title": "Reports",
       "description": "Review and moderate user reports.",
-      "filterAll": "All",
       "empty": "No reports found.",
       "colType": "Type",
       "colReporter": "Reporter",

@@ -58,6 +58,14 @@ export type RoomDetailForApply = {
     ownerId: string;
     createdAt: Date;
     photos: { id: string; slot: number; url: string; caption: string | null }[];
+    owner: {
+        firstName: string;
+        lastName: string;
+        avatarUrl: string | null;
+        studyProgram: string | null;
+        studyLevel: string | null;
+        institutionDomain: string;
+    } | null;
 };
 
 export async function getUserApplications(userId: string): Promise<UserApplication[]> {
@@ -203,6 +211,18 @@ export async function getRoomDetailForApply(
             .where(eq(roomPhotos.roomId, roomId))
             .orderBy(roomPhotos.slot);
 
+        const [ownerProfile] = await tx
+            .select({
+                firstName: profiles.firstName,
+                lastName: profiles.lastName,
+                avatarUrl: profiles.avatarUrl,
+                studyProgram: profiles.studyProgram,
+                studyLevel: profiles.studyLevel,
+                institutionDomain: profiles.institutionDomain,
+            })
+            .from(profiles)
+            .where(eq(profiles.id, room.ownerId));
+
         return {
             ...room,
             rentPrice: Number(room.rentPrice),
@@ -213,6 +233,7 @@ export async function getRoomDetailForApply(
             locationTags: room.locationTags ?? [],
             preferredLifestyleTags: room.preferredLifestyleTags ?? [],
             photos,
+            owner: ownerProfile ?? null,
         };
     });
 }

@@ -742,6 +742,10 @@
       "cancel": "Abbrechen",
       "submitApplication": "Bewerbung absenden",
       "applySuccess": "Bewerbung abgesendet!",
+      "postedBy": "Gepostet von",
+      "photoCount": "{count, plural, one {1 Foto} other {# Fotos}}",
+      "photoIndex": "Foto {index}",
+      "availability": "Verfügbarkeit",
       "errors": {
         "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",
         "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",

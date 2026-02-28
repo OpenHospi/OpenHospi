@@ -741,6 +741,10 @@
       "cancel": "Cancel",
       "submitApplication": "Submit application",
       "applySuccess": "Application submitted!",
+      "postedBy": "Posted by",
+      "photoCount": "{count, plural, one {1 photo} other {# photos}}",
+      "photoIndex": "Photo {index}",
+      "availability": "Availability",
       "errors": {
         "invalid_data": "Please check your message and try again.",
         "room_not_active": "This room is no longer accepting applications.",

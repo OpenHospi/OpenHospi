@@ -1,18 +1,21 @@
 import {GenderPreference} from "@openhospi/shared/enums";
-import {Home, MapPin, Ruler, Settings, Users} from "lucide-react";
+import {Camera, Check, Home, MapPin, Ruler, Settings, Users} from "lucide-react";
 import type {Metadata} from "next";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 
+import {InstitutionBadge} from "@/components/app/institution-badge";
 import {ReportDialog} from "@/components/app/report-dialog";
 import {StorageImage} from "@/components/storage-image";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Separator} from "@/components/ui/separator";
+import {UserAvatar} from "@/components/user-avatar";
 import {Link} from "@/i18n/navigation-app";
 import {getApplicationForRoom, getRoomDetailForApply} from "@/lib/applications";
 import {requireSession} from "@/lib/auth-server";
 import {APPLICATION_STATUS_COLORS} from "@/lib/status-colors";
+
 import {ApplyDialog} from "./apply-dialog";
 
 export async function generateMetadata({
@@ -75,6 +78,12 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                                 className="object-cover"
                                 priority
                             />
+                            {room.photos.length > 1 && (
+                                <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-md bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
+                                    <Camera className="size-3.5"/>
+                                    {t("photoCount", {count: room.photos.length})}
+                                </div>
+                            )}
                         </div>
                     )}
                     {otherPhotos.length > 0 && (
@@ -86,7 +95,7 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                                 >
                                     <StorageImage
                                         src={photo.url}
-                                        alt={photo.caption ?? room.title}
+                                        alt={`${room.title} — ${t("photoIndex", {index: photo.slot})}`}
                                         bucket="room-photos"
                                         fill
                                         className="object-cover"
@@ -168,7 +177,7 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                             {room.utilitiesIncluded && (
                                 <>
                                     <dt className="text-muted-foreground">{t("utilitiesIncluded")}</dt>
-                                    <dd/>
+                                    <dd><Check className="size-4 text-green-600"/></dd>
                                 </>
                             )}
                             {!room.utilitiesIncluded && room.serviceCosts != null && (
@@ -184,16 +193,15 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                             {!room.utilitiesIncluded && room.serviceCosts == null && (
                                 <>
                                     <dt className="text-muted-foreground">{t("utilitiesExcluded")}</dt>
-                                    <dd/>
+                                    <dd className="text-muted-foreground">—</dd>
                                 </>
                             )}
                             {room.availableFrom && (
                                 <>
-                                    <dt className="text-muted-foreground">
-                                        {t("availableFrom", {date: room.availableFrom})}
-                                    </dt>
+                                    <dt className="text-muted-foreground">{t("availability")}</dt>
                                     <dd>
-                                        {room.availableUntil && t("availableUntil", {date: room.availableUntil})}
+                                        {t("availableFrom", {date: room.availableFrom})}
+                                        {room.availableUntil && ` ${t("availableUntil", {date: room.availableUntil})}`}
                                     </dd>
                                 </>
                             )}
@@ -257,7 +265,33 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                 </div>
 
                 {/* Sidebar */}
-                <div className="lg:col-span-1">
+                <div className="space-y-4 lg:col-span-1">
+                    {room.owner && (
+                        <Card>
+                            <CardContent className="flex items-center gap-3 pt-6">
+                                <UserAvatar
+                                    avatarUrl={room.owner.avatarUrl}
+                                    userName={`${room.owner.firstName} ${room.owner.lastName}`}
+                                    size="lg"
+                                />
+                                <div className="min-w-0">
+                                    <p className="text-xs text-muted-foreground">{t("postedBy")}</p>
+                                    <p className="truncate font-medium">
+                                        {room.owner.firstName} {room.owner.lastName}
+                                    </p>
+                                    {room.owner.studyProgram && (
+                                        <p className="truncate text-xs text-muted-foreground">
+                                            {room.owner.studyProgram}
+                                            {room.owner.studyLevel && ` · ${tEnums("study_level." + room.owner.studyLevel)}`}
+                                        </p>
+                                    )}
+                                    <div className="mt-1">
+                                        <InstitutionBadge domain={room.owner.institutionDomain}/>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                     <Card className="sticky top-24">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">

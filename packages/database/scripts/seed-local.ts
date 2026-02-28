@@ -133,7 +133,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
         ],
       }),
       gender: f.valuesFromArray({
-        values: ["man", "vrouw", "zeg_ik_liever_niet"],
+        values: ["male", "female", "prefer_not_to_say"],
       }),
       lifestyleTags: f.default({ defaultValue: [] }),
       languages: f.default({ defaultValue: [] }),
@@ -221,13 +221,13 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       serviceCosts: f.number({ minValue: 30, maxValue: 100, precision: 100 }),
       roomSizeM2: f.int({ minValue: 10, maxValue: 30 }),
       rentalType: f.valuesFromArray({
-        values: ["vast", "tijdelijk", "onderhuur"],
+        values: ["permanent", "temporary", "sublet"],
       }),
       houseType: f.valuesFromArray({
-        values: ["studentenhuis", "appartement", "studio", "woongroep"],
+        values: ["student_house", "apartment", "studio", "living_group"],
       }),
       furnishing: f.valuesFromArray({
-        values: ["kaal", "gestoffeerd", "gemeubileerd"],
+        values: ["unfurnished", "semi_furnished", "furnished"],
       }),
       totalHousemates: f.int({ minValue: 2, maxValue: 8 }),
       status: f.valuesFromArray({
@@ -243,7 +243,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
         ],
       }),
       preferredGender: f.valuesFromArray({
-        values: ["geen_voorkeur", "man", "vrouw", "geen_voorkeur"],
+        values: ["no_preference", "male", "female", "no_preference"],
       }),
       features: f.default({ defaultValue: [] }),
       locationTags: f.default({ defaultValue: [] }),

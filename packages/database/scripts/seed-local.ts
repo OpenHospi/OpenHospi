@@ -522,6 +522,38 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "Centrum",
         ],
       }),
+      address: f.valuesFromArray({
+        values: [
+          // Groningen (7)
+          "Zonnelaan 12",
+          "Nieuwe Boteringestraat 45",
+          "Gelkingestraat 8a",
+          "Oosterstraat 62",
+          "Zernikelaan 3",
+          "Irisweg 21",
+          "Folkingestraat 17",
+          // Amsterdam (3)
+          "Van Baerlestraat 88",
+          "Ferdinand Bolstraat 34",
+          "Bloemgracht 52",
+          // Utrecht (3)
+          "Oudegracht 142",
+          "Heidelberglaan 5",
+          "Kanaalstraat 78",
+          // Rotterdam (2)
+          "Boompjes 29",
+          "Kralingse Plaslaan 16",
+          // Leiden (2)
+          "Rapenburg 33",
+          "Stationsweg 11",
+          // Eindhoven (1)
+          "Torenallee 24",
+          // Nijmegen (1)
+          "Heyendaalseweg 95",
+          // Delft (1)
+          "Mekelweg 7",
+        ],
+      }),
       rentPrice: f.valuesFromArray({
         values: [
           // Groningen (affordable)

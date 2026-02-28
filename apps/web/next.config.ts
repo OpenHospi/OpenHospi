@@ -17,8 +17,10 @@ const cspHeader = `
   .trim();
 
 const nextConfig: NextConfig = {
-  serverActions: {
-    bodySizeLimit: "12mb",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "12mb",
+    },
   },
   images: {
     dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",

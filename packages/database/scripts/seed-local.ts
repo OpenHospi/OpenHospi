@@ -352,6 +352,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           ["nl", "en"],
         ],
       }),
+      vereniging: f.default({ defaultValue: null }),
       preferredLocale: f.valuesFromArray({
         values: ["nl", "nl", "en", "nl", "nl", "nl", "nl", "nl", "en", "en", "nl", "nl", "en", "nl", "nl"],
       }),
@@ -662,6 +663,8 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "closed",
         ],
       }),
+      roomVereniging: f.default({ defaultValue: null }),
+      availableUntil: f.default({ defaultValue: null }),
       preferredGender: f.valuesFromArray({
         values: [
           "no_preference",

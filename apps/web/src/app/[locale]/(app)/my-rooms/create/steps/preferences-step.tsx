@@ -10,7 +10,7 @@ import {
     RoomFeature,
     Vereniging,
 } from "@openhospi/shared/enums";
-import {Check, ChevronsUpDown, Loader2} from "lucide-react";
+import {Loader2} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {useTransition} from "react";
 import {useForm} from "react-hook-form";
@@ -19,13 +19,13 @@ import {toast} from "sonner";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "@/components/ui/combobox";
 import {
     Form,
     FormControl,
@@ -36,7 +36,6 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {cn} from "@/lib/utils";
 
@@ -226,71 +225,34 @@ export function PreferencesStep({roomId, defaultValues, onBack, onNext}: Props) 
                     control={form.control}
                     name="roomVereniging"
                     render={({field}) => (
-                        <FormItem className="flex flex-col">
+                        <FormItem>
                             <FormLabel>
                                 {t("fields.roomVereniging")}{" "}
                                 <span className="text-muted-foreground font-normal">({t("optional")})</span>
                             </FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            className={cn(
-                                                "w-full justify-between",
-                                                !field.value && "text-muted-foreground",
-                                            )}
-                                        >
-                                            {field.value
-                                                ? tEnums(`vereniging.${field.value}`)
-                                                : t("placeholders.searchVereniging")}
-                                            <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50"/>
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                                    <Command>
-                                        <CommandInput placeholder={t("placeholders.searchVereniging")}/>
-                                        <CommandList>
-                                            <CommandEmpty>{t("noResults")}</CommandEmpty>
-                                            <CommandGroup>
-                                                <CommandItem
-                                                    value="__none__"
-                                                    onSelect={() => {
-                                                        form.setValue("roomVereniging", undefined, {shouldValidate: true});
-                                                    }}
-                                                >
-                                                    <Check
-                                                        className={cn(
-                                                            "mr-2 size-4",
-                                                            !field.value ? "opacity-100" : "opacity-0",
-                                                        )}
-                                                    />
-                                                    {t("noSelection")}
-                                                </CommandItem>
-                                                {Vereniging.values.map((v) => (
-                                                    <CommandItem
-                                                        key={v}
-                                                        value={tEnums(`vereniging.${v}`)}
-                                                        onSelect={() => {
-                                                            form.setValue("roomVereniging", v, {shouldValidate: true});
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 size-4",
-                                                                field.value === v ? "opacity-100" : "opacity-0",
-                                                            )}
-                                                        />
-                                                        {tEnums(`vereniging.${v}`)}
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
+                            <Combobox
+                                value={field.value ?? null}
+                                onValueChange={(val) =>
+                                    form.setValue("roomVereniging", val ?? undefined, {shouldValidate: true})
+                                }
+                                items={Vereniging.values}
+                                itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                            >
+                                <ComboboxInput
+                                    placeholder={t("placeholders.searchVereniging")}
+                                    showClear
+                                />
+                                <ComboboxContent>
+                                    <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                                    <ComboboxList>
+                                        {(v) => (
+                                            <ComboboxItem key={v} value={v}>
+                                                {tEnums(`vereniging.${v}`)}
+                                            </ComboboxItem>
+                                        )}
+                                    </ComboboxList>
+                                </ComboboxContent>
+                            </Combobox>
                             <FormMessage/>
                         </FormItem>
                     )}

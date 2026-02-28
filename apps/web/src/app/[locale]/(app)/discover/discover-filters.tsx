@@ -8,23 +8,25 @@ import {
   LocationTag,
   RoomFeature,
 } from "@openhospi/shared/enums";
-import { Check, ChevronsUpDown, SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  useComboboxAnchor,
+} from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -172,22 +174,24 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
         {/* City */}
         <div className="space-y-1.5">
           <Label>{t("city")}</Label>
-          <Select
-            value={filters.city ?? "all"}
-            onValueChange={(v) => updateFilter("city", v === "all" ? undefined : v)}
+          <Combobox
+            value={filters.city ?? null}
+            onValueChange={(v) => updateFilter("city", v ?? undefined)}
+            items={City.values}
+            itemToStringLabel={(city) => tEnums(`city.${city}`)}
           >
-            <SelectTrigger>
-              <SelectValue placeholder={t("cityPlaceholder")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("cityPlaceholder")}</SelectItem>
-              {City.values.map((city) => (
-                <SelectItem key={city} value={city}>
-                  {tEnums(`city.${city}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <ComboboxInput placeholder={t("cityPlaceholder")} showClear />
+            <ComboboxContent>
+              <ComboboxEmpty>{t("cityPlaceholder")}</ComboboxEmpty>
+              <ComboboxList>
+                {(city) => (
+                  <ComboboxItem key={city} value={city}>
+                    {tEnums(`city.${city}`)}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
         </div>
 
         {/* Min price */}
@@ -308,7 +312,6 @@ function MultiSelect({
   placeholder,
   renderLabel,
   onChange,
-  selectedCountLabel,
 }: {
   values: string[];
   options: string[];
@@ -317,50 +320,34 @@ function MultiSelect({
   onChange: (values: string[]) => void;
   selectedCountLabel: (count: number) => string;
 }) {
-  const [open, setOpen] = useState(false);
-
-  const toggle = (value: string) => {
-    if (values.includes(value)) {
-      onChange(values.filter((v) => v !== value));
-    } else {
-      onChange([...values, value]);
-    }
-  };
+  const anchor = useComboboxAnchor();
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" className="w-full justify-between font-normal">
-          {values.length > 0 ? (
-            <span className="flex items-center gap-1">
-              <Badge variant="secondary" className="text-xs">
-                {selectedCountLabel(values.length)}
-              </Badge>
-            </span>
-          ) : (
-            <span className="text-muted-foreground">{placeholder}</span>
+    <Combobox
+      multiple
+      value={values}
+      onValueChange={onChange}
+      items={options}
+      itemToStringLabel={renderLabel}
+    >
+      <ComboboxChips ref={anchor}>
+        {values.map((item) => (
+          <ComboboxChip key={item}>
+            {renderLabel(item)}
+          </ComboboxChip>
+        ))}
+        <ComboboxChipsInput placeholder={values.length === 0 ? placeholder : ""} />
+      </ComboboxChips>
+      <ComboboxContent anchor={anchor}>
+        <ComboboxEmpty>{placeholder}</ComboboxEmpty>
+        <ComboboxList>
+          {(option) => (
+            <ComboboxItem key={option} value={option}>
+              {renderLabel(option)}
+            </ComboboxItem>
           )}
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[250px] p-0" align="start">
-        <Command>
-          <CommandInput placeholder={placeholder} />
-          <CommandList>
-            <CommandEmpty>No results.</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem key={option} value={option} onSelect={() => toggle(option)}>
-                  <Check
-                    className={cn("size-4", values.includes(option) ? "opacity-100" : "opacity-0")}
-                  />
-                  {renderLabel(option)}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
   );
 }

@@ -1,26 +1,18 @@
 "use client";
 
 import {ReportStatus} from "@openhospi/shared/enums";
-import {Check, ChevronsUpDown} from "lucide-react";
 import {useTranslations} from "next-intl";
-import {useState, useTransition} from "react";
+import {useTransition} from "react";
 import {toast} from "sonner";
 
-import {Button} from "@/components/ui/button";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {cn} from "@/lib/utils";
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "@/components/ui/combobox";
 
 import {updateReportStatus} from "../../actions";
 
@@ -32,20 +24,15 @@ type Props = {
 export function ReportStatusSelector({reportId, currentStatus}: Props) {
     const t = useTranslations("admin.reports");
     const tEnums = useTranslations("enums");
-    const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    function handleStatusChange(newStatus: ReportStatus) {
-        if (newStatus === currentStatus) {
-            setOpen(false);
-            return;
-        }
+    function handleStatusChange(newStatus: string | null) {
+        if (!newStatus || newStatus === currentStatus) return;
 
         startTransition(async () => {
             try {
-                await updateReportStatus(reportId, newStatus);
+                await updateReportStatus(reportId, newStatus as ReportStatus);
                 toast.success(t("statusUpdated"));
-                setOpen(false);
             } catch {
                 toast.error(t("error"));
             }
@@ -53,47 +40,27 @@ export function ReportStatusSelector({reportId, currentStatus}: Props) {
     }
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-50 justify-between"
-                    disabled={isPending}
-                >
-                    {tEnums(`report_status.${currentStatus}`)}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-50 p-0">
-                <Command>
-                    <CommandInput placeholder={t("searchStatus")}/>
-                    <CommandList>
-                        <CommandEmpty>{t("noStatusFound")}</CommandEmpty>
-                        <CommandGroup>
-                            {ReportStatus.values.map((status) => (
-                                <CommandItem
-                                    key={status}
-                                    value={status}
-                                    onSelect={() => handleStatusChange(status)}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            currentStatus === status ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {tEnums(`report_status.${status}`)}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
+        <Combobox
+            value={currentStatus}
+            onValueChange={handleStatusChange}
+            items={ReportStatus.values}
+            itemToStringLabel={(s) => tEnums(`report_status.${s}`)}
+        >
+            <ComboboxInput
+                className="w-50"
+                placeholder={t("searchStatus")}
+                disabled={isPending}
+            />
+            <ComboboxContent>
+                <ComboboxEmpty>{t("noStatusFound")}</ComboboxEmpty>
+                <ComboboxList>
+                    {(status) => (
+                        <ComboboxItem key={status} value={status}>
+                            {tEnums(`report_status.${status}`)}
+                        </ComboboxItem>
+                    )}
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
     );
 }
-
-
-

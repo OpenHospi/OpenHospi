@@ -1,11 +1,5 @@
 {
   "buildCommand": "pnpm --filter @openhospi/web build",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/cron/event-reminders",
-      "schedule": "0 8 * * *"
-    }
-  ]
+  "framework": "nextjs"
 }

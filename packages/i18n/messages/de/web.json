@@ -465,6 +465,7 @@
       },
       "genderPreferNotToSayHint": "Du siehst dann nur Zimmer, die für alle offen sind. Zimmer, die gezielt einen Mann oder eine Frau suchen, werden dir nicht angezeigt.",
       "required": "Pflichtfeld",
+      "dragToReorder": "Ziehen zum Neuordnen",
       "optional": "optional",
       "next": "Weiter",
       "back": "Zurück",

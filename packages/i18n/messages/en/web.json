@@ -464,6 +464,7 @@
       },
       "genderPreferNotToSayHint": "You will only see rooms that are open to everyone. Rooms looking specifically for a man or a woman won't appear in your results.",
       "required": "Required",
+      "dragToReorder": "Drag to reorder",
       "optional": "optional",
       "next": "Next",
       "back": "Back",

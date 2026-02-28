@@ -464,6 +464,7 @@
       },
       "genderPreferNotToSayHint": "Je ziet dan alleen kamers die openstaan voor iedereen. Kamers die specifiek een man of vrouw zoeken verschijnen niet in je resultaten.",
       "required": "Verplicht",
+      "dragToReorder": "Sleep om te herordenen",
       "optional": "optioneel",
       "next": "Volgende",
       "back": "Vorige",

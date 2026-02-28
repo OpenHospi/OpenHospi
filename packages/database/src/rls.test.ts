@@ -33,7 +33,7 @@ type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 async function withAnonymous<T>(fn: (tx: Transaction) => Promise<T>): Promise<T> {
   return db.transaction(async (tx) => {
     try {
-      await tx.execute(sql`set local role anonymous`);
+      await tx.execute(sql`set local role anon`);
       return await fn(tx);
     } finally {
       await tx.execute(sql`reset role`);
@@ -414,8 +414,8 @@ describe("RLS policies (integration)", () => {
       expect(rows).toHaveLength(1);
     });
 
-    it("other user cannot see votes", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+    it("outsider cannot see votes", async () => {
+      const rows = await withRLS(USER_C, (tx) =>
         tx.select().from(votes).where(eq(votes.id, VOTE_ID)),
       );
       expect(rows).toHaveLength(0);

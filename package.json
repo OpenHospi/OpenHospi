@@ -13,6 +13,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e:db": "vitest run packages/database/src/e2e.test.ts",
     "db:push": "pnpm --filter @openhospi/database db:push",
     "db:push:local": "pnpm --filter @openhospi/database db:push:local",
     "db:studio": "pnpm --filter @openhospi/database db:studio",

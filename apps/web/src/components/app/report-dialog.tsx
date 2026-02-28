@@ -1,7 +1,6 @@
 "use client";
 
-import { REPORT_REASONS } from "@openhospi/shared/enums";
-import type { ReportReason } from "@openhospi/shared/enums";
+import { ReportReason } from "@openhospi/shared/enums";
 import { Flag } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
@@ -114,7 +113,7 @@ export function ReportDialog({
                 <SelectValue placeholder={t("reasonPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                {REPORT_REASONS.map((r) => (
+                {ReportReason.values.map((r) => (
                   <SelectItem key={r} value={r}>
                     {tEnums(`report_reason.${r}`)}
                   </SelectItem>

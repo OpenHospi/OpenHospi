@@ -4,15 +4,15 @@ import {
   MAX_ROOM_TITLE_LENGTH,
 } from "@openhospi/shared/constants";
 import {
-  CITIES,
-  FURNISHINGS,
-  GENDER_PREFERENCES,
-  HOUSE_TYPES,
-  LIFESTYLE_TAGS,
-  LOCATION_TAGS,
-  RENTAL_TYPES,
-  ROOM_FEATURES,
-  VERENIGINGEN,
+  City,
+  Furnishing,
+  GenderPreference,
+  HouseType,
+  LifestyleTag,
+  LocationTag,
+  RentalType,
+  RoomFeature,
+  Vereniging,
 } from "@openhospi/shared/enums";
 import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
@@ -22,7 +22,7 @@ import { roomPhotos, rooms } from "../schema/rooms";
 const baseRoomSchema = createInsertSchema(rooms, {
   title: z.string().min(1).max(MAX_ROOM_TITLE_LENGTH),
   description: z.string().max(MAX_ROOM_DESCRIPTION_LENGTH).optional(),
-  city: z.enum(CITIES),
+  city: z.enum(City.values),
   neighborhood: z.string().max(100).optional(),
   address: z.string().max(200).optional(),
   rentPrice: z.coerce.number().min(0).max(99999),
@@ -32,17 +32,17 @@ const baseRoomSchema = createInsertSchema(rooms, {
   roomSizeM2: z.coerce.number().int().min(1).max(999).optional(),
   availableFrom: z.string().min(1),
   availableUntil: z.string().optional(),
-  rentalType: z.enum(RENTAL_TYPES),
-  houseType: z.enum(HOUSE_TYPES).optional(),
-  furnishing: z.enum(FURNISHINGS).optional(),
+  rentalType: z.enum(RentalType.values),
+  houseType: z.enum(HouseType.values).optional(),
+  furnishing: z.enum(Furnishing.values).optional(),
   totalHousemates: z.coerce.number().int().min(1).max(50).optional(),
-  features: z.array(z.enum(ROOM_FEATURES)).optional(),
-  locationTags: z.array(z.enum(LOCATION_TAGS)).optional(),
-  preferredGender: z.enum(GENDER_PREFERENCES).optional(),
+  features: z.array(z.enum(RoomFeature.values)).optional(),
+  locationTags: z.array(z.enum(LocationTag.values)).optional(),
+  preferredGender: z.enum(GenderPreference.values).optional(),
   preferredAgeMin: z.coerce.number().int().min(16).max(99).optional(),
   preferredAgeMax: z.coerce.number().int().min(16).max(99).optional(),
-  preferredLifestyleTags: z.array(z.enum(LIFESTYLE_TAGS)).optional(),
-  roomVereniging: z.enum(VERENIGINGEN).optional(),
+  preferredLifestyleTags: z.array(z.enum(LifestyleTag.values)).optional(),
+  roomVereniging: z.enum(Vereniging.values).optional(),
   shareLinkExpiresAt: z.string().optional(),
   shareLinkMaxUses: z.coerce.number().int().min(1).max(10000).optional(),
 });
@@ -71,10 +71,10 @@ export const roomDetailsSchema = baseRoomSchema
   })
   .refine(
     (data) => {
-      if (data.rentalType === "vast") return true;
+      if (data.rentalType === RentalType.permanent) return true;
       return !!data.availableUntil;
     },
-    { message: "availableUntil is required for onderhuur/tijdelijk", path: ["availableUntil"] },
+    { message: "availableUntil is required for sublet/temporary", path: ["availableUntil"] },
   );
 
 export const roomPreferencesSchema = baseRoomSchema.pick({
@@ -115,10 +115,10 @@ export const editRoomSchema = baseRoomSchema
   })
   .refine(
     (data) => {
-      if (data.rentalType === "vast") return true;
+      if (data.rentalType === RentalType.permanent) return true;
       return !!data.availableUntil;
     },
-    { message: "availableUntil is required for onderhuur/tijdelijk", path: ["availableUntil"] },
+    { message: "availableUntil is required for sublet/temporary", path: ["availableUntil"] },
   );
 
 export const shareLinkSettingsSchema = baseRoomSchema.pick({

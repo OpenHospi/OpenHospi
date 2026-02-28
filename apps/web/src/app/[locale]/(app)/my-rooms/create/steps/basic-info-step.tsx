@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomBasicInfoData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema } from "@openhospi/database/validators";
-import { CITIES } from "@openhospi/shared/enums";
+import { City } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -113,7 +113,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {CITIES.map((city) => (
+                  {City.values.map((city) => (
                     <SelectItem key={city} value={city}>
                       {tEnums(`city.${city}`)}
                     </SelectItem>

@@ -1,7 +1,6 @@
 import {withRLS} from "@openhospi/database";
 import {applications, profiles, roomPhotos, rooms} from "@openhospi/database/schema";
-import {RoomStatus} from "@openhospi/shared/enums";
-import type {ApplicationStatus} from "@openhospi/shared/enums";
+import {RoomStatus, ApplicationStatus} from "@openhospi/shared/enums";
 import {and, desc, eq, isNull, or} from "drizzle-orm";
 
 import {notBlockedBy} from "@/lib/block-filter";

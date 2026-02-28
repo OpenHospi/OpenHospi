@@ -5,7 +5,7 @@ import {
   MAX_EVENT_NOTES_LENGTH,
   MAX_EVENT_TITLE_LENGTH,
 } from "@openhospi/shared/constants";
-import { INVITATION_STATUSES } from "@openhospi/shared/enums";
+import { InvitationStatus } from "@openhospi/shared/enums";
 import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
 
@@ -36,7 +36,7 @@ export type CreateEventData = z.infer<typeof createEventSchema>;
 
 export const rsvpSchema = z
   .object({
-    status: z.enum(INVITATION_STATUSES),
+    status: z.enum(InvitationStatus.values),
     declineReason: z.string().max(MAX_DECLINE_REASON_LENGTH).optional(),
   })
   .refine(

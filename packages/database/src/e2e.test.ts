@@ -3,9 +3,9 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
   AdminAction,
-  APPLICATION_STATUSES,
   ApplicationStatus,
-  INVITATION_STATUSES,
+  ApplicationStatus,
+  InvitationStatus,
   InvitationStatus,
   isTerminalApplicationStatus,
   isValidApplicationTransition,
@@ -14,7 +14,7 @@ import {
   ReportReason,
   ReportStatus,
   ReviewDecision,
-  ROOM_STATUSES,
+  RoomStatus,
   RoomStatus,
   VALID_APPLICATION_TRANSITIONS,
   VALID_INVITATION_TRANSITIONS,
@@ -983,8 +983,8 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("exhaustive room transitions: all valid pairs true, all invalid false", async () => {
-      for (const from of ROOM_STATUSES) {
-        for (const to of ROOM_STATUSES) {
+      for (const from of RoomStatus.values) {
+        for (const to of RoomStatus.values) {
           const expected = VALID_ROOM_TRANSITIONS[from].includes(to);
           expect(isValidRoomTransition(from, to)).toBe(expected);
         }
@@ -992,8 +992,8 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("exhaustive application transitions: all valid pairs true, all invalid false", async () => {
-      for (const from of APPLICATION_STATUSES) {
-        for (const to of APPLICATION_STATUSES) {
+      for (const from of ApplicationStatus.values) {
+        for (const to of ApplicationStatus.values) {
           const expected = VALID_APPLICATION_TRANSITIONS[from].includes(to);
           expect(isValidApplicationTransition(from, to)).toBe(expected);
         }
@@ -1001,8 +1001,8 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("exhaustive invitation transitions: all valid pairs true, all invalid false", async () => {
-      for (const from of INVITATION_STATUSES) {
-        for (const to of INVITATION_STATUSES) {
+      for (const from of InvitationStatus.values) {
+        for (const to of InvitationStatus.values) {
           const expected = VALID_INVITATION_TRANSITIONS[from].includes(to);
           expect(isValidInvitationTransition(from, to)).toBe(expected);
         }

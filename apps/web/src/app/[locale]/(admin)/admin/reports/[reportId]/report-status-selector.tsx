@@ -1,7 +1,6 @@
 "use client";
 
-import {REPORT_STATUSES} from "@openhospi/shared/enums";
-import type {ReportStatus} from "@openhospi/shared/enums";
+import {ReportStatus} from "@openhospi/shared/enums";
 import {Check, ChevronsUpDown} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {useState, useTransition} from "react";
@@ -73,7 +72,7 @@ export function ReportStatusSelector({reportId, currentStatus}: Props) {
                     <CommandList>
                         <CommandEmpty>{t("noStatusFound")}</CommandEmpty>
                         <CommandGroup>
-                            {REPORT_STATUSES.map((status) => (
+                            {ReportStatus.values.map((status) => (
                                 <CommandItem
                                     key={status}
                                     value={status}

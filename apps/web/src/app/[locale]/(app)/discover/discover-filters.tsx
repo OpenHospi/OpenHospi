@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  CITIES,
+  City,
   DiscoverSort,
-  FURNISHINGS,
-  HOUSE_TYPES,
-  LOCATION_TAGS,
-  ROOM_FEATURES,
+  Furnishing,
+  HouseType,
+  LocationTag,
+  RoomFeature,
 } from "@openhospi/shared/enums";
 import { Check, ChevronsUpDown, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -181,7 +181,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("cityPlaceholder")}</SelectItem>
-              {CITIES.map((city) => (
+              {City.values.map((city) => (
                 <SelectItem key={city} value={city}>
                   {tEnums(`city.${city}`)}
                 </SelectItem>
@@ -232,7 +232,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("houseTypePlaceholder")}</SelectItem>
-              {HOUSE_TYPES.map((ht) => (
+              {HouseType.values.map((ht) => (
                 <SelectItem key={ht} value={ht}>
                   {tEnums(`house_type.${ht}`)}
                 </SelectItem>
@@ -253,7 +253,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("furnishingPlaceholder")}</SelectItem>
-              {FURNISHINGS.map((f) => (
+              {Furnishing.values.map((f) => (
                 <SelectItem key={f} value={f}>
                   {tEnums(`furnishing.${f}`)}
                 </SelectItem>
@@ -277,7 +277,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
           <Label>{t("features")}</Label>
           <MultiSelect
             values={filters.features ?? []}
-            options={ROOM_FEATURES as unknown as string[]}
+            options={RoomFeature.values as unknown as string[]}
             placeholder={t("featuresPlaceholder")}
             renderLabel={(v) => tEnums(`room_feature.${v}`)}
             onChange={(v) => updateFilter("features", v.length > 0 ? v : undefined)}
@@ -290,7 +290,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
           <Label>{t("locationTags")}</Label>
           <MultiSelect
             values={filters.locationTags ?? []}
-            options={LOCATION_TAGS as unknown as string[]}
+            options={LocationTag.values as unknown as string[]}
             placeholder={t("locationTagsPlaceholder")}
             renderLabel={(v) => tEnums(`location_tag.${v}`)}
             onChange={(v) => updateFilter("locationTags", v.length > 0 ? v : undefined)}

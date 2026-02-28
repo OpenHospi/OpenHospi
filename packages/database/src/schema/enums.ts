@@ -1,57 +1,59 @@
-import {pgEnum} from "drizzle-orm/pg-core";
+import { pgEnum } from "drizzle-orm/pg-core";
 
-import {SUPPORTED_LOCALES} from "@openhospi/shared/constants";
+import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
 import {
-    ADMIN_ACTIONS,
-    AFFILIATIONS,
-    APPLICATION_STATUSES,
-    CITIES,
-    CONVERSATION_TYPES,
-    DELIVERY_STATUSES,
-    FURNISHINGS,
-    GENDER_PREFERENCES,
-    GENDERS,
-    HOUSE_MEMBER_ROLES,
-    HOUSE_TYPES,
-    INVITATION_STATUSES,
-    LANGUAGES,
-    LIFESTYLE_TAGS,
-    LOCATION_TAGS,
-    MESSAGE_TYPES,
-    RENTAL_TYPES,
-    REPORT_REASONS,
-    REPORT_STATUSES,
-    REPORT_TYPES,
-    REVIEW_DECISIONS,
-    ROOM_FEATURES,
-    ROOM_STATUSES,
-    STUDY_LEVELS,
-    VERENIGINGEN,
+  AdminAction,
+  Affiliation,
+  ApplicationStatus,
+  City,
+  ConversationType,
+  DeliveryStatus,
+  DiscoverSort,
+  Furnishing,
+  Gender,
+  GenderPreference,
+  HouseMemberRole,
+  HouseType,
+  InvitationStatus,
+  Language,
+  LifestyleTag,
+  LocationTag,
+  MessageType,
+  RentalType,
+  ReportReason,
+  ReportStatus,
+  ReportType,
+  ReviewDecision,
+  RoomFeature,
+  RoomStatus,
+  StudyLevel,
+  Vereniging,
 } from "@openhospi/shared/enums";
 
-export const genderEnum = pgEnum("gender_enum", GENDERS);
-export const genderPreferenceEnum = pgEnum("gender_preference_enum", GENDER_PREFERENCES);
-export const languageEnum = pgEnum("language_enum", LANGUAGES);
-export const affiliationEnum = pgEnum("affiliation_enum", AFFILIATIONS);
-export const studyLevelEnum = pgEnum("study_level_enum", STUDY_LEVELS);
-export const lifestyleTagEnum = pgEnum("lifestyle_tag_enum", LIFESTYLE_TAGS);
-export const houseTypeEnum = pgEnum("house_type_enum", HOUSE_TYPES);
-export const roomStatusEnum = pgEnum("room_status_enum", ROOM_STATUSES);
-export const furnishingEnum = pgEnum("furnishing_enum", FURNISHINGS);
-export const roomFeatureEnum = pgEnum("room_feature_enum", ROOM_FEATURES);
-export const rentalTypeEnum = pgEnum("rental_type_enum", RENTAL_TYPES);
-export const locationTagEnum = pgEnum("location_tag_enum", LOCATION_TAGS);
-export const cityEnum = pgEnum("city_enum", CITIES);
-export const applicationStatusEnum = pgEnum("application_status_enum", APPLICATION_STATUSES);
-export const reviewDecisionEnum = pgEnum("review_decision_enum", REVIEW_DECISIONS);
-export const invitationStatusEnum = pgEnum("invitation_status_enum", INVITATION_STATUSES);
-export const houseMemberRoleEnum = pgEnum("house_member_role_enum", HOUSE_MEMBER_ROLES);
-export const conversationTypeEnum = pgEnum("conversation_type_enum", CONVERSATION_TYPES);
-export const messageTypeEnum = pgEnum("message_type_enum", MESSAGE_TYPES);
-export const deliveryStatusEnum = pgEnum("delivery_status_enum", DELIVERY_STATUSES);
-export const adminActionEnum = pgEnum("admin_action_enum", ADMIN_ACTIONS);
-export const reportReasonEnum = pgEnum("report_reason_enum", REPORT_REASONS);
-export const reportStatusEnum = pgEnum("report_status_enum", REPORT_STATUSES);
-export const reportTypeEnum = pgEnum("report_type_enum", REPORT_TYPES);
-export const verenigingEnum = pgEnum("vereniging_enum", VERENIGINGEN);
+export const genderEnum = pgEnum("gender_enum", Gender.values);
+export const genderPreferenceEnum = pgEnum("gender_preference_enum", GenderPreference.values);
+export const languageEnum = pgEnum("language_enum", Language.values);
+export const affiliationEnum = pgEnum("affiliation_enum", Affiliation.values);
+export const studyLevelEnum = pgEnum("study_level_enum", StudyLevel.values);
+export const lifestyleTagEnum = pgEnum("lifestyle_tag_enum", LifestyleTag.values);
+export const houseTypeEnum = pgEnum("house_type_enum", HouseType.values);
+export const roomStatusEnum = pgEnum("room_status_enum", RoomStatus.values);
+export const furnishingEnum = pgEnum("furnishing_enum", Furnishing.values);
+export const roomFeatureEnum = pgEnum("room_feature_enum", RoomFeature.values);
+export const rentalTypeEnum = pgEnum("rental_type_enum", RentalType.values);
+export const locationTagEnum = pgEnum("location_tag_enum", LocationTag.values);
+export const cityEnum = pgEnum("city_enum", City.values);
+export const applicationStatusEnum = pgEnum("application_status_enum", ApplicationStatus.values);
+export const reviewDecisionEnum = pgEnum("review_decision_enum", ReviewDecision.values);
+export const invitationStatusEnum = pgEnum("invitation_status_enum", InvitationStatus.values);
+export const houseMemberRoleEnum = pgEnum("house_member_role_enum", HouseMemberRole.values);
+export const conversationTypeEnum = pgEnum("conversation_type_enum", ConversationType.values);
+export const messageTypeEnum = pgEnum("message_type_enum", MessageType.values);
+export const deliveryStatusEnum = pgEnum("delivery_status_enum", DeliveryStatus.values);
+export const adminActionEnum = pgEnum("admin_action_enum", AdminAction.values);
+export const reportReasonEnum = pgEnum("report_reason_enum", ReportReason.values);
+export const reportStatusEnum = pgEnum("report_status_enum", ReportStatus.values);
+export const reportTypeEnum = pgEnum("report_type_enum", ReportType.values);
+export const discoverSortEnum = pgEnum("discover_sort_enum", DiscoverSort.values);
+export const verenigingEnum = pgEnum("vereniging_enum", Vereniging.values);
 export const localeEnum = pgEnum("locale_enum", SUPPORTED_LOCALES);

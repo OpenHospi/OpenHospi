@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomDetailsData } from "@openhospi/database/validators";
 import { roomDetailsSchema } from "@openhospi/database/validators";
-import { FURNISHINGS, HOUSE_TYPES, RENTAL_TYPES, RentalType } from "@openhospi/shared/enums";
+import { Furnishing, HouseType, RentalType } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -56,7 +56,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
       roomSizeM2: defaultValues.roomSizeM2 ?? undefined,
       availableFrom: defaultValues.availableFrom ?? "",
       availableUntil: defaultValues.availableUntil ?? "",
-      rentalType: defaultValues.rentalType ?? RentalType.vast,
+      rentalType: defaultValues.rentalType ?? RentalType.permanent,
       houseType: defaultValues.houseType,
       furnishing: defaultValues.furnishing,
       totalHousemates: defaultValues.totalHousemates ?? undefined,
@@ -189,7 +189,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                   defaultValue={field.value}
                   className="flex flex-wrap gap-3"
                 >
-                  {RENTAL_TYPES.map((type) => (
+                  {RentalType.values.map((type) => (
                     <Label
                       key={type}
                       className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
@@ -220,7 +220,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
             )}
           />
 
-          {rentalType !== RentalType.vast && (
+          {rentalType !== RentalType.permanent && (
             <FormField
               control={form.control}
               name="availableUntil"
@@ -250,7 +250,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {HOUSE_TYPES.map((type) => (
+                  {HouseType.values.map((type) => (
                     <SelectItem key={type} value={type}>
                       {tEnums(`house_type.${type}`)}
                     </SelectItem>
@@ -275,7 +275,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {FURNISHINGS.map((f) => (
+                  {Furnishing.values.map((f) => (
                     <SelectItem key={f} value={f}>
                       {tEnums(`furnishing.${f}`)}
                     </SelectItem>

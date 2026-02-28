@@ -2,8 +2,7 @@ import {db, withRLS} from "@openhospi/database";
 import {profiles, roomPhotos, rooms} from "@openhospi/database/schema";
 import type {RoomPhoto} from "@openhospi/database/types";
 import {ROOMS_PER_PAGE} from "@openhospi/shared/constants";
-import type {LocationTag, RoomFeature} from "@openhospi/shared/enums";
-import {DiscoverSort, GenderPreference, RoomStatus} from "@openhospi/shared/enums";
+import {DiscoverSort, GenderPreference, RoomStatus, LocationTag, RoomFeature} from "@openhospi/shared/enums";
 import {
     and,
     arrayContains,
@@ -142,12 +141,12 @@ function buildDiscoverConditions(
     if (userGender) {
         conditions.push(
             or(
-                eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any),
+                eq(rooms.preferredGender, GenderPreference.no_preference as any),
                 eq(rooms.preferredGender, userGender as any),
             )!,
         );
     } else {
-        conditions.push(eq(rooms.preferredGender, GenderPreference.geen_voorkeur as any));
+        conditions.push(eq(rooms.preferredGender, GenderPreference.no_preference as any));
     }
 
     if (filters.city) conditions.push(eq(rooms.city, filters.city as any));

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { PreferencesStepData } from "@openhospi/database/validators";
 import { preferencesStepSchema } from "@openhospi/database/validators";
-import { CITIES, VERENIGINGEN } from "@openhospi/shared/enums";
+import { City, Vereniging } from "@openhospi/shared/enums";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -92,7 +92,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {CITIES.map((city) => (
+                  {City.values.map((city) => (
                     <SelectItem key={city} value={city}>
                       {tEnums(`city.${city}`)}
                     </SelectItem>
@@ -189,7 +189,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                           />
                           {t("noSelection")}
                         </CommandItem>
-                        {VERENIGINGEN.map((v) => (
+                        {Vereniging.values.map((v) => (
                           <CommandItem
                             key={v}
                             value={tEnums(`vereniging.${v}`)}

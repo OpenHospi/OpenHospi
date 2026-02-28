@@ -4,7 +4,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import type {ReviewData} from "@openhospi/database/validators";
 import {reviewSchema} from "@openhospi/database/validators";
 import {MAX_NOTES_LENGTH} from "@openhospi/shared/constants";
-import {REVIEW_DECISIONS} from "@openhospi/shared/enums";
+import {ReviewDecision} from "@openhospi/shared/enums";
 import {Loader2, UserCircle} from "lucide-react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
@@ -195,7 +195,7 @@ export function ApplicantProfileSheet({
                                                     value={field.value}
                                                     className="flex gap-3"
                                                 >
-                                                    {REVIEW_DECISIONS.map((d) => (
+                                                    {ReviewDecision.values.map((d) => (
                                                         <Label
                                                             key={d}
                                                             className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"

@@ -1,5 +1,5 @@
 import { APP_NAME } from "@openhospi/shared/constants";
-import { CITIES, GenderPreference } from "@openhospi/shared/enums";
+import { City, GenderPreference } from "@openhospi/shared/enums";
 import { ArrowLeft, CalendarDays, Home, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -18,7 +18,7 @@ import { getLoginUrl } from "@/lib/urls";
 export const dynamic = "force-dynamic";
 
 function isCity(slug: string): boolean {
-  return CITIES.includes(slug as (typeof CITIES)[number]);
+  return City.values.includes(slug as (typeof City.values)[number]);
 }
 
 export async function generateMetadata({
@@ -342,12 +342,12 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Preferences */}
-            {(room.preferredGender !== GenderPreference.geen_voorkeur ||
+            {(room.preferredGender !== GenderPreference.no_preference ||
               room.preferredLifestyleTags.length > 0) && (
               <div>
                 <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                 <div className="mt-2 space-y-2">
-                  {room.preferredGender !== GenderPreference.geen_voorkeur && (
+                  {room.preferredGender !== GenderPreference.no_preference && (
                     <p className="text-sm text-muted-foreground">
                       {tEnums(`gender_preference.${room.preferredGender}`)}
                       {room.preferredAgeMin != null &&

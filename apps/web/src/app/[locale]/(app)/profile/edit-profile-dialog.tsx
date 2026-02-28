@@ -9,15 +9,13 @@ import {
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
 import {
-  CITIES,
+  City,
   Gender,
-  GENDERS,
   getStudyLevelsForInstitutionType,
-  LIFESTYLE_TAGS,
-  STUDY_LEVELS,
-  VERENIGINGEN,
+  type LifestyleTag,
+  StudyLevel,
+  Vereniging,
 } from "@openhospi/shared/enums";
-import type { LifestyleTag } from "@openhospi/shared/enums";
 import { getInstitution } from "@openhospi/surfconext";
 import { Check, ChevronsUpDown, Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -154,7 +152,7 @@ export function EditProfileDialog({ profile }: Props) {
                       defaultValue={field.value}
                       className="flex flex-wrap gap-3"
                     >
-                      {GENDERS.map((g) => (
+                      {Gender.values.map((g) => (
                         <Label
                           key={g}
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
@@ -165,7 +163,7 @@ export function EditProfileDialog({ profile }: Props) {
                       ))}
                     </RadioGroup>
                   </FormControl>
-                  {field.value === Gender.zeg_ik_liever_niet && (
+                  {field.value === Gender.prefer_not_to_say && (
                     <p className="text-xs text-muted-foreground">
                       {tOnboarding("genderPreferNotToSayHint")}
                     </p>
@@ -220,7 +218,7 @@ export function EditProfileDialog({ profile }: Props) {
                         ? getStudyLevelsForInstitutionType(
                             getInstitution(profile.institutionDomain).type,
                           )
-                        : STUDY_LEVELS
+                        : StudyLevel.values
                       ).map((level) => (
                         <SelectItem key={level} value={level}>
                           {tEnums(`study_level.${level}`)}
@@ -261,7 +259,7 @@ export function EditProfileDialog({ profile }: Props) {
                 })}
               </p>
               <div className="flex flex-wrap gap-2">
-                {LIFESTYLE_TAGS.map((tag) => {
+                {LifestyleTag.values.map((tag) => {
                   const isSelected = selectedTags.includes(tag);
                   return (
                     <Badge
@@ -293,7 +291,7 @@ export function EditProfileDialog({ profile }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {CITIES.map((city) => (
+                      {City.values.map((city) => (
                         <SelectItem key={city} value={city}>
                           {tEnums(`city.${city}`)}
                         </SelectItem>
@@ -377,7 +375,7 @@ export function EditProfileDialog({ profile }: Props) {
                               />
                               {tOnboarding("noSelection")}
                             </CommandItem>
-                            {VERENIGINGEN.map((v) => (
+                            {Vereniging.values.map((v) => (
                               <CommandItem
                                 key={v}
                                 value={tEnums(`vereniging.${v}`)}

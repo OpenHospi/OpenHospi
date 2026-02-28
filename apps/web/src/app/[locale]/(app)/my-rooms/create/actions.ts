@@ -93,7 +93,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
         serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
-        availableUntil: d.rentalType === RentalType.vast ? null : d.availableUntil || null,
+        availableUntil: d.rentalType === RentalType.permanent ? null : d.availableUntil || null,
         rentalType: d.rentalType,
         houseType: d.houseType || null,
         furnishing: d.furnishing || null,
@@ -119,7 +119,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
       .set({
         features: d.features ?? [],
         locationTags: d.locationTags ?? [],
-        preferredGender: d.preferredGender || GenderPreference.geen_voorkeur,
+        preferredGender: d.preferredGender || GenderPreference.no_preference,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
         preferredLifestyleTags: d.preferredLifestyleTags ?? [],

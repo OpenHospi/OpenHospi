@@ -11,11 +11,11 @@ import {
     session,
     user,
 } from "@openhospi/database/schema";
-import {AdminAction, ReportStatus, RoomStatus} from "@openhospi/shared/enums";
-import type {
-    AdminAction as AdminActionType,
-    ReportStatus as ReportStatusType,
-    ReportType as ReportTypeType
+import {
+    AdminAction,
+    ReportStatus,
+    ReportType,
+    RoomStatus,
 } from "@openhospi/shared/enums";
 import {and, count, desc, eq, gte} from "drizzle-orm";
 import {revalidatePath} from "next/cache";
@@ -30,7 +30,7 @@ export type AggregateStats = {
     newSignupsWeek: number;
     activeListings: number;
     pendingReports: number;
-    pendingReportsByType: Record<ReportTypeType, number>;
+    pendingReportsByType: Record<ReportType, number>;
     listingsByCity: { city: string; count: number }[];
 };
 
@@ -85,14 +85,14 @@ export async function getAggregateStats(): Promise<AggregateStats> {
             .orderBy(desc(count())),
     ]);
 
-    const pendingReportsByType: Record<ReportTypeType, number> = {
+    const pendingReportsByType: Record<ReportType, number> = {
         message: 0,
         user: 0,
         room: 0,
     };
 
     pendingByTypeRows.forEach((row) => {
-        pendingReportsByType[row.type as ReportTypeType] = row.count;
+        pendingReportsByType[row.type as ReportType] = row.count;
     });
 
     return {
@@ -109,7 +109,7 @@ export async function getAggregateStats(): Promise<AggregateStats> {
 
 export type ReportListItem = {
     id: string;
-    reportType: ReportTypeType;
+    reportType: ReportType;
     reporterId: string;
     reporterName: string;
     reportedUserId: string | null;
@@ -123,8 +123,8 @@ export type ReportListItem = {
 };
 
 export async function getReports(
-    status?: ReportStatusType,
-    type?: ReportTypeType,
+    status?: ReportStatus,
+    type?: ReportType,
 ): Promise<ReportListItem[]> {
     await requireAdmin();
 
@@ -319,7 +319,7 @@ export async function getUserDetail(userId: string): Promise<UserDetail | null> 
 
 export async function resolveReport(
     reportId: string,
-    action: AdminActionType,
+    action: AdminAction,
     reason: string,
 ) {
     const adminSession = await requireAdmin();
@@ -348,14 +348,14 @@ export async function resolveReport(
 
 export async function updateReportStatus(
     reportId: string,
-    newStatus: ReportStatusType,
+    newStatus: ReportStatus,
     notes?: string,
 ) {
     const adminSession = await requireAdmin();
     const adminUserId = adminSession.user.id;
 
     const updateData: {
-        status: ReportStatusType;
+        status: ReportStatus;
         resolvedAt?: Date;
         resolvedBy?: string;
     } = {status: newStatus};

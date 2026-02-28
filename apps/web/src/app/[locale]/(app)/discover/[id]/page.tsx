@@ -231,12 +231,12 @@ export default async function DiscoverRoomDetailPage({params}: Props) {
                     )}
 
                     {/* Preferences */}
-                    {(room.preferredGender !== GenderPreference.geen_voorkeur ||
+                    {(room.preferredGender !== GenderPreference.no_preference ||
                         room.preferredLifestyleTags.length > 0) && (
                         <div>
                             <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                             <div className="mt-2 space-y-2">
-                                {room.preferredGender !== GenderPreference.geen_voorkeur && (
+                                {room.preferredGender !== GenderPreference.no_preference && (
                                     <p className="text-sm text-muted-foreground">
                                         {tEnums(`gender_preference.${room.preferredGender}`)}
                                         {room.preferredAgeMin != null &&

@@ -5,23 +5,23 @@ import {
   MAX_STUDY_PROGRAM_LENGTH,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
-import { CITIES, GENDERS, LIFESTYLE_TAGS, STUDY_LEVELS, VERENIGINGEN } from "@openhospi/shared/enums";
+import { City, Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
 
 import { profiles } from "../schema/profiles";
 
 const baseProfileSchema = createInsertSchema(profiles, {
-  gender: z.enum(GENDERS),
+  gender: z.enum(Gender.values),
   birthDate: z.string().min(1),
   studyProgram: z.string().min(1).max(MAX_STUDY_PROGRAM_LENGTH),
-  studyLevel: z.enum(STUDY_LEVELS).optional(),
+  studyLevel: z.enum(StudyLevel.values).optional(),
   bio: z.string().max(MAX_BIO_LENGTH).optional(),
-  lifestyleTags: z.array(z.enum(LIFESTYLE_TAGS)).min(MIN_LIFESTYLE_TAGS).max(MAX_LIFESTYLE_TAGS),
-  preferredCity: z.enum(CITIES),
+  lifestyleTags: z.array(z.enum(LifestyleTag.values)).min(MIN_LIFESTYLE_TAGS).max(MAX_LIFESTYLE_TAGS),
+  preferredCity: z.enum(City.values),
   maxRent: z.coerce.number().int().min(0).max(5000).optional(),
   availableFrom: z.string().min(1),
-  vereniging: z.enum(VERENIGINGEN).optional(),
+  vereniging: z.enum(Vereniging.values).optional(),
   instagramHandle: z.string().max(MAX_INSTAGRAM_HANDLE_LENGTH).optional(),
   showInstagram: z.boolean().optional(),
 });

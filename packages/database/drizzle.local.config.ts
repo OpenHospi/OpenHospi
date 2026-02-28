@@ -1,15 +1,11 @@
 import { defineConfig } from "drizzle-kit";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL is required. Set it in .env.local or environment.",
-  );
-}
-
 export default defineConfig({
   schema: "./src/schema/index.ts",
   dialect: "postgresql",
-  dbCredentials: { url: process.env.DATABASE_URL },
+  dbCredentials: {
+    url: "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+  },
   schemaFilter: ["public"],
   entities: { roles: { provider: "supabase" } },
 });

@@ -1,5 +1,5 @@
 /**
- * E2EE: X25519 key exchange + AES-256-GCM encrypt/decrypt
+ * E2EE: P-256 ECDH key exchange + AES-256-GCM encrypt/decrypt
  *
  * Uses Web Crypto API exclusively. Compatible with browsers and Node.js 20+.
  *
@@ -82,14 +82,14 @@ async function aesDecrypt(
 
 // ── Helpers ──
 
-function toBase64(buf: ArrayBuffer | Uint8Array<ArrayBuffer>): string {
+export function toBase64(buf: ArrayBuffer | Uint8Array<ArrayBuffer>): string {
   const bytes = buf instanceof ArrayBuffer ? new Uint8Array(buf) : buf;
   let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
   return btoa(binary);
 }
 
-function fromBase64(str: string): Uint8Array<ArrayBuffer> {
+export function fromBase64(str: string): Uint8Array<ArrayBuffer> {
   const binary = atob(str);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
@@ -189,4 +189,36 @@ export async function decryptFromGroup(
   // Decrypt the message
   const plaintextBuf = await aesDecrypt(messageKey, fromBase64(ciphertext), fromBase64(iv));
   return new TextDecoder().decode(plaintextBuf);
+}
+
+// ── Backup Encrypt / Decrypt ──
+
+export type BackupData = {
+  encryptedPrivateKey: string;
+  backupIv: string;
+  backupKey: string;
+};
+
+export async function createBackup(privateKeyJwk: JsonWebKey): Promise<BackupData> {
+  const backupKey = await crypto.subtle.generateKey(ALGO_AES, true, ["encrypt", "decrypt"]);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encoded = new TextEncoder().encode(JSON.stringify(privateKeyJwk));
+  const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, backupKey, encoded);
+  const rawKey = await crypto.subtle.exportKey("raw", backupKey);
+
+  return {
+    encryptedPrivateKey: toBase64(encrypted),
+    backupIv: toBase64(iv),
+    backupKey: toBase64(rawKey),
+  };
+}
+
+export async function decryptBackup(backup: BackupData): Promise<JsonWebKey> {
+  const rawKey = fromBase64(backup.backupKey);
+  const key = await crypto.subtle.importKey("raw", rawKey, ALGO_AES, false, ["decrypt"]);
+  const iv = fromBase64(backup.backupIv);
+  const ciphertext = fromBase64(backup.encryptedPrivateKey);
+  const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+
+  return JSON.parse(new TextDecoder().decode(decrypted));
 }

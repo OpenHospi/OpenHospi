@@ -1,58 +1,59 @@
-import { Home } from "lucide-react";
-import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import {Home} from "lucide-react";
+import {getTranslations} from "next-intl/server";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Link } from "@/i18n/navigation-app";
-import type { UserApplication } from "@/lib/applications";
-import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
-import { cn } from "@/lib/utils";
+import {StorageImage} from "@/components/storage-image";
+import {Badge} from "@/components/ui/badge";
+import {Card, CardContent, CardHeader} from "@/components/ui/card";
+import {Link} from "@/i18n/navigation-app";
+import type {UserApplication} from "@/lib/applications";
+import {APPLICATION_STATUS_COLORS} from "@/lib/status-colors";
+import {cn} from "@/lib/utils";
 
 type Props = {
-  application: UserApplication;
+    application: UserApplication;
 };
 
-export async function ApplicationCard({ application }: Props) {
-  const t = await getTranslations("app.applications");
-  const tEnums = await getTranslations("enums");
+export async function ApplicationCard({application}: Props) {
+    const t = await getTranslations("app.applications");
+    const tEnums = await getTranslations("enums");
 
-  const appliedDate = new Date(application.appliedAt).toLocaleDateString();
+    const appliedDate = new Date(application.appliedAt).toLocaleDateString();
 
-  return (
-    <Link href={`/applications/${application.id}`}>
-      <Card className="overflow-hidden transition-shadow hover:shadow-md">
-        <div className="relative aspect-video bg-muted">
-          {application.roomCoverPhotoUrl ? (
-            <Image
-              src={application.roomCoverPhotoUrl}
-              alt={application.roomTitle}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex size-full items-center justify-center">
-              <Home className="size-8 text-muted-foreground" />
-            </div>
-          )}
-          <Badge
-            className={cn("absolute top-2 right-2", APPLICATION_STATUS_COLORS[application.status])}
-          >
-            {tEnums(`application_status.${application.status}`)}
-          </Badge>
-        </div>
-        <CardHeader className="pb-2">
-          <h3 className="truncate font-semibold">{application.roomTitle}</h3>
-          <p className="text-sm text-muted-foreground">{tEnums(`city.${application.roomCity}`)}</p>
-        </CardHeader>
-        <CardContent className="flex items-center justify-between text-sm">
+    return (
+        <Link href={`/applications/${application.id}`}>
+            <Card className="overflow-hidden transition-shadow hover:shadow-md">
+                <div className="relative aspect-video bg-muted">
+                    {application.roomCoverPhotoUrl ? (
+                        <StorageImage
+                            src={application.roomCoverPhotoUrl}
+                            alt={application.roomTitle}
+                            bucket="room-photos"
+                            fill
+                            className="object-cover"
+                        />
+                    ) : (
+                        <div className="flex size-full items-center justify-center">
+                            <Home className="size-8 text-muted-foreground"/>
+                        </div>
+                    )}
+                    <Badge
+                        className={cn("absolute top-2 right-2", APPLICATION_STATUS_COLORS[application.status])}
+                    >
+                        {tEnums(`application_status.${application.status}`)}
+                    </Badge>
+                </div>
+                <CardHeader className="pb-2">
+                    <h3 className="truncate font-semibold">{application.roomTitle}</h3>
+                    <p className="text-sm text-muted-foreground">{tEnums(`city.${application.roomCity}`)}</p>
+                </CardHeader>
+                <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">
             €{application.roomRentPrice}
-            <span className="font-normal text-muted-foreground">/mo</span>
+              <span className="font-normal text-muted-foreground">/mo</span>
           </span>
-          <span className="text-muted-foreground">{t("appliedOn", { date: appliedDate })}</span>
-        </CardContent>
-      </Card>
-    </Link>
-  );
+                    <span className="text-muted-foreground">{t("appliedOn", {date: appliedDate})}</span>
+                </CardContent>
+            </Card>
+        </Link>
+    );
 }

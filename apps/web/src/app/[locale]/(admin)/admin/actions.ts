@@ -218,7 +218,7 @@ export async function getRoomDetail(roomId: string): Promise<RoomDetail | null> 
     if (!row) return null;
 
     const [coverPhoto] = await db
-        .select({ url: roomPhotos.url })
+        .select({url: roomPhotos.url})
         .from(roomPhotos)
         .where(eq(roomPhotos.roomId, roomId))
         .orderBy(roomPhotos.slot)
@@ -275,7 +275,7 @@ export async function getUserDetail(userId: string): Promise<UserDetail | null> 
     let avatarUrl = row.avatarUrl;
     if (!avatarUrl) {
         const [photo] = await db
-            .select({ url: profilePhotos.url })
+            .select({url: profilePhotos.url})
             .from(profilePhotos)
             .where(eq(profilePhotos.userId, userId))
             .orderBy(profilePhotos.slot)

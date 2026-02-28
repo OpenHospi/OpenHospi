@@ -51,8 +51,9 @@ export async function uploadPhotoToStorage(
 
     if (error) throw new Error(error.message);
 
-    const {data} = supabaseAdmin.storage.from(bucket).getPublicUrl(finalPath);
-    return data.publicUrl;
+    // Return only the storage path, not the full URL
+    // This makes the data more portable and allows changing storage backends
+    return finalPath;
 }
 
 export function extractStoragePath(url: string, bucket: string): string | null {
@@ -65,13 +66,24 @@ export function extractStoragePath(url: string, bucket: string): string | null {
     return decodeURIComponent(url.slice(idx + marker.length));
 }
 
-export async function deletePhotoFromStorage(url: string): Promise<void> {
-    // Try both buckets
-    for (const bucket of ["profile-photos", "room-photos"] as const) {
-        const path = extractStoragePath(url, bucket);
-        if (path) {
-            await supabaseAdmin.storage.from(bucket).remove([path]);
-            return;
+export async function deletePhotoFromStorage(pathOrUrl: string): Promise<void> {
+    // If it's a full URL, extract the path
+    if (pathOrUrl.includes("://")) {
+        // Try both buckets
+        for (const bucket of ["profile-photos", "room-photos"] as const) {
+            const path = extractStoragePath(pathOrUrl, bucket);
+            if (path) {
+                await supabaseAdmin.storage.from(bucket).remove([path]);
+                return;
+            }
+        }
+    } else {
+        // It's already a path, try both buckets
+        for (const bucket of ["profile-photos", "room-photos"] as const) {
+            const {error} = await supabaseAdmin.storage.from(bucket).remove([pathOrUrl]);
+            if (!error) return;
         }
     }
 }
+
+

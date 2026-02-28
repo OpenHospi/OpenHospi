@@ -14,7 +14,7 @@ type Props = {
 function offsetCoords(lat: number, lng: number) {
   const seed = Math.abs(Math.sin(lat * 1000 + lng * 2000));
   const offsetLat = (seed - 0.5) * 0.003;
-  const offsetLng = ((seed * 1.3) % 1 - 0.5) * 0.003;
+  const offsetLng = (((seed * 1.3) % 1) - 0.5) * 0.003;
   return { lat: lat + offsetLat, lng: lng + offsetLng };
 }
 

@@ -21,7 +21,10 @@ export async function RoomDetails({ room }: Props) {
         {room.streetName && (
           <Detail
             label={t("fields.address")}
-            value={[room.streetName, room.houseNumber].filter(Boolean).join(" ") + (room.postalCode ? `, ${room.postalCode}` : "")}
+            value={
+              [room.streetName, room.houseNumber].filter(Boolean).join(" ") +
+              (room.postalCode ? `, ${room.postalCode}` : "")
+            }
           />
         )}
         <Detail label={t("fields.rentPrice")} value={`€${room.rentPrice}`} />

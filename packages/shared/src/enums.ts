@@ -359,6 +359,18 @@ export const ReportReason = {
     other: "other",
 } as const satisfies Record<ReportReason, ReportReason>;
 
+export const REPORT_TYPES = [
+    "message",
+    "user",
+    "room",
+] as const;
+export type ReportType = (typeof REPORT_TYPES)[number];
+export const ReportType = {
+    message: "message",
+    user: "user",
+    room: "room",
+} as const satisfies Record<ReportType, ReportType>;
+
 export const REPORT_STATUSES = [
     "pending",
     "reviewing",
@@ -372,6 +384,23 @@ export const ReportStatus = {
     resolved: "resolved",
     dismissed: "dismissed",
 } as const satisfies Record<ReportStatus, ReportStatus>;
+
+export const VALID_REPORT_STATUS_TRANSITIONS: Record<
+    ReportStatus,
+    readonly ReportStatus[]
+> = {
+    pending: ["reviewing", "dismissed"],
+    reviewing: ["resolved", "dismissed"],
+    resolved: [],
+    dismissed: [],
+} as const;
+
+export function isValidReportStatusTransition(
+    from: ReportStatus,
+    to: ReportStatus,
+): boolean {
+    return VALID_REPORT_STATUS_TRANSITIONS[from]?.includes(to) ?? false;
+}
 
 export const VALID_APPLICATION_TRANSITIONS: Record<
     ApplicationStatus,

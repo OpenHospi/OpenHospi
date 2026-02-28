@@ -12,7 +12,11 @@ import {
     user,
 } from "@openhospi/database/schema";
 import {AdminAction, ReportStatus, RoomStatus} from "@openhospi/shared/enums";
-import type {AdminAction as AdminActionType, ReportStatus as ReportStatusType} from "@openhospi/shared/enums";
+import type {
+    AdminAction as AdminActionType,
+    ReportStatus as ReportStatusType,
+    ReportType as ReportTypeType
+} from "@openhospi/shared/enums";
 import {and, count, desc, eq, gte} from "drizzle-orm";
 import {revalidatePath} from "next/cache";
 
@@ -26,6 +30,7 @@ export type AggregateStats = {
     newSignupsWeek: number;
     activeListings: number;
     pendingReports: number;
+    pendingReportsByType: Record<ReportTypeType, number>;
     listingsByCity: { city: string; count: number }[];
 };
 
@@ -43,6 +48,7 @@ export async function getAggregateStats(): Promise<AggregateStats> {
         [newSignupsWeekRow],
         [activeListingsRow],
         [pendingReportsRow],
+        pendingByTypeRows,
         listingsByCity,
     ] = await Promise.all([
         db.select({count: count()}).from(user),
@@ -67,12 +73,27 @@ export async function getAggregateStats(): Promise<AggregateStats> {
             .from(reports)
             .where(eq(reports.status, ReportStatus.pending)),
         db
+            .select({type: reports.reportType, count: count()})
+            .from(reports)
+            .where(eq(reports.status, ReportStatus.pending))
+            .groupBy(reports.reportType),
+        db
             .select({city: rooms.city, count: count()})
             .from(rooms)
             .where(eq(rooms.status, RoomStatus.active))
             .groupBy(rooms.city)
             .orderBy(desc(count())),
     ]);
+
+    const pendingReportsByType: Record<ReportTypeType, number> = {
+        message: 0,
+        user: 0,
+        room: 0,
+    };
+
+    pendingByTypeRows.forEach((row) => {
+        pendingReportsByType[row.type as ReportTypeType] = row.count;
+    });
 
     return {
         totalUsers: totalUsersRow?.count ?? 0,
@@ -81,12 +102,14 @@ export async function getAggregateStats(): Promise<AggregateStats> {
         newSignupsWeek: newSignupsWeekRow?.count ?? 0,
         activeListings: activeListingsRow?.count ?? 0,
         pendingReports: pendingReportsRow?.count ?? 0,
+        pendingReportsByType,
         listingsByCity,
     };
 }
 
 export type ReportListItem = {
     id: string;
+    reportType: ReportTypeType;
     reporterId: string;
     reporterName: string;
     reportedUserId: string | null;
@@ -99,17 +122,22 @@ export type ReportListItem = {
     createdAt: Date;
 };
 
-export async function getReports(status?: ReportStatusType): Promise<ReportListItem[]> {
+export async function getReports(
+    status?: ReportStatusType,
+    type?: ReportTypeType,
+): Promise<ReportListItem[]> {
     await requireAdmin();
 
-    const conditions = status ? [eq(reports.status, status)] : [];
+    const conditions = [];
+    if (status) conditions.push(eq(reports.status, status));
+    if (type) conditions.push(eq(reports.reportType, type));
 
-    // Use aliased profiles for reporter and reported user
     const reporterProfile = profiles;
 
     const rows = await db
         .select({
             id: reports.id,
+            reportType: reports.reportType,
             reporterId: reports.reporterId,
             reporterName: reporterProfile.firstName,
             reportedUserId: reports.reportedUserId,
@@ -145,6 +173,7 @@ export async function getReportDetail(reportId: string): Promise<ReportDetail | 
     const [row] = await db
         .select({
             id: reports.id,
+            reportType: reports.reportType,
             reporterId: reports.reporterId,
             reporterName: profiles.firstName,
             reportedUserId: reports.reportedUserId,

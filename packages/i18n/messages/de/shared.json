@@ -383,12 +383,17 @@
     },
     "report_reason": {
       "spam": "Spam",
-      "harassment": "Belästigung",
+      "harassment": "Belstigung",
       "fake_profile": "Fake-Profil",
       "inappropriate_content": "Unangemessener Inhalt",
       "scam": "Betrug",
       "discrimination": "Diskriminierung",
       "other": "Sonstiges"
+    },
+    "report_type": {
+      "message": "Nachricht",
+      "user": "Benutzerprofil",
+      "room": "Zimmerangebot"
     },
     "report_status": {
       "pending": "Ausstehend",

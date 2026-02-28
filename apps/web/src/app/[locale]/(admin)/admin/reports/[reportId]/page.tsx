@@ -21,6 +21,12 @@ type Props = {
     params: Promise<{ locale: string; reportId: string }>;
 };
 
+const TYPE_COLORS: Record<string, string> = {
+    message: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+    user: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    room: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+};
+
 export default async function ReportDetailPage({params}: Props) {
     const {locale, reportId} = await params;
     setRequestLocale(locale);
@@ -48,7 +54,12 @@ export default async function ReportDetailPage({params}: Props) {
                         <span className="sr-only">{t("reports.backToList")}</span>
                     </Link>
                 </Button>
-                <h1 className="text-3xl font-bold tracking-tight">{t("reports.detailTitle")}</h1>
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">{t("reports.detailTitle")}</h1>
+                    <Badge className={TYPE_COLORS[report.reportType] ?? ""} style={{marginTop: "0.5rem"}}>
+                        {tEnums(`report_type.${report.reportType}`)}
+                    </Badge>
+                </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">

@@ -390,6 +390,11 @@
       "discrimination": "Discriminatie",
       "other": "Anders"
     },
+    "report_type": {
+      "message": "Bericht",
+      "user": "Gebruikersprofiel",
+      "room": "Kameraanbod"
+    },
     "report_status": {
       "pending": "In afwachting",
       "reviewing": "In behandeling",

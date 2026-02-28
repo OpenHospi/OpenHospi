@@ -1,31 +1,32 @@
-import { pgEnum } from "drizzle-orm/pg-core";
+import {pgEnum} from "drizzle-orm/pg-core";
 
-import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import {SUPPORTED_LOCALES} from "@openhospi/shared/constants";
 import {
-  ADMIN_ACTIONS,
-  AFFILIATIONS,
-  APPLICATION_STATUSES,
-  CITIES,
-  CONVERSATION_TYPES,
-  DELIVERY_STATUSES,
-  FURNISHINGS,
-  GENDER_PREFERENCES,
-  GENDERS,
-  HOUSE_MEMBER_ROLES,
-  HOUSE_TYPES,
-  INVITATION_STATUSES,
-  LANGUAGES,
-  LIFESTYLE_TAGS,
-  LOCATION_TAGS,
-  MESSAGE_TYPES,
-  RENTAL_TYPES,
-  REPORT_REASONS,
-  REPORT_STATUSES,
-  REVIEW_DECISIONS,
-  ROOM_FEATURES,
-  ROOM_STATUSES,
-  STUDY_LEVELS,
-  VERENIGINGEN,
+    ADMIN_ACTIONS,
+    AFFILIATIONS,
+    APPLICATION_STATUSES,
+    CITIES,
+    CONVERSATION_TYPES,
+    DELIVERY_STATUSES,
+    FURNISHINGS,
+    GENDER_PREFERENCES,
+    GENDERS,
+    HOUSE_MEMBER_ROLES,
+    HOUSE_TYPES,
+    INVITATION_STATUSES,
+    LANGUAGES,
+    LIFESTYLE_TAGS,
+    LOCATION_TAGS,
+    MESSAGE_TYPES,
+    RENTAL_TYPES,
+    REPORT_REASONS,
+    REPORT_STATUSES,
+    REPORT_TYPES,
+    REVIEW_DECISIONS,
+    ROOM_FEATURES,
+    ROOM_STATUSES,
+    STUDY_LEVELS,
+    VERENIGINGEN,
 } from "@openhospi/shared/enums";
 
 export const genderEnum = pgEnum("gender_enum", GENDERS);
@@ -51,5 +52,6 @@ export const deliveryStatusEnum = pgEnum("delivery_status_enum", DELIVERY_STATUS
 export const adminActionEnum = pgEnum("admin_action_enum", ADMIN_ACTIONS);
 export const reportReasonEnum = pgEnum("report_reason_enum", REPORT_REASONS);
 export const reportStatusEnum = pgEnum("report_status_enum", REPORT_STATUSES);
+export const reportTypeEnum = pgEnum("report_type_enum", REPORT_TYPES);
 export const verenigingEnum = pgEnum("vereniging_enum", VERENIGINGEN);
 export const localeEnum = pgEnum("locale_enum", SUPPORTED_LOCALES);

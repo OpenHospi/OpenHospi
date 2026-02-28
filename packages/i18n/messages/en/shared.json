@@ -390,6 +390,11 @@
       "discrimination": "Discrimination",
       "other": "Other"
     },
+    "report_type": {
+      "message": "Message",
+      "user": "User Profile",
+      "room": "Room Listing"
+    },
     "report_status": {
       "pending": "Pending",
       "reviewing": "Reviewing",

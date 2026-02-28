@@ -11,7 +11,7 @@ OpenHospi is a free, open-source student housing/roommate platform for the Nethe
 - **Mobile:** Expo SDK 55+ (planned, not yet started)
 - **Auth:** Better Auth + @better-auth/sso (SURFconext OIDC)
 - **Database:** Supabase PostgreSQL + Drizzle ORM
-- **Storage:** Vercel Blob
+- **Storage:** Supabase Storage (profile-photos, room-photos buckets)
 - **i18n:** next-intl v4 — NL (default), EN, DE
 
 ## Coding Philosophy
@@ -60,6 +60,13 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - `src/i18n/` — internationalization config
 - `src/messages/` — translation JSON files (nl.json, en.json, de.json)
 
+### i18n (next-intl)
+- Translation files: `packages/i18n/messages/{nl,en,de}/{shared,web}.json`
+- **Never duplicate translation keys.** Generic labels (e.g. "Cancel", "City", "Status", "Title", "Bio") belong in `common.labels` in `shared.json` — not repeated per feature namespace
+- Use `useTranslations("common")` (or `getTranslations({ namespace: "common" })` server-side) for shared labels alongside feature-specific translations
+- Feature-specific text stays in its own namespace (e.g. `admin.reports`, `app.rooms`)
+- Before adding a new translation key, check if the same label already exists in `common.labels` or another namespace
+
 ### Linting & Formatting
 - ESLint 9 flat config with strict a11y, import ordering, security, and code quality plugins
 - Prettier for formatting (separate from ESLint)
@@ -104,4 +111,5 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Don't use `eq()` in RLS policy expressions — use raw `sql` with string literals to avoid `$1` placeholder bugs
 - Don't create constants that alias enum values (e.g. `DEFAULT_ROOM_STATUS = "draft"`) — use enum companion objects instead (`RoomStatus.draft`)
 - Don't use hardcoded enum string literals in queries or runtime checks — use the companion objects from `@openhospi/shared/enums`
+- Don't duplicate translation keys — reusable labels go in `common.labels` in `shared.json`, not repeated per namespace
 - Don't touch working code outside the scope of what was asked

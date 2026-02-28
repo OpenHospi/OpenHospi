@@ -1,0 +1,56 @@
+"use client";
+
+import {StorageImage} from "@/components/storage-image";
+
+type UserAvatarProps = {
+    avatarUrl: string | null | undefined;
+    userName: string;
+    size?: "sm" | "md" | "lg";
+    className?: string;
+};
+
+const sizeClasses = {
+    sm: "size-8 text-xs",
+    md: "size-10 text-sm",
+    lg: "size-16 text-lg",
+};
+
+/**
+ * Simple user avatar component that shows profile photo or initials.
+ * Automatically handles:
+ * - Empty/null avatar URLs
+ * - Storage path to public URL conversion
+ * - Initials generation (up to 2 letters)
+ */
+export function UserAvatar({avatarUrl, userName, size = "md", className = ""}: UserAvatarProps) {
+    // Get initials (max 2 characters)
+    const getInitials = (name: string): string => {
+        const parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.charAt(0).toUpperCase();
+    };
+
+    const initials = getInitials(userName);
+    const hasValidAvatar = avatarUrl && avatarUrl.trim().length > 0;
+
+    return hasValidAvatar ? (
+        <div className={`relative shrink-0 overflow-hidden rounded-full ${sizeClasses[size]} ${className}`}>
+            <StorageImage
+                src={avatarUrl}
+                alt={userName}
+                bucket="profile-photos"
+                fill
+                className="object-cover"
+            />
+        </div>
+    ) : (
+        <div
+            className={`bg-primary/10 flex shrink-0 items-center justify-center rounded-full font-semibold text-primary ${sizeClasses[size]} ${className}`}
+        >
+            {initials}
+        </div>
+    );
+}
+

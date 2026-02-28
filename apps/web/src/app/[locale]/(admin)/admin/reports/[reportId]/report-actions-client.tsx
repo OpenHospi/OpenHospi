@@ -5,6 +5,17 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -26,6 +37,7 @@ export function ReportActions({
   reportedUserBanned,
 }: Props) {
   const t = useTranslations("admin.reports");
+  const tCommon = useTranslations("common.labels");
   const [reason, setReason] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -100,14 +112,27 @@ export function ReportActions({
           </Button>
 
           {reportedUserId && !reportedUserBanned && (
-            <Button
-              variant="destructive"
-              onClick={handleBan}
-              disabled={!reason.trim() || isPending}
-            >
-              <Ban className="mr-2 size-4" />
-              {t("banUser")}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  disabled={!reason.trim() || isPending}
+                >
+                  <Ban className="mr-2 size-4" />
+                  {t("banUser")}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("confirmBanTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>{t("confirmBanDescription")}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBan}>{t("banUser")}</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
 
           {reportedUserId && reportedUserBanned && (
@@ -118,14 +143,27 @@ export function ReportActions({
           )}
 
           {reportedRoomId && (
-            <Button
-              variant="destructive"
-              onClick={handleRemoveListing}
-              disabled={!reason.trim() || isPending}
-            >
-              <Trash2 className="mr-2 size-4" />
-              {t("removeListing")}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  disabled={!reason.trim() || isPending}
+                >
+                  <Trash2 className="mr-2 size-4" />
+                  {t("removeListing")}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("confirmRemoveTitle")}</AlertDialogTitle>
+                  <AlertDialogDescription>{t("confirmRemoveDescription")}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleRemoveListing}>{t("removeListing")}</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       </CardContent>

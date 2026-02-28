@@ -347,7 +347,6 @@
     "userMenu": {
       "profile": "Mijn profiel",
       "settings": "Instellingen",
-
       "logout": "Uitloggen"
     },
     "discover": {
@@ -1142,8 +1141,12 @@
     "reports": {
       "title": "Meldingen",
       "description": "Bekijk en modereer gebruikersmeldingen.",
-      "filterAll": "Alle",
       "empty": "Geen meldingen gevonden.",
+      "emptyWithStatusFilter": "Geen meldingen met deze status.",
+      "emptyWithTypeFilter": "Geen meldingen van dit type.",
+      "filterByStatus": "Filteren op Status",
+      "filterByType": "Filteren op Type",
+      "allTypes": "Alle types",
       "colType": "Type",
       "colReporter": "Melder",
       "colReason": "Reden",
@@ -1171,11 +1174,23 @@
       "banUser": "Gebruiker blokkeren",
       "unbanUser": "Blokkering opheffen",
       "removeListing": "Advertentie verwijderen",
+      "removeRoom": "Kamer verwijderen",
       "dismissed": "Melding afgewezen",
       "userBanned": "Gebruiker geblokkeerd",
       "userUnbanned": "Blokkering opgeheven",
       "listingRemoved": "Advertentie verwijderd",
-      "error": "Er is een fout opgetreden"
+      "roomRemoved": "Kamer verwijderd",
+      "error": "Er is een fout opgetreden",
+      "backToList": "Terug naar meldingen",
+      "roomDetails": "Kamerdetails",
+      "userDetails": "Gebruikersdetails",
+      "confirmBanTitle": "Gebruiker blokkeren?",
+      "confirmBanDescription": "Dit trekt de toegang van de gebruiker direct in. Ze kunnen niet meer inloggen totdat de blokkering wordt opgeheven.",
+      "confirmRemoveTitle": "Kamer verwijderen?",
+      "confirmRemoveDescription": "Dit sluit de kameradvertentie en deze is niet meer zichtbaar voor andere gebruikers.",
+      "statusUpdated": "Meldingsstatus bijgewerkt",
+      "searchStatus": "Status zoeken...",
+      "noStatusFound": "Geen status gevonden"
     },
     "auditLog": {
       "title": "Auditlog",

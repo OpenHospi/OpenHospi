@@ -6,17 +6,20 @@ import type { RoomPhoto } from "@openhospi/database/types";
 import { and, eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
-import { deletePhotoFromStorage } from "@/lib/photos";
+import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
 
 export async function saveRoomPhoto(
-  url: string,
-  roomId: string,
-  slot: number,
+  formData: FormData,
 ): Promise<{ error?: string; photo?: RoomPhoto }> {
   const session = await requireSession();
 
+  const file = formData.get("file") as File | null;
+  const roomId = formData.get("roomId") as string | null;
+  const slot = Number(formData.get("slot"));
+
+  if (!file) return { error: "Missing file" };
+  if (!roomId) return { error: "Missing roomId" };
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
-  if (!url || !roomId) return { error: "Missing URL or roomId" };
 
   // Verify ownership
   const [room] = await db
@@ -26,6 +29,10 @@ export async function saveRoomPhoto(
   if (!room) return { error: "Room not found" };
 
   try {
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${roomId}/slot-${slot}.${ext}`;
+    const url = await uploadPhotoToStorage(file, "room-photos", path);
+
     const [photo] = await db
       .insert(roomPhotos)
       .values({ roomId, slot, url })

@@ -102,7 +102,7 @@ export async function deleteAccount() {
     return [...pPhotos.map((p) => p.url), ...rPhotoUrls];
   });
 
-  // Delete photos from Vercel Blob storage
+  // Delete photos from storage
   for (const url of photoUrls) {
     try {
       await deletePhotoFromStorage(url);

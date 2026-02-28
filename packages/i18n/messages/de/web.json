@@ -1151,7 +1151,14 @@
       "userBanned": "Benutzer gesperrt",
       "userUnbanned": "Sperre aufgehoben",
       "listingRemoved": "Anzeige entfernt",
-      "error": "Ein Fehler ist aufgetreten"
+      "error": "Ein Fehler ist aufgetreten",
+      "backToList": "Zurück zu Meldungen",
+      "roomDetails": "Zimmerdetails",
+      "userDetails": "Benutzerdetails",
+      "confirmBanTitle": "Benutzer sperren?",
+      "confirmBanDescription": "Dies entzieht dem Benutzer sofort den Zugang. Er kann sich erst nach Aufhebung der Sperre wieder anmelden.",
+      "confirmRemoveTitle": "Anzeige entfernen?",
+      "confirmRemoveDescription": "Dies schließt die Zimmeranzeige und sie ist für andere Benutzer nicht mehr sichtbar."
     },
     "auditLog": {
       "title": "Auditprotokoll",

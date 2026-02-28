@@ -3,7 +3,19 @@
     "appName": "OpenHospi",
     "loading": "Laden...",
     "error": "Etwas ist schiefgelaufen",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "labels": {
+      "title": "Titel",
+      "city": "Stadt",
+      "status": "Status",
+      "bio": "Bio",
+      "institution": "Einrichtung",
+      "cancel": "Abbrechen",
+      "owner": "Eigentümer",
+      "studyProgramme": "Studiengang",
+      "memberSince": "Mitglied seit",
+      "rentPrice": "Mietpreis"
+    }
   },
   "enums": {
     "language_enum": {
@@ -371,12 +383,17 @@
     },
     "report_reason": {
       "spam": "Spam",
-      "harassment": "Belästigung",
+      "harassment": "Belstigung",
       "fake_profile": "Fake-Profil",
       "inappropriate_content": "Unangemessener Inhalt",
       "scam": "Betrug",
       "discrimination": "Diskriminierung",
       "other": "Sonstiges"
+    },
+    "report_type": {
+      "message": "Nachricht",
+      "user": "Benutzerprofil",
+      "room": "Zimmerangebot"
     },
     "report_status": {
       "pending": "Ausstehend",

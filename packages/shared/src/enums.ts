@@ -3,6 +3,11 @@
 
 export const GENDERS = ["man", "vrouw", "zeg_ik_liever_niet"] as const;
 export type Gender = (typeof GENDERS)[number];
+export const Gender = {
+    man: "man",
+    vrouw: "vrouw",
+    zeg_ik_liever_niet: "zeg_ik_liever_niet",
+} as const satisfies Record<Gender, Gender>;
 
 export const GENDER_PREFERENCES = ["man", "vrouw", "geen_voorkeur"] as const;
 export type GenderPreference = (typeof GENDER_PREFERENCES)[number];

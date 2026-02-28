@@ -457,6 +457,7 @@
         "slot4": "Mit Freunden oder Mitbewohnern",
         "slot5": "Dein Studium oder Arbeit"
       },
+      "genderPreferNotToSayHint": "Du siehst dann nur Zimmer, die für alle offen sind. Zimmer, die gezielt einen Mann oder eine Frau suchen, werden dir nicht angezeigt.",
       "required": "Pflichtfeld",
       "optional": "optional",
       "next": "Weiter",

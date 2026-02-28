@@ -1,6 +1,6 @@
 "use client";
 
-import {MAX_PROFILE_PHOTOS} from "@openhospi/shared/constants";
+import {ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE, MAX_PROFILE_PHOTOS} from "@openhospi/shared/constants";
 import {Camera, Loader2, X} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {useRef, useState, useTransition} from "react";
@@ -20,6 +20,7 @@ type Props = {
 
 export function PhotosGrid({photos: initialPhotos, editable}: Props) {
     const t = useTranslations("app.onboarding");
+    const tErrors = useTranslations("common.errors");
     const [photos, setPhotos] = useState(initialPhotos);
     const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
     const [isPending, startTransition] = useTransition();
@@ -56,13 +57,25 @@ export function PhotosGrid({photos: initialPhotos, editable}: Props) {
             }
         } catch {
             setUploadingSlot(null);
-            toast.error("Upload failed");
+            toast.error(tErrors("uploadFailed"));
         }
     }
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file || activeSlot === null) return;
+
+        if (file.size > MAX_AVATAR_SIZE) {
+            toast.error(tErrors("fileTooLarge", {maxSize: Math.round(MAX_AVATAR_SIZE / 1024 / 1024)}));
+            e.target.value = "";
+            return;
+        }
+
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+            toast.error(tErrors("invalidFileType"));
+            e.target.value = "";
+            return;
+        }
 
         const slot = activeSlot;
         setUploadingSlot(slot);

@@ -456,6 +456,7 @@
         "slot4": "Met vrienden of huisgenoten",
         "slot5": "Je studie of werk"
       },
+      "genderPreferNotToSayHint": "Je ziet dan alleen kamers die openstaan voor iedereen. Kamers die specifiek een man of vrouw zoeken verschijnen niet in je resultaten.",
       "required": "Verplicht",
       "optional": "optioneel",
       "next": "Volgende",

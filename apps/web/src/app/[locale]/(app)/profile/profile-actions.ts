@@ -52,10 +52,12 @@ export async function saveProfilePhoto(
   if (!file) return { error: "Missing file" };
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
 
+  let url: string | undefined;
+
   try {
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${session.user.id}/slot-${slot}.${ext}`;
-    const url = await uploadPhotoToStorage(file, "profile-photos", path);
+    url = await uploadPhotoToStorage(file, "profile-photos", path);
 
     const [photo] = await withRLS(session.user.id, (tx) =>
       tx
@@ -71,6 +73,7 @@ export async function saveProfilePhoto(
     revalidatePath("/profile");
     return { photo };
   } catch (e) {
+    if (url) await deletePhotoFromStorage(url).catch(() => {});
     const message = e instanceof Error ? e.message : "Save failed";
     return { error: message };
   }

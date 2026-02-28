@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { AboutStepData } from "@openhospi/database/validators";
 import { aboutStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
-import { GENDERS, getStudyLevelsForInstitutionType, STUDY_LEVELS } from "@openhospi/shared/enums";
+import { Gender, GENDERS, getStudyLevelsForInstitutionType, STUDY_LEVELS } from "@openhospi/shared/enums";
 import { getInstitution } from "@openhospi/surfconext";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -95,6 +95,11 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
                   ))}
                 </RadioGroup>
               </FormControl>
+              {field.value === Gender.zeg_ik_liever_niet && (
+                <p className="text-xs text-muted-foreground">
+                  {t("genderPreferNotToSayHint")}
+                </p>
+              )}
               <FormMessage />
             </FormItem>
           )}

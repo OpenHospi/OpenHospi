@@ -1,17 +1,19 @@
 "use server";
 
-import { db } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
+import { withRLS } from "@openhospi/database";
+import { roomPhotos } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
 
 export async function saveRoomPhoto(
   formData: FormData,
 ): Promise<{ error?: string; photo?: RoomPhoto }> {
   const session = await requireSession();
+  const userId = session.user.id;
 
   const file = formData.get("file") as File | null;
   const roomId = formData.get("roomId") as string | null;
@@ -21,29 +23,30 @@ export async function saveRoomPhoto(
   if (!roomId) return { error: "Missing roomId" };
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
 
-  // Verify ownership
-  const [room] = await db
-    .select({ id: rooms.id })
-    .from(rooms)
-    .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, session.user.id)));
-  if (!room) return { error: "Room not found" };
+  await requireRoomOwnership(roomId, userId);
+
+  let url: string | undefined;
 
   try {
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${roomId}/slot-${slot}.${ext}`;
-    const url = await uploadPhotoToStorage(file, "room-photos", path);
+    url = await uploadPhotoToStorage(file, "room-photos", path);
 
-    const [photo] = await db
-      .insert(roomPhotos)
-      .values({ roomId, slot, url })
-      .onConflictDoUpdate({
-        target: [roomPhotos.roomId, roomPhotos.slot],
-        set: { url, uploadedAt: new Date() },
-      })
-      .returning();
+    const [photo] = await withRLS(userId, (tx) =>
+      tx
+        .insert(roomPhotos)
+        .values({ roomId, slot, url })
+        .onConflictDoUpdate({
+          target: [roomPhotos.roomId, roomPhotos.slot],
+          set: { url, uploadedAt: new Date() },
+        })
+        .returning(),
+    );
 
+    revalidatePath(`/my-rooms/${roomId}`);
     return { photo };
   } catch (e) {
+    if (url) await deletePhotoFromStorage(url).catch(() => {});
     const message = e instanceof Error ? e.message : "Save failed";
     return { error: message };
   }
@@ -51,30 +54,31 @@ export async function saveRoomPhoto(
 
 export async function deleteRoomPhoto(roomId: string, slot: number): Promise<{ error?: string }> {
   const session = await requireSession();
+  const userId = session.user.id;
 
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
 
-  // Verify ownership
-  const [room] = await db
-    .select({ id: rooms.id })
-    .from(rooms)
-    .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, session.user.id)));
-  if (!room) return { error: "Room not found" };
+  await requireRoomOwnership(roomId, userId);
 
   try {
-    const [photo] = await db
-      .select({ url: roomPhotos.url })
-      .from(roomPhotos)
-      .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot)));
+    const [photo] = await withRLS(userId, (tx) =>
+      tx
+        .select({ url: roomPhotos.url })
+        .from(roomPhotos)
+        .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
+    );
 
     if (!photo) return { error: "Photo not found" };
 
     await deletePhotoFromStorage(photo.url);
 
-    await db
-      .delete(roomPhotos)
-      .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot)));
+    await withRLS(userId, (tx) =>
+      tx
+        .delete(roomPhotos)
+        .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
+    );
 
+    revalidatePath(`/my-rooms/${roomId}`);
     return {};
   } catch (e) {
     const message = e instanceof Error ? e.message : "Delete failed";

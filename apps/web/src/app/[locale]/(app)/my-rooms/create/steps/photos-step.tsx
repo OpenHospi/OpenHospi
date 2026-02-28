@@ -1,6 +1,6 @@
 "use client";
 
-import {MAX_ROOM_PHOTOS} from "@openhospi/shared/constants";
+import {ALLOWED_IMAGE_TYPES, MAX_ROOM_PHOTO_SIZE, MAX_ROOM_PHOTOS} from "@openhospi/shared/constants";
 import {Camera, Loader2, X} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {useRef, useState, useTransition} from "react";
@@ -24,6 +24,7 @@ type Props = {
 
 export function PhotosStep({roomId, photos, onPhotosChange, onBack, onPublished}: Props) {
     const t = useTranslations("app.rooms");
+    const tErrors = useTranslations("common.errors");
     const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
     const [isPending, startTransition] = useTransition();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,6 +45,18 @@ export function PhotosStep({roomId, photos, onPhotosChange, onBack, onPublished}
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file || activeSlot === null) return;
+
+        if (file.size > MAX_ROOM_PHOTO_SIZE) {
+            toast.error(tErrors("fileTooLarge", {maxSize: Math.round(MAX_ROOM_PHOTO_SIZE / 1024 / 1024)}));
+            e.target.value = "";
+            return;
+        }
+
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+            toast.error(tErrors("invalidFileType"));
+            e.target.value = "";
+            return;
+        }
 
         const slot = activeSlot;
         setUploadingSlot(slot);
@@ -67,7 +80,7 @@ export function PhotosStep({roomId, photos, onPhotosChange, onBack, onPublished}
                 }
             } catch {
                 setUploadingSlot(null);
-                toast.error("Upload failed");
+                toast.error(tErrors("uploadFailed"));
             }
         });
 

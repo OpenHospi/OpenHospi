@@ -1,17 +1,16 @@
 "use client";
 
-import {MAX_PROFILE_PHOTOS} from "@openhospi/shared/constants";
+import {ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE, MAX_PROFILE_PHOTOS} from "@openhospi/shared/constants";
 import {Camera, Loader2, X} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {useRef, useState, useTransition} from "react";
 import {toast} from "sonner";
 
+import {deleteProfilePhoto, saveProfilePhoto} from "@/app/[locale]/(app)/profile/profile-actions";
 import {StorageImage} from "@/components/storage-image";
 import {Button} from "@/components/ui/button";
 import type {ProfilePhoto} from "@/lib/profile";
 import {cn} from "@/lib/utils";
-
-import {deletePhoto, savePhoto} from "../photo-actions";
 
 type Props = {
     photos: ProfilePhoto[];
@@ -22,6 +21,7 @@ type Props = {
 
 export function PhotosStep({photos, onPhotosChange, onBack, onNext}: Props) {
     const t = useTranslations("app.onboarding");
+    const tErrors = useTranslations("common.errors");
     const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
     const [isPending, startTransition] = useTransition();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,6 +43,18 @@ export function PhotosStep({photos, onPhotosChange, onBack, onNext}: Props) {
         const file = e.target.files?.[0];
         if (!file || activeSlot === null) return;
 
+        if (file.size > MAX_AVATAR_SIZE) {
+            toast.error(tErrors("fileTooLarge", {maxSize: Math.round(MAX_AVATAR_SIZE / 1024 / 1024)}));
+            e.target.value = "";
+            return;
+        }
+
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+            toast.error(tErrors("invalidFileType"));
+            e.target.value = "";
+            return;
+        }
+
         const slot = activeSlot;
         setUploadingSlot(slot);
 
@@ -51,7 +63,7 @@ export function PhotosStep({photos, onPhotosChange, onBack, onNext}: Props) {
                 const formData = new FormData();
                 formData.set("file", file);
                 formData.set("slot", String(slot));
-                const result = await savePhoto(formData);
+                const result = await saveProfilePhoto(formData);
                 setUploadingSlot(null);
 
                 if (result.error) {
@@ -64,7 +76,7 @@ export function PhotosStep({photos, onPhotosChange, onBack, onNext}: Props) {
                 }
             } catch {
                 setUploadingSlot(null);
-                toast.error("Upload failed");
+                toast.error(tErrors("uploadFailed"));
             }
         });
 
@@ -73,7 +85,7 @@ export function PhotosStep({photos, onPhotosChange, onBack, onNext}: Props) {
 
     function handleDelete(slot: number) {
         startTransition(async () => {
-            const result = await deletePhoto(slot);
+            const result = await deleteProfilePhoto(slot);
             if (result?.error) {
                 toast.error(result.error);
                 return;

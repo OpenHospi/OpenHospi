@@ -4,6 +4,12 @@
     "loading": "Laden...",
     "error": "Etwas ist schiefgelaufen",
     "retry": "Erneut versuchen",
+    "errors": {
+      "fileTooLarge": "Datei ist zu groß. Maximale Größe ist {maxSize} MB.",
+      "invalidFileType": "Ungültiger Dateityp. Bitte JPEG, PNG oder WebP verwenden.",
+      "uploadFailed": "Upload fehlgeschlagen. Bitte versuche es erneut.",
+      "deleteFailed": "Löschen fehlgeschlagen. Bitte versuche es erneut."
+    },
     "labels": {
       "title": "Titel",
       "city": "Stadt",

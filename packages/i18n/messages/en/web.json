@@ -456,6 +456,7 @@
         "slot4": "With friends or housemates",
         "slot5": "Your study or work"
       },
+      "genderPreferNotToSayHint": "You will only see rooms that are open to everyone. Rooms looking specifically for a man or a woman won't appear in your results.",
       "required": "Required",
       "optional": "optional",
       "next": "Next",

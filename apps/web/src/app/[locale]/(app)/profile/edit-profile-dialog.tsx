@@ -10,6 +10,7 @@ import {
 } from "@openhospi/shared/constants";
 import {
   CITIES,
+  Gender,
   GENDERS,
   getStudyLevelsForInstitutionType,
   LIFESTYLE_TAGS,
@@ -164,6 +165,11 @@ export function EditProfileDialog({ profile }: Props) {
                       ))}
                     </RadioGroup>
                   </FormControl>
+                  {field.value === Gender.zeg_ik_liever_niet && (
+                    <p className="text-xs text-muted-foreground">
+                      {tOnboarding("genderPreferNotToSayHint")}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

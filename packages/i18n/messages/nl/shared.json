@@ -4,6 +4,12 @@
     "loading": "Laden...",
     "error": "Er is iets misgegaan",
     "retry": "Opnieuw proberen",
+    "errors": {
+      "fileTooLarge": "Bestand is te groot. Maximale grootte is {maxSize} MB.",
+      "invalidFileType": "Ongeldig bestandstype. Gebruik JPEG, PNG of WebP.",
+      "uploadFailed": "Uploaden mislukt. Probeer het opnieuw.",
+      "deleteFailed": "Verwijderen mislukt. Probeer het opnieuw."
+    },
     "labels": {
       "title": "Titel",
       "city": "Stad",

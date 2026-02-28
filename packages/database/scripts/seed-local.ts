@@ -1,3 +1,5 @@
+import { createClient } from "@supabase/supabase-js";
+import { asc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { reset, seed } from "drizzle-seed";
@@ -418,6 +420,153 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
 
 }));
+
+// ── Photo seeding ────────────────────────────────────────────────────
+
+// Local Supabase defaults (well-known dev-only keys)
+const LOCAL_SUPABASE_URL = "http://127.0.0.1:54321";
+const LOCAL_SERVICE_ROLE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU";
+const supabase = createClient(LOCAL_SUPABASE_URL, LOCAL_SERVICE_ROLE_KEY);
+
+// Photo counts per entity (index = entity order, value = number of photos)
+const PROFILE_PHOTO_COUNTS = [5, 4, 3, 3, 2, 2, 1, 1, 1, 0];
+const ROOM_PHOTO_COUNTS = [8, 5, 4, 3, 2, 1, 1, 0];
+
+async function downloadImage(
+  seed: string,
+  width: number,
+  height: number,
+): Promise<Buffer> {
+  const url = `https://picsum.photos/seed/${seed}/${width}/${height}.jpg`;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+      return Buffer.from(await res.arrayBuffer());
+    } catch (e) {
+      if (attempt === 2) throw e;
+      await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+    }
+  }
+  throw new Error("unreachable");
+}
+
+async function seedProfilePhoto(
+  userId: string,
+  slot: number,
+): Promise<string> {
+  const imageData = await downloadImage(
+    `profile-${userId.slice(0, 8)}-${slot}`,
+    400,
+    400,
+  );
+  const path = `${userId}/slot-${slot}.jpg`;
+
+  const { error } = await supabase.storage
+    .from("profile-photos")
+    .upload(path, imageData, { contentType: "image/jpeg", upsert: true });
+  if (error) throw error;
+
+  await db
+    .insert(schema.profilePhotos)
+    .values({ userId, slot, url: path })
+    .onConflictDoNothing();
+
+  return path;
+}
+
+async function seedRoomPhoto(roomId: string, slot: number): Promise<void> {
+  const imageData = await downloadImage(
+    `room-${roomId.slice(0, 8)}-${slot}`,
+    800,
+    600,
+  );
+  const path = `${roomId}/slot-${slot}.jpg`;
+
+  const { error } = await supabase.storage
+    .from("room-photos")
+    .upload(path, imageData, { contentType: "image/jpeg", upsert: true });
+  if (error) throw error;
+
+  await db
+    .insert(schema.roomPhotos)
+    .values({ roomId, slot, url: path })
+    .onConflictDoNothing();
+}
+
+// Fetch seeded profiles and rooms
+const allProfiles = await db
+  .select({ id: schema.profiles.id })
+  .from(schema.profiles)
+  .orderBy(asc(schema.profiles.id));
+const allRooms = await db
+  .select({ id: schema.rooms.id })
+  .from(schema.rooms)
+  .orderBy(asc(schema.rooms.id));
+
+// Clean existing storage files (idempotent re-runs)
+for (const bucket of ["profile-photos", "room-photos"] as const) {
+  const { data: folders } = await supabase.storage.from(bucket).list();
+  if (folders) {
+    for (const folder of folders) {
+      const { data: files } = await supabase.storage
+        .from(bucket)
+        .list(folder.name);
+      if (files?.length) {
+        await supabase.storage
+          .from(bucket)
+          .remove(files.map((f) => `${folder.name}/${f.name}`));
+      }
+    }
+  }
+}
+
+// Seed profile photos
+console.log("Seeding profile photos...");
+for (let i = 0; i < allProfiles.length; i++) {
+  const count = PROFILE_PHOTO_COUNTS[i] ?? 0;
+  if (count === 0) {
+    console.log(`  Profile ${i + 1}: 0 photos (empty state)`);
+    continue;
+  }
+
+  const userId = allProfiles[i].id;
+  const paths = await Promise.all(
+    Array.from({ length: count }, (_, slot) =>
+      seedProfilePhoto(userId, slot + 1),
+    ),
+  );
+
+  // Set avatarUrl to slot-1 path (matches app behavior)
+  await db
+    .update(schema.profiles)
+    .set({ avatarUrl: paths[0] })
+    .where(eq(schema.profiles.id, userId));
+
+  console.log(`  Profile ${i + 1}: ${count} photos`);
+}
+
+// Seed room photos
+console.log("Seeding room photos...");
+for (let i = 0; i < allRooms.length; i++) {
+  const count = ROOM_PHOTO_COUNTS[i] ?? 0;
+  if (count === 0) {
+    console.log(`  Room ${i + 1}: 0 photos (empty state)`);
+    continue;
+  }
+
+  const roomId = allRooms[i].id;
+  await Promise.all(
+    Array.from({ length: count }, (_, slot) =>
+      seedRoomPhoto(roomId, slot + 1),
+    ),
+  );
+
+  console.log(`  Room ${i + 1}: ${count} photos`);
+}
+
+console.log("Photo seeding complete.");
 
 await client.end();
 console.log("Local database seeded successfully.");

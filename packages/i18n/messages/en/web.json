@@ -347,7 +347,6 @@
     "userMenu": {
       "profile": "My profile",
       "settings": "Settings",
-
       "logout": "Log out"
     },
     "discover": {
@@ -963,12 +962,36 @@
       "perYear": "/yr",
       "perMonth": "/mo",
       "rows": [
-        { "name": "Vercel", "current": "€0", "atScale": "~€222" },
-        { "name": "Supabase", "current": "€0", "atScale": "~€276" },
-        { "name": "SURFconext", "current": "€0", "atScale": "€0" },
-        { "name": "Domains (3x)", "current": "~€50", "atScale": "~€50" },
-        { "name": "Apple Developer", "current": "€99", "atScale": "€99" },
-        { "name": "Google Play", "current": "€25", "atScale": "—" }
+        {
+          "name": "Vercel",
+          "current": "€0",
+          "atScale": "~€222"
+        },
+        {
+          "name": "Supabase",
+          "current": "€0",
+          "atScale": "~€276"
+        },
+        {
+          "name": "SURFconext",
+          "current": "€0",
+          "atScale": "€0"
+        },
+        {
+          "name": "Domains (3x)",
+          "current": "~€50",
+          "atScale": "~€50"
+        },
+        {
+          "name": "Apple Developer",
+          "current": "€99",
+          "atScale": "€99"
+        },
+        {
+          "name": "Google Play",
+          "current": "€25",
+          "atScale": "—"
+        }
       ],
       "totalLabel": "Total per year",
       "currentTotal": "~€174/yr",
@@ -1158,7 +1181,10 @@
       "confirmBanTitle": "Ban this user?",
       "confirmBanDescription": "This will immediately revoke the user's access. They will not be able to log in until unbanned.",
       "confirmRemoveTitle": "Remove this listing?",
-      "confirmRemoveDescription": "This will close the room listing and it will no longer be visible to other users."
+      "confirmRemoveDescription": "This will close the room listing and it will no longer be visible to other users.",
+      "statusUpdated": "Report status updated",
+      "searchStatus": "Search status...",
+      "noStatusFound": "No status found"
     },
     "auditLog": {
       "title": "Audit log",

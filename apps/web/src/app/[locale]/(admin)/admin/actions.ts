@@ -325,6 +325,37 @@ export async function resolveReport(
     revalidatePath("/admin/reports");
 }
 
+export async function updateReportStatus(
+    reportId: string,
+    newStatus: ReportStatusType,
+    notes?: string,
+) {
+    const adminSession = await requireAdmin();
+    const adminUserId = adminSession.user.id;
+
+    const updateData: any = {status: newStatus};
+
+    // If moving to resolved or dismissed, set resolved fields
+    if (newStatus === ReportStatus.resolved || newStatus === ReportStatus.dismissed) {
+        updateData.resolvedAt = new Date();
+        updateData.resolvedBy = adminUserId;
+    }
+
+    await db.update(reports).set(updateData).where(eq(reports.id, reportId));
+
+    // Log the status change
+    await db.insert(adminAuditLog).values({
+        adminUserId,
+        action: AdminAction.update_report,
+        targetId: reportId,
+        reason: notes || `Status changed to ${newStatus}`,
+        metadata: {newStatus},
+    });
+
+    revalidatePath(`/admin/reports/${reportId}`);
+    revalidatePath("/admin/reports");
+}
+
 export async function dismissReport(reportId: string, reason: string) {
     const adminSession = await requireAdmin();
     const adminUserId = adminSession.user.id;

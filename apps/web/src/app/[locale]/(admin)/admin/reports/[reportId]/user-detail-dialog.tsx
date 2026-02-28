@@ -32,7 +32,7 @@ export function UserDetailDialog({user, children}: Props) {
                 </DialogHeader>
                 <div className="space-y-4">
                     <div className="flex items-center gap-4">
-                        {user.avatarUrl ? (
+                        {user.avatarUrl && user.avatarUrl.trim() ? (
                             <div className="relative size-16 shrink-0 overflow-hidden rounded-full">
                                 <StorageImage
                                     src={user.avatarUrl}
@@ -44,8 +44,8 @@ export function UserDetailDialog({user, children}: Props) {
                             </div>
                         ) : (
                             <div
-                                className="bg-muted flex size-16 shrink-0 items-center justify-center rounded-full text-lg font-medium">
-                                {user.name.charAt(0).toUpperCase()}
+                                className="bg-primary/10 flex size-16 shrink-0 items-center justify-center rounded-full text-lg font-semibold text-primary">
+                                {user.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2) || user.name.charAt(0).toUpperCase()}
                             </div>
                         )}
                         <div>

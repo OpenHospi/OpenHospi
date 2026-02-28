@@ -1,4 +1,4 @@
-import { RoomStatus } from "@openhospi/shared/enums";
+import { GenderPreference, RentalType, RoomStatus } from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
 import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
@@ -56,14 +56,14 @@ export const rooms = pgTable(
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),
-    rentalType: rentalTypeEnum("rental_type").default("vast"),
+    rentalType: rentalTypeEnum("rental_type").default(RentalType.permanent),
     houseType: houseTypeEnum("house_type"),
     furnishing: furnishingEnum("furnishing"),
     totalHousemates: integer("total_housemates"),
     features: roomFeatureEnum("features").array().default([]),
     locationTags: locationTagEnum("location_tags").array().default([]),
     roomVereniging: verenigingEnum("room_vereniging"),
-    preferredGender: genderPreferenceEnum("preferred_gender").default("geen_voorkeur"),
+    preferredGender: genderPreferenceEnum("preferred_gender").default(GenderPreference.no_preference),
     preferredAgeMin: integer("preferred_age_min"),
     preferredAgeMax: integer("preferred_age_max"),
     preferredLifestyleTags: lifestyleTagEnum("preferred_lifestyle_tags")

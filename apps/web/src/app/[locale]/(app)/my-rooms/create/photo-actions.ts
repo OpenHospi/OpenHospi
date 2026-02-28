@@ -32,13 +32,14 @@ export async function saveRoomPhoto(
     const path = `${roomId}/slot-${slot}.${ext}`;
     url = await uploadPhotoToStorage(file, "room-photos", path);
 
+    const photoUrl = url;
     const [photo] = await withRLS(userId, (tx) =>
       tx
         .insert(roomPhotos)
-        .values({ roomId, slot, url })
+        .values({ roomId, slot, url: photoUrl })
         .onConflictDoUpdate({
           target: [roomPhotos.roomId, roomPhotos.slot],
-          set: { url, uploadedAt: new Date() },
+          set: { url: photoUrl, uploadedAt: new Date() },
         })
         .returning(),
     );

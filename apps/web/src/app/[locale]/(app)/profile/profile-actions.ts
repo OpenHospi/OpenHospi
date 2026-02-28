@@ -59,13 +59,14 @@ export async function saveProfilePhoto(
     const path = `${session.user.id}/slot-${slot}.${ext}`;
     url = await uploadPhotoToStorage(file, "profile-photos", path);
 
+    const photoUrl = url;
     const [photo] = await withRLS(session.user.id, (tx) =>
       tx
         .insert(profilePhotos)
-        .values({ userId: session.user.id, slot, url })
+        .values({ userId: session.user.id, slot, url: photoUrl })
         .onConflictDoUpdate({
           target: [profilePhotos.userId, profilePhotos.slot],
-          set: { url, uploadedAt: new Date() },
+          set: { url: photoUrl, uploadedAt: new Date() },
         })
         .returning(),
     );

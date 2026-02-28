@@ -12,7 +12,7 @@ import {
   City,
   Gender,
   getStudyLevelsForInstitutionType,
-  type LifestyleTag,
+  LifestyleTag,
   StudyLevel,
   Vereniging,
 } from "@openhospi/shared/enums";

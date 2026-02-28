@@ -10,6 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {InstitutionBadge} from "@/components/app/institution-badge";
 import {UserAvatar} from "@/components/user-avatar";
 
 import type {UserDetail} from "../../actions";
@@ -49,7 +50,7 @@ export function UserDetailDialog({user, children}: Props) {
                     <div className="space-y-3">
                         <div>
                             <p className="text-muted-foreground text-sm">{tCommon("institution")}</p>
-                            <p className="font-medium">{user.institutionDomain}</p>
+                            <InstitutionBadge domain={user.institutionDomain} />
                         </div>
                         {user.studyProgram && (
                             <div>

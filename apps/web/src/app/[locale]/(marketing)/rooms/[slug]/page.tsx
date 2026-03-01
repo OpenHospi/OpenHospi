@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { RoomGalleryHero } from "@/components/app/room-gallery-hero";
 import { PublicRoomCard } from "@/components/marketing/public-room-card";
-import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -160,7 +160,6 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
 
   const cityName = tEnums(`city.${room.city}`);
   const coverPhoto = room.photos[0];
-  const otherPhotos = room.photos.slice(1);
 
   // Safe: all values come from our DB — no user-supplied HTML
   const jsonLdScript = JSON.stringify({
@@ -189,37 +188,8 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         {/* Photo gallery */}
         {room.photos.length > 0 && (
-          <div className="mb-8 space-y-2">
-            {coverPhoto && (
-              <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-                <StorageImage
-                  src={coverPhoto.url}
-                  alt={room.title}
-                  bucket="room-photos"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            )}
-            {otherPhotos.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-                {otherPhotos.map((photo) => (
-                  <div
-                    key={photo.id}
-                    className="relative aspect-video overflow-hidden rounded-lg bg-muted"
-                  >
-                    <StorageImage
-                      src={photo.url}
-                      alt={photo.caption ?? room.title}
-                      bucket="room-photos"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="mb-8">
+            <RoomGalleryHero photos={room.photos} roomTitle={room.title} />
           </div>
         )}
 

@@ -964,6 +964,7 @@
       "essentialOnly": "Nur essenzielle",
       "manage": "Einstellungen verwalten",
       "manageTitle": "Cookie-Einstellungen",
+      "manageDescription": "Wähle aus, welche Cookies du zulässt. Essenzielle Cookies sind immer aktiv.",
       "savePreferences": "Einstellungen speichern",
       "purposes": {
         "essential": {
@@ -1073,7 +1074,9 @@
           "description": "Zeige und verwalte deine aktiven Anmeldesitzungen.",
           "current": "Aktuelle Sitzung",
           "lastActive": "Zuletzt aktiv {date}",
-          "revokeButton": "Widerrufen"
+          "revokeButton": "Widerrufen",
+          "revoked": "Sitzung widerrufen",
+          "empty": "Keine aktiven Sitzungen gefunden."
         }
       },
       "dangerZone": {

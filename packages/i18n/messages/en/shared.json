@@ -964,6 +964,7 @@
       "essentialOnly": "Only essential",
       "manage": "Manage preferences",
       "manageTitle": "Cookie preferences",
+      "manageDescription": "Choose which cookies you allow. Essential cookies are always active.",
       "savePreferences": "Save preferences",
       "purposes": {
         "essential": {
@@ -1073,7 +1074,9 @@
           "description": "View and manage your active login sessions.",
           "current": "Current session",
           "lastActive": "Last active {date}",
-          "revokeButton": "Revoke"
+          "revokeButton": "Revoke",
+          "revoked": "Session revoked",
+          "empty": "No active sessions found."
         }
       },
       "dangerZone": {

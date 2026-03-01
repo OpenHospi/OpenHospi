@@ -7,7 +7,6 @@ import {
   blocks,
   consentRecords,
   conversationMembers,
-  conversations,
   dataRequests,
   houseMembers,
   notifications,
@@ -21,7 +20,11 @@ import {
   user,
   votes,
 } from "@openhospi/database/schema";
-import { PRIVACY_POLICY_VERSION, SUPPORTED_LOCALES, type SupportedLocale } from "@openhospi/shared/constants";
+import {
+  PRIVACY_POLICY_VERSION,
+  SUPPORTED_LOCALES,
+  type SupportedLocale,
+} from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
@@ -58,14 +61,8 @@ export async function exportData() {
       .select()
       .from(conversationMembers)
       .where(eq(conversationMembers.userId, userId));
-    const userBlocks = await tx
-      .select()
-      .from(blocks)
-      .where(eq(blocks.blockerId, userId));
-    const userVotes = await tx
-      .select()
-      .from(votes)
-      .where(eq(votes.voterId, userId));
+    const userBlocks = await tx.select().from(blocks).where(eq(blocks.blockerId, userId));
+    const userVotes = await tx.select().from(votes).where(eq(votes.voterId, userId));
     const userNotifications = await tx
       .select()
       .from(notifications)
@@ -78,10 +75,7 @@ export async function exportData() {
       })
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, userId));
-    const [userPublicKey] = await tx
-      .select()
-      .from(publicKeys)
-      .where(eq(publicKeys.userId, userId));
+    const [userPublicKey] = await tx.select().from(publicKeys).where(eq(publicKeys.userId, userId));
     const userConsents = await tx
       .select()
       .from(activeConsents)
@@ -128,6 +122,61 @@ export async function exportData() {
   });
 
   return { data };
+}
+
+function toCsvRow(values: unknown[]): string {
+  return values
+    .map((v) => {
+      const str = v == null ? "" : String(v);
+      return str.includes(",") || str.includes('"') || str.includes("\n")
+        ? `"${str.replaceAll('"', '""')}"`
+        : str;
+    })
+    .join(",");
+}
+
+function tableToCsv(rows: Record<string, unknown>[]): string {
+  if (rows.length === 0) return "";
+  const headers = Object.keys(rows[0]);
+  const lines = [toCsvRow(headers)];
+  for (const row of rows) {
+    lines.push(toCsvRow(headers.map((h) => row[h])));
+  }
+  return lines.join("\n");
+}
+
+export async function exportDataCSV() {
+  const result = await exportData();
+  if ("error" in result) return result;
+
+  const { data } = result;
+  if (!data) return { error: "NO_DATA" };
+
+  const categories: [string, Record<string, unknown>[]][] = [
+    ["profile.csv", data.profile ? [data.profile] : []],
+    ["profile-photos.csv", data.profilePhotos],
+    ["rooms.csv", data.rooms],
+    ["room-photos.csv", data.roomPhotos],
+    ["applications.csv", data.applications],
+    ["reviews.csv", data.reviews],
+    ["house-members.csv", data.houseMembers],
+    ["conversations.csv", data.conversations],
+    ["blocks.csv", data.blocks],
+    ["votes.csv", data.votes],
+    ["notifications.csv", data.notifications],
+    ["push-subscriptions.csv", data.pushSubscriptions],
+    ["public-key.csv", data.publicKey ? [data.publicKey] : []],
+    ["consents.csv", data.consents],
+    ["consent-history.csv", data.consentHistory],
+    ["data-requests.csv", data.dataRequests],
+  ];
+
+  const csvFiles: Record<string, string> = {};
+  for (const [filename, rows] of categories) {
+    if (rows.length > 0) csvFiles[filename] = tableToCsv(rows);
+  }
+
+  return { csvFiles };
 }
 
 export async function updatePreferredLocale(locale: SupportedLocale) {

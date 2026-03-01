@@ -1,7 +1,18 @@
 "use client";
 
 import { ConsentPurpose, DataRequestType } from "@openhospi/shared/enums";
-import { Download, History, Loader2, Send, Shield, ShieldOff, Trash2 } from "lucide-react";
+import {
+  Download,
+  FileSpreadsheet,
+  History,
+  Loader2,
+  Monitor,
+  Send,
+  Shield,
+  ShieldOff,
+  Smartphone,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
@@ -32,8 +43,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth-client";
 
-import { deleteAccount, exportData } from "./actions";
+import { deleteAccount, exportData, exportDataCSV } from "./actions";
 import {
   getActiveConsents,
   getConsentHistory,
@@ -70,6 +82,19 @@ export function SettingsContent() {
   >([]);
   const [showHistory, setShowHistory] = useState(false);
 
+  // CSV export state
+  const [isExportingCSV, startExportCSV] = useTransition();
+
+  // Sessions state
+  type SessionInfo = {
+    token: string;
+    userAgent?: string | null;
+    createdAt: Date;
+    current?: boolean;
+  };
+  const [sessions, setSessions] = useState<SessionInfo[]>([]);
+  const [isRevokingSession, startRevokeSession] = useTransition();
+
   useEffect(() => {
     getActiveConsents().then((records) => {
       const map: Record<string, boolean> = {};
@@ -77,6 +102,9 @@ export function SettingsContent() {
       setConsents(map);
     });
     getProcessingRestriction().then((r) => setIsRestricted(r !== null));
+    authClient.listSessions().then(({ data }) => {
+      if (data) setSessions(data as unknown as SessionInfo[]);
+    });
   }, []);
 
   function handleExport() {
@@ -93,6 +121,35 @@ export function SettingsContent() {
       a.click();
       URL.revokeObjectURL(url);
       toast.success(t("exportSuccess"));
+    });
+  }
+
+  function handleExportCSV() {
+    startExportCSV(async () => {
+      const result = await exportDataCSV();
+      if ("error" in result) return;
+      const { csvFiles } = result;
+      if (!csvFiles) return;
+
+      // Download each CSV as a separate file
+      for (const [filename, content] of Object.entries(csvFiles)) {
+        const blob = new Blob([content], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+      toast.success(t("exportSuccess"));
+    });
+  }
+
+  function handleRevokeSession(token: string) {
+    startRevokeSession(async () => {
+      await authClient.revokeSession({ token });
+      setSessions(sessions.filter((s) => s.token !== token));
+      toast.success(t("account.sessions.revoked"));
     });
   }
 
@@ -182,9 +239,7 @@ export function SettingsContent() {
               return (
                 <div key={purpose} className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <p className="text-sm font-medium">
-                      {tConsent(`purposes.${purpose}.name`)}
-                    </p>
+                    <p className="text-sm font-medium">{tConsent(`purposes.${purpose}.name`)}</p>
                     <p className="text-xs text-muted-foreground">
                       {tConsent(`purposes.${purpose}.description`)}
                     </p>
@@ -208,7 +263,17 @@ export function SettingsContent() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {(["profile", "photos", "housing", "applications", "chat", "sessions", "moderation"] as const).map((cat) => {
+              {(
+                [
+                  "profile",
+                  "photos",
+                  "housing",
+                  "applications",
+                  "chat",
+                  "sessions",
+                  "moderation",
+                ] as const
+              ).map((cat) => {
                 const isLegitimateInterest = cat === "sessions" || cat === "moderation";
                 const legalBasis = isLegitimateInterest
                   ? t("privacy.dataOverview.legitimateInterest")
@@ -217,7 +282,10 @@ export function SettingsContent() {
                 if (cat === "sessions") retention = t("privacy.dataOverview.30days");
                 else if (cat === "moderation") retention = t("privacy.dataOverview.90days");
                 return (
-                  <div key={cat} className="flex items-center justify-between rounded-lg border p-3">
+                  <div
+                    key={cat}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
                     <span className="text-sm font-medium">
                       {t(`privacy.dataOverview.categories.${cat}`)}
                     </span>
@@ -242,10 +310,18 @@ export function SettingsContent() {
             <CardTitle>{t("dataExport.title")}</CardTitle>
             <CardDescription>{t("dataExport.description")}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={handleExport} disabled={isExporting}>
               {isExporting ? <Loader2 className="animate-spin" /> : <Download className="size-4" />}
-              {t("dataExport.button")}
+              {t("dataExport.jsonButton")}
+            </Button>
+            <Button variant="outline" onClick={handleExportCSV} disabled={isExportingCSV}>
+              {isExportingCSV ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <FileSpreadsheet className="size-4" />
+              )}
+              {t("dataExport.csvButton")}
             </Button>
           </CardContent>
         </Card>
@@ -263,11 +339,7 @@ export function SettingsContent() {
                   <Shield className="size-4" />
                   {t("privacy.processingRestriction.active")}
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={handleRestriction}
-                  disabled={isRestricting}
-                >
+                <Button variant="outline" onClick={handleRestriction} disabled={isRestricting}>
                   {isRestricting && <Loader2 className="animate-spin" />}
                   <ShieldOff className="size-4" />
                   {t("privacy.processingRestriction.liftButton")}
@@ -336,7 +408,11 @@ export function SettingsContent() {
               onClick={handleSubmitDataRequest}
               disabled={isSubmittingRequest || !requestType || requestDescription.length < 10}
             >
-              {isSubmittingRequest ? <Loader2 className="animate-spin" /> : <Send className="size-4" />}
+              {isSubmittingRequest ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Send className="size-4" />
+              )}
               {t("privacy.dataRequest.submitButton")}
             </Button>
           </CardContent>
@@ -389,6 +465,58 @@ export function SettingsContent() {
 
       {/* ── Account tab ── */}
       <TabsContent value="account" className="space-y-6">
+        {/* Active sessions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("account.sessions.title")}</CardTitle>
+            <CardDescription>{t("account.sessions.description")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {sessions.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{t("account.sessions.empty")}</p>
+            ) : (
+              sessions.map((session) => {
+                const isMobile = session.userAgent
+                  ? /mobile|android|iphone/i.test(session.userAgent)
+                  : false;
+                return (
+                  <div
+                    key={session.token}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      {isMobile ? (
+                        <Smartphone className="size-4 text-muted-foreground" />
+                      ) : (
+                        <Monitor className="size-4 text-muted-foreground" />
+                      )}
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-medium">
+                          {session.current
+                            ? t("account.sessions.current")
+                            : t("account.sessions.lastActive", {
+                                date: new Date(session.createdAt).toLocaleDateString(),
+                              })}
+                        </p>
+                      </div>
+                    </div>
+                    {!session.current && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRevokeSession(session.token)}
+                        disabled={isRevokingSession}
+                      >
+                        {t("account.sessions.revokeButton")}
+                      </Button>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="border-destructive">
           <CardHeader>
             <CardTitle className="text-destructive">{t("dangerZone.title")}</CardTitle>

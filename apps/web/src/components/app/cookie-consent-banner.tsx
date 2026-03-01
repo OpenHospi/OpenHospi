@@ -1,21 +1,22 @@
 "use client";
 
 import { ConsentPurpose, type LegalBasis } from "@openhospi/shared/enums";
+import { Cookie } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { migrateGuestConsent, recordConsent } from "@/app/consent-actions";
 
 import { Button } from "../ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Separator } from "../ui/separator";
 import { Switch } from "../ui/switch";
 
 const CONSENT_STORAGE_KEY = "openhospi_consent";
@@ -64,28 +65,29 @@ export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [consent, setConsent] = useState<ConsentState>(DEFAULT_CONSENT);
+  const initialized = useRef(false);
 
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
     const stored = getStoredConsent();
     if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Initializing from localStorage on mount; no cascading render risk
       setConsent(stored);
-      // Already consented — try migrating to DB (no-op if already migrated)
       migrateGuestConsent(consentToEntries(stored));
     } else {
       setVisible(true);
     }
   }, []);
 
-  const handleSave = useCallback(
-    async (newConsent: ConsentState) => {
-      storeConsent(newConsent);
-      setConsent(newConsent);
-      setVisible(false);
-      setManageOpen(false);
-      await recordConsent(consentToEntries(newConsent));
-    },
-    [],
-  );
+  const handleSave = useCallback(async (newConsent: ConsentState) => {
+    storeConsent(newConsent);
+    setConsent(newConsent);
+    setVisible(false);
+    setManageOpen(false);
+    await recordConsent(consentToEntries(newConsent));
+  }, []);
 
   const acceptAll = useCallback(() => {
     handleSave({
@@ -106,24 +108,21 @@ export function CookieConsentBanner() {
     <>
       <div className="fixed inset-x-0 bottom-0 z-50 p-4 sm:flex sm:justify-center">
         <Card className="w-full shadow-lg sm:max-w-lg">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">{t("title")}</CardTitle>
-          </CardHeader>
-          <CardContent className="pb-3">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Cookie className="size-4" />
+              {t("title")}
+            </CardTitle>
             <p className="text-sm text-muted-foreground">{t("description")}</p>
-          </CardContent>
-          <CardFooter className="flex flex-wrap gap-2">
+          </CardHeader>
+          <CardFooter className="flex flex-wrap gap-2 pt-0">
             <Button size="sm" onClick={acceptAll}>
               {t("acceptAll")}
             </Button>
             <Button size="sm" variant="outline" onClick={essentialOnly}>
               {t("essentialOnly")}
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setManageOpen(true)}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setManageOpen(true)}>
               {t("manage")}
             </Button>
           </CardFooter>
@@ -131,48 +130,45 @@ export function CookieConsentBanner() {
       </div>
 
       <Dialog open={manageOpen} onOpenChange={setManageOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-md">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{t("manageTitle")}</DialogTitle>
+            <DialogDescription>{t("manageDescription")}</DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {ConsentPurpose.values.map((purpose) => {
               const isEssential = purpose === ConsentPurpose.essential;
               return (
-                <div key={purpose}>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">
-                        {t(`purposes.${purpose}.name`)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {t(`purposes.${purpose}.description`)}
-                      </p>
-                    </div>
-                    <Switch
-                      checked={consent[purpose]}
-                      disabled={isEssential}
-                      onCheckedChange={(checked) =>
-                        setConsent((prev) => ({ ...prev, [purpose]: checked }))
-                      }
-                    />
+                <div
+                  key={purpose}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
+                  <div className="space-y-0.5 pr-4">
+                    <p className="text-sm font-medium leading-none">
+                      {t(`purposes.${purpose}.name`)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t(`purposes.${purpose}.description`)}
+                    </p>
                   </div>
-                  {purpose !== ConsentPurpose.analytics && (
-                    <Separator className="mt-4" />
-                  )}
+                  <Switch
+                    checked={consent[purpose]}
+                    disabled={isEssential}
+                    onCheckedChange={(checked) =>
+                      setConsent((prev) => ({ ...prev, [purpose]: checked }))
+                    }
+                  />
                 </div>
               );
             })}
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter>
             <Button variant="outline" onClick={essentialOnly}>
               {t("essentialOnly")}
             </Button>
-            <Button onClick={() => handleSave(consent)}>
-              {t("savePreferences")}
-            </Button>
+            <Button onClick={() => handleSave(consent)}>{t("savePreferences")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -964,6 +964,7 @@
       "essentialOnly": "Alleen essentieel",
       "manage": "Voorkeuren beheren",
       "manageTitle": "Cookievoorkeuren",
+      "manageDescription": "Kies welke cookies je toestaat. Essentiële cookies zijn altijd actief.",
       "savePreferences": "Voorkeuren opslaan",
       "purposes": {
         "essential": {
@@ -1073,7 +1074,9 @@
           "description": "Bekijk en beheer je actieve inlogsessies.",
           "current": "Huidige sessie",
           "lastActive": "Laatst actief {date}",
-          "revokeButton": "Intrekken"
+          "revokeButton": "Intrekken",
+          "revoked": "Sessie ingetrokken",
+          "empty": "Geen actieve sessies gevonden."
         }
       },
       "dangerZone": {

@@ -347,7 +347,7 @@
       },
       {
         "title": "Melden & blokkeren",
-        "description": "Meld ongepast gedrag of blokkeer gebruikers met één klik. We handelen snel op meldingen."
+        "description": "Meld ongepast gedrag of blokkeer gebruikers met één klik. We handelen snel op meldingen. Je kunt ons ook bereiken via abuse@openhospi.nl."
       }
     ]
   },
@@ -494,6 +494,10 @@
       {
         "title": "Toepasselijk recht",
         "content": "Deze voorwaarden vallen onder Nederlands recht. Eventuele geschillen worden beslecht door de Nederlandse rechtbanken."
+      },
+      {
+        "title": "Contact",
+        "content": "Heb je vragen over deze voorwaarden? Neem contact op via support@openhospi.nl."
       }
     ]
   },

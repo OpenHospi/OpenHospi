@@ -347,7 +347,7 @@
       },
       {
         "title": "Report & block",
-        "description": "Report inappropriate behavior or block users with one click. We act on reports quickly."
+        "description": "Report inappropriate behavior or block users with one click. We act on reports quickly. You can also reach us at abuse@openhospi.nl."
       }
     ]
   },
@@ -494,6 +494,10 @@
       {
         "title": "Governing law",
         "content": "These terms are governed by Dutch law. Any disputes will be resolved in the courts of the Netherlands."
+      },
+      {
+        "title": "Contact",
+        "content": "If you have questions about these terms, contact us at support@openhospi.nl."
       }
     ]
   },

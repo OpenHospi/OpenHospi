@@ -25,7 +25,7 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
   const t = await getTranslations({ locale, namespace: "terms" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
 
-  const sectionCount = 6;
+  const sectionCount = 7;
 
   // Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation)
   const breadcrumbs = breadcrumbJsonLd(locale, [

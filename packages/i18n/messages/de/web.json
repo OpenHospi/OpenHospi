@@ -347,7 +347,7 @@
       },
       {
         "title": "Melden & Blockieren",
-        "description": "Melde unangemessenes Verhalten oder blockiere Nutzer mit einem Klick. Wir handeln schnell bei Meldungen."
+        "description": "Melde unangemessenes Verhalten oder blockiere Nutzer mit einem Klick. Wir handeln schnell bei Meldungen. Du kannst uns auch unter abuse@openhospi.nl erreichen."
       }
     ]
   },
@@ -494,6 +494,10 @@
       {
         "title": "Anwendbares Recht",
         "content": "Diese Bedingungen unterliegen niederländischem Recht. Streitigkeiten werden vor niederländischen Gerichten verhandelt."
+      },
+      {
+        "title": "Kontakt",
+        "content": "Bei Fragen zu diesen Bedingungen kontaktiere uns unter support@openhospi.nl."
       }
     ]
   },

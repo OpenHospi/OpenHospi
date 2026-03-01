@@ -1,6 +1,7 @@
 "use client";
 
-import { Github, GraduationCap, Loader2 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { GraduationCap, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
@@ -59,7 +60,7 @@ export function LoginButton() {
             size="lg"
             className="w-full"
           >
-            {isPending ? <Loader2 className="animate-spin" /> : <Github />}
+            {isPending ? <Loader2 className="animate-spin" /> : <SiGithub color="currentColor" />}
             {t("devGithubButton")}
           </Button>
           <p className="text-center text-xs text-muted-foreground">{t("devGithubDescription")}</p>

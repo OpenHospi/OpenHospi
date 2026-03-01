@@ -58,13 +58,9 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
                   </TableCell>
                   <TableCell>{entry.adminName}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">
-                      {tEnums(`admin_action.${entry.action}`)}
-                    </Badge>
+                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}`)}</Badge>
                     {entry.targetType && (
-                      <span className="text-muted-foreground ml-2 text-xs">
-                        {entry.targetType}
-                      </span>
+                      <span className="text-muted-foreground ml-2 text-xs">{entry.targetType}</span>
                     )}
                   </TableCell>
                   <TableCell className="max-w-xs truncate">{entry.reason}</TableCell>
@@ -73,9 +69,7 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
             </TableBody>
           </Table>
 
-          <p className="text-muted-foreground text-sm">
-            {t("auditLog.total", { count: total })}
-          </p>
+          <p className="text-muted-foreground text-sm">{t("auditLog.total", { count: total })}</p>
         </>
       )}
     </div>

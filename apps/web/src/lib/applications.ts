@@ -76,7 +76,10 @@ export type RoomDetailForApply = {
 };
 
 export async function getUserApplications(userId: string): Promise<UserApplication[]> {
-  const photoCountSq = sql<string>`(select ${count()} from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id})`.as("room_photo_count");
+  const photoCountSq =
+    sql<string>`(select ${count()} from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id})`.as(
+      "room_photo_count",
+    );
 
   const rows = await withRLS(userId, (tx) =>
     tx
@@ -111,7 +114,10 @@ export async function getApplicationDetail(
   applicationId: string,
   userId: string,
 ): Promise<ApplicationDetail | null> {
-  const photoCountSq = sql<string>`(select ${count()} from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id})`.as("room_photo_count");
+  const photoCountSq =
+    sql<string>`(select ${count()} from ${roomPhotos} where ${roomPhotos.roomId} = ${rooms.id})`.as(
+      "room_photo_count",
+    );
 
   return withRLS(userId, async (tx) => {
     const [row] = await tx
@@ -249,7 +255,9 @@ export async function getRoomDetailForApply(
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : null,
       serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
-      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ? Number(room.estimatedUtilitiesCosts) : null,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
+        ? Number(room.estimatedUtilitiesCosts)
+        : null,
       totalCost: Number(room.totalCost),
       features: room.features ?? [],
       locationTags: room.locationTags ?? [],

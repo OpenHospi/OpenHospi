@@ -1,4 +1,66 @@
 {
+  "seo": {
+    "home": {
+      "title": "Kostenlose Studentenwohnungen — Zimmer Finden & Anbieten",
+      "description": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Nur verifizierte Studierende über SURFconext. Keine Gebühren, keine Vermittler."
+    },
+    "about": {
+      "title": "Über OpenHospi — Unsere Mission & Geschichte",
+      "description": "Erfahre mehr über OpenHospis Mission, Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich für jeden Studierenden zu machen."
+    },
+    "costs": {
+      "title": "Kosten & Transparenz — Wie Wir Kostenlos Bleiben",
+      "description": "OpenHospi ist kostenlos für alle Studierenden. Sieh genau, was der Betrieb der Plattform kostet und wohin Spenden fließen."
+    },
+    "findARoom": {
+      "title": "Zimmer Finden — Kostenlose Studentenwohnungen",
+      "description": "Finde dein nächstes Studentenzimmer kostenlos auf OpenHospi. Verifizierte Studierende, verschlüsselter Chat und faire Sichtbarkeit für alle."
+    },
+    "listARoom": {
+      "title": "Zimmer Anbieten — Finde Deinen Nächsten Mitbewohner",
+      "description": "Biete dein Studentenzimmer kostenlos auf OpenHospi an. Erreiche verifizierte Studierende in den ganzen Niederlanden — keine Inseratsgebühren."
+    },
+    "safety": {
+      "title": "Sicherheit & Vertrauen — Wie Wir Dich Schützen",
+      "description": "SURFconext-Verifizierung, Ende-zu-Ende verschlüsselter Chat, DSGVO-Konformität und Open-Source-Transparenz. Deine Sicherheit hat Priorität."
+    },
+    "privacy": {
+      "title": "Datenschutzerklärung",
+      "description": "Wie OpenHospi deine personenbezogenen Daten erhebt, nutzt und schützt. DSGVO-konform, keine Tracker, kein Datenverkauf."
+    },
+    "terms": {
+      "title": "Allgemeine Geschäftsbedingungen",
+      "description": "Nutzungsbedingungen für OpenHospi, die kostenlose Studentenwohnungsplattform für die Niederlande."
+    },
+    "missingAssociation": {
+      "title": "Vereinigung Fehlt? — Lass Es Uns Wissen",
+      "description": "Ist deine Studierendenvereinigung nicht auf OpenHospi gelistet? Kontaktiere uns und wir fügen sie hinzu."
+    },
+    "rooms": {
+      "title": "Studentenzimmer in den Niederlanden",
+      "description": "Durchsuche verfügbare Studentenzimmer in niederländischen Städten. Kostenlos, verifiziert und fair für jeden Studierenden."
+    },
+    "breadcrumbs": {
+      "home": "Startseite",
+      "rooms": "Studentenzimmer"
+    },
+    "faq": {
+      "costs": [
+        { "question": "Ist OpenHospi wirklich kostenlos?", "answer": "Ja, OpenHospi ist für alle Studierenden völlig kostenlos. Es gibt keine versteckten Kosten, keine Premium-Pläne und keine Werbung. Wir finanzieren uns durch Spenden und Sponsoring." },
+        { "question": "Wie wird OpenHospi finanziert?", "answer": "OpenHospi wird durch individuelle Spenden, Universitätssponsoring und freiwillige Open-Source-Beiträge finanziert. Alle Finanzen sind über Open Collective transparent einsehbar." },
+        { "question": "Wird OpenHospi jemals kostenpflichtig?", "answer": "Nein. OpenHospi wird niemals Freemium oder Pay-to-Win sein. Kein Studierender muss jemals zahlen, um die Plattform zu nutzen oder mehr Sichtbarkeit zu erhalten." }
+      ],
+      "safety": [
+        { "question": "Wie werden Nutzer auf OpenHospi verifiziert?", "answer": "Jeder Nutzer meldet sich über SURFconext an, das von der eigenen Universität oder Hochschule verwaltet wird. Das bedeutet, dass nur echte Studierende und Mitarbeiter niederländischer Bildungseinrichtungen die Plattform nutzen können." },
+        { "question": "Sind meine Nachrichten privat?", "answer": "Ja. Alle Chatnachrichten auf OpenHospi sind Ende-zu-Ende verschlüsselt. Nicht einmal OpenHospi kann deine Gespräche lesen." },
+        { "question": "Was passiert, wenn ich einen Nutzer melde?", "answer": "Meldungen werden von unserem Team überprüft. Wir handeln schnell, einschließlich der Sperrung von Nutzern, die gegen unsere Nutzungsbedingungen verstoßen." }
+      ],
+      "findARoom": [
+        { "question": "Wie finde ich ein Zimmer auf OpenHospi?", "answer": "Melde dich mit deinem SURFconext-Konto an, vervollständige dein Profil, durchsuche verfügbare Zimmer nach Stadt und Preis und sende eine persönliche Nachricht an WGs, die dir gefallen." },
+        { "question": "Was ist Hospiteren?", "answer": "Hospiteren ist die traditionelle niederländische Art, Mitbewohner zu finden. WGs laden Kandidaten zu einem Besuch ein, damit beide Seiten sehen können, ob es passt, bevor man einzieht." }
+      ]
+    }
+  },
   "metadata": {
     "title": "OpenHospi — Kostenlose Studentenwohnungen",
     "description": "Die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden."

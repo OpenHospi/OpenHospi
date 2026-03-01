@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 import { getCitiesWithRoomCount } from "@/lib/discover";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,7 @@ export async function generateMetadata({
   return {
     title: `${t("title")} — ${APP_NAME}`,
     description: t("subtitle"),
+    alternates: alternatesForPath(locale, "/rooms"),
   };
 }
 
@@ -35,10 +37,19 @@ export default async function RoomsIndexPage({ params }: Props) {
   const cities = await getCitiesWithRoomCount();
   const t = await getTranslations({ locale, namespace: "public.rooms" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const loginUrl = getLoginUrl();
+
+  // Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation)
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("home"), path: "" },
+    { name: tSeo("rooms"), path: "/rooms" },
+  ]);
 
   return (
     <section className="py-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Hero */}
         <div className="text-center">

@@ -1,6 +1,6 @@
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import {
   BadgeCheck,
-  Github,
   HandCoins,
   Lock,
   LogIn,
@@ -9,13 +9,30 @@ import {
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 import { CtaSection } from "@/components/marketing/cta-section";
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { Hero } from "@/components/marketing/hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { alternatesForPath, organizationJsonLd } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.home" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: alternatesForPath(locale, ""),
+  };
+}
 
 const featureIcons = {
   free: HandCoins,
@@ -29,8 +46,13 @@ const stepIcons = [LogIn, Search, UserCheck] as const;
 export default function HomePage() {
   const t = useTranslations("home");
 
+  // Safe: all content from our i18n translations and constants, not user input
+  const orgJsonLd = organizationJsonLd();
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgJsonLd }} />
+
       {/* Hero */}
       <Hero />
 
@@ -98,7 +120,7 @@ export default function HomePage() {
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <Github className="mx-auto size-12 text-primary" />
+            <SiGithub className="mx-auto size-12" color="currentColor" />
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
               {t("openSource.title")}
             </h2>
@@ -110,7 +132,7 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Github className="size-4" />
+                  <SiGithub className="size-4" color="currentColor" />
                   {t("openSource.cta")}
                 </a>
               </Button>

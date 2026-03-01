@@ -34,10 +34,15 @@ export async function RoomDetails({ room }: Props) {
         )}
         <Detail
           label={t("fields.utilitiesIncluded")}
-          value={room.utilitiesIncluded ? tEnums(`utilities_included.${room.utilitiesIncluded}`) : "—"}
+          value={
+            room.utilitiesIncluded ? tEnums(`utilities_included.${room.utilitiesIncluded}`) : "—"
+          }
         />
         {room.estimatedUtilitiesCosts != null && (
-          <Detail label={t("fields.estimatedUtilitiesCosts")} value={`€${room.estimatedUtilitiesCosts}`} />
+          <Detail
+            label={t("fields.estimatedUtilitiesCosts")}
+            value={`€${room.estimatedUtilitiesCosts}`}
+          />
         )}
         {room.roomSizeM2 && <Detail label={t("fields.roomSize")} value={`${room.roomSizeM2} m²`} />}
         {room.availableFrom && (

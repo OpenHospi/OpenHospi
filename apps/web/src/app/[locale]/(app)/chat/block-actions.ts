@@ -1,13 +1,7 @@
 "use server";
 
 import { db, withRLS } from "@openhospi/database";
-import {
-  applications,
-  blocks,
-  houseMembers,
-  houses,
-  rooms,
-} from "@openhospi/database/schema";
+import { applications, blocks, houseMembers, houses, rooms } from "@openhospi/database/schema";
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -28,10 +22,7 @@ export async function blockUser(blockedId: string) {
   if (userId === blockedId) throw new Error("Cannot block yourself");
 
   await withRLS(userId, async (tx) => {
-    await tx
-      .insert(blocks)
-      .values({ blockerId: userId, blockedId })
-      .onConflictDoNothing();
+    await tx.insert(blocks).values({ blockerId: userId, blockedId }).onConflictDoNothing();
   });
 
   // Cascade: auto-reject pending applications from blocked user to blocker's rooms
@@ -94,12 +85,7 @@ export async function isBlocked(userId: string, otherUserId: string): Promise<bo
   const [row] = await db
     .select({ blockerId: blocks.blockerId })
     .from(blocks)
-    .where(
-      inArray(
-        blocks.blockerId,
-        [userId, otherUserId],
-      ),
-    )
+    .where(inArray(blocks.blockerId, [userId, otherUserId]))
     .limit(1);
 
   // Check bidirectional: either userId blocked otherUserId OR otherUserId blocked userId

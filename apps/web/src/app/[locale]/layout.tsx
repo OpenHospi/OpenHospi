@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -23,14 +23,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl"),
-  title: {
-    template: `%s | ${APP_NAME}`,
-    default: APP_NAME,
-  },
-  description: "Open-source student housing platform for the Netherlands",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl"),
+    title: {
+      template: `%s | ${APP_NAME}`,
+      default: t("title"),
+    },
+    description: t("description"),
+  };
+}
 
 type Props = {
   children: React.ReactNode;

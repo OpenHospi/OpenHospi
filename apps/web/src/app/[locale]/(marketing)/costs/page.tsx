@@ -1,8 +1,7 @@
-"use client";
-
-import { Cloud, Globe, Smartphone, Heart, Building2, Code, ExternalLink } from "lucide-react";
+import { Building2, Cloud, Code, ExternalLink, Globe, Heart, Smartphone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
@@ -16,19 +15,49 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return {
+    title: t("costs.title"),
+    description: t("costs.description"),
+    alternates: alternatesForPath(locale, "/costs"),
+  };
+}
 
 const groupIcons: LucideIcon[] = [Cloud, Globe, Smartphone];
 const groupItemCounts = [3, 3, 2] as const;
 const pillarIcons: LucideIcon[] = [Heart, Building2, Code];
 
-// Infrastructure items (group 0) use current/atScale, others use cost
 const infrastructureGroupIndex = 0;
 
-export default function CostsPage() {
-  const t = useTranslations("costs");
+export default async function CostsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "costs" });
+  const tSeo = await getTranslations({ locale, namespace: "seo" });
+
+  // Safe: all content from our i18n translations, not user input
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("breadcrumbs.home"), path: "" },
+    { name: t("title"), path: "/costs" },
+  ]);
+
+  const faqItems = tSeo.raw("faq.costs") as { question: string; answer: string }[];
+  const faq = faqJsonLd(faqItems);
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faq }} />
+
       {/* Intro */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -44,7 +73,7 @@ export default function CostsPage() {
         </div>
       </section>
 
-      {/* Cost breakdown — grouped cards */}
+      {/* Cost breakdown */}
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("breakdown.title")}</h2>

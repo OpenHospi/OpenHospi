@@ -41,9 +41,8 @@ export function PushNotificationManager() {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(
-          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-        ).buffer as ArrayBuffer,
+        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!)
+          .buffer as ArrayBuffer,
       });
 
       const json = subscription.toJSON();
@@ -77,28 +76,16 @@ export function PushNotificationManager() {
   }, []);
 
   if (!isSupported) {
-    return (
-      <p className="text-muted-foreground text-sm">{t("unsupported")}</p>
-    );
+    return <p className="text-muted-foreground text-sm">{t("unsupported")}</p>;
   }
 
   return isSubscribed ? (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleUnsubscribe}
-      disabled={isLoading}
-    >
+    <Button variant="outline" size="sm" onClick={handleUnsubscribe} disabled={isLoading}>
       <BellOff className="mr-2 size-4" />
       {t("disable")}
     </Button>
   ) : (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleSubscribe}
-      disabled={isLoading}
-    >
+    <Button variant="outline" size="sm" onClick={handleSubscribe} disabled={isLoading}>
       <BellRing className="mr-2 size-4" />
       {t("enable")}
     </Button>

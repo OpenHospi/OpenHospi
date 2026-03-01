@@ -155,10 +155,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                 items={Vereniging.values}
                 itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
               >
-                <ComboboxInput
-                  placeholder={t("placeholders.searchVereniging")}
-                  showClear
-                />
+                <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                 <ComboboxContent>
                   <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                   <ComboboxList>

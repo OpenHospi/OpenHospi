@@ -248,7 +248,9 @@ export function CreateEventDialog({ roomId }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.description")}{" "}
-                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
+                    <span className="font-normal text-muted-foreground">
+                      ({tCommon("optional")})
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Textarea
@@ -269,7 +271,9 @@ export function CreateEventDialog({ roomId }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.maxAttendees")}{" "}
-                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
+                    <span className="font-normal text-muted-foreground">
+                      ({tCommon("optional")})
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -294,7 +298,9 @@ export function CreateEventDialog({ roomId }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.notes")}{" "}
-                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
+                    <span className="font-normal text-muted-foreground">
+                      ({tCommon("optional")})
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Textarea

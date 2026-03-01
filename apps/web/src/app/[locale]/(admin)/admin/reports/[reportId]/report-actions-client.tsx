@@ -114,10 +114,7 @@ export function ReportActions({
           {reportedUserId && !reportedUserBanned && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button
-                  variant="destructive"
-                  disabled={!reason.trim() || isPending}
-                >
+                <Button variant="destructive" disabled={!reason.trim() || isPending}>
                   <Ban className="mr-2 size-4" />
                   {t("banUser")}
                 </Button>
@@ -145,10 +142,7 @@ export function ReportActions({
           {reportedRoomId && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button
-                  variant="destructive"
-                  disabled={!reason.trim() || isPending}
-                >
+                <Button variant="destructive" disabled={!reason.trim() || isPending}>
                   <Trash2 className="mr-2 size-4" />
                   {t("removeListing")}
                 </Button>
@@ -160,7 +154,9 @@ export function ReportActions({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleRemoveListing}>{t("removeListing")}</AlertDialogAction>
+                  <AlertDialogAction onClick={handleRemoveListing}>
+                    {t("removeListing")}
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

@@ -13,7 +13,11 @@ import {
 } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE, MAX_PROFILE_PHOTOS } from "@openhospi/shared/constants";
+import {
+  ALLOWED_IMAGE_TYPES,
+  MAX_AVATAR_SIZE,
+  MAX_PROFILE_PHOTOS,
+} from "@openhospi/shared/constants";
 import { Camera, GripVertical, Loader2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";

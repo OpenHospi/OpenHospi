@@ -1,4 +1,66 @@
 {
+  "seo": {
+    "home": {
+      "title": "Free Student Housing Platform — Find & List Rooms",
+      "description": "OpenHospi is the free, open-source student housing platform for the Netherlands. Verified students only via SURFconext. No fees, no middlemen."
+    },
+    "about": {
+      "title": "About OpenHospi — Our Mission & Story",
+      "description": "Learn about OpenHospi's mission to make student housing in the Netherlands fair, free, and accessible for every student."
+    },
+    "costs": {
+      "title": "Costs & Transparency — How We Stay Free",
+      "description": "OpenHospi is free for all students. See exactly what it costs to run the platform and where donations go."
+    },
+    "findARoom": {
+      "title": "Find a Student Room — Search Free Housing",
+      "description": "Find your next student room for free on OpenHospi. Verified students, encrypted chat, and fair visibility for everyone."
+    },
+    "listARoom": {
+      "title": "List a Room — Find Your Next Housemate",
+      "description": "List your student room for free on OpenHospi. Reach verified students across the Netherlands — no listing fees."
+    },
+    "safety": {
+      "title": "Safety & Trust — How We Protect You",
+      "description": "SURFconext verification, end-to-end encrypted chat, GDPR compliance, and open-source transparency. Your safety is our priority."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "How OpenHospi collects, uses, and protects your personal data. GDPR compliant, no trackers, no data sales."
+    },
+    "terms": {
+      "title": "Terms & Conditions",
+      "description": "Terms of use for OpenHospi, the free student housing platform for the Netherlands."
+    },
+    "missingAssociation": {
+      "title": "Association Missing? — Let Us Know",
+      "description": "Is your student association not listed on OpenHospi? Contact us and we'll add it."
+    },
+    "rooms": {
+      "title": "Student Rooms in the Netherlands",
+      "description": "Browse available student rooms across Dutch cities. Free, verified, and fair for every student."
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "rooms": "Student Rooms"
+    },
+    "faq": {
+      "costs": [
+        { "question": "Is OpenHospi really free?", "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships." },
+        { "question": "How is OpenHospi funded?", "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective." },
+        { "question": "Will OpenHospi ever become paid?", "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility." }
+      ],
+      "safety": [
+        { "question": "How are users verified on OpenHospi?", "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform." },
+        { "question": "Are my messages private?", "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations." },
+        { "question": "What happens when I report a user?", "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service." }
+      ],
+      "findARoom": [
+        { "question": "How do I find a room on OpenHospi?", "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like." },
+        { "question": "What is hospiteren?", "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in." }
+      ]
+    }
+  },
   "metadata": {
     "title": "OpenHospi — Free Student Housing Platform for the Netherlands",
     "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees."

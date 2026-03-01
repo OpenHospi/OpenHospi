@@ -28,9 +28,7 @@ export function ConversationList({ conversations, currentUserId }: Props) {
       {conversations.map((conv) => {
         const otherMembers = conv.members.filter((m) => m.userId !== currentUserId);
         const displayName =
-          conv.roomTitle ??
-          otherMembers.map((m) => m.firstName).join(", ") ??
-          t("conversation");
+          conv.roomTitle ?? otherMembers.map((m) => m.firstName).join(", ") ?? t("conversation");
 
         return (
           <Link

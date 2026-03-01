@@ -342,7 +342,9 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
     rentPrice: Number(room.rentPrice),
     deposit: room.deposit ? Number(room.deposit) : null,
     serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
-    estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ? Number(room.estimatedUtilitiesCosts) : null,
+    estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
+      ? Number(room.estimatedUtilitiesCosts)
+      : null,
     totalCost: Number(room.totalCost),
     features: room.features ?? [],
     locationTags: room.locationTags ?? [],

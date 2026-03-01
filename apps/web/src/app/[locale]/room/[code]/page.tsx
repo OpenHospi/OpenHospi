@@ -23,7 +23,6 @@ export async function generateMetadata({
   const room = await getRoomByShareLink(code);
   if (!room || room.status !== RoomStatus.active) return { title: t("title") };
 
-
   const cityName = tEnums(`city.${room.city}`);
   return { title: `${room.title} — ${cityName}` };
 }

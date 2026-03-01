@@ -1,11 +1,11 @@
 "use server";
 
-import {withRLS} from "@openhospi/database";
-import {reports, rooms} from "@openhospi/database/schema";
-import type {ReportReason, ReportType} from "@openhospi/shared/enums";
-import {eq} from "drizzle-orm";
+import { withRLS } from "@openhospi/database";
+import { reports, rooms } from "@openhospi/database/schema";
+import type { ReportReason, ReportType } from "@openhospi/shared/enums";
+import { eq } from "drizzle-orm";
 
-import {requireSession} from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth-server";
 
 /**
  * Report a message
@@ -14,30 +14,30 @@ import {requireSession} from "@/lib/auth-server";
  * - Type-safe return with message_report type
  */
 export async function reportMessage(data: {
-    reportedUserId: string;
-    reportedMessageId: string;
-    reason: ReportReason;
-    description?: string;
-    decryptedMessageText?: string;
+  reportedUserId: string;
+  reportedMessageId: string;
+  reason: ReportReason;
+  description?: string;
+  decryptedMessageText?: string;
 }) {
-    const session = await requireSession();
-    const userId = session.user.id;
+  const session = await requireSession();
+  const userId = session.user.id;
 
-    if (userId === data.reportedUserId) {
-        throw new Error("Cannot report a message from yourself");
-    }
+  if (userId === data.reportedUserId) {
+    throw new Error("Cannot report a message from yourself");
+  }
 
-    await withRLS(userId, async (tx) => {
-        await tx.insert(reports).values({
-            reportType: "message",
-            reporterId: userId,
-            reportedUserId: data.reportedUserId,
-            reportedMessageId: data.reportedMessageId,
-            reason: data.reason,
-            description: data.description,
-            decryptedMessageText: data.decryptedMessageText,
-        });
+  await withRLS(userId, async (tx) => {
+    await tx.insert(reports).values({
+      reportType: "message",
+      reporterId: userId,
+      reportedUserId: data.reportedUserId,
+      reportedMessageId: data.reportedMessageId,
+      reason: data.reason,
+      description: data.description,
+      decryptedMessageText: data.decryptedMessageText,
     });
+  });
 }
 
 /**
@@ -46,26 +46,26 @@ export async function reportMessage(data: {
  * - Type-safe return with user_report type
  */
 export async function reportUser(data: {
-    reportedUserId: string;
-    reason: ReportReason;
-    description?: string;
+  reportedUserId: string;
+  reason: ReportReason;
+  description?: string;
 }) {
-    const session = await requireSession();
-    const userId = session.user.id;
+  const session = await requireSession();
+  const userId = session.user.id;
 
-    if (userId === data.reportedUserId) {
-        throw new Error("Cannot report yourself");
-    }
+  if (userId === data.reportedUserId) {
+    throw new Error("Cannot report yourself");
+  }
 
-    await withRLS(userId, async (tx) => {
-        await tx.insert(reports).values({
-            reportType: "user",
-            reporterId: userId,
-            reportedUserId: data.reportedUserId,
-            reason: data.reason,
-            description: data.description,
-        });
+  await withRLS(userId, async (tx) => {
+    await tx.insert(reports).values({
+      reportType: "user",
+      reporterId: userId,
+      reportedUserId: data.reportedUserId,
+      reason: data.reason,
+      description: data.description,
     });
+  });
 }
 
 /**
@@ -75,42 +75,42 @@ export async function reportUser(data: {
  * - Type-safe return with room_report type
  */
 export async function reportRoom(data: {
-    reportedRoomId: string;
-    reason: ReportReason;
-    description?: string;
+  reportedRoomId: string;
+  reason: ReportReason;
+  description?: string;
 }) {
-    const session = await requireSession();
-    const userId = session.user.id;
+  const session = await requireSession();
+  const userId = session.user.id;
 
-    // Validate room exists
-    const [room] = await withRLS(userId, async (tx) => {
-        return tx
-            .select({id: rooms.id, ownerId: rooms.ownerId})
-            .from(rooms)
-            .where(eq(rooms.id, data.reportedRoomId));
+  // Validate room exists
+  const [room] = await withRLS(userId, async (tx) => {
+    return tx
+      .select({ id: rooms.id, ownerId: rooms.ownerId })
+      .from(rooms)
+      .where(eq(rooms.id, data.reportedRoomId));
+  });
+
+  if (!room) throw new Error("Room not found");
+  if (room.ownerId === userId) throw new Error("Cannot report your own room");
+
+  await withRLS(userId, async (tx) => {
+    await tx.insert(reports).values({
+      reportType: "room",
+      reporterId: userId,
+      reportedRoomId: data.reportedRoomId,
+      reason: data.reason,
+      description: data.description,
     });
-
-    if (!room) throw new Error("Room not found");
-    if (room.ownerId === userId) throw new Error("Cannot report your own room");
-
-    await withRLS(userId, async (tx) => {
-        await tx.insert(reports).values({
-            reportType: "room",
-            reporterId: userId,
-            reportedRoomId: data.reportedRoomId,
-            reason: data.reason,
-            description: data.description,
-        });
-    });
+  });
 }
 
 /**
  * Get typed report response (for client usage)
  */
 export type TypedReport = {
-    type: ReportType;
-    id: string;
-    reason: ReportReason;
-    description?: string;
-    createdAt: Date;
+  type: ReportType;
+  id: string;
+  reason: ReportReason;
+  description?: string;
+  createdAt: Date;
 };

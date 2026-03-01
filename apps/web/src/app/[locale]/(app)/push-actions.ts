@@ -35,7 +35,5 @@ export async function unsubscribePush(endpoint: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Unauthorized");
 
-  await db
-    .delete(pushSubscriptions)
-    .where(eq(pushSubscriptions.endpoint, endpoint));
+  await db.delete(pushSubscriptions).where(eq(pushSubscriptions.endpoint, endpoint));
 }

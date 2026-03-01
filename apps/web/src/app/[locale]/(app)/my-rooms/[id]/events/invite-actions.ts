@@ -101,10 +101,7 @@ export async function batchInviteApplicants(
       const memberIds = members.map((m) => m.userId);
 
       for (const app of apps) {
-        await getOrCreateHospiConversation(roomId, app.userId, [
-          ...memberIds,
-          app.userId,
-        ]);
+        await getOrCreateHospiConversation(roomId, app.userId, [...memberIds, app.userId]);
       }
     }
   });

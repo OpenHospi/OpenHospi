@@ -70,13 +70,17 @@ function CostBreakdown({
   room,
   t,
 }: {
-  room: Pick<RoomDetailForApply, "utilitiesIncluded" | "totalCost" | "rentPrice" | "serviceCosts" | "estimatedUtilitiesCosts">;
+  room: Pick<
+    RoomDetailForApply,
+    "utilitiesIncluded" | "totalCost" | "rentPrice" | "serviceCosts" | "estimatedUtilitiesCosts"
+  >;
   t: (key: string) => string;
 }) {
   const isIncluded = room.utilitiesIncluded === UtilitiesIncluded.included;
   const isEstimated = room.utilitiesIncluded === UtilitiesIncluded.estimated;
   const hasServiceCosts = room.serviceCosts != null && room.serviceCosts > 0;
-  const hasEstimatedUtilities = isEstimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0;
+  const hasEstimatedUtilities =
+    isEstimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0;
   const hasBreakdown = hasServiceCosts || hasEstimatedUtilities;
 
   return (
@@ -158,9 +162,13 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
   const isInvitee =
     isOwner ||
     (existingApplication != null &&
-      ([ApplicationStatus.invited, ApplicationStatus.attending, ApplicationStatus.accepted] as string[]).includes(
-        existingApplication.status,
-      ));
+      (
+        [
+          ApplicationStatus.invited,
+          ApplicationStatus.attending,
+          ApplicationStatus.accepted,
+        ] as string[]
+      ).includes(existingApplication.status));
   const cityName = tEnums(`city.${room.city}`);
 
   // Format address — full address only for invitees/owner, street name for all authenticated
@@ -178,9 +186,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
   return (
     <div className="space-y-8">
       {/* Photo gallery */}
-      {room.photos.length > 0 && (
-        <RoomGalleryHero photos={room.photos} roomTitle={room.title} />
-      )}
+      {room.photos.length > 0 && <RoomGalleryHero photos={room.photos} roomTitle={room.title} />}
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main content */}
@@ -220,8 +226,11 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <UserRound className="size-4" />
               <span>
-                {tEnums(`gender_preference.${room.preferredGender || GenderPreference.no_preference}`)}
-                {room.preferredAgeMin != null && room.preferredAgeMax != null &&
+                {tEnums(
+                  `gender_preference.${room.preferredGender || GenderPreference.no_preference}`,
+                )}
+                {room.preferredAgeMin != null &&
+                  room.preferredAgeMax != null &&
                   ` · ${t("ageRange", { min: room.preferredAgeMin, max: room.preferredAgeMax })}`}
               </span>
             </div>
@@ -252,7 +261,11 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
               {room.acceptedLanguages.length > 0 && (
                 <>
                   <dt className="text-muted-foreground">{t("acceptedLanguages")}</dt>
-                  <dd>{room.acceptedLanguages.map((lang) => tEnums(`language_enum.${lang}`)).join(", ")}</dd>
+                  <dd>
+                    {room.acceptedLanguages
+                      .map((lang) => tEnums(`language_enum.${lang}`))
+                      .join(", ")}
+                  </dd>
                 </>
               )}
             </dl>
@@ -333,7 +346,9 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
             <CardHeader className="pb-3">
               <CardTitle>
                 <span className="text-2xl">€{room.totalCost}</span>
-                <span className="text-base font-normal text-muted-foreground">{tCommon("perMonth")}</span>
+                <span className="text-base font-normal text-muted-foreground">
+                  {tCommon("perMonth")}
+                </span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">

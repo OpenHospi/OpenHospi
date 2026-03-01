@@ -947,7 +947,7 @@
       "photoIndex": "Photo {index}",
       "showAllPhotos": "Show all {count} photos",
       "availability": "Availability",
-      "loginToApply": "Log in with SURFconext to apply",
+      "loginToApply": "Log in met SURFconext om te reageren",
       "roomSize": "{size} m²",
       "errors": {
         "invalid_data": "Please check your message and try again.",

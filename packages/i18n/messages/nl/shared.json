@@ -33,7 +33,9 @@
       "noResults": "Geen resultaten gevonden.",
       "optional": "optioneel",
       "housemates": "{count, plural, =1 {1 huisgenoot} other {# huisgenoten}}",
-      "backToApp": "Terug naar app"
+      "backToApp": "Terug naar app",
+      "show": "Tonen",
+      "hide": "Verbergen"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",

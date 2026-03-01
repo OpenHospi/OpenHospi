@@ -2,16 +2,26 @@
 
 import { db, withRLS } from "@openhospi/database";
 import {
+  activeConsents,
   applications,
+  blocks,
+  consentRecords,
+  conversationMembers,
+  conversations,
+  dataRequests,
   houseMembers,
+  notifications,
   profilePhotos,
   profiles,
+  publicKeys,
+  pushSubscriptions,
   reviews,
   roomPhotos,
   rooms,
   user,
+  votes,
 } from "@openhospi/database/schema";
-import { SUPPORTED_LOCALES, type SupportedLocale } from "@openhospi/shared/constants";
+import { PRIVACY_POLICY_VERSION, SUPPORTED_LOCALES, type SupportedLocale } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
@@ -44,8 +54,60 @@ export async function exportData() {
       .select()
       .from(houseMembers)
       .where(eq(houseMembers.userId, userId));
+    const userConversations = await tx
+      .select()
+      .from(conversationMembers)
+      .where(eq(conversationMembers.userId, userId));
+    const userBlocks = await tx
+      .select()
+      .from(blocks)
+      .where(eq(blocks.blockerId, userId));
+    const userVotes = await tx
+      .select()
+      .from(votes)
+      .where(eq(votes.voterId, userId));
+    const userNotifications = await tx
+      .select()
+      .from(notifications)
+      .where(eq(notifications.userId, userId));
+    const userPushSubscriptions = await tx
+      .select({
+        id: pushSubscriptions.id,
+        endpoint: pushSubscriptions.endpoint,
+        createdAt: pushSubscriptions.createdAt,
+      })
+      .from(pushSubscriptions)
+      .where(eq(pushSubscriptions.userId, userId));
+    const [userPublicKey] = await tx
+      .select()
+      .from(publicKeys)
+      .where(eq(publicKeys.userId, userId));
+    const userConsents = await tx
+      .select()
+      .from(activeConsents)
+      .where(eq(activeConsents.userId, userId));
+    const userConsentHistory = await tx
+      .select()
+      .from(consentRecords)
+      .where(eq(consentRecords.userId, userId));
+    const userDataRequests = await tx
+      .select({
+        id: dataRequests.id,
+        type: dataRequests.type,
+        status: dataRequests.status,
+        description: dataRequests.description,
+        createdAt: dataRequests.createdAt,
+        completedAt: dataRequests.completedAt,
+      })
+      .from(dataRequests)
+      .where(eq(dataRequests.userId, userId));
 
     return {
+      _metadata: {
+        exportedAt: new Date().toISOString(),
+        privacyPolicyVersion: PRIVACY_POLICY_VERSION,
+        format: "GDPR Art. 20 data portability export",
+      },
       profile,
       profilePhotos: photos,
       rooms: userRooms,
@@ -53,7 +115,15 @@ export async function exportData() {
       applications: userApplications,
       reviews: userReviews,
       houseMembers: userHouseMembers,
-      exportedAt: new Date().toISOString(),
+      conversations: userConversations,
+      blocks: userBlocks,
+      votes: userVotes,
+      notifications: userNotifications,
+      pushSubscriptions: userPushSubscriptions,
+      publicKey: userPublicKey ?? null,
+      consents: userConsents,
+      consentHistory: userConsentHistory,
+      dataRequests: userDataRequests,
     };
   });
 

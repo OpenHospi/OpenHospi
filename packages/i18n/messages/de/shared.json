@@ -33,7 +33,9 @@
       "noResults": "Keine Ergebnisse gefunden.",
       "optional": "optional",
       "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
-      "backToApp": "Zurück zur App"
+      "backToApp": "Zurück zur App",
+      "show": "Anzeigen",
+      "hide": "Ausblenden"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",

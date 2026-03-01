@@ -75,8 +75,7 @@ export async function savePreferencesStep(data: PreferencesStepData) {
   const parsed = preferencesStepSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
-  const { preferredCity, maxRent, availableFrom, vereniging, instagramHandle, showInstagram } =
-    parsed.data;
+  const { preferredCity, maxRent, availableFrom, vereniging } = parsed.data;
 
   await withRLS(session.user.id, (tx) =>
     tx
@@ -86,8 +85,6 @@ export async function savePreferencesStep(data: PreferencesStepData) {
         maxRent: maxRent != null ? String(maxRent) : null,
         availableFrom,
         vereniging: vereniging || null,
-        instagramHandle: instagramHandle || null,
-        showInstagram,
       })
       .where(eq(profiles.id, session.user.id)),
   );

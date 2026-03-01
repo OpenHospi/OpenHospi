@@ -576,9 +576,7 @@
         "preferredCity": "Voorkeursstad",
         "maxRent": "Max huur",
         "availableFrom": "Beschikbaar vanaf",
-        "vereniging": "Vereniging",
-        "instagram": "Instagram",
-        "showInstagram": "Instagram tonen op profiel"
+        "vereniging": "Vereniging"
       },
       "placeholders": {
         "studyProgram": "bijv. Informatica",

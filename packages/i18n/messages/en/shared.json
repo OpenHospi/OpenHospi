@@ -576,9 +576,7 @@
         "preferredCity": "Preferred city",
         "maxRent": "Max rent",
         "availableFrom": "Available from",
-        "vereniging": "Student association",
-        "instagram": "Instagram",
-        "showInstagram": "Show Instagram on profile"
+        "vereniging": "Student association"
       },
       "placeholders": {
         "studyProgram": "e.g. Computer Science",

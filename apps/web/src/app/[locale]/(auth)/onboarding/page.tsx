@@ -44,8 +44,6 @@ export default async function OnboardingPage({ params }: Props) {
     maxRent: profile?.maxRent,
     availableFrom: profile?.availableFrom,
     vereniging: profile?.vereniging,
-    instagramHandle: profile?.instagramHandle,
-    showInstagram: profile?.showInstagram ?? false,
     photos: profile?.photos ?? [],
   };
 

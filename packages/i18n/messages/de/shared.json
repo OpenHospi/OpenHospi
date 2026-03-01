@@ -576,9 +576,7 @@
         "preferredCity": "Bevorzugte Stadt",
         "maxRent": "Max Miete",
         "availableFrom": "Verfügbar ab",
-        "vereniging": "Studentenverein",
-        "instagram": "Instagram",
-        "showInstagram": "Instagram im Profil anzeigen"
+        "vereniging": "Studentenverein"
       },
       "placeholders": {
         "studyProgram": "z.B. Informatik",

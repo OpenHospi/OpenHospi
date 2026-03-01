@@ -11,7 +11,6 @@ export const MAX_ROOM_TITLE_LENGTH = 200;
 export const MAX_ROOM_DESCRIPTION_LENGTH = 5000;
 export const MAX_STUDY_PROGRAM_LENGTH = 200;
 export const MAX_NOTES_LENGTH = 2000;
-export const MAX_INSTAGRAM_HANDLE_LENGTH = 30;
 
 // Photo limits
 export const MAX_PROFILE_PHOTOS = 5;

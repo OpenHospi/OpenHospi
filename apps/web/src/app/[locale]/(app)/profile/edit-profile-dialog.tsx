@@ -61,7 +61,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Profile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
@@ -95,8 +94,6 @@ export function EditProfileDialog({ profile }: Props) {
       maxRent: profile.maxRent ? Number(profile.maxRent) : undefined,
       availableFrom: profile.availableFrom ?? "",
       vereniging: (profile.vereniging as EditProfileData["vereniging"]) ?? undefined,
-      instagramHandle: profile.instagramHandle ?? "",
-      showInstagram: profile.showInstagram ?? false,
     },
   });
 
@@ -412,35 +409,6 @@ export function EditProfileDialog({ profile }: Props) {
                     </ComboboxContent>
                   </Combobox>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="instagramHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tOnboarding("fields.instagram")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="@username" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="showInstagram"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel className="cursor-pointer">
-                    {tOnboarding("fields.showInstagram")}
-                  </FormLabel>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
                 </FormItem>
               )}
             />

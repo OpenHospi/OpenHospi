@@ -28,7 +28,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 
 import { finishOnboarding, savePreferencesStep } from "../actions";
 
@@ -51,8 +50,6 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
       maxRent: defaultValues.maxRent ?? undefined,
       availableFrom: defaultValues.availableFrom ?? "",
       vereniging: defaultValues.vereniging ?? undefined,
-      instagramHandle: defaultValues.instagramHandle ?? "",
-      showInstagram: defaultValues.showInstagram ?? false,
     },
   });
 
@@ -168,36 +165,6 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                 </ComboboxContent>
               </Combobox>
               <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="instagramHandle"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {t("fields.instagram")}{" "}
-                <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
-              </FormLabel>
-              <FormControl>
-                <Input placeholder="@username" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="showInstagram"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-3">
-              <FormLabel className="cursor-pointer">{t("fields.showInstagram")}</FormLabel>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
             </FormItem>
           )}
         />

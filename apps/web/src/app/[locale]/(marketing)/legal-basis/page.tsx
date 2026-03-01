@@ -34,7 +34,7 @@ export default async function LegalBasisPage({ params }: { params: Promise<{ loc
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
-      <LegalPageContent locale={locale} namespace="legalBasis" sectionCount={6} hasIntro />
+      <LegalPageContent locale={locale} namespace="legalBasis" hasIntro />
     </section>
   );
 }

@@ -33,17 +33,16 @@ function renderItemText(item: string): ReactNode {
 interface LegalPageContentProps {
   locale: string;
   namespace: string;
-  sectionCount: number;
   hasIntro?: boolean;
 }
 
 export async function LegalPageContent({
   locale,
   namespace,
-  sectionCount,
   hasIntro,
 }: LegalPageContentProps) {
   const t = await getTranslations({ locale, namespace });
+  const sections = t.raw("sections") as unknown[];
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -55,7 +54,7 @@ export async function LegalPageContent({
       {hasIntro && <p className="mb-8 text-muted-foreground leading-relaxed">{t("intro")}</p>}
 
       <div className="space-y-10">
-        {Array.from({ length: sectionCount }, (_, i) => {
+        {sections.map((_, i) => {
           const hasContent = t.has(`sections.${i}.content`);
           const hasItems = t.has(`sections.${i}.items`);
           const rawItems = hasItems ? (t.raw(`sections.${i}.items`) as string[]) : [];

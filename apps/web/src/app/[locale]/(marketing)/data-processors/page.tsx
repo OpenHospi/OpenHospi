@@ -38,7 +38,7 @@ export default async function DataProcessorsPage({
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
-      <LegalPageContent locale={locale} namespace="dataProcessors" sectionCount={4} hasIntro />
+      <LegalPageContent locale={locale} namespace="dataProcessors" hasIntro />
     </section>
   );
 }

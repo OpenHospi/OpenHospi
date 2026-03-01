@@ -38,7 +38,7 @@ export default async function ProcessingRegisterPage({
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
-      <LegalPageContent locale={locale} namespace="processingRegister" sectionCount={9} hasIntro />
+      <LegalPageContent locale={locale} namespace="processingRegister" hasIntro />
     </section>
   );
 }

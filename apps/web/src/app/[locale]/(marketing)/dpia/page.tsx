@@ -34,7 +34,7 @@ export default async function DpiaPage({ params }: { params: Promise<{ locale: s
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
-      <LegalPageContent locale={locale} namespace="dpia" sectionCount={10} hasIntro />
+      <LegalPageContent locale={locale} namespace="dpia" hasIntro />
     </section>
   );
 }

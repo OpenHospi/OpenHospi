@@ -34,7 +34,7 @@ export default async function CookiesPage({ params }: { params: Promise<{ locale
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
-      <LegalPageContent locale={locale} namespace="cookies" sectionCount={5} />
+      <LegalPageContent locale={locale} namespace="cookies" />
     </section>
   );
 }

@@ -34,7 +34,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
-      <LegalPageContent locale={locale} namespace="privacy" sectionCount={18} />
+      <LegalPageContent locale={locale} namespace="privacy" />
     </section>
   );
 }

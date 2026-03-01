@@ -2,6 +2,8 @@ import { DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { RoomCard } from "@/components/app/room-card";
+import { Link } from "@/i18n/navigation-app";
 import { requireSession } from "@/lib/auth-server";
 import type { DiscoverCursor, DiscoverFilters } from "@/lib/discover";
 import { getDiscoverRooms } from "@/lib/discover";
@@ -9,7 +11,6 @@ import { getProfile } from "@/lib/profile";
 
 import { DiscoverFiltersPanel } from "./discover-filters";
 import { DiscoverLoadMore } from "./discover-load-more";
-import { DiscoverRoomCard } from "./discover-room-card";
 
 export async function generateMetadata({
   params,
@@ -113,7 +114,9 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rooms.map((room) => (
-              <DiscoverRoomCard key={room.id} room={room} />
+              <Link key={room.id} href={`/discover/${room.id}`}>
+                <RoomCard room={room} />
+              </Link>
             ))}
           </div>
           {nextCursor && <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />}

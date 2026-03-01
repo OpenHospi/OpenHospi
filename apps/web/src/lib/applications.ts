@@ -60,7 +60,6 @@ export type RoomDetailForApply = {
   preferredGender: string | null;
   preferredAgeMin: number | null;
   preferredAgeMax: number | null;
-  preferredLifestyleTags: string[];
   acceptedLanguages: string[];
   ownerId: string;
   createdAt: Date;
@@ -217,7 +216,7 @@ export async function getRoomDetailForApply(
         preferredGender: rooms.preferredGender,
         preferredAgeMin: rooms.preferredAgeMin,
         preferredAgeMax: rooms.preferredAgeMax,
-        preferredLifestyleTags: rooms.preferredLifestyleTags,
+
         acceptedLanguages: rooms.acceptedLanguages,
         ownerId: rooms.ownerId,
         createdAt: rooms.createdAt,
@@ -261,7 +260,7 @@ export async function getRoomDetailForApply(
       totalCost: Number(room.totalCost),
       features: room.features ?? [],
       locationTags: room.locationTags ?? [],
-      preferredLifestyleTags: room.preferredLifestyleTags ?? [],
+
       acceptedLanguages: room.acceptedLanguages ?? [],
       photos,
       owner: ownerProfile ?? null,

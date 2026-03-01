@@ -160,9 +160,6 @@ export function RoomCreateForm({ room }: Props) {
               preferredGender: room.preferredGender as RoomPreferencesData["preferredGender"],
               preferredAgeMin: room.preferredAgeMin ?? undefined,
               preferredAgeMax: room.preferredAgeMax ?? undefined,
-              preferredLifestyleTags:
-                (room.preferredLifestyleTags as RoomPreferencesData["preferredLifestyleTags"]) ??
-                [],
               acceptedLanguages:
                 (room.acceptedLanguages as RoomPreferencesData["acceptedLanguages"]) ?? [],
               roomVereniging: room.roomVereniging as RoomPreferencesData["roomVereniging"],

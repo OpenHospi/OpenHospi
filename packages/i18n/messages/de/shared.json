@@ -947,6 +947,8 @@
       "photoIndex": "Foto {index}",
       "showAllPhotos": "Alle {count} Fotos anzeigen",
       "availability": "Verfügbarkeit",
+      "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
+      "roomSize": "{size} m²",
       "errors": {
         "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",
         "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",

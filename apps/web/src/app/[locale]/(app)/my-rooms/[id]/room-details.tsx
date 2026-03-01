@@ -113,21 +113,6 @@ export async function RoomDetails({ room }: Props) {
           </div>
         </div>
       )}
-
-      {(room.preferredLifestyleTags ?? []).length > 0 && (
-        <div>
-          <p className="mb-2 text-sm font-medium text-muted-foreground">
-            {t("fields.preferredLifestyleTags")}
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {(room.preferredLifestyleTags ?? []).map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tEnums(`lifestyle_tag.${tag}`)}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

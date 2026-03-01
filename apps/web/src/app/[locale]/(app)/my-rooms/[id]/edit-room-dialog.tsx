@@ -9,7 +9,6 @@ import {
   GenderPreference,
   HouseType,
   Language,
-  LifestyleTag,
   LocationTag,
   RentalType,
   RoomFeature,
@@ -111,7 +110,6 @@ export function EditRoomDialog({ room }: Props) {
       preferredGender: room.preferredGender as EditRoomData["preferredGender"],
       preferredAgeMin: room.preferredAgeMin ?? undefined,
       preferredAgeMax: room.preferredAgeMax ?? undefined,
-      preferredLifestyleTags: (room.preferredLifestyleTags as LifestyleTag[]) ?? [],
       acceptedLanguages: (room.acceptedLanguages as Language[]) ?? [],
       roomVereniging: (room.roomVereniging as EditRoomData["roomVereniging"]) ?? undefined,
     },
@@ -121,11 +119,10 @@ export function EditRoomDialog({ room }: Props) {
   const utilitiesIncluded = form.watch("utilitiesIncluded");
   const selectedFeatures = form.watch("features") ?? [];
   const selectedLocationTags = form.watch("locationTags") ?? [];
-  const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
   const selectedLanguages = form.watch("acceptedLanguages") ?? [];
 
   function toggleArrayField<T extends string>(
-    name: "features" | "locationTags" | "preferredLifestyleTags" | "acceptedLanguages",
+    name: "features" | "locationTags" | "acceptedLanguages",
     value: T,
   ) {
     const current = (form.getValues(name) as T[]) ?? [];
@@ -605,28 +602,6 @@ export function EditRoomDialog({ room }: Props) {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="space-y-2">
-              <FormLabel>{t("fields.preferredLifestyleTags")}</FormLabel>
-              <div className="flex flex-wrap gap-2">
-                {LifestyleTag.values.map((tag) => {
-                  const isSelected = selectedLifestyleTags.includes(tag);
-                  return (
-                    <Badge
-                      key={tag}
-                      variant={isSelected ? "default" : "outline"}
-                      className={cn(
-                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
-                        isSelected && "bg-primary text-primary-foreground",
-                      )}
-                      onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
-                    >
-                      {tEnums(`lifestyle_tag.${tag}`)}
-                    </Badge>
-                  );
-                })}
-              </div>
             </div>
 
             <div className="space-y-2">

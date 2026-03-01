@@ -22,7 +22,7 @@ import {
   genderPreferenceEnum,
   houseTypeEnum,
   languageEnum,
-  lifestyleTagEnum,
+
   locationTagEnum,
   rentalTypeEnum,
   roomFeatureEnum,
@@ -72,9 +72,6 @@ export const rooms = pgTable(
     preferredGender: genderPreferenceEnum("preferred_gender").default(GenderPreference.no_preference),
     preferredAgeMin: integer("preferred_age_min"),
     preferredAgeMax: integer("preferred_age_max"),
-    preferredLifestyleTags: lifestyleTagEnum("preferred_lifestyle_tags")
-      .array()
-      .default([]),
     status: roomStatusEnum("status").notNull().default("draft"),
     shareLink: uuid("share_link").unique().defaultRandom(),
     shareLinkExpiresAt: timestamp("share_link_expires_at", { withTimezone: true }),

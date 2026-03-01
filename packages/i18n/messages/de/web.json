@@ -385,7 +385,16 @@
       },
       {
         "title": "3. Daten, die wir erheben",
-        "content": "Wir erheben: Profildaten (Name, E-Mail, Geburtsdatum, Geschlecht, Studiendaten, Fotos), Wohnungsdaten (Zimmeranzeigen mit Adressen und Koordinaten), Kommunikationsdaten (Ende-zu-Ende verschlüsselte Chatnachrichten), Bewerbungsdaten (persönliche Nachrichten und Status), Sitzungsdaten (IP-Adresse, User Agent für Sicherheit), Push-Tokens (für die Zustellung von Benachrichtigungen) und Einwilligungsdatensätze (deine Cookie- und Datenschutzeinstellungen)."
+        "content": "Wir erheben die folgenden Kategorien personenbezogener Daten:",
+        "items": [
+          "Profildaten — Name, E-Mail, Geburtsdatum, Geschlecht, Studiendaten, Fotos",
+          "Wohnungsdaten — Zimmeranzeigen mit Adressen und Koordinaten",
+          "Kommunikationsdaten — Ende-zu-Ende verschlüsselte Chatnachrichten",
+          "Bewerbungsdaten — persönliche Nachrichten und Status",
+          "Sitzungsdaten — IP-Adresse, User Agent für Sicherheit",
+          "Push-Tokens — für die Zustellung von Benachrichtigungen",
+          "Einwilligungsdatensätze — deine Cookie- und Datenschutzeinstellungen"
+        ]
       },
       {
         "title": "4. SURFconext-Daten",
@@ -397,11 +406,22 @@
       },
       {
         "title": "6. Rechtsgrundlage",
-        "content": "Wir verarbeiten deine Daten auf folgenden Rechtsgrundlagen: Vertrag (Art. 6(1)(b)) — Profil, Wohnungen, Bewerbungen, Chat; notwendig für die Diensterbringung. Einwilligung (Art. 6(1)(a)) — funktionale Cookies, Push-Benachrichtigungen, Analysen. Berechtigtes Interesse (Art. 6(1)(f)) — Sitzungssicherheit (IP-Protokollierung), Plattformsicherheit (Moderationsberichte). Du kannst deine Einwilligung jederzeit über Einstellungen > Datenschutz widerrufen."
+        "content": "Wir verarbeiten deine Daten auf folgenden Rechtsgrundlagen. Du kannst deine Einwilligung jederzeit über Einstellungen > Datenschutz widerrufen.",
+        "items": [
+          "Vertrag (Art. 6(1)(b)) — Profil, Wohnungen, Bewerbungen, Chat; notwendig für die Diensterbringung",
+          "Einwilligung (Art. 6(1)(a)) — funktionale Cookies, Push-Benachrichtigungen, Analysen",
+          "Berechtigtes Interesse (Art. 6(1)(f)) — Sitzungssicherheit (IP-Protokollierung), Plattformsicherheit (Moderationsberichte)"
+        ]
       },
       {
         "title": "7. Datenweitergabe & Auftragsverarbeiter",
-        "content": "Wir teilen deine Daten nur mit folgenden Auftragsverarbeitern, alle innerhalb der EU/EWR: Supabase (Dublin, Irland) — Datenbank und Dateispeicher; Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen; Upstash (Irland) — Ratenbegrenzung über Redis; SURFconext (Niederlande) — Authentifizierung. Alle Auftragsverarbeiter arbeiten unter Auftragsverarbeitungsverträgen."
+        "content": "Wir teilen deine Daten nur mit folgenden Auftragsverarbeitern, alle innerhalb der EU/des EWR. Alle Auftragsverarbeiter arbeiten unter Auftragsverarbeitungsverträgen.",
+        "items": [
+          "Supabase (Dublin, Irland) — Datenbank und Dateispeicher",
+          "Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen",
+          "Upstash (Irland) — Ratenbegrenzung über Redis",
+          "SURFconext (Niederlande) — Authentifizierung"
+        ]
       },
       {
         "title": "8. Internationale Übermittlungen",
@@ -409,11 +429,28 @@
       },
       {
         "title": "9. Aufbewahrungsfristen",
-        "content": "Profildaten, Zimmeranzeigen und Chatnachrichten werden aufbewahrt, solange dein Konto aktiv ist. Sitzungs-IP-Adressen werden nach 30 Tagen anonymisiert. Abgelaufene Sitzungen werden nach 90 Tagen gelöscht. Berichtsnachrichtentexte werden 90 Tage nach Abschluss entfernt. Gelesene Benachrichtigungen werden nach 180 Tagen gelöscht. IP-Adressen in Einwilligungsdatensätzen werden nach 365 Tagen anonymisiert. Wenn du dein Konto löschst, werden alle deine Daten dauerhaft durch Kaskadenlöschungen entfernt."
+        "content": "Wir bewahren deine Daten für folgende Zeiträume auf:",
+        "items": [
+          "Profildaten, Zimmeranzeigen und Chatnachrichten — aufbewahrt, solange dein Konto aktiv ist",
+          "Sitzungs-IP-Adressen — anonymisiert nach 30 Tagen",
+          "Abgelaufene Sitzungen — gelöscht nach 90 Tagen",
+          "Berichtsnachrichtentexte — entfernt 90 Tage nach Abschluss",
+          "Gelesene Benachrichtigungen — gelöscht nach 180 Tagen",
+          "IP-Adressen in Einwilligungsdatensätzen — anonymisiert nach 365 Tagen",
+          "Kontolöschung — alle Daten dauerhaft durch Kaskadenlöschungen entfernt"
+        ]
       },
       {
         "title": "10. Deine Rechte",
-        "content": "Gemäß der DSGVO hast du das Recht auf: Auskunft (Art. 15) — über Einstellungen > Datenschutz > Datenexport; Berichtigung (Art. 16) — bearbeite jederzeit dein Profil; Löschung (Art. 17) — lösche dein Konto und alle Daten; Einschränkung der Verarbeitung (Art. 18) — pausiere die Verarbeitung bei Beibehaltung der Daten; Datenübertragbarkeit (Art. 20) — Export im JSON- oder CSV-Format; Widerspruch (Art. 21) — widerspreche der Verarbeitung auf Basis berechtigter Interessen. Du kannst diese Rechte über Einstellungen > Datenschutz oder per E-Mail an privacy@openhospi.nl ausüben."
+        "content": "Gemäß der DSGVO hast du folgende Rechte. Du kannst diese Rechte über Einstellungen > Datenschutz oder per E-Mail an privacy@openhospi.nl ausüben.",
+        "items": [
+          "Auskunft (Art. 15) — über Einstellungen > Datenschutz > Datenexport",
+          "Berichtigung (Art. 16) — bearbeite jederzeit dein Profil",
+          "Löschung (Art. 17) — lösche dein Konto und alle Daten",
+          "Einschränkung der Verarbeitung (Art. 18) — pausiere die Verarbeitung bei Beibehaltung der Daten",
+          "Datenübertragbarkeit (Art. 20) — Export im JSON- oder CSV-Format",
+          "Widerspruch (Art. 21) — widerspreche der Verarbeitung auf Basis berechtigter Interessen"
+        ]
       },
       {
         "title": "11. Beschwerderecht",
@@ -451,11 +488,18 @@
       },
       {
         "title": "Essenzielle Cookies",
-        "content": "Diese Cookies sind für das Funktionieren der Plattform unbedingt erforderlich. Hierfür ist keine Einwilligung erforderlich. Wir verwenden: better-auth.session_token — authentifiziert deine Anmeldesitzung (Sitzungs-Cookie, wird beim Schließen des Browsers gelöscht)."
+        "content": "Diese Cookies sind für das Funktionieren der Plattform unbedingt erforderlich. Hierfür ist keine Einwilligung erforderlich.",
+        "items": [
+          "better-auth.session_token — authentifiziert deine Anmeldesitzung (Sitzungs-Cookie, wird beim Schließen des Browsers gelöscht)"
+        ]
       },
       {
         "title": "Funktionale Cookies",
-        "content": "Diese Cookies verbessern dein Erlebnis, sind aber nicht unbedingt erforderlich. Hierfür ist deine Einwilligung erforderlich: sidebar_state — merkt sich, ob die Seitenleiste geöffnet oder geschlossen ist (permanent, localStorage); NEXT_LOCALE — merkt sich deine Spracheinstellung (1 Jahr)."
+        "content": "Diese Cookies verbessern dein Erlebnis, sind aber nicht unbedingt erforderlich. Hierfür ist deine Einwilligung erforderlich.",
+        "items": [
+          "sidebar_state — merkt sich, ob die Seitenleiste geöffnet oder geschlossen ist (permanent, localStorage)",
+          "NEXT_LOCALE — merkt sich deine Spracheinstellung (1 Jahr)"
+        ]
       },
       {
         "title": "Analysen",
@@ -704,39 +748,102 @@
     "sections": {
       "0": {
         "title": "1. Nutzerprofile",
-        "content": "Zweck: Bereitstellung der Studentenwohnungsplattform. Datenkategorien: Name, E-Mail, Geburtsdatum, Geschlecht, Studiengang, Einrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Andere Plattformnutzer (eingeschränkte Profilansicht). Aufbewahrung: Bis zur Kontolöschung. Sicherheit: RLS-Richtlinien, verschlüsselter Transport, Zugriffskontrollen."
+        "items": [
+          "Zweck — Bereitstellung der Studentenwohnungsplattform",
+          "Datenkategorien — Name, E-Mail, Geburtsdatum, Geschlecht, Studiengang, Einrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete",
+          "Rechtsgrundlage — Vertrag (Art. 6(1)(b))",
+          "Empfänger — Andere Plattformnutzer (eingeschränkte Profilansicht)",
+          "Aufbewahrung — Bis zur Kontolöschung",
+          "Sicherheit — RLS-Richtlinien, verschlüsselter Transport, Zugriffskontrollen"
+        ]
       },
       "1": {
         "title": "2. Profilfotos",
-        "content": "Zweck: Profilidentifikation. Datenkategorien: bis zu 5 Fotos pro Nutzer. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Andere Plattformnutzer. Aufbewahrung: Bis zur Löschung durch den Nutzer oder Kontolöschung. Sicherheit: Supabase Storage mit Zugriffskontrolle."
+        "items": [
+          "Zweck — Profilidentifikation",
+          "Datenkategorien — bis zu 5 Fotos pro Nutzer",
+          "Rechtsgrundlage — Vertrag (Art. 6(1)(b))",
+          "Empfänger — Andere Plattformnutzer",
+          "Aufbewahrung — Bis zur Löschung durch den Nutzer oder Kontolöschung",
+          "Sicherheit — Supabase Storage mit Zugriffskontrolle"
+        ]
       },
       "2": {
         "title": "3. Zimmeranzeigen",
-        "content": "Zweck: Wohnungsmarktplatz-Funktionalität. Datenkategorien: Adresse, Stadt, Koordinaten, Mietpreis, Zimmerdetails, Fotos, Verfügbarkeit. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Alle authentifizierten Nutzer (oder öffentlich bei Nicht-Vereinigungszimmern). Aufbewahrung: Bis zur Löschung der Anzeige oder Kontolöschung. Sicherheit: RLS-Richtlinien, nur Eigentümer kann bearbeiten."
+        "items": [
+          "Zweck — Wohnungsmarktplatz-Funktionalität",
+          "Datenkategorien — Adresse, Stadt, Koordinaten, Mietpreis, Zimmerdetails, Fotos, Verfügbarkeit",
+          "Rechtsgrundlage — Vertrag (Art. 6(1)(b))",
+          "Empfänger — Alle authentifizierten Nutzer (oder öffentlich bei Nicht-Vereinigungszimmern)",
+          "Aufbewahrung — Bis zur Löschung der Anzeige oder Kontolöschung",
+          "Sicherheit — RLS-Richtlinien, nur Eigentümer kann bearbeiten"
+        ]
       },
       "3": {
         "title": "4. Bewerbungen",
-        "content": "Zweck: Vermittlung von Suchenden und Zimmern. Datenkategorien: persönliche Nachricht, Bewerbungsstatus. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Zimmereigentümer und Hausmitglieder. Aufbewahrung: Bis zum Zurückziehen oder Kontolöschung. Sicherheit: RLS-Richtlinien beschränken Zugriff auf beteiligte Parteien."
+        "items": [
+          "Zweck — Vermittlung von Suchenden und Zimmern",
+          "Datenkategorien — persönliche Nachricht, Bewerbungsstatus",
+          "Rechtsgrundlage — Vertrag (Art. 6(1)(b))",
+          "Empfänger — Zimmereigentümer und Hausmitglieder",
+          "Aufbewahrung — Bis zum Zurückziehen oder Kontolöschung",
+          "Sicherheit — RLS-Richtlinien beschränken Zugriff auf beteiligte Parteien"
+        ]
       },
       "4": {
         "title": "5. Chatnachrichten",
-        "content": "Zweck: Kommunikation zwischen Suchenden und Hausmitgliedern. Datenkategorien: verschlüsselter Nachrichteninhalt, Zeitstempel. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Nur Gesprächsteilnehmer. Aufbewahrung: Bis zur Kontolöschung. Sicherheit: Ende-zu-Ende-Verschlüsselung (AES-256-GCM), nur Teilnehmer können entschlüsseln."
+        "items": [
+          "Zweck — Kommunikation zwischen Suchenden und Hausmitgliedern",
+          "Datenkategorien — verschlüsselter Nachrichteninhalt, Zeitstempel",
+          "Rechtsgrundlage — Vertrag (Art. 6(1)(b))",
+          "Empfänger — Nur Gesprächsteilnehmer",
+          "Aufbewahrung — Bis zur Kontolöschung",
+          "Sicherheit — Ende-zu-Ende-Verschlüsselung (AES-256-GCM), nur Teilnehmer können entschlüsseln"
+        ]
       },
       "5": {
         "title": "6. Sitzungsdaten",
-        "content": "Zweck: Authentifizierung und Sicherheit. Datenkategorien: IP-Adresse, User Agent, Sitzungstoken. Rechtsgrundlage: Berechtigtes Interesse (Art. 6(1)(f)) — Plattformsicherheit. Empfänger: Keine (nur intern). Aufbewahrung: IP-Adresse nach 30 Tagen nach Ablauf anonymisiert; Sitzung nach 90 Tagen gelöscht. Sicherheit: Nur serverseitig, wird nicht geteilt."
+        "items": [
+          "Zweck — Authentifizierung und Sicherheit",
+          "Datenkategorien — IP-Adresse, User Agent, Sitzungstoken",
+          "Rechtsgrundlage — Berechtigtes Interesse (Art. 6(1)(f)) — Plattformsicherheit",
+          "Empfänger — Keine (nur intern)",
+          "Aufbewahrung — IP-Adresse nach 30 Tagen nach Ablauf anonymisiert; Sitzung nach 90 Tagen gelöscht",
+          "Sicherheit — Nur serverseitig, wird nicht geteilt"
+        ]
       },
       "6": {
         "title": "7. Moderationsdaten",
-        "content": "Zweck: Plattformsicherheit und Missbrauchsprävention. Datenkategorien: Meldungen, Sperrungen, temporär entschlüsselter Nachrichtentext (nur bei gemeldeten Nachrichten). Rechtsgrundlage: Berechtigtes Interesse (Art. 6(1)(f)) — Nutzersicherheit. Empfänger: Nur Admin-Team. Aufbewahrung: Entschlüsselter Nachrichtentext wird 90 Tage nach Abschluss gelöscht. Sicherheit: Nur Admin-Zugriff, Audit-Protokollierung."
+        "items": [
+          "Zweck — Plattformsicherheit und Missbrauchsprävention",
+          "Datenkategorien — Meldungen, Sperrungen, temporär entschlüsselter Nachrichtentext (nur bei gemeldeten Nachrichten)",
+          "Rechtsgrundlage — Berechtigtes Interesse (Art. 6(1)(f)) — Nutzersicherheit",
+          "Empfänger — Nur Admin-Team",
+          "Aufbewahrung — Entschlüsselter Nachrichtentext wird 90 Tage nach Abschluss gelöscht",
+          "Sicherheit — Nur Admin-Zugriff, Audit-Protokollierung"
+        ]
       },
       "7": {
         "title": "8. Einwilligungsdatensätze",
-        "content": "Zweck: Nachweis einer gültigen Einwilligung (Art. 7). Datenkategorien: Einwilligungszweck, erteilt/widerrufen Status, IP-Adresse, User Agent, Datenschutzrichtlinien-Version, Zeitstempel. Rechtsgrundlage: Gesetzliche Verpflichtung (Art. 6(1)(c)). Empfänger: Keine (internes Audit). Aufbewahrung: IP-Adresse nach 365 Tagen anonymisiert; Datensätze werden zur Compliance aufbewahrt. Sicherheit: Unveränderlich (kein Update/Löschen), RLS auf eigene Datensätze beschränkt."
+        "items": [
+          "Zweck — Nachweis einer gültigen Einwilligung (Art. 7)",
+          "Datenkategorien — Einwilligungszweck, erteilt/widerrufen Status, IP-Adresse, User Agent, Datenschutzrichtlinien-Version, Zeitstempel",
+          "Rechtsgrundlage — Gesetzliche Verpflichtung (Art. 6(1)(c))",
+          "Empfänger — Keine (internes Audit)",
+          "Aufbewahrung — IP-Adresse nach 365 Tagen anonymisiert; Datensätze werden zur Compliance aufbewahrt",
+          "Sicherheit — Unveränderlich (kein Update/Löschen), RLS auf eigene Datensätze beschränkt"
+        ]
       },
       "8": {
         "title": "9. Push-Benachrichtigungs-Abonnements",
-        "content": "Zweck: Zustellung von Push-Benachrichtigungen. Datenkategorien: Endpunkt-URL, Verschlüsselungsschlüssel. Rechtsgrundlage: Einwilligung (Art. 6(1)(a)). Empfänger: Browser-Push-Service. Aufbewahrung: Bis zur Abmeldung durch den Nutzer oder Kontolöschung. Sicherheit: Web-Push-Protokoll mit Verschlüsselung."
+        "items": [
+          "Zweck — Zustellung von Push-Benachrichtigungen",
+          "Datenkategorien — Endpunkt-URL, Verschlüsselungsschlüssel",
+          "Rechtsgrundlage — Einwilligung (Art. 6(1)(a))",
+          "Empfänger — Browser-Push-Service",
+          "Aufbewahrung — Bis zur Abmeldung durch den Nutzer oder Kontolöschung",
+          "Sicherheit — Web-Push-Protokoll mit Verschlüsselung"
+        ]
       }
     }
   },
@@ -751,31 +858,74 @@
       },
       "1": {
         "title": "2. Notwendigkeit und Verhältnismäßigkeit",
-        "content": "Die Datenerhebung beschränkt sich auf das für die Plattformfunktion strikt Notwendige. Profildaten ermöglichen das Matching (Vertragsgrundlage). Standortdaten ermöglichen die geografische Suche. E2E-verschlüsselter Chat gewährleistet die Kommunikationsprivatsphäre. Keine Daten werden verkauft oder zu Marketingzwecken mit Dritten geteilt. Es wird keine automatisierte Entscheidungsfindung oder Profiling eingesetzt."
+        "content": "Die Datenerhebung beschränkt sich auf das für die Plattformfunktion strikt Notwendige.",
+        "items": [
+          "Profildaten ermöglichen das Matching (Vertragsgrundlage)",
+          "Standortdaten ermöglichen die geografische Suche",
+          "E2E-verschlüsselter Chat gewährleistet die Kommunikationsprivatsphäre",
+          "Keine Daten werden verkauft oder zu Marketingzwecken mit Dritten geteilt",
+          "Es wird keine automatisierte Entscheidungsfindung oder Profiling eingesetzt"
+        ]
       },
       "2": {
         "title": "3. Risiko: Verarbeitung von Profildaten",
-        "content": "Risiko: Unbefugter Zugriff auf persönliche Profile. Wahrscheinlichkeit: Gering. Auswirkung: Mittel. Maßnahmen: Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über SURFconext erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt. Restrisiko: Gering."
+        "items": [
+          "Risiko — Unbefugter Zugriff auf persönliche Profile",
+          "Wahrscheinlichkeit — Gering",
+          "Auswirkung — Mittel",
+          "Maßnahmen — Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über SURFconext erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
+          "Restrisiko — Gering"
+        ]
       },
       "3": {
         "title": "4. Risiko: Standortdaten (Zimmerkoordinaten)",
-        "content": "Risiko: Präzise Standortverfolgung über Zimmerkoordinaten. Wahrscheinlichkeit: Gering. Auswirkung: Mittel. Maßnahmen: Koordinaten werden nur für die Kartenanzeige verwendet. Keine Standortverfolgung der Nutzer. Koordinaten beziehen sich auf das Zimmer, nicht den Nutzer. Nur für authentifizierte Nutzer sichtbar. Restrisiko: Gering."
+        "items": [
+          "Risiko — Präzise Standortverfolgung über Zimmerkoordinaten",
+          "Wahrscheinlichkeit — Gering",
+          "Auswirkung — Mittel",
+          "Maßnahmen — Koordinaten werden nur für die Kartenanzeige verwendet. Keine Standortverfolgung der Nutzer. Koordinaten beziehen sich auf das Zimmer, nicht den Nutzer. Nur für authentifizierte Nutzer sichtbar",
+          "Restrisiko — Gering"
+        ]
       },
       "4": {
         "title": "5. Risiko: Chatnachrichteninhalt",
-        "content": "Risiko: Abfangen oder unbefugtes Lesen von Nachrichten. Wahrscheinlichkeit: Sehr gering. Auswirkung: Hoch. Maßnahmen: Ende-zu-Ende-Verschlüsselung mit AES-256-GCM. Pro-Nachricht-Schlüssel für jeden Empfänger gewrappt. Private Schlüssel in IndexedDB (clientseitig) gespeichert. Server hat nie Zugriff auf Klartext. Restrisiko: Sehr gering."
+        "items": [
+          "Risiko — Abfangen oder unbefugtes Lesen von Nachrichten",
+          "Wahrscheinlichkeit — Sehr gering",
+          "Auswirkung — Hoch",
+          "Maßnahmen — Ende-zu-Ende-Verschlüsselung mit AES-256-GCM. Pro-Nachricht-Schlüssel für jeden Empfänger gewrappt. Private Schlüssel in IndexedDB (clientseitig) gespeichert. Server hat nie Zugriff auf Klartext",
+          "Restrisiko — Sehr gering"
+        ]
       },
       "5": {
         "title": "6. Risiko: Fotospeicherung",
-        "content": "Risiko: Unbefugter Zugriff auf Profil- oder Zimmerfotos. Wahrscheinlichkeit: Gering. Auswirkung: Mittel. Maßnahmen: Supabase Storage mit Zugriffsrichtlinien. Fotos nur für authentifizierte Nutzer zugänglich. Löschung kaskadiert bei Kontoentfernung. Restrisiko: Gering."
+        "items": [
+          "Risiko — Unbefugter Zugriff auf Profil- oder Zimmerfotos",
+          "Wahrscheinlichkeit — Gering",
+          "Auswirkung — Mittel",
+          "Maßnahmen — Supabase Storage mit Zugriffsrichtlinien. Fotos nur für authentifizierte Nutzer zugänglich. Löschung kaskadiert bei Kontoentfernung",
+          "Restrisiko — Gering"
+        ]
       },
       "6": {
         "title": "7. Risiko: SURFconext-Daten",
-        "content": "Risiko: Übermäßige Datenerhebung vom SSO-Anbieter. Wahrscheinlichkeit: Sehr gering. Auswirkung: Gering. Maßnahmen: Es werden nur Name, E-Mail und Einrichtungsdomain von SURFconext empfangen. Keine zusätzlichen Attribute angefordert. SURFconext wird von SURF (Niederlande) verwaltet. Restrisiko: Sehr gering."
+        "items": [
+          "Risiko — Übermäßige Datenerhebung vom SSO-Anbieter",
+          "Wahrscheinlichkeit — Sehr gering",
+          "Auswirkung — Gering",
+          "Maßnahmen — Es werden nur Name, E-Mail und Einrichtungsdomain von SURFconext empfangen. Keine zusätzlichen Attribute angefordert. SURFconext wird von SURF (Niederlande) verwaltet",
+          "Restrisiko — Sehr gering"
+        ]
       },
       "7": {
         "title": "8. Risiko: Moderation — temporär entschlüsselte Nachrichten",
-        "content": "Risiko: Offenlegung privater Nachrichteninhalte während der Moderation. Wahrscheinlichkeit: Gering (nur bei Nutzermeldung). Auswirkung: Mittel. Maßnahmen: Nur der meldende Nutzer liefert den entschlüsselten Text. Temporäre Speicherung mit automatischer 90-Tage-Löschung. Nur Admin-Zugriff mit vollständiger Audit-Protokollierung. Restrisiko: Gering."
+        "items": [
+          "Risiko — Offenlegung privater Nachrichteninhalte während der Moderation",
+          "Wahrscheinlichkeit — Gering (nur bei Nutzermeldung)",
+          "Auswirkung — Mittel",
+          "Maßnahmen — Nur der meldende Nutzer liefert den entschlüsselten Text. Temporäre Speicherung mit automatischer 90-Tage-Löschung. Nur Admin-Zugriff mit vollständiger Audit-Protokollierung",
+          "Restrisiko — Gering"
+        ]
       },
       "8": {
         "title": "9. Daten von Kindern (Art. 8)",
@@ -794,19 +944,43 @@
     "sections": {
       "0": {
         "title": "1. Supabase (Datenbank & Speicher)",
-        "content": "Rolle: Datenbank-Hosting (PostgreSQL) und Dateispeicher (Profilfotos, Zimmerfotos). Standort: Dublin, Irland (eu-west-1). Verarbeitete Daten: Alle in der Datenbank gespeicherten personenbezogenen Daten, hochgeladene Fotos. AVV: Supabase-Auftragsverarbeitungsvertrag liegt vor. Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung, SOC 2 Typ II zertifiziert."
+        "items": [
+          "Rolle — Datenbank-Hosting (PostgreSQL) und Dateispeicher (Profilfotos, Zimmerfotos)",
+          "Standort — Dublin, Irland (eu-west-1)",
+          "Verarbeitete Daten — Alle in der Datenbank gespeicherten personenbezogenen Daten, hochgeladene Fotos",
+          "AVV — Supabase-Auftragsverarbeitungsvertrag liegt vor",
+          "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung, SOC 2 Typ II zertifiziert"
+        ]
       },
       "1": {
         "title": "2. Vercel (Webhosting & Edge)",
-        "content": "Rolle: Webanwendungs-Hosting, Serverless Functions, Edge-Netzwerk. Standort: Dublin, Irland (eu-west-1). Verarbeitete Daten: HTTP-Anfragen (IP-Adresse, User Agent) in Serverprotokollen. AVV: Vercel Data Processing Addendum liegt vor. Sicherheit: Automatisches HTTPS, DDoS-Schutz, SOC 2 Typ II zertifiziert."
+        "items": [
+          "Rolle — Webanwendungs-Hosting, Serverless Functions, Edge-Netzwerk",
+          "Standort — Dublin, Irland (eu-west-1)",
+          "Verarbeitete Daten — HTTP-Anfragen (IP-Adresse, User Agent) in Serverprotokollen",
+          "AVV — Vercel Data Processing Addendum liegt vor",
+          "Sicherheit — Automatisches HTTPS, DDoS-Schutz, SOC 2 Typ II zertifiziert"
+        ]
       },
       "2": {
         "title": "3. Upstash (Redis — Ratenbegrenzung)",
-        "content": "Rolle: Redis-Datenbank für Ratenbegrenzung und Missbrauchsprävention. Standort: Irland (AWS eu-west-1). Verarbeitete Daten: Anonymisierte Ratenbegrenzungszähler (User-ID-Hashes). Keine personenbezogenen Daten gespeichert. AVV: Upstash DSGVO-AVV liegt vor. Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung."
+        "items": [
+          "Rolle — Redis-Datenbank für Ratenbegrenzung und Missbrauchsprävention",
+          "Standort — Irland (AWS eu-west-1)",
+          "Verarbeitete Daten — Anonymisierte Ratenbegrenzungszähler (User-ID-Hashes). Keine personenbezogenen Daten gespeichert",
+          "AVV — Upstash DSGVO-AVV liegt vor",
+          "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung"
+        ]
       },
       "3": {
         "title": "4. SURFconext (SSO/OIDC-Anbieter)",
-        "content": "Rolle: Identitätsanbieter für die Studierendenauthentifizierung. Standort: Niederlande (SURF-Infrastruktur). Verarbeitete Daten: Authentifizierungstoken, Name, E-Mail, Einrichtungsdomain (bei der Anmeldung empfangen). AVV: SURF arbeitet unter niederländischem Recht als Bildungsinfrastrukturanbieter. Sicherheit: SAML/OIDC-Protokolle, Sicherheit auf institutionellem Niveau."
+        "items": [
+          "Rolle — Identitätsanbieter für die Studierendenauthentifizierung",
+          "Standort — Niederlande (SURF-Infrastruktur)",
+          "Verarbeitete Daten — Authentifizierungstoken, Name, E-Mail, Einrichtungsdomain (bei der Anmeldung empfangen)",
+          "AVV — SURF arbeitet unter niederländischem Recht als Bildungsinfrastrukturanbieter",
+          "Sicherheit — SAML/OIDC-Protokolle, Sicherheit auf institutionellem Niveau"
+        ]
       }
     }
   },
@@ -817,19 +991,43 @@
     "sections": {
       "0": {
         "title": "1. Vertrag (Art. 6(1)(b))",
-        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung unseres Vertrags mit dir (Bereitstellung der Studentenwohnungsplattform) erforderlich: Erstellung und Verwaltung des Nutzerprofils. Upload von Profilfotos. Erstellung und Verwaltung von Zimmeranzeigen. Einreichung und Verarbeitung von Bewerbungen. Chat-Messaging (E2E-verschlüsselt). Verwaltung der Hausmitgliedschaft. Abstimmung über Bewerbungen."
+        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung unseres Vertrags mit dir (Bereitstellung der Studentenwohnungsplattform) erforderlich:",
+        "items": [
+          "Erstellung und Verwaltung des Nutzerprofils",
+          "Upload von Profilfotos",
+          "Erstellung und Verwaltung von Zimmeranzeigen",
+          "Einreichung und Verarbeitung von Bewerbungen",
+          "Chat-Messaging (E2E-verschlüsselt)",
+          "Verwaltung der Hausmitgliedschaft",
+          "Abstimmung über Bewerbungen"
+        ]
       },
       "1": {
         "title": "2. Einwilligung (Art. 6(1)(a))",
-        "content": "Die folgenden Verarbeitungstätigkeiten basieren auf deiner ausdrücklichen Einwilligung, die du jederzeit über Einstellungen > Datenschutz widerrufen kannst: Funktionale Cookies (Seitenleistenstatus, Spracheinstellung). Zustellung von Push-Benachrichtigungen. Analysen (Vercel Analytics — cookielos, keine personenbezogenen Daten). Die Einwilligung kann in deinen Kontoeinstellungen oder über das Cookie-Banner verwaltet werden."
+        "content": "Die folgenden Verarbeitungstätigkeiten basieren auf deiner ausdrücklichen Einwilligung, die du jederzeit über Einstellungen > Datenschutz widerrufen kannst:",
+        "items": [
+          "Funktionale Cookies (Seitenleistenstatus, Spracheinstellung)",
+          "Zustellung von Push-Benachrichtigungen",
+          "Analysen (Vercel Analytics — cookielos, keine personenbezogenen Daten)"
+        ]
       },
       "2": {
         "title": "3. Berechtigtes Interesse (Art. 6(1)(f))",
-        "content": "Die folgenden Verarbeitungstätigkeiten basieren auf unserem berechtigten Interesse an Plattformsicherheit und Nutzerschutz: Sitzungsdaten (IP-Adresse, User Agent) — zur Sicherheitsüberwachung. Moderationsdaten (Meldungen, Sperrungen) — für die Plattformsicherheit. Temporär entschlüsselter Nachrichtentext — zur Untersuchung gemeldeter Nachrichten. Wir haben diese Interessen gegen deine Rechte abgewogen und festgestellt, dass die Verarbeitung verhältnismäßig und notwendig ist."
+        "content": "Die folgenden Verarbeitungstätigkeiten basieren auf unserem berechtigten Interesse an Plattformsicherheit und Nutzerschutz. Wir haben diese Interessen gegen deine Rechte abgewogen und festgestellt, dass die Verarbeitung verhältnismäßig und notwendig ist.",
+        "items": [
+          "Sitzungsdaten (IP-Adresse, User Agent) — zur Sicherheitsüberwachung",
+          "Moderationsdaten (Meldungen, Sperrungen) — für die Plattformsicherheit",
+          "Temporär entschlüsselter Nachrichtentext — zur Untersuchung gemeldeter Nachrichten"
+        ]
       },
       "3": {
         "title": "4. Gesetzliche Verpflichtung (Art. 6(1)(c))",
-        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung gesetzlicher Verpflichtungen erforderlich: Einwilligungsdatensätze (unveränderlicher Audit-Trail) — zum Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO. Bearbeitung von Datenanfragen — zur Erfüllung der Betroffenenrechte (Art. 15-22). Verarbeitungseinschränkungsdatensätze — zur Einhaltung des Rechts auf Einschränkung nach Art. 18."
+        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung gesetzlicher Verpflichtungen erforderlich:",
+        "items": [
+          "Einwilligungsdatensätze (unveränderlicher Audit-Trail) — zum Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO",
+          "Bearbeitung von Datenanfragen — zur Erfüllung der Betroffenenrechte (Art. 15-22)",
+          "Verarbeitungseinschränkungsdatensätze — zur Einhaltung des Rechts auf Einschränkung nach Art. 18"
+        ]
       },
       "4": {
         "title": "5. Keine automatisierte Entscheidungsfindung",

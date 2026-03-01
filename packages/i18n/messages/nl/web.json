@@ -385,7 +385,16 @@
       },
       {
         "title": "3. Gegevens die we verzamelen",
-        "content": "We verzamelen: profielgegevens (naam, e-mail, geboortedatum, geslacht, studiegegevens, foto's), woninggegevens (kameradvertenties met adressen en coördinaten), communicatiegegevens (end-to-end versleutelde chatberichten), aanmeldingsgegevens (persoonlijke berichten en status), sessiegegevens (IP-adres, user agent voor beveiliging), pushtokens (voor het bezorgen van meldingen) en toestemmingsrecords (je cookie- en privacyvoorkeuren)."
+        "content": "Wij verzamelen de volgende categorieën persoonsgegevens:",
+        "items": [
+          "Profielgegevens — naam, e-mail, geboortedatum, geslacht, studiegegevens, foto's",
+          "Woninggegevens — kameradvertenties met adressen en coördinaten",
+          "Communicatiegegevens — end-to-end versleutelde chatberichten",
+          "Sollicitatiegegevens — persoonlijke berichten en status",
+          "Sessiegegevens — IP-adres, user agent voor beveiliging",
+          "Push-notificatietokens — voor bezorging van notificaties",
+          "Toestemmingsregistratie — je cookie- en privacyvoorkeuren"
+        ]
       },
       {
         "title": "4. SURFconext-gegevens",
@@ -397,11 +406,22 @@
       },
       {
         "title": "6. Rechtsgrond",
-        "content": "We verwerken je gegevens op basis van de volgende rechtsgronden: Overeenkomst (Art. 6(1)(b)) — profiel, woningen, aanmeldingen, chat; deze zijn noodzakelijk voor de dienstverlening. Toestemming (Art. 6(1)(a)) — functionele cookies, pushmeldingen, analyse. Gerechtvaardigd belang (Art. 6(1)(f)) — sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten). Je kunt toestemming op elk moment intrekken via Instellingen > Privacy. Zie onze pagina Rechtsgrondoverzicht voor een volledig overzicht per verwerkingsactiviteit."
+        "content": "Wij verwerken je gegevens op basis van de volgende rechtsgronden. Je kunt je toestemming op elk moment intrekken via Instellingen > Privacy. Zie onze pagina Rechtsgrondslag voor een volledig overzicht per verwerkingsactiviteit.",
+        "items": [
+          "Overeenkomst (Art. 6(1)(b)) — profiel, woning, sollicitaties, chat; noodzakelijk voor de dienstverlening",
+          "Toestemming (Art. 6(1)(a)) — functionele cookies, pushnotificaties, analytics",
+          "Gerechtvaardigd belang (Art. 6(1)(f)) — sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten)"
+        ]
       },
       {
         "title": "7. Gegevensdeling & verwerkers",
-        "content": "We delen je gegevens alleen met de volgende verwerkers, allemaal gevestigd binnen de EU/EER: Supabase (Dublin, Ierland) — database en bestandsopslag; Vercel (Dublin, Ierland) — webhosting en edge-functies; Upstash (Ierland) — snelheidsbeperking via Redis; SURFconext (Nederland) — authenticatie. Alle verwerkers werken onder Verwerkersovereenkomsten. Zie onze Verwerkers-pagina voor details."
+        "content": "Wij delen je gegevens alleen met de volgende verwerkers, allemaal gevestigd binnen de EU/EER. Alle verwerkers werken onder verwerkersovereenkomsten. Zie onze pagina Verwerkers voor details.",
+        "items": [
+          "Supabase (Dublin, Ierland) — database en bestandsopslag",
+          "Vercel (Dublin, Ierland) — webhosting en edge-functies",
+          "Upstash (Ierland) — snelheidsbeperking via Redis",
+          "SURFconext (Nederland) — authenticatie"
+        ]
       },
       {
         "title": "8. Internationale doorgifte",
@@ -409,11 +429,28 @@
       },
       {
         "title": "9. Bewaartermijnen",
-        "content": "Profielgegevens, woningadvertenties en chatberichten worden bewaard zolang je account actief is. Sessie-IP-adressen worden geanonimiseerd na 30 dagen. Verlopen sessies worden verwijderd na 90 dagen. Rapportberichttekst wordt verwijderd 90 dagen na afhandeling. Gelezen meldingen worden verwijderd na 180 dagen. IP-adressen in toestemmingsrecords worden geanonimiseerd na 365 dagen. Wanneer je je account verwijdert, worden al je gegevens permanent verwijderd via cascadeverwijderingen."
+        "content": "Wij bewaren je gegevens gedurende de volgende perioden:",
+        "items": [
+          "Profielgegevens, kameradvertenties en chatberichten — bewaard zolang je account actief is",
+          "Sessie-IP-adressen — geanonimiseerd na 30 dagen",
+          "Verlopen sessies — verwijderd na 90 dagen",
+          "Rapportberichtteksten — verwijderd 90 dagen na afhandeling",
+          "Gelezen meldingen — verwijderd na 180 dagen",
+          "IP-adressen in toestemmingsregistratie — geanonimiseerd na 365 dagen",
+          "Accountverwijdering — alle gegevens permanent verwijderd via cascading deletes"
+        ]
       },
       {
         "title": "10. Jouw rechten",
-        "content": "Onder de AVG heb je het recht op: inzage in je gegevens (Art. 15) — via Instellingen > Privacy > Gegevens exporteren; rectificatie (Art. 16) — bewerk je profiel op elk moment; wissing (Art. 17) — verwijder je account en alle gegevens; beperking van verwerking (Art. 18) — pauzeer verwerking terwijl gegevens worden bewaard; gegevensoverdraagbaarheid (Art. 20) — exporteer in JSON- of CSV-formaat; bezwaar (Art. 21) — maak bezwaar tegen verwerking op basis van gerechtvaardigd belang. Je kunt deze rechten uitoefenen via Instellingen > Privacy, of door contact op te nemen met privacy@openhospi.nl."
+        "content": "Onder de AVG heb je de volgende rechten. Je kunt deze rechten uitoefenen via Instellingen > Privacy, of door contact op te nemen met privacy@openhospi.nl.",
+        "items": [
+          "Inzage van je gegevens (Art. 15) — via Instellingen > Privacy > Gegevensexport",
+          "Rectificatie (Art. 16) — bewerk je profiel op elk moment",
+          "Wissing (Art. 17) — verwijder je account en alle gegevens",
+          "Beperking van verwerking (Art. 18) — pauzeer verwerking met behoud van gegevens",
+          "Gegevensoverdraagbaarheid (Art. 20) — exporteer in JSON- of CSV-formaat",
+          "Bezwaar (Art. 21) — maak bezwaar tegen verwerking op basis van gerechtvaardigd belang"
+        ]
       },
       {
         "title": "11. Recht op klacht",
@@ -451,11 +488,18 @@
       },
       {
         "title": "Essentiële cookies",
-        "content": "Deze cookies zijn strikt noodzakelijk voor het functioneren van het platform. Hiervoor is geen toestemming vereist. We gebruiken: better-auth.session_token — authenticeert je inlogsessie (sessiecookie, wordt verwijderd wanneer je je browser sluit)."
+        "content": "Deze cookies zijn strikt noodzakelijk voor het functioneren van het platform. Hiervoor is geen toestemming vereist.",
+        "items": [
+          "better-auth.session_token — authenticeert je inlogsessie (sessiecookie, verwijderd wanneer je de browser sluit)"
+        ]
       },
       {
         "title": "Functionele cookies",
-        "content": "Deze cookies verbeteren je ervaring maar zijn niet strikt noodzakelijk. Hiervoor is je toestemming vereist: sidebar_state — onthoudt of de zijbalk open of gesloten is (permanent, localStorage); NEXT_LOCALE — onthoudt je taalvoorkeur (1 jaar)."
+        "content": "Deze cookies verbeteren je ervaring maar zijn niet strikt noodzakelijk. Hiervoor is je toestemming vereist.",
+        "items": [
+          "sidebar_state — onthoudt of de zijbalk open of gesloten is (persistent, localStorage)",
+          "NEXT_LOCALE — onthoudt je taalvoorkeur (1 jaar)"
+        ]
       },
       {
         "title": "Analyse",
@@ -704,39 +748,101 @@
     "sections": {
       "0": {
         "title": "1. Gebruikersprofielen",
-        "content": "Doel: Het leveren van de studentenhuisvestingsdienst. Gegevenscategorieën: naam, e-mail, geboortedatum, geslacht, studierichting, instelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Andere platformgebruikers (beperkt profieloverzicht). Bewaartermijn: Tot accountverwijdering. Beveiliging: RLS-beleid, versleuteld transport, toegangscontrole."
+        "items": [
+          "Doel — Het leveren van de studentenhuisvestingsdienst",
+          "Gegevenscategorieën — naam, e-mail, geboortedatum, geslacht, studierichting, instelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur",
+          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Ontvangers — Andere platformgebruikers (beperkt profieloverzicht)",
+          "Bewaartermijn — Tot accountverwijdering",
+          "Beveiliging — RLS-beleid, versleuteld transport, toegangscontrole"
+        ]
       },
       "1": {
         "title": "2. Profielfoto's",
-        "content": "Doel: Profielidentificatie. Gegevenscategorieën: maximaal 5 foto's per gebruiker. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Andere platformgebruikers. Bewaartermijn: Tot verwijdering door gebruiker of accountverwijdering. Beveiliging: Supabase Storage met toegangscontrole."
+        "items": [
+          "Doel — Profielidentificatie",
+          "Gegevenscategorieën — maximaal 5 foto's per gebruiker",
+          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Ontvangers — Andere platformgebruikers",
+          "Bewaartermijn — Tot verwijdering door gebruiker of accountverwijdering",
+          "Beveiliging — Supabase Storage met toegangscontrole"
+        ]
       },
       "2": {
         "title": "3. Kameradvertenties",
-        "content": "Doel: Woningmarktfunctionaliteit. Gegevenscategorieën: adres, stad, coördinaten, huurprijs, kamerdetails, foto's, beschikbaarheid. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Alle geauthenticeerde gebruikers. Bewaartermijn: Tot verwijdering of accountverwijdering. Beveiliging: RLS-beleid, alleen eigenaar kan bewerken."
+        "items": [
+          "Doel — Woningmarktfunctionaliteit",
+          "Gegevenscategorieën — adres, stad, coördinaten, huurprijs, kamerdetails, foto's, beschikbaarheid",
+          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Ontvangers — Alle geauthenticeerde gebruikers",
+          "Bewaartermijn — Tot verwijdering of accountverwijdering",
+          "Beveiliging — RLS-beleid, alleen eigenaar kan bewerken"
+        ]
       },
       "3": {
         "title": "4. Sollicitaties",
-        "content": "Doel: Matching van zoekenden met kamers. Gegevenscategorieën: persoonlijk bericht, sollicitatiestatus. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Kamereigenaar en huisgenoten. Bewaartermijn: Tot intrekking of accountverwijdering. Beveiliging: RLS-beleid beperkt tot betrokken partijen."
+        "items": [
+          "Doel — Matching van zoekenden met kamers",
+          "Gegevenscategorieën — persoonlijk bericht, sollicitatiestatus",
+          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Ontvangers — Kamereigenaar en huisgenoten",
+          "Bewaartermijn — Tot intrekking of accountverwijdering",
+          "Beveiliging — RLS-beleid beperkt tot betrokken partijen"
+        ]
       },
       "4": {
         "title": "5. Chatberichten",
-        "content": "Doel: Communicatie tussen zoekenden en huisgenoten. Gegevenscategorieën: versleutelde berichtinhoud, tijdstempels. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Alleen gespreksdeelnemers. Bewaartermijn: Tot accountverwijdering. Beveiliging: End-to-end encryptie (AES-256-GCM), alleen deelnemers kunnen ontsleutelen."
+        "items": [
+          "Doel — Communicatie tussen zoekenden en huisgenoten",
+          "Gegevenscategorieën — versleutelde berichtinhoud, tijdstempels",
+          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Ontvangers — Alleen gespreksdeelnemers",
+          "Bewaartermijn — Tot accountverwijdering",
+          "Beveiliging — End-to-end encryptie (AES-256-GCM), alleen deelnemers kunnen ontsleutelen"
+        ]
       },
       "5": {
         "title": "6. Sessiegegevens",
-        "content": "Doel: Authenticatie en beveiliging. Gegevenscategorieën: IP-adres, user agent, sessietoken. Rechtsgrond: Gerechtvaardigd belang (Art. 6(1)(f)). Ontvangers: Geen (alleen intern). Bewaartermijn: IP-adres gewist na 30 dagen na verlopen; sessie verwijderd na 90 dagen. Beveiliging: Alleen server-side."
+        "items": [
+          "Doel — Authenticatie en beveiliging",
+          "Gegevenscategorieën — IP-adres, user agent, sessietoken",
+          "Rechtsgrond — Gerechtvaardigd belang (Art. 6(1)(f))",
+          "Ontvangers — Geen (alleen intern)",
+          "Bewaartermijn — IP-adres gewist na 30 dagen na verlopen; sessie verwijderd na 90 dagen",
+          "Beveiliging — Alleen server-side"
+        ]
       },
       "6": {
         "title": "7. Moderatiegegevens",
-        "content": "Doel: Platformveiligheid en misbruikpreventie. Gegevenscategorieën: meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst. Rechtsgrond: Gerechtvaardigd belang (Art. 6(1)(f)). Ontvangers: Alleen adminteam. Bewaartermijn: Ontsleutelde berichttekst verwijderd 90 dagen na afhandeling. Beveiliging: Alleen admin-toegang, auditlogging."
+        "items": [
+          "Doel — Platformveiligheid en misbruikpreventie",
+          "Gegevenscategorieën — meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst",
+          "Rechtsgrond — Gerechtvaardigd belang (Art. 6(1)(f))",
+          "Ontvangers — Alleen adminteam",
+          "Bewaartermijn — Ontsleutelde berichttekst verwijderd 90 dagen na afhandeling",
+          "Beveiliging — Alleen admin-toegang, auditlogging"
+        ]
       },
       "7": {
         "title": "8. Toestemmingsregistratie",
-        "content": "Doel: Aantonen van geldige toestemming (Art. 7). Gegevenscategorieën: toestemmingsdoel, verleend/ingetrokken status, IP-adres, user agent, privacybeleidversie, tijdstempel. Rechtsgrond: Wettelijke verplichting (Art. 6(1)(c)). Ontvangers: Geen (interne audit). Bewaartermijn: IP-adres gewist na 365 dagen; records bewaard voor compliance."
+        "items": [
+          "Doel — Aantonen van geldige toestemming (Art. 7)",
+          "Gegevenscategorieën — toestemmingsdoel, verleend/ingetrokken status, IP-adres, user agent, privacybeleidversie, tijdstempel",
+          "Rechtsgrond — Wettelijke verplichting (Art. 6(1)(c))",
+          "Ontvangers — Geen (interne audit)",
+          "Bewaartermijn — IP-adres gewist na 365 dagen; records bewaard voor compliance"
+        ]
       },
       "8": {
         "title": "9. Pushmeldingsabonnementen",
-        "content": "Doel: Bezorgen van pushmeldingen. Gegevenscategorieën: endpoint-URL, encryptiesleutels. Rechtsgrond: Toestemming (Art. 6(1)(a)). Ontvangers: Browser push-service. Bewaartermijn: Tot uitschrijving of accountverwijdering. Beveiliging: Web Push-protocol met encryptie."
+        "items": [
+          "Doel — Bezorgen van pushmeldingen",
+          "Gegevenscategorieën — endpoint-URL, encryptiesleutels",
+          "Rechtsgrond — Toestemming (Art. 6(1)(a))",
+          "Ontvangers — Browser push-service",
+          "Bewaartermijn — Tot uitschrijving of accountverwijdering",
+          "Beveiliging — Web Push-protocol met encryptie"
+        ]
       }
     }
   },
@@ -751,31 +857,74 @@
       },
       "1": {
         "title": "2. Noodzaak en evenredigheid",
-        "content": "Gegevensverzameling is beperkt tot wat strikt noodzakelijk is. Profielgegevens maken matching mogelijk (contractbasis). Locatiegegevens maken geografisch zoeken mogelijk. E2E-versleutelde chat waarborgt communicatieprivacy. Geen gegevens worden verkocht of gedeeld met derden voor marketing. Geen geautomatiseerde besluitvorming of profilering."
+        "content": "De gegevensverzameling is beperkt tot wat strikt noodzakelijk is voor het functioneren van het platform.",
+        "items": [
+          "Profielgegevens maken matching mogelijk (contractbasis)",
+          "Locatiegegevens maken geografisch zoeken mogelijk",
+          "E2E-versleutelde chat waarborgt communicatieprivacy",
+          "Er worden geen gegevens verkocht of gedeeld met derden voor marketing",
+          "Er wordt geen geautomatiseerde besluitvorming of profilering gebruikt"
+        ]
       },
       "2": {
         "title": "3. Risico: Profielgegevensverwerking",
-        "content": "Risico: Ongeautoriseerde toegang tot profielen. Waarschijnlijkheid: Laag. Impact: Gemiddeld. Maatregelen: Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via SURFconext. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers. Restrisico: Laag."
+        "items": [
+          "Risico — Ongeautoriseerde toegang tot profielen",
+          "Waarschijnlijkheid — Laag",
+          "Impact — Gemiddeld",
+          "Maatregelen — Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via SURFconext. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
+          "Restrisico — Laag"
+        ]
       },
       "3": {
         "title": "4. Risico: Locatiegegevens",
-        "content": "Risico: Precieze locatiebepaling via kamercoördinaten. Waarschijnlijkheid: Laag. Impact: Gemiddeld. Maatregelen: Coördinaten alleen voor kaartweergave. Geen locatietracking van gebruikers. Alleen zichtbaar voor geauthenticeerde gebruikers. Restrisico: Laag."
+        "items": [
+          "Risico — Precieze locatiebepaling via kamercoördinaten",
+          "Waarschijnlijkheid — Laag",
+          "Impact — Gemiddeld",
+          "Maatregelen — Coördinaten alleen voor kaartweergave. Geen locatietracking van gebruikers. Alleen zichtbaar voor geauthenticeerde gebruikers",
+          "Restrisico — Laag"
+        ]
       },
       "4": {
         "title": "5. Risico: Chatberichtinhoud",
-        "content": "Risico: Onderschepping of ongeautoriseerd lezen van berichten. Waarschijnlijkheid: Zeer laag. Impact: Hoog. Maatregelen: End-to-end encryptie met AES-256-GCM. Per-bericht sleutels gewrapped voor elke ontvanger. Privésleutels in IndexedDB (client-side). Server heeft nooit toegang tot platte tekst. Restrisico: Zeer laag."
+        "items": [
+          "Risico — Onderschepping of ongeautoriseerd lezen van berichten",
+          "Waarschijnlijkheid — Zeer laag",
+          "Impact — Hoog",
+          "Maatregelen — End-to-end encryptie met AES-256-GCM. Per-bericht sleutels gewrapped voor elke ontvanger. Privésleutels in IndexedDB (client-side). Server heeft nooit toegang tot platte tekst",
+          "Restrisico — Zeer laag"
+        ]
       },
       "5": {
         "title": "6. Risico: Foto-opslag",
-        "content": "Risico: Ongeautoriseerde toegang tot foto's. Waarschijnlijkheid: Laag. Impact: Gemiddeld. Maatregelen: Supabase Storage met toegangsbeleid. Foto's alleen toegankelijk voor geauthenticeerde gebruikers. Verwijdering cascadeert bij accountverwijdering. Restrisico: Laag."
+        "items": [
+          "Risico — Ongeautoriseerde toegang tot foto's",
+          "Waarschijnlijkheid — Laag",
+          "Impact — Gemiddeld",
+          "Maatregelen — Supabase Storage met toegangsbeleid. Foto's alleen toegankelijk voor geauthenticeerde gebruikers. Verwijdering cascadeert bij accountverwijdering",
+          "Restrisico — Laag"
+        ]
       },
       "6": {
         "title": "7. Risico: SURFconext-gegevens",
-        "content": "Risico: Oververzameling van SSO-provider. Waarschijnlijkheid: Zeer laag. Impact: Laag. Maatregelen: Alleen naam, e-mail en instellingsdomein ontvangen van SURFconext. Geen extra attributen opgevraagd. SURFconext wordt beheerd door SURF (Nederland). Restrisico: Zeer laag."
+        "items": [
+          "Risico — Oververzameling van SSO-provider",
+          "Waarschijnlijkheid — Zeer laag",
+          "Impact — Laag",
+          "Maatregelen — Alleen naam, e-mail en instellingsdomein ontvangen van SURFconext. Geen extra attributen opgevraagd. SURFconext wordt beheerd door SURF (Nederland)",
+          "Restrisico — Zeer laag"
+        ]
       },
       "7": {
         "title": "8. Risico: Moderatie — tijdelijk ontsleutelde berichten",
-        "content": "Risico: Blootstelling van privéberichtinhoud tijdens moderatie. Waarschijnlijkheid: Laag (alleen bij melding). Impact: Gemiddeld. Maatregelen: Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Alleen admin-toegang met volledige auditlogging. Restrisico: Laag."
+        "items": [
+          "Risico — Blootstelling van privéberichtinhoud tijdens moderatie",
+          "Waarschijnlijkheid — Laag (alleen bij melding)",
+          "Impact — Gemiddeld",
+          "Maatregelen — Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Alleen admin-toegang met volledige auditlogging",
+          "Restrisico — Laag"
+        ]
       },
       "8": {
         "title": "9. Kinderdata (Art. 8)",
@@ -794,19 +943,43 @@
     "sections": {
       "0": {
         "title": "1. Supabase (Database & Opslag)",
-        "content": "Rol: Database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's). Locatie: Dublin, Ierland (eu-west-1). Verwerkte gegevens: Alle persoonsgegevens in de database, geüploade foto's. Verwerkersovereenkomst: Supabase Data Processing Agreement aanwezig. Beveiliging: Encryptie at rest en in transit, SOC 2 Type II gecertificeerd."
+        "items": [
+          "Rol — Database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's)",
+          "Locatie — Dublin, Ierland (eu-west-1)",
+          "Verwerkte gegevens — Alle persoonsgegevens in de database, geüploade foto's",
+          "Verwerkersovereenkomst — Supabase Data Processing Agreement aanwezig",
+          "Beveiliging — Encryptie at rest en in transit, SOC 2 Type II gecertificeerd"
+        ]
       },
       "1": {
         "title": "2. Vercel (Webhosting & Edge)",
-        "content": "Rol: Webapplicatie-hosting, serverless functies, edge-netwerk. Locatie: Dublin, Ierland (eu-west-1). Verwerkte gegevens: HTTP-verzoeken (IP-adres, user agent) in serverlogs. Verwerkersovereenkomst: Vercel Data Processing Addendum aanwezig. Beveiliging: Automatisch HTTPS, DDoS-bescherming, SOC 2 Type II gecertificeerd."
+        "items": [
+          "Rol — Webapplicatie-hosting, serverless functies, edge-netwerk",
+          "Locatie — Dublin, Ierland (eu-west-1)",
+          "Verwerkte gegevens — HTTP-verzoeken (IP-adres, user agent) in serverlogs",
+          "Verwerkersovereenkomst — Vercel Data Processing Addendum aanwezig",
+          "Beveiliging — Automatisch HTTPS, DDoS-bescherming, SOC 2 Type II gecertificeerd"
+        ]
       },
       "2": {
         "title": "3. Upstash (Redis — Rate Limiting)",
-        "content": "Rol: Redis-database voor rate limiting en misbruikpreventie. Locatie: Ierland (AWS eu-west-1). Verwerkte gegevens: Geanonimiseerde rate limit-tellers (gebruikers-ID hashes). Geen persoonsgegevens opgeslagen. Verwerkersovereenkomst: Upstash GDPR DPA aanwezig. Beveiliging: Encryptie at rest en in transit."
+        "items": [
+          "Rol — Redis-database voor rate limiting en misbruikpreventie",
+          "Locatie — Ierland (AWS eu-west-1)",
+          "Verwerkte gegevens — Geanonimiseerde rate limit-tellers (gebruikers-ID hashes). Geen persoonsgegevens opgeslagen",
+          "Verwerkersovereenkomst — Upstash GDPR DPA aanwezig",
+          "Beveiliging — Encryptie at rest en in transit"
+        ]
       },
       "3": {
         "title": "4. SURFconext (SSO/OIDC-provider)",
-        "content": "Rol: Identiteitsprovider voor studentenauthenticatie. Locatie: Nederland (SURF-infrastructuur). Verwerkte gegevens: Authenticatietokens, naam, e-mail, instellingsdomein (ontvangen bij inloggen). Verwerkersovereenkomst: SURF opereert onder Nederlands recht als onderwijsinfrastructuurprovider. Beveiliging: SAML/OIDC-protocollen, institutionele beveiliging."
+        "items": [
+          "Rol — Identiteitsprovider voor studentenauthenticatie",
+          "Locatie — Nederland (SURF-infrastructuur)",
+          "Verwerkte gegevens — Authenticatietokens, naam, e-mail, instellingsdomein (ontvangen bij inloggen)",
+          "Verwerkersovereenkomst — SURF opereert onder Nederlands recht als onderwijsinfrastructuurprovider",
+          "Beveiliging — SAML/OIDC-protocollen, institutionele beveiliging"
+        ]
       }
     }
   },
@@ -817,19 +990,43 @@
     "sections": {
       "0": {
         "title": "1. Overeenkomst (Art. 6(1)(b))",
-        "content": "De volgende verwerkingen zijn noodzakelijk voor de uitvoering van onze overeenkomst (het leveren van het studentenhuisvestingsplatform): Aanmaken en beheren van gebruikersprofielen. Uploaden van profielfoto's. Aanmaken en beheren van kameradvertenties. Indienen en verwerken van sollicitaties. Chatberichten (E2E versleuteld). Beheer van huislidmaatschappen. Stemmen op sollicitanten."
+        "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk voor de uitvoering van onze overeenkomst met jou (het aanbieden van het studentenwoningplatform):",
+        "items": [
+          "Aanmaken en beheren van gebruikersprofiel",
+          "Uploaden van profielfoto's",
+          "Aanmaken en beheren van kameradvertenties",
+          "Indienen en verwerken van sollicitaties",
+          "Chatberichten (E2E-versleuteld)",
+          "Beheer van huislidmaatschap",
+          "Stemmen over sollicitaties"
+        ]
       },
       "1": {
         "title": "2. Toestemming (Art. 6(1)(a))",
-        "content": "De volgende verwerkingen zijn gebaseerd op jouw uitdrukkelijke toestemming, die je op elk moment kunt intrekken via Instellingen > Privacy: Functionele cookies (zijbalkstatus, taalvoorkeur). Pushmeldingen. Analytics (Vercel Analytics — cookieloos, geen PII). Toestemming beheren kan in je accountinstellingen of via de cookieconsentbanner."
+        "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op je uitdrukkelijke toestemming, die je op elk moment kunt intrekken via Instellingen > Privacy:",
+        "items": [
+          "Functionele cookies (zijbalkstatus, taalvoorkeur)",
+          "Bezorging van pushnotificaties",
+          "Analytics (Vercel Analytics — cookieloos, geen persoonsgegevens)"
+        ]
       },
       "2": {
         "title": "3. Gerechtvaardigd belang (Art. 6(1)(f))",
-        "content": "De volgende verwerkingen zijn gebaseerd op ons gerechtvaardigd belang bij platformbeveiliging en gebruikersveiligheid: Sessiegegevens (IP-adres, user agent) — voor beveiligingsmonitoring. Moderatiegegevens (meldingen, blokkeringen) — voor platformveiligheid. Tijdelijk ontsleutelde berichttekst — voor onderzoek van gemelde berichten. We hebben deze belangen afgewogen tegen jouw rechten."
+        "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op ons gerechtvaardigd belang bij platformbeveiliging en gebruikersveiligheid. Wij hebben deze belangen afgewogen tegen jouw rechten en vastgesteld dat de verwerking evenredig en noodzakelijk is.",
+        "items": [
+          "Sessiegegevens (IP-adres, user agent) — voor beveiligingsmonitoring",
+          "Moderatiegegevens (meldingen, blokkades) — voor platformveiligheid",
+          "Tijdelijk ontsleutelde berichttekst — voor onderzoek van gemelde berichten"
+        ]
       },
       "3": {
         "title": "4. Wettelijke verplichting (Art. 6(1)(c))",
-        "content": "De volgende verwerkingen zijn noodzakelijk om te voldoen aan wettelijke verplichtingen: Toestemmingsregistratie (onveranderlijk audittrail) — om geldige toestemming aan te tonen per Art. 7 AVG. Verwerking van gegevensverzoeken — om rechten van betrokkenen te vervullen (Art. 15-22). Verwerkingsbeperkingsregistratie — om te voldoen aan Art. 18 recht op beperking."
+        "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk om te voldoen aan wettelijke verplichtingen:",
+        "items": [
+          "Toestemmingsregistratie (onveranderbaar auditspoor) — om geldige toestemming aan te tonen conform Art. 7 AVG",
+          "Verwerking van gegevensverzoeken — om de rechten van betrokkenen te vervullen (Art. 15-22)",
+          "Verwerkingsbeperkingsregistratie — om te voldoen aan het recht op beperking van Art. 18"
+        ]
       },
       "4": {
         "title": "5. Geen geautomatiseerde besluitvorming",

@@ -385,7 +385,16 @@
       },
       {
         "title": "3. Data we collect",
-        "content": "We collect: profile data (name, email, date of birth, gender, study information, photos), housing data (room listings with addresses and coordinates), communication data (end-to-end encrypted chat messages), application data (personal messages and status), session data (IP address, user agent for security), push notification tokens (for delivery of notifications), and consent records (your cookie and privacy preferences)."
+        "content": "We collect the following categories of personal data:",
+        "items": [
+          "Profile data — name, email, date of birth, gender, study information, photos",
+          "Housing data — room listings with addresses and coordinates",
+          "Communication data — end-to-end encrypted chat messages",
+          "Application data — personal messages and status",
+          "Session data — IP address, user agent for security",
+          "Push notification tokens — for delivery of notifications",
+          "Consent records — your cookie and privacy preferences"
+        ]
       },
       {
         "title": "4. SURFconext data",
@@ -397,11 +406,22 @@
       },
       {
         "title": "6. Legal basis",
-        "content": "We process your data based on the following legal grounds: Contract (Art. 6(1)(b)) — profile, housing, applications, chat; these are necessary to provide the service. Consent (Art. 6(1)(a)) — functional cookies, push notifications, analytics. Legitimate interest (Art. 6(1)(f)) — session security (IP logging), platform safety (moderation reports). You can withdraw consent at any time via Settings > Privacy. See our Legal Basis Overview page for a complete breakdown per processing activity."
+        "content": "We process your data based on the following legal grounds. You can withdraw consent at any time via Settings > Privacy. See our Legal Basis Overview page for a complete breakdown per processing activity.",
+        "items": [
+          "Contract (Art. 6(1)(b)) — profile, housing, applications, chat; these are necessary to provide the service",
+          "Consent (Art. 6(1)(a)) — functional cookies, push notifications, analytics",
+          "Legitimate interest (Art. 6(1)(f)) — session security (IP logging), platform safety (moderation reports)"
+        ]
       },
       {
         "title": "7. Data sharing & processors",
-        "content": "We share your data only with the following processors, all located within the EU/EEA: Supabase (Dublin, Ireland) — database and file storage; Vercel (Dublin, Ireland) — web hosting and edge functions; Upstash (Ireland) — rate limiting via Redis; SURFconext (Netherlands) — authentication. All processors operate under Data Processing Agreements (DPAs). See our Data Processors page for details."
+        "content": "We share your data only with the following processors, all located within the EU/EEA. All processors operate under Data Processing Agreements (DPAs). See our Data Processors page for details.",
+        "items": [
+          "Supabase (Dublin, Ireland) — database and file storage",
+          "Vercel (Dublin, Ireland) — web hosting and edge functions",
+          "Upstash (Ireland) — rate limiting via Redis",
+          "SURFconext (Netherlands) — authentication"
+        ]
       },
       {
         "title": "8. International transfers",
@@ -409,11 +429,28 @@
       },
       {
         "title": "9. Data retention",
-        "content": "Profile data, housing listings, and chat messages are retained as long as your account is active. Session IP addresses are anonymized after 30 days. Expired sessions are deleted after 90 days. Report message text is removed 90 days after resolution. Read notifications are deleted after 180 days. Consent record IP addresses are anonymized after 365 days. When you delete your account, all your data is permanently removed via cascading deletes."
+        "content": "We retain your data for the following periods:",
+        "items": [
+          "Profile data, housing listings, and chat messages — retained as long as your account is active",
+          "Session IP addresses — anonymized after 30 days",
+          "Expired sessions — deleted after 90 days",
+          "Report message text — removed 90 days after resolution",
+          "Read notifications — deleted after 180 days",
+          "Consent record IP addresses — anonymized after 365 days",
+          "Account deletion — all data permanently removed via cascading deletes"
+        ]
       },
       {
         "title": "10. Your rights",
-        "content": "Under GDPR, you have the right to: access your data (Art. 15) — via Settings > Privacy > Data export; rectification (Art. 16) — edit your profile at any time; erasure (Art. 17) — delete your account and all data; restriction of processing (Art. 18) — pause processing while keeping data stored; data portability (Art. 20) — export in JSON or CSV format; objection (Art. 21) — object to processing based on legitimate interest. You can exercise these rights via Settings > Privacy, or by contacting privacy@openhospi.nl."
+        "content": "Under GDPR, you have the following rights. You can exercise these rights via Settings > Privacy, or by contacting privacy@openhospi.nl.",
+        "items": [
+          "Access your data (Art. 15) — via Settings > Privacy > Data export",
+          "Rectification (Art. 16) — edit your profile at any time",
+          "Erasure (Art. 17) — delete your account and all data",
+          "Restriction of processing (Art. 18) — pause processing while keeping data stored",
+          "Data portability (Art. 20) — export in JSON or CSV format",
+          "Objection (Art. 21) — object to processing based on legitimate interest"
+        ]
       },
       {
         "title": "11. Right to lodge a complaint",
@@ -451,11 +488,18 @@
       },
       {
         "title": "Essential cookies",
-        "content": "These cookies are strictly necessary for the platform to function. They do not require consent. We use: better-auth.session_token — authenticates your login session (session cookie, deleted when you close your browser)."
+        "content": "These cookies are strictly necessary for the platform to function. They do not require consent.",
+        "items": [
+          "better-auth.session_token — authenticates your login session (session cookie, deleted when you close your browser)"
+        ]
       },
       {
         "title": "Functional cookies",
-        "content": "These cookies improve your experience but are not strictly necessary. They require your consent: sidebar_state — remembers whether the sidebar is open or closed (persistent, localStorage); NEXT_LOCALE — remembers your language preference (1 year)."
+        "content": "These cookies improve your experience but are not strictly necessary. They require your consent.",
+        "items": [
+          "sidebar_state — remembers whether the sidebar is open or closed (persistent, localStorage)",
+          "NEXT_LOCALE — remembers your language preference (1 year)"
+        ]
       },
       {
         "title": "Analytics",
@@ -704,39 +748,102 @@
     "sections": {
       "0": {
         "title": "1. User profiles",
-        "content": "Purpose: Providing the student housing platform service. Data categories: name, email, date of birth, gender, study programme, institution, bio, lifestyle tags, preferred city, available from date, max rent. Legal basis: Contract (Art. 6(1)(b)). Recipients: Other platform users (limited profile view). Retention: Until account deletion. Security: RLS policies, encrypted transport, access controls."
+        "items": [
+          "Purpose — Providing the student housing platform service",
+          "Data categories — name, email, date of birth, gender, study programme, institution, bio, lifestyle tags, preferred city, available from date, max rent",
+          "Legal basis — Contract (Art. 6(1)(b))",
+          "Recipients — Other platform users (limited profile view)",
+          "Retention — Until account deletion",
+          "Security — RLS policies, encrypted transport, access controls"
+        ]
       },
       "1": {
         "title": "2. Profile photos",
-        "content": "Purpose: Profile identification. Data categories: up to 5 photos per user. Legal basis: Contract (Art. 6(1)(b)). Recipients: Other platform users. Retention: Until deletion by user or account deletion. Security: Supabase Storage with access controls."
+        "items": [
+          "Purpose — Profile identification",
+          "Data categories — up to 5 photos per user",
+          "Legal basis — Contract (Art. 6(1)(b))",
+          "Recipients — Other platform users",
+          "Retention — Until deletion by user or account deletion",
+          "Security — Supabase Storage with access controls"
+        ]
       },
       "2": {
         "title": "3. Room listings",
-        "content": "Purpose: Housing marketplace functionality. Data categories: address, city, coordinates, rent price, room details, photos, availability. Legal basis: Contract (Art. 6(1)(b)). Recipients: All authenticated users (or public for non-association rooms). Retention: Until listing deletion or account deletion. Security: RLS policies, owner-only editing."
+        "items": [
+          "Purpose — Housing marketplace functionality",
+          "Data categories — address, city, coordinates, rent price, room details, photos, availability",
+          "Legal basis — Contract (Art. 6(1)(b))",
+          "Recipients — All authenticated users (or public for non-association rooms)",
+          "Retention — Until listing deletion or account deletion",
+          "Security — RLS policies, owner-only editing"
+        ]
       },
       "3": {
         "title": "4. Applications",
-        "content": "Purpose: Matching seekers with rooms. Data categories: personal message, application status. Legal basis: Contract (Art. 6(1)(b)). Recipients: Room owner and house members. Retention: Until withdrawal or account deletion. Security: RLS policies restricting access to involved parties."
+        "items": [
+          "Purpose — Matching seekers with rooms",
+          "Data categories — personal message, application status",
+          "Legal basis — Contract (Art. 6(1)(b))",
+          "Recipients — Room owner and house members",
+          "Retention — Until withdrawal or account deletion",
+          "Security — RLS policies restricting access to involved parties"
+        ]
       },
       "4": {
         "title": "5. Chat messages",
-        "content": "Purpose: Communication between seekers and house members. Data categories: encrypted message content, timestamps. Legal basis: Contract (Art. 6(1)(b)). Recipients: Conversation participants only. Retention: Until account deletion. Security: End-to-end encryption (AES-256-GCM), only participants can decrypt."
+        "items": [
+          "Purpose — Communication between seekers and house members",
+          "Data categories — encrypted message content, timestamps",
+          "Legal basis — Contract (Art. 6(1)(b))",
+          "Recipients — Conversation participants only",
+          "Retention — Until account deletion",
+          "Security — End-to-end encryption (AES-256-GCM), only participants can decrypt"
+        ]
       },
       "5": {
         "title": "6. Session data",
-        "content": "Purpose: Authentication and security. Data categories: IP address, user agent, session token. Legal basis: Legitimate interest (Art. 6(1)(f)) — platform security. Recipients: None (internal only). Retention: IP address nullified after 30 days post-expiry; session deleted after 90 days. Security: Server-side only, not shared."
+        "items": [
+          "Purpose — Authentication and security",
+          "Data categories — IP address, user agent, session token",
+          "Legal basis — Legitimate interest (Art. 6(1)(f)) — platform security",
+          "Recipients — None (internal only)",
+          "Retention — IP address nullified after 30 days post-expiry; session deleted after 90 days",
+          "Security — Server-side only, not shared"
+        ]
       },
       "6": {
         "title": "7. Moderation data",
-        "content": "Purpose: Platform safety and abuse prevention. Data categories: reports, blocks, temporarily decrypted message text (for reported messages only). Legal basis: Legitimate interest (Art. 6(1)(f)) — user safety. Recipients: Admin team only. Retention: Decrypted message text deleted 90 days after resolution. Security: Admin-only access, audit logging."
+        "items": [
+          "Purpose — Platform safety and abuse prevention",
+          "Data categories — reports, blocks, temporarily decrypted message text (for reported messages only)",
+          "Legal basis — Legitimate interest (Art. 6(1)(f)) — user safety",
+          "Recipients — Admin team only",
+          "Retention — Decrypted message text deleted 90 days after resolution",
+          "Security — Admin-only access, audit logging"
+        ]
       },
       "7": {
         "title": "8. Consent records",
-        "content": "Purpose: Demonstrating valid consent (Art. 7). Data categories: consent purpose, granted/revoked status, IP address, user agent, privacy policy version, timestamp. Legal basis: Legal obligation (Art. 6(1)(c)). Recipients: None (internal audit). Retention: IP address nullified after 365 days; records retained for compliance. Security: Immutable (no update/delete), RLS restricted to own records."
+        "items": [
+          "Purpose — Demonstrating valid consent (Art. 7)",
+          "Data categories — consent purpose, granted/revoked status, IP address, user agent, privacy policy version, timestamp",
+          "Legal basis — Legal obligation (Art. 6(1)(c))",
+          "Recipients — None (internal audit)",
+          "Retention — IP address nullified after 365 days; records retained for compliance",
+          "Security — Immutable (no update/delete), RLS restricted to own records"
+        ]
       },
       "8": {
         "title": "9. Push notification subscriptions",
-        "content": "Purpose: Delivering push notifications. Data categories: endpoint URL, encryption keys. Legal basis: Consent (Art. 6(1)(a)). Recipients: Browser push service. Retention: Until user unsubscribes or account deletion. Security: Web Push protocol with encryption."
+        "items": [
+          "Purpose — Delivering push notifications",
+          "Data categories — endpoint URL, encryption keys",
+          "Legal basis — Consent (Art. 6(1)(a))",
+          "Recipients — Browser push service",
+          "Retention — Until user unsubscribes or account deletion",
+          "Security — Web Push protocol with encryption"
+        ]
       }
     }
   },
@@ -751,31 +858,74 @@
       },
       "1": {
         "title": "2. Necessity and proportionality",
-        "content": "Data collection is limited to what is strictly necessary for the platform to function. Profile data enables matching (contract basis). Location data enables geographic search. E2E encrypted chat ensures communication privacy. No data is sold or shared with third parties for marketing. No automated decision-making or profiling is used."
+        "content": "Data collection is limited to what is strictly necessary for the platform to function.",
+        "items": [
+          "Profile data enables matching (contract basis)",
+          "Location data enables geographic search",
+          "E2E encrypted chat ensures communication privacy",
+          "No data is sold or shared with third parties for marketing",
+          "No automated decision-making or profiling is used"
+        ]
       },
       "2": {
         "title": "3. Risk: Profile data processing",
-        "content": "Risk: Unauthorized access to personal profiles. Likelihood: Low. Impact: Medium. Mitigations: Row-Level Security (RLS) on all database tables. Authentication required via SURFconext. Profile visibility limited to authenticated users. Residual risk: Low."
+        "items": [
+          "Risk — Unauthorized access to personal profiles",
+          "Likelihood — Low",
+          "Impact — Medium",
+          "Mitigations — Row-Level Security (RLS) on all database tables. Authentication required via SURFconext. Profile visibility limited to authenticated users",
+          "Residual risk — Low"
+        ]
       },
       "3": {
         "title": "4. Risk: Location data (room coordinates)",
-        "content": "Risk: Precise location tracking via room coordinates. Likelihood: Low. Impact: Medium. Mitigations: Coordinates used only for map display. No location tracking of users. Coordinates are of the room, not the user. Only visible to authenticated users. Residual risk: Low."
+        "items": [
+          "Risk — Precise location tracking via room coordinates",
+          "Likelihood — Low",
+          "Impact — Medium",
+          "Mitigations — Coordinates used only for map display. No location tracking of users. Coordinates are of the room, not the user. Only visible to authenticated users",
+          "Residual risk — Low"
+        ]
       },
       "4": {
         "title": "5. Risk: Chat message content",
-        "content": "Risk: Interception or unauthorized reading of messages. Likelihood: Very low. Impact: High. Mitigations: End-to-end encryption with AES-256-GCM. Per-message keys wrapped for each recipient. Private keys stored in IndexedDB (client-side). Server never has access to plaintext. Residual risk: Very low."
+        "items": [
+          "Risk — Interception or unauthorized reading of messages",
+          "Likelihood — Very low",
+          "Impact — High",
+          "Mitigations — End-to-end encryption with AES-256-GCM. Per-message keys wrapped for each recipient. Private keys stored in IndexedDB (client-side). Server never has access to plaintext",
+          "Residual risk — Very low"
+        ]
       },
       "5": {
         "title": "6. Risk: Photo storage",
-        "content": "Risk: Unauthorized access to profile or room photos. Likelihood: Low. Impact: Medium. Mitigations: Supabase Storage with access policies. Photos only accessible to authenticated users. Deletion cascades on account removal. Residual risk: Low."
+        "items": [
+          "Risk — Unauthorized access to profile or room photos",
+          "Likelihood — Low",
+          "Impact — Medium",
+          "Mitigations — Supabase Storage with access policies. Photos only accessible to authenticated users. Deletion cascades on account removal",
+          "Residual risk — Low"
+        ]
       },
       "6": {
         "title": "7. Risk: SURFconext data",
-        "content": "Risk: Over-collection from SSO provider. Likelihood: Very low. Impact: Low. Mitigations: Only name, email, and institution domain are received from SURFconext. No additional attributes requested. SURFconext is managed by SURF (Netherlands). Residual risk: Very low."
+        "items": [
+          "Risk — Over-collection from SSO provider",
+          "Likelihood — Very low",
+          "Impact — Low",
+          "Mitigations — Only name, email, and institution domain are received from SURFconext. No additional attributes requested. SURFconext is managed by SURF (Netherlands)",
+          "Residual risk — Very low"
+        ]
       },
       "7": {
         "title": "8. Risk: Moderation — temporarily decrypted messages",
-        "content": "Risk: Exposure of private message content during moderation. Likelihood: Low (only on user report). Impact: Medium. Mitigations: Only the reporting user provides the decrypted text. Stored temporarily with 90-day auto-deletion. Admin-only access with full audit logging. Residual risk: Low."
+        "items": [
+          "Risk — Exposure of private message content during moderation",
+          "Likelihood — Low (only on user report)",
+          "Impact — Medium",
+          "Mitigations — Only the reporting user provides the decrypted text. Stored temporarily with 90-day auto-deletion. Admin-only access with full audit logging",
+          "Residual risk — Low"
+        ]
       },
       "8": {
         "title": "9. Children's data (Art. 8)",
@@ -794,19 +944,43 @@
     "sections": {
       "0": {
         "title": "1. Supabase (Database & Storage)",
-        "content": "Role: Database hosting (PostgreSQL) and file storage (profile photos, room photos). Location: Dublin, Ireland (eu-west-1). Data processed: All personal data stored in the database, uploaded photos. DPA: Supabase Data Processing Agreement in place. Security: Encryption at rest and in transit, SOC 2 Type II certified."
+        "items": [
+          "Role — Database hosting (PostgreSQL) and file storage (profile photos, room photos)",
+          "Location — Dublin, Ireland (eu-west-1)",
+          "Data processed — All personal data stored in the database, uploaded photos",
+          "DPA — Supabase Data Processing Agreement in place",
+          "Security — Encryption at rest and in transit, SOC 2 Type II certified"
+        ]
       },
       "1": {
         "title": "2. Vercel (Web Hosting & Edge)",
-        "content": "Role: Web application hosting, serverless functions, edge network. Location: Dublin, Ireland (eu-west-1). Data processed: HTTP requests (IP address, user agent) in server logs. DPA: Vercel Data Processing Addendum in place. Security: Automatic HTTPS, DDoS protection, SOC 2 Type II certified."
+        "items": [
+          "Role — Web application hosting, serverless functions, edge network",
+          "Location — Dublin, Ireland (eu-west-1)",
+          "Data processed — HTTP requests (IP address, user agent) in server logs",
+          "DPA — Vercel Data Processing Addendum in place",
+          "Security — Automatic HTTPS, DDoS protection, SOC 2 Type II certified"
+        ]
       },
       "2": {
         "title": "3. Upstash (Redis — Rate Limiting)",
-        "content": "Role: Redis database for rate limiting and abuse prevention. Location: Ireland (AWS eu-west-1). Data processed: Anonymized rate limit counters (user ID hashes). No personal data stored. DPA: Upstash GDPR DPA in place. Security: Encryption at rest and in transit."
+        "items": [
+          "Role — Redis database for rate limiting and abuse prevention",
+          "Location — Ireland (AWS eu-west-1)",
+          "Data processed — Anonymized rate limit counters (user ID hashes). No personal data stored",
+          "DPA — Upstash GDPR DPA in place",
+          "Security — Encryption at rest and in transit"
+        ]
       },
       "3": {
         "title": "4. SURFconext (SSO/OIDC Provider)",
-        "content": "Role: Identity provider for student authentication. Location: Netherlands (SURF infrastructure). Data processed: Authentication tokens, name, email, institution domain (received during login). DPA: SURF operates under Dutch law as an educational infrastructure provider. Security: SAML/OIDC protocols, institutional-grade security."
+        "items": [
+          "Role — Identity provider for student authentication",
+          "Location — Netherlands (SURF infrastructure)",
+          "Data processed — Authentication tokens, name, email, institution domain (received during login)",
+          "DPA — SURF operates under Dutch law as an educational infrastructure provider",
+          "Security — SAML/OIDC protocols, institutional-grade security"
+        ]
       }
     }
   },
@@ -817,19 +991,43 @@
     "sections": {
       "0": {
         "title": "1. Contract (Art. 6(1)(b))",
-        "content": "The following processing activities are necessary for the performance of our contract with you (providing the student housing platform): User profile creation and management. Profile photo uploads. Room listing creation and management. Application submission and processing. Chat messaging (E2E encrypted). House membership management. Voting on applications."
+        "content": "The following processing activities are necessary for the performance of our contract with you (providing the student housing platform):",
+        "items": [
+          "User profile creation and management",
+          "Profile photo uploads",
+          "Room listing creation and management",
+          "Application submission and processing",
+          "Chat messaging (E2E encrypted)",
+          "House membership management",
+          "Voting on applications"
+        ]
       },
       "1": {
         "title": "2. Consent (Art. 6(1)(a))",
-        "content": "The following processing activities are based on your explicit consent, which you can withdraw at any time via Settings > Privacy: Functional cookies (sidebar state, language preference). Push notification delivery. Analytics (Vercel Analytics — cookieless, no PII). Consent can be managed in your account settings or via the cookie consent banner."
+        "content": "The following processing activities are based on your explicit consent, which you can withdraw at any time via Settings > Privacy:",
+        "items": [
+          "Functional cookies (sidebar state, language preference)",
+          "Push notification delivery",
+          "Analytics (Vercel Analytics — cookieless, no PII)"
+        ]
       },
       "2": {
         "title": "3. Legitimate interest (Art. 6(1)(f))",
-        "content": "The following processing activities are based on our legitimate interest in platform security and user safety: Session data (IP address, user agent) — for security monitoring. Moderation data (reports, blocks) — for platform safety. Temporarily decrypted message text — for investigating reported messages. We have balanced these interests against your rights and determined that the processing is proportionate and necessary."
+        "content": "The following processing activities are based on our legitimate interest in platform security and user safety. We have balanced these interests against your rights and determined that the processing is proportionate and necessary.",
+        "items": [
+          "Session data (IP address, user agent) — for security monitoring",
+          "Moderation data (reports, blocks) — for platform safety",
+          "Temporarily decrypted message text — for investigating reported messages"
+        ]
       },
       "3": {
         "title": "4. Legal obligation (Art. 6(1)(c))",
-        "content": "The following processing activities are necessary to comply with legal obligations: Consent records (immutable audit trail) — to demonstrate valid consent per Art. 7 GDPR. Data request processing — to fulfill data subject rights (Art. 15-22). Processing restriction records — to comply with Art. 18 right to restriction."
+        "content": "The following processing activities are necessary to comply with legal obligations:",
+        "items": [
+          "Consent records (immutable audit trail) — to demonstrate valid consent per Art. 7 GDPR",
+          "Data request processing — to fulfill data subject rights (Art. 15-22)",
+          "Processing restriction records — to comply with Art. 18 right to restriction"
+        ]
       },
       "4": {
         "title": "5. No automated decision-making",

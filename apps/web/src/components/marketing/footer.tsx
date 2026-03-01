@@ -2,11 +2,10 @@
 
 import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
-import { Github } from "lucide-react";
+import { Github, Instagram } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
 
@@ -65,9 +64,18 @@ export function MarketingFooter() {
               >
                 <Github className="size-5" />
               </a>
-              <Badge variant="outline" className="text-xs">
-                {t("openSource")}
-              </Badge>
+              <a
+                href="https://www.instagram.com/openhospi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="size-5" />
+              </a>
+            </div>
+            <div className="mt-4 w-36">
+              <TrustpilotWidget locale={locale} />
             </div>
           </div>
 
@@ -97,10 +105,7 @@ export function MarketingFooter() {
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
           </p>
-          <div className="flex items-center gap-4">
-            <TrustpilotWidget locale={locale} />
-            <LanguageSwitcher />
-          </div>
+          <LanguageSwitcher />
         </div>
       </div>
     </footer>

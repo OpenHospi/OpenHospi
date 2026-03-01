@@ -9,7 +9,7 @@
       "invalidFileType": "Ungültiger Dateityp. Bitte JPEG, PNG oder WebP verwenden.",
       "uploadFailed": "Upload fehlgeschlagen. Bitte versuche es erneut.",
       "deleteFailed": "Löschen fehlgeschlagen. Bitte versuche es erneut.",
-      "processingRestricted": "Die Verarbeitung deines Kontos ist derzeit eingeschränkt. Du kannst dies unter Einstellungen > Datenschutz verwalten."
+      "processingRestricted": "De verwerking van je account is momenteel beperkt. Je kunt dit beheren in Instellingen > Privacy."
     },
     "labels": {
       "title": "Titel",
@@ -961,14 +961,14 @@
       }
     },
     "privacyAccept": {
-      "title": "Datenschutzerklärung aktualisiert",
-      "description": "Unsere Datenschutzerklärung wurde aktualisiert. Bitte überprüfe die Änderungen und akzeptiere, um OpenHospi weiter nutzen zu können.",
-      "summary": "Die aktualisierte Datenschutzerklärung beschreibt, wie wir deine personenbezogenen Daten in Übereinstimmung mit der DSGVO erfassen, verwenden und schützen.",
-      "acceptButton": "Ich akzeptiere",
-      "viewFullPolicy": "Vollständige Datenschutzerklärung anzeigen"
+      "title": "Privacybeleid bijgewerkt",
+      "description": "Ons privacybeleid is bijgewerkt. Bekijk de wijzigingen en accepteer om OpenHospi te blijven gebruiken.",
+      "summary": "Het bijgewerkte privacybeleid beschrijft hoe wij je persoonsgegevens verzamelen, gebruiken en beschermen in overeenstemming met de AVG/GDPR.",
+      "acceptButton": "Ik accepteer",
+      "viewFullPolicy": "Volledig privacybeleid bekijken"
     },
     "restricted": {
-      "banner": "Die Verarbeitung deines Kontos ist eingeschränkt. Einige Funktionen sind nicht verfügbar. Du kannst dies unter Einstellungen > Datenschutz verwalten."
+      "banner": "De verwerking van je account is beperkt. Sommige functies zijn niet beschikbaar. Je kunt dit beheren in Instellingen > Privacy."
     },
     "consent": {
       "title": "Wir verwenden Cookies",

@@ -76,6 +76,7 @@ export function PhotoLightbox({
           maxWidth: "none",
           maxHeight: "none",
           transform: "none",
+          translate: "none",
         }}
       >
         <DialogTitle className="sr-only">{t("lightboxTitle")}</DialogTitle>

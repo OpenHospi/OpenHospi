@@ -1,12 +1,16 @@
 import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 
-
-// Combined regex with named groups for classification
-// Priority: email > GDPR article > Dutch phone > URL with protocol > bare domain
+// Combined regex for auto-linking legal text.
+// Priority: email > law article > Dutch phone > URL with protocol > bare domain
+//
+// Law article sub-patterns:
+//   1) [Aa]rt. N ... LAWNAME  — handles EN (1)(c), NL , lid N, onder X, and DE Abs. N lit. X
+//   2) Telecommunicatiewet [Aa]rt. N.Na — reversed format (law name first)
+//
 const LINK_PATTERN =
-   
-  /([\w.+-]+@[\w-]+\.[\w.-]+)|(?:Art\.?\s*(\d+)(?:\(\d+\)(?:\([a-z]\))?)?(?:\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)))|(\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b)|(https?:\/\/[^\s),]+)|((?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?)/g;
+  // eslint-disable-next-line security/detect-unsafe-regex, sonarjs/slow-regex, sonarjs/regex-complexity
+  /([\w.+-]+@[\w-]+\.[\w.-]+)|(?:\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:\(\d+\)(?:\([a-z]\))?|(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+)+,?|\s+(?:to|tot\s+en\s+met|bis)\s+\d+)?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b|\bTelecommunicatiewet\s+[Aa]rt\.?\s*[\d.]+\w?)|(\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b)|(https?:\/\/[^\s),]+)|((?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?)/g;
 
 const GDPR_LAWS: Record<string, string> = {
   GDPR: "https://gdpr.eu/article-",
@@ -16,9 +20,10 @@ const GDPR_LAWS: Record<string, string> = {
   Telecommunicatiewet: "https://wetten.overheid.nl/BWBR0009950/",
 };
 
-// More specific regex for GDPR article extraction (used in the render step)
-const GDPR_ARTICLE_RE =
-  /Art\.?\s*(\d+)(?:\(\d+\)(?:\([a-z]\))?)?\s+(GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)/;
+// Extracts article number (group 1) and law name (group 2) from a matched string.
+// Uses [\s\S]*? to bridge all three notation styles (EN parens, NL comma, DE keyword).
+// eslint-disable-next-line security/detect-unsafe-regex, sonarjs/slow-regex
+const GDPR_ARTICLE_RE = /[Aa]rt\.?\s*(\d+(?:\.\d+\w?)?)[\s\S]*?(GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)/;
 
 function classifyAndRender(match: string, key: number): ReactNode {
   const linkClass =
@@ -33,7 +38,23 @@ function classifyAndRender(match: string, key: number): ReactNode {
     );
   }
 
-  // GDPR / legal article reference
+  // Telecommunicatiewet Art. reference (reversed format: law name first)
+  if (match.startsWith("Telecommunicatiewet")) {
+    return (
+      <a
+        key={key}
+        href={GDPR_LAWS.Telecommunicatiewet}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={linkClass}
+      >
+        {match}
+        <ExternalLink className="inline size-3" />
+      </a>
+    );
+  }
+
+  // GDPR / AVG / DSGVO / UAVG article reference
   const articleMatch = GDPR_ARTICLE_RE.exec(match);
   if (articleMatch) {
     const [, articleNum, law] = articleMatch;
@@ -69,6 +90,7 @@ function classifyAndRender(match: string, key: number): ReactNode {
   // URL with protocol
   if (match.startsWith("http")) {
     // Strip trailing punctuation that's not part of the URL
+    // eslint-disable-next-line sonarjs/slow-regex
     const cleaned = match.replace(/[.)]+$/, "");
     return (
       <a
@@ -85,6 +107,7 @@ function classifyAndRender(match: string, key: number): ReactNode {
   }
 
   // Bare domain
+  // eslint-disable-next-line sonarjs/slow-regex
   const cleaned = match.replace(/[.)]+$/, "");
   return (
     <a
@@ -106,6 +129,7 @@ export function AutoLinkedText({ text }: { text: string }) {
   let matchCount = 0;
 
   // Reset regex state
+  // eslint-disable-next-line react-hooks/immutability
   LINK_PATTERN.lastIndex = 0;
 
   let match: RegExpExecArray | null;

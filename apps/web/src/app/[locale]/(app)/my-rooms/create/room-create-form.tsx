@@ -1,5 +1,6 @@
 "use client";
 
+import { ROOM_CREATE_TOTAL_STEPS } from "@openhospi/shared/constants";
 import type {
   RoomBasicInfoData,
   RoomDetailsData,
@@ -17,8 +18,6 @@ import { BasicInfoStep } from "./steps/basic-info-step";
 import { DetailsStep } from "./steps/details-step";
 import { PhotosStep } from "./steps/photos-step";
 import { PreferencesStep } from "./steps/preferences-step";
-
-const TOTAL_STEPS = 4;
 
 type Props = {
   room: RoomWithPhotos;
@@ -51,7 +50,7 @@ export function RoomCreateForm({ room }: Props) {
             return (
               <li
                 key={key}
-                className={cn("relative flex items-center", index < TOTAL_STEPS - 1 && "flex-1")}
+                className={cn("relative flex items-center", index < ROOM_CREATE_TOTAL_STEPS - 1 && "flex-1")}
               >
                 <button
                   type="button"
@@ -83,7 +82,7 @@ export function RoomCreateForm({ room }: Props) {
                 </span>
 
                 {/* Connector line */}
-                {index < TOTAL_STEPS - 1 && (
+                {index < ROOM_CREATE_TOTAL_STEPS - 1 && (
                   <div
                     className={cn(
                       "mx-2 h-0.5 flex-1 transition-colors",

@@ -1,8 +1,9 @@
+import { OG_IMAGE_SIZE } from "@openhospi/shared/constants";
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 
 export const alt = "Safety & Trust";
-export const size = { width: 1200, height: 630 };
+export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 
 export default async function OGImage({ params }: { params: Promise<{ locale: string }> }) {

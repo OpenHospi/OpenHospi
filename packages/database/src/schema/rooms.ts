@@ -39,7 +39,7 @@ export const rooms = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     ownerId: uuid("created_by")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     houseId: uuid("house_id")
       .notNull()
       .references(() => houses.id),

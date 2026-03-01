@@ -67,3 +67,49 @@ export const ALLOWED_IMAGE_TYPES = [
   "image/heif",
 ] as const;
 export type AllowedImageType = (typeof ALLOWED_IMAGE_TYPES)[number];
+
+// Consent & cookie storage
+export const CONSENT_STORAGE_KEY = "openhospi_consent";
+export const CONSENT_CHANGE_EVENT = "openhospi:consent-change";
+
+// IndexedDB (E2EE key storage)
+export const INDEXED_DB_NAME = "openhospi-keys";
+export const INDEXED_DB_STORE_NAME = "private-keys";
+export const INDEXED_DB_VERSION = 1;
+
+// Layout & responsive
+export const MOBILE_BREAKPOINT = 768;
+export const LEGAL_HEADER_OFFSET = 96;
+
+// PDOK (Dutch address lookup)
+export const PDOK_SUGGEST_URL =
+  "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
+export const PDOK_LOOKUP_URL =
+  "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup";
+export const PDOK_SUGGESTION_LIMIT = 6;
+
+// External services
+export const TRUSTPILOT_URL =
+  "https://nl.trustpilot.com/review/openhospi.nl";
+export const TRUSTPILOT_CACHE_REVALIDATE_SECONDS = 86400;
+
+// Multi-step forms
+export const ONBOARDING_TOTAL_STEPS = 5;
+export const ROOM_CREATE_TOTAL_STEPS = 4;
+
+// OG Image & icon dimensions
+export const OG_IMAGE_SIZE = { width: 1200, height: 630 } as const;
+export const APPLE_ICON_SIZE = { width: 180, height: 180 } as const;
+
+// UX timings (milliseconds)
+export const COPY_FEEDBACK_TIMEOUT_MS = 2000;
+export const ADDRESS_DEBOUNCE_MS = 300;
+
+// Auth
+export const SESSION_COOKIE_NAME = "better-auth.session_token";
+
+// Rate limits (per day)
+export const RATE_LIMIT_APPLY = 20;
+export const RATE_LIMIT_CREATE_ROOM = 5;
+export const RATE_LIMIT_EXPORT_DATA = 3;
+export const RATE_LIMIT_JOIN_SHARE_LINK = 10;

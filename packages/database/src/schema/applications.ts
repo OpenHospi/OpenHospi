@@ -16,7 +16,7 @@ export const applications = pgTable(
       .references(() => rooms.id, { onDelete: "cascade" }),
     userId: uuid("user_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     personalMessage: text("personal_message"),
     status: applicationStatusEnum("status").notNull().default("sent"),
     appliedAt: timestamp("applied_at", { withTimezone: true }).notNull().defaultNow(),
@@ -56,10 +56,10 @@ export const reviews = pgTable(
       .references(() => rooms.id, { onDelete: "cascade" }),
     reviewerId: uuid("reviewer_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     applicantId: uuid("applicant_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     decision: reviewDecisionEnum("decision").notNull(),
     notes: text("notes"),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }).notNull().defaultNow(),

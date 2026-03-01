@@ -22,13 +22,15 @@ import {
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { getUserOwnerHouses } from "@/lib/houses";
 import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { createDraftRoom, getExistingDraft } from "@/lib/rooms";
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
     return { error: "RATE_LIMITED" };
@@ -59,6 +61,8 @@ export async function createHouseAndContinue(
   formData: FormData,
 ): Promise<{ id?: string; error?: string }> {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
     return { error: "RATE_LIMITED" };
@@ -99,6 +103,8 @@ export async function createDraftRoomForHouse(
   houseId: string,
 ): Promise<{ id?: string; error?: string }> {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
     return { error: "RATE_LIMITED" };
@@ -135,6 +141,9 @@ export async function createDraftRoomForHouse(
 
 export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = roomBasicInfoSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -173,6 +182,9 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
 
 export async function saveDetails(roomId: string, data: RoomDetailsData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = roomDetailsSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -207,6 +219,9 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
 
 export async function savePreferences(roomId: string, data: RoomPreferencesData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = roomPreferencesSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -234,6 +249,9 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
 
 export async function publishRoom(roomId: string) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   await requireRoomOwnership(roomId, session.user.id);
 
   return withRLS(session.user.id, async (tx) => {

@@ -26,8 +26,7 @@ export const hospiEvents = pgTable(
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
     createdBy: uuid("created_by")
-      .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "set null" }),
     title: text("title").notNull(),
     description: text("description"),
     eventDate: date("event_date").notNull(),
@@ -78,7 +77,7 @@ export const hospiInvitations = pgTable(
       .references(() => hospiEvents.id, { onDelete: "cascade" }),
     userId: uuid("user_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     applicationId: uuid("application_id").references(() => applications.id),
     status: invitationStatusEnum("status").default("pending"),
     respondedAt: timestamp("responded_at", { withTimezone: true }),
@@ -122,10 +121,10 @@ export const votes = pgTable(
       .references(() => rooms.id, { onDelete: "cascade" }),
     voterId: uuid("voter_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     applicantId: uuid("applicant_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     rank: integer("rank").notNull(),
     round: integer("round").notNull().default(1),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

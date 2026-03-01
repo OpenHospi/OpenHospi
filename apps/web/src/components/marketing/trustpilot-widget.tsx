@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-const TRUSTPILOT_URL = "https://nl.trustpilot.com/review/openhospi.nl";
+import { TRUSTPILOT_URL } from "@openhospi/shared/constants";
 
 const VALID_SCORES = [0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] as const;
 type TrustpilotScore = (typeof VALID_SCORES)[number];

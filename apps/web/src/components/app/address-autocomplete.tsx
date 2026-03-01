@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  ADDRESS_DEBOUNCE_MS,
+  PDOK_LOOKUP_URL,
+  PDOK_SUGGEST_URL,
+  PDOK_SUGGESTION_LIMIT,
+} from "@openhospi/shared/constants";
 import { MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -26,9 +32,6 @@ type Props = {
   onClear: () => void;
   placeholder?: string;
 };
-
-const PDOK_SUGGEST_URL = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
-const PDOK_LOOKUP_URL = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup";
 
 function parseWktPoint(wkt: string): { latitude: number; longitude: number } | null {
   const match = wkt.match(/POINT\(([^ ]+) ([^ ]+)\)/);
@@ -60,7 +63,7 @@ export function AddressAutocomplete({
 
     setIsLoading(true);
     try {
-      const url = `${PDOK_SUGGEST_URL}?q=${encodeURIComponent(q)}&fq=type:adres&rows=6`;
+      const url = `${PDOK_SUGGEST_URL}?q=${encodeURIComponent(q)}&fq=type:adres&rows=${PDOK_SUGGESTION_LIMIT}`;
       const res = await fetch(url);
       if (!res.ok) return;
       const data = await res.json();
@@ -81,7 +84,7 @@ export function AddressAutocomplete({
   function handleInputChange(value: string) {
     setQuery(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchSuggestions(value), 300);
+    debounceRef.current = setTimeout(() => fetchSuggestions(value), ADDRESS_DEBOUNCE_MS);
   }
 
   async function handleSelect(suggestion: Suggestion) {

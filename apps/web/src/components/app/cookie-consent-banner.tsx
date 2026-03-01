@@ -1,5 +1,6 @@
 "use client";
 
+import { CONSENT_CHANGE_EVENT, CONSENT_STORAGE_KEY } from "@openhospi/shared/constants";
 import { ConsentPurpose, type LegalBasis } from "@openhospi/shared/enums";
 import { Cookie } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -18,8 +19,6 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Switch } from "../ui/switch";
-
-const CONSENT_STORAGE_KEY = "openhospi_consent";
 
 type ConsentState = Record<ConsentPurpose, boolean>;
 
@@ -86,6 +85,7 @@ export function CookieConsentBanner() {
     setConsent(newConsent);
     setVisible(false);
     setManageOpen(false);
+    window.dispatchEvent(new CustomEvent(CONSENT_CHANGE_EVENT));
     await recordConsent(consentToEntries(newConsent));
   }, []);
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { COPY_FEEDBACK_TIMEOUT_MS } from "@openhospi/shared/constants";
 import { Check, Copy, Loader2, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -28,7 +29,7 @@ export function ShareLinkSection({ room }: Props) {
     await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     toast.success(t("copied"));
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), COPY_FEEDBACK_TIMEOUT_MS);
   }
 
   function handleRegenerate() {

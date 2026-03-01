@@ -8,10 +8,13 @@ import { ApplicationStatus, isValidApplicationTransition } from "@openhospi/shar
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
 
 export async function markApplicationsSeen(roomId: string) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   await requireHousemate(roomId, session.user.id);
 
   await withRLS(session.user.id, (tx) =>
@@ -27,6 +30,9 @@ export async function markApplicationsSeen(roomId: string) {
 
 export async function submitReview(roomId: string, applicantUserId: string, data: ReviewData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = reviewSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 
@@ -62,6 +68,9 @@ export async function updateApplicationStatus(
   newStatus: ApplicationStatus,
 ) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   await requireHousemate(roomId, session.user.id, ["owner", "admin"]);
 
   return withRLS(session.user.id, async (tx) => {

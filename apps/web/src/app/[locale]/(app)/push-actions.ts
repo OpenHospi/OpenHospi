@@ -1,23 +1,39 @@
 "use server";
 
-import { db } from "@openhospi/database";
-import { pushSubscriptions } from "@openhospi/database/schema";
-import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
+import { db, withRLS } from "@openhospi/database";
+import { activeConsents, pushSubscriptions } from "@openhospi/database/schema";
+import { and, eq } from "drizzle-orm";
 
-import { auth } from "@/lib/auth";
+import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 
 export async function subscribePush(subscription: {
   endpoint: string;
   keys: { p256dh: string; auth: string };
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) throw new Error("Unauthorized");
+  const session = await requireSession();
+  const userId = session.user.id;
+
+  const restricted = await requireNotRestricted(userId);
+  if (restricted) throw new Error(restricted.error);
+
+  // Verify push_notifications consent (Art. 6)
+  const [consent] = await withRLS(userId, (tx) =>
+    tx
+      .select({ granted: activeConsents.granted })
+      .from(activeConsents)
+      .where(
+        and(eq(activeConsents.userId, userId), eq(activeConsents.purpose, "push_notifications")),
+      )
+      .limit(1),
+  );
+  if (!consent?.granted) {
+    throw new Error("PUSH_CONSENT_REQUIRED");
+  }
 
   await db
     .insert(pushSubscriptions)
     .values({
-      userId: session.user.id,
+      userId,
       endpoint: subscription.endpoint,
       p256dh: subscription.keys.p256dh,
       auth: subscription.keys.auth,
@@ -32,8 +48,7 @@ export async function subscribePush(subscription: {
 }
 
 export async function unsubscribePush(endpoint: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) throw new Error("Unauthorized");
+  await requireSession();
 
   await db.delete(pushSubscriptions).where(eq(pushSubscriptions.endpoint, endpoint));
 }

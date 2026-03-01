@@ -22,7 +22,7 @@ export const conversations = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     roomId: uuid("room_id").references(() => rooms.id, { onDelete: "cascade" }),
-    seekerUserId: uuid("seeker_user_id").references(() => profiles.id),
+    seekerUserId: uuid("seeker_user_id").references(() => profiles.id, { onDelete: "set null" }),
     type: conversationTypeEnum("type").notNull().default("direct"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -49,7 +49,7 @@ export const conversationMembers = pgTable(
       .references(() => conversations.id, { onDelete: "cascade" }),
     userId: uuid("user_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow(),
     muted: boolean("muted").default(false),
   },
@@ -87,8 +87,7 @@ export const messages = pgTable(
       .notNull()
       .references(() => conversations.id, { onDelete: "cascade" }),
     senderId: uuid("sender_id")
-      .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "set null" }),
     ciphertext: text("ciphertext").notNull(),
     iv: text("iv").notNull(),
     encryptedKeys: jsonb("encrypted_keys"),
@@ -128,7 +127,7 @@ export const messageReceipts = pgTable(
       .references(() => messages.id, { onDelete: "cascade" }),
     userId: uuid("user_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     status: deliveryStatusEnum("status").notNull().default("sent"),
     deliveredAt: timestamp("delivered_at", { withTimezone: true }),
     readAt: timestamp("read_at", { withTimezone: true }),

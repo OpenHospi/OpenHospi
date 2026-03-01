@@ -8,7 +8,8 @@
       "fileTooLarge": "Bestand is te groot. Maximale grootte is {maxSize} MB.",
       "invalidFileType": "Ongeldig bestandstype. Gebruik JPEG, PNG of WebP.",
       "uploadFailed": "Uploaden mislukt. Probeer het opnieuw.",
-      "deleteFailed": "Verwijderen mislukt. Probeer het opnieuw."
+      "deleteFailed": "Verwijderen mislukt. Probeer het opnieuw.",
+      "processingRestricted": "De verwerking van je account is momenteel beperkt. Je kunt dit beheren in Instellingen > Privacy."
     },
     "labels": {
       "title": "Titel",
@@ -958,6 +959,16 @@
         "already_applied": "Je hebt je al aangemeld voor deze kamer.",
         "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
+    },
+    "privacyAccept": {
+      "title": "Privacybeleid bijgewerkt",
+      "description": "Ons privacybeleid is bijgewerkt. Bekijk de wijzigingen en accepteer om OpenHospi te blijven gebruiken.",
+      "summary": "Het bijgewerkte privacybeleid beschrijft hoe wij je persoonsgegevens verzamelen, gebruiken en beschermen in overeenstemming met de AVG/GDPR.",
+      "acceptButton": "Ik accepteer",
+      "viewFullPolicy": "Volledig privacybeleid bekijken"
+    },
+    "restricted": {
+      "banner": "De verwerking van je account is beperkt. Sommige functies zijn niet beschikbaar. Je kunt dit beheren in Instellingen > Privacy."
     },
     "consent": {
       "title": "Wij gebruiken cookies",

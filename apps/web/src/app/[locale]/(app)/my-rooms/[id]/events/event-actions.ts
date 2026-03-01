@@ -8,11 +8,14 @@ import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
 
 export async function createEvent(roomId: string, data: CreateEventData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = createEventSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 
@@ -44,6 +47,9 @@ export async function createEvent(roomId: string, data: CreateEventData) {
 
 export async function updateEvent(eventId: string, roomId: string, data: CreateEventData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = createEventSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 
@@ -71,6 +77,8 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
 
 export async function cancelEvent(eventId: string, roomId: string) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   const result = await withRLS(session.user.id, async (tx) => {
     const [event] = await tx

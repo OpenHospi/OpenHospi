@@ -1,6 +1,5 @@
+import { TRUSTPILOT_CACHE_REVALIDATE_SECONDS, TRUSTPILOT_URL } from "@openhospi/shared/constants";
 import { unstable_cache } from "next/cache";
-
-const TRUSTPILOT_REVIEW_URL = "https://nl.trustpilot.com/review/openhospi.nl";
 
 export interface TrustpilotData {
   score: number;
@@ -9,7 +8,7 @@ export interface TrustpilotData {
 
 async function fetchTrustpilotData(): Promise<TrustpilotData> {
   try {
-    const res = await fetch(TRUSTPILOT_REVIEW_URL, {
+    const res = await fetch(TRUSTPILOT_URL, {
       headers: { "User-Agent": "OpenHospi/1.0" },
     });
 
@@ -30,5 +29,5 @@ async function fetchTrustpilotData(): Promise<TrustpilotData> {
 }
 
 export const getTrustpilotData = unstable_cache(fetchTrustpilotData, ["trustpilot-data"], {
-  revalidate: 86400,
+  revalidate: TRUSTPILOT_CACHE_REVALIDATE_SECONDS,
 });

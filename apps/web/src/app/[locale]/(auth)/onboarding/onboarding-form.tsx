@@ -1,5 +1,6 @@
 "use client";
 
+import { ONBOARDING_TOTAL_STEPS } from "@openhospi/shared/constants";
 import type { AboutStepData, PreferencesStepData } from "@openhospi/database/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -12,8 +13,6 @@ import { LanguagesStep } from "./steps/languages-step";
 import { PersonalityStep } from "./steps/personality-step";
 import { PhotosStep } from "./steps/photos-step";
 import { PreferencesStep } from "./steps/preferences-step";
-
-const TOTAL_STEPS = 5;
 
 type Props = {
   initialData: Partial<ProfileWithPhotos>;
@@ -36,10 +35,10 @@ export function OnboardingForm({ initialData }: Props) {
     <div className="w-full max-w-lg space-y-8">
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{t("stepOf", { current: step, total: TOTAL_STEPS })}</span>
+          <span>{t("stepOf", { current: step, total: ONBOARDING_TOTAL_STEPS })}</span>
           <span>{stepTitles[step - 1]}</span>
         </div>
-        <Progress value={(step / TOTAL_STEPS) * 100} />
+        <Progress value={(step / ONBOARDING_TOTAL_STEPS) * 100} />
       </div>
 
       <div>

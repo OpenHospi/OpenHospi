@@ -1,10 +1,8 @@
 "use client";
 
+import { LEGAL_HEADER_OFFSET } from "@openhospi/shared/constants";
 import { Link as LinkIcon } from "lucide-react";
 import { useCallback } from "react";
-
-
-const HEADER_OFFSET = 96;
 
 interface LegalHeadingLinkProps {
   id: string;
@@ -24,7 +22,7 @@ export function LegalHeadingLink({
       if (!el) return;
 
       const top =
-        el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+        el.getBoundingClientRect().top + window.scrollY - LEGAL_HEADER_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
       history.replaceState(null, "", `#${id}`);
     },

@@ -6,13 +6,15 @@ import { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 
 type JoinResult = { success: true } | { error: "INVALID_LINK" | "ALREADY_MEMBER" };
 
 export async function joinHouse(inviteCode: string): Promise<JoinResult> {
   const session = await requireSession();
   const userId = session.user.id;
+  const restricted = await requireNotRestricted(userId);
+  if (restricted) throw new Error(restricted.error);
 
   // Uses db directly — the house_members_insert RLS policy only allows
   // the house creator to insert. The joining user is NOT the creator,

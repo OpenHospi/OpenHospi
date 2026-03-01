@@ -1,3 +1,9 @@
+import {
+  RATE_LIMIT_APPLY,
+  RATE_LIMIT_CREATE_ROOM,
+  RATE_LIMIT_EXPORT_DATA,
+  RATE_LIMIT_JOIN_SHARE_LINK,
+} from "@openhospi/shared/constants";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
@@ -18,10 +24,10 @@ function limiter(
 }
 
 export const rateLimiters = {
-  apply: limiter(20, "1 d", "apply"),
-  createRoom: limiter(5, "1 d", "room"),
-  exportData: limiter(3, "1 d", "export"),
-  joinShareLink: limiter(10, "1 d", "join"),
+  apply: limiter(RATE_LIMIT_APPLY, "1 d", "apply"),
+  createRoom: limiter(RATE_LIMIT_CREATE_ROOM, "1 d", "room"),
+  exportData: limiter(RATE_LIMIT_EXPORT_DATA, "1 d", "export"),
+  joinShareLink: limiter(RATE_LIMIT_JOIN_SHARE_LINK, "1 d", "join"),
 } as const;
 
 /**

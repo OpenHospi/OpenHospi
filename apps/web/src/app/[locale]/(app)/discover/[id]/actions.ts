@@ -8,11 +8,14 @@ import { RoomStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 
 export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = applyToRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 

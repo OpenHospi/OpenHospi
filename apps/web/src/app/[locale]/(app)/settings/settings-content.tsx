@@ -128,7 +128,7 @@ export function SettingsContent() {
     startExportCSV(async () => {
       const result = await exportDataCSV();
       if ("error" in result) return;
-      const { csvFiles } = result;
+      const { csvFiles } = result as { csvFiles: Record<string, string> };
       if (!csvFiles) return;
 
       // Download each CSV as a separate file

@@ -3,7 +3,7 @@
 import { MAX_DECLINE_REASON_LENGTH } from "@openhospi/shared/constants";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { Calendar, Check, Clock, Loader2, MapPin, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";

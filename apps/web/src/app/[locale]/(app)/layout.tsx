@@ -3,8 +3,7 @@ import { profiles } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Link, redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 

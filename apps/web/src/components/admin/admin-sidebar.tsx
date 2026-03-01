@@ -1,8 +1,7 @@
 "use client";
 
 import { BarChart3, ClipboardList, FileText, ScrollText, ShieldCheck } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 
 import {

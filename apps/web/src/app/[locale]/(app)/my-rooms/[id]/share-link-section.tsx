@@ -2,7 +2,7 @@
 
 import { COPY_FEEDBACK_TIMEOUT_MS } from "@openhospi/shared/constants";
 import { Check, Copy, Loader2, RefreshCw } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";

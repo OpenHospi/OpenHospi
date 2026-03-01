@@ -10,7 +10,7 @@ import {
   MAX_EVENT_TITLE_LENGTH,
 } from "@openhospi/shared/constants";
 import { Loader2, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";

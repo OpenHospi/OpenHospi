@@ -1,4 +1,3 @@
-import type { Locale } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
 import type { Metadata } from "next";
@@ -57,7 +56,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   setRequestLocale(locale);
 
-  const messages = await getMessages(locale as Locale);
+  const messages = await getMessages(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>

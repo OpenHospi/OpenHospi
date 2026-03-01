@@ -1,6 +1,6 @@
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Focus } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation-app";
 import { getTranslations } from "next-intl/server";
 
 

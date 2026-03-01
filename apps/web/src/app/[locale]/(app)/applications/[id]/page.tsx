@@ -1,7 +1,6 @@
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { InvitationCard } from "@/app/[locale]/(app)/invitations/invitation-card";
@@ -10,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "@/i18n/navigation-app";
+import { Link, redirect } from "@/i18n/navigation-app";
 import { getApplicationDetail } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 import { getInvitationForApplication } from "@/lib/invitations";

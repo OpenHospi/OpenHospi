@@ -1,6 +1,6 @@
 import { RoomStatus } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 

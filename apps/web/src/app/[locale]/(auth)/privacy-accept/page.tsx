@@ -1,8 +1,7 @@
 "use client";
 
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 

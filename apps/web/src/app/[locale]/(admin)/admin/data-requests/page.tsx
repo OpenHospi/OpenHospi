@@ -1,5 +1,5 @@
 import { DataRequestStatus } from "@openhospi/shared/enums";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";

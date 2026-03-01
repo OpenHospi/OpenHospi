@@ -1,5 +1,5 @@
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { requireSession } from "@/lib/auth-server";

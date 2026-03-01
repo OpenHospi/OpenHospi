@@ -13,7 +13,7 @@ import {
   type PreferencesStepData,
 } from "@openhospi/database/validators";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation-app";
 
 import { requireSession } from "@/lib/auth-server";
 

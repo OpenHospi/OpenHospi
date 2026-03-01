@@ -1,7 +1,7 @@
 "use client";
 
 import { Flag, MoreVertical, ShieldBan, ShieldCheck, ArrowLeft  } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";

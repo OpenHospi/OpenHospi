@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronsUpDown, Home, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

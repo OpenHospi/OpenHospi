@@ -1,7 +1,7 @@
 import { withRLS } from "@openhospi/database";
 import { houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

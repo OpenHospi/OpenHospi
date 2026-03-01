@@ -16,7 +16,7 @@ import {
   Vereniging,
 } from "@openhospi/shared/enums";
 import { Loader2, Pencil } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";

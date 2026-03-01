@@ -2,8 +2,7 @@
 
 import { RoomStatus } from "@openhospi/shared/enums";
 import { Loader2, Pause, Pencil, Play, Rocket, Trash2, XCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";

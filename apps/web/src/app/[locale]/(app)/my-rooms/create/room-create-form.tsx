@@ -7,7 +7,7 @@ import type {
 } from "@openhospi/database/validators";
 import { ROOM_CREATE_TOTAL_STEPS } from "@openhospi/shared/constants";
 import { Check } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 

@@ -2,7 +2,7 @@
 
 import { INVITABLE_APPLICATION_STATUSES, ReviewDecision } from "@openhospi/shared/enums";
 import { Check, Loader2, UserPlus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";

@@ -6,7 +6,7 @@ import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
 import { ReviewDecision } from "@openhospi/shared/enums";
 import { Loader2, UserCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
 import { useForm } from "react-hook-form";

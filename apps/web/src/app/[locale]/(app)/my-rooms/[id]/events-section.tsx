@@ -1,5 +1,5 @@
 import { Calendar, MapPin, Users } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation-app";
 import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";

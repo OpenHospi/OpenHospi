@@ -25,6 +25,7 @@
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
     "supabase:reset": "supabase db reset && pnpm db:push:local && pnpm db:setup:storage:local && pnpm db:seed:local",
+    "i18n:check": "npx @lingual/i18n-check@latest --source nl --locales packages/i18n/messages",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
   },
   "pnpm": {

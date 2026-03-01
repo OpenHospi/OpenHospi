@@ -1,6 +1,6 @@
 import { APP_NAME } from "@openhospi/shared/constants";
 import { ShieldCheck } from "lucide-react";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 

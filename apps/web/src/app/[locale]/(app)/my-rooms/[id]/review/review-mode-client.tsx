@@ -2,8 +2,7 @@
 
 import { ReviewDecision } from "@openhospi/shared/enums";
 import { ArrowLeft, Minus, ThumbsDown, ThumbsUp, UserCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";

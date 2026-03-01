@@ -1,6 +1,5 @@
 import { ArrowLeft, Calendar, Clock, MapPin, Users, UserCircle } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Link, redirect } from "@/i18n/navigation-app";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";

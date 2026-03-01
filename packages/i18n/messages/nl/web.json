@@ -32,6 +32,26 @@
       "title": "Algemene Voorwaarden",
       "description": "Gebruiksvoorwaarden voor OpenHospi, het gratis studentenhuisvestingsplatform voor Nederland."
     },
+    "cookies": {
+      "title": "Cookiebeleid",
+      "description": "Welke cookies OpenHospi gebruikt en hoe je je voorkeuren kunt beheren."
+    },
+    "processingRegister": {
+      "title": "Verwerkingsregister",
+      "description": "Overzicht van alle verwerkingsactiviteiten van persoonsgegevens bij OpenHospi (Art. 30 AVG)."
+    },
+    "dpia": {
+      "title": "Gegevensbeschermingseffectbeoordeling",
+      "description": "Risicobeoordeling voor de verwerking van persoonsgegevens bij OpenHospi (Art. 35 AVG)."
+    },
+    "dataProcessors": {
+      "title": "Verwerkers",
+      "description": "Overzicht van alle externe verwerkers die OpenHospi gebruikt."
+    },
+    "legalBasis": {
+      "title": "Rechtsgrondoverzicht",
+      "description": "Rechtsgrond per verwerkingsactiviteit bij OpenHospi (Art. 6 AVG)."
+    },
     "missingAssociation": {
       "title": "Vereniging Mist? — Laat Het Ons Weten",
       "description": "Staat jouw studentenvereniging niet op OpenHospi? Neem contact op en we voegen hem toe."
@@ -88,6 +108,7 @@
       "browseRooms": "Kamers bekijken",
       "costs": "Kosten",
       "privacy": "Privacybeleid",
+      "cookies": "Cookiebeleid",
       "terms": "Voorwaarden",
       "about": "Over ons",
       "missingAssociation": "Vereniging mist?"
@@ -324,35 +345,97 @@
   },
   "privacy": {
     "title": "Privacybeleid",
-    "lastUpdated": "Laatst bijgewerkt: februari 2026",
+    "lastUpdated": "Laatst bijgewerkt: maart 2026",
     "sections": [
       {
-        "title": "Welke gegevens we verzamelen",
-        "content": "We verzamelen gegevens die je verstrekt bij het aanmaken van je account (via SURFconext), je profielinformatie, kameradvertenties en berichten die je via het platform verstuurt."
+        "title": "1. Verwerkingsverantwoordelijke",
+        "content": "OpenHospi is de verwerkingsverantwoordelijke voor de verwerking van je persoonsgegevens. OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Voor privacyvragen kun je contact opnemen via privacy@openhospi.nl."
       },
       {
-        "title": "SURFconext-gegevens",
-        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres en instelling. We gebruiken dit om je identiteit te verifiëren en je account aan te maken."
+        "title": "2. Privacycontact",
+        "content": "Voor alle privacy- en gegevensbeschermingsvragen kun je contact opnemen via privacy@openhospi.nl. We streven ernaar binnen 30 dagen te reageren, zoals vereist door artikel 12 AVG."
       },
       {
-        "title": "Hoe we je gegevens gebruiken",
-        "content": "We gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden. We verkopen je gegevens niet, gebruiken ze niet voor reclame en delen ze niet met derden, behalve wanneer de wet dit vereist."
+        "title": "3. Gegevens die we verzamelen",
+        "content": "We verzamelen: profielgegevens (naam, e-mail, geboortedatum, geslacht, studiegegevens, foto's), woninggegevens (kameradvertenties met adressen en coördinaten), communicatiegegevens (end-to-end versleutelde chatberichten), aanmeldingsgegevens (persoonlijke berichten en status), sessiegegevens (IP-adres, user agent voor beveiliging), pushtokens (voor het bezorgen van meldingen) en toestemmingsrecords (je cookie- en privacyvoorkeuren)."
       },
       {
-        "title": "Gegevensverwerker",
-        "content": "Onze database wordt gehost op Supabase (EU-regio). Supabase fungeert als onze gegevensverwerker onder een Verwerkersovereenkomst."
+        "title": "4. SURFconext-gegevens",
+        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres en onderwijsinstellingsdomein. SURFconext wordt beheerd door SURF, de samenwerkingsorganisatie voor IT in het onderwijs. We gebruiken deze gegevens om je studentidentiteit te verifiëren en je account aan te maken."
       },
       {
-        "title": "Bewaartermijn",
-        "content": "Je gegevens worden bewaard zolang je account actief is. Je kunt je account op elk moment verwijderen, waarmee al je gegevens permanent worden verwijderd."
+        "title": "5. Hoe we je gegevens gebruiken",
+        "content": "We gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden: studenten matchen met kamers, communicatie faciliteren tussen zoekers en aanbieders, en het hospiteerproces beheren. We verkopen je gegevens niet, gebruiken ze niet voor reclame, profileren je niet voor marketing en delen ze niet met derden behalve zoals beschreven in dit beleid."
       },
       {
-        "title": "Jouw rechten",
-        "content": "Onder de AVG heb je het recht om je persoonsgegevens in te zien, te corrigeren, te exporteren en te verwijderen. Neem contact op via privacy@openhospi.nl om deze rechten uit te oefenen."
+        "title": "6. Rechtsgrond",
+        "content": "We verwerken je gegevens op basis van de volgende rechtsgronden: Overeenkomst (Art. 6(1)(b)) — profiel, woningen, aanmeldingen, chat; deze zijn noodzakelijk voor de dienstverlening. Toestemming (Art. 6(1)(a)) — functionele cookies, pushmeldingen, analyse. Gerechtvaardigd belang (Art. 6(1)(f)) — sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten). Je kunt toestemming op elk moment intrekken via Instellingen > Privacy. Zie onze pagina Rechtsgrondoverzicht voor een volledig overzicht per verwerkingsactiviteit."
       },
       {
-        "title": "Contact",
-        "content": "Voor privacy-gerelateerde vragen, e-mail privacy@openhospi.nl."
+        "title": "7. Gegevensdeling & verwerkers",
+        "content": "We delen je gegevens alleen met de volgende verwerkers, allemaal gevestigd binnen de EU/EER: Supabase (Dublin, Ierland) — database en bestandsopslag; Vercel (Dublin, Ierland) — webhosting en edge-functies; Upstash (Ierland) — snelheidsbeperking via Redis; SURFconext (Nederland) — authenticatie. Alle verwerkers werken onder Verwerkersovereenkomsten. Zie onze Verwerkers-pagina voor details."
+      },
+      {
+        "title": "8. Internationale doorgifte",
+        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). We geven geen persoonsgegevens door buiten de EER. Al onze infrastructuurproviders zijn gevestigd in Ierland of Nederland."
+      },
+      {
+        "title": "9. Bewaartermijnen",
+        "content": "Profielgegevens, woningadvertenties en chatberichten worden bewaard zolang je account actief is. Sessie-IP-adressen worden geanonimiseerd na 30 dagen. Verlopen sessies worden verwijderd na 90 dagen. Rapportberichttekst wordt verwijderd 90 dagen na afhandeling. Gelezen meldingen worden verwijderd na 180 dagen. IP-adressen in toestemmingsrecords worden geanonimiseerd na 365 dagen. Wanneer je je account verwijdert, worden al je gegevens permanent verwijderd via cascadeverwijderingen."
+      },
+      {
+        "title": "10. Jouw rechten",
+        "content": "Onder de AVG heb je het recht op: inzage in je gegevens (Art. 15) — via Instellingen > Privacy > Gegevens exporteren; rectificatie (Art. 16) — bewerk je profiel op elk moment; wissing (Art. 17) — verwijder je account en alle gegevens; beperking van verwerking (Art. 18) — pauzeer verwerking terwijl gegevens worden bewaard; gegevensoverdraagbaarheid (Art. 20) — exporteer in JSON- of CSV-formaat; bezwaar (Art. 21) — maak bezwaar tegen verwerking op basis van gerechtvaardigd belang. Je kunt deze rechten uitoefenen via Instellingen > Privacy, of door contact op te nemen met privacy@openhospi.nl."
+      },
+      {
+        "title": "11. Recht op klacht",
+        "content": "Als je van mening bent dat je gegevensbeschermingsrechten zijn geschonden, heb je het recht een klacht in te dienen bij de Autoriteit Persoonsgegevens op autoriteitpersoonsgegevens.nl, of bij de toezichthoudende autoriteit in je EU-lidstaat van verblijf."
+      },
+      {
+        "title": "12. Cookies & tracking",
+        "content": "We gebruiken een minimale set cookies. Essentiële cookies (sessie-authenticatie) vereisen geen toestemming. Functionele cookies (taalvoorkeur, zijbalkstatus) vereisen je toestemming op grond van de Telecommunicatiewet (Art. 11.7a). We gebruiken geen trackingcookies of advertentiecookies van derden. Zie ons Cookiebeleid voor volledige details."
+      },
+      {
+        "title": "13. End-to-end-encryptie",
+        "content": "Alle chatberichten tussen studenten en kameraanbieders zijn end-to-end versleuteld (E2EE) met AES-256-GCM en ECDH-sleuteluitwisseling. Dit betekent dat OpenHospi de inhoud van je privéberichten niet kan lezen. Encryptiesleutels worden lokaal op je apparaat opgeslagen en optioneel (versleuteld) op onze servers geback-upt."
+      },
+      {
+        "title": "14. Gegevens van kinderen",
+        "content": "OpenHospi is uitsluitend toegankelijk via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, wat voldoet aan de AVG-leeftijdsvereiste onder Nederlands recht (UAVG Art. 5). We verzamelen niet bewust gegevens van kinderen onder 16 jaar."
+      },
+      {
+        "title": "15. Geautomatiseerde besluitvorming",
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde besluitvorming of profilering zoals gedefinieerd in artikel 22 AVG. Kamermatching is volledig handmatig — gebruikers bladeren door advertenties en melden zich zelf aan. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
+      },
+      {
+        "title": "16. Wijzigingen in dit beleid",
+        "content": "We kunnen dit privacybeleid van tijd tot tijd bijwerken. Belangrijke wijzigingen worden gecommuniceerd via een in-app-melding. De datum 'laatst bijgewerkt' bovenaan weerspiegelt de meest recente revisie. Voortgezet gebruik van OpenHospi na wijzigingen geldt als acceptatie."
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Cookiebeleid",
+    "lastUpdated": "Laatst bijgewerkt: maart 2026",
+    "sections": [
+      {
+        "title": "Wat zijn cookies?",
+        "content": "Cookies zijn kleine tekstbestanden die op je apparaat worden opgeslagen wanneer je een website bezoekt. Ze helpen de site je voorkeuren te onthouden en je ervaring te verbeteren. Onder de Nederlandse Telecommunicatiewet (Art. 11.7a) hebben we je toestemming nodig voor niet-essentiële cookies."
+      },
+      {
+        "title": "Essentiële cookies",
+        "content": "Deze cookies zijn strikt noodzakelijk voor het functioneren van het platform. Hiervoor is geen toestemming vereist. We gebruiken: better-auth.session_token — authenticeert je inlogsessie (sessiecookie, wordt verwijderd wanneer je je browser sluit)."
+      },
+      {
+        "title": "Functionele cookies",
+        "content": "Deze cookies verbeteren je ervaring maar zijn niet strikt noodzakelijk. Hiervoor is je toestemming vereist: sidebar_state — onthoudt of de zijbalk open of gesloten is (permanent, localStorage); NEXT_LOCALE — onthoudt je taalvoorkeur (1 jaar)."
+      },
+      {
+        "title": "Analyse",
+        "content": "We gebruiken Vercel Analytics, dat cookieloos is en geen persoonsgegevens gebruikt. Hoewel technisch geen toestemming vereist is, vermelden we het in je toestemmingsvoorkeuren voor volledige transparantie. Je kunt je op elk moment afmelden via Instellingen > Privacy."
+      },
+      {
+        "title": "Je voorkeuren beheren",
+        "content": "Je kunt je cookievoorkeuren op elk moment wijzigen via Instellingen > Privacy in je account, of door op 'Voorkeuren beheren' te klikken op de cookiebanner. Voor vragen over ons cookiebeleid kun je contact opnemen via privacy@openhospi.nl."
       }
     ]
   },

@@ -955,8 +955,40 @@
         "RATE_LIMITED": "Too many attempts. Please try again later."
       }
     },
+    "consent": {
+      "title": "We use cookies",
+      "description": "We use essential cookies to keep you logged in and optional cookies for a better experience. You can manage your preferences at any time.",
+      "acceptAll": "Accept all",
+      "essentialOnly": "Only essential",
+      "manage": "Manage preferences",
+      "manageTitle": "Cookie preferences",
+      "savePreferences": "Save preferences",
+      "purposes": {
+        "essential": {
+          "name": "Essential",
+          "description": "Required for authentication and core platform functionality. Cannot be disabled."
+        },
+        "functional": {
+          "name": "Functional",
+          "description": "Remembers your preferences like language and sidebar state."
+        },
+        "push_notifications": {
+          "name": "Push notifications",
+          "description": "Allows delivery of browser push notifications for messages and events."
+        },
+        "analytics": {
+          "name": "Analytics",
+          "description": "Cookieless analytics by Vercel to help us improve the platform. No personal data is collected."
+        }
+      }
+    },
     "settings": {
       "title": "Settings",
+      "tabs": {
+        "general": "General",
+        "privacy": "Privacy",
+        "account": "Account"
+      },
       "pushNotifications": {
         "title": "Push notifications",
         "description": "Manage browser push notifications to stay updated on new messages, applications, and events."
@@ -965,8 +997,82 @@
       "exportRateLimited": "Too many export requests today. Please try again later.",
       "dataExport": {
         "title": "Export your data",
-        "description": "Download all your personal data as a JSON file. This includes your profile, rooms, applications, and reviews.",
+        "description": "Download all your personal data in JSON or CSV format. This includes your profile, rooms, applications, messages, and consent records.",
+        "jsonButton": "Export JSON",
+        "csvButton": "Export CSV",
         "button": "Export data"
+      },
+      "privacy": {
+        "title": "Privacy & data",
+        "consentManagement": {
+          "title": "Consent management",
+          "description": "Manage your cookie and data processing preferences."
+        },
+        "dataOverview": {
+          "title": "Your data overview",
+          "description": "See what personal data is stored and how it is used.",
+          "categories": {
+            "profile": "Profile",
+            "photos": "Photos",
+            "housing": "Housing listings",
+            "applications": "Applications",
+            "chat": "Chat messages",
+            "sessions": "Sessions",
+            "moderation": "Moderation"
+          },
+          "legalBasis": "Legal basis",
+          "retention": "Retention",
+          "untilDeletion": "Until account deletion",
+          "30days": "30 days after expiry",
+          "90days": "90 days after resolution",
+          "contract": "Contract",
+          "legitimateInterest": "Legitimate interest"
+        },
+        "consentHistory": {
+          "title": "Consent history",
+          "description": "View the history of your consent changes.",
+          "empty": "No consent records yet.",
+          "granted": "Granted",
+          "revoked": "Revoked"
+        },
+        "dataRequest": {
+          "title": "Data requests",
+          "description": "Submit a formal GDPR request regarding your personal data.",
+          "typeLabel": "Request type",
+          "descriptionLabel": "Description",
+          "descriptionPlaceholder": "Describe your request in detail...",
+          "submitButton": "Submit request",
+          "success": "Request submitted successfully. We will respond within 30 days.",
+          "types": {
+            "access": "Access my data (Art. 15)",
+            "rectification": "Correct my data (Art. 16)",
+            "erasure": "Delete my data (Art. 17)",
+            "restriction": "Restrict processing (Art. 18)",
+            "portability": "Data portability (Art. 20)",
+            "objection": "Object to processing (Art. 21)"
+          }
+        },
+        "processingRestriction": {
+          "title": "Restrict processing",
+          "description": "Temporarily pause all processing of your data. Your profile and rooms will be hidden from other users. You can lift this restriction at any time.",
+          "activateButton": "Restrict processing",
+          "liftButton": "Lift restriction",
+          "active": "Processing is currently restricted",
+          "reasonLabel": "Reason",
+          "reasonPlaceholder": "Why do you want to restrict processing?",
+          "activateSuccess": "Processing restricted. Your profile and rooms are now hidden.",
+          "liftSuccess": "Processing restriction lifted. Your profile and rooms are visible again."
+        }
+      },
+      "account": {
+        "title": "Account",
+        "sessions": {
+          "title": "Active sessions",
+          "description": "View and manage your active login sessions.",
+          "current": "Current session",
+          "lastActive": "Last active {date}",
+          "revokeButton": "Revoke"
+        }
       },
       "dangerZone": {
         "title": "Danger zone",

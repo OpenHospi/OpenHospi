@@ -32,6 +32,26 @@
       "title": "Terms & Conditions",
       "description": "Terms of use for OpenHospi, the free student housing platform for the Netherlands."
     },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "Learn which cookies OpenHospi uses and how to manage your preferences."
+    },
+    "processingRegister": {
+      "title": "Processing Register",
+      "description": "Overview of all personal data processing activities at OpenHospi (Art. 30 GDPR)."
+    },
+    "dpia": {
+      "title": "Data Protection Impact Assessment",
+      "description": "Risk assessment for personal data processing at OpenHospi (Art. 35 GDPR)."
+    },
+    "dataProcessors": {
+      "title": "Data Processors",
+      "description": "Overview of all third-party data processors used by OpenHospi."
+    },
+    "legalBasis": {
+      "title": "Legal Basis Overview",
+      "description": "Legal basis for each data processing activity at OpenHospi (Art. 6 GDPR)."
+    },
     "missingAssociation": {
       "title": "Association Missing? — Let Us Know",
       "description": "Is your student association not listed on OpenHospi? Contact us and we'll add it."
@@ -88,6 +108,7 @@
       "browseRooms": "Browse rooms",
       "costs": "Costs",
       "privacy": "Privacy policy",
+      "cookies": "Cookie policy",
       "terms": "Terms & conditions",
       "about": "About",
       "missingAssociation": "Association missing?"
@@ -324,35 +345,97 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: February 2026",
+    "lastUpdated": "Last updated: March 2026",
     "sections": [
       {
-        "title": "What data we collect",
-        "content": "We collect data you provide when creating your account (via SURFconext), your profile information, room listings, and messages you send through the platform."
+        "title": "1. Controller",
+        "content": "OpenHospi is the controller for processing your personal data. OpenHospi is a free, open-source student housing platform for the Netherlands. For privacy questions, contact us at privacy@openhospi.nl."
       },
       {
-        "title": "SURFconext data",
-        "content": "When you log in via SURFconext, we receive your name, email address, and institution. We use this to verify your identity and create your account."
+        "title": "2. Privacy contact",
+        "content": "For all privacy and data protection inquiries, contact privacy@openhospi.nl. We aim to respond within 30 days, as required by GDPR Article 12."
       },
       {
-        "title": "How we use your data",
-        "content": "We use your data solely to provide the OpenHospi platform. We do not sell your data, use it for advertising, or share it with third parties except as required by law."
+        "title": "3. Data we collect",
+        "content": "We collect: profile data (name, email, date of birth, gender, study information, photos), housing data (room listings with addresses and coordinates), communication data (end-to-end encrypted chat messages), application data (personal messages and status), session data (IP address, user agent for security), push notification tokens (for delivery of notifications), and consent records (your cookie and privacy preferences)."
       },
       {
-        "title": "Data processor",
-        "content": "Our database is hosted on Supabase (EU region). Supabase acts as our data processor under a Data Processing Agreement."
+        "title": "4. SURFconext data",
+        "content": "When you log in via SURFconext, we receive your name, email address, and educational institution domain. SURFconext is operated by SURF, the Dutch collaborative organisation for IT in education. We use this data to verify your student identity and create your account."
       },
       {
-        "title": "Data retention",
-        "content": "Your data is retained as long as your account is active. You can delete your account at any time, which will permanently remove all your data."
+        "title": "5. How we use your data",
+        "content": "We use your data solely to provide the OpenHospi platform: matching students with rooms, facilitating communication between seekers and hosts, and managing the housing application process. We do not sell your data, use it for advertising, profile you for marketing, or share it with third parties except as described in this policy."
       },
       {
-        "title": "Your rights",
-        "content": "Under GDPR, you have the right to access, correct, export, and delete your personal data. Contact us at privacy@openhospi.nl to exercise these rights."
+        "title": "6. Legal basis",
+        "content": "We process your data based on the following legal grounds: Contract (Art. 6(1)(b)) — profile, housing, applications, chat; these are necessary to provide the service. Consent (Art. 6(1)(a)) — functional cookies, push notifications, analytics. Legitimate interest (Art. 6(1)(f)) — session security (IP logging), platform safety (moderation reports). You can withdraw consent at any time via Settings > Privacy. See our Legal Basis Overview page for a complete breakdown per processing activity."
       },
       {
-        "title": "Contact",
-        "content": "For privacy-related questions, email privacy@openhospi.nl."
+        "title": "7. Data sharing & processors",
+        "content": "We share your data only with the following processors, all located within the EU/EEA: Supabase (Dublin, Ireland) — database and file storage; Vercel (Dublin, Ireland) — web hosting and edge functions; Upstash (Ireland) — rate limiting via Redis; SURFconext (Netherlands) — authentication. All processors operate under Data Processing Agreements (DPAs). See our Data Processors page for details."
+      },
+      {
+        "title": "8. International transfers",
+        "content": "All your data is stored and processed within the European Economic Area (EEA). We do not transfer personal data outside the EEA. All our infrastructure providers are based in Ireland or the Netherlands."
+      },
+      {
+        "title": "9. Data retention",
+        "content": "Profile data, housing listings, and chat messages are retained as long as your account is active. Session IP addresses are anonymized after 30 days. Expired sessions are deleted after 90 days. Report message text is removed 90 days after resolution. Read notifications are deleted after 180 days. Consent record IP addresses are anonymized after 365 days. When you delete your account, all your data is permanently removed via cascading deletes."
+      },
+      {
+        "title": "10. Your rights",
+        "content": "Under GDPR, you have the right to: access your data (Art. 15) — via Settings > Privacy > Data export; rectification (Art. 16) — edit your profile at any time; erasure (Art. 17) — delete your account and all data; restriction of processing (Art. 18) — pause processing while keeping data stored; data portability (Art. 20) — export in JSON or CSV format; objection (Art. 21) — object to processing based on legitimate interest. You can exercise these rights via Settings > Privacy, or by contacting privacy@openhospi.nl."
+      },
+      {
+        "title": "11. Right to lodge a complaint",
+        "content": "If you believe your data protection rights have been violated, you have the right to lodge a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens) at autoriteitpersoonsgegevens.nl, or with the supervisory authority in your EU member state of residence."
+      },
+      {
+        "title": "12. Cookies & tracking",
+        "content": "We use a minimal set of cookies. Essential cookies (session authentication) do not require consent. Functional cookies (language preference, sidebar state) require your consent under Dutch telecommunications law (Telecommunicatiewet Art. 11.7a). We do not use tracking cookies or third-party advertising cookies. See our Cookie Policy for full details."
+      },
+      {
+        "title": "13. End-to-end encryption",
+        "content": "All chat messages between students and room hosts are end-to-end encrypted (E2EE) using AES-256-GCM with ECDH key exchange. This means OpenHospi cannot read the content of your private messages. Encryption keys are stored locally on your device and optionally backed up (encrypted) on our servers."
+      },
+      {
+        "title": "14. Children's data",
+        "content": "OpenHospi is exclusively accessible via SURFconext, which requires enrollment at an accredited Dutch educational institution. This means all users are students aged 16 or older, meeting the GDPR age requirement under Dutch law (UAVG Art. 5). We do not knowingly collect data from children under 16."
+      },
+      {
+        "title": "15. Automated decision-making",
+        "content": "OpenHospi does not use automated decision-making or profiling as defined in GDPR Article 22. Room matching is entirely manual — users browse listings and apply themselves. No algorithms determine who sees which rooms or who gets accepted."
+      },
+      {
+        "title": "16. Changes to this policy",
+        "content": "We may update this privacy policy from time to time. Significant changes will be communicated via an in-app notification. The 'last updated' date at the top reflects the most recent revision. Continued use of OpenHospi after changes constitutes acceptance."
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Cookie Policy",
+    "lastUpdated": "Last updated: March 2026",
+    "sections": [
+      {
+        "title": "What are cookies?",
+        "content": "Cookies are small text files stored on your device when you visit a website. They help the site remember your preferences and improve your experience. Under Dutch law (Telecommunicatiewet Art. 11.7a), we need your consent for non-essential cookies."
+      },
+      {
+        "title": "Essential cookies",
+        "content": "These cookies are strictly necessary for the platform to function. They do not require consent. We use: better-auth.session_token — authenticates your login session (session cookie, deleted when you close your browser)."
+      },
+      {
+        "title": "Functional cookies",
+        "content": "These cookies improve your experience but are not strictly necessary. They require your consent: sidebar_state — remembers whether the sidebar is open or closed (persistent, localStorage); NEXT_LOCALE — remembers your language preference (1 year)."
+      },
+      {
+        "title": "Analytics",
+        "content": "We use Vercel Analytics, which is cookieless and does not use personally identifiable information. While no consent is technically required, we list it in your consent preferences for full transparency. You can opt out at any time via Settings > Privacy."
+      },
+      {
+        "title": "Managing your preferences",
+        "content": "You can change your cookie preferences at any time via Settings > Privacy in your account, or by clicking 'Manage preferences' on the cookie banner. For questions about our cookie policy, contact privacy@openhospi.nl."
       }
     ]
   },

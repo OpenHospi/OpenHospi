@@ -12,25 +12,25 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "seo" });
   return {
-    title: t("privacy.title"),
-    description: t("privacy.description"),
-    alternates: alternatesForPath(locale, "/privacy"),
+    title: t("cookies.title"),
+    description: t("cookies.description"),
+    alternates: alternatesForPath(locale, "/cookies"),
   };
 }
 
-export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function CookiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: "privacy" });
+  const t = await getTranslations({ locale, namespace: "cookies" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
 
-  const sectionCount = 16;
+  const sectionCount = 5;
 
   // Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation)
   const breadcrumbs = breadcrumbJsonLd(locale, [
     { name: tSeo("home"), path: "" },
-    { name: t("title"), path: "/privacy" },
+    { name: t("title"), path: "/cookies" },
   ]);
 
   return (

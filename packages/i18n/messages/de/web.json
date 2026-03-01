@@ -32,6 +32,26 @@
       "title": "Allgemeine Geschäftsbedingungen",
       "description": "Nutzungsbedingungen für OpenHospi, die kostenlose Studentenwohnungsplattform für die Niederlande."
     },
+    "cookies": {
+      "title": "Cookie-Richtlinie",
+      "description": "Erfahre, welche Cookies OpenHospi verwendet und wie du deine Einstellungen verwalten kannst."
+    },
+    "processingRegister": {
+      "title": "Verarbeitungsverzeichnis",
+      "description": "Übersicht aller Verarbeitungstätigkeiten personenbezogener Daten bei OpenHospi (Art. 30 DSGVO)."
+    },
+    "dpia": {
+      "title": "Datenschutz-Folgenabschätzung",
+      "description": "Risikobewertung für die Verarbeitung personenbezogener Daten bei OpenHospi (Art. 35 DSGVO)."
+    },
+    "dataProcessors": {
+      "title": "Auftragsverarbeiter",
+      "description": "Übersicht aller externen Auftragsverarbeiter, die OpenHospi nutzt."
+    },
+    "legalBasis": {
+      "title": "Rechtsgrundlagenübersicht",
+      "description": "Rechtsgrundlage pro Verarbeitungstätigkeit bei OpenHospi (Art. 6 DSGVO)."
+    },
     "missingAssociation": {
       "title": "Vereinigung Fehlt? — Lass Es Uns Wissen",
       "description": "Ist deine Studierendenvereinigung nicht auf OpenHospi gelistet? Kontaktiere uns und wir fügen sie hinzu."
@@ -88,6 +108,7 @@
       "browseRooms": "Zimmer durchsuchen",
       "costs": "Kosten",
       "privacy": "Datenschutz",
+      "cookies": "Cookie-Richtlinie",
       "terms": "AGB",
       "about": "Über uns",
       "missingAssociation": "Vereinigung fehlt?"
@@ -324,35 +345,97 @@
   },
   "privacy": {
     "title": "Datenschutzerklärung",
-    "lastUpdated": "Zuletzt aktualisiert: Februar 2026",
+    "lastUpdated": "Zuletzt aktualisiert: März 2026",
     "sections": [
       {
-        "title": "Welche Daten wir erheben",
-        "content": "Wir erheben Daten, die du bei der Kontoerstellung (über SURFconext) angibst, deine Profilinformationen, Zimmeranzeigen und Nachrichten, die du über die Plattform sendest."
+        "title": "1. Verantwortlicher",
+        "content": "OpenHospi ist der Verantwortliche für die Verarbeitung deiner personenbezogenen Daten. OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Für Datenschutzfragen kontaktiere uns unter privacy@openhospi.nl."
       },
       {
-        "title": "SURFconext-Daten",
-        "content": "Wenn du dich über SURFconext anmeldest, erhalten wir deinen Namen, deine E-Mail-Adresse und deine Institution. Wir nutzen diese Daten zur Identitätsverifizierung und Kontoerstellung."
+        "title": "2. Datenschutzkontakt",
+        "content": "Für alle Datenschutz- und Datenschutzanfragen kontaktiere privacy@openhospi.nl. Wir bemühen uns, innerhalb von 30 Tagen zu antworten, wie in Artikel 12 DSGVO vorgeschrieben."
       },
       {
-        "title": "Wie wir deine Daten verwenden",
-        "content": "Wir verwenden deine Daten ausschließlich zur Bereitstellung der OpenHospi-Plattform. Wir verkaufen deine Daten nicht, nutzen sie nicht für Werbung und teilen sie nicht mit Dritten, außer wenn gesetzlich vorgeschrieben."
+        "title": "3. Daten, die wir erheben",
+        "content": "Wir erheben: Profildaten (Name, E-Mail, Geburtsdatum, Geschlecht, Studiendaten, Fotos), Wohnungsdaten (Zimmeranzeigen mit Adressen und Koordinaten), Kommunikationsdaten (Ende-zu-Ende verschlüsselte Chatnachrichten), Bewerbungsdaten (persönliche Nachrichten und Status), Sitzungsdaten (IP-Adresse, User Agent für Sicherheit), Push-Tokens (für die Zustellung von Benachrichtigungen) und Einwilligungsdatensätze (deine Cookie- und Datenschutzeinstellungen)."
       },
       {
-        "title": "Auftragsverarbeiter",
-        "content": "Unsere Datenbank wird auf Supabase (EU-Region) gehostet. Supabase fungiert als unser Auftragsverarbeiter gemäß einem Auftragsverarbeitungsvertrag."
+        "title": "4. SURFconext-Daten",
+        "content": "Wenn du dich über SURFconext anmeldest, erhalten wir deinen Namen, deine E-Mail-Adresse und die Domain deiner Bildungseinrichtung. SURFconext wird von SURF betrieben, der niederländischen Kooperationsorganisation für IT im Bildungswesen. Wir nutzen diese Daten zur Verifizierung deiner Studierendenidentität und Kontoerstellung."
       },
       {
-        "title": "Aufbewahrungsfrist",
-        "content": "Deine Daten werden aufbewahrt, solange dein Konto aktiv ist. Du kannst dein Konto jederzeit löschen, wodurch alle deine Daten dauerhaft entfernt werden."
+        "title": "5. Wie wir deine Daten verwenden",
+        "content": "Wir verwenden deine Daten ausschließlich zur Bereitstellung der OpenHospi-Plattform: Vermittlung von Studierenden und Zimmern, Erleichterung der Kommunikation zwischen Suchenden und Anbietern und Verwaltung des Bewerbungsprozesses. Wir verkaufen deine Daten nicht, nutzen sie nicht für Werbung, erstellen kein Marketing-Profil und teilen sie nicht mit Dritten außer wie in dieser Richtlinie beschrieben."
       },
       {
-        "title": "Deine Rechte",
-        "content": "Gemäß der DSGVO hast du das Recht auf Auskunft, Berichtigung, Export und Löschung deiner personenbezogenen Daten. Kontaktiere uns unter privacy@openhospi.nl, um diese Rechte auszuüben."
+        "title": "6. Rechtsgrundlage",
+        "content": "Wir verarbeiten deine Daten auf folgenden Rechtsgrundlagen: Vertrag (Art. 6(1)(b)) — Profil, Wohnungen, Bewerbungen, Chat; notwendig für die Diensterbringung. Einwilligung (Art. 6(1)(a)) — funktionale Cookies, Push-Benachrichtigungen, Analysen. Berechtigtes Interesse (Art. 6(1)(f)) — Sitzungssicherheit (IP-Protokollierung), Plattformsicherheit (Moderationsberichte). Du kannst deine Einwilligung jederzeit über Einstellungen > Datenschutz widerrufen."
       },
       {
-        "title": "Kontakt",
-        "content": "Für datenschutzbezogene Fragen, E-Mail an privacy@openhospi.nl."
+        "title": "7. Datenweitergabe & Auftragsverarbeiter",
+        "content": "Wir teilen deine Daten nur mit folgenden Auftragsverarbeitern, alle innerhalb der EU/EWR: Supabase (Dublin, Irland) — Datenbank und Dateispeicher; Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen; Upstash (Irland) — Ratenbegrenzung über Redis; SURFconext (Niederlande) — Authentifizierung. Alle Auftragsverarbeiter arbeiten unter Auftragsverarbeitungsverträgen."
+      },
+      {
+        "title": "8. Internationale Übermittlungen",
+        "content": "Alle deine Daten werden innerhalb des Europäischen Wirtschaftsraums (EWR) gespeichert und verarbeitet. Wir übermitteln keine personenbezogenen Daten außerhalb des EWR. Alle unsere Infrastrukturanbieter befinden sich in Irland oder den Niederlanden."
+      },
+      {
+        "title": "9. Aufbewahrungsfristen",
+        "content": "Profildaten, Zimmeranzeigen und Chatnachrichten werden aufbewahrt, solange dein Konto aktiv ist. Sitzungs-IP-Adressen werden nach 30 Tagen anonymisiert. Abgelaufene Sitzungen werden nach 90 Tagen gelöscht. Berichtsnachrichtentexte werden 90 Tage nach Abschluss entfernt. Gelesene Benachrichtigungen werden nach 180 Tagen gelöscht. IP-Adressen in Einwilligungsdatensätzen werden nach 365 Tagen anonymisiert. Wenn du dein Konto löschst, werden alle deine Daten dauerhaft durch Kaskadenlöschungen entfernt."
+      },
+      {
+        "title": "10. Deine Rechte",
+        "content": "Gemäß der DSGVO hast du das Recht auf: Auskunft (Art. 15) — über Einstellungen > Datenschutz > Datenexport; Berichtigung (Art. 16) — bearbeite jederzeit dein Profil; Löschung (Art. 17) — lösche dein Konto und alle Daten; Einschränkung der Verarbeitung (Art. 18) — pausiere die Verarbeitung bei Beibehaltung der Daten; Datenübertragbarkeit (Art. 20) — Export im JSON- oder CSV-Format; Widerspruch (Art. 21) — widerspreche der Verarbeitung auf Basis berechtigter Interessen. Du kannst diese Rechte über Einstellungen > Datenschutz oder per E-Mail an privacy@openhospi.nl ausüben."
+      },
+      {
+        "title": "11. Beschwerderecht",
+        "content": "Wenn du der Meinung bist, dass deine Datenschutzrechte verletzt wurden, hast du das Recht, eine Beschwerde bei der niederländischen Datenschutzbehörde (Autoriteit Persoonsgegevens) unter autoriteitpersoonsgegevens.nl einzureichen, oder bei der Aufsichtsbehörde in deinem EU-Mitgliedstaat des Wohnsitzes."
+      },
+      {
+        "title": "12. Cookies & Tracking",
+        "content": "Wir verwenden eine minimale Anzahl von Cookies. Essenzielle Cookies (Sitzungsauthentifizierung) erfordern keine Einwilligung. Funktionale Cookies (Spracheinstellung, Seitenleistenstatus) erfordern deine Einwilligung nach niederländischem Telekommunikationsgesetz (Telecommunicatiewet Art. 11.7a). Wir verwenden keine Tracking-Cookies oder Werbe-Cookies von Drittanbietern. Siehe unsere Cookie-Richtlinie für vollständige Details."
+      },
+      {
+        "title": "13. Ende-zu-Ende-Verschlüsselung",
+        "content": "Alle Chatnachrichten zwischen Studierenden und Zimmeranbietern sind Ende-zu-Ende verschlüsselt (E2EE) mit AES-256-GCM und ECDH-Schlüsselaustausch. Das bedeutet, dass OpenHospi den Inhalt deiner privaten Nachrichten nicht lesen kann. Verschlüsselungsschlüssel werden lokal auf deinem Gerät gespeichert und optional (verschlüsselt) auf unseren Servern gesichert."
+      },
+      {
+        "title": "14. Daten von Kindern",
+        "content": "OpenHospi ist ausschließlich über SURFconext zugänglich, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Das bedeutet, dass alle Nutzer Studierende ab 16 Jahren sind, was die DSGVO-Altersanforderung nach niederländischem Recht (UAVG Art. 5) erfüllt. Wir erheben wissentlich keine Daten von Kindern unter 16 Jahren."
+      },
+      {
+        "title": "15. Automatisierte Entscheidungsfindung",
+        "content": "OpenHospi verwendet keine automatisierte Entscheidungsfindung oder Profiling gemäß Artikel 22 DSGVO. Die Zimmervermittlung ist vollständig manuell — Nutzer durchsuchen Anzeigen und bewerben sich selbst. Keine Algorithmen bestimmen, wer welche Zimmer sieht oder wer akzeptiert wird."
+      },
+      {
+        "title": "16. Änderungen dieser Richtlinie",
+        "content": "Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Wesentliche Änderungen werden über eine In-App-Benachrichtigung mitgeteilt. Das Datum 'Zuletzt aktualisiert' oben zeigt die letzte Überarbeitung an. Die weitere Nutzung von OpenHospi nach Änderungen gilt als Zustimmung."
+      }
+    ]
+  },
+  "cookies": {
+    "title": "Cookie-Richtlinie",
+    "lastUpdated": "Zuletzt aktualisiert: März 2026",
+    "sections": [
+      {
+        "title": "Was sind Cookies?",
+        "content": "Cookies sind kleine Textdateien, die auf deinem Gerät gespeichert werden, wenn du eine Website besuchst. Sie helfen der Website, deine Einstellungen zu merken und dein Erlebnis zu verbessern. Nach niederländischem Telekommunikationsgesetz (Telecommunicatiewet Art. 11.7a) benötigen wir deine Einwilligung für nicht-essenzielle Cookies."
+      },
+      {
+        "title": "Essenzielle Cookies",
+        "content": "Diese Cookies sind für das Funktionieren der Plattform unbedingt erforderlich. Hierfür ist keine Einwilligung erforderlich. Wir verwenden: better-auth.session_token — authentifiziert deine Anmeldesitzung (Sitzungs-Cookie, wird beim Schließen des Browsers gelöscht)."
+      },
+      {
+        "title": "Funktionale Cookies",
+        "content": "Diese Cookies verbessern dein Erlebnis, sind aber nicht unbedingt erforderlich. Hierfür ist deine Einwilligung erforderlich: sidebar_state — merkt sich, ob die Seitenleiste geöffnet oder geschlossen ist (permanent, localStorage); NEXT_LOCALE — merkt sich deine Spracheinstellung (1 Jahr)."
+      },
+      {
+        "title": "Analysen",
+        "content": "Wir verwenden Vercel Analytics, das cookielos ist und keine personenbezogenen Daten verwendet. Obwohl technisch keine Einwilligung erforderlich ist, listen wir es in deinen Einwilligungseinstellungen für volle Transparenz auf. Du kannst dich jederzeit über Einstellungen > Datenschutz abmelden."
+      },
+      {
+        "title": "Einstellungen verwalten",
+        "content": "Du kannst deine Cookie-Einstellungen jederzeit über Einstellungen > Datenschutz in deinem Konto ändern, oder indem du auf 'Einstellungen verwalten' im Cookie-Banner klickst. Bei Fragen zu unserer Cookie-Richtlinie kontaktiere privacy@openhospi.nl."
       }
     ]
   },

@@ -955,8 +955,40 @@
         "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
       }
     },
+    "consent": {
+      "title": "Wij gebruiken cookies",
+      "description": "Wij gebruiken essentiële cookies om je ingelogd te houden en optionele cookies voor een betere ervaring. Je kunt je voorkeuren op elk moment aanpassen.",
+      "acceptAll": "Alles accepteren",
+      "essentialOnly": "Alleen essentieel",
+      "manage": "Voorkeuren beheren",
+      "manageTitle": "Cookievoorkeuren",
+      "savePreferences": "Voorkeuren opslaan",
+      "purposes": {
+        "essential": {
+          "name": "Essentieel",
+          "description": "Vereist voor authenticatie en kernfunctionaliteit. Kan niet worden uitgeschakeld."
+        },
+        "functional": {
+          "name": "Functioneel",
+          "description": "Onthoudt je voorkeuren zoals taal en zijbalkstatus."
+        },
+        "push_notifications": {
+          "name": "Pushmeldingen",
+          "description": "Maakt het mogelijk om browserpushmeldingen te ontvangen voor berichten en evenementen."
+        },
+        "analytics": {
+          "name": "Analyse",
+          "description": "Cookieloze analyse door Vercel om het platform te verbeteren. Er worden geen persoonsgegevens verzameld."
+        }
+      }
+    },
     "settings": {
       "title": "Instellingen",
+      "tabs": {
+        "general": "Algemeen",
+        "privacy": "Privacy",
+        "account": "Account"
+      },
       "pushNotifications": {
         "title": "Pushmeldingen",
         "description": "Beheer browserpushmeldingen om op de hoogte te blijven van nieuwe berichten, reacties en evenementen."
@@ -965,8 +997,82 @@
       "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
       "dataExport": {
         "title": "Exporteer je gegevens",
-        "description": "Download al je persoonlijke gegevens als JSON-bestand. Dit omvat je profiel, kamers, aanmeldingen en beoordelingen.",
+        "description": "Download al je persoonlijke gegevens in JSON- of CSV-formaat. Dit omvat je profiel, kamers, aanmeldingen, berichten en toestemmingsrecords.",
+        "jsonButton": "JSON exporteren",
+        "csvButton": "CSV exporteren",
         "button": "Gegevens exporteren"
+      },
+      "privacy": {
+        "title": "Privacy & gegevens",
+        "consentManagement": {
+          "title": "Toestemmingsbeheer",
+          "description": "Beheer je cookie- en gegevensverwerkingsvoorkeuren."
+        },
+        "dataOverview": {
+          "title": "Je gegevensoverzicht",
+          "description": "Bekijk welke persoonsgegevens zijn opgeslagen en hoe ze worden gebruikt.",
+          "categories": {
+            "profile": "Profiel",
+            "photos": "Foto's",
+            "housing": "Kameradvertenties",
+            "applications": "Aanmeldingen",
+            "chat": "Chatberichten",
+            "sessions": "Sessies",
+            "moderation": "Moderatie"
+          },
+          "legalBasis": "Rechtsgrond",
+          "retention": "Bewaartermijn",
+          "untilDeletion": "Tot accountverwijdering",
+          "30days": "30 dagen na verlopen",
+          "90days": "90 dagen na afhandeling",
+          "contract": "Overeenkomst",
+          "legitimateInterest": "Gerechtvaardigd belang"
+        },
+        "consentHistory": {
+          "title": "Toestemmingsgeschiedenis",
+          "description": "Bekijk de geschiedenis van je toestemmingswijzigingen.",
+          "empty": "Nog geen toestemmingsrecords.",
+          "granted": "Verleend",
+          "revoked": "Ingetrokken"
+        },
+        "dataRequest": {
+          "title": "Gegevensverzoeken",
+          "description": "Dien een formeel AVG-verzoek in met betrekking tot je persoonsgegevens.",
+          "typeLabel": "Type verzoek",
+          "descriptionLabel": "Beschrijving",
+          "descriptionPlaceholder": "Beschrijf je verzoek in detail...",
+          "submitButton": "Verzoek indienen",
+          "success": "Verzoek succesvol ingediend. We reageren binnen 30 dagen.",
+          "types": {
+            "access": "Inzage in mijn gegevens (Art. 15)",
+            "rectification": "Correctie van mijn gegevens (Art. 16)",
+            "erasure": "Verwijdering van mijn gegevens (Art. 17)",
+            "restriction": "Beperking van verwerking (Art. 18)",
+            "portability": "Gegevensoverdraagbaarheid (Art. 20)",
+            "objection": "Bezwaar tegen verwerking (Art. 21)"
+          }
+        },
+        "processingRestriction": {
+          "title": "Verwerking beperken",
+          "description": "Pauzeer tijdelijk alle verwerking van je gegevens. Je profiel en kamers worden verborgen voor andere gebruikers. Je kunt deze beperking op elk moment opheffen.",
+          "activateButton": "Verwerking beperken",
+          "liftButton": "Beperking opheffen",
+          "active": "Verwerking is momenteel beperkt",
+          "reasonLabel": "Reden",
+          "reasonPlaceholder": "Waarom wil je de verwerking beperken?",
+          "activateSuccess": "Verwerking beperkt. Je profiel en kamers zijn nu verborgen.",
+          "liftSuccess": "Verwerkingsbeperking opgeheven. Je profiel en kamers zijn weer zichtbaar."
+        }
+      },
+      "account": {
+        "title": "Account",
+        "sessions": {
+          "title": "Actieve sessies",
+          "description": "Bekijk en beheer je actieve inlogsessies.",
+          "current": "Huidige sessie",
+          "lastActive": "Laatst actief {date}",
+          "revokeButton": "Intrekken"
+        }
       },
       "dangerZone": {
         "title": "Gevarenzone",

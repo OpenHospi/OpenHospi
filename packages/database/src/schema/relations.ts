@@ -6,6 +6,12 @@ import { conversationMembers, conversations, messageReceipts, messages } from ".
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
 import { notifications, pushSubscriptions, pushTokens } from "./notifications";
+import {
+  activeConsents,
+  consentRecords,
+  dataRequests,
+  processingRestrictions,
+} from "./privacy";
 import { profilePhotos, profiles } from "./profiles";
 import { roomPhotos, rooms } from "./rooms";
 import { blocks, privateKeyBackups, publicKeys, reports } from "./security";
@@ -49,6 +55,11 @@ export const relations = defineRelations(
     pushTokens,
     pushSubscriptions,
     notifications,
+    // Privacy / GDPR
+    consentRecords,
+    activeConsents,
+    dataRequests,
+    processingRestrictions,
   },
   (r) => ({
     // ── Auth relations (required for Better Auth experimental joins) ──
@@ -309,6 +320,32 @@ export const relations = defineRelations(
     notifications: {
       user: r.one.profiles({
         from: r.notifications.userId,
+        to: r.profiles.id,
+      }),
+    },
+
+    // ── Privacy / GDPR relations ──
+    consentRecords: {
+      user: r.one.profiles({
+        from: r.consentRecords.userId,
+        to: r.profiles.id,
+      }),
+    },
+    activeConsents: {
+      user: r.one.profiles({
+        from: r.activeConsents.userId,
+        to: r.profiles.id,
+      }),
+    },
+    dataRequests: {
+      user: r.one.profiles({
+        from: r.dataRequests.userId,
+        to: r.profiles.id,
+      }),
+    },
+    processingRestrictions: {
+      user: r.one.profiles({
+        from: r.processingRestrictions.userId,
         to: r.profiles.id,
       }),
     },

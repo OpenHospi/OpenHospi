@@ -5,7 +5,10 @@ import {
   AdminAction,
   ApplicationStatus,
   City,
+  ConsentPurpose,
   ConversationType,
+  DataRequestStatus,
+  DataRequestType,
   DeliveryStatus,
   DiscoverSort,
   Furnishing,
@@ -15,6 +18,7 @@ import {
   HouseType,
   InvitationStatus,
   Language,
+  LegalBasis,
   LifestyleTag,
   LocationTag,
   MessageType,
@@ -93,3 +97,16 @@ export const utilitiesIncludedEnum = pgEnum(
 );
 export const verenigingEnum = pgEnum("vereniging_enum", Vereniging.values);
 export const localeEnum = pgEnum("locale_enum", SUPPORTED_LOCALES);
+export const consentPurposeEnum = pgEnum(
+  "consent_purpose_enum",
+  ConsentPurpose.values,
+);
+export const legalBasisEnum = pgEnum("legal_basis_enum", LegalBasis.values);
+export const dataRequestTypeEnum = pgEnum(
+  "data_request_type_enum",
+  DataRequestType.values,
+);
+export const dataRequestStatusEnum = pgEnum(
+  "data_request_status_enum",
+  DataRequestStatus.values,
+);

@@ -46,6 +46,16 @@ export const REMINDER_HOURS_BEFORE_EVENT = 24;
 export const NOTIFICATIONS_PER_PAGE = 20;
 export const MESSAGES_PER_PAGE = 50;
 
+// Data retention (days)
+export const RETENTION_SESSION_IP_DAYS = 30;
+export const RETENTION_EXPIRED_SESSION_DAYS = 90;
+export const RETENTION_REPORT_MESSAGE_TEXT_DAYS = 90;
+export const RETENTION_READ_NOTIFICATION_DAYS = 180;
+export const RETENTION_CONSENT_IP_DAYS = 365;
+
+// Privacy policy version
+export const PRIVACY_POLICY_VERSION = "1.0";
+
 // File size limits (bytes)
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB
 export const MAX_ROOM_PHOTO_SIZE = 10 * 1024 * 1024; // 10 MB

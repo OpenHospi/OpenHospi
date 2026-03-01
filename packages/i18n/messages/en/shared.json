@@ -4,6 +4,12 @@
     "loading": "Loading...",
     "error": "Something went wrong",
     "retry": "Try again",
+    "errors": {
+      "fileTooLarge": "Bestand is te groot. Maximale grootte is {maxSize} MB.",
+      "invalidFileType": "Ongeldig bestandstype. Gebruik JPEG, PNG of WebP.",
+      "uploadFailed": "Uploaden mislukt. Probeer het opnieuw.",
+      "deleteFailed": "Verwijderen mislukt. Probeer het opnieuw."
+    },
     "labels": {
       "title": "Titel",
       "city": "Stad",
@@ -15,6 +21,13 @@
       "studyProgramme": "Opleiding",
       "memberSince": "Lid sinds",
       "rentPrice": "Huurprijs"
+    },
+    "gallery": {
+      "lightboxTitle": "Fotogalerij",
+      "close": "Galerij sluiten",
+      "previous": "Vorige foto",
+      "next": "Volgende foto",
+      "counter": "{current} van {total}"
     }
   },
   "enums": {
@@ -35,36 +48,36 @@
       "ko": "Korean"
     },
     "gender": {
-      "man": "Man",
-      "vrouw": "Woman",
-      "zeg_ik_liever_niet": "Prefer not to say"
+      "male": "Man",
+      "female": "Vrouw",
+      "prefer_not_to_say": "Zeg ik liever niet"
     },
     "lifestyle_tag": {
-      "gezellig": "Sociable",
-      "rustig": "Calm",
+      "sociable": "Gezellig",
+      "quiet": "Rustig",
       "introvert": "Introvert",
-      "extravert": "Extrovert",
-      "sporten": "Sports",
-      "koken": "Cooking",
-      "gamen": "Gaming",
-      "muziek": "Music",
-      "uitgaan": "Going out",
-      "feesten": "Parties",
-      "studeren": "Studying",
-      "lezen": "Reading",
-      "reizen": "Traveling",
-      "filmavond": "Movie night",
-      "creatief": "Creative",
-      "vroege_vogel": "Early bird",
-      "nachtbraker": "Night owl",
-      "schoon": "Clean",
-      "relaxed_met_schoonmaken": "Relaxed about cleaning",
-      "vegetarisch": "Vegetarian",
+      "extrovert": "Extravert",
+      "sports": "Sporten",
+      "cooking": "Koken",
+      "gaming": "Gamen",
+      "music": "Muziek",
+      "nightlife": "Uitgaan",
+      "partying": "Feesten",
+      "studying": "Studeren",
+      "reading": "Lezen",
+      "traveling": "Reizen",
+      "movie_night": "Filmavond",
+      "creative": "Creatief",
+      "early_bird": "Vroege vogel",
+      "night_owl": "Nachtbraker",
+      "tidy": "Schoon",
+      "relaxed_cleaning": "Relaxed met schoonmaken",
+      "vegetarian": "Vegetarisch",
       "vegan": "Vegan",
-      "duurzaam": "Sustainable",
-      "inclusief": "Inclusive",
-      "internationaal": "International",
-      "huisdieren": "Pets"
+      "sustainable": "Duurzaam",
+      "inclusive": "Inclusief",
+      "international": "Internationaal",
+      "pets": "Huisdieren"
     },
     "study_level": {
       "mbo": "MBO",
@@ -139,11 +152,11 @@
       "terschelling": "Terschelling"
     },
     "house_type": {
-      "studentenhuis": "Student house",
-      "appartement": "Apartment",
+      "student_house": "Studentenhuis",
+      "apartment": "Appartement",
       "studio": "Studio",
-      "woongroep": "Shared living group",
-      "anti_kraak": "Anti-squat"
+      "living_group": "Woongroep",
+      "anti_squat": "Anti-kraak"
     },
     "room_status": {
       "draft": "Draft",
@@ -151,52 +164,58 @@
       "paused": "Paused",
       "closed": "Closed"
     },
+    "furnishing_label": "Inrichting",
     "furnishing": {
-      "kaal": "Unfurnished",
-      "gestoffeerd": "Floored & curtained",
-      "gemeubileerd": "Furnished"
+      "unfurnished": "Kaal",
+      "semi_furnished": "Gestoffeerd",
+      "furnished": "Gemeubileerd"
+    },
+    "utilities_included": {
+      "included": "Inbegrepen",
+      "not_included": "Niet inbegrepen",
+      "estimated": "Geschat voorschot"
     },
     "room_feature": {
-      "eigen_badkamer": "Private bathroom",
-      "gedeelde_badkamer": "Shared bathroom",
-      "eigen_keuken": "Private kitchen",
-      "gedeelde_keuken": "Shared kitchen",
-      "balkon": "Balcony",
-      "tuin": "Garden",
-      "terras": "Terrace",
-      "berging": "Storage",
-      "parkeerplaats": "Parking spot",
-      "fietsenstalling": "Bike storage",
-      "wasmachine": "Washing machine",
-      "droger": "Dryer",
-      "vaatwasser": "Dishwasher",
-      "wifi_inbegrepen": "Wi-Fi included",
-      "huisdieren_toegestaan": "Pets allowed",
-      "roken_toegestaan": "Smoking allowed",
-      "geen_huisdieren": "No pets",
-      "niet_roken": "No smoking"
+      "private_bathroom": "Eigen badkamer",
+      "shared_bathroom": "Gedeelde badkamer",
+      "private_kitchen": "Eigen keuken",
+      "shared_kitchen": "Gedeelde keuken",
+      "balcony": "Balkon",
+      "garden": "Tuin",
+      "terrace": "Terras",
+      "storage": "Berging",
+      "parking": "Parkeerplaats",
+      "bike_storage": "Fietsenstalling",
+      "washing_machine": "Wasmachine",
+      "dryer": "Droger",
+      "dishwasher": "Vaatwasser",
+      "wifi_included": "Wifi inbegrepen",
+      "pets_allowed": "Huisdieren toegestaan",
+      "smoking_allowed": "Roken toegestaan",
+      "no_pets": "Geen huisdieren",
+      "no_smoking": "Niet roken"
     },
     "rental_type": {
-      "vast": "Permanent",
-      "onderhuur": "Sublet",
-      "tijdelijk": "Temporary"
+      "permanent": "Vast",
+      "sublet": "Onderhuur",
+      "temporary": "Tijdelijk"
     },
     "location_tag": {
-      "dichtbij_universiteit": "Near university",
-      "dichtbij_station": "Near train station",
-      "dichtbij_ov": "Near public transport",
-      "dichtbij_centrum": "Near city center",
-      "dichtbij_supermarkt": "Near supermarket",
-      "dichtbij_uitgaan": "Near nightlife",
-      "dichtbij_sportcentrum": "Near sports center",
-      "dichtbij_park": "Near park",
-      "rustige_buurt": "Quiet neighborhood",
-      "levendige_buurt": "Lively neighborhood"
+      "near_university": "Dichtbij universiteit",
+      "near_station": "Dichtbij station",
+      "near_transit": "Dichtbij OV",
+      "near_center": "Dichtbij centrum",
+      "near_supermarket": "Dichtbij supermarkt",
+      "near_nightlife": "Dichtbij uitgaan",
+      "near_sports_center": "Dichtbij sportcentrum",
+      "near_park": "Dichtbij park",
+      "quiet_neighborhood": "Rustige buurt",
+      "lively_neighborhood": "Levendige buurt"
     },
     "gender_preference": {
-      "man": "Man",
-      "vrouw": "Woman",
-      "geen_voorkeur": "No preference"
+      "male": "Man",
+      "female": "Vrouw",
+      "no_preference": "Geen voorkeur"
     },
     "vereniging": {
       "omnivas": "Omnivas",
@@ -351,7 +370,7 @@
       "gumbo_millennium": "Gumbo Millennium",
       "oikos_nomos": "Oikos Nomos",
       "zhtc": "ZHTC",
-      "anders": "Other"
+      "other": "Anders"
     },
     "application_status": {
       "sent": "Sent",

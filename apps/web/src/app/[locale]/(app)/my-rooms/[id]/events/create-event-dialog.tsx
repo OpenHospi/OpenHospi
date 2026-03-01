@@ -13,7 +13,7 @@ import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -84,7 +84,7 @@ export function CreateEventDialog({ roomId }: Props) {
     },
   });
 
-  const timeStart = form.watch("timeStart");
+  const timeStart = useWatch({ control: form.control, name: "timeStart" });
 
   function handleDurationSelect(minutes: number) {
     setSelectedDuration(minutes);

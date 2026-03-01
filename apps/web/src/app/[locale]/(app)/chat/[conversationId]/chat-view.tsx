@@ -132,7 +132,6 @@ export function ChatView({
         conversationId={conversationId}
         currentUserId={currentUserId}
         initialMessages={initialMessages}
-        members={members}
       />
 
       {/* Input */}

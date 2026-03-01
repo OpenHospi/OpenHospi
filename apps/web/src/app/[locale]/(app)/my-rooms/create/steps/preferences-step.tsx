@@ -13,7 +13,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -92,9 +92,9 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
     });
   }
 
-  const selectedFeatures = form.watch("features") ?? [];
-  const selectedLocationTags = form.watch("locationTags") ?? [];
-  const selectedLanguages = form.watch("acceptedLanguages") ?? [];
+  const selectedFeatures = useWatch({ control: form.control, name: "features" }) ?? [];
+  const selectedLocationTags = useWatch({ control: form.control, name: "locationTags" }) ?? [];
+  const selectedLanguages = useWatch({ control: form.control, name: "acceptedLanguages" }) ?? [];
 
   return (
     <Form {...form}>

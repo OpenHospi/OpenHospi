@@ -24,6 +24,22 @@ type Props = {
   houses: OwnerHouse[];
 };
 
+function useCreateHouseHandler() {
+  const t = useTranslations("app.rooms");
+  const router = useRouter();
+
+  return async (formData: FormData) => {
+    const result = await createHouseAndContinue(formData);
+    if (result.error) {
+      toast.error(t(`houseSetup.errors.${result.error}`));
+      return;
+    }
+    if (result.id) {
+      router.push(`/my-rooms/create?id=${result.id}`);
+    }
+  };
+}
+
 export function HouseGate({ houses }: Props) {
   if (houses.length === 0) {
     return <HouseSetup />;
@@ -33,20 +49,11 @@ export function HouseGate({ houses }: Props) {
 
 function HouseSetup() {
   const t = useTranslations("app.rooms");
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const createHouse = useCreateHouseHandler();
 
   function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      const result = await createHouseAndContinue(formData);
-      if (result.error) {
-        toast.error(t(`houseSetup.errors.${result.error}`));
-        return;
-      }
-      if (result.id) {
-        router.push(`/my-rooms/create?id=${result.id}`);
-      }
-    });
+    startTransition(() => createHouse(formData));
   }
 
   return (
@@ -126,6 +133,7 @@ function HousePicker({ houses }: { houses: OwnerHouse[] }) {
   const [isPending, startTransition] = useTransition();
   const [selectedId, setSelectedId] = useState<string>(houses[0]?.id ?? "");
   const [showCreate, setShowCreate] = useState(false);
+  const createHouse = useCreateHouseHandler();
 
   function handleContinue() {
     startTransition(async () => {
@@ -141,16 +149,7 @@ function HousePicker({ houses }: { houses: OwnerHouse[] }) {
   }
 
   function handleCreateNew(formData: FormData) {
-    startTransition(async () => {
-      const result = await createHouseAndContinue(formData);
-      if (result.error) {
-        toast.error(t(`houseSetup.errors.${result.error}`));
-        return;
-      }
-      if (result.id) {
-        router.push(`/my-rooms/create?id=${result.id}`);
-      }
-    });
+    startTransition(() => createHouse(formData));
   }
 
   return (

@@ -8,7 +8,7 @@ import { City } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { AddressAutocomplete } from "@/components/app/address-autocomplete";
@@ -63,7 +63,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
     },
   });
 
-  const descriptionValue = form.watch("description") ?? "";
+  const descriptionValue = useWatch({ control: form.control, name: "description" }) ?? "";
 
   let addressDisplay = "";
   if (defaultValues.streetName) {

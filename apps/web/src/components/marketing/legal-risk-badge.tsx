@@ -44,22 +44,30 @@ const LEVEL_ALIASES: Record<string, string> = {
   "sehr hoch": "very high",
 };
 
-const RISK_LEVEL_RE =
-  /^(Very\s+(?:low|high)|Low|Medium|High|Zeer\s+(?:laag|hoog)|Laag|Gemiddeld|Hoog|Sehr\s+(?:gering|hoch)|Gering|Mittel|Hoch)\b(.*)$/i;
+// Sort aliases longest-first to match "very low" before "low"
+const SORTED_ALIASES = Object.keys(LEVEL_ALIASES).sort((a, b) => b.length - a.length);
 
 function parseRiskLevel(value: string): {
   level: string;
+  displayLabel: string;
   note: string;
 } | null {
-  const match = RISK_LEVEL_RE.exec(value.trim());
-  if (!match) return null;
-  const raw = match[1].toLowerCase();
-  const level = LEVEL_ALIASES[raw] ?? raw;
-  const note = match[2]
-    .replace(/^\s*\(/, "")
-    .replace(/\)\s*$/, "")
-    .trim();
-  return { level, note };
+  const trimmed = value.trim();
+  const lower = trimmed.toLowerCase();
+
+  for (const alias of SORTED_ALIASES) {
+    if (lower.startsWith(alias)) {
+      const rest = trimmed.slice(alias.length);
+      if (rest.length === 0 || /^\W/.test(rest)) {
+        return {
+          level: LEVEL_ALIASES[alias],
+          displayLabel: trimmed.slice(0, alias.length),
+          note: rest.replace(/^\s*\(/, "").replace(/\)\s*$/, "").trim(),
+        };
+      }
+    }
+  }
+  return null;
 }
 
 export function RiskLevelBadge({ value }: { value: string }) {
@@ -67,13 +75,10 @@ export function RiskLevelBadge({ value }: { value: string }) {
   if (!parsed) return <AutoLinkedText text={value} />;
 
   const colorClass = RISK_COLORS[parsed.level] ?? "";
-  // Show the original matched text (capitalized) rather than the normalized key
-  const match = RISK_LEVEL_RE.exec(value.trim());
-  const displayLabel = match ? match[1] : parsed.level;
   return (
     <span className="inline-flex items-center gap-2">
       <Badge variant="outline" className={colorClass}>
-        {displayLabel.charAt(0).toUpperCase() + displayLabel.slice(1).toLowerCase()}
+        {parsed.displayLabel.charAt(0).toUpperCase() + parsed.displayLabel.slice(1).toLowerCase()}
       </Badge>
       {parsed.note && (
         <span className="text-xs text-muted-foreground">{parsed.note}</span>

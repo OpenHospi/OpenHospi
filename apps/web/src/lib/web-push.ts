@@ -1,13 +1,13 @@
 import { db } from "@openhospi/database";
 import { pushSubscriptions } from "@openhospi/database/schema";
 import { eq } from "drizzle-orm";
-import webpush from "web-push";
+import { sendNotification, setVapidDetails } from "web-push";
 
 let vapidConfigured = false;
 
 function ensureVapid() {
   if (vapidConfigured) return;
-  webpush.setVapidDetails(
+  setVapidDetails(
     "mailto:info@openhospi.nl",
     process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
     process.env.VAPID_PRIVATE_KEY!,
@@ -28,7 +28,7 @@ export async function sendWebPushToUser(
 
   const results = await Promise.allSettled(
     subs.map((sub) =>
-      webpush.sendNotification(
+      sendNotification(
         { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
         JSON.stringify(payload),
       ),

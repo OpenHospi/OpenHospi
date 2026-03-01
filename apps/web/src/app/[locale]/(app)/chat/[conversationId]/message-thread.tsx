@@ -18,7 +18,6 @@ type Props = {
   conversationId: string;
   currentUserId: string;
   initialMessages: MessageItem[];
-  members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
 };
 
 type DecryptedMessage = {
@@ -31,7 +30,7 @@ type DecryptedMessage = {
   createdAt: Date;
 };
 
-export function MessageThread({ conversationId, currentUserId, initialMessages, members }: Props) {
+export function MessageThread({ conversationId, currentUserId, initialMessages }: Props) {
   const t = useTranslations("app.chat");
   const [decryptedMessages, setDecryptedMessages] = useState<DecryptedMessage[]>([]);
   const [isDecrypting, setIsDecrypting] = useState(true);

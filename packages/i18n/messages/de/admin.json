@@ -28,8 +28,12 @@
     "reports": {
       "title": "Meldungen",
       "description": "Benutzermeldungen prüfen und moderieren.",
-      "filterAll": "Alle",
       "empty": "Keine Meldungen gefunden.",
+      "emptyWithStatusFilter": "Geen meldingen met deze status.",
+      "emptyWithTypeFilter": "Geen meldingen van dit type.",
+      "filterByStatus": "Filteren op Status",
+      "filterByType": "Filteren op Type",
+      "allTypes": "Alle types",
       "colType": "Typ",
       "colReporter": "Melder",
       "colReason": "Grund",
@@ -57,10 +61,12 @@
       "banUser": "Benutzer sperren",
       "unbanUser": "Sperre aufheben",
       "removeListing": "Anzeige entfernen",
+      "removeRoom": "Kamer verwijderen",
       "dismissed": "Meldung abgelehnt",
       "userBanned": "Benutzer gesperrt",
       "userUnbanned": "Sperre aufgehoben",
       "listingRemoved": "Anzeige entfernt",
+      "roomRemoved": "Kamer verwijderd",
       "error": "Ein Fehler ist aufgetreten",
       "backToList": "Zurück zu Meldungen",
       "roomDetails": "Zimmerdetails",
@@ -68,7 +74,10 @@
       "confirmBanTitle": "Benutzer sperren?",
       "confirmBanDescription": "Dies entzieht dem Benutzer sofort den Zugang. Er kann sich erst nach Aufhebung der Sperre wieder anmelden.",
       "confirmRemoveTitle": "Anzeige entfernen?",
-      "confirmRemoveDescription": "Dies schließt die Zimmeranzeige und sie ist für andere Benutzer nicht mehr sichtbar."
+      "confirmRemoveDescription": "Dies schließt die Zimmeranzeige und sie ist für andere Benutzer nicht mehr sichtbar.",
+      "statusUpdated": "Meldingsstatus bijgewerkt",
+      "searchStatus": "Status zoeken...",
+      "noStatusFound": "Geen status gevonden"
     },
     "dataRequests": {
       "title": "Datenanfragen",

@@ -222,7 +222,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
         preferredGender: d.preferredGender || GenderPreference.no_preference,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
-        preferredLifestyleTags: d.preferredLifestyleTags ?? [],
+
         acceptedLanguages: d.acceptedLanguages ?? [],
         roomVereniging: d.roomVereniging || null,
       })

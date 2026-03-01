@@ -58,7 +58,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
         preferredGender: d.preferredGender || GenderPreference.no_preference,
         preferredAgeMin: d.preferredAgeMin || null,
         preferredAgeMax: d.preferredAgeMax || null,
-        preferredLifestyleTags: d.preferredLifestyleTags ?? [],
+
         acceptedLanguages: d.acceptedLanguages ?? [],
         roomVereniging: d.roomVereniging || null,
       })

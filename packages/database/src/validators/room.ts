@@ -9,7 +9,7 @@ import {
   GenderPreference,
   HouseType,
   Language,
-  LifestyleTag,
+
   LocationTag,
   RentalType,
   RoomFeature,
@@ -50,7 +50,7 @@ const baseRoomSchema = createInsertSchema(rooms, {
   preferredGender: z.enum(GenderPreference.values).optional(),
   preferredAgeMin: z.coerce.number().int().min(16).max(99).optional(),
   preferredAgeMax: z.coerce.number().int().min(16).max(99).optional(),
-  preferredLifestyleTags: z.array(z.enum(LifestyleTag.values)).optional(),
+
   acceptedLanguages: z.array(z.enum(Language.values)).optional(),
   roomVereniging: z.enum(Vereniging.values).optional(),
   shareLinkExpiresAt: z.string().optional(),
@@ -98,7 +98,6 @@ export const roomPreferencesSchema = baseRoomSchema.pick({
   preferredGender: true,
   preferredAgeMin: true,
   preferredAgeMax: true,
-  preferredLifestyleTags: true,
   acceptedLanguages: true,
   roomVereniging: true,
 });
@@ -131,7 +130,6 @@ export const editRoomSchema = baseRoomSchema
     preferredGender: true,
     preferredAgeMin: true,
     preferredAgeMax: true,
-    preferredLifestyleTags: true,
     acceptedLanguages: true,
     roomVereniging: true,
   })

@@ -94,7 +94,6 @@ export type PublicRoom = {
   preferredGender: string | null;
   preferredAgeMin: number | null;
   preferredAgeMax: number | null;
-  preferredLifestyleTags: string[];
   createdAt: Date;
   photos: Pick<RoomPhoto, "id" | "slot" | "url" | "caption">[];
 };
@@ -316,7 +315,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
       preferredGender: rooms.preferredGender,
       preferredAgeMin: rooms.preferredAgeMin,
       preferredAgeMax: rooms.preferredAgeMax,
-      preferredLifestyleTags: rooms.preferredLifestyleTags,
+
       createdAt: rooms.createdAt,
     })
     .from(rooms)
@@ -348,7 +347,6 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
     totalCost: Number(room.totalCost),
     features: room.features ?? [],
     locationTags: room.locationTags ?? [],
-    preferredLifestyleTags: room.preferredLifestyleTags ?? [],
     photos,
   };
 }

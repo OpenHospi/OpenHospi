@@ -3,11 +3,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321 https://*.tile.openstreetmap.org;
   font-src 'self';
-  connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl https://api.pdok.nl;
+  connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl https://api.pdok.nl https://va.vercel-scripts.com;
   frame-ancestors 'none';
   form-action 'self';
   base-uri 'self';

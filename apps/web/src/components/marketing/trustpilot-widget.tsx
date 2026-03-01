@@ -1,59 +1,39 @@
-"use client";
+/* eslint-disable @next/next/no-img-element */
 
-import Script from "next/script";
-import { useEffect, useRef } from "react";
+const TRUSTPILOT_URL = "https://nl.trustpilot.com/review/openhospi.nl";
 
-const TRUSTPILOT_BUID = "69a41a474a822941538339a1";
+const VALID_SCORES = [0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] as const;
+type TrustpilotScore = (typeof VALID_SCORES)[number];
 
-declare global {
-  interface Window {
-    Trustpilot?: {
-      loadFromElement: (element: HTMLElement, reload: boolean) => void;
-    };
-  }
+function nearestScore(score: number): TrustpilotScore {
+    return VALID_SCORES.reduce((prev, curr) =>
+        Math.abs(curr - score) < Math.abs(prev - score) ? curr : prev,
+    );
 }
 
-export function TrustpilotWidget({ locale }: { locale: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+export function TrustpilotWidget({score = 0}: { score?: number }) {
+    const rounded = nearestScore(score);
 
-  useEffect(() => {
-    if (ref.current && window.Trustpilot) {
-      window.Trustpilot.loadFromElement(ref.current, true);
-    }
-  }, []);
-
-  const localeMap: Record<string, string> = { nl: "nl-NL", de: "de-DE" };
-  const tpLocale = localeMap[locale] ?? "en-US";
-
-  return (
-    <>
-      <Script
-        src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js"
-        strategy="lazyOnload"
-        onLoad={() => {
-          if (ref.current && window.Trustpilot) {
-            window.Trustpilot.loadFromElement(ref.current, true);
-          }
-        }}
-      />
-      <div
-        ref={ref}
-        className="trustpilot-widget"
-        data-locale={tpLocale}
-        data-template-id="5419b6a8b0d04a076446a9ad"
-        data-businessunit-id={TRUSTPILOT_BUID}
-        data-style-height="24px"
-        data-style-width="100%"
-        data-theme="dark"
-      >
+    return (
         <a
-          href="https://nl.trustpilot.com/review/openhospi.nl"
-          target="_blank"
-          rel="noopener noreferrer"
+            href={TRUSTPILOT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-2 transition-opacity hover:opacity-80"
         >
-          Trustpilot
+            <img
+                src={`/trustpilot/stars-${rounded}.svg`}
+                alt={`Trustpilot ${rounded} out of 5`}
+                width={108}
+                height={20}
+            />
+            <img
+                src="/trustpilot/logo-black.svg"
+                alt="Trustpilot"
+                width={80}
+                height={20}
+                className="dark:invert"
+            />
         </a>
-      </div>
-    </>
-  );
+    );
 }

@@ -1,10 +1,10 @@
 "use client";
 
+import { SiGithub, SiInstagram } from "@icons-pack/react-simple-icons";
 import logo from "@openhospi/shared/assets/logo.svg";
 import {APP_NAME} from "@openhospi/shared/constants";
-import { SiGithub, SiInstagram } from "@icons-pack/react-simple-icons";
 import Image from "next/image";
-import {useLocale, useTranslations} from "next-intl";
+import {useTranslations} from "next-intl";
 
 import {Badge} from "@/components/ui/badge";
 import {Separator} from "@/components/ui/separator";
@@ -13,9 +13,8 @@ import {Link} from "@/i18n/navigation";
 import {LanguageSwitcher} from "./language-switcher";
 import {TrustpilotWidget} from "./trustpilot-widget";
 
-export function MarketingFooter() {
+export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: number }) {
     const t = useTranslations("footer");
-    const locale = useLocale();
 
     const linkGroups = [
         {
@@ -107,7 +106,7 @@ export function MarketingFooter() {
                         &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
                     </p>
                     <div className="flex items-center gap-4">
-                        <TrustpilotWidget locale={locale}/>
+                        <TrustpilotWidget score={trustpilotScore} />
                         <LanguageSwitcher/>
                     </div>
                 </div>

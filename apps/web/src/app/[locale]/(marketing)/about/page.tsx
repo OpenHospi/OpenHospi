@@ -1,8 +1,8 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { AlertTriangle, Heart, User } from "lucide-react";
-import type { ComponentType, SVGProps } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { ComponentType, SVGProps } from "react";
 
 import { Button } from "@/components/ui/button";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";

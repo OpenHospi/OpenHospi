@@ -1,7 +1,10 @@
 import { MarketingFooter } from "@/components/marketing/footer";
 import { MarketingHeader } from "@/components/marketing/header";
+import { getTrustpilotData } from "@/lib/trustpilot";
 
-export default function MarketingLayout({ children }: { children: React.ReactNode }) {
+export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
+  const { score } = await getTrustpilotData();
+
   return (
     <>
       <a
@@ -12,7 +15,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       </a>
       <MarketingHeader />
       <main id="main-content">{children}</main>
-      <MarketingFooter />
+      <MarketingFooter trustpilotScore={score} />
     </>
   );
 }

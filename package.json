@@ -10,6 +10,7 @@
     "dev": "pnpm --filter @openhospi/web dev",
     "build": "pnpm --filter @openhospi/web build",
     "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint --fix",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:watch": "vitest",

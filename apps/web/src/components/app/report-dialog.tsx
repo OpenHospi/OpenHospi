@@ -2,8 +2,8 @@
 
 import { ReportReason } from "@openhospi/shared/enums";
 import { Flag } from "lucide-react";
-import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";

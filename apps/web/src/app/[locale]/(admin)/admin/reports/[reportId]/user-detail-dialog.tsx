@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { InstitutionBadge } from "@/components/app/institution-badge";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -10,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { InstitutionBadge } from "@/components/app/institution-badge";
 import { UserAvatar } from "@/components/user-avatar";
 
 import type { UserDetail } from "../../actions";

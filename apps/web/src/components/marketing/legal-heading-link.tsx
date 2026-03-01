@@ -1,8 +1,8 @@
 "use client";
 
+import { Link as LinkIcon } from "lucide-react";
 import { useCallback } from "react";
 
-import { Link as LinkIcon } from "lucide-react";
 
 const HEADER_OFFSET = 96;
 

@@ -1,11 +1,11 @@
+import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { ExternalLink } from "lucide-react";
 
 // Combined regex with named groups for classification
 // Priority: email > GDPR article > Dutch phone > URL with protocol > bare domain
 const LINK_PATTERN =
-  // eslint-disable-next-line no-useless-escape
+   
   /([\w.+-]+@[\w-]+\.[\w.-]+)|(?:Art\.?\s*(\d+)(?:\(\d+\)(?:\([a-z]\))?)?(?:\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)))|(\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b)|(https?:\/\/[^\s),]+)|((?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?)/g;
 
 const GDPR_LAWS: Record<string, string> = {
@@ -58,7 +58,7 @@ function classifyAndRender(match: string, key: number): ReactNode {
 
   // Dutch phone number (e.g. 070 888 85 00)
   if (/^0\d{2}\s/.test(match)) {
-    const digits = match.replace(/\s/g, "");
+    const digits = match.replaceAll(/\s/g, "");
     return (
       <a key={key} href={`tel:+31${digits.slice(1)}`} className={linkClass}>
         {match}

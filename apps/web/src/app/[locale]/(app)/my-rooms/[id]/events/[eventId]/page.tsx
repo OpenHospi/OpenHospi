@@ -15,6 +15,7 @@ import { INVITATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
 import { InviteApplicantsDialog } from "../invite-applicants-dialog";
+
 import { CancelEventButton } from "./cancel-event-button";
 
 type Props = {

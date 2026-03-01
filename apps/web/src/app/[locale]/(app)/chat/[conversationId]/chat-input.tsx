@@ -2,16 +2,16 @@
 
 import { encryptForGroup, importPrivateKey, importPublicKey } from "@openhospi/crypto";
 import { Send } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { getStoredPrivateKey } from "@/lib/crypto-store";
 import { supabase } from "@/lib/supabase-client";
 
-import { fetchPublicKeys } from "../key-actions";
 import { sendMessage } from "../chat-actions";
+import { fetchPublicKeys } from "../key-actions";
 
 type Props = {
   conversationId: string;

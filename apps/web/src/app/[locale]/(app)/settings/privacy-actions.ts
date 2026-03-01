@@ -7,17 +7,17 @@ import {
   dataRequests,
   processingRestrictions,
 } from "@openhospi/database/schema";
-import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import {
   requestProcessingRestrictionSchema,
   submitDataRequestSchema,
   type RequestProcessingRestrictionData,
   type SubmitDataRequestData,
 } from "@openhospi/database/validators";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import { and, desc, eq, isNull } from "drizzle-orm";
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 
 import { requireSession } from "@/lib/auth-server";
 

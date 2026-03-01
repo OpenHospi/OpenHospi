@@ -1,8 +1,8 @@
+import { APP_NAME } from "@openhospi/shared/constants";
 import { ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { APP_NAME } from "@openhospi/shared/constants";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSession } from "@/lib/auth-server";

@@ -1,5 +1,5 @@
-import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
 import { AppSidebar } from "@/components/app/app-sidebar";

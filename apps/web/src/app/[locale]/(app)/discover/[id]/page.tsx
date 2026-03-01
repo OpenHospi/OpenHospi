@@ -1,5 +1,5 @@
-import { ApplicationStatus, GenderPreference } from "@openhospi/shared/enums";
-import { Check, Home, MapPin, Ruler, Settings, UserRound, Users } from "lucide-react";
+import { ApplicationStatus, GenderPreference, UtilitiesIncluded } from "@openhospi/shared/enums";
+import { Check, Home, Info, MapPin, Ruler, Settings, UserRound, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -70,51 +70,61 @@ function CostBreakdown({
   room,
   t,
 }: {
-  room: Pick<RoomDetailForApply, "utilitiesIncluded" | "totalCost" | "rentPrice" | "serviceCosts">;
+  room: Pick<RoomDetailForApply, "utilitiesIncluded" | "totalCost" | "rentPrice" | "serviceCosts" | "estimatedUtilitiesCosts">;
   t: (key: string) => string;
 }) {
-  if (room.utilitiesIncluded) {
-    return (
-      <>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">{t("rentAllIn")}</span>
-          <span>€{room.totalCost}</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-green-600">
-          <Check className="size-3.5" />
-          <span className="text-xs">{t("utilitiesIncluded")}</span>
-        </div>
-      </>
-    );
-  }
-
-  if (room.serviceCosts != null) {
-    return (
-      <>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">{t("rent")}</span>
-          <span>€{room.rentPrice}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">{t("serviceCosts")}</span>
-          <span>€{room.serviceCosts}</span>
-        </div>
-        <Separator />
-        <div className="flex justify-between font-medium">
-          <span>{t("total")}</span>
-          <span>€{room.totalCost}</span>
-        </div>
-      </>
-    );
-  }
+  const isIncluded = room.utilitiesIncluded === UtilitiesIncluded.included;
+  const isEstimated = room.utilitiesIncluded === UtilitiesIncluded.estimated;
+  const hasServiceCosts = room.serviceCosts != null && room.serviceCosts > 0;
+  const hasEstimatedUtilities = isEstimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0;
+  const hasBreakdown = hasServiceCosts || hasEstimatedUtilities;
 
   return (
     <>
       <div className="flex justify-between">
-        <span className="text-muted-foreground">{t("rent")}</span>
-        <span>€{room.rentPrice}</span>
+        <span className="text-muted-foreground">
+          {isIncluded ? t("rentInclUtilities") : t("rent")}
+        </span>
+        <span>&euro;{room.rentPrice}</span>
       </div>
-      <p className="text-xs text-muted-foreground">{t("utilitiesNotIncluded")}</p>
+
+      {hasServiceCosts && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">{t("serviceCosts")}</span>
+          <span>&euro;{room.serviceCosts}</span>
+        </div>
+      )}
+
+      {hasEstimatedUtilities && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">{t("utilitiesEstimated")}</span>
+          <span>&euro;{room.estimatedUtilitiesCosts}</span>
+        </div>
+      )}
+
+      {hasBreakdown && (
+        <>
+          <Separator />
+          <div className="flex justify-between font-medium">
+            <span>{isEstimated ? t("estimatedTotal") : t("total")}</span>
+            <span>&euro;{room.totalCost}</span>
+          </div>
+        </>
+      )}
+
+      {isIncluded && (
+        <div className="flex items-center gap-1.5 text-green-600">
+          <Check className="size-3.5" />
+          <span className="text-xs">{t("utilitiesIncluded")}</span>
+        </div>
+      )}
+
+      {!isIncluded && !isEstimated && (
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          <Info className="size-3.5" />
+          <span className="text-xs">{t("utilitiesNotIncluded")}</span>
+        </div>
+      )}
     </>
   );
 }

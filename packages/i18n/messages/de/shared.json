@@ -170,6 +170,11 @@
       "semi_furnished": "Teilmöbliert",
       "furnished": "Möbliert"
     },
+    "utilities_included": {
+      "included": "Inklusive",
+      "not_included": "Nicht inklusive",
+      "estimated": "Geschätzter Vorschuss"
+    },
     "room_feature": {
       "private_bathroom": "Eigenes Bad",
       "shared_bathroom": "Geteiltes Bad",

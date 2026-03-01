@@ -13,6 +13,7 @@ import {
   LocationTag,
   RentalType,
   RoomFeature,
+  UtilitiesIncluded,
   Vereniging,
 } from "@openhospi/shared/enums";
 import { Loader2, Pencil } from "lucide-react";
@@ -43,6 +44,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -58,7 +60,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Room } from "@/lib/rooms";
 import { cn } from "@/lib/utils";
@@ -91,8 +92,9 @@ export function EditRoomDialog({ room }: Props) {
       longitude: room.longitude ?? undefined,
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : undefined,
-      utilitiesIncluded: room.utilitiesIncluded ?? false,
+      utilitiesIncluded: (room.utilitiesIncluded as EditRoomData["utilitiesIncluded"]) ?? UtilitiesIncluded.included,
       serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ? Number(room.estimatedUtilitiesCosts) : undefined,
       roomSizeM2: room.roomSizeM2 ?? undefined,
       availableFrom: room.availableFrom ?? "",
       availableUntil: room.availableUntil ?? "",
@@ -289,29 +291,70 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="utilitiesIncluded"
+              name="serviceCosts"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel className="cursor-pointer">{t("fields.utilitiesIncluded")}</FormLabel>
+                <FormItem>
+                  <FormLabel>{t("fields.serviceCosts")}</FormLabel>
                   <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    <Input
+                      type="number"
+                      min={0}
+                      placeholder={t("placeholders.serviceCosts")}
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
+                  <FormDescription>{t("helpers.serviceCosts")}</FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            {!utilitiesIncluded && (
+            <FormField
+              control={form.control}
+              name="utilitiesIncluded"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.utilitiesIncluded")}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== UtilitiesIncluded.estimated) {
+                          form.setValue("estimatedUtilitiesCosts", undefined);
+                        }
+                      }}
+                      value={field.value}
+                      className="space-y-2"
+                    >
+                      {UtilitiesIncluded.values.map((option) => (
+                        <Label
+                          key={option}
+                          className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                        >
+                          <RadioGroupItem value={option} />
+                          {t(`utilities.${option}`)}
+                        </Label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {utilitiesIncluded === UtilitiesIncluded.estimated && (
               <FormField
                 control={form.control}
-                name="serviceCosts"
+                name="estimatedUtilitiesCosts"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.serviceCosts")}</FormLabel>
+                    <FormLabel>{t("fields.estimatedUtilitiesCosts")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min={0}
-                        placeholder={t("placeholders.serviceCosts")}
+                        placeholder={t("placeholders.estimatedUtilitiesCosts")}
                         {...field}
                         value={field.value ?? ""}
                       />

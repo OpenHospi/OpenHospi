@@ -170,6 +170,11 @@
       "semi_furnished": "Floored & curtained",
       "furnished": "Furnished"
     },
+    "utilities_included": {
+      "included": "Included",
+      "not_included": "Not included",
+      "estimated": "Estimated advance"
+    },
     "room_feature": {
       "private_bathroom": "Private bathroom",
       "shared_bathroom": "Shared bathroom",

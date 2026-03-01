@@ -9,6 +9,7 @@ import {
   isValidRoomTransition,
   RentalType,
   RoomStatus,
+  UtilitiesIncluded,
 } from "@openhospi/shared/enums";
 import { count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -38,8 +39,10 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
         longitude: d.longitude ?? null,
         rentPrice: String(d.rentPrice),
         deposit: d.deposit != null ? String(d.deposit) : null,
-        utilitiesIncluded: d.utilitiesIncluded ?? false,
+        utilitiesIncluded: d.utilitiesIncluded ?? UtilitiesIncluded.included,
         serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
+        estimatedUtilitiesCosts: d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
+          ? String(d.estimatedUtilitiesCosts) : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
         availableUntil: d.rentalType === RentalType.permanent ? null : d.availableUntil || null,

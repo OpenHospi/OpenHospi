@@ -1,5 +1,5 @@
-import { City, GenderPreference } from "@openhospi/shared/enums";
-import { ArrowLeft, Check, Home, MapPin, Ruler, Users } from "lucide-react";
+import { City, GenderPreference, UtilitiesIncluded } from "@openhospi/shared/enums";
+import { ArrowLeft, Check, Home, Info, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -336,47 +336,56 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
               <CardContent className="space-y-3">
                 {/* Cost breakdown */}
                 <div className="space-y-1.5 text-sm">
-                  {room.utilitiesIncluded ? (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      {room.utilitiesIncluded === UtilitiesIncluded.included ? t("rentInclUtilities") : t("rent")}
+                    </span>
+                    <span>&euro;{room.rentPrice}</span>
+                  </div>
+
+                  {room.serviceCosts != null && room.serviceCosts > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t("serviceCosts")}</span>
+                      <span>&euro;{room.serviceCosts}</span>
+                    </div>
+                  )}
+
+                  {room.utilitiesIncluded === UtilitiesIncluded.estimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t("utilitiesEstimated")}</span>
+                      <span>&euro;{room.estimatedUtilitiesCosts}</span>
+                    </div>
+                  )}
+
+                  {((room.serviceCosts != null && room.serviceCosts > 0) ||
+                    (room.utilitiesIncluded === UtilitiesIncluded.estimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0)) && (
                     <>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t("rentAllIn")}</span>
-                        <span>€{room.totalCost}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-green-600">
-                        <Check className="size-3.5" />
-                        <span className="text-xs">{t("utilitiesIncluded")}</span>
-                      </div>
-                    </>
-                  ) : room.serviceCosts != null ? (
-                    <>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t("rent")}</span>
-                        <span>€{room.rentPrice}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t("serviceCosts")}</span>
-                        <span>€{room.serviceCosts}</span>
-                      </div>
                       <Separator />
                       <div className="flex justify-between font-medium">
-                        <span>{t("total")}</span>
-                        <span>€{room.totalCost}</span>
+                        <span>{room.utilitiesIncluded === UtilitiesIncluded.estimated ? t("estimatedTotal") : t("total")}</span>
+                        <span>&euro;{room.totalCost}</span>
                       </div>
                     </>
-                  ) : (
-                    <>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t("rent")}</span>
-                        <span>€{room.rentPrice}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">{t("utilitiesExcluded")}</p>
-                    </>
+                  )}
+
+                  {room.utilitiesIncluded === UtilitiesIncluded.included && (
+                    <div className="flex items-center gap-1.5 text-green-600">
+                      <Check className="size-3.5" />
+                      <span className="text-xs">{t("utilitiesIncluded")}</span>
+                    </div>
+                  )}
+
+                  {room.utilitiesIncluded === UtilitiesIncluded.not_included && (
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Info className="size-3.5" />
+                      <span className="text-xs">{t("utilitiesNotIncluded")}</span>
+                    </div>
                   )}
 
                   {room.deposit != null && (
                     <div className="flex justify-between pt-1">
                       <span className="text-muted-foreground">{t("deposit")}</span>
-                      <span>€{room.deposit}</span>
+                      <span>&euro;{room.deposit}</span>
                     </div>
                   )}
                 </div>

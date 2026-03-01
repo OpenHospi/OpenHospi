@@ -170,6 +170,11 @@
       "semi_furnished": "Gestoffeerd",
       "furnished": "Gemeubileerd"
     },
+    "utilities_included": {
+      "included": "Inbegrepen",
+      "not_included": "Niet inbegrepen",
+      "estimated": "Geschat voorschot"
+    },
     "room_feature": {
       "private_bathroom": "Eigen badkamer",
       "shared_bathroom": "Gedeelde badkamer",

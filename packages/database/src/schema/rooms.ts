@@ -1,8 +1,7 @@
-import { GenderPreference, RentalType, RoomStatus } from "@openhospi/shared/enums";
+import { GenderPreference, RentalType, RoomStatus, UtilitiesIncluded } from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
 import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
-  boolean,
   date,
   doublePrecision,
   index,
@@ -28,6 +27,7 @@ import {
   rentalTypeEnum,
   roomFeatureEnum,
   roomStatusEnum,
+  utilitiesIncludedEnum,
   verenigingEnum,
 } from "./enums";
 import { houses } from "./houses";
@@ -54,10 +54,11 @@ export const rooms = pgTable(
     longitude: doublePrecision("longitude"),
     rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),
     deposit: numeric("deposit", { precision: 7, scale: 2 }),
-    utilitiesIncluded: boolean("utilities_included").default(false),
+    utilitiesIncluded: utilitiesIncludedEnum("utilities_included").default(UtilitiesIncluded.included),
     serviceCosts: numeric("service_costs", { precision: 7, scale: 2 }),
+    estimatedUtilitiesCosts: numeric("estimated_utilities_costs", { precision: 7, scale: 2 }),
     totalCost: numeric("total_cost", { precision: 7, scale: 2 })
-      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0)`),
+      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0) + COALESCE(estimated_utilities_costs, 0)`),
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),

@@ -650,6 +650,22 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       serviceCosts: f.valuesFromArray({
         values: ["50", "60", "75", "45", "40", "50", "65", "90", "80", "85", "70", "60", "65", "75", "80", "55", "65", "60", "55", "70"],
       }),
+      utilitiesIncluded: f.valuesFromArray({
+        values: [
+          "not_included", "estimated", "not_included", "included", "not_included",
+          "estimated", "included", "not_included", "estimated", "not_included",
+          "not_included", "estimated", "included", "not_included", "estimated",
+          "not_included", "not_included", "estimated", "not_included", "included",
+        ],
+      }),
+      estimatedUtilitiesCosts: f.valuesFromArray({
+        values: [
+          null, "75", null, null, null,
+          "80", null, null, "65", null,
+          null, "70", null, null, "85",
+          null, null, "60", null, null,
+        ],
+      }),
       roomSizeM2: f.valuesFromArray({
         values: [18, 16, 22, 15, 14, 17, 20, 24, 16, 18, 15, 18, 16, 17, 25, 14, 20, 19, 16, 22],
       }),

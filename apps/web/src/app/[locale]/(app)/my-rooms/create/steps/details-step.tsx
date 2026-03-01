@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomDetailsData } from "@openhospi/database/validators";
 import { roomDetailsSchema } from "@openhospi/database/validators";
-import { Furnishing, HouseType, RentalType } from "@openhospi/shared/enums";
+import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,7 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 
 import { saveDetails } from "../actions";
 
@@ -58,8 +58,9 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
     defaultValues: {
       rentPrice: defaultValues.rentPrice ?? undefined,
       deposit: defaultValues.deposit ?? undefined,
-      utilitiesIncluded: defaultValues.utilitiesIncluded ?? false,
+      utilitiesIncluded: defaultValues.utilitiesIncluded ?? UtilitiesIncluded.included,
       serviceCosts: defaultValues.serviceCosts ?? undefined,
+      estimatedUtilitiesCosts: defaultValues.estimatedUtilitiesCosts ?? undefined,
       roomSizeM2: defaultValues.roomSizeM2 ?? undefined,
       availableFrom: defaultValues.availableFrom ?? "",
       availableUntil: defaultValues.availableUntil ?? "",
@@ -146,24 +147,70 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
             <FormField
               control={form.control}
-              name="utilitiesIncluded"
+              name="serviceCosts"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel className="cursor-pointer">{t("fields.utilitiesIncluded")}</FormLabel>
+                <FormItem>
+                  <FormLabel>{t("fields.serviceCosts")}</FormLabel>
                   <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <InputGroupText>&euro;</InputGroupText>
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        type="number"
+                        min={0}
+                        placeholder={t("placeholders.serviceCosts")}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </InputGroup>
                   </FormControl>
+                  <FormDescription>{t("helpers.serviceCosts")}</FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            {!utilitiesIncluded && (
+            <FormField
+              control={form.control}
+              name="utilitiesIncluded"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.utilitiesIncluded")}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== UtilitiesIncluded.estimated) {
+                          form.setValue("estimatedUtilitiesCosts", undefined);
+                        }
+                      }}
+                      value={field.value}
+                      className="space-y-2"
+                    >
+                      {UtilitiesIncluded.values.map((option) => (
+                        <Label
+                          key={option}
+                          className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                        >
+                          <RadioGroupItem value={option} />
+                          {t(`utilities.${option}`)}
+                        </Label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {utilitiesIncluded === UtilitiesIncluded.estimated && (
               <FormField
                 control={form.control}
-                name="serviceCosts"
+                name="estimatedUtilitiesCosts"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.serviceCosts")}</FormLabel>
+                    <FormLabel>{t("fields.estimatedUtilitiesCosts")}</FormLabel>
                     <FormControl>
                       <InputGroup>
                         <InputGroupAddon>
@@ -172,7 +219,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                         <InputGroupInput
                           type="number"
                           min={0}
-                          placeholder={t("placeholders.serviceCosts")}
+                          placeholder={t("placeholders.estimatedUtilitiesCosts")}
                           {...field}
                           value={field.value ?? ""}
                         />

@@ -43,8 +43,9 @@ export type RoomDetailForApply = {
   longitude: number | null;
   rentPrice: number;
   deposit: number | null;
-  utilitiesIncluded: boolean | null;
+  utilitiesIncluded: string | null;
   serviceCosts: number | null;
+  estimatedUtilitiesCosts: number | null;
   totalCost: number;
   roomSizeM2: number | null;
   availableFrom: string | null;
@@ -195,6 +196,7 @@ export async function getRoomDetailForApply(
         deposit: rooms.deposit,
         utilitiesIncluded: rooms.utilitiesIncluded,
         serviceCosts: rooms.serviceCosts,
+        estimatedUtilitiesCosts: rooms.estimatedUtilitiesCosts,
         totalCost: rooms.totalCost,
         roomSizeM2: rooms.roomSizeM2,
         availableFrom: rooms.availableFrom,
@@ -247,6 +249,7 @@ export async function getRoomDetailForApply(
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : null,
       serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ? Number(room.estimatedUtilitiesCosts) : null,
       totalCost: Number(room.totalCost),
       features: room.features ?? [],
       locationTags: room.locationTags ?? [],

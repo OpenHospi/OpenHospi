@@ -169,6 +169,13 @@ export const RoomFeature = defineEnum([
 ] as const);
 export type RoomFeature = (typeof RoomFeature.values)[number];
 
+export const UtilitiesIncluded = defineEnum([
+  "included",
+  "not_included",
+  "estimated",
+] as const);
+export type UtilitiesIncluded = (typeof UtilitiesIncluded.values)[number];
+
 export const RentalType = defineEnum([
   "permanent",
   "sublet",

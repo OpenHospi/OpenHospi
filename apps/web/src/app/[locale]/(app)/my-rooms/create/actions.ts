@@ -12,7 +12,7 @@ import {
   roomDetailsSchema,
   roomPreferencesSchema,
 } from "@openhospi/database/validators";
-import { GenderPreference, HouseMemberRole, RentalType, RoomStatus } from "@openhospi/shared/enums";
+import { GenderPreference, HouseMemberRole, RentalType, RoomStatus, UtilitiesIncluded } from "@openhospi/shared/enums";
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -167,8 +167,10 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
       .set({
         rentPrice: String(d.rentPrice),
         deposit: d.deposit != null ? String(d.deposit) : null,
-        utilitiesIncluded: d.utilitiesIncluded ?? false,
+        utilitiesIncluded: d.utilitiesIncluded ?? UtilitiesIncluded.included,
         serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
+        estimatedUtilitiesCosts: d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
+          ? String(d.estimatedUtilitiesCosts) : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
         availableUntil: d.rentalType === RentalType.permanent ? null : d.availableUntil || null,

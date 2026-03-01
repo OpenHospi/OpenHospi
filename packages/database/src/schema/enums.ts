@@ -26,6 +26,7 @@ import {
   RoomFeature,
   RoomStatus,
   StudyLevel,
+  UtilitiesIncluded,
   Vereniging,
 } from "@openhospi/shared/enums";
 
@@ -85,6 +86,10 @@ export const reportTypeEnum = pgEnum("report_type_enum", ReportType.values);
 export const discoverSortEnum = pgEnum(
   "discover_sort_enum",
   DiscoverSort.values,
+);
+export const utilitiesIncludedEnum = pgEnum(
+  "utilities_included_enum",
+  UtilitiesIncluded.values,
 );
 export const verenigingEnum = pgEnum("vereniging_enum", Vereniging.values);
 export const localeEnum = pgEnum("locale_enum", SUPPORTED_LOCALES);

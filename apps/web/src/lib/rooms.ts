@@ -21,6 +21,23 @@ export type RoomSummary = {
   createdAt: Date;
 };
 
+export async function getExistingDraft(userId: string, houseId: string): Promise<string | null> {
+  return withRLS(userId, async (tx) => {
+    const [row] = await tx
+      .select({ id: rooms.id })
+      .from(rooms)
+      .where(
+        and(
+          eq(rooms.ownerId, userId),
+          eq(rooms.houseId, houseId),
+          eq(rooms.status, RoomStatus.draft),
+        ),
+      )
+      .limit(1);
+    return row?.id ?? null;
+  });
+}
+
 export async function createDraftRoom(userId: string, houseId: string): Promise<string> {
   const roomId = crypto.randomUUID();
 

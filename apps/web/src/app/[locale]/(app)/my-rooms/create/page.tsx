@@ -6,7 +6,7 @@ import { RoomStatus } from "@openhospi/shared/enums";
 
 import { requireSession } from "@/lib/auth-server";
 import { getUserOwnerHouses } from "@/lib/houses";
-import { createDraftRoom, getRoom } from "@/lib/rooms";
+import { createDraftRoom, getExistingDraft, getRoom } from "@/lib/rooms";
 
 import { HouseGate } from "./house-gate";
 import { RoomCreateForm } from "./room-create-form";
@@ -40,7 +40,8 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
     }
 
     if (houses.length === 1) {
-      const roomId = await createDraftRoom(user.id, houses[0].id);
+      const existingDraftId = await getExistingDraft(user.id, houses[0].id);
+      const roomId = existingDraftId ?? (await createDraftRoom(user.id, houses[0].id));
       return redirect(`/my-rooms/create?id=${roomId}`);
     }
 

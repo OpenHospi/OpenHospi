@@ -777,7 +777,9 @@
         "pause": "Pause listing",
         "activate": "Activate listing",
         "close": "Close listing",
-        "edit": "Edit room"
+        "edit": "Edit room",
+        "continueEditing": "Continue editing",
+        "deleteDraft": "Delete draft"
       },
       "shareLink": {
         "title": "Share link",
@@ -801,7 +803,9 @@
         "closed": "Room closed",
         "updated": "Room updated",
         "draftSaved": "Draft saved",
-        "RATE_LIMITED": "Too many rooms created today. Please try again later."
+        "RATE_LIMITED": "Too many rooms created today. Please try again later.",
+        "confirmDeleteTitle": "Delete draft?",
+        "confirmDelete": "This will permanently delete this draft room."
       },
       "manage": {
         "title": "Room management",

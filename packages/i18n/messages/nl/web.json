@@ -38,11 +38,11 @@
     },
     "processingRegister": {
       "title": "Verwerkingsregister",
-      "description": "Overzicht van alle verwerkingsactiviteiten van persoonsgegevens bij OpenHospi (Art. 30 AVG)."
+      "description": "Overzicht van alle verwerkingsactiviteiten van persoonsgegevens bij OpenHospi (art. 30 AVG)."
     },
     "dpia": {
       "title": "Gegevensbeschermingseffectbeoordeling",
-      "description": "Risicobeoordeling voor de verwerking van persoonsgegevens bij OpenHospi (Art. 35 AVG)."
+      "description": "Risicobeoordeling voor de verwerking van persoonsgegevens bij OpenHospi (art. 35 AVG)."
     },
     "dataProcessors": {
       "title": "Verwerkers",
@@ -50,7 +50,7 @@
     },
     "legalBasis": {
       "title": "Rechtsgrondoverzicht",
-      "description": "Rechtsgrond per verwerkingsactiviteit bij OpenHospi (Art. 6 AVG)."
+      "description": "Rechtsgrond per verwerkingsactiviteit bij OpenHospi (art. 6 AVG)."
     },
     "missingAssociation": {
       "title": "Vereniging Mist? — Laat Het Ons Weten",
@@ -82,7 +82,7 @@
       "safety": [
         {
           "question": "Hoe worden gebruikers geverifieerd op OpenHospi?",
-          "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten en medewerkers van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
+          "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
         },
         {
           "question": "Zijn mijn berichten privé?",
@@ -377,59 +377,66 @@
     "sections": [
       {
         "title": "1. Verwerkingsverantwoordelijke",
-        "content": "OpenHospi is de verwerkingsverantwoordelijke voor de verwerking van je persoonsgegevens. OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Voor privacyvragen kun je contact opnemen via privacy@openhospi.nl."
+        "content": "OpenHospi is de verwerkingsverantwoordelijke in de zin van art. 4, onder 7, AVG voor de verwerking van je persoonsgegevens. OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Voor privacyvragen kun je contact opnemen via privacy@openhospi.nl. OpenHospi heeft geen functionaris voor gegevensbescherming aangewezen, omdat dit op grond van art. 37 AVG niet vereist is gezien de aard en omvang van onze verwerkingsactiviteiten."
       },
       {
         "title": "2. Privacycontact",
-        "content": "Voor alle privacy- en gegevensbeschermingsvragen kun je contact opnemen via privacy@openhospi.nl. We streven ernaar binnen 30 dagen te reageren, zoals vereist door artikel 12 AVG."
+        "content": "Voor alle privacy- en gegevensbeschermingsvragen kun je contact opnemen via privacy@openhospi.nl. Wij behandelen je verzoek kosteloos en reageren binnen een maand na ontvangst, conform art. 12, lid 3, AVG. Bij complexe of talrijke verzoeken kunnen wij deze termijn met ten hoogste twee maanden verlengen. Wij stellen je in dat geval binnen een maand na ontvangst van het verzoek op de hoogte van een dergelijke verlenging en van de redenen daarvoor."
       },
       {
         "title": "3. Gegevens die we verzamelen",
-        "content": "Wij verzamelen de volgende categorieën persoonsgegevens:",
+        "content": "Wij verzamelen de volgende categorieën persoonsgegevens, conform het beginsel van dataminimalisatie (art. 5, lid 1, onder c, AVG):",
         "items": [
-          "Profielgegevens — naam, e-mail, geboortedatum, geslacht, studiegegevens, foto's",
-          "Woninggegevens — kameradvertenties met adressen en coördinaten",
-          "Communicatiegegevens — end-to-end versleutelde chatberichten",
-          "Sollicitatiegegevens — persoonlijke berichten en status",
-          "Sessiegegevens — IP-adres, user agent voor beveiliging",
-          "Push-notificatietokens — voor bezorging van notificaties",
-          "Toestemmingsregistratie — je cookie- en privacyvoorkeuren"
+          "Profielgegevens — naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur, foto's",
+          "Woninggegevens — kameradvertenties met adressen, coördinaten, huurprijs, kamerdetails en foto's",
+          "Communicatiegegevens — end-to-end versleutelde chatberichten (inhoud is voor OpenHospi onleesbaar)",
+          "Sollicitatiegegevens — persoonlijk bericht en sollicitatiestatus",
+          "Sessiegegevens — IP-adres en user agent voor beveiligingsdoeleinden",
+          "Push-notificatietokens — voor het bezorgen van notificaties op je apparaat",
+          "Toestemmingsregistratie — je cookie- en privacyvoorkeuren, tijdstempels en privacybeleidversie",
+          "Wij verzamelen geen bijzondere categorieën persoonsgegevens als bedoeld in art. 9, lid 1, AVG (waaronder gegevens over ras, politieke opvattingen, religie, gezondheid of seksuele gerichtheid). Indien je dergelijke gegevens vrijwillig deelt in je profiel of berichten, verwerken wij deze op grond van art. 9, lid 2, onder e, AVG (kennelijk door jou openbaar gemaakt)."
         ]
       },
       {
         "title": "4. SURFconext-gegevens",
-        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres en onderwijsinstellingsdomein. SURFconext wordt beheerd door SURF, de samenwerkingsorganisatie voor IT in het onderwijs. We gebruiken deze gegevens om je studentidentiteit te verifiëren en je account aan te maken."
+        "content": "Wanneer je inlogt via SURFconext ontvangen wij je naam, e-mailadres en onderwijsinstellingsdomein. SURFconext wordt beheerd door SURF, de samenwerkingsorganisatie voor ICT in het Nederlandse onderwijs. SURF is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. Wij gebruiken de ontvangen gegevens om je studentidentiteit te verifiëren en je account aan te maken."
       },
       {
         "title": "5. Hoe we je gegevens gebruiken",
-        "content": "We gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden: studenten matchen met kamers, communicatie faciliteren tussen zoekers en aanbieders, en het hospiteerproces beheren. We verkopen je gegevens niet, gebruiken ze niet voor reclame, profileren je niet voor marketing en delen ze niet met derden behalve zoals beschreven in dit beleid."
+        "content": "Wij gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden, conform het doelbindingsbeginsel (art. 5, lid 1, onder b, AVG): studenten matchen met kamers, communicatie faciliteren tussen zoekers en aanbieders, en het hospiteerproces beheren. Wij verkopen je gegevens niet, gebruiken ze niet voor reclame, profileren je niet voor marketingdoeleinden en delen ze niet met derden buiten hetgeen beschreven is in dit beleid."
       },
       {
-        "title": "6. Rechtsgrond",
-        "content": "Wij verwerken je gegevens op basis van de volgende rechtsgronden. Je kunt je toestemming op elk moment intrekken via Instellingen > Privacy. Zie onze pagina Rechtsgrondslag voor een volledig overzicht per verwerkingsactiviteit.",
+        "title": "6. Verplichting tot verstrekking van gegevens",
+        "content": "Profielgegevens (naam, e-mailadres, studiegegevens) zijn contractueel vereist om het platform te kunnen gebruiken (art. 13, lid 2, onder e, AVG). Zonder deze gegevens kan geen account worden aangemaakt en kan het platform niet functioneren. De verstrekking is contractueel vereist, niet wettelijk verplicht. Je bent vrij om geen account aan te maken als je deze gegevens niet wilt delen."
+      },
+      {
+        "title": "7. Rechtsgrond",
+        "content": "Wij verwerken je gegevens op basis van de volgende rechtsgronden (art. 6 AVG). Zie onze pagina Rechtsgrondenoverzicht voor een volledig overzicht per verwerkingsactiviteit.",
         "items": [
-          "Overeenkomst (Art. 6(1)(b)) — profiel, woning, sollicitaties, chat; noodzakelijk voor de dienstverlening",
-          "Toestemming (Art. 6(1)(a)) — functionele cookies, pushnotificaties, analytics",
-          "Gerechtvaardigd belang (Art. 6(1)(f)) — sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten)"
+          "Overeenkomst (art. 6, lid 1, onder b, AVG) — profiel, woning, sollicitaties, chat; noodzakelijk voor de uitvoering van de overeenkomst",
+          "Toestemming (art. 6, lid 1, onder a, AVG) — functionele cookies, pushnotificaties, analytics",
+          "Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG) — sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten). Wij hebben deze belangen afgewogen tegen jouw rechten en vrijheden en vastgesteld dat de verwerking noodzakelijk en evenredig is",
+          "Wettelijke verplichting (art. 6, lid 1, onder c, AVG) — toestemmingsregistratie (aantonen geldige toestemming conform art. 7 AVG)",
+          "Je kunt je toestemming op elk moment intrekken via Instellingen > Privacy. Het intrekken van je toestemming laat de rechtmatigheid van de verwerking op basis van toestemming vóór de intrekking onverlet (art. 7, lid 3, AVG)."
         ]
       },
       {
-        "title": "7. Gegevensdeling & verwerkers",
-        "content": "Wij delen je gegevens alleen met de volgende verwerkers, allemaal gevestigd binnen de EU/EER. Alle verwerkers werken onder verwerkersovereenkomsten. Zie onze pagina Verwerkers voor details.",
+        "title": "8. Gegevensdeling & verwerkers",
+        "content": "Wij delen je gegevens alleen met de volgende partijen, allemaal gevestigd binnen de EU/EER. Alle verwerkers werken onder een verwerkersovereenkomst conform art. 28 AVG. Zie onze pagina Verwerkers voor details.",
         "items": [
-          "Supabase (Dublin, Ierland) — database en bestandsopslag",
-          "Vercel (Dublin, Ierland) — webhosting en edge-functies",
-          "Upstash (Ierland) — snelheidsbeperking via Redis",
-          "SURFconext (Nederland) — authenticatie"
+          "Supabase (Dublin, Ierland) — database en bestandsopslag (verwerker)",
+          "Vercel (Dublin, Ierland) — webhosting en edge-functies (verwerker)",
+          "Upstash (Ierland) — snelheidsbeperking via Redis (verwerker)",
+          "SURFconext (Nederland) — authenticatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)"
         ]
       },
       {
-        "title": "8. Internationale doorgifte",
-        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). We geven geen persoonsgegevens door buiten de EER. Al onze infrastructuurproviders zijn gevestigd in Ierland of Nederland."
+        "title": "9. Internationale doorgifte",
+        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). Wij geven geen persoonsgegevens door aan derde landen of internationale organisaties. De bepalingen inzake doorgifte (art. 44 tot en met 49 AVG) zijn daarom niet van toepassing. Al onze infrastructuurproviders zijn gevestigd in Ierland of Nederland."
       },
       {
-        "title": "9. Bewaartermijnen",
-        "content": "Wij bewaren je gegevens gedurende de volgende perioden:",
+        "title": "10. Bewaartermijnen",
+        "content": "Wij bewaren je gegevens niet langer dan noodzakelijk voor de doeleinden waarvoor zij zijn verzameld, conform het opslagbeperkingsbeginsel (art. 5, lid 1, onder e, AVG):",
         "items": [
           "Profielgegevens, kameradvertenties en chatberichten — bewaard zolang je account actief is",
           "Sessie-IP-adressen — geanonimiseerd na 30 dagen",
@@ -441,40 +448,50 @@
         ]
       },
       {
-        "title": "10. Jouw rechten",
-        "content": "Onder de AVG heb je de volgende rechten. Je kunt deze rechten uitoefenen via Instellingen > Privacy, of door contact op te nemen met privacy@openhospi.nl.",
+        "title": "11. Jouw rechten",
+        "content": "Op grond van de AVG heb je de volgende rechten met betrekking tot je persoonsgegevens. Je kunt deze rechten uitoefenen via Instellingen > Privacy, of door contact op te nemen met privacy@openhospi.nl.",
         "items": [
-          "Inzage van je gegevens (Art. 15) — via Instellingen > Privacy > Gegevensexport",
-          "Rectificatie (Art. 16) — bewerk je profiel op elk moment",
-          "Wissing (Art. 17) — verwijder je account en alle gegevens",
-          "Beperking van verwerking (Art. 18) — pauzeer verwerking met behoud van gegevens",
-          "Gegevensoverdraagbaarheid (Art. 20) — exporteer in JSON- of CSV-formaat",
-          "Bezwaar (Art. 21) — maak bezwaar tegen verwerking op basis van gerechtvaardigd belang"
+          "Recht van inzage (art. 15 AVG) — je hebt recht op een kopie van je persoonsgegevens, via Instellingen > Privacy > Gegevensexport",
+          "Recht op rectificatie (art. 16 AVG) — je kunt onjuiste of onvolledige gegevens laten corrigeren, via je profiel",
+          "Recht op gegevenswissing (art. 17 AVG) — je kunt verzoeken om verwijdering van je gegevens, via Instellingen > Account verwijderen",
+          "Recht op beperking van de verwerking (art. 18 AVG) — je kunt verzoeken om beperking van de verwerking met behoud van je gegevens",
+          "Kennisgevingsplicht (art. 19 AVG) — wij stellen iedere ontvanger aan wie persoonsgegevens zijn verstrekt in kennis van rectificatie, wissing of beperking, tenzij dit onmogelijk blijkt of onevenredig veel inspanning vergt",
+          "Recht op overdraagbaarheid van gegevens (art. 20 AVG) — je kunt je gegevens in een gestructureerd, gangbaar en machineleesbaar formaat ontvangen (JSON of CSV), via Instellingen > Privacy > Gegevensexport",
+          "Recht van bezwaar (art. 21 AVG) — je kunt bezwaar maken tegen verwerking op grond van gerechtvaardigd belang"
         ]
       },
       {
-        "title": "11. Recht op klacht",
-        "content": "Als je van mening bent dat je gegevensbeschermingsrechten zijn geschonden, heb je het recht een klacht in te dienen bij de Autoriteit Persoonsgegevens op autoriteitpersoonsgegevens.nl, of bij de toezichthoudende autoriteit in je EU-lidstaat van verblijf."
+        "title": "12. Recht op klacht",
+        "content": "Als je van mening bent dat je rechten op grond van de AVG zijn geschonden, heb je het recht een klacht in te dienen bij de Autoriteit Persoonsgegevens (art. 77 AVG). Je kunt ook een klacht indienen bij de toezichthoudende autoriteit in de EU-lidstaat van je gewone verblijfplaats.",
+        "items": [
+          "Autoriteit Persoonsgegevens — Postbus 93374, 2509 AJ Den Haag",
+          "Telefoon — 070 888 85 00",
+          "Website — autoriteitpersoonsgegevens.nl"
+        ]
       },
       {
-        "title": "12. Cookies & tracking",
-        "content": "We gebruiken een minimale set cookies. Essentiële cookies (sessie-authenticatie) vereisen geen toestemming. Functionele cookies (taalvoorkeur, zijbalkstatus) vereisen je toestemming op grond van de Telecommunicatiewet (Art. 11.7a). We gebruiken geen trackingcookies of advertentiecookies van derden. Zie ons Cookiebeleid voor volledige details."
+        "title": "13. Cookies & tracking",
+        "content": "Wij gebruiken een minimale set cookies. Essentiële cookies (sessie-authenticatie) zijn strikt noodzakelijk voor het functioneren van het platform en vereisen geen toestemming. Functionele cookies (taalvoorkeur, zijbalkstatus) vereisen je toestemming op grond van art. 11.7a Telecommunicatiewet. Wij gebruiken geen trackingcookies of advertentiecookies van derden. Zie ons Cookiebeleid voor volledige details."
       },
       {
-        "title": "13. End-to-end-encryptie",
-        "content": "Alle chatberichten tussen studenten en kameraanbieders zijn end-to-end versleuteld (E2EE) met AES-256-GCM en ECDH-sleuteluitwisseling. Dit betekent dat OpenHospi de inhoud van je privéberichten niet kan lezen. Encryptiesleutels worden lokaal op je apparaat opgeslagen en optioneel (versleuteld) op onze servers geback-upt."
+        "title": "14. End-to-end-encryptie",
+        "content": "Alle chatberichten tussen studenten en kameraanbieders zijn end-to-end versleuteld (E2EE) met AES-256-GCM en ECDH-sleuteluitwisseling, als passende technische maatregel in de zin van art. 32 AVG en ter invulling van gegevensbescherming door ontwerp (art. 25 AVG). Dit betekent dat OpenHospi de inhoud van je privéberichten niet kan lezen. Encryptiesleutels worden lokaal op je apparaat opgeslagen en optioneel (versleuteld) op onze servers geback-upt."
       },
       {
-        "title": "14. Gegevens van kinderen",
-        "content": "OpenHospi is uitsluitend toegankelijk via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, wat voldoet aan de AVG-leeftijdsvereiste onder Nederlands recht (UAVG Art. 5). We verzamelen niet bewust gegevens van kinderen onder 16 jaar."
+        "title": "15. Datalekken",
+        "content": "Bij een inbreuk in verband met persoonsgegevens meldt OpenHospi dit zonder onredelijke vertraging en uiterlijk binnen 72 uur aan de Autoriteit Persoonsgegevens, tenzij het niet waarschijnlijk is dat de inbreuk een risico inhoudt voor jouw rechten en vrijheden (art. 33 AVG). Indien de inbreuk waarschijnlijk een hoog risico inhoudt voor jouw rechten en vrijheden, stellen wij je daarvan onverwijld en in duidelijke en eenvoudige taal op de hoogte (art. 34 AVG). De end-to-end-encryptie van chatberichten beperkt de impact bij een eventuele inbreuk op communicatiegegevens, aangezien de versleuteling de gegevens onbegrijpelijk maakt voor onbevoegden (art. 34, lid 3, onder a, AVG)."
       },
       {
-        "title": "15. Geautomatiseerde besluitvorming",
-        "content": "OpenHospi maakt geen gebruik van geautomatiseerde besluitvorming of profilering zoals gedefinieerd in artikel 22 AVG. Kamermatching is volledig handmatig — gebruikers bladeren door advertenties en melden zich zelf aan. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
+        "title": "16. Gegevens van kinderen",
+        "content": "OpenHospi is uitsluitend toegankelijk via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG, dat lidstaten toestaat de leeftijdsgrens op minimaal 16 jaar te stellen). Wij verzamelen niet bewust persoonsgegevens van kinderen jonger dan 16 jaar."
       },
       {
-        "title": "16. Wijzigingen in dit beleid",
-        "content": "We kunnen dit privacybeleid van tijd tot tijd bijwerken. Belangrijke wijzigingen worden gecommuniceerd via een in-app-melding. De datum 'laatst bijgewerkt' bovenaan weerspiegelt de meest recente revisie. Voortgezet gebruik van OpenHospi na wijzigingen geldt als acceptatie."
+        "title": "17. Geautomatiseerde besluitvorming",
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig — gebruikers bladeren door advertenties en melden zich zelf aan. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
+      },
+      {
+        "title": "18. Wijzigingen in dit beleid",
+        "content": "Wij kunnen dit privacybeleid van tijd tot tijd bijwerken. Belangrijke wijzigingen worden gecommuniceerd via een in-app-melding. De datum 'laatst bijgewerkt' bovenaan weerspiegelt de meest recente revisie."
       }
     ]
   },
@@ -484,26 +501,26 @@
     "sections": [
       {
         "title": "Wat zijn cookies?",
-        "content": "Cookies zijn kleine tekstbestanden die op je apparaat worden opgeslagen wanneer je een website bezoekt. Ze helpen de site je voorkeuren te onthouden en je ervaring te verbeteren. Onder de Nederlandse Telecommunicatiewet (Art. 11.7a) hebben we je toestemming nodig voor niet-essentiële cookies."
+        "content": "Cookies zijn kleine tekstbestanden die op je apparaat worden opgeslagen wanneer je een website bezoekt. Ze helpen de site je voorkeuren te onthouden en je ervaring te verbeteren. Op grond van art. 11.7a Telecommunicatiewet hebben wij je toestemming nodig voor het plaatsen van niet-essentiële cookies en vergelijkbare technologieën (zoals localStorage)."
       },
       {
         "title": "Essentiële cookies",
-        "content": "Deze cookies zijn strikt noodzakelijk voor het functioneren van het platform. Hiervoor is geen toestemming vereist.",
+        "content": "Deze cookies zijn strikt noodzakelijk voor het functioneren van het platform. Hiervoor is geen toestemming vereist op grond van art. 11.7a Telecommunicatiewet.",
         "items": [
-          "better-auth.session_token — authenticeert je inlogsessie (sessiecookie, verwijderd wanneer je de browser sluit)"
+          "better-auth.session_token — authenticeert je inlogsessie (sessiecookie, verwijderd bij sluiten van de browser)"
         ]
       },
       {
-        "title": "Functionele cookies",
-        "content": "Deze cookies verbeteren je ervaring maar zijn niet strikt noodzakelijk. Hiervoor is je toestemming vereist.",
+        "title": "Functionele cookies en lokale opslag",
+        "content": "De volgende cookies en lokale opslagtechnologieën verbeteren je ervaring maar zijn niet strikt noodzakelijk. Hiervoor vragen wij je toestemming conform art. 11.7a Telecommunicatiewet.",
         "items": [
-          "sidebar_state — onthoudt of de zijbalk open of gesloten is (persistent, localStorage)",
-          "NEXT_LOCALE — onthoudt je taalvoorkeur (1 jaar)"
+          "sidebar_state — onthoudt of de zijbalk open of gesloten is (persistent, localStorage — geen cookie, maar lokale opslag in je browser)",
+          "NEXT_LOCALE — onthoudt je taalvoorkeur (cookie, geldig 1 jaar)"
         ]
       },
       {
         "title": "Analyse",
-        "content": "We gebruiken Vercel Analytics, dat cookieloos is en geen persoonsgegevens gebruikt. Hoewel technisch geen toestemming vereist is, vermelden we het in je toestemmingsvoorkeuren voor volledige transparantie. Je kunt je op elk moment afmelden via Instellingen > Privacy."
+        "content": "Wij gebruiken Vercel Analytics, dat cookieloos werkt en geen persoonsgegevens verwerkt. Hoewel hiervoor technisch geen toestemming vereist is, vermelden wij het in je toestemmingsvoorkeuren voor volledige transparantie. Je kunt je op elk moment afmelden via Instellingen > Privacy."
       },
       {
         "title": "Je voorkeuren beheren",
@@ -517,7 +534,7 @@
     "sections": [
       {
         "title": "Geschiktheid",
-        "content": "OpenHospi is beschikbaar voor studenten en medewerkers van Nederlandse onderwijsinstellingen die zijn aangesloten bij SURFconext."
+        "content": "OpenHospi is beschikbaar voor studenten van Nederlandse onderwijsinstellingen die zijn aangesloten bij SURFconext."
       },
       {
         "title": "Accountverantwoordelijkheden",
@@ -742,51 +759,59 @@
     }
   },
   "processingRegister": {
-    "title": "Verwerkingsregister (Art. 30 AVG)",
+    "title": "Verwerkingsregister (art. 30 AVG)",
     "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
-    "intro": "Conform artikel 30 van de AVG houdt OpenHospi dit register bij van alle verwerkingsactiviteiten van persoonsgegevens.",
+    "intro": "Conform art. 30, lid 1, AVG houdt OpenHospi als verwerkingsverantwoordelijke dit register bij van alle verwerkingsactiviteiten van persoonsgegevens.",
     "sections": {
       "0": {
         "title": "1. Gebruikersprofielen",
         "items": [
           "Doel — Het leveren van de studentenhuisvestingsdienst",
-          "Gegevenscategorieën — naam, e-mail, geboortedatum, geslacht, studierichting, instelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur",
-          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Categorieën betrokkenen — Geregistreerde studenten",
+          "Gegevenscategorieën — naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur",
+          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
           "Ontvangers — Andere platformgebruikers (beperkt profieloverzicht)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
           "Bewaartermijn — Tot accountverwijdering",
-          "Beveiliging — RLS-beleid, versleuteld transport, toegangscontrole"
+          "Beveiliging — Row-Level Security (RLS), versleuteld transport (TLS), rolgebaseerde toegangscontrole"
         ]
       },
       "1": {
         "title": "2. Profielfoto's",
         "items": [
-          "Doel — Profielidentificatie",
+          "Doel — Profielidentificatie en visuele herkenning",
+          "Categorieën betrokkenen — Geregistreerde studenten",
           "Gegevenscategorieën — maximaal 5 foto's per gebruiker",
-          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
-          "Ontvangers — Andere platformgebruikers",
+          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers — Andere platformgebruikers (geauthenticeerd)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
           "Bewaartermijn — Tot verwijdering door gebruiker of accountverwijdering",
-          "Beveiliging — Supabase Storage met toegangscontrole"
+          "Beveiliging — Supabase Storage met toegangsbeleid, versleutelde opslag"
         ]
       },
       "2": {
         "title": "3. Kameradvertenties",
         "items": [
-          "Doel — Woningmarktfunctionaliteit",
+          "Doel — Woningmarktfunctionaliteit en geografisch zoeken",
+          "Categorieën betrokkenen — Geregistreerde studenten (kameraanbieders)",
           "Gegevenscategorieën — adres, stad, coördinaten, huurprijs, kamerdetails, foto's, beschikbaarheid",
-          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
+          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
           "Ontvangers — Alle geauthenticeerde gebruikers",
-          "Bewaartermijn — Tot verwijdering of accountverwijdering",
-          "Beveiliging — RLS-beleid, alleen eigenaar kan bewerken"
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — Tot verwijdering door eigenaar of accountverwijdering",
+          "Beveiliging — RLS-beleid (alleen eigenaar kan bewerken), versleuteld transport"
         ]
       },
       "3": {
         "title": "4. Sollicitaties",
         "items": [
-          "Doel — Matching van zoekenden met kamers",
+          "Doel — Matching van zoekenden met kamers en beheer van het hospiteerproces",
+          "Categorieën betrokkenen — Geregistreerde studenten (kamerzoekers)",
           "Gegevenscategorieën — persoonlijk bericht, sollicitatiestatus",
-          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
-          "Ontvangers — Kamereigenaar en huisgenoten",
-          "Bewaartermijn — Tot intrekking of accountverwijdering",
+          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers — Kamereigenaar en huisgenoten van de betreffende woning",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — Tot intrekking door zoeker of accountverwijdering",
           "Beveiliging — RLS-beleid beperkt tot betrokken partijen"
         ]
       },
@@ -794,76 +819,87 @@
         "title": "5. Chatberichten",
         "items": [
           "Doel — Communicatie tussen zoekenden en huisgenoten",
-          "Gegevenscategorieën — versleutelde berichtinhoud, tijdstempels",
-          "Rechtsgrond — Overeenkomst (Art. 6(1)(b))",
-          "Ontvangers — Alleen gespreksdeelnemers",
+          "Categorieën betrokkenen — Geregistreerde studenten (gespreksdeelnemers)",
+          "Gegevenscategorieën — end-to-end versleutelde berichtinhoud, tijdstempels, versleutelde sessiesleutels",
+          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers — Alleen gespreksdeelnemers (inhoud onleesbaar voor OpenHospi)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
           "Bewaartermijn — Tot accountverwijdering",
-          "Beveiliging — End-to-end encryptie (AES-256-GCM), alleen deelnemers kunnen ontsleutelen"
+          "Beveiliging — End-to-end encryptie (AES-256-GCM met ECDH-sleuteluitwisseling), alleen deelnemers kunnen ontsleutelen"
         ]
       },
       "5": {
         "title": "6. Sessiegegevens",
         "items": [
-          "Doel — Authenticatie en beveiliging",
+          "Doel — Authenticatie en beveiligingsmonitoring",
+          "Categorieën betrokkenen — Geregistreerde studenten",
           "Gegevenscategorieën — IP-adres, user agent, sessietoken",
-          "Rechtsgrond — Gerechtvaardigd belang (Art. 6(1)(f))",
-          "Ontvangers — Geen (alleen intern)",
-          "Bewaartermijn — IP-adres gewist na 30 dagen na verlopen; sessie verwijderd na 90 dagen",
-          "Beveiliging — Alleen server-side"
+          "Rechtsgrond — Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
+          "Ontvangers — Geen (uitsluitend intern gebruik)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — IP-adres geanonimiseerd 30 dagen na verlopen sessie; sessierecord verwijderd na 90 dagen",
+          "Beveiliging — Uitsluitend server-side verwerking, versleutelde opslag"
         ]
       },
       "6": {
         "title": "7. Moderatiegegevens",
         "items": [
           "Doel — Platformveiligheid en misbruikpreventie",
-          "Gegevenscategorieën — meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst",
-          "Rechtsgrond — Gerechtvaardigd belang (Art. 6(1)(f))",
-          "Ontvangers — Alleen adminteam",
-          "Bewaartermijn — Ontsleutelde berichttekst verwijderd 90 dagen na afhandeling",
-          "Beveiliging — Alleen admin-toegang, auditlogging"
+          "Categorieën betrokkenen — Geregistreerde studenten (melders en gemelden)",
+          "Gegevenscategorieën — meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst (door melder aangeleverd)",
+          "Rechtsgrond — Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
+          "Ontvangers — Uitsluitend het adminteam",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — Ontsleutelde berichttekst automatisch verwijderd 90 dagen na afhandeling",
+          "Beveiliging — Uitsluitend admin-toegang, volledige auditlogging"
         ]
       },
       "7": {
         "title": "8. Toestemmingsregistratie",
         "items": [
-          "Doel — Aantonen van geldige toestemming (Art. 7)",
+          "Doel — Aantonen van geldige toestemming (art. 7 AVG)",
+          "Categorieën betrokkenen — Geregistreerde studenten en websitebezoekers",
           "Gegevenscategorieën — toestemmingsdoel, verleend/ingetrokken status, IP-adres, user agent, privacybeleidversie, tijdstempel",
-          "Rechtsgrond — Wettelijke verplichting (Art. 6(1)(c))",
-          "Ontvangers — Geen (interne audit)",
-          "Bewaartermijn — IP-adres gewist na 365 dagen; records bewaard voor compliance"
+          "Rechtsgrond — Wettelijke verplichting (art. 6, lid 1, onder c, AVG)",
+          "Ontvangers — Geen (uitsluitend intern voor auditdoeleinden)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — IP-adres geanonimiseerd na 365 dagen; toestemmingsrecords bewaard zolang noodzakelijk voor bewijsdoeleinden",
+          "Beveiliging — Onveranderbaar auditspoor, versleutelde opslag"
         ]
       },
       "8": {
         "title": "9. Pushmeldingsabonnementen",
         "items": [
-          "Doel — Bezorgen van pushmeldingen",
-          "Gegevenscategorieën — endpoint-URL, encryptiesleutels",
-          "Rechtsgrond — Toestemming (Art. 6(1)(a))",
-          "Ontvangers — Browser push-service",
-          "Bewaartermijn — Tot uitschrijving of accountverwijdering",
-          "Beveiliging — Web Push-protocol met encryptie"
+          "Doel — Bezorgen van pushmeldingen aan gebruikers",
+          "Categorieën betrokkenen — Geregistreerde studenten die pushnotificaties hebben ingeschakeld",
+          "Gegevenscategorieën — endpoint-URL, encryptiesleutels voor push-service",
+          "Rechtsgrond — Toestemming (art. 6, lid 1, onder a, AVG)",
+          "Ontvangers — Browser push-service (technisch noodzakelijk voor bezorging)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — Tot uitschrijving door gebruiker of accountverwijdering",
+          "Beveiliging — Web Push-protocol met end-to-end encryptie"
         ]
       }
     }
   },
   "dpia": {
-    "title": "Gegevensbeschermingseffectbeoordeling (Art. 35 AVG)",
+    "title": "Gegevensbeschermingseffectbeoordeling (art. 35 AVG)",
     "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
-    "intro": "Deze gegevensbeschermingseffectbeoordeling evalueert de risico's van persoonsgegevensverwerking op het OpenHospi-platform.",
+    "intro": "Deze gegevensbeschermingseffectbeoordeling (DPIA) evalueert de risico's van persoonsgegevensverwerking op het OpenHospi-platform, conform art. 35, lid 7, AVG.",
     "sections": {
       "0": {
         "title": "1. Beschrijving van de verwerking",
-        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via SURFconext (institutionele SSO), maken profielen aan, plaatsen kamers, bekijken advertenties, solliciteren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen."
+        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via SURFconext (institutionele SSO), maken profielen aan, plaatsen kamers, bekijken advertenties, solliciteren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, woninggegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistratie."
       },
       "1": {
         "title": "2. Noodzaak en evenredigheid",
-        "content": "De gegevensverzameling is beperkt tot wat strikt noodzakelijk is voor het functioneren van het platform.",
+        "content": "De gegevensverzameling is beperkt tot wat strikt noodzakelijk is voor het functioneren van het platform, conform het beginsel van dataminimalisatie (art. 5, lid 1, onder c, AVG).",
         "items": [
-          "Profielgegevens maken matching mogelijk (contractbasis)",
+          "Profielgegevens maken matching mogelijk (rechtsgrond: overeenkomst, art. 6, lid 1, onder b, AVG)",
           "Locatiegegevens maken geografisch zoeken mogelijk",
-          "E2E-versleutelde chat waarborgt communicatieprivacy",
+          "E2E-versleutelde chat waarborgt communicatieprivacy (art. 25 en art. 32 AVG)",
           "Er worden geen gegevens verkocht of gedeeld met derden voor marketing",
-          "Er wordt geen geautomatiseerde besluitvorming of profilering gebruikt"
+          "Er wordt geen geautomatiseerde besluitvorming of profilering gebruikt (art. 22 AVG)"
         ]
       },
       "2": {
@@ -912,7 +948,7 @@
           "Risico — Oververzameling van SSO-provider",
           "Waarschijnlijkheid — Zeer laag",
           "Impact — Laag",
-          "Maatregelen — Alleen naam, e-mail en instellingsdomein ontvangen van SURFconext. Geen extra attributen opgevraagd. SURFconext wordt beheerd door SURF (Nederland)",
+          "Maatregelen — Alleen naam, e-mailadres en instellingsdomein ontvangen van SURFconext. Geen extra attributen opgevraagd. SURFconext wordt beheerd door SURF (Nederland)",
           "Restrisico — Zeer laag"
         ]
       },
@@ -922,97 +958,97 @@
           "Risico — Blootstelling van privéberichtinhoud tijdens moderatie",
           "Waarschijnlijkheid — Laag (alleen bij melding)",
           "Impact — Gemiddeld",
-          "Maatregelen — Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Alleen admin-toegang met volledige auditlogging",
+          "Maatregelen — Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Uitsluitend admin-toegang met volledige auditlogging",
           "Restrisico — Laag"
         ]
       },
       "8": {
-        "title": "9. Kinderdata (Art. 8)",
-        "content": "Alle gebruikers authenticeren via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16+ zijn (de Nederlandse UAVG-drempel). Geen aparte leeftijdsverificatie nodig."
+        "title": "9. Kinderen (art. 8 AVG)",
+        "content": "Alle gebruikers authenticeren via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
       },
       "9": {
         "title": "10. Conclusie",
-        "content": "De verwerkingsactiviteiten van OpenHospi presenteren aanvaardbare restrisico's na maatregelen. Het platform implementeert privacy by design en by default door E2E-encryptie, RLS, dataminimalisatie, geautomatiseerde retentie en transparante verwerking. Er blijven geen hoge restrisico's over die consultatie met de Autoriteit Persoonsgegevens vereisen onder Art. 36."
+        "content": "De verwerkingsactiviteiten van OpenHospi presenteren aanvaardbare restrisico's na implementatie van maatregelen. Het platform implementeert gegevensbescherming door ontwerp en door standaardinstellingen (art. 25 AVG) door middel van end-to-end encryptie, Row-Level Security, dataminimalisatie, geautomatiseerde retentieregels en transparante verwerking. Er blijven geen hoge restrisico's over die voorafgaande raadpleging van de Autoriteit Persoonsgegevens vereisen op grond van art. 36 AVG."
       }
     }
   },
   "dataProcessors": {
-    "title": "Verwerkers (Art. 28 AVG)",
+    "title": "Verwerkers (art. 28 AVG)",
     "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
-    "intro": "OpenHospi maakt gebruik van de volgende externe verwerkers. Alle verwerkers bevinden zich binnen de EU/EER. Er worden geen persoonsgegevens buiten de Europese Economische Ruimte doorgegeven.",
+    "intro": "OpenHospi maakt gebruik van de volgende externe partijen voor de verwerking van persoonsgegevens. Alle verwerkers bevinden zich binnen de EU/EER. Er worden geen persoonsgegevens buiten de Europese Economische Ruimte doorgegeven.",
     "sections": {
       "0": {
         "title": "1. Supabase (Database & Opslag)",
         "items": [
-          "Rol — Database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's)",
+          "Rol — Verwerker: database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's)",
           "Locatie — Dublin, Ierland (eu-west-1)",
           "Verwerkte gegevens — Alle persoonsgegevens in de database, geüploade foto's",
-          "Verwerkersovereenkomst — Supabase Data Processing Agreement aanwezig",
-          "Beveiliging — Encryptie at rest en in transit, SOC 2 Type II gecertificeerd"
+          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten (Supabase Data Processing Agreement)",
+          "Beveiliging — Versleuteling at rest en in transit, SOC 2 Type II gecertificeerd"
         ]
       },
       "1": {
         "title": "2. Vercel (Webhosting & Edge)",
         "items": [
-          "Rol — Webapplicatie-hosting, serverless functies, edge-netwerk",
+          "Rol — Verwerker: webapplicatie-hosting, serverless functies, edge-netwerk",
           "Locatie — Dublin, Ierland (eu-west-1)",
           "Verwerkte gegevens — HTTP-verzoeken (IP-adres, user agent) in serverlogs",
-          "Verwerkersovereenkomst — Vercel Data Processing Addendum aanwezig",
+          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten (Vercel Data Processing Addendum)",
           "Beveiliging — Automatisch HTTPS, DDoS-bescherming, SOC 2 Type II gecertificeerd"
         ]
       },
       "2": {
         "title": "3. Upstash (Redis — Rate Limiting)",
         "items": [
-          "Rol — Redis-database voor rate limiting en misbruikpreventie",
+          "Rol — Verwerker: Redis-database voor rate limiting en misbruikpreventie",
           "Locatie — Ierland (AWS eu-west-1)",
           "Verwerkte gegevens — Geanonimiseerde rate limit-tellers (gebruikers-ID hashes). Geen persoonsgegevens opgeslagen",
-          "Verwerkersovereenkomst — Upstash GDPR DPA aanwezig",
-          "Beveiliging — Encryptie at rest en in transit"
+          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten (Upstash DPA)",
+          "Beveiliging — Versleuteling at rest en in transit"
         ]
       },
       "3": {
         "title": "4. SURFconext (SSO/OIDC-provider)",
         "items": [
-          "Rol — Identiteitsprovider voor studentenauthenticatie",
+          "Rol — Zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces (geen verwerker in de zin van art. 28 AVG)",
           "Locatie — Nederland (SURF-infrastructuur)",
-          "Verwerkte gegevens — Authenticatietokens, naam, e-mail, instellingsdomein (ontvangen bij inloggen)",
-          "Verwerkersovereenkomst — SURF opereert onder Nederlands recht als onderwijsinfrastructuurprovider",
-          "Beveiliging — SAML/OIDC-protocollen, institutionele beveiliging"
+          "Verwerkte gegevens — Authenticatietokens, naam, e-mailadres, instellingsdomein (ontvangen bij inloggen)",
+          "Verwerkersovereenkomst — SURF is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de SURFconext Gebruiksvoorwaarden en Nederlands recht",
+          "Beveiliging — SAML/OIDC-protocollen, institutionele beveiliging, beheerd door SURF"
         ]
       }
     }
   },
   "legalBasis": {
-    "title": "Rechtsgrondenoverzicht (Art. 6 AVG)",
+    "title": "Rechtsgrondenoverzicht (art. 6 AVG)",
     "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
-    "intro": "Deze pagina geeft een overzicht van de rechtsgrond voor elke verwerkingsactiviteit bij OpenHospi, conform artikel 6 van de AVG.",
+    "intro": "Deze pagina geeft een overzicht van de rechtsgrond voor elke verwerkingsactiviteit bij OpenHospi, conform art. 6 AVG.",
     "sections": {
       "0": {
-        "title": "1. Overeenkomst (Art. 6(1)(b))",
-        "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk voor de uitvoering van onze overeenkomst met jou (het aanbieden van het studentenwoningplatform):",
+        "title": "1. Overeenkomst — art. 6, lid 1, onder b, AVG",
+        "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk voor de uitvoering van onze overeenkomst met jou (het aanbieden van het studentenhuisvestingsplatform):",
         "items": [
           "Aanmaken en beheren van gebruikersprofiel",
           "Uploaden van profielfoto's",
           "Aanmaken en beheren van kameradvertenties",
           "Indienen en verwerken van sollicitaties",
-          "Chatberichten (E2E-versleuteld)",
+          "Chatberichten (end-to-end versleuteld)",
           "Beheer van huislidmaatschap",
           "Stemmen over sollicitaties"
         ]
       },
       "1": {
-        "title": "2. Toestemming (Art. 6(1)(a))",
-        "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op je uitdrukkelijke toestemming, die je op elk moment kunt intrekken via Instellingen > Privacy:",
+        "title": "2. Toestemming — art. 6, lid 1, onder a, AVG",
+        "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op je uitdrukkelijke toestemming, die je op elk moment kunt intrekken via Instellingen > Privacy. Het intrekken van je toestemming laat de rechtmatigheid van de verwerking vóór de intrekking onverlet (art. 7, lid 3, AVG).",
         "items": [
-          "Functionele cookies (zijbalkstatus, taalvoorkeur)",
+          "Functionele cookies en lokale opslag (zijbalkstatus, taalvoorkeur)",
           "Bezorging van pushnotificaties",
           "Analytics (Vercel Analytics — cookieloos, geen persoonsgegevens)"
         ]
       },
       "2": {
-        "title": "3. Gerechtvaardigd belang (Art. 6(1)(f))",
-        "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op ons gerechtvaardigd belang bij platformbeveiliging en gebruikersveiligheid. Wij hebben deze belangen afgewogen tegen jouw rechten en vastgesteld dat de verwerking evenredig en noodzakelijk is.",
+        "title": "3. Gerechtvaardigd belang — art. 6, lid 1, onder f, AVG",
+        "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op ons gerechtvaardigd belang bij platformbeveiliging en gebruikersveiligheid. Wij hebben deze belangen afgewogen tegen jouw rechten en vrijheden en vastgesteld dat de verwerking evenredig en noodzakelijk is.",
         "items": [
           "Sessiegegevens (IP-adres, user agent) — voor beveiligingsmonitoring",
           "Moderatiegegevens (meldingen, blokkades) — voor platformveiligheid",
@@ -1020,21 +1056,21 @@
         ]
       },
       "3": {
-        "title": "4. Wettelijke verplichting (Art. 6(1)(c))",
+        "title": "4. Wettelijke verplichting — art. 6, lid 1, onder c, AVG",
         "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk om te voldoen aan wettelijke verplichtingen:",
         "items": [
-          "Toestemmingsregistratie (onveranderbaar auditspoor) — om geldige toestemming aan te tonen conform Art. 7 AVG",
-          "Verwerking van gegevensverzoeken — om de rechten van betrokkenen te vervullen (Art. 15-22)",
-          "Verwerkingsbeperkingsregistratie — om te voldoen aan het recht op beperking van Art. 18"
+          "Toestemmingsregistratie (onveranderbaar auditspoor) — om geldige toestemming aan te tonen conform art. 7 AVG",
+          "Verwerking van gegevensverzoeken — om de rechten van betrokkenen te vervullen (art. 15 tot en met 22 AVG)",
+          "Verwerkingsbeperkingsregistratie — om te voldoen aan het recht op beperking van de verwerking (art. 18 AVG)"
         ]
       },
       "4": {
         "title": "5. Geen geautomatiseerde besluitvorming",
-        "content": "OpenHospi maakt geen gebruik van geautomatiseerde besluitvorming of profilering zoals gedefinieerd in artikel 22 van de AVG. Kamermatching is volledig handmatig — gebruikers bekijken advertenties en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie huisvesting krijgt."
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig — gebruikers bekijken advertenties en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie huisvesting krijgt."
       },
       "5": {
         "title": "6. Contact",
-        "content": "Heb je vragen over de rechtsgrond voor de verwerking van je gegevens? Neem contact op via privacy@openhospi.nl. Je hebt ook het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens via autoriteitpersoonsgegevens.nl."
+        "content": "Heb je vragen over de rechtsgrond voor de verwerking van je gegevens? Neem contact op via privacy@openhospi.nl. Je hebt ook het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens (Postbus 93374, 2509 AJ Den Haag, tel. 070 888 85 00, autoriteitpersoonsgegevens.nl)."
       }
     }
   }

@@ -82,7 +82,7 @@
       "safety": [
         {
           "question": "How are users verified on OpenHospi?",
-          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform."
+          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students of Dutch educational institutions can use the platform."
         },
         {
           "question": "Are my messages private?",
@@ -517,7 +517,7 @@
     "sections": [
       {
         "title": "Eligibility",
-        "content": "OpenHospi is available to students and staff of Dutch educational institutions that are connected to SURFconext."
+        "content": "OpenHospi is available to students of Dutch educational institutions that are connected to SURFconext."
       },
       {
         "title": "Account responsibilities",

@@ -82,7 +82,7 @@
       "safety": [
         {
           "question": "Wie werden Nutzer auf OpenHospi verifiziert?",
-          "answer": "Jeder Nutzer meldet sich über SURFconext an, das von der eigenen Universität oder Hochschule verwaltet wird. Das bedeutet, dass nur echte Studierende und Mitarbeiter niederländischer Bildungseinrichtungen die Plattform nutzen können."
+          "answer": "Jeder Nutzer meldet sich über SURFconext an, das von der eigenen Universität oder Hochschule verwaltet wird. Das bedeutet, dass nur echte Studierende niederländischer Bildungseinrichtungen die Plattform nutzen können."
         },
         {
           "question": "Sind meine Nachrichten privat?",
@@ -517,7 +517,7 @@
     "sections": [
       {
         "title": "Berechtigung",
-        "content": "OpenHospi steht Studierenden und Mitarbeitern niederländischer Bildungseinrichtungen zur Verfügung, die an SURFconext angeschlossen sind."
+        "content": "OpenHospi steht Studierenden niederländischer Bildungseinrichtungen zur Verfügung, die an SURFconext angeschlossen sind."
       },
       {
         "title": "Kontoverantwortung",

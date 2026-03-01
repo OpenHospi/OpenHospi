@@ -1,5 +1,5 @@
 import {isTerminalApplicationStatus} from "@openhospi/shared/enums";
-import {Home} from "lucide-react";
+import {Camera, Home} from "lucide-react";
 import type {Metadata} from "next";
 import {redirect} from "next/navigation";
 import {getTranslations, setRequestLocale} from "next-intl/server";
@@ -68,6 +68,12 @@ export default async function ApplicationDetailPage({params}: Props) {
                         ) : (
                             <div className="flex size-full items-center justify-center">
                                 <Home className="size-8 text-muted-foreground"/>
+                            </div>
+                        )}
+                        {application.roomPhotoCount > 1 && (
+                            <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-0.5 text-xs font-medium text-white">
+                                <Camera className="size-3" />
+                                {application.roomPhotoCount}
                             </div>
                         )}
                     </div>

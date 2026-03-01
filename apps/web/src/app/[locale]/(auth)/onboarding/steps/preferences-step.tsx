@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { PreferencesStepData } from "@openhospi/database/validators";
 import { preferencesStepSchema } from "@openhospi/database/validators";
-import { CITIES, VERENIGINGEN } from "@openhospi/shared/enums";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { City, Vereniging } from "@openhospi/shared/enums";
+import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -12,13 +12,13 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -28,16 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
 
 import { finishOnboarding, savePreferencesStep } from "../actions";
 
@@ -85,20 +76,24 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.preferredCity")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("placeholders.preferredCity")} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {CITIES.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {tEnums(`city.${city}`)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Combobox
+                value={field.value ?? null}
+                onValueChange={field.onChange}
+                items={City.values}
+                itemToStringLabel={(city) => tEnums(`city.${city}`)}
+              >
+                <ComboboxInput placeholder={t("placeholders.preferredCity")} />
+                <ComboboxContent>
+                  <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  <ComboboxList>
+                    {(city) => (
+                      <ComboboxItem key={city} value={city}>
+                        {tEnums(`city.${city}`)}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               <FormMessage />
             </FormItem>
           )}
@@ -146,71 +141,34 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
           control={form.control}
           name="vereniging"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
+            <FormItem>
               <FormLabel>
                 {t("fields.vereniging")}{" "}
                 <span className="text-muted-foreground font-normal">({t("optional")})</span>
               </FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      {field.value
-                        ? tEnums(`vereniging.${field.value}`)
-                        : t("placeholders.searchVereniging")}
-                      <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                  <Command>
-                    <CommandInput placeholder={t("placeholders.searchVereniging")} />
-                    <CommandList>
-                      <CommandEmpty>{t("noResults")}</CommandEmpty>
-                      <CommandGroup>
-                        <CommandItem
-                          value="__none__"
-                          onSelect={() => {
-                            form.setValue("vereniging", undefined, { shouldValidate: true });
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 size-4",
-                              !field.value ? "opacity-100" : "opacity-0",
-                            )}
-                          />
-                          {t("noSelection")}
-                        </CommandItem>
-                        {VERENIGINGEN.map((v) => (
-                          <CommandItem
-                            key={v}
-                            value={tEnums(`vereniging.${v}`)}
-                            onSelect={() => {
-                              form.setValue("vereniging", v, { shouldValidate: true });
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 size-4",
-                                field.value === v ? "opacity-100" : "opacity-0",
-                              )}
-                            />
-                            {tEnums(`vereniging.${v}`)}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+              <Combobox
+                value={field.value ?? null}
+                onValueChange={(val) =>
+                  form.setValue("vereniging", val ?? undefined, { shouldValidate: true })
+                }
+                items={Vereniging.values}
+                itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+              >
+                <ComboboxInput
+                  placeholder={t("placeholders.searchVereniging")}
+                  showClear
+                />
+                <ComboboxContent>
+                  <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  <ComboboxList>
+                    {(v) => (
+                      <ComboboxItem key={v} value={v}>
+                        {tEnums(`vereniging.${v}`)}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               <FormMessage />
             </FormItem>
           )}

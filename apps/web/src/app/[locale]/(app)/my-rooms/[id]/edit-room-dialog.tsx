@@ -4,35 +4,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { EditRoomData } from "@openhospi/database/validators";
 import { editRoomSchema } from "@openhospi/database/validators";
 import {
-  CITIES,
-  FURNISHINGS,
-  GENDER_PREFERENCES,
-  HOUSE_TYPES,
-  LIFESTYLE_TAGS,
-  LOCATION_TAGS,
-  RENTAL_TYPES,
+  City,
+  Furnishing,
+  GenderPreference,
+  HouseType,
+  Language,
+  LifestyleTag,
+  LocationTag,
   RentalType,
-  ROOM_FEATURES,
-  VERENIGINGEN,
+  RoomFeature,
+  UtilitiesIncluded,
+  Vereniging,
 } from "@openhospi/shared/enums";
-import type { LifestyleTag, LocationTag, RoomFeature } from "@openhospi/shared/enums";
-import { Check, ChevronsUpDown, Loader2, Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { AddressAutocomplete } from "@/components/app/address-autocomplete";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +44,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -50,7 +52,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -59,7 +60,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Room } from "@/lib/rooms";
 import { cn } from "@/lib/utils";
@@ -85,11 +85,16 @@ export function EditRoomDialog({ room }: Props) {
       description: room.description ?? "",
       city: room.city as EditRoomData["city"],
       neighborhood: room.neighborhood ?? "",
-      address: room.address ?? "",
+      streetName: room.streetName ?? "",
+      houseNumber: room.houseNumber ?? "",
+      postalCode: room.postalCode ?? "",
+      latitude: room.latitude ?? undefined,
+      longitude: room.longitude ?? undefined,
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : undefined,
-      utilitiesIncluded: room.utilitiesIncluded ?? false,
+      utilitiesIncluded: (room.utilitiesIncluded as EditRoomData["utilitiesIncluded"]) ?? UtilitiesIncluded.included,
       serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ? Number(room.estimatedUtilitiesCosts) : undefined,
       roomSizeM2: room.roomSizeM2 ?? undefined,
       availableFrom: room.availableFrom ?? "",
       availableUntil: room.availableUntil ?? "",
@@ -103,6 +108,7 @@ export function EditRoomDialog({ room }: Props) {
       preferredAgeMin: room.preferredAgeMin ?? undefined,
       preferredAgeMax: room.preferredAgeMax ?? undefined,
       preferredLifestyleTags: (room.preferredLifestyleTags as LifestyleTag[]) ?? [],
+      acceptedLanguages: (room.acceptedLanguages as Language[]) ?? [],
       roomVereniging: (room.roomVereniging as EditRoomData["roomVereniging"]) ?? undefined,
     },
   });
@@ -112,9 +118,10 @@ export function EditRoomDialog({ room }: Props) {
   const selectedFeatures = form.watch("features") ?? [];
   const selectedLocationTags = form.watch("locationTags") ?? [];
   const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
+  const selectedLanguages = form.watch("acceptedLanguages") ?? [];
 
   function toggleArrayField<T extends string>(
-    name: "features" | "locationTags" | "preferredLifestyleTags",
+    name: "features" | "locationTags" | "preferredLifestyleTags" | "acceptedLanguages",
     value: T,
   ) {
     const current = (form.getValues(name) as T[]) ?? [];
@@ -189,51 +196,67 @@ export function EditRoomDialog({ room }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.city")}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {CITIES.map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {tEnums(`city.${city}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Combobox
+                    value={field.value ?? null}
+                    onValueChange={field.onChange}
+                    items={City.values}
+                    itemToStringLabel={(city) => tEnums(`city.${city}`)}
+                  >
+                    <ComboboxInput placeholder={t("fields.city")} />
+                    <ComboboxContent>
+                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      <ComboboxList>
+                        {(city) => (
+                          <ComboboxItem key={city} value={city}>
+                            {tEnums(`city.${city}`)}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="neighborhood"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.neighborhood")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.address")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+            <FormField
+              control={form.control}
+              name="neighborhood"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.neighborhood")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="space-y-2">
+              <FormLabel>{t("fields.address")}</FormLabel>
+              <AddressAutocomplete
+                defaultDisplayValue={
+                  room.streetName
+                    ? [room.streetName, room.houseNumber].filter(Boolean).join(" ") +
+                      (room.postalCode ? `, ${room.postalCode}` : "")
+                    : ""
+                }
+                onSelect={(result) => {
+                  form.setValue("streetName", result.streetName, { shouldValidate: true });
+                  form.setValue("houseNumber", result.houseNumber, { shouldValidate: true });
+                  form.setValue("postalCode", result.postalCode, { shouldValidate: true });
+                  form.setValue("latitude", result.latitude, { shouldValidate: true });
+                  form.setValue("longitude", result.longitude, { shouldValidate: true });
+                }}
+                onClear={() => {
+                  form.setValue("streetName", "", { shouldValidate: true });
+                  form.setValue("houseNumber", "", { shouldValidate: true });
+                  form.setValue("postalCode", "", { shouldValidate: true });
+                  form.setValue("latitude", undefined, { shouldValidate: true });
+                  form.setValue("longitude", undefined, { shouldValidate: true });
+                }}
+                placeholder={t("placeholders.searchAddress")}
               />
             </div>
 
@@ -268,29 +291,70 @@ export function EditRoomDialog({ room }: Props) {
 
             <FormField
               control={form.control}
-              name="utilitiesIncluded"
+              name="serviceCosts"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel className="cursor-pointer">{t("fields.utilitiesIncluded")}</FormLabel>
+                <FormItem>
+                  <FormLabel>{t("fields.serviceCosts")}</FormLabel>
                   <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    <Input
+                      type="number"
+                      min={0}
+                      placeholder={t("placeholders.serviceCosts")}
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
+                  <FormDescription>{t("helpers.serviceCosts")}</FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            {!utilitiesIncluded && (
+            <FormField
+              control={form.control}
+              name="utilitiesIncluded"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.utilitiesIncluded")}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value !== UtilitiesIncluded.estimated) {
+                          form.setValue("estimatedUtilitiesCosts", undefined);
+                        }
+                      }}
+                      value={field.value}
+                      className="space-y-2"
+                    >
+                      {UtilitiesIncluded.values.map((option) => (
+                        <Label
+                          key={option}
+                          className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                        >
+                          <RadioGroupItem value={option} />
+                          {t(`utilities.${option}`)}
+                        </Label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {utilitiesIncluded === UtilitiesIncluded.estimated && (
               <FormField
                 control={form.control}
-                name="serviceCosts"
+                name="estimatedUtilitiesCosts"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.serviceCosts")}</FormLabel>
+                    <FormLabel>{t("fields.estimatedUtilitiesCosts")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min={0}
-                        placeholder={t("placeholders.serviceCosts")}
+                        placeholder={t("placeholders.estimatedUtilitiesCosts")}
                         {...field}
                         value={field.value ?? ""}
                       />
@@ -327,7 +391,7 @@ export function EditRoomDialog({ room }: Props) {
                       defaultValue={field.value}
                       className="flex flex-wrap gap-3"
                     >
-                      {RENTAL_TYPES.map((type) => (
+                      {RentalType.values.map((type) => (
                         <Label
                           key={type}
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
@@ -357,7 +421,7 @@ export function EditRoomDialog({ room }: Props) {
                   </FormItem>
                 )}
               />
-              {rentalType !== RentalType.vast && (
+              {rentalType !== RentalType.permanent && (
                 <FormField
                   control={form.control}
                   name="availableUntil"
@@ -387,7 +451,7 @@ export function EditRoomDialog({ room }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {HOUSE_TYPES.map((type) => (
+                      {HouseType.values.map((type) => (
                         <SelectItem key={type} value={type}>
                           {tEnums(`house_type.${type}`)}
                         </SelectItem>
@@ -412,7 +476,7 @@ export function EditRoomDialog({ room }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {FURNISHINGS.map((f) => (
+                      {Furnishing.values.map((f) => (
                         <SelectItem key={f} value={f}>
                           {tEnums(`furnishing.${f}`)}
                         </SelectItem>
@@ -441,7 +505,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="space-y-2">
               <FormLabel>{t("fields.features")}</FormLabel>
               <div className="flex flex-wrap gap-2">
-                {ROOM_FEATURES.map((feature) => {
+                {RoomFeature.values.map((feature) => {
                   const isSelected = selectedFeatures.includes(feature);
                   return (
                     <Badge
@@ -463,7 +527,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="space-y-2">
               <FormLabel>{t("fields.locationTags")}</FormLabel>
               <div className="flex flex-wrap gap-2">
-                {LOCATION_TAGS.map((tag) => {
+                {LocationTag.values.map((tag) => {
                   const isSelected = selectedLocationTags.includes(tag);
                   return (
                     <Badge
@@ -494,7 +558,7 @@ export function EditRoomDialog({ room }: Props) {
                       defaultValue={field.value}
                       className="flex flex-wrap gap-3"
                     >
-                      {GENDER_PREFERENCES.map((g) => (
+                      {GenderPreference.values.map((g) => (
                         <Label
                           key={g}
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
@@ -542,7 +606,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="space-y-2">
               <FormLabel>{t("fields.preferredLifestyleTags")}</FormLabel>
               <div className="flex flex-wrap gap-2">
-                {LIFESTYLE_TAGS.map((tag) => {
+                {LifestyleTag.values.map((tag) => {
                   const isSelected = selectedLifestyleTags.includes(tag);
                   return (
                     <Badge
@@ -561,77 +625,57 @@ export function EditRoomDialog({ room }: Props) {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <FormLabel>{t("fields.acceptedLanguages")}</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {Language.values.map((lang) => {
+                  const isSelected = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleArrayField("acceptedLanguages", lang)}
+                    >
+                      {tEnums(`language_enum.${lang}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
             <FormField
               control={form.control}
               name="roomVereniging"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem>
                   <FormLabel>
                     {t("fields.roomVereniging")}{" "}
                     <span className="text-muted-foreground font-normal">({t("optional")})</span>
                   </FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "w-full justify-between",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value
-                            ? tEnums(`vereniging.${field.value}`)
-                            : t("placeholders.searchVereniging")}
-                          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                      <Command>
-                        <CommandInput placeholder={t("placeholders.searchVereniging")} />
-                        <CommandList>
-                          <CommandEmpty>{t("noResults")}</CommandEmpty>
-                          <CommandGroup>
-                            <CommandItem
-                              value="__none__"
-                              onSelect={() => {
-                                form.setValue("roomVereniging", undefined, {
-                                  shouldValidate: true,
-                                });
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 size-4",
-                                  !field.value ? "opacity-100" : "opacity-0",
-                                )}
-                              />
-                              {t("noSelection")}
-                            </CommandItem>
-                            {VERENIGINGEN.map((v) => (
-                              <CommandItem
-                                key={v}
-                                value={tEnums(`vereniging.${v}`)}
-                                onSelect={() => {
-                                  form.setValue("roomVereniging", v, { shouldValidate: true });
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 size-4",
-                                    field.value === v ? "opacity-100" : "opacity-0",
-                                  )}
-                                />
-                                {tEnums(`vereniging.${v}`)}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <Combobox
+                    value={field.value ?? null}
+                    onValueChange={(val) =>
+                      form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
+                    }
+                    items={Vereniging.values}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                  >
+                    <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
+                    <ComboboxContent>
+                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      <ComboboxList>
+                        {(v) => (
+                          <ComboboxItem key={v} value={v}>
+                            {tEnums(`vereniging.${v}`)}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   <FormMessage />
                 </FormItem>
               )}

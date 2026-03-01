@@ -1,7 +1,7 @@
-export const APP_NAME = 'OpenHospi';
+export const APP_NAME = "OpenHospi";
 
-export const DEFAULT_LOCALE = 'nl' as const;
-export const SUPPORTED_LOCALES = ['nl', 'en', 'de'] as const;
+export const DEFAULT_LOCALE = "nl" as const;
+export const SUPPORTED_LOCALES = ["nl", "en", "de"] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 // Length limits (match SQL CHECK constraints)
@@ -21,6 +21,10 @@ export const MAX_PHOTO_CAPTION_LENGTH = 200;
 // Lifestyle tag limits
 export const MIN_LIFESTYLE_TAGS = 2;
 export const MAX_LIFESTYLE_TAGS = 8;
+
+// Language selection limits
+export const MIN_LANGUAGES = 1;
+export const MAX_LANGUAGES = 5;
 
 // Pagination
 export const ROOMS_PER_PAGE = 12;
@@ -47,10 +51,10 @@ export const MESSAGES_PER_PAGE = 50;
 export const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5 MB
 export const MAX_ROOM_PHOTO_SIZE = 10 * 1024 * 1024; // 10 MB
 export const ALLOWED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/heic',
-  'image/heif',
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
 ] as const;
 export type AllowedImageType = (typeof ALLOWED_IMAGE_TYPES)[number];

@@ -5,20 +5,22 @@ import type { EditProfileData } from "@openhospi/database/validators";
 import { editProfileSchema } from "@openhospi/database/validators";
 import {
   MAX_BIO_LENGTH,
+  MAX_LANGUAGES,
   MAX_LIFESTYLE_TAGS,
+  MIN_LANGUAGES,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
 import {
-  CITIES,
-  GENDERS,
+  City,
+  Gender,
   getStudyLevelsForInstitutionType,
-  LIFESTYLE_TAGS,
-  STUDY_LEVELS,
-  VERENIGINGEN,
+  Language,
+  LifestyleTag,
+  StudyLevel,
+  Vereniging,
 } from "@openhospi/shared/enums";
-import type { LifestyleTag } from "@openhospi/shared/enums";
 import { getInstitution } from "@openhospi/surfconext";
-import { Check, ChevronsUpDown, Loader2, Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -27,13 +29,13 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import {
   Dialog,
   DialogContent,
@@ -51,7 +53,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -88,6 +89,7 @@ export function EditProfileDialog({ profile }: Props) {
       studyLevel: (profile.studyLevel as EditProfileData["studyLevel"]) ?? undefined,
       bio: profile.bio ?? "",
       lifestyleTags: (profile.lifestyleTags as LifestyleTag[]) ?? [],
+      languages: (profile.languages as Language[]) ?? [],
       preferredCity: (profile.preferredCity as EditProfileData["preferredCity"]) ?? undefined,
       maxRent: profile.maxRent ? Number(profile.maxRent) : undefined,
       availableFrom: profile.availableFrom ?? "",
@@ -110,6 +112,7 @@ export function EditProfileDialog({ profile }: Props) {
   }
 
   const selectedTags = form.watch("lifestyleTags") ?? [];
+  const selectedLanguages = form.watch("languages") ?? [];
 
   function toggleTag(tag: LifestyleTag) {
     const current = form.getValues("lifestyleTags") ?? [];
@@ -121,6 +124,19 @@ export function EditProfileDialog({ profile }: Props) {
       );
     } else if (current.length < MAX_LIFESTYLE_TAGS) {
       form.setValue("lifestyleTags", [...current, tag], { shouldValidate: true });
+    }
+  }
+
+  function toggleLanguage(lang: Language) {
+    const current = form.getValues("languages") ?? [];
+    if (current.includes(lang)) {
+      form.setValue(
+        "languages",
+        current.filter((l) => l !== lang),
+        { shouldValidate: true },
+      );
+    } else if (current.length < MAX_LANGUAGES) {
+      form.setValue("languages", [...current, lang], { shouldValidate: true });
     }
   }
 
@@ -153,7 +169,7 @@ export function EditProfileDialog({ profile }: Props) {
                       defaultValue={field.value}
                       className="flex flex-wrap gap-3"
                     >
-                      {GENDERS.map((g) => (
+                      {Gender.values.map((g) => (
                         <Label
                           key={g}
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
@@ -164,6 +180,11 @@ export function EditProfileDialog({ profile }: Props) {
                       ))}
                     </RadioGroup>
                   </FormControl>
+                  {field.value === Gender.prefer_not_to_say && (
+                    <p className="text-xs text-muted-foreground">
+                      {tOnboarding("genderPreferNotToSayHint")}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -214,7 +235,7 @@ export function EditProfileDialog({ profile }: Props) {
                         ? getStudyLevelsForInstitutionType(
                             getInstitution(profile.institutionDomain).type,
                           )
-                        : STUDY_LEVELS
+                        : StudyLevel.values
                       ).map((level) => (
                         <SelectItem key={level} value={level}>
                           {tEnums(`study_level.${level}`)}
@@ -246,6 +267,35 @@ export function EditProfileDialog({ profile }: Props) {
             />
 
             <div className="space-y-2">
+              <FormLabel>{t("languages")}</FormLabel>
+              <p className="text-xs text-muted-foreground">
+                {tOnboarding("languageCounter", {
+                  count: selectedLanguages.length,
+                  min: MIN_LANGUAGES,
+                  max: MAX_LANGUAGES,
+                })}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {Language.values.map((lang) => {
+                  const isSelected = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleLanguage(lang)}
+                    >
+                      {tEnums(`language_enum.${lang}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <FormLabel>{t("lifestyleTags")}</FormLabel>
               <p className="text-xs text-muted-foreground">
                 {tOnboarding("tagCounter", {
@@ -255,7 +305,7 @@ export function EditProfileDialog({ profile }: Props) {
                 })}
               </p>
               <div className="flex flex-wrap gap-2">
-                {LIFESTYLE_TAGS.map((tag) => {
+                {LifestyleTag.values.map((tag) => {
                   const isSelected = selectedTags.includes(tag);
                   return (
                     <Badge
@@ -280,20 +330,24 @@ export function EditProfileDialog({ profile }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.preferredCity")}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {CITIES.map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {tEnums(`city.${city}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Combobox
+                    value={field.value ?? null}
+                    onValueChange={field.onChange}
+                    items={City.values}
+                    itemToStringLabel={(city) => tEnums(`city.${city}`)}
+                  >
+                    <ComboboxInput placeholder={tOnboarding("placeholders.preferredCity")} />
+                    <ComboboxContent>
+                      <ComboboxEmpty>{tOnboarding("noResults")}</ComboboxEmpty>
+                      <ComboboxList>
+                        {(city) => (
+                          <ComboboxItem key={city} value={city}>
+                            {tEnums(`city.${city}`)}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   <FormMessage />
                 </FormItem>
               )}
@@ -331,68 +385,31 @@ export function EditProfileDialog({ profile }: Props) {
               control={form.control}
               name="vereniging"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem>
                   <FormLabel>{tOnboarding("fields.vereniging")}</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "w-full justify-between",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value
-                            ? tEnums(`vereniging.${field.value}`)
-                            : tOnboarding("placeholders.searchVereniging")}
-                          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                      <Command>
-                        <CommandInput placeholder={tOnboarding("placeholders.searchVereniging")} />
-                        <CommandList>
-                          <CommandEmpty>{tOnboarding("noResults")}</CommandEmpty>
-                          <CommandGroup>
-                            <CommandItem
-                              value="__none__"
-                              onSelect={() => {
-                                form.setValue("vereniging", undefined, { shouldValidate: true });
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 size-4",
-                                  !field.value ? "opacity-100" : "opacity-0",
-                                )}
-                              />
-                              {tOnboarding("noSelection")}
-                            </CommandItem>
-                            {VERENIGINGEN.map((v) => (
-                              <CommandItem
-                                key={v}
-                                value={tEnums(`vereniging.${v}`)}
-                                onSelect={() => {
-                                  form.setValue("vereniging", v, { shouldValidate: true });
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 size-4",
-                                    field.value === v ? "opacity-100" : "opacity-0",
-                                  )}
-                                />
-                                {tEnums(`vereniging.${v}`)}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <Combobox
+                    value={field.value ?? null}
+                    onValueChange={(val) =>
+                      form.setValue("vereniging", val ?? undefined, { shouldValidate: true })
+                    }
+                    items={Vereniging.values}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                  >
+                    <ComboboxInput
+                      placeholder={tOnboarding("placeholders.searchVereniging")}
+                      showClear
+                    />
+                    <ComboboxContent>
+                      <ComboboxEmpty>{tOnboarding("noResults")}</ComboboxEmpty>
+                      <ComboboxList>
+                        {(v) => (
+                          <ComboboxItem key={v} value={v}>
+                            {tEnums(`vereniging.${v}`)}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                   <FormMessage />
                 </FormItem>
               )}

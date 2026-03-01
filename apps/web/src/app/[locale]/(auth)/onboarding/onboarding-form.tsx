@@ -8,11 +8,12 @@ import { Progress } from "@/components/ui/progress";
 import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/profile";
 
 import { AboutStep } from "./steps/about-step";
+import { LanguagesStep } from "./steps/languages-step";
 import { PersonalityStep } from "./steps/personality-step";
 import { PhotosStep } from "./steps/photos-step";
 import { PreferencesStep } from "./steps/preferences-step";
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 type Props = {
   initialData: Partial<ProfileWithPhotos>;
@@ -26,6 +27,7 @@ export function OnboardingForm({ initialData }: Props) {
   const stepTitles = [
     t("steps.about"),
     t("steps.personality"),
+    t("steps.languages"),
     t("steps.photos"),
     t("steps.preferences"),
   ];
@@ -70,15 +72,25 @@ export function OnboardingForm({ initialData }: Props) {
       )}
 
       {step === 3 && (
-        <PhotosStep
-          photos={photos}
-          onPhotosChange={setPhotos}
+        <LanguagesStep
+          defaultValues={{
+            languages: (initialData.languages as string[]) ?? [],
+          }}
           onBack={() => setStep(2)}
           onNext={() => setStep(4)}
         />
       )}
 
       {step === 4 && (
+        <PhotosStep
+          photos={photos}
+          onPhotosChange={setPhotos}
+          onBack={() => setStep(3)}
+          onNext={() => setStep(5)}
+        />
+      )}
+
+      {step === 5 && (
         <PreferencesStep
           defaultValues={{
             preferredCity:
@@ -89,7 +101,7 @@ export function OnboardingForm({ initialData }: Props) {
             instagramHandle: initialData.instagramHandle ?? "",
             showInstagram: initialData.showInstagram ?? false,
           }}
-          onBack={() => setStep(3)}
+          onBack={() => setStep(4)}
         />
       )}
     </div>

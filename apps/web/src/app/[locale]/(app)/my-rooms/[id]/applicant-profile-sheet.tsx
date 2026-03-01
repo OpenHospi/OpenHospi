@@ -4,7 +4,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import type {ReviewData} from "@openhospi/database/validators";
 import {reviewSchema} from "@openhospi/database/validators";
 import {MAX_NOTES_LENGTH} from "@openhospi/shared/constants";
-import {REVIEW_DECISIONS} from "@openhospi/shared/enums";
+import {ReviewDecision} from "@openhospi/shared/enums";
 import {Loader2, UserCircle} from "lucide-react";
 import {useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
@@ -13,7 +13,7 @@ import {useForm} from "react-hook-form";
 import {toast} from "sonner";
 
 import {InstitutionBadge} from "@/components/app/institution-badge";
-import {StorageImage} from "@/components/storage-image";
+import {ProfilePhotoCarousel} from "@/components/app/profile-photo-carousel";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {
@@ -95,22 +95,7 @@ export function ApplicantProfileSheet({
                 <div className="mt-6 space-y-6">
                     {/* Profile photos */}
                     {applicant.photos.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-2">
-                            {applicant.photos.map((photo) => (
-                                <div
-                                    key={photo.id}
-                                    className="relative aspect-square overflow-hidden rounded-lg bg-muted"
-                                >
-                                    <StorageImage
-                                        src={photo.url}
-                                        alt={photo.caption ?? applicant.firstName}
-                                        bucket="profile-photos"
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
-                            ))}
-                        </div>
+                        <ProfilePhotoCarousel photos={applicant.photos} userName={applicant.firstName} />
                     ) : (
                         <div className="flex items-center justify-center rounded-lg bg-muted p-8">
                             <UserCircle className="size-16 text-muted-foreground"/>
@@ -195,7 +180,7 @@ export function ApplicantProfileSheet({
                                                     value={field.value}
                                                     className="flex gap-3"
                                                 >
-                                                    {REVIEW_DECISIONS.map((d) => (
+                                                    {ReviewDecision.values.map((d) => (
                                                         <Label
                                                             key={d}
                                                             className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"

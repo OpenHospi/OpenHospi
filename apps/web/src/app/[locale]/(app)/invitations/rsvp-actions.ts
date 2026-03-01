@@ -10,7 +10,6 @@ import {
   isValidApplicationTransition,
   isValidInvitationTransition,
 } from "@openhospi/shared/enums";
-import type { InvitationStatus as InvitationStatusType } from "@openhospi/shared/enums";
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -39,7 +38,7 @@ async function tryUpdateApplicationStatus(
 
 async function handleApplicationStatusOnRsvp(
   tx: RLSTransaction,
-  newStatus: InvitationStatusType,
+  newStatus: InvitationStatus,
   applicationId: string,
   userId: string,
   roomId: string,
@@ -94,8 +93,8 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
       return { error: "not_found" };
     }
 
-    const currentStatus = invitation.status as InvitationStatusType;
-    const newStatus = parsed.data.status as InvitationStatusType;
+    const currentStatus = invitation.status as InvitationStatus;
+    const newStatus = parsed.data.status as InvitationStatus;
 
     if (!isValidInvitationTransition(currentStatus, newStatus)) {
       return { error: "invalid_transition" };

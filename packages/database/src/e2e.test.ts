@@ -3,18 +3,18 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
   AdminAction,
-  APPLICATION_STATUSES,
   ApplicationStatus,
-  INVITATION_STATUSES,
+  Gender,
   InvitationStatus,
   isTerminalApplicationStatus,
   isValidApplicationTransition,
   isValidInvitationTransition,
   isValidRoomTransition,
+  LifestyleTag,
   ReportReason,
   ReportStatus,
+  ReportType,
   ReviewDecision,
-  ROOM_STATUSES,
   RoomStatus,
   VALID_APPLICATION_TRANSITIONS,
   VALID_INVITATION_TRANSITIONS,
@@ -181,14 +181,14 @@ describe("E2E workflow tests (integration)", () => {
     it("onboarding step 1: update about fields", async () => {
       const [updated] = await withRLS(SEEKER_1, (tx) =>
         tx.update(profiles).set({
-          gender: "man",
+          gender: Gender.male,
           birthDate: "2000-01-15",
           studyProgram: "Computer Science",
           studyLevel: "wo_bachelor",
           bio: "Ik zoek een kamer in Amsterdam",
         }).where(eq(profiles.id, SEEKER_1)).returning(),
       );
-      expect(updated.gender).toBe("man");
+      expect(updated.gender).toBe(Gender.male);
       expect(updated.birthDate).toBe("2000-01-15");
       expect(updated.studyProgram).toBe("Computer Science");
       expect(updated.studyLevel).toBe("wo_bachelor");
@@ -198,11 +198,11 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("onboarding step 2: set lifestyleTags array", async () => {
-      const tags = ["gezellig", "sporten", "koken"] as const;
+      const tags = [LifestyleTag.sociable, LifestyleTag.sports, LifestyleTag.cooking] as const;
       const [updated] = await withRLS(SEEKER_1, (tx) =>
         tx.update(profiles).set({ lifestyleTags: [...tags] }).where(eq(profiles.id, SEEKER_1)).returning(),
       );
-      expect(updated.lifestyleTags).toEqual(["gezellig", "sporten", "koken"]);
+      expect(updated.lifestyleTags).toEqual([LifestyleTag.sociable, LifestyleTag.sports, LifestyleTag.cooking]);
       await db.update(profiles).set({ lifestyleTags: [] }).where(eq(profiles.id, SEEKER_1));
     });
 
@@ -222,9 +222,9 @@ describe("E2E workflow tests (integration)", () => {
 
     it("profile completion check: all required fields set", async () => {
       await db.update(profiles).set({
-        gender: "man", birthDate: "2000-01-15", studyProgram: "CS", studyLevel: "wo_bachelor",
+        gender: Gender.male, birthDate: "2000-01-15", studyProgram: "CS", studyLevel: "wo_bachelor",
         bio: "Test", preferredCity: "amsterdam", maxRent: "750.00", availableFrom: "2026-06-01",
-        lifestyleTags: ["gezellig"],
+        lifestyleTags: [LifestyleTag.sociable],
       }).where(eq(profiles.id, SEEKER_1));
 
       const [p] = await withRLS(SEEKER_1, (tx) =>
@@ -806,7 +806,7 @@ describe("E2E workflow tests (integration)", () => {
     it("report flow: reporter sees, reported user cannot", async () => {
       const [report] = await withRLS(SEEKER_1, (tx) =>
         tx.insert(reports).values({
-          reporterId: SEEKER_1, reportedUserId: SEEKER_2,
+          reportType: ReportType.user, reporterId: SEEKER_1, reportedUserId: SEEKER_2,
           reason: ReportReason.harassment, description: "E2E test report",
         }).returning(),
       );
@@ -830,7 +830,7 @@ describe("E2E workflow tests (integration)", () => {
 
     it("admin sees all reports", async () => {
       const [report] = await db.insert(reports).values({
-        reporterId: SEEKER_1, reportedUserId: SEEKER_2,
+        reportType: ReportType.user, reporterId: SEEKER_1, reportedUserId: SEEKER_2,
         reason: ReportReason.spam, description: "Admin visibility test",
       }).returning();
 
@@ -846,7 +846,7 @@ describe("E2E workflow tests (integration)", () => {
 
     it("admin resolves report, non-admin cannot", async () => {
       const [report] = await db.insert(reports).values({
-        reporterId: SEEKER_1, reportedUserId: SEEKER_2,
+        reportType: ReportType.user, reporterId: SEEKER_1, reportedUserId: SEEKER_2,
         reason: ReportReason.fake_profile, description: "Resolve test",
       }).returning();
 
@@ -983,8 +983,8 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("exhaustive room transitions: all valid pairs true, all invalid false", async () => {
-      for (const from of ROOM_STATUSES) {
-        for (const to of ROOM_STATUSES) {
+      for (const from of RoomStatus.values) {
+        for (const to of RoomStatus.values) {
           const expected = VALID_ROOM_TRANSITIONS[from].includes(to);
           expect(isValidRoomTransition(from, to)).toBe(expected);
         }
@@ -992,8 +992,8 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("exhaustive application transitions: all valid pairs true, all invalid false", async () => {
-      for (const from of APPLICATION_STATUSES) {
-        for (const to of APPLICATION_STATUSES) {
+      for (const from of ApplicationStatus.values) {
+        for (const to of ApplicationStatus.values) {
           const expected = VALID_APPLICATION_TRANSITIONS[from].includes(to);
           expect(isValidApplicationTransition(from, to)).toBe(expected);
         }
@@ -1001,8 +1001,8 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("exhaustive invitation transitions: all valid pairs true, all invalid false", async () => {
-      for (const from of INVITATION_STATUSES) {
-        for (const to of INVITATION_STATUSES) {
+      for (const from of InvitationStatus.values) {
+        for (const to of InvitationStatus.values) {
           const expected = VALID_INVITATION_TRANSITIONS[from].includes(to);
           expect(isValidInvitationTransition(from, to)).toBe(expected);
         }

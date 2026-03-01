@@ -17,7 +17,6 @@ import {
 
 import { user } from "./auth";
 import {
-  affiliationEnum,
   cityEnum,
   genderEnum,
   languageEnum,
@@ -37,8 +36,6 @@ export const profiles = pgTable(
     lastName: text("last_name").notNull(),
     email: text("email").notNull(),
     institutionDomain: text("institution_domain").notNull(),
-    affiliation: affiliationEnum("affiliation").default("student"),
-    faculty: text("faculty"),
     avatarUrl: text("avatar_url"),
     birthDate: date("birth_date"),
     gender: genderEnum("gender"),
@@ -46,7 +43,6 @@ export const profiles = pgTable(
     studyProgram: text("study_program"),
     studyLevel: studyLevelEnum("study_level"),
     vereniging: verenigingEnum("vereniging"),
-    role: text("role").default("seeker"),
     maxRent: numeric("max_rent", { precision: 7, scale: 2 }),
     availableFrom: date("available_from"),
     preferredCity: cityEnum("preferred_city"),
@@ -57,7 +53,9 @@ export const profiles = pgTable(
     preferredLocale: localeEnum("preferred_locale").default("nl"),
     notificationPreferences: jsonb("notification_preferences"),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .defaultNow()

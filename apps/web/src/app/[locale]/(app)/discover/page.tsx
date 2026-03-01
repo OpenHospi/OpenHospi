@@ -1,4 +1,4 @@
-import { DISCOVER_SORTS, DiscoverSort } from "@openhospi/shared/enums";
+import { DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -37,7 +37,7 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
   };
 
   const rawSort = first("sort");
-  const sort: DiscoverSort = (DISCOVER_SORTS as readonly string[]).includes(rawSort ?? "")
+  const sort: DiscoverSort = (DiscoverSort.values as readonly string[]).includes(rawSort ?? "")
     ? (rawSort as DiscoverSort)
     : DiscoverSort.newest;
 

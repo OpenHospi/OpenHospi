@@ -1,7 +1,6 @@
 import {withRLS} from "@openhospi/database";
 import {hospiEvents, hospiInvitations, rooms} from "@openhospi/database/schema";
-import type {InvitationStatus} from "@openhospi/shared/enums";
-import {InvitationStatus as IS} from "@openhospi/shared/enums";
+import {InvitationStatus} from "@openhospi/shared/enums";
 import {and, eq} from "drizzle-orm";
 
 import {notBlockedBy} from "@/lib/block-filter";
@@ -48,7 +47,7 @@ export async function getUserInvitations(userId: string): Promise<UserInvitation
         // status has .default("pending") so it's never null in practice
         return rows.map((row) => ({
             ...row,
-            status: (row.status ?? IS.pending) as InvitationStatus,
+            status: (row.status ?? InvitationStatus.pending) as InvitationStatus,
         }));
     });
 }
@@ -88,7 +87,7 @@ export async function getInvitationForApplication(
 
         return {
             ...row,
-            status: (row.status ?? IS.pending) as InvitationStatus,
+            status: (row.status ?? InvitationStatus.pending) as InvitationStatus,
         };
     });
 }

@@ -5,9 +5,9 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321;
+  img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321 https://*.tile.openstreetmap.org;
   font-src 'self';
-  connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl;
+  connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl https://api.pdok.nl;
   frame-ancestors 'none';
   form-action 'self';
   base-uri 'self';
@@ -17,7 +17,13 @@ const cspHeader = `
   .trim();
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "12mb",
+    },
+  },
   images: {
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
     remotePatterns: [
       {
         protocol: "https",

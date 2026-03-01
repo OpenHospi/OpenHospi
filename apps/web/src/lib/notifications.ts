@@ -1,9 +1,11 @@
 import { db, withRLS } from "@openhospi/database";
-import { notifications, profiles, pushTokens } from "@openhospi/database/schema";
+import { notifications, profiles } from "@openhospi/database/schema";
+import { getMessages } from "@openhospi/i18n/app";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import type { SupportedLocale } from "@openhospi/shared/constants";
-import { getMessages } from "@openhospi/i18n/app";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
+
+import { sendWebPushToUser } from "./web-push";
 
 export type NotificationItem = {
   id: string;
@@ -15,15 +17,14 @@ export type NotificationItem = {
 };
 
 /**
- * Main notification function. Resolves i18n text, then delegates to the
- * Supabase Edge Function for in-app notification + push delivery.
+ * Main notification function. Resolves i18n text, inserts in-app notification,
+ * and sends Web Push (best-effort).
  */
 export async function notifyUser(
   userId: string,
   messageKey: string,
   params?: Record<string, string>,
 ) {
-  // Look up user's preferred locale
   const [profile] = await db
     .select({ preferredLocale: profiles.preferredLocale })
     .from(profiles)
@@ -32,33 +33,10 @@ export async function notifyUser(
   const locale = (profile?.preferredLocale ?? "nl") as SupportedLocale;
   const messages = await getMessages(locale);
 
-  // Resolve notification text from i18n
-  const titleKey = `${messageKey}.title`;
-  const bodyKey = `${messageKey}.body`;
-  const title = resolveMessageKey(messages, titleKey, params);
-  const body = resolveMessageKey(messages, bodyKey, params);
+  const title = resolveMessageKey(messages, `${messageKey}.title`, params);
+  const body = resolveMessageKey(messages, `${messageKey}.body`, params);
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (supabaseUrl && serviceKey) {
-    // Call Supabase Edge Function for notification delivery
-    try {
-      await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${serviceKey}`,
-        },
-        body: JSON.stringify({ userId, title, body, data: params ?? {} }),
-      });
-      return;
-    } catch {
-      // Fall through to inline delivery
-    }
-  }
-
-  // Fallback: inline delivery (for local dev without edge functions)
+  // 1. Insert in-app notification
   await db.insert(notifications).values({
     userId,
     title,
@@ -66,13 +44,11 @@ export async function notifyUser(
     data: params ?? {},
   });
 
-  const tokens = await db
-    .select({ expoPushToken: pushTokens.expoPushToken })
-    .from(pushTokens)
-    .where(and(eq(pushTokens.userId, userId), eq(pushTokens.active, true)));
-
-  for (const token of tokens) {
-    await sendPushNotification(token.expoPushToken, title, body, params);
+  // 2. Send Web Push (best-effort)
+  try {
+    await sendWebPushToUser(userId, { title, body });
+  } catch {
+    // Push delivery is best-effort — don't fail the operation
   }
 }
 
@@ -100,29 +76,6 @@ function resolveMessageKey(
     }
   }
   return result;
-}
-
-async function sendPushNotification(
-  expoPushToken: string,
-  title: string,
-  body: string,
-  data?: Record<string, string>,
-) {
-  try {
-    await fetch("https://exp.host/--/api/v2/push/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: expoPushToken,
-        title,
-        body,
-        data,
-        sound: "default",
-      }),
-    });
-  } catch {
-    // Push delivery is best-effort — don't fail the operation
-  }
 }
 
 export async function getUserNotifications(userId: string, page = 1): Promise<NotificationItem[]> {

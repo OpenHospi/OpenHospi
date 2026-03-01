@@ -4,15 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomPreferencesData } from "@openhospi/database/validators";
 import { roomPreferencesSchema } from "@openhospi/database/validators";
 import {
-  GENDER_PREFERENCES,
   GenderPreference,
-  LIFESTYLE_TAGS,
-  LOCATION_TAGS,
-  ROOM_FEATURES,
-  VERENIGINGEN,
+  Language,
+  LifestyleTag,
+  LocationTag,
+  RoomFeature,
+  Vereniging,
 } from "@openhospi/shared/enums";
-import type { LifestyleTag, LocationTag, RoomFeature } from "@openhospi/shared/enums";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -20,14 +19,15 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -38,7 +38,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 
@@ -62,16 +61,17 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
     defaultValues: {
       features: (defaultValues.features as RoomFeature[]) ?? [],
       locationTags: (defaultValues.locationTags as LocationTag[]) ?? [],
-      preferredGender: defaultValues.preferredGender ?? GenderPreference.geen_voorkeur,
+      preferredGender: defaultValues.preferredGender ?? GenderPreference.no_preference,
       preferredAgeMin: defaultValues.preferredAgeMin ?? undefined,
       preferredAgeMax: defaultValues.preferredAgeMax ?? undefined,
       preferredLifestyleTags: (defaultValues.preferredLifestyleTags as LifestyleTag[]) ?? [],
+      acceptedLanguages: (defaultValues.acceptedLanguages as Language[]) ?? [],
       roomVereniging: defaultValues.roomVereniging ?? undefined,
     },
   });
 
   function toggleArrayField<T extends string>(
-    name: "features" | "locationTags" | "preferredLifestyleTags",
+    name: "features" | "locationTags" | "preferredLifestyleTags" | "acceptedLanguages",
     value: T,
   ) {
     const current = (form.getValues(name) as T[]) ?? [];
@@ -96,207 +96,217 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
   const selectedFeatures = form.watch("features") ?? [];
   const selectedLocationTags = form.watch("locationTags") ?? [];
   const selectedLifestyleTags = form.watch("preferredLifestyleTags") ?? [];
+  const selectedLanguages = form.watch("acceptedLanguages") ?? [];
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-2">
-          <FormLabel>{t("fields.features")}</FormLabel>
-          <div className="flex flex-wrap gap-2">
-            {ROOM_FEATURES.map((feature) => {
-              const isSelected = selectedFeatures.includes(feature);
-              return (
-                <Badge
-                  key={feature}
-                  variant={isSelected ? "default" : "outline"}
-                  className={cn(
-                    "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
-                    isSelected && "bg-primary text-primary-foreground",
-                  )}
-                  onClick={() => toggleArrayField("features", feature)}
-                >
-                  {tEnums(`room_feature.${feature}`)}
-                </Badge>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <FormLabel>{t("fields.locationTags")}</FormLabel>
-          <div className="flex flex-wrap gap-2">
-            {LOCATION_TAGS.map((tag) => {
-              const isSelected = selectedLocationTags.includes(tag);
-              return (
-                <Badge
-                  key={tag}
-                  variant={isSelected ? "default" : "outline"}
-                  className={cn(
-                    "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
-                    isSelected && "bg-primary text-primary-foreground",
-                  )}
-                  onClick={() => toggleArrayField("locationTags", tag)}
-                >
-                  {tEnums(`location_tag.${tag}`)}
-                </Badge>
-              );
-            })}
-          </div>
-        </div>
-
-        <FormField
-          control={form.control}
-          name="preferredGender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("fields.preferredGender")}</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-wrap gap-3"
-                >
-                  {GENDER_PREFERENCES.map((g) => (
-                    <Label
-                      key={g}
-                      className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
-                    >
-                      <RadioGroupItem value={g} />
-                      {tEnums(`gender_preference.${g}`)}
-                    </Label>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="preferredAgeMin"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("fields.preferredAgeMin")}</FormLabel>
-                <FormControl>
-                  <Input type="number" min={16} max={99} {...field} value={field.value ?? ""} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="preferredAgeMax"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("fields.preferredAgeMax")}</FormLabel>
-                <FormControl>
-                  <Input type="number" min={16} max={99} {...field} value={field.value ?? ""} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <FormLabel>{t("fields.preferredLifestyleTags")}</FormLabel>
-          <div className="flex flex-wrap gap-2">
-            {LIFESTYLE_TAGS.map((tag) => {
-              const isSelected = selectedLifestyleTags.includes(tag);
-              return (
-                <Badge
-                  key={tag}
-                  variant={isSelected ? "default" : "outline"}
-                  className={cn(
-                    "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
-                    isSelected && "bg-primary text-primary-foreground",
-                  )}
-                  onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
-                >
-                  {tEnums(`lifestyle_tag.${tag}`)}
-                </Badge>
-              );
-            })}
-          </div>
-        </div>
-
-        <FormField
-          control={form.control}
-          name="roomVereniging"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>
-                {t("fields.roomVereniging")}{" "}
-                <span className="text-muted-foreground font-normal">({t("optional")})</span>
-              </FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
+        {/* Features & Location */}
+        <Card>
+          <CardHeader className="pb-2">
+            <p className="text-sm font-medium">{t("wizard.sections.features")}</p>
+            <CardDescription>{t("wizard.sectionDescriptions.features")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <FormLabel>{t("fields.features")}</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {RoomFeature.values.map((feature) => {
+                  const isSelected = selectedFeatures.includes(feature);
+                  return (
+                    <Badge
+                      key={feature}
+                      variant={isSelected ? "default" : "outline"}
                       className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground",
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
                       )}
+                      onClick={() => toggleArrayField("features", feature)}
                     >
-                      {field.value
-                        ? tEnums(`vereniging.${field.value}`)
-                        : t("placeholders.searchVereniging")}
-                      <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                  <Command>
-                    <CommandInput placeholder={t("placeholders.searchVereniging")} />
-                    <CommandList>
-                      <CommandEmpty>{t("noResults")}</CommandEmpty>
-                      <CommandGroup>
-                        <CommandItem
-                          value="__none__"
-                          onSelect={() => {
-                            form.setValue("roomVereniging", undefined, { shouldValidate: true });
-                          }}
+                      {tEnums(`room_feature.${feature}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>{t("fields.locationTags")}</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {LocationTag.values.map((tag) => {
+                  const isSelected = selectedLocationTags.includes(tag);
+                  return (
+                    <Badge
+                      key={tag}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleArrayField("locationTags", tag)}
+                    >
+                      {tEnums(`location_tag.${tag}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tenant Preferences */}
+        <Card>
+          <CardHeader className="pb-2">
+            <p className="text-sm font-medium">{t("wizard.sections.preferences")}</p>
+            <CardDescription>{t("wizard.sectionDescriptions.preferences")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="preferredGender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.preferredGender")}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-wrap gap-3"
+                    >
+                      {GenderPreference.values.map((g) => (
+                        <Label
+                          key={g}
+                          className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
-                          <Check
-                            className={cn(
-                              "mr-2 size-4",
-                              !field.value ? "opacity-100" : "opacity-0",
-                            )}
-                          />
-                          {t("noSelection")}
-                        </CommandItem>
-                        {VERENIGINGEN.map((v) => (
-                          <CommandItem
-                            key={v}
-                            value={tEnums(`vereniging.${v}`)}
-                            onSelect={() => {
-                              form.setValue("roomVereniging", v, { shouldValidate: true });
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 size-4",
-                                field.value === v ? "opacity-100" : "opacity-0",
-                              )}
-                            />
+                          <RadioGroupItem value={g} />
+                          {tEnums(`gender_preference.${g}`)}
+                        </Label>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="preferredAgeMin"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.preferredAgeMin")}</FormLabel>
+                    <FormControl>
+                      <Input type="number" min={16} max={99} {...field} value={field.value ?? ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="preferredAgeMax"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.preferredAgeMax")}</FormLabel>
+                    <FormControl>
+                      <Input type="number" min={16} max={99} {...field} value={field.value ?? ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>{t("fields.preferredLifestyleTags")}</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {LifestyleTag.values.map((tag) => {
+                  const isSelected = selectedLifestyleTags.includes(tag);
+                  return (
+                    <Badge
+                      key={tag}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleArrayField("preferredLifestyleTags", tag)}
+                    >
+                      {tEnums(`lifestyle_tag.${tag}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>{t("fields.acceptedLanguages")}</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {Language.values.map((lang) => {
+                  const isSelected = selectedLanguages.includes(lang);
+                  return (
+                    <Badge
+                      key={lang}
+                      variant={isSelected ? "default" : "outline"}
+                      className={cn(
+                        "cursor-pointer select-none px-2.5 py-1 text-xs transition-colors",
+                        isSelected && "bg-primary text-primary-foreground",
+                      )}
+                      onClick={() => toggleArrayField("acceptedLanguages", lang)}
+                    >
+                      {tEnums(`language_enum.${lang}`)}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Association */}
+        <Card>
+          <CardHeader className="pb-2">
+            <p className="text-sm font-medium">{t("wizard.sections.association")}</p>
+            <CardDescription>{t("wizard.sectionDescriptions.association")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              control={form.control}
+              name="roomVereniging"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("fields.roomVereniging")}{" "}
+                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                  </FormLabel>
+                  <Combobox
+                    value={field.value ?? null}
+                    onValueChange={(val) =>
+                      form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
+                    }
+                    items={Vereniging.values}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                  >
+                    <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
+                    <ComboboxContent>
+                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      <ComboboxList>
+                        {(v) => (
+                          <ComboboxItem key={v} value={v}>
                             {tEnums(`vereniging.${v}`)}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
 
         <div className="flex justify-between">
           <Button variant="outline" type="button" onClick={onBack}>

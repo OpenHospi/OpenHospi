@@ -1,9 +1,9 @@
-import { RoomStatus } from "@openhospi/shared/enums";
+import { GenderPreference, RentalType, RoomStatus, UtilitiesIncluded } from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
 import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
-  boolean,
   date,
+  doublePrecision,
   index,
   integer,
   numeric,
@@ -27,6 +27,7 @@ import {
   rentalTypeEnum,
   roomFeatureEnum,
   roomStatusEnum,
+  utilitiesIncludedEnum,
   verenigingEnum,
 } from "./enums";
 import { houses } from "./houses";
@@ -46,24 +47,29 @@ export const rooms = pgTable(
     description: text("description"),
     city: cityEnum("city").notNull(),
     neighborhood: text("neighborhood"),
-    address: text("address"),
+    streetName: text("street_name"),
+    houseNumber: text("house_number"),
+    postalCode: text("postal_code"),
+    latitude: doublePrecision("latitude"),
+    longitude: doublePrecision("longitude"),
     rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),
     deposit: numeric("deposit", { precision: 7, scale: 2 }),
-    utilitiesIncluded: boolean("utilities_included").default(false),
+    utilitiesIncluded: utilitiesIncludedEnum("utilities_included").default(UtilitiesIncluded.included),
     serviceCosts: numeric("service_costs", { precision: 7, scale: 2 }),
+    estimatedUtilitiesCosts: numeric("estimated_utilities_costs", { precision: 7, scale: 2 }),
     totalCost: numeric("total_cost", { precision: 7, scale: 2 })
-      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0)`),
+      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0) + COALESCE(estimated_utilities_costs, 0)`),
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),
-    rentalType: rentalTypeEnum("rental_type").default("vast"),
+    rentalType: rentalTypeEnum("rental_type").default(RentalType.permanent),
     houseType: houseTypeEnum("house_type"),
     furnishing: furnishingEnum("furnishing"),
     totalHousemates: integer("total_housemates"),
     features: roomFeatureEnum("features").array().default([]),
     locationTags: locationTagEnum("location_tags").array().default([]),
     roomVereniging: verenigingEnum("room_vereniging"),
-    preferredGender: genderPreferenceEnum("preferred_gender").default("geen_voorkeur"),
+    preferredGender: genderPreferenceEnum("preferred_gender").default(GenderPreference.no_preference),
     preferredAgeMin: integer("preferred_age_min"),
     preferredAgeMax: integer("preferred_age_max"),
     preferredLifestyleTags: lifestyleTagEnum("preferred_lifestyle_tags")

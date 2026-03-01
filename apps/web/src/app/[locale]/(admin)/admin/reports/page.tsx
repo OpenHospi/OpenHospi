@@ -1,5 +1,4 @@
-import {REPORT_STATUSES, REPORT_TYPES} from "@openhospi/shared/enums";
-import type {ReportStatus, ReportType} from "@openhospi/shared/enums";
+import {ReportStatus, ReportType} from "@openhospi/shared/enums";
 import Link from "next/link";
 import {getTranslations, setRequestLocale} from "next-intl/server";
 
@@ -42,11 +41,11 @@ export default async function AdminReportsPage({params, searchParams}: Props) {
     const t = await getTranslations({locale, namespace: "admin"});
     const tEnums = await getTranslations({locale, namespace: "enums"});
 
-    const filterStatus = status && REPORT_STATUSES.includes(status as ReportStatus)
+    const filterStatus = status && ReportStatus.values.includes(status as ReportStatus)
         ? (status as ReportStatus)
-        : REPORT_STATUSES[0];
+        : ReportStatus.values[0];
 
-    const filterType = type && REPORT_TYPES.includes(type as ReportType)
+    const filterType = type && ReportType.values.includes(type as ReportType)
         ? (type as ReportType)
         : undefined;
 
@@ -64,7 +63,7 @@ export default async function AdminReportsPage({params, searchParams}: Props) {
                     <h3 className="text-sm font-semibold mb-3">{t("reports.filterByStatus")}</h3>
                     <Tabs defaultValue={filterStatus} value={filterStatus}>
                         <TabsList>
-                            {REPORT_STATUSES.map((s) => {
+                            {ReportStatus.values.map((s) => {
                                 const typeParam = filterType ? `&type=${filterType}` : "";
                                 return (
                                     <TabsTrigger key={s} value={s} asChild>
@@ -91,7 +90,7 @@ export default async function AdminReportsPage({params, searchParams}: Props) {
                         >
                             {t("reports.allTypes")}
                         </Link>
-                        {REPORT_TYPES.map((t_) => (
+                        {ReportType.values.map((t_) => (
                             <Link
                                 key={t_}
                                 href={`/admin/reports?status=${filterStatus}&type=${t_}`}

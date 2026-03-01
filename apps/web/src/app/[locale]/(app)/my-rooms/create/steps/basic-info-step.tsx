@@ -3,17 +3,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomBasicInfoData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema } from "@openhospi/database/validators";
-import { CITIES } from "@openhospi/shared/enums";
+import { City } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { AddressAutocomplete } from "@/components/app/address-autocomplete";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,6 +40,8 @@ type Props = {
   onNext: () => void;
 };
 
+const MAX_DESCRIPTION_LENGTH = 2000;
+
 export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   const t = useTranslations("app.rooms");
   const tEnums = useTranslations("enums");
@@ -50,9 +55,21 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
       description: defaultValues.description ?? "",
       city: defaultValues.city,
       neighborhood: defaultValues.neighborhood ?? "",
-      address: defaultValues.address ?? "",
+      streetName: defaultValues.streetName ?? "",
+      houseNumber: defaultValues.houseNumber ?? "",
+      postalCode: defaultValues.postalCode ?? "",
+      latitude: defaultValues.latitude ?? undefined,
+      longitude: defaultValues.longitude ?? undefined,
     },
   });
+
+  const descriptionValue = form.watch("description") ?? "";
+
+  let addressDisplay = "";
+  if (defaultValues.streetName) {
+    const street = [defaultValues.streetName, defaultValues.houseNumber].filter(Boolean).join(" ");
+    addressDisplay = defaultValues.postalCode ? `${street}, ${defaultValues.postalCode}` : street;
+  }
 
   function onSubmit(data: RoomBasicInfoData) {
     startTransition(async () => {
@@ -68,95 +85,119 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("fields.title")}</FormLabel>
-              <FormControl>
-                <Input placeholder={t("placeholders.title")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Card>
+          <CardContent className="space-y-6 pt-6">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.title")}</FormLabel>
+                  <FormControl>
+                    <Input placeholder={t("placeholders.title")} {...field} />
+                  </FormControl>
+                  <FormDescription>{t("wizard.helpers.title")}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("fields.description")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder={t("placeholders.description")}
-                  className="min-h-24 resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.description")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder={t("placeholders.description")}
+                      className="min-h-24 resize-none"
+                      maxLength={MAX_DESCRIPTION_LENGTH}
+                      {...field}
+                    />
+                  </FormControl>
+                  <div className="flex items-center justify-between">
+                    <FormDescription>{t("wizard.helpers.description")}</FormDescription>
+                    <span className="text-xs text-muted-foreground">
+                      {descriptionValue.length}/{MAX_DESCRIPTION_LENGTH}
+                    </span>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
 
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("fields.city")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {CITIES.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {tEnums(`city.${city}`)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Card>
+          <CardContent className="space-y-6 pt-6">
+            <p className="text-sm font-medium">{t("wizard.sections.location")}</p>
 
-        <FormField
-          control={form.control}
-          name="neighborhood"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {t("fields.neighborhood")}{" "}
-                <span className="text-muted-foreground font-normal">
-                  ({t("wizard.stepDescriptions.step1")})
-                </span>
-              </FormLabel>
-              <FormControl>
-                <Input placeholder={t("placeholders.neighborhood")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.city")}</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {City.values.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {tEnums(`city.${city}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
+            <FormField
+              control={form.control}
+              name="neighborhood"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("fields.neighborhood")}{" "}
+                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder={t("placeholders.neighborhood")} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="space-y-2">
               <FormLabel>{t("fields.address")}</FormLabel>
-              <FormControl>
-                <Input placeholder={t("placeholders.address")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              <AddressAutocomplete
+                defaultDisplayValue={addressDisplay}
+                onSelect={(result) => {
+                  form.setValue("streetName", result.streetName, { shouldValidate: true });
+                  form.setValue("houseNumber", result.houseNumber, { shouldValidate: true });
+                  form.setValue("postalCode", result.postalCode, { shouldValidate: true });
+                  form.setValue("latitude", result.latitude, { shouldValidate: true });
+                  form.setValue("longitude", result.longitude, { shouldValidate: true });
+                }}
+                onClear={() => {
+                  form.setValue("streetName", "", { shouldValidate: true });
+                  form.setValue("houseNumber", "", { shouldValidate: true });
+                  form.setValue("postalCode", "", { shouldValidate: true });
+                  form.setValue("latitude", undefined, { shouldValidate: true });
+                  form.setValue("longitude", undefined, { shouldValidate: true });
+                }}
+                placeholder={t("placeholders.searchAddress")}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="flex justify-end">
           <Button type="submit" disabled={isPending}>

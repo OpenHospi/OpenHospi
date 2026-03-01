@@ -14,11 +14,17 @@ import { requireSession } from "@/lib/auth-server";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string; code: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale, code } = await params;
   const t = await getTranslations({ locale, namespace: "app.join" });
-  return { title: t("title") };
+  const tEnums = await getTranslations({ locale, namespace: "enums" });
+
+  const room = await getRoomByShareLink(code);
+  if (!room || room.status !== RoomStatus.active) return { title: t("title") };
+
+  const cityName = tEnums(`city.${room.city}`);
+  return { title: `${room.title} — ${cityName}` };
 }
 
 type Props = {

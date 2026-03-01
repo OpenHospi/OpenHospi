@@ -1,10 +1,12 @@
 export {
   aboutStepSchema,
   editProfileSchema,
+  languagesStepSchema,
   personalityStepSchema,
   preferencesStepSchema,
   type AboutStepData,
   type EditProfileData,
+  type LanguagesStepData,
   type PersonalityStepData,
   type PreferencesStepData,
 } from "./profile";

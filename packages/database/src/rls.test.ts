@@ -164,7 +164,7 @@ describe("RLS policies (integration)", () => {
     await db.insert(blocks).values({ blockerId: USER_A, blockedId: USER_B });
 
     await db.insert(reports).values({
-      id: REPORT_ID, reporterId: USER_A, reportedUserId: USER_B, reason: "spam", description: "test report",
+      id: REPORT_ID, reportType: "user", reporterId: USER_A, reportedUserId: USER_B, reason: "spam", description: "test report",
     });
   });
 

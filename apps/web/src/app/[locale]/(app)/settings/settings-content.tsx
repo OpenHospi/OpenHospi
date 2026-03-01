@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { PushNotificationManager } from "@/components/app/push-notification-manager";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +56,16 @@ export function SettingsContent() {
 
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("pushNotifications.title")}</CardTitle>
+          <CardDescription>{t("pushNotifications.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PushNotificationManager />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>{t("dataExport.title")}</CardTitle>

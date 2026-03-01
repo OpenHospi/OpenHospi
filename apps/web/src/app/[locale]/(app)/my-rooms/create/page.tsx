@@ -5,8 +5,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { RoomStatus } from "@openhospi/shared/enums";
 
 import { requireSession } from "@/lib/auth-server";
-import { getRoom } from "@/lib/rooms";
+import { getUserOwnerHouses } from "@/lib/houses";
+import { createDraftRoom, getRoom } from "@/lib/rooms";
 
+import { HouseGate } from "./house-gate";
 import { RoomCreateForm } from "./room-create-form";
 
 export async function generateMetadata({
@@ -31,12 +33,19 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
   const { user } = await requireSession();
 
   if (!id) {
-    const { createDraftRoomAction } = await import("./actions");
-    const result = await createDraftRoomAction();
-    if (result.error || !result.id) {
-      return <p>{result.error || "Failed to create draft"}</p>;
+    const houses = await getUserOwnerHouses(user.id);
+
+    if (houses.length === 0) {
+      return <HouseGate houses={[]} />;
     }
-    return redirect(`/my-rooms/create?id=${result.id}`);
+
+    if (houses.length === 1) {
+      const roomId = await createDraftRoom(user.id, houses[0].id);
+      return redirect(`/my-rooms/create?id=${roomId}`);
+    }
+
+    // Multiple houses — show picker
+    return <HouseGate houses={houses} />;
   }
 
   const room = await getRoom(id, user.id);

@@ -1,8 +1,7 @@
 import {withRLS} from "@openhospi/database";
 import {applications, profilePhotos, profiles, reviews} from "@openhospi/database/schema";
 import {MAX_APPLICANTS_PER_PAGE} from "@openhospi/shared/constants";
-import {ApplicationStatus} from "@openhospi/shared/enums";
-import type {ReviewDecision} from "@openhospi/shared/enums";
+import {ApplicationStatus, ReviewDecision} from "@openhospi/shared/enums";
 import {and, asc, eq, inArray, ne} from "drizzle-orm";
 
 export type ApplicantReview = {

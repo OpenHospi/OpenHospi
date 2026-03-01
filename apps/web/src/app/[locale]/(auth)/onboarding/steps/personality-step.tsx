@@ -1,8 +1,7 @@
 "use client";
 
 import { MAX_LIFESTYLE_TAGS, MIN_LIFESTYLE_TAGS } from "@openhospi/shared/constants";
-import { LIFESTYLE_TAGS } from "@openhospi/shared/enums";
-import type { LifestyleTag } from "@openhospi/shared/enums";
+import { LifestyleTag } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -66,7 +65,7 @@ export function PersonalityStep({ defaultValues, onBack, onNext }: Props) {
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {LIFESTYLE_TAGS.map((tag) => {
+        {LifestyleTag.values.map((tag) => {
           const isSelected = selected.has(tag);
           return (
             <Badge

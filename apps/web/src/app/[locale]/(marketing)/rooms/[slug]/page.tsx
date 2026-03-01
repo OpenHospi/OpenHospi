@@ -1,11 +1,10 @@
-import { APP_NAME } from "@openhospi/shared/constants";
-import { CITIES, GenderPreference } from "@openhospi/shared/enums";
-import { ArrowLeft, CalendarDays, Home, MapPin, Ruler, Users } from "lucide-react";
+import { City, GenderPreference, UtilitiesIncluded } from "@openhospi/shared/enums";
+import { ArrowLeft, Check, Home, Info, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { RoomGalleryHero } from "@/components/app/room-gallery-hero";
 import { PublicRoomCard } from "@/components/marketing/public-room-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,12 +12,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
+import { getStoragePublicUrl } from "@/lib/storage-url";
 import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
 function isCity(slug: string): boolean {
-  return CITIES.includes(slug as (typeof CITIES)[number]);
+  return City.values.includes(slug as (typeof City.values)[number]);
 }
 
 export async function generateMetadata({
@@ -33,7 +33,7 @@ export async function generateMetadata({
     const t = await getTranslations({ locale, namespace: "public.cityPage" });
     const cityName = tEnums(`city.${slug}`);
     return {
-      title: `${t("title", { city: cityName })} — ${APP_NAME}`,
+      title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
     };
   }
@@ -44,8 +44,11 @@ export async function generateMetadata({
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
-  const title = `${room.title} — ${cityName} — ${APP_NAME}`;
+  const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
+  const ogImage = room.photos[0]?.url
+    ? getStoragePublicUrl(room.photos[0].url, "room-photos")
+    : undefined;
 
   return {
     title,
@@ -53,7 +56,13 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: room.photos[0]?.url ? [{ url: room.photos[0].url }] : [],
+      ...(ogImage && { images: [{ url: ogImage }] }),
+    },
+    twitter: {
+      card: ogImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(ogImage && { images: [ogImage] }),
     },
   };
 }
@@ -151,7 +160,6 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
 
   const cityName = tEnums(`city.${room.city}`);
   const coverPhoto = room.photos[0];
-  const otherPhotos = room.photos.slice(1);
 
   // Safe: all values come from our DB — no user-supplied HTML
   const jsonLdScript = JSON.stringify({
@@ -164,7 +172,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
       addressLocality: cityName,
       addressCountry: "NL",
     },
-    ...(coverPhoto && { image: coverPhoto.url }),
+    ...(coverPhoto && { image: getStoragePublicUrl(coverPhoto.url, "room-photos") }),
     offers: {
       "@type": "Offer",
       price: room.totalCost,
@@ -180,35 +188,8 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         {/* Photo gallery */}
         {room.photos.length > 0 && (
-          <div className="mb-8 space-y-2">
-            {coverPhoto && (
-              <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-                <Image
-                  src={coverPhoto.url}
-                  alt={room.title}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            )}
-            {otherPhotos.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-                {otherPhotos.map((photo) => (
-                  <div
-                    key={photo.id}
-                    className="relative aspect-video overflow-hidden rounded-lg bg-muted"
-                  >
-                    <Image
-                      src={photo.url}
-                      alt={photo.caption ?? room.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="mb-8">
+            <RoomGalleryHero photos={room.photos} roomTitle={room.title} />
           </div>
         )}
 
@@ -272,34 +253,6 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                 )}
                 <dt className="text-muted-foreground">{t("rentalType")}</dt>
                 <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
-                {room.deposit != null && (
-                  <>
-                    <dt className="text-muted-foreground">{t("deposit")}</dt>
-                    <dd>€{room.deposit}</dd>
-                  </>
-                )}
-                {room.utilitiesIncluded && (
-                  <>
-                    <dt className="text-muted-foreground">{t("utilitiesIncluded")}</dt>
-                    <dd />
-                  </>
-                )}
-                {!room.utilitiesIncluded && room.serviceCosts != null && (
-                  <>
-                    <dt className="text-muted-foreground">{t("rent")}</dt>
-                    <dd>€{room.rentPrice}</dd>
-                    <dt className="text-muted-foreground">{t("serviceCosts")}</dt>
-                    <dd>€{room.serviceCosts}</dd>
-                    <dt className="text-muted-foreground">{t("totalCost")}</dt>
-                    <dd>€{room.totalCost}</dd>
-                  </>
-                )}
-                {!room.utilitiesIncluded && room.serviceCosts == null && (
-                  <>
-                    <dt className="text-muted-foreground">{t("utilitiesExcluded")}</dt>
-                    <dd />
-                  </>
-                )}
                 {room.availableFrom && (
                   <>
                     <dt className="text-muted-foreground">
@@ -342,12 +295,12 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             )}
 
             {/* Preferences */}
-            {(room.preferredGender !== GenderPreference.geen_voorkeur ||
+            {(room.preferredGender !== GenderPreference.no_preference ||
               room.preferredLifestyleTags.length > 0) && (
               <div>
                 <h2 className="text-lg font-semibold">{t("preferences")}</h2>
                 <div className="mt-2 space-y-2">
-                  {room.preferredGender !== GenderPreference.geen_voorkeur && (
+                  {room.preferredGender !== GenderPreference.no_preference && (
                     <p className="text-sm text-muted-foreground">
                       {tEnums(`gender_preference.${room.preferredGender}`)}
                       {room.preferredAgeMin != null &&
@@ -372,18 +325,79 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
           {/* Sidebar CTA */}
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarDays className="size-5" />€{room.totalCost}
-                  {t("perMonth")}
+              <CardHeader className="pb-3">
+                <CardTitle>
+                  <span className="text-2xl">€{room.totalCost}</span>
+                  <span className="text-base font-normal text-muted-foreground">
+                    {t("perMonth")}
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                {/* Cost breakdown */}
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      {room.utilitiesIncluded === UtilitiesIncluded.included ? t("rentInclUtilities") : t("rent")}
+                    </span>
+                    <span>&euro;{room.rentPrice}</span>
+                  </div>
+
+                  {room.serviceCosts != null && room.serviceCosts > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t("serviceCosts")}</span>
+                      <span>&euro;{room.serviceCosts}</span>
+                    </div>
+                  )}
+
+                  {room.utilitiesIncluded === UtilitiesIncluded.estimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t("utilitiesEstimated")}</span>
+                      <span>&euro;{room.estimatedUtilitiesCosts}</span>
+                    </div>
+                  )}
+
+                  {((room.serviceCosts != null && room.serviceCosts > 0) ||
+                    (room.utilitiesIncluded === UtilitiesIncluded.estimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0)) && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between font-medium">
+                        <span>{room.utilitiesIncluded === UtilitiesIncluded.estimated ? t("estimatedTotal") : t("total")}</span>
+                        <span>&euro;{room.totalCost}</span>
+                      </div>
+                    </>
+                  )}
+
+                  {room.utilitiesIncluded === UtilitiesIncluded.included && (
+                    <div className="flex items-center gap-1.5 text-green-600">
+                      <Check className="size-3.5" />
+                      <span className="text-xs">{t("utilitiesIncluded")}</span>
+                    </div>
+                  )}
+
+                  {room.utilitiesIncluded === UtilitiesIncluded.not_included && (
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Info className="size-3.5" />
+                      <span className="text-xs">{t("utilitiesNotIncluded")}</span>
+                    </div>
+                  )}
+
+                  {room.deposit != null && (
+                    <div className="flex justify-between pt-1">
+                      <span className="text-muted-foreground">{t("deposit")}</span>
+                      <span>&euro;{room.deposit}</span>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
                 {room.availableFrom && (
                   <p className="text-sm text-muted-foreground">
                     {t("availableFrom", { date: room.availableFrom })}
                   </p>
                 )}
+
                 <Button asChild className="w-full">
                   <a href={loginUrl}>{t("loginToApply")}</a>
                 </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Calendar, FileText, Home, MessageCircle, Search, Settings, User } from "lucide-react";
+import { Building2, Calendar, FileText, Home, MessageCircle, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import {
@@ -58,18 +58,6 @@ export function AppSidebar({ user }: AppSidebarProps) {
       label: t("chat"),
       href: "/chat" as const,
       icon: MessageCircle,
-      disabled: false,
-    },
-    {
-      label: t("profile"),
-      href: "/profile" as const,
-      icon: User,
-      disabled: false,
-    },
-    {
-      label: t("settings"),
-      href: "/settings" as const,
-      icon: Settings,
       disabled: false,
     },
   ];

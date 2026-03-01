@@ -40,6 +40,7 @@ type Props = {
 
 export function ApplyDialog({ roomId }: Props) {
   const t = useTranslations("app.roomDetail");
+  const tCommon = useTranslations("common.labels");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -107,7 +108,7 @@ export function ApplyDialog({ roomId }: Props) {
 
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                {t("cancel")}
+                {tCommon("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="animate-spin" />}

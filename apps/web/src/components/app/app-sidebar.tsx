@@ -27,6 +27,7 @@ type AppSidebarProps = {
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const t = useTranslations("app.sidebar");
+  const tCommon = useTranslations("common.labels");
   const pathname = usePathname();
 
   const navItems = [
@@ -88,7 +89,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                 return (
                   <SidebarMenuItem key={item.href}>
                     {item.disabled ? (
-                      <SidebarMenuButton disabled tooltip={t("comingSoon")}>
+                      <SidebarMenuButton disabled tooltip={tCommon("comingSoon")}>
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>

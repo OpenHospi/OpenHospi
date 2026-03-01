@@ -43,6 +43,7 @@ type Props = {
 
 export function AboutStep({defaultValues, institutionDomain, onNext}: Props) {
     const t = useTranslations("app.onboarding");
+    const tCommon = useTranslations("common.labels");
     const tEnums = useTranslations("enums");
     const [isPending, startTransition] = useTransition();
 
@@ -140,7 +141,7 @@ export function AboutStep({defaultValues, institutionDomain, onNext}: Props) {
                         <FormItem>
                             <FormLabel>
                                 {t("fields.studyLevel")}{" "}
-                                <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                                <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
                             </FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
@@ -171,7 +172,7 @@ export function AboutStep({defaultValues, institutionDomain, onNext}: Props) {
                         <FormItem>
                             <FormLabel>
                                 {t("fields.bio")}{" "}
-                                <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                                <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
                             </FormLabel>
                             <FormControl>
                                 <Textarea
@@ -189,7 +190,7 @@ export function AboutStep({defaultValues, institutionDomain, onNext}: Props) {
                 <div className="flex justify-end">
                     <Button type="submit" disabled={isPending}>
                         {isPending && <Loader2 className="animate-spin"/>}
-                        {t("next")}
+                        {tCommon("next")}
                     </Button>
                 </div>
             </form>

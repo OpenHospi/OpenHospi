@@ -21,6 +21,7 @@ type Props = {
 
 export function LanguagesStep({ defaultValues, onBack, onNext }: Props) {
   const t = useTranslations("app.onboarding");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
   const [selected, setSelected] = useState<Set<string>>(new Set(defaultValues.languages));
@@ -85,11 +86,11 @@ export function LanguagesStep({ defaultValues, onBack, onNext }: Props) {
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack}>
-          {t("back")}
+          {tCommon("back")}
         </Button>
         <Button onClick={onSubmit} disabled={isPending || selected.size < MIN_LANGUAGES}>
           {isPending && <Loader2 className="animate-spin" />}
-          {t("next")}
+          {tCommon("next")}
         </Button>
       </div>
     </div>

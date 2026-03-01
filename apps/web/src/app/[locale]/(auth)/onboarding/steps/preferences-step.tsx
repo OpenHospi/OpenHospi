@@ -39,6 +39,7 @@ type Props = {
 
 export function PreferencesStep({ defaultValues, onBack }: Props) {
   const t = useTranslations("app.onboarding");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
 
@@ -84,7 +85,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
               >
                 <ComboboxInput placeholder={t("placeholders.preferredCity")} />
                 <ComboboxContent>
-                  <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                   <ComboboxList>
                     {(city) => (
                       <ComboboxItem key={city} value={city}>
@@ -106,7 +107,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
             <FormItem>
               <FormLabel>
                 {t("fields.maxRent")}{" "}
-                <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
               </FormLabel>
               <FormControl>
                 <Input
@@ -144,7 +145,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
             <FormItem>
               <FormLabel>
                 {t("fields.vereniging")}{" "}
-                <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
               </FormLabel>
               <Combobox
                 value={field.value ?? null}
@@ -159,7 +160,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   showClear
                 />
                 <ComboboxContent>
-                  <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                  <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                   <ComboboxList>
                     {(v) => (
                       <ComboboxItem key={v} value={v}>
@@ -181,7 +182,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
             <FormItem>
               <FormLabel>
                 {t("fields.instagram")}{" "}
-                <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
               </FormLabel>
               <FormControl>
                 <Input placeholder="@username" {...field} />
@@ -206,7 +207,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
 
         <div className="flex justify-between">
           <Button variant="outline" type="button" onClick={onBack}>
-            {t("back")}
+            {tCommon("back")}
           </Button>
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin" />}

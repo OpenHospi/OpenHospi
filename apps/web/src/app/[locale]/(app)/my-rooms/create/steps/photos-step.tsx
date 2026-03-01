@@ -29,6 +29,7 @@ type Props = {
 
 export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished }: Props) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const tErrors = useTranslations("common.errors");
   const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -207,7 +208,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
 
         <CardFooter className="flex justify-between border-t pt-6">
           <Button variant="outline" onClick={onBack} disabled={isPending}>
-            {t("actions.back")}
+            {tCommon("back")}
           </Button>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleSaveDraft} disabled={isPending}>

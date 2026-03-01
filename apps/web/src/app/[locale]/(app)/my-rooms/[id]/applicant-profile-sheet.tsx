@@ -48,6 +48,7 @@ export function ApplicantProfileSheet({
                                           onOpenChange,
                                       }: Props) {
     const t = useTranslations("app.rooms.applicants");
+    const tCommon = useTranslations("common.labels");
     const tEnums = useTranslations("enums");
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
@@ -204,7 +205,7 @@ export function ApplicantProfileSheet({
                                             <FormLabel>
                                                 {t("notes")}{" "}
                                                 <span
-                                                    className="font-normal text-muted-foreground">({t("optional")})</span>
+                                                    className="font-normal text-muted-foreground">({tCommon("optional")})</span>
                                             </FormLabel>
                                             <FormControl>
                                                 <Textarea

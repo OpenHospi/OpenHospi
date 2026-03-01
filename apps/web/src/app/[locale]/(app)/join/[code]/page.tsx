@@ -29,6 +29,7 @@ export default async function JoinHousePage({ params }: Props) {
   await requireSession();
 
   const t = await getTranslations({ locale, namespace: "app.joinHouse" });
+  const tCommon = await getTranslations({ locale, namespace: "common.labels" });
 
   const house = await getHouseByInviteCode(code);
 
@@ -42,7 +43,7 @@ export default async function JoinHousePage({ params }: Props) {
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline">
-              <Link href="/discover">{t("cancel")}</Link>
+              <Link href="/discover">{tCommon("cancel")}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -67,7 +68,7 @@ export default async function JoinHousePage({ params }: Props) {
 
           <div className="flex gap-3">
             <Button asChild variant="outline" className="flex-1">
-              <Link href="/discover">{t("cancel")}</Link>
+              <Link href="/discover">{tCommon("cancel")}</Link>
             </Button>
             <div className="flex-1">
               <JoinHouseButton code={code} />

@@ -46,6 +46,7 @@ export function ReportDialog({
   trigger,
 }: Props) {
   const t = useTranslations("app.report");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<ReportReason | "">("");
@@ -135,7 +136,7 @@ export function ReportDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
-            {t("cancel")}
+            {tCommon("cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={!reason || isPending} variant="destructive">
             {t("submit")}

@@ -72,6 +72,7 @@ type Props = {
 
 export function EditRoomDialog({ room }: Props) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -204,7 +205,7 @@ export function EditRoomDialog({ room }: Props) {
                   >
                     <ComboboxInput placeholder={t("fields.city")} />
                     <ComboboxContent>
-                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                       <ComboboxList>
                         {(city) => (
                           <ComboboxItem key={city} value={city}>
@@ -654,7 +655,7 @@ export function EditRoomDialog({ room }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.roomVereniging")}{" "}
-                    <span className="text-muted-foreground font-normal">({t("optional")})</span>
+                    <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
                   </FormLabel>
                   <Combobox
                     value={field.value ?? null}
@@ -666,7 +667,7 @@ export function EditRoomDialog({ room }: Props) {
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
-                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                       <ComboboxList>
                         {(v) => (
                           <ComboboxItem key={v} value={v}>

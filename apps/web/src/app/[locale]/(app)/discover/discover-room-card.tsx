@@ -13,6 +13,7 @@ type Props = {
 
 export async function DiscoverRoomCard({room}: Props) {
     const t = await getTranslations("app.discover.card");
+    const tCommon = await getTranslations("common.labels");
     const tEnums = await getTranslations("enums");
 
     return (
@@ -45,7 +46,7 @@ export async function DiscoverRoomCard({room}: Props) {
                 <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">
             €{room.totalCost}
-              <span className="font-normal text-muted-foreground">{t("perMonth")}</span>
+              <span className="font-normal text-muted-foreground">{tCommon("perMonth")}</span>
           </span>
                     <span className="flex items-center gap-1 text-muted-foreground">
             {room.roomSizeM2 && <span>{room.roomSizeM2} m²</span>}

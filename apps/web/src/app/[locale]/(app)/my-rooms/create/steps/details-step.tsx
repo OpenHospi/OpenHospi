@@ -49,6 +49,7 @@ type Props = {
 
 export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
 
@@ -404,11 +405,11 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
 
         <div className="flex justify-between">
           <Button variant="outline" type="button" onClick={onBack}>
-            {t("actions.back")}
+            {tCommon("back")}
           </Button>
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin" />}
-            {t("actions.next")}
+            {tCommon("next")}
           </Button>
         </div>
       </form>

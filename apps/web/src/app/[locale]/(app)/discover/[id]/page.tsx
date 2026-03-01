@@ -135,6 +135,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
   const { user } = await requireSession();
 
   const t = await getTranslations({ locale, namespace: "app.roomDetail" });
+  const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const [room, existingApplication] = await Promise.all([
@@ -196,7 +197,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-1.5">
               <span className="text-2xl font-bold">€{room.totalCost}</span>
-              <span className="text-muted-foreground">{t("perMonth")}</span>
+              <span className="text-muted-foreground">{tCommon("perMonth")}</span>
             </div>
             {room.roomSizeM2 && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -207,7 +208,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
             {room.totalHousemates != null && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 <Users className="size-4" />
-                <span>{t("housemates", { count: room.totalHousemates })}</span>
+                <span>{tCommon("housemates", { count: room.totalHousemates })}</span>
               </div>
             )}
             {room.houseType && (
@@ -332,7 +333,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
             <CardHeader className="pb-3">
               <CardTitle>
                 <span className="text-2xl">€{room.totalCost}</span>
-                <span className="text-base font-normal text-muted-foreground">{t("perMonth")}</span>
+                <span className="text-base font-normal text-muted-foreground">{tCommon("perMonth")}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">

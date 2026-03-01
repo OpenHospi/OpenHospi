@@ -52,6 +52,7 @@ type Props = {
 
 export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
 
@@ -279,7 +280,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                 <FormItem>
                   <FormLabel>
                     {t("fields.roomVereniging")}{" "}
-                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
                   </FormLabel>
                   <Combobox
                     value={field.value ?? null}
@@ -291,7 +292,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
-                      <ComboboxEmpty>{t("noResults")}</ComboboxEmpty>
+                      <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                       <ComboboxList>
                         {(v) => (
                           <ComboboxItem key={v} value={v}>
@@ -310,11 +311,11 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
 
         <div className="flex justify-between">
           <Button variant="outline" type="button" onClick={onBack}>
-            {t("actions.back")}
+            {tCommon("back")}
           </Button>
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin" />}
-            {t("actions.next")}
+            {tCommon("next")}
           </Button>
         </div>
       </form>

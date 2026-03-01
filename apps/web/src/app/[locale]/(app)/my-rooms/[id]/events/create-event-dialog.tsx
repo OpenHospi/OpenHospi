@@ -63,6 +63,7 @@ type Props = {
 
 export function CreateEventDialog({ roomId }: Props) {
   const t = useTranslations("app.rooms.events");
+  const tCommon = useTranslations("common.labels");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [selectedDuration, setSelectedDuration] = useState<number | null>(120);
@@ -247,7 +248,7 @@ export function CreateEventDialog({ roomId }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.description")}{" "}
-                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
                   </FormLabel>
                   <FormControl>
                     <Textarea
@@ -268,7 +269,7 @@ export function CreateEventDialog({ roomId }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.maxAttendees")}{" "}
-                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -293,7 +294,7 @@ export function CreateEventDialog({ roomId }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.notes")}{" "}
-                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
                   </FormLabel>
                   <FormControl>
                     <Textarea

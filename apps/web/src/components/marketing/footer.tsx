@@ -32,6 +32,10 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 {href: "/privacy", label: t("links.privacy")},
                 {href: "/cookies", label: t("links.cookies")},
                 {href: "/terms", label: t("links.terms")},
+                {href: "/processing-register", label: t("links.processingRegister")},
+                {href: "/legal-basis", label: t("links.legalBasis")},
+                {href: "/data-processors", label: t("links.dataProcessors")},
+                {href: "/dpia", label: t("links.dpia")},
             ],
         },
         {

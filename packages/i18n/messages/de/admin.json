@@ -10,6 +10,7 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "reports": "Meldungen",
+      "dataRequests": "Datenanfragen",
       "auditLog": "Auditprotokoll"
     },
     "userMenu": {},
@@ -68,6 +69,46 @@
       "confirmBanDescription": "Dies entzieht dem Benutzer sofort den Zugang. Er kann sich erst nach Aufhebung der Sperre wieder anmelden.",
       "confirmRemoveTitle": "Anzeige entfernen?",
       "confirmRemoveDescription": "Dies schließt die Zimmeranzeige und sie ist für andere Benutzer nicht mehr sichtbar."
+    },
+    "dataRequests": {
+      "title": "Datenanfragen",
+      "description": "DSGVO-Betroffenenanfragen verwalten.",
+      "empty": "Keine Datenanfragen gefunden.",
+      "stats": {
+        "pending": "Ausstehend",
+        "inProgress": "In Bearbeitung"
+      },
+      "colUser": "Benutzer",
+      "colType": "Typ",
+      "colStatus": "Status",
+      "colDate": "Datum",
+      "types": {
+        "access": "Auskunft",
+        "rectification": "Berichtigung",
+        "erasure": "Löschung",
+        "restriction": "Einschränkung",
+        "portability": "Datenübertragbarkeit",
+        "objection": "Widerspruch"
+      },
+      "statuses": {
+        "pending": "Ausstehend",
+        "in_progress": "In Bearbeitung",
+        "completed": "Abgeschlossen",
+        "denied": "Abgelehnt"
+      },
+      "detail": {
+        "title": "Anfragedetails",
+        "userInfo": "Benutzerinformationen",
+        "requestInfo": "Anfrageinformationen",
+        "adminNotes": "Admin-Notizen",
+        "notesPlaceholder": "Interne Notizen zu dieser Anfrage hinzufügen...",
+        "updateStatus": "Status aktualisieren",
+        "backToList": "Zurück zu Datenanfragen",
+        "liftRestriction": "Verarbeitungseinschränkung aufheben",
+        "statusUpdated": "Anfragestatus aktualisiert"
+      },
+      "filterByStatus": "Nach Status filtern",
+      "allStatuses": "Alle Status"
     },
     "auditLog": {
       "title": "Auditprotokoll",

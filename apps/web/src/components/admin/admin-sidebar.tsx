@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, ClipboardList, ScrollText, ShieldCheck } from "lucide-react";
+import { BarChart3, ClipboardList, FileText, ScrollText, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -36,6 +36,7 @@ export function AdminSidebar({ user }: Props) {
   const navItems = [
     { label: t("dashboard"), href: "/admin", icon: BarChart3 },
     { label: t("reports"), href: "/admin/reports", icon: ClipboardList },
+    { label: t("dataRequests"), href: "/admin/data-requests", icon: FileText },
     { label: t("auditLog"), href: "/admin/audit-log", icon: ScrollText },
   ];
 

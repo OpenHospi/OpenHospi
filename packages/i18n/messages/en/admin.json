@@ -10,6 +10,7 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "reports": "Reports",
+      "dataRequests": "Data requests",
       "auditLog": "Audit log"
     },
     "userMenu": {},
@@ -77,6 +78,46 @@
       "statusUpdated": "Report status updated",
       "searchStatus": "Search status...",
       "noStatusFound": "No status found"
+    },
+    "dataRequests": {
+      "title": "Data requests",
+      "description": "Manage GDPR data subject requests.",
+      "empty": "No data requests found.",
+      "stats": {
+        "pending": "Pending",
+        "inProgress": "In progress"
+      },
+      "colUser": "User",
+      "colType": "Type",
+      "colStatus": "Status",
+      "colDate": "Date",
+      "types": {
+        "access": "Access",
+        "rectification": "Rectification",
+        "erasure": "Erasure",
+        "restriction": "Restriction",
+        "portability": "Portability",
+        "objection": "Objection"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "denied": "Denied"
+      },
+      "detail": {
+        "title": "Request details",
+        "userInfo": "User information",
+        "requestInfo": "Request information",
+        "adminNotes": "Admin notes",
+        "notesPlaceholder": "Add internal notes about this request...",
+        "updateStatus": "Update status",
+        "backToList": "Back to data requests",
+        "liftRestriction": "Lift processing restriction",
+        "statusUpdated": "Request status updated"
+      },
+      "filterByStatus": "Filter by status",
+      "allStatuses": "All statuses"
     },
     "auditLog": {
       "title": "Audit log",

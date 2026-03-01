@@ -66,18 +66,42 @@
     },
     "faq": {
       "costs": [
-        { "question": "Ist OpenHospi wirklich kostenlos?", "answer": "Ja, OpenHospi ist für alle Studierenden völlig kostenlos. Es gibt keine versteckten Kosten, keine Premium-Pläne und keine Werbung. Wir finanzieren uns durch Spenden und Sponsoring." },
-        { "question": "Wie wird OpenHospi finanziert?", "answer": "OpenHospi wird durch individuelle Spenden, Universitätssponsoring und freiwillige Open-Source-Beiträge finanziert. Alle Finanzen sind über Open Collective transparent einsehbar." },
-        { "question": "Wird OpenHospi jemals kostenpflichtig?", "answer": "Nein. OpenHospi wird niemals Freemium oder Pay-to-Win sein. Kein Studierender muss jemals zahlen, um die Plattform zu nutzen oder mehr Sichtbarkeit zu erhalten." }
+        {
+          "question": "Ist OpenHospi wirklich kostenlos?",
+          "answer": "Ja, OpenHospi ist für alle Studierenden völlig kostenlos. Es gibt keine versteckten Kosten, keine Premium-Pläne und keine Werbung. Wir finanzieren uns durch Spenden und Sponsoring."
+        },
+        {
+          "question": "Wie wird OpenHospi finanziert?",
+          "answer": "OpenHospi wird durch individuelle Spenden, Universitätssponsoring und freiwillige Open-Source-Beiträge finanziert. Alle Finanzen sind über Open Collective transparent einsehbar."
+        },
+        {
+          "question": "Wird OpenHospi jemals kostenpflichtig?",
+          "answer": "Nein. OpenHospi wird niemals Freemium oder Pay-to-Win sein. Kein Studierender muss jemals zahlen, um die Plattform zu nutzen oder mehr Sichtbarkeit zu erhalten."
+        }
       ],
       "safety": [
-        { "question": "Wie werden Nutzer auf OpenHospi verifiziert?", "answer": "Jeder Nutzer meldet sich über SURFconext an, das von der eigenen Universität oder Hochschule verwaltet wird. Das bedeutet, dass nur echte Studierende und Mitarbeiter niederländischer Bildungseinrichtungen die Plattform nutzen können." },
-        { "question": "Sind meine Nachrichten privat?", "answer": "Ja. Alle Chatnachrichten auf OpenHospi sind Ende-zu-Ende verschlüsselt. Nicht einmal OpenHospi kann deine Gespräche lesen." },
-        { "question": "Was passiert, wenn ich einen Nutzer melde?", "answer": "Meldungen werden von unserem Team überprüft. Wir handeln schnell, einschließlich der Sperrung von Nutzern, die gegen unsere Nutzungsbedingungen verstoßen." }
+        {
+          "question": "Wie werden Nutzer auf OpenHospi verifiziert?",
+          "answer": "Jeder Nutzer meldet sich über SURFconext an, das von der eigenen Universität oder Hochschule verwaltet wird. Das bedeutet, dass nur echte Studierende und Mitarbeiter niederländischer Bildungseinrichtungen die Plattform nutzen können."
+        },
+        {
+          "question": "Sind meine Nachrichten privat?",
+          "answer": "Ja. Alle Chatnachrichten auf OpenHospi sind Ende-zu-Ende verschlüsselt. Nicht einmal OpenHospi kann deine Gespräche lesen."
+        },
+        {
+          "question": "Was passiert, wenn ich einen Nutzer melde?",
+          "answer": "Meldungen werden von unserem Team überprüft. Wir handeln schnell, einschließlich der Sperrung von Nutzern, die gegen unsere Nutzungsbedingungen verstoßen."
+        }
       ],
       "findARoom": [
-        { "question": "Wie finde ich ein Zimmer auf OpenHospi?", "answer": "Melde dich mit deinem SURFconext-Konto an, vervollständige dein Profil, durchsuche verfügbare Zimmer nach Stadt und Preis und sende eine persönliche Nachricht an WGs, die dir gefallen." },
-        { "question": "Was ist Hospiteren?", "answer": "Hospiteren ist die traditionelle niederländische Art, Mitbewohner zu finden. WGs laden Kandidaten zu einem Besuch ein, damit beide Seiten sehen können, ob es passt, bevor man einzieht." }
+        {
+          "question": "Wie finde ich ein Zimmer auf OpenHospi?",
+          "answer": "Melde dich mit deinem SURFconext-Konto an, vervollständige dein Profil, durchsuche verfügbare Zimmer nach Stadt und Preis und sende eine persönliche Nachricht an WGs, die dir gefallen."
+        },
+        {
+          "question": "Was ist Hospiteren?",
+          "answer": "Hospiteren ist die traditionelle niederländische Art, Mitbewohner zu finden. WGs laden Kandidaten zu einem Besuch ein, damit beide Seiten sehen können, ob es passt, bevor man einzieht."
+        }
       ]
     }
   },
@@ -110,6 +134,10 @@
       "privacy": "Datenschutz",
       "cookies": "Cookie-Richtlinie",
       "terms": "AGB",
+      "processingRegister": "Verarbeitungsverzeichnis",
+      "legalBasis": "Rechtsgrundlage",
+      "dataProcessors": "Auftragsverarbeiter",
+      "dpia": "DSFA",
       "about": "Über uns",
       "missingAssociation": "Vereinigung fehlt?"
     },
@@ -663,6 +691,150 @@
       "to": "An",
       "subject": "Betreff",
       "body": "Nachricht"
+    }
+  },
+  "processingRegister": {
+    "title": "Verarbeitungsverzeichnis (Art. 30 DSGVO)",
+    "lastUpdated": "Zuletzt aktualisiert: 1. März 2026",
+    "intro": "Gemäß Artikel 30 der DSGVO führt OpenHospi dieses Verzeichnis aller Verarbeitungstätigkeiten personenbezogener Daten.",
+    "sections": {
+      "0": {
+        "title": "1. Nutzerprofile",
+        "content": "Zweck: Bereitstellung der Studentenwohnungsplattform. Datenkategorien: Name, E-Mail, Geburtsdatum, Geschlecht, Studiengang, Einrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Andere Plattformnutzer (eingeschränkte Profilansicht). Aufbewahrung: Bis zur Kontolöschung. Sicherheit: RLS-Richtlinien, verschlüsselter Transport, Zugriffskontrollen."
+      },
+      "1": {
+        "title": "2. Profilfotos",
+        "content": "Zweck: Profilidentifikation. Datenkategorien: bis zu 5 Fotos pro Nutzer. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Andere Plattformnutzer. Aufbewahrung: Bis zur Löschung durch den Nutzer oder Kontolöschung. Sicherheit: Supabase Storage mit Zugriffskontrolle."
+      },
+      "2": {
+        "title": "3. Zimmeranzeigen",
+        "content": "Zweck: Wohnungsmarktplatz-Funktionalität. Datenkategorien: Adresse, Stadt, Koordinaten, Mietpreis, Zimmerdetails, Fotos, Verfügbarkeit. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Alle authentifizierten Nutzer (oder öffentlich bei Nicht-Vereinigungszimmern). Aufbewahrung: Bis zur Löschung der Anzeige oder Kontolöschung. Sicherheit: RLS-Richtlinien, nur Eigentümer kann bearbeiten."
+      },
+      "3": {
+        "title": "4. Bewerbungen",
+        "content": "Zweck: Vermittlung von Suchenden und Zimmern. Datenkategorien: persönliche Nachricht, Bewerbungsstatus. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Zimmereigentümer und Hausmitglieder. Aufbewahrung: Bis zum Zurückziehen oder Kontolöschung. Sicherheit: RLS-Richtlinien beschränken Zugriff auf beteiligte Parteien."
+      },
+      "4": {
+        "title": "5. Chatnachrichten",
+        "content": "Zweck: Kommunikation zwischen Suchenden und Hausmitgliedern. Datenkategorien: verschlüsselter Nachrichteninhalt, Zeitstempel. Rechtsgrundlage: Vertrag (Art. 6(1)(b)). Empfänger: Nur Gesprächsteilnehmer. Aufbewahrung: Bis zur Kontolöschung. Sicherheit: Ende-zu-Ende-Verschlüsselung (AES-256-GCM), nur Teilnehmer können entschlüsseln."
+      },
+      "5": {
+        "title": "6. Sitzungsdaten",
+        "content": "Zweck: Authentifizierung und Sicherheit. Datenkategorien: IP-Adresse, User Agent, Sitzungstoken. Rechtsgrundlage: Berechtigtes Interesse (Art. 6(1)(f)) — Plattformsicherheit. Empfänger: Keine (nur intern). Aufbewahrung: IP-Adresse nach 30 Tagen nach Ablauf anonymisiert; Sitzung nach 90 Tagen gelöscht. Sicherheit: Nur serverseitig, wird nicht geteilt."
+      },
+      "6": {
+        "title": "7. Moderationsdaten",
+        "content": "Zweck: Plattformsicherheit und Missbrauchsprävention. Datenkategorien: Meldungen, Sperrungen, temporär entschlüsselter Nachrichtentext (nur bei gemeldeten Nachrichten). Rechtsgrundlage: Berechtigtes Interesse (Art. 6(1)(f)) — Nutzersicherheit. Empfänger: Nur Admin-Team. Aufbewahrung: Entschlüsselter Nachrichtentext wird 90 Tage nach Abschluss gelöscht. Sicherheit: Nur Admin-Zugriff, Audit-Protokollierung."
+      },
+      "7": {
+        "title": "8. Einwilligungsdatensätze",
+        "content": "Zweck: Nachweis einer gültigen Einwilligung (Art. 7). Datenkategorien: Einwilligungszweck, erteilt/widerrufen Status, IP-Adresse, User Agent, Datenschutzrichtlinien-Version, Zeitstempel. Rechtsgrundlage: Gesetzliche Verpflichtung (Art. 6(1)(c)). Empfänger: Keine (internes Audit). Aufbewahrung: IP-Adresse nach 365 Tagen anonymisiert; Datensätze werden zur Compliance aufbewahrt. Sicherheit: Unveränderlich (kein Update/Löschen), RLS auf eigene Datensätze beschränkt."
+      },
+      "8": {
+        "title": "9. Push-Benachrichtigungs-Abonnements",
+        "content": "Zweck: Zustellung von Push-Benachrichtigungen. Datenkategorien: Endpunkt-URL, Verschlüsselungsschlüssel. Rechtsgrundlage: Einwilligung (Art. 6(1)(a)). Empfänger: Browser-Push-Service. Aufbewahrung: Bis zur Abmeldung durch den Nutzer oder Kontolöschung. Sicherheit: Web-Push-Protokoll mit Verschlüsselung."
+      }
+    }
+  },
+  "dpia": {
+    "title": "Datenschutz-Folgenabschätzung (Art. 35 DSGVO)",
+    "lastUpdated": "Zuletzt aktualisiert: 1. März 2026",
+    "intro": "Diese Datenschutz-Folgenabschätzung bewertet die Risiken der Verarbeitung personenbezogener Daten auf der OpenHospi-Plattform.",
+    "sections": {
+      "0": {
+        "title": "1. Beschreibung der Verarbeitung",
+        "content": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Nutzer authentifizieren sich über SURFconext (institutionelles SSO), erstellen Profile, inserieren Zimmer, durchsuchen Anzeigen, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen."
+      },
+      "1": {
+        "title": "2. Notwendigkeit und Verhältnismäßigkeit",
+        "content": "Die Datenerhebung beschränkt sich auf das für die Plattformfunktion strikt Notwendige. Profildaten ermöglichen das Matching (Vertragsgrundlage). Standortdaten ermöglichen die geografische Suche. E2E-verschlüsselter Chat gewährleistet die Kommunikationsprivatsphäre. Keine Daten werden verkauft oder zu Marketingzwecken mit Dritten geteilt. Es wird keine automatisierte Entscheidungsfindung oder Profiling eingesetzt."
+      },
+      "2": {
+        "title": "3. Risiko: Verarbeitung von Profildaten",
+        "content": "Risiko: Unbefugter Zugriff auf persönliche Profile. Wahrscheinlichkeit: Gering. Auswirkung: Mittel. Maßnahmen: Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über SURFconext erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt. Restrisiko: Gering."
+      },
+      "3": {
+        "title": "4. Risiko: Standortdaten (Zimmerkoordinaten)",
+        "content": "Risiko: Präzise Standortverfolgung über Zimmerkoordinaten. Wahrscheinlichkeit: Gering. Auswirkung: Mittel. Maßnahmen: Koordinaten werden nur für die Kartenanzeige verwendet. Keine Standortverfolgung der Nutzer. Koordinaten beziehen sich auf das Zimmer, nicht den Nutzer. Nur für authentifizierte Nutzer sichtbar. Restrisiko: Gering."
+      },
+      "4": {
+        "title": "5. Risiko: Chatnachrichteninhalt",
+        "content": "Risiko: Abfangen oder unbefugtes Lesen von Nachrichten. Wahrscheinlichkeit: Sehr gering. Auswirkung: Hoch. Maßnahmen: Ende-zu-Ende-Verschlüsselung mit AES-256-GCM. Pro-Nachricht-Schlüssel für jeden Empfänger gewrappt. Private Schlüssel in IndexedDB (clientseitig) gespeichert. Server hat nie Zugriff auf Klartext. Restrisiko: Sehr gering."
+      },
+      "5": {
+        "title": "6. Risiko: Fotospeicherung",
+        "content": "Risiko: Unbefugter Zugriff auf Profil- oder Zimmerfotos. Wahrscheinlichkeit: Gering. Auswirkung: Mittel. Maßnahmen: Supabase Storage mit Zugriffsrichtlinien. Fotos nur für authentifizierte Nutzer zugänglich. Löschung kaskadiert bei Kontoentfernung. Restrisiko: Gering."
+      },
+      "6": {
+        "title": "7. Risiko: SURFconext-Daten",
+        "content": "Risiko: Übermäßige Datenerhebung vom SSO-Anbieter. Wahrscheinlichkeit: Sehr gering. Auswirkung: Gering. Maßnahmen: Es werden nur Name, E-Mail und Einrichtungsdomain von SURFconext empfangen. Keine zusätzlichen Attribute angefordert. SURFconext wird von SURF (Niederlande) verwaltet. Restrisiko: Sehr gering."
+      },
+      "7": {
+        "title": "8. Risiko: Moderation — temporär entschlüsselte Nachrichten",
+        "content": "Risiko: Offenlegung privater Nachrichteninhalte während der Moderation. Wahrscheinlichkeit: Gering (nur bei Nutzermeldung). Auswirkung: Mittel. Maßnahmen: Nur der meldende Nutzer liefert den entschlüsselten Text. Temporäre Speicherung mit automatischer 90-Tage-Löschung. Nur Admin-Zugriff mit vollständiger Audit-Protokollierung. Restrisiko: Gering."
+      },
+      "8": {
+        "title": "9. Daten von Kindern (Art. 8)",
+        "content": "Alle Nutzer authentifizieren sich über SURFconext, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt effektiv sicher, dass alle Nutzer 16+ sind (die niederländische UAVG-Schwelle). Eine separate Altersverifikation ist nicht erforderlich."
+      },
+      "9": {
+        "title": "10. Fazit",
+        "content": "Die Verarbeitungstätigkeiten von OpenHospi weisen nach Umsetzung der Maßnahmen akzeptable Restrisiken auf. Die Plattform implementiert Datenschutz durch Technikgestaltung und datenschutzfreundliche Voreinstellungen durch E2E-Verschlüsselung, RLS, Datenminimierung, automatisierte Aufbewahrung und transparente Verarbeitung. Es verbleiben keine hohen Restrisiken, die eine Konsultation der Autoriteit Persoonsgegevens nach Art. 36 erfordern würden."
+      }
+    }
+  },
+  "dataProcessors": {
+    "title": "Auftragsverarbeiter (Art. 28 DSGVO)",
+    "lastUpdated": "Zuletzt aktualisiert: 1. März 2026",
+    "intro": "OpenHospi nutzt die folgenden externen Auftragsverarbeiter. Alle Auftragsverarbeiter befinden sich innerhalb der EU/des EWR. Es werden keine personenbezogenen Daten außerhalb des Europäischen Wirtschaftsraums übermittelt.",
+    "sections": {
+      "0": {
+        "title": "1. Supabase (Datenbank & Speicher)",
+        "content": "Rolle: Datenbank-Hosting (PostgreSQL) und Dateispeicher (Profilfotos, Zimmerfotos). Standort: Dublin, Irland (eu-west-1). Verarbeitete Daten: Alle in der Datenbank gespeicherten personenbezogenen Daten, hochgeladene Fotos. AVV: Supabase-Auftragsverarbeitungsvertrag liegt vor. Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung, SOC 2 Typ II zertifiziert."
+      },
+      "1": {
+        "title": "2. Vercel (Webhosting & Edge)",
+        "content": "Rolle: Webanwendungs-Hosting, Serverless Functions, Edge-Netzwerk. Standort: Dublin, Irland (eu-west-1). Verarbeitete Daten: HTTP-Anfragen (IP-Adresse, User Agent) in Serverprotokollen. AVV: Vercel Data Processing Addendum liegt vor. Sicherheit: Automatisches HTTPS, DDoS-Schutz, SOC 2 Typ II zertifiziert."
+      },
+      "2": {
+        "title": "3. Upstash (Redis — Ratenbegrenzung)",
+        "content": "Rolle: Redis-Datenbank für Ratenbegrenzung und Missbrauchsprävention. Standort: Irland (AWS eu-west-1). Verarbeitete Daten: Anonymisierte Ratenbegrenzungszähler (User-ID-Hashes). Keine personenbezogenen Daten gespeichert. AVV: Upstash DSGVO-AVV liegt vor. Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung."
+      },
+      "3": {
+        "title": "4. SURFconext (SSO/OIDC-Anbieter)",
+        "content": "Rolle: Identitätsanbieter für die Studierendenauthentifizierung. Standort: Niederlande (SURF-Infrastruktur). Verarbeitete Daten: Authentifizierungstoken, Name, E-Mail, Einrichtungsdomain (bei der Anmeldung empfangen). AVV: SURF arbeitet unter niederländischem Recht als Bildungsinfrastrukturanbieter. Sicherheit: SAML/OIDC-Protokolle, Sicherheit auf institutionellem Niveau."
+      }
+    }
+  },
+  "legalBasis": {
+    "title": "Rechtsgrundlagenübersicht (Art. 6 DSGVO)",
+    "lastUpdated": "Zuletzt aktualisiert: 1. März 2026",
+    "intro": "Diese Seite bietet einen Überblick über die Rechtsgrundlage für jede Datenverarbeitungstätigkeit bei OpenHospi gemäß Artikel 6 der DSGVO.",
+    "sections": {
+      "0": {
+        "title": "1. Vertrag (Art. 6(1)(b))",
+        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung unseres Vertrags mit dir (Bereitstellung der Studentenwohnungsplattform) erforderlich: Erstellung und Verwaltung des Nutzerprofils. Upload von Profilfotos. Erstellung und Verwaltung von Zimmeranzeigen. Einreichung und Verarbeitung von Bewerbungen. Chat-Messaging (E2E-verschlüsselt). Verwaltung der Hausmitgliedschaft. Abstimmung über Bewerbungen."
+      },
+      "1": {
+        "title": "2. Einwilligung (Art. 6(1)(a))",
+        "content": "Die folgenden Verarbeitungstätigkeiten basieren auf deiner ausdrücklichen Einwilligung, die du jederzeit über Einstellungen > Datenschutz widerrufen kannst: Funktionale Cookies (Seitenleistenstatus, Spracheinstellung). Zustellung von Push-Benachrichtigungen. Analysen (Vercel Analytics — cookielos, keine personenbezogenen Daten). Die Einwilligung kann in deinen Kontoeinstellungen oder über das Cookie-Banner verwaltet werden."
+      },
+      "2": {
+        "title": "3. Berechtigtes Interesse (Art. 6(1)(f))",
+        "content": "Die folgenden Verarbeitungstätigkeiten basieren auf unserem berechtigten Interesse an Plattformsicherheit und Nutzerschutz: Sitzungsdaten (IP-Adresse, User Agent) — zur Sicherheitsüberwachung. Moderationsdaten (Meldungen, Sperrungen) — für die Plattformsicherheit. Temporär entschlüsselter Nachrichtentext — zur Untersuchung gemeldeter Nachrichten. Wir haben diese Interessen gegen deine Rechte abgewogen und festgestellt, dass die Verarbeitung verhältnismäßig und notwendig ist."
+      },
+      "3": {
+        "title": "4. Gesetzliche Verpflichtung (Art. 6(1)(c))",
+        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung gesetzlicher Verpflichtungen erforderlich: Einwilligungsdatensätze (unveränderlicher Audit-Trail) — zum Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO. Bearbeitung von Datenanfragen — zur Erfüllung der Betroffenenrechte (Art. 15-22). Verarbeitungseinschränkungsdatensätze — zur Einhaltung des Rechts auf Einschränkung nach Art. 18."
+      },
+      "4": {
+        "title": "5. Keine automatisierte Entscheidungsfindung",
+        "content": "OpenHospi verwendet keine automatisierte Entscheidungsfindung oder Profiling im Sinne von Artikel 22 der DSGVO. Die Zimmervermittlung ist vollständig manuell — Nutzer durchsuchen Anzeigen und reichen Bewerbungen selbst ein. Hausmitglieder stimmen über Bewerber in einem manuellen Abstimmungsprozess ab. Keine Algorithmen bestimmen, wer eine Wohnung bekommt."
+      },
+      "5": {
+        "title": "6. Kontakt",
+        "content": "Bei Fragen zur Rechtsgrundlage für die Verarbeitung deiner Daten kontaktiere uns unter privacy@openhospi.nl. Du hast außerdem das Recht, eine Beschwerde bei der niederländischen Datenschutzbehörde (Autoriteit Persoonsgegevens) unter autoriteitpersoonsgegevens.nl einzureichen."
+      }
     }
   }
 }

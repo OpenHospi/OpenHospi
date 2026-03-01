@@ -66,18 +66,42 @@
     },
     "faq": {
       "costs": [
-        { "question": "Is OpenHospi echt gratis?", "answer": "Ja, OpenHospi is volledig gratis voor alle studenten. Er zijn geen verborgen kosten, geen premium plannen en geen advertenties. We worden gefinancierd door donaties en sponsoring." },
-        { "question": "Hoe wordt OpenHospi gefinancierd?", "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective." },
-        { "question": "Wordt OpenHospi ooit betaald?", "answer": "Nee. OpenHospi wordt nooit freemium of pay-to-win. Geen student hoeft ooit te betalen om het platform te gebruiken of meer zichtbaarheid te krijgen." }
+        {
+          "question": "Is OpenHospi echt gratis?",
+          "answer": "Ja, OpenHospi is volledig gratis voor alle studenten. Er zijn geen verborgen kosten, geen premium plannen en geen advertenties. We worden gefinancierd door donaties en sponsoring."
+        },
+        {
+          "question": "Hoe wordt OpenHospi gefinancierd?",
+          "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective."
+        },
+        {
+          "question": "Wordt OpenHospi ooit betaald?",
+          "answer": "Nee. OpenHospi wordt nooit freemium of pay-to-win. Geen student hoeft ooit te betalen om het platform te gebruiken of meer zichtbaarheid te krijgen."
+        }
       ],
       "safety": [
-        { "question": "Hoe worden gebruikers geverifieerd op OpenHospi?", "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten en medewerkers van Nederlandse onderwijsinstellingen het platform kunnen gebruiken." },
-        { "question": "Zijn mijn berichten privé?", "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld. Zelfs OpenHospi kan je gesprekken niet lezen." },
-        { "question": "Wat gebeurt er als ik een gebruiker meld?", "answer": "Meldingen worden beoordeeld door ons team. We handelen snel, inclusief het blokkeren van gebruikers die onze voorwaarden schenden." }
+        {
+          "question": "Hoe worden gebruikers geverifieerd op OpenHospi?",
+          "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten en medewerkers van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
+        },
+        {
+          "question": "Zijn mijn berichten privé?",
+          "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld. Zelfs OpenHospi kan je gesprekken niet lezen."
+        },
+        {
+          "question": "Wat gebeurt er als ik een gebruiker meld?",
+          "answer": "Meldingen worden beoordeeld door ons team. We handelen snel, inclusief het blokkeren van gebruikers die onze voorwaarden schenden."
+        }
       ],
       "findARoom": [
-        { "question": "Hoe vind ik een kamer op OpenHospi?", "answer": "Log in met je SURFconext-account, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt." },
-        { "question": "Wat is hospiteren?", "answer": "Hospiteren is de traditionele Nederlandse manier om huisgenoten te vinden. Huizen nodigen kandidaten uit voor een bezoek zodat beide kanten kunnen zien of het een goede match is voordat je intrekt." }
+        {
+          "question": "Hoe vind ik een kamer op OpenHospi?",
+          "answer": "Log in met je SURFconext-account, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt."
+        },
+        {
+          "question": "Wat is hospiteren?",
+          "answer": "Hospiteren is de traditionele Nederlandse manier om huisgenoten te vinden. Huizen nodigen kandidaten uit voor een bezoek zodat beide kanten kunnen zien of het een goede match is voordat je intrekt."
+        }
       ]
     }
   },
@@ -111,7 +135,11 @@
       "cookies": "Cookiebeleid",
       "terms": "Voorwaarden",
       "about": "Over ons",
-      "missingAssociation": "Vereniging mist?"
+      "missingAssociation": "Vereniging mist?",
+      "processingRegister": "Verwerkingsregister",
+      "legalBasis": "Rechtsgronden",
+      "dataProcessors": "Verwerkers",
+      "dpia": "DPIA"
     },
     "tagline": "Gratis, open-source studentenhuisvesting voor Nederland.",
     "openSource": "Open source",
@@ -663,6 +691,150 @@
       "to": "Aan",
       "subject": "Onderwerp",
       "body": "Bericht"
+    }
+  },
+  "processingRegister": {
+    "title": "Verwerkingsregister (Art. 30 AVG)",
+    "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
+    "intro": "Conform artikel 30 van de AVG houdt OpenHospi dit register bij van alle verwerkingsactiviteiten van persoonsgegevens.",
+    "sections": {
+      "0": {
+        "title": "1. Gebruikersprofielen",
+        "content": "Doel: Het leveren van de studentenhuisvestingsdienst. Gegevenscategorieën: naam, e-mail, geboortedatum, geslacht, studierichting, instelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Andere platformgebruikers (beperkt profieloverzicht). Bewaartermijn: Tot accountverwijdering. Beveiliging: RLS-beleid, versleuteld transport, toegangscontrole."
+      },
+      "1": {
+        "title": "2. Profielfoto's",
+        "content": "Doel: Profielidentificatie. Gegevenscategorieën: maximaal 5 foto's per gebruiker. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Andere platformgebruikers. Bewaartermijn: Tot verwijdering door gebruiker of accountverwijdering. Beveiliging: Supabase Storage met toegangscontrole."
+      },
+      "2": {
+        "title": "3. Kameradvertenties",
+        "content": "Doel: Woningmarktfunctionaliteit. Gegevenscategorieën: adres, stad, coördinaten, huurprijs, kamerdetails, foto's, beschikbaarheid. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Alle geauthenticeerde gebruikers. Bewaartermijn: Tot verwijdering of accountverwijdering. Beveiliging: RLS-beleid, alleen eigenaar kan bewerken."
+      },
+      "3": {
+        "title": "4. Sollicitaties",
+        "content": "Doel: Matching van zoekenden met kamers. Gegevenscategorieën: persoonlijk bericht, sollicitatiestatus. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Kamereigenaar en huisgenoten. Bewaartermijn: Tot intrekking of accountverwijdering. Beveiliging: RLS-beleid beperkt tot betrokken partijen."
+      },
+      "4": {
+        "title": "5. Chatberichten",
+        "content": "Doel: Communicatie tussen zoekenden en huisgenoten. Gegevenscategorieën: versleutelde berichtinhoud, tijdstempels. Rechtsgrond: Overeenkomst (Art. 6(1)(b)). Ontvangers: Alleen gespreksdeelnemers. Bewaartermijn: Tot accountverwijdering. Beveiliging: End-to-end encryptie (AES-256-GCM), alleen deelnemers kunnen ontsleutelen."
+      },
+      "5": {
+        "title": "6. Sessiegegevens",
+        "content": "Doel: Authenticatie en beveiliging. Gegevenscategorieën: IP-adres, user agent, sessietoken. Rechtsgrond: Gerechtvaardigd belang (Art. 6(1)(f)). Ontvangers: Geen (alleen intern). Bewaartermijn: IP-adres gewist na 30 dagen na verlopen; sessie verwijderd na 90 dagen. Beveiliging: Alleen server-side."
+      },
+      "6": {
+        "title": "7. Moderatiegegevens",
+        "content": "Doel: Platformveiligheid en misbruikpreventie. Gegevenscategorieën: meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst. Rechtsgrond: Gerechtvaardigd belang (Art. 6(1)(f)). Ontvangers: Alleen adminteam. Bewaartermijn: Ontsleutelde berichttekst verwijderd 90 dagen na afhandeling. Beveiliging: Alleen admin-toegang, auditlogging."
+      },
+      "7": {
+        "title": "8. Toestemmingsregistratie",
+        "content": "Doel: Aantonen van geldige toestemming (Art. 7). Gegevenscategorieën: toestemmingsdoel, verleend/ingetrokken status, IP-adres, user agent, privacybeleidversie, tijdstempel. Rechtsgrond: Wettelijke verplichting (Art. 6(1)(c)). Ontvangers: Geen (interne audit). Bewaartermijn: IP-adres gewist na 365 dagen; records bewaard voor compliance."
+      },
+      "8": {
+        "title": "9. Pushmeldingsabonnementen",
+        "content": "Doel: Bezorgen van pushmeldingen. Gegevenscategorieën: endpoint-URL, encryptiesleutels. Rechtsgrond: Toestemming (Art. 6(1)(a)). Ontvangers: Browser push-service. Bewaartermijn: Tot uitschrijving of accountverwijdering. Beveiliging: Web Push-protocol met encryptie."
+      }
+    }
+  },
+  "dpia": {
+    "title": "Gegevensbeschermingseffectbeoordeling (Art. 35 AVG)",
+    "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
+    "intro": "Deze gegevensbeschermingseffectbeoordeling evalueert de risico's van persoonsgegevensverwerking op het OpenHospi-platform.",
+    "sections": {
+      "0": {
+        "title": "1. Beschrijving van de verwerking",
+        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via SURFconext (institutionele SSO), maken profielen aan, plaatsen kamers, bekijken advertenties, solliciteren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen."
+      },
+      "1": {
+        "title": "2. Noodzaak en evenredigheid",
+        "content": "Gegevensverzameling is beperkt tot wat strikt noodzakelijk is. Profielgegevens maken matching mogelijk (contractbasis). Locatiegegevens maken geografisch zoeken mogelijk. E2E-versleutelde chat waarborgt communicatieprivacy. Geen gegevens worden verkocht of gedeeld met derden voor marketing. Geen geautomatiseerde besluitvorming of profilering."
+      },
+      "2": {
+        "title": "3. Risico: Profielgegevensverwerking",
+        "content": "Risico: Ongeautoriseerde toegang tot profielen. Waarschijnlijkheid: Laag. Impact: Gemiddeld. Maatregelen: Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via SURFconext. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers. Restrisico: Laag."
+      },
+      "3": {
+        "title": "4. Risico: Locatiegegevens",
+        "content": "Risico: Precieze locatiebepaling via kamercoördinaten. Waarschijnlijkheid: Laag. Impact: Gemiddeld. Maatregelen: Coördinaten alleen voor kaartweergave. Geen locatietracking van gebruikers. Alleen zichtbaar voor geauthenticeerde gebruikers. Restrisico: Laag."
+      },
+      "4": {
+        "title": "5. Risico: Chatberichtinhoud",
+        "content": "Risico: Onderschepping of ongeautoriseerd lezen van berichten. Waarschijnlijkheid: Zeer laag. Impact: Hoog. Maatregelen: End-to-end encryptie met AES-256-GCM. Per-bericht sleutels gewrapped voor elke ontvanger. Privésleutels in IndexedDB (client-side). Server heeft nooit toegang tot platte tekst. Restrisico: Zeer laag."
+      },
+      "5": {
+        "title": "6. Risico: Foto-opslag",
+        "content": "Risico: Ongeautoriseerde toegang tot foto's. Waarschijnlijkheid: Laag. Impact: Gemiddeld. Maatregelen: Supabase Storage met toegangsbeleid. Foto's alleen toegankelijk voor geauthenticeerde gebruikers. Verwijdering cascadeert bij accountverwijdering. Restrisico: Laag."
+      },
+      "6": {
+        "title": "7. Risico: SURFconext-gegevens",
+        "content": "Risico: Oververzameling van SSO-provider. Waarschijnlijkheid: Zeer laag. Impact: Laag. Maatregelen: Alleen naam, e-mail en instellingsdomein ontvangen van SURFconext. Geen extra attributen opgevraagd. SURFconext wordt beheerd door SURF (Nederland). Restrisico: Zeer laag."
+      },
+      "7": {
+        "title": "8. Risico: Moderatie — tijdelijk ontsleutelde berichten",
+        "content": "Risico: Blootstelling van privéberichtinhoud tijdens moderatie. Waarschijnlijkheid: Laag (alleen bij melding). Impact: Gemiddeld. Maatregelen: Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Alleen admin-toegang met volledige auditlogging. Restrisico: Laag."
+      },
+      "8": {
+        "title": "9. Kinderdata (Art. 8)",
+        "content": "Alle gebruikers authenticeren via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16+ zijn (de Nederlandse UAVG-drempel). Geen aparte leeftijdsverificatie nodig."
+      },
+      "9": {
+        "title": "10. Conclusie",
+        "content": "De verwerkingsactiviteiten van OpenHospi presenteren aanvaardbare restrisico's na maatregelen. Het platform implementeert privacy by design en by default door E2E-encryptie, RLS, dataminimalisatie, geautomatiseerde retentie en transparante verwerking. Er blijven geen hoge restrisico's over die consultatie met de Autoriteit Persoonsgegevens vereisen onder Art. 36."
+      }
+    }
+  },
+  "dataProcessors": {
+    "title": "Verwerkers (Art. 28 AVG)",
+    "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
+    "intro": "OpenHospi maakt gebruik van de volgende externe verwerkers. Alle verwerkers bevinden zich binnen de EU/EER. Er worden geen persoonsgegevens buiten de Europese Economische Ruimte doorgegeven.",
+    "sections": {
+      "0": {
+        "title": "1. Supabase (Database & Opslag)",
+        "content": "Rol: Database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's). Locatie: Dublin, Ierland (eu-west-1). Verwerkte gegevens: Alle persoonsgegevens in de database, geüploade foto's. Verwerkersovereenkomst: Supabase Data Processing Agreement aanwezig. Beveiliging: Encryptie at rest en in transit, SOC 2 Type II gecertificeerd."
+      },
+      "1": {
+        "title": "2. Vercel (Webhosting & Edge)",
+        "content": "Rol: Webapplicatie-hosting, serverless functies, edge-netwerk. Locatie: Dublin, Ierland (eu-west-1). Verwerkte gegevens: HTTP-verzoeken (IP-adres, user agent) in serverlogs. Verwerkersovereenkomst: Vercel Data Processing Addendum aanwezig. Beveiliging: Automatisch HTTPS, DDoS-bescherming, SOC 2 Type II gecertificeerd."
+      },
+      "2": {
+        "title": "3. Upstash (Redis — Rate Limiting)",
+        "content": "Rol: Redis-database voor rate limiting en misbruikpreventie. Locatie: Ierland (AWS eu-west-1). Verwerkte gegevens: Geanonimiseerde rate limit-tellers (gebruikers-ID hashes). Geen persoonsgegevens opgeslagen. Verwerkersovereenkomst: Upstash GDPR DPA aanwezig. Beveiliging: Encryptie at rest en in transit."
+      },
+      "3": {
+        "title": "4. SURFconext (SSO/OIDC-provider)",
+        "content": "Rol: Identiteitsprovider voor studentenauthenticatie. Locatie: Nederland (SURF-infrastructuur). Verwerkte gegevens: Authenticatietokens, naam, e-mail, instellingsdomein (ontvangen bij inloggen). Verwerkersovereenkomst: SURF opereert onder Nederlands recht als onderwijsinfrastructuurprovider. Beveiliging: SAML/OIDC-protocollen, institutionele beveiliging."
+      }
+    }
+  },
+  "legalBasis": {
+    "title": "Rechtsgrondenoverzicht (Art. 6 AVG)",
+    "lastUpdated": "Laatst bijgewerkt: 1 maart 2026",
+    "intro": "Deze pagina geeft een overzicht van de rechtsgrond voor elke verwerkingsactiviteit bij OpenHospi, conform artikel 6 van de AVG.",
+    "sections": {
+      "0": {
+        "title": "1. Overeenkomst (Art. 6(1)(b))",
+        "content": "De volgende verwerkingen zijn noodzakelijk voor de uitvoering van onze overeenkomst (het leveren van het studentenhuisvestingsplatform): Aanmaken en beheren van gebruikersprofielen. Uploaden van profielfoto's. Aanmaken en beheren van kameradvertenties. Indienen en verwerken van sollicitaties. Chatberichten (E2E versleuteld). Beheer van huislidmaatschappen. Stemmen op sollicitanten."
+      },
+      "1": {
+        "title": "2. Toestemming (Art. 6(1)(a))",
+        "content": "De volgende verwerkingen zijn gebaseerd op jouw uitdrukkelijke toestemming, die je op elk moment kunt intrekken via Instellingen > Privacy: Functionele cookies (zijbalkstatus, taalvoorkeur). Pushmeldingen. Analytics (Vercel Analytics — cookieloos, geen PII). Toestemming beheren kan in je accountinstellingen of via de cookieconsentbanner."
+      },
+      "2": {
+        "title": "3. Gerechtvaardigd belang (Art. 6(1)(f))",
+        "content": "De volgende verwerkingen zijn gebaseerd op ons gerechtvaardigd belang bij platformbeveiliging en gebruikersveiligheid: Sessiegegevens (IP-adres, user agent) — voor beveiligingsmonitoring. Moderatiegegevens (meldingen, blokkeringen) — voor platformveiligheid. Tijdelijk ontsleutelde berichttekst — voor onderzoek van gemelde berichten. We hebben deze belangen afgewogen tegen jouw rechten."
+      },
+      "3": {
+        "title": "4. Wettelijke verplichting (Art. 6(1)(c))",
+        "content": "De volgende verwerkingen zijn noodzakelijk om te voldoen aan wettelijke verplichtingen: Toestemmingsregistratie (onveranderlijk audittrail) — om geldige toestemming aan te tonen per Art. 7 AVG. Verwerking van gegevensverzoeken — om rechten van betrokkenen te vervullen (Art. 15-22). Verwerkingsbeperkingsregistratie — om te voldoen aan Art. 18 recht op beperking."
+      },
+      "4": {
+        "title": "5. Geen geautomatiseerde besluitvorming",
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde besluitvorming of profilering zoals gedefinieerd in artikel 22 van de AVG. Kamermatching is volledig handmatig — gebruikers bekijken advertenties en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie huisvesting krijgt."
+      },
+      "5": {
+        "title": "6. Contact",
+        "content": "Heb je vragen over de rechtsgrond voor de verwerking van je gegevens? Neem contact op via privacy@openhospi.nl. Je hebt ook het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens via autoriteitpersoonsgegevens.nl."
+      }
     }
   }
 }

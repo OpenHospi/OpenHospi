@@ -66,18 +66,42 @@
     },
     "faq": {
       "costs": [
-        { "question": "Is OpenHospi really free?", "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships." },
-        { "question": "How is OpenHospi funded?", "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective." },
-        { "question": "Will OpenHospi ever become paid?", "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility." }
+        {
+          "question": "Is OpenHospi really free?",
+          "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships."
+        },
+        {
+          "question": "How is OpenHospi funded?",
+          "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective."
+        },
+        {
+          "question": "Will OpenHospi ever become paid?",
+          "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility."
+        }
       ],
       "safety": [
-        { "question": "How are users verified on OpenHospi?", "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform." },
-        { "question": "Are my messages private?", "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations." },
-        { "question": "What happens when I report a user?", "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service." }
+        {
+          "question": "How are users verified on OpenHospi?",
+          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform."
+        },
+        {
+          "question": "Are my messages private?",
+          "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations."
+        },
+        {
+          "question": "What happens when I report a user?",
+          "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service."
+        }
       ],
       "findARoom": [
-        { "question": "How do I find a room on OpenHospi?", "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like." },
-        { "question": "What is hospiteren?", "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in." }
+        {
+          "question": "How do I find a room on OpenHospi?",
+          "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like."
+        },
+        {
+          "question": "What is hospiteren?",
+          "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in."
+        }
       ]
     }
   },
@@ -111,7 +135,11 @@
       "cookies": "Cookie policy",
       "terms": "Terms & conditions",
       "about": "About",
-      "missingAssociation": "Association missing?"
+      "missingAssociation": "Association missing?",
+      "processingRegister": "Processing register",
+      "legalBasis": "Legal basis",
+      "dataProcessors": "Data processors",
+      "dpia": "DPIA"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -663,6 +691,150 @@
       "to": "To",
       "subject": "Subject",
       "body": "Message"
+    }
+  },
+  "processingRegister": {
+    "title": "Processing Register (Art. 30 GDPR)",
+    "lastUpdated": "Last updated: March 1, 2026",
+    "intro": "In accordance with Article 30 of the GDPR, OpenHospi maintains this register of all personal data processing activities.",
+    "sections": {
+      "0": {
+        "title": "1. User profiles",
+        "content": "Purpose: Providing the student housing platform service. Data categories: name, email, date of birth, gender, study programme, institution, bio, lifestyle tags, preferred city, available from date, max rent. Legal basis: Contract (Art. 6(1)(b)). Recipients: Other platform users (limited profile view). Retention: Until account deletion. Security: RLS policies, encrypted transport, access controls."
+      },
+      "1": {
+        "title": "2. Profile photos",
+        "content": "Purpose: Profile identification. Data categories: up to 5 photos per user. Legal basis: Contract (Art. 6(1)(b)). Recipients: Other platform users. Retention: Until deletion by user or account deletion. Security: Supabase Storage with access controls."
+      },
+      "2": {
+        "title": "3. Room listings",
+        "content": "Purpose: Housing marketplace functionality. Data categories: address, city, coordinates, rent price, room details, photos, availability. Legal basis: Contract (Art. 6(1)(b)). Recipients: All authenticated users (or public for non-association rooms). Retention: Until listing deletion or account deletion. Security: RLS policies, owner-only editing."
+      },
+      "3": {
+        "title": "4. Applications",
+        "content": "Purpose: Matching seekers with rooms. Data categories: personal message, application status. Legal basis: Contract (Art. 6(1)(b)). Recipients: Room owner and house members. Retention: Until withdrawal or account deletion. Security: RLS policies restricting access to involved parties."
+      },
+      "4": {
+        "title": "5. Chat messages",
+        "content": "Purpose: Communication between seekers and house members. Data categories: encrypted message content, timestamps. Legal basis: Contract (Art. 6(1)(b)). Recipients: Conversation participants only. Retention: Until account deletion. Security: End-to-end encryption (AES-256-GCM), only participants can decrypt."
+      },
+      "5": {
+        "title": "6. Session data",
+        "content": "Purpose: Authentication and security. Data categories: IP address, user agent, session token. Legal basis: Legitimate interest (Art. 6(1)(f)) — platform security. Recipients: None (internal only). Retention: IP address nullified after 30 days post-expiry; session deleted after 90 days. Security: Server-side only, not shared."
+      },
+      "6": {
+        "title": "7. Moderation data",
+        "content": "Purpose: Platform safety and abuse prevention. Data categories: reports, blocks, temporarily decrypted message text (for reported messages only). Legal basis: Legitimate interest (Art. 6(1)(f)) — user safety. Recipients: Admin team only. Retention: Decrypted message text deleted 90 days after resolution. Security: Admin-only access, audit logging."
+      },
+      "7": {
+        "title": "8. Consent records",
+        "content": "Purpose: Demonstrating valid consent (Art. 7). Data categories: consent purpose, granted/revoked status, IP address, user agent, privacy policy version, timestamp. Legal basis: Legal obligation (Art. 6(1)(c)). Recipients: None (internal audit). Retention: IP address nullified after 365 days; records retained for compliance. Security: Immutable (no update/delete), RLS restricted to own records."
+      },
+      "8": {
+        "title": "9. Push notification subscriptions",
+        "content": "Purpose: Delivering push notifications. Data categories: endpoint URL, encryption keys. Legal basis: Consent (Art. 6(1)(a)). Recipients: Browser push service. Retention: Until user unsubscribes or account deletion. Security: Web Push protocol with encryption."
+      }
+    }
+  },
+  "dpia": {
+    "title": "Data Protection Impact Assessment (Art. 35 GDPR)",
+    "lastUpdated": "Last updated: March 1, 2026",
+    "intro": "This Data Protection Impact Assessment evaluates the risks associated with personal data processing on the OpenHospi platform.",
+    "sections": {
+      "0": {
+        "title": "1. Description of processing",
+        "content": "OpenHospi is a free, open-source student housing platform for the Netherlands. Users authenticate via SURFconext (institutional SSO), create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions."
+      },
+      "1": {
+        "title": "2. Necessity and proportionality",
+        "content": "Data collection is limited to what is strictly necessary for the platform to function. Profile data enables matching (contract basis). Location data enables geographic search. E2E encrypted chat ensures communication privacy. No data is sold or shared with third parties for marketing. No automated decision-making or profiling is used."
+      },
+      "2": {
+        "title": "3. Risk: Profile data processing",
+        "content": "Risk: Unauthorized access to personal profiles. Likelihood: Low. Impact: Medium. Mitigations: Row-Level Security (RLS) on all database tables. Authentication required via SURFconext. Profile visibility limited to authenticated users. Residual risk: Low."
+      },
+      "3": {
+        "title": "4. Risk: Location data (room coordinates)",
+        "content": "Risk: Precise location tracking via room coordinates. Likelihood: Low. Impact: Medium. Mitigations: Coordinates used only for map display. No location tracking of users. Coordinates are of the room, not the user. Only visible to authenticated users. Residual risk: Low."
+      },
+      "4": {
+        "title": "5. Risk: Chat message content",
+        "content": "Risk: Interception or unauthorized reading of messages. Likelihood: Very low. Impact: High. Mitigations: End-to-end encryption with AES-256-GCM. Per-message keys wrapped for each recipient. Private keys stored in IndexedDB (client-side). Server never has access to plaintext. Residual risk: Very low."
+      },
+      "5": {
+        "title": "6. Risk: Photo storage",
+        "content": "Risk: Unauthorized access to profile or room photos. Likelihood: Low. Impact: Medium. Mitigations: Supabase Storage with access policies. Photos only accessible to authenticated users. Deletion cascades on account removal. Residual risk: Low."
+      },
+      "6": {
+        "title": "7. Risk: SURFconext data",
+        "content": "Risk: Over-collection from SSO provider. Likelihood: Very low. Impact: Low. Mitigations: Only name, email, and institution domain are received from SURFconext. No additional attributes requested. SURFconext is managed by SURF (Netherlands). Residual risk: Very low."
+      },
+      "7": {
+        "title": "8. Risk: Moderation — temporarily decrypted messages",
+        "content": "Risk: Exposure of private message content during moderation. Likelihood: Low (only on user report). Impact: Medium. Mitigations: Only the reporting user provides the decrypted text. Stored temporarily with 90-day auto-deletion. Admin-only access with full audit logging. Residual risk: Low."
+      },
+      "8": {
+        "title": "9. Children's data (Art. 8)",
+        "content": "All users authenticate via SURFconext, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16+ (the Dutch UAVG threshold). No separate age verification is needed."
+      },
+      "9": {
+        "title": "10. Conclusion",
+        "content": "The processing activities of OpenHospi present acceptable residual risks after mitigations. The platform implements privacy by design and by default through E2E encryption, RLS, data minimization, automated retention, and transparent processing. No high residual risks remain that would require consultation with the Autoriteit Persoonsgegevens under Art. 36."
+      }
+    }
+  },
+  "dataProcessors": {
+    "title": "Data Processors (Art. 28 GDPR)",
+    "lastUpdated": "Last updated: March 1, 2026",
+    "intro": "OpenHospi uses the following third-party data processors. All processors are located within the EU/EEA. No personal data is transferred outside the European Economic Area.",
+    "sections": {
+      "0": {
+        "title": "1. Supabase (Database & Storage)",
+        "content": "Role: Database hosting (PostgreSQL) and file storage (profile photos, room photos). Location: Dublin, Ireland (eu-west-1). Data processed: All personal data stored in the database, uploaded photos. DPA: Supabase Data Processing Agreement in place. Security: Encryption at rest and in transit, SOC 2 Type II certified."
+      },
+      "1": {
+        "title": "2. Vercel (Web Hosting & Edge)",
+        "content": "Role: Web application hosting, serverless functions, edge network. Location: Dublin, Ireland (eu-west-1). Data processed: HTTP requests (IP address, user agent) in server logs. DPA: Vercel Data Processing Addendum in place. Security: Automatic HTTPS, DDoS protection, SOC 2 Type II certified."
+      },
+      "2": {
+        "title": "3. Upstash (Redis — Rate Limiting)",
+        "content": "Role: Redis database for rate limiting and abuse prevention. Location: Ireland (AWS eu-west-1). Data processed: Anonymized rate limit counters (user ID hashes). No personal data stored. DPA: Upstash GDPR DPA in place. Security: Encryption at rest and in transit."
+      },
+      "3": {
+        "title": "4. SURFconext (SSO/OIDC Provider)",
+        "content": "Role: Identity provider for student authentication. Location: Netherlands (SURF infrastructure). Data processed: Authentication tokens, name, email, institution domain (received during login). DPA: SURF operates under Dutch law as an educational infrastructure provider. Security: SAML/OIDC protocols, institutional-grade security."
+      }
+    }
+  },
+  "legalBasis": {
+    "title": "Legal Basis Overview (Art. 6 GDPR)",
+    "lastUpdated": "Last updated: March 1, 2026",
+    "intro": "This page provides an overview of the legal basis for each data processing activity at OpenHospi, in accordance with Article 6 of the GDPR.",
+    "sections": {
+      "0": {
+        "title": "1. Contract (Art. 6(1)(b))",
+        "content": "The following processing activities are necessary for the performance of our contract with you (providing the student housing platform): User profile creation and management. Profile photo uploads. Room listing creation and management. Application submission and processing. Chat messaging (E2E encrypted). House membership management. Voting on applications."
+      },
+      "1": {
+        "title": "2. Consent (Art. 6(1)(a))",
+        "content": "The following processing activities are based on your explicit consent, which you can withdraw at any time via Settings > Privacy: Functional cookies (sidebar state, language preference). Push notification delivery. Analytics (Vercel Analytics — cookieless, no PII). Consent can be managed in your account settings or via the cookie consent banner."
+      },
+      "2": {
+        "title": "3. Legitimate interest (Art. 6(1)(f))",
+        "content": "The following processing activities are based on our legitimate interest in platform security and user safety: Session data (IP address, user agent) — for security monitoring. Moderation data (reports, blocks) — for platform safety. Temporarily decrypted message text — for investigating reported messages. We have balanced these interests against your rights and determined that the processing is proportionate and necessary."
+      },
+      "3": {
+        "title": "4. Legal obligation (Art. 6(1)(c))",
+        "content": "The following processing activities are necessary to comply with legal obligations: Consent records (immutable audit trail) — to demonstrate valid consent per Art. 7 GDPR. Data request processing — to fulfill data subject rights (Art. 15-22). Processing restriction records — to comply with Art. 18 right to restriction."
+      },
+      "4": {
+        "title": "5. No automated decision-making",
+        "content": "OpenHospi does not use automated decision-making or profiling as defined in Article 22 of the GDPR. Room matching is entirely manual — users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who gets housing."
+      },
+      "5": {
+        "title": "6. Contact",
+        "content": "If you have questions about the legal basis for processing your data, contact us at privacy@openhospi.nl. You also have the right to lodge a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens) at autoriteitpersoonsgegevens.nl."
+      }
     }
   }
 }

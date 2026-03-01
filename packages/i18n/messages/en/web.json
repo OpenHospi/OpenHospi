@@ -270,7 +270,7 @@
       },
       {
         "title": "SURFconext data",
-        "content": "When you log in via SURFconext, we receive your name, email address, institution, and affiliation (student/employee). We use this to verify your identity and create your account."
+        "content": "Wanneer je inlogt via SURFconext ontvangen we je naam, e-mailadres en instelling. We gebruiken dit om je identiteit te verifiëren en je account aan te maken."
       },
       {
         "title": "How we use your data",
@@ -330,7 +330,10 @@
       "description": "Log in with your university account to access OpenHospi.",
       "surfconextButton": "Log in with SURFconext",
       "surfconextDescription": "Use your university or hogeschool account.",
-      "error": "Inloggen mislukt. Probeer het opnieuw."
+      "error": "Inloggen mislukt. Probeer het opnieuw.",
+      "devOrDivider": "of",
+      "devGithubButton": "Inloggen met GitHub (Dev)",
+      "devGithubDescription": "Alleen voor ontwikkeling. Gebruikt GitHub voor lokaal testen."
     }
   },
   "app": {
@@ -340,8 +343,6 @@
       "applications": "Applications",
       "invitations": "Uitnodigingen",
       "chat": "Chat",
-      "profile": "Profile",
-      "settings": "Settings",
       "comingSoon": "Coming soon"
     },
     "userMenu": {
@@ -401,6 +402,7 @@
       "maxRent": "Max rent",
       "availableFrom": "Available from",
       "lifestyleTags": "Lifestyle",
+      "languages": "Gesproken talen",
       "completeness": {
         "title": "Profile {completed}/{total} complete",
         "photo": "Profile photo",
@@ -418,14 +420,16 @@
       "steps": {
         "about": "About you",
         "personality": "Personality",
+        "languages": "Talen",
         "photos": "Photos",
         "preferences": "Preferences"
       },
       "stepDescriptions": {
         "step1": "Tell us a bit about yourself.",
         "step2": "What describes you best?",
-        "step3": "Add photos so houses get to know you.",
-        "step4": "What are you looking for?"
+        "step3": "Welke talen spreek je?",
+        "step4": "Voeg foto's toe zodat huizen je leren kennen.",
+        "step5": "Wat zoek je?"
       },
       "fields": {
         "gender": "Gender",
@@ -456,7 +460,9 @@
         "slot4": "With friends or housemates",
         "slot5": "Your study or work"
       },
+      "genderPreferNotToSayHint": "Je ziet dan alleen kamers die openstaan voor iedereen. Kamers die specifiek een man of vrouw zoeken verschijnen niet in je resultaten.",
       "required": "Required",
+      "dragToReorder": "Sleep om te herordenen",
       "optional": "optional",
       "next": "Next",
       "back": "Back",
@@ -464,8 +470,10 @@
       "noResults": "No results found.",
       "noSelection": "No selection",
       "tagCounter": "{count}/{max} selected (min {min})",
+      "languageCounter": "{count} van {min}–{max} talen",
       "validation": {
-        "minTags": "Select at least {min} tags"
+        "minTags": "Select at least {min} tags",
+        "minLanguages": "Selecteer minimaal {min} taal"
       }
     },
     "rooms": {
@@ -502,6 +510,38 @@
         "yearsOld": "years old",
         "reviewMode": "Beoordelingsmodus"
       },
+      "houseSetup": {
+        "title": "Stel eerst je woning in",
+        "description": "Voordat je een kamer kunt plaatsen, moet je een huis aanmaken. Een huis groepeert je kamers en laat je huisgenoten uitnodigen.",
+        "benefits": {
+          "rooms": {
+            "title": "Groepeer je kamers",
+            "description": "Organiseer al je kamers onder één huis voor een duidelijk overzicht."
+          },
+          "housemates": {
+            "title": "Nodig huisgenoten uit",
+            "description": "Voeg huidige huisgenoten toe zodat zij kunnen helpen bij het beoordelen van kandidaten."
+          }
+        },
+        "form": {
+          "title": "Maak je huis aan",
+          "description": "Geef je huis een herkenbare naam — je kunt dit later wijzigen.",
+          "nameLabel": "Huisnaam",
+          "namePlaceholder": "bijv. Keizersgracht 42",
+          "submit": "Huis aanmaken & doorgaan"
+        },
+        "errors": {
+          "INVALID_NAME": "Naam moet minstens 2 tekens bevatten.",
+          "RATE_LIMITED": "Te veel verzoeken. Probeer het later opnieuw."
+        }
+      },
+      "housePicker": {
+        "title": "In welk huis is deze kamer?",
+        "description": "Selecteer het huis waar deze kamer zich bevindt.",
+        "roomCount": "{count, plural, =0 {Nog geen kamers} =1 {1 kamer} other {# kamers}}",
+        "createNew": "Een nieuw huis aanmaken",
+        "continue": "Doorgaan"
+      },
       "wizard": {
         "stepOf": "Step {current} of {total}",
         "steps": {
@@ -515,7 +555,27 @@
           "step2": "Add pricing, availability, and room details.",
           "step3": "Set preferences and features for your room.",
           "step4": "Upload photos to show your room."
-        }
+        },
+        "sections": {
+          "location": "Locatie",
+          "pricing": "Prijs",
+          "property": "Woningdetails",
+          "availability": "Beschikbaarheid",
+          "features": "Kamereigenschappen & locatie",
+          "preferences": "Huisgenotenvoorkeuren",
+          "association": "Vereniging"
+        },
+        "sectionDescriptions": {
+          "features": "Laat zien wat je kamer en locatie bijzonder maakt.",
+          "preferences": "Beschrijf wie je zoekt als nieuwe huisgenoot.",
+          "association": "Koppel deze kamer optioneel aan een studentenvereniging."
+        },
+        "helpers": {
+          "title": "Een pakkende titel helpt je kamer op te vallen.",
+          "description": "Beschrijf wat deze kamer en dit huis bijzonder maakt."
+        },
+        "photoGuidance": "Upload minstens 1 foto om te publiceren. De eerste foto is je omslagfoto.",
+        "photoCount": "{count}/{max} foto's"
       },
       "fields": {
         "title": "Title",
@@ -523,10 +583,15 @@
         "city": "City",
         "neighborhood": "Neighborhood",
         "address": "Address",
+        "streetName": "Straatnaam",
+        "houseNumber": "Huisnummer",
+        "postalCode": "Postcode",
+        "acceptedLanguages": "Talen",
         "rentPrice": "Monthly rent",
         "deposit": "Deposit",
-        "utilitiesIncluded": "Utilities included",
+        "utilitiesIncluded": "Gas, water en licht",
         "serviceCosts": "Service costs",
+        "estimatedUtilitiesCosts": "Geschatte g/w/l kosten",
         "roomSize": "Room size (m²)",
         "availableFrom": "Available from",
         "availableUntil": "Available until",
@@ -547,12 +612,22 @@
         "description": "Describe the room and house...",
         "neighborhood": "e.g. Centrum",
         "address": "e.g. Keizersgracht 1",
+        "searchAddress": "Zoek een adres...",
         "rentPrice": "e.g. 450",
         "deposit": "e.g. 450",
         "serviceCosts": "e.g. 75",
+        "estimatedUtilitiesCosts": "bijv. 75",
         "roomSize": "e.g. 12",
         "totalHousemates": "e.g. 5",
         "searchVereniging": "Search association..."
+      },
+      "helpers": {
+        "serviceCosts": "Bijv. schoonmaak, internet, VvE-bijdrage"
+      },
+      "utilities": {
+        "included": "Inbegrepen in de huur",
+        "not_included": "Niet inbegrepen, huurder regelt dit zelf",
+        "estimated": "Niet inbegrepen, geschat voorschot"
       },
       "photoSlots": {
         "slot1": "Cover photo",
@@ -704,6 +779,17 @@
     },
     "roomDetail": {
       "perMonth": "/mo",
+      "location": "Locatie",
+      "approximateLocation": "Geschatte locatie — het exacte adres wordt gedeeld na je aanmelding",
+      "ageRange": "{min}–{max} jaar",
+      "acceptedLanguages": "Gesproken talen",
+      "rentInclUtilities": "Kale huur (incl. g/w/l)",
+      "utilitiesNotIncluded": "Gas/water/licht niet inbegrepen",
+      "utilitiesEstimated": "Gas/water/licht (geschat)",
+      "estimatedTotal": "Totaal (geschat)",
+      "total": "Totaal",
+      "whoWereLookingFor": "Wie we zoeken",
+      "everyoneWelcome": "Iedereen welkom",
       "details": "Room details",
       "description": "Description",
       "features": "Features",
@@ -713,15 +799,14 @@
       "availableFrom": "Available from {date}",
       "availableUntil": "until {date}",
       "deposit": "Deposit",
-      "utilitiesIncluded": "Utilities included",
-      "utilitiesExcluded": "Utilities not included",
+      "utilitiesIncluded": "Gas/water/licht inbegrepen",
       "serviceCosts": "Service costs",
       "rent": "Rent",
       "totalCost": "Total",
       "rentalType": "Rental type",
       "notFound": "Room not found",
       "notAvailable": "This room is no longer accepting applications.",
-      "backToDiscover": "Back to discover",
+      "backToDiscover": "Terug naar aanbod",
       "manageRoom": "Manage this room",
       "viewApplication": "View your application",
       "apply": "Apply to this room",
@@ -732,6 +817,11 @@
       "cancel": "Cancel",
       "submitApplication": "Submit application",
       "applySuccess": "Application submitted!",
+      "postedBy": "Geplaatst door",
+      "photoCount": "{count, plural, one {1 foto} other {# foto's}}",
+      "photoIndex": "Foto {index}",
+      "showAllPhotos": "Toon alle {count} foto's",
+      "availability": "Beschikbaarheid",
       "errors": {
         "invalid_data": "Please check your message and try again.",
         "room_not_active": "This room is no longer accepting applications.",
@@ -742,6 +832,10 @@
     },
     "settings": {
       "title": "Settings",
+      "pushNotifications": {
+        "title": "Pushmeldingen",
+        "description": "Beheer browserpushmeldingen om op de hoogte te blijven van nieuwe berichten, reacties en evenementen."
+      },
       "exportSuccess": "Data exported successfully",
       "exportRateLimited": "Too many export requests today. Please try again later.",
       "dataExport": {
@@ -842,6 +936,11 @@
       "title": "Meldingen",
       "empty": "Nog geen meldingen",
       "markAllRead": "Alles als gelezen markeren"
+    },
+    "push": {
+      "enable": "Pushmeldingen inschakelen",
+      "disable": "Pushmeldingen uitschakelen",
+      "unsupported": "Pushmeldingen worden niet ondersteund in deze browser"
     },
     "chat": {
       "title": "Chat",
@@ -1086,10 +1185,14 @@
       "notFound": "Room not found",
       "notFoundDescription": "This room may have been removed or is no longer available.",
       "deposit": "Deposit",
-      "utilitiesIncluded": "Utilities included",
-      "utilitiesExcluded": "Utilities not included",
+      "utilitiesIncluded": "Gas/water/licht inbegrepen",
+      "utilitiesNotIncluded": "Gas/water/licht niet inbegrepen",
+      "utilitiesEstimated": "Gas/water/licht (geschat)",
       "serviceCosts": "Service costs",
       "rent": "Rent",
+      "rentInclUtilities": "Kale huur (incl. g/w/l)",
+      "estimatedTotal": "Totaal (geschat)",
+      "total": "Totaal",
       "totalCost": "Total",
       "roomSize": "{size} m²",
       "rentalType": "Rental type"

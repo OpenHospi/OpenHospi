@@ -32,6 +32,26 @@
       "title": "Terms & Conditions",
       "description": "Terms of use for OpenHospi, the free student housing platform for the Netherlands."
     },
+    "cookies": {
+      "title": "Cookiebeleid",
+      "description": "Welke cookies OpenHospi gebruikt en hoe je je voorkeuren kunt beheren."
+    },
+    "processingRegister": {
+      "title": "Verwerkingsregister",
+      "description": "Overzicht van alle verwerkingsactiviteiten van persoonsgegevens bij OpenHospi (art. 30 AVG)."
+    },
+    "dpia": {
+      "title": "Gegevensbeschermingseffectbeoordeling",
+      "description": "Risicobeoordeling voor de verwerking van persoonsgegevens bij OpenHospi (art. 35 AVG)."
+    },
+    "dataProcessors": {
+      "title": "Verwerkers",
+      "description": "Overzicht van alle externe verwerkers die OpenHospi gebruikt."
+    },
+    "legalBasis": {
+      "title": "Rechtsgrondoverzicht",
+      "description": "Rechtsgrond per verwerkingsactiviteit bij OpenHospi (art. 6 AVG)."
+    },
     "missingAssociation": {
       "title": "Association Missing? — Let Us Know",
       "description": "Is your student association not listed on OpenHospi? Contact us and we'll add it."
@@ -62,7 +82,7 @@
       "safety": [
         {
           "question": "How are users verified on OpenHospi?",
-          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform."
+          "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
         },
         {
           "question": "Are my messages private?",
@@ -112,9 +132,14 @@
       "browseRooms": "Browse rooms",
       "costs": "Costs",
       "privacy": "Privacy policy",
+      "cookies": "Cookiebeleid",
       "terms": "Terms & conditions",
       "about": "About",
-      "missingAssociation": "Association missing?"
+      "missingAssociation": "Association missing?",
+      "processingRegister": "Verwerkingsregister",
+      "legalBasis": "Rechtsgronden",
+      "dataProcessors": "Verwerkers",
+      "dpia": "DPIA"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -322,7 +347,7 @@
       },
       {
         "title": "Report & block",
-        "description": "Report inappropriate behavior or block users with one click. We act on reports quickly."
+        "description": "Meld ongepast gedrag of blokkeer gebruikers met één klik. We handelen snel op meldingen. Je kunt ons ook bereiken via abuse@openhospi.nl."
       }
     ]
   },
@@ -345,70 +370,6 @@
       "description": "OpenHospi is a community project. Anyone can contribute code, translations, or ideas. We're transparent about everything we do.",
       "cta": "Contribute on GitHub"
     }
-  },
-  "privacy": {
-    "title": "Privacy Policy",
-    "lastUpdated": "Last updated: February 2026",
-    "sections": [
-      {
-        "title": "What data we collect",
-        "content": "We collect data you provide when creating your account (via SURFconext), your profile information, room listings, and messages you send through the platform."
-      },
-      {
-        "title": "SURFconext data",
-        "content": "When you log in via SURFconext, we receive your name, email address, and institution. We use this to verify your identity and create your account."
-      },
-      {
-        "title": "How we use your data",
-        "content": "We use your data solely to provide the OpenHospi platform. We do not sell your data, use it for advertising, or share it with third parties except as required by law."
-      },
-      {
-        "title": "Data processor",
-        "content": "Our database is hosted on Supabase (EU region). Supabase acts as our data processor under a Data Processing Agreement."
-      },
-      {
-        "title": "Data retention",
-        "content": "Your data is retained as long as your account is active. You can delete your account at any time, which will permanently remove all your data."
-      },
-      {
-        "title": "Your rights",
-        "content": "Under GDPR, you have the right to access, correct, export, and delete your personal data. Contact us at privacy@openhospi.nl to exercise these rights."
-      },
-      {
-        "title": "Contact",
-        "content": "For privacy-related questions, email privacy@openhospi.nl."
-      }
-    ]
-  },
-  "terms": {
-    "title": "Terms & Conditions",
-    "lastUpdated": "Last updated: February 2026",
-    "sections": [
-      {
-        "title": "Eligibility",
-        "content": "OpenHospi is available to students and staff of Dutch educational institutions that are connected to SURFconext."
-      },
-      {
-        "title": "Account responsibilities",
-        "content": "You are responsible for maintaining the security of your account. Do not share your login credentials or attempt to impersonate others."
-      },
-      {
-        "title": "Acceptable use",
-        "content": "You agree to use OpenHospi only for finding or offering student housing. Harassment, discrimination, fraud, and spam are prohibited."
-      },
-      {
-        "title": "Content ownership",
-        "content": "You retain ownership of content you post (profile text, photos, messages). By posting, you grant OpenHospi a license to display this content on the platform."
-      },
-      {
-        "title": "Liability",
-        "content": "OpenHospi is provided as-is. We are not responsible for the accuracy of listings, the behavior of other users, or any transactions made outside the platform."
-      },
-      {
-        "title": "Governing law",
-        "content": "These terms are governed by Dutch law. Any disputes will be resolved in the courts of the Netherlands."
-      }
-    ]
   },
   "costs": {
     "title": "Costs & Transparency",

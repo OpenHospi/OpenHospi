@@ -1,6 +1,5 @@
 import {
   MAX_BIO_LENGTH,
-  MAX_INSTAGRAM_HANDLE_LENGTH,
   MAX_LANGUAGES,
   MAX_LIFESTYLE_TAGS,
   MAX_STUDY_PROGRAM_LENGTH,
@@ -38,8 +37,6 @@ const baseProfileSchema = createInsertSchema(profiles, {
   maxRent: z.coerce.number().int().min(0).max(5000).optional(),
   availableFrom: z.string().min(1),
   vereniging: z.enum(Vereniging.values).optional(),
-  instagramHandle: z.string().max(MAX_INSTAGRAM_HANDLE_LENGTH).optional(),
-  showInstagram: z.boolean().optional(),
 });
 
 export const aboutStepSchema = baseProfileSchema.pick({
@@ -63,8 +60,6 @@ export const preferencesStepSchema = baseProfileSchema.pick({
   maxRent: true,
   availableFrom: true,
   vereniging: true,
-  instagramHandle: true,
-  showInstagram: true,
 });
 
 export const editProfileSchema = baseProfileSchema.pick({
@@ -79,8 +74,6 @@ export const editProfileSchema = baseProfileSchema.pick({
   maxRent: true,
   availableFrom: true,
   vereniging: true,
-  instagramHandle: true,
-  showInstagram: true,
 });
 
 export type AboutStepData = z.infer<typeof aboutStepSchema>;

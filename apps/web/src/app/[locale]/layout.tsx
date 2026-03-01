@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { CookieConsentBanner } from "@/components/app/cookie-consent-banner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
@@ -65,6 +66,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>
             {children}
+            <CookieConsentBanner />
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>

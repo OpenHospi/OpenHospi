@@ -7,6 +7,7 @@ export * from "./applications";
 export * from "./events";
 export * from "./chat";
 export * from "./security";
+export * from "./privacy";
 export * from "./notifications";
 export * from "./rls-helpers";
 export { relations } from "./relations";

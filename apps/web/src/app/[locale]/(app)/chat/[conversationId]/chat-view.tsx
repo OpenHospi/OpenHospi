@@ -1,12 +1,12 @@
 "use client";
 
-import { Flag, MoreVertical, ShieldBan, ShieldCheck } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Flag, MoreVertical, ShieldBan, ShieldCheck, ArrowLeft  } from "lucide-react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
+import { ReportDialog } from "@/components/app/report-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,12 +15,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ReportDialog } from "@/components/app/report-dialog";
 import type { MessageItem } from "@/lib/chat";
 
 import { blockUser, unblockUser } from "../block-actions";
-import { MessageThread } from "./message-thread";
+
 import { ChatInput } from "./chat-input";
+import { MessageThread } from "./message-thread";
 
 type Props = {
   conversationId: string;

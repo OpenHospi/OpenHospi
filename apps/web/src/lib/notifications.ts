@@ -72,7 +72,7 @@ function resolveMessageKey(
   let result = current;
   if (params) {
     for (const [k, v] of Object.entries(params)) {
-      result = result.replace(new RegExp(`\\{${k}\\}`, "g"), v);
+      result = result.replaceAll(new RegExp(`\\{${k}\\}`, "g"), v);
     }
   }
   return result;

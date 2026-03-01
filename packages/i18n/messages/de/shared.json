@@ -33,7 +33,11 @@
       "noResults": "Keine Ergebnisse gefunden.",
       "optional": "optional",
       "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
-      "backToApp": "Zurück zur App"
+      "backToApp": "Zurück zur App",
+      "show": "Anzeigen",
+      "hide": "Ausblenden",
+      "onThisPage": "Auf dieser Seite",
+      "linkToSection": "Link zu {title}"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -576,9 +580,7 @@
         "preferredCity": "Bevorzugte Stadt",
         "maxRent": "Max Miete",
         "availableFrom": "Verfügbar ab",
-        "vereniging": "Studentenverein",
-        "instagram": "Instagram",
-        "showInstagram": "Instagram im Profil anzeigen"
+        "vereniging": "Studentenverein"
       },
       "placeholders": {
         "studyProgram": "z.B. Informatik",
@@ -957,8 +959,41 @@
         "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
       }
     },
+    "consent": {
+      "title": "Wir verwenden Cookies",
+      "description": "Wir verwenden essenzielle Cookies, um dich angemeldet zu halten, und optionale Cookies für ein besseres Erlebnis. Du kannst deine Einstellungen jederzeit anpassen.",
+      "acceptAll": "Alle akzeptieren",
+      "essentialOnly": "Nur essenzielle",
+      "manage": "Einstellungen verwalten",
+      "manageTitle": "Cookie-Einstellungen",
+      "manageDescription": "Wähle aus, welche Cookies du zulässt. Essenzielle Cookies sind immer aktiv.",
+      "savePreferences": "Einstellungen speichern",
+      "purposes": {
+        "essential": {
+          "name": "Essenziell",
+          "description": "Erforderlich für Authentifizierung und Kernfunktionalität der Plattform. Kann nicht deaktiviert werden."
+        },
+        "functional": {
+          "name": "Funktional",
+          "description": "Merkt sich deine Einstellungen wie Sprache und Seitenleistenstatus."
+        },
+        "push_notifications": {
+          "name": "Push-Benachrichtigungen",
+          "description": "Ermöglicht die Zustellung von Browser-Push-Benachrichtigungen für Nachrichten und Veranstaltungen."
+        },
+        "analytics": {
+          "name": "Analysen",
+          "description": "Cookielose Analysen von Vercel zur Verbesserung der Plattform. Es werden keine personenbezogenen Daten erhoben."
+        }
+      }
+    },
     "settings": {
       "title": "Einstellungen",
+      "tabs": {
+        "general": "Allgemein",
+        "privacy": "Datenschutz",
+        "account": "Konto"
+      },
       "pushNotifications": {
         "title": "Push-Benachrichtigungen",
         "description": "Verwalte Browser-Push-Benachrichtigungen, um über neue Nachrichten, Bewerbungen und Veranstaltungen informiert zu bleiben."
@@ -967,8 +1002,84 @@
       "exportRateLimited": "Zu viele Exportanfragen heute. Bitte versuche es später erneut.",
       "dataExport": {
         "title": "Deine Daten exportieren",
-        "description": "Lade alle deine persönlichen Daten als JSON-Datei herunter. Dies umfasst dein Profil, Zimmer, Bewerbungen und Bewertungen.",
+        "description": "Lade alle deine persönlichen Daten im JSON- oder CSV-Format herunter. Dies umfasst dein Profil, Zimmer, Bewerbungen, Nachrichten und Einwilligungsdatensätze.",
+        "jsonButton": "JSON exportieren",
+        "csvButton": "CSV exportieren",
         "button": "Daten exportieren"
+      },
+      "privacy": {
+        "title": "Datenschutz & Daten",
+        "consentManagement": {
+          "title": "Einwilligungsverwaltung",
+          "description": "Verwalte deine Cookie- und Datenverarbeitungseinstellungen."
+        },
+        "dataOverview": {
+          "title": "Deine Datenübersicht",
+          "description": "Sieh, welche personenbezogenen Daten gespeichert sind und wie sie verwendet werden.",
+          "categories": {
+            "profile": "Profil",
+            "photos": "Fotos",
+            "housing": "Zimmeranzeigen",
+            "applications": "Bewerbungen",
+            "chat": "Chatnachrichten",
+            "sessions": "Sitzungen",
+            "moderation": "Moderation"
+          },
+          "legalBasis": "Rechtsgrundlage",
+          "retention": "Aufbewahrungsfrist",
+          "untilDeletion": "Bis zur Kontolöschung",
+          "30days": "30 Tage nach Ablauf",
+          "90days": "90 Tage nach Abschluss",
+          "contract": "Vertrag",
+          "legitimateInterest": "Berechtigtes Interesse"
+        },
+        "consentHistory": {
+          "title": "Einwilligungsverlauf",
+          "description": "Zeige den Verlauf deiner Einwilligungsänderungen an.",
+          "empty": "Noch keine Einwilligungsdatensätze.",
+          "granted": "Erteilt",
+          "revoked": "Widerrufen"
+        },
+        "dataRequest": {
+          "title": "Datenanfragen",
+          "description": "Reiche eine formelle DSGVO-Anfrage bezüglich deiner personenbezogenen Daten ein.",
+          "typeLabel": "Anfragetyp",
+          "descriptionLabel": "Beschreibung",
+          "descriptionPlaceholder": "Beschreibe deine Anfrage im Detail...",
+          "submitButton": "Anfrage einreichen",
+          "success": "Anfrage erfolgreich eingereicht. Wir antworten innerhalb von 30 Tagen.",
+          "types": {
+            "access": "Auskunft über meine Daten (Art. 15)",
+            "rectification": "Berichtigung meiner Daten (Art. 16)",
+            "erasure": "Löschung meiner Daten (Art. 17)",
+            "restriction": "Einschränkung der Verarbeitung (Art. 18)",
+            "portability": "Datenübertragbarkeit (Art. 20)",
+            "objection": "Widerspruch gegen Verarbeitung (Art. 21)"
+          }
+        },
+        "processingRestriction": {
+          "title": "Verarbeitung einschränken",
+          "description": "Pausiere vorübergehend die Verarbeitung deiner Daten. Dein Profil und deine Zimmer werden für andere Nutzer verborgen. Du kannst diese Einschränkung jederzeit aufheben.",
+          "activateButton": "Verarbeitung einschränken",
+          "liftButton": "Einschränkung aufheben",
+          "active": "Die Verarbeitung ist derzeit eingeschränkt",
+          "reasonLabel": "Grund",
+          "reasonPlaceholder": "Warum möchtest du die Verarbeitung einschränken?",
+          "activateSuccess": "Verarbeitung eingeschränkt. Dein Profil und deine Zimmer sind jetzt verborgen.",
+          "liftSuccess": "Verarbeitungseinschränkung aufgehoben. Dein Profil und deine Zimmer sind wieder sichtbar."
+        }
+      },
+      "account": {
+        "title": "Konto",
+        "sessions": {
+          "title": "Aktive Sitzungen",
+          "description": "Zeige und verwalte deine aktiven Anmeldesitzungen.",
+          "current": "Aktuelle Sitzung",
+          "lastActive": "Zuletzt aktiv {date}",
+          "revokeButton": "Widerrufen",
+          "revoked": "Sitzung widerrufen",
+          "empty": "Keine aktiven Sitzungen gefunden."
+        }
       },
       "dangerZone": {
         "title": "Gefahrenzone",

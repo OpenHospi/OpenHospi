@@ -32,6 +32,26 @@
       "title": "Terms & Conditions",
       "description": "Terms of use for OpenHospi, the free student housing platform for the Netherlands."
     },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "Learn which cookies OpenHospi uses and how to manage your preferences."
+    },
+    "processingRegister": {
+      "title": "Processing Register",
+      "description": "Overview of all personal data processing activities at OpenHospi (Art. 30 GDPR)."
+    },
+    "dpia": {
+      "title": "Data Protection Impact Assessment",
+      "description": "Risk assessment for personal data processing at OpenHospi (Art. 35 GDPR)."
+    },
+    "dataProcessors": {
+      "title": "Data Processors",
+      "description": "Overview of all third-party data processors used by OpenHospi."
+    },
+    "legalBasis": {
+      "title": "Legal Basis Overview",
+      "description": "Legal basis for each data processing activity at OpenHospi (Art. 6 GDPR)."
+    },
     "missingAssociation": {
       "title": "Association Missing? — Let Us Know",
       "description": "Is your student association not listed on OpenHospi? Contact us and we'll add it."
@@ -46,18 +66,42 @@
     },
     "faq": {
       "costs": [
-        { "question": "Is OpenHospi really free?", "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships." },
-        { "question": "How is OpenHospi funded?", "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective." },
-        { "question": "Will OpenHospi ever become paid?", "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility." }
+        {
+          "question": "Is OpenHospi really free?",
+          "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships."
+        },
+        {
+          "question": "How is OpenHospi funded?",
+          "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective."
+        },
+        {
+          "question": "Will OpenHospi ever become paid?",
+          "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility."
+        }
       ],
       "safety": [
-        { "question": "How are users verified on OpenHospi?", "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform." },
-        { "question": "Are my messages private?", "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations." },
-        { "question": "What happens when I report a user?", "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service." }
+        {
+          "question": "How are users verified on OpenHospi?",
+          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students of Dutch educational institutions can use the platform."
+        },
+        {
+          "question": "Are my messages private?",
+          "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations."
+        },
+        {
+          "question": "What happens when I report a user?",
+          "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service."
+        }
       ],
       "findARoom": [
-        { "question": "How do I find a room on OpenHospi?", "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like." },
-        { "question": "What is hospiteren?", "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in." }
+        {
+          "question": "How do I find a room on OpenHospi?",
+          "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like."
+        },
+        {
+          "question": "What is hospiteren?",
+          "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in."
+        }
       ]
     }
   },
@@ -88,9 +132,14 @@
       "browseRooms": "Browse rooms",
       "costs": "Costs",
       "privacy": "Privacy policy",
+      "cookies": "Cookie policy",
       "terms": "Terms & conditions",
       "about": "About",
-      "missingAssociation": "Association missing?"
+      "missingAssociation": "Association missing?",
+      "processingRegister": "Processing register",
+      "legalBasis": "Legal basis",
+      "dataProcessors": "Data processors",
+      "dpia": "DPIA"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -298,7 +347,7 @@
       },
       {
         "title": "Report & block",
-        "description": "Report inappropriate behavior or block users with one click. We act on reports quickly."
+        "description": "Report inappropriate behavior or block users with one click. We act on reports quickly. You can also reach us at abuse@openhospi.nl."
       }
     ]
   },
@@ -321,70 +370,6 @@
       "description": "OpenHospi is a community project. Anyone can contribute code, translations, or ideas. We're transparent about everything we do.",
       "cta": "Contribute on GitHub"
     }
-  },
-  "privacy": {
-    "title": "Privacy Policy",
-    "lastUpdated": "Last updated: February 2026",
-    "sections": [
-      {
-        "title": "What data we collect",
-        "content": "We collect data you provide when creating your account (via SURFconext), your profile information, room listings, and messages you send through the platform."
-      },
-      {
-        "title": "SURFconext data",
-        "content": "When you log in via SURFconext, we receive your name, email address, and institution. We use this to verify your identity and create your account."
-      },
-      {
-        "title": "How we use your data",
-        "content": "We use your data solely to provide the OpenHospi platform. We do not sell your data, use it for advertising, or share it with third parties except as required by law."
-      },
-      {
-        "title": "Data processor",
-        "content": "Our database is hosted on Supabase (EU region). Supabase acts as our data processor under a Data Processing Agreement."
-      },
-      {
-        "title": "Data retention",
-        "content": "Your data is retained as long as your account is active. You can delete your account at any time, which will permanently remove all your data."
-      },
-      {
-        "title": "Your rights",
-        "content": "Under GDPR, you have the right to access, correct, export, and delete your personal data. Contact us at privacy@openhospi.nl to exercise these rights."
-      },
-      {
-        "title": "Contact",
-        "content": "For privacy-related questions, email privacy@openhospi.nl."
-      }
-    ]
-  },
-  "terms": {
-    "title": "Terms & Conditions",
-    "lastUpdated": "Last updated: February 2026",
-    "sections": [
-      {
-        "title": "Eligibility",
-        "content": "OpenHospi is available to students and staff of Dutch educational institutions that are connected to SURFconext."
-      },
-      {
-        "title": "Account responsibilities",
-        "content": "You are responsible for maintaining the security of your account. Do not share your login credentials or attempt to impersonate others."
-      },
-      {
-        "title": "Acceptable use",
-        "content": "You agree to use OpenHospi only for finding or offering student housing. Harassment, discrimination, fraud, and spam are prohibited."
-      },
-      {
-        "title": "Content ownership",
-        "content": "You retain ownership of content you post (profile text, photos, messages). By posting, you grant OpenHospi a license to display this content on the platform."
-      },
-      {
-        "title": "Liability",
-        "content": "OpenHospi is provided as-is. We are not responsible for the accuracy of listings, the behavior of other users, or any transactions made outside the platform."
-      },
-      {
-        "title": "Governing law",
-        "content": "These terms are governed by Dutch law. Any disputes will be resolved in the courts of the Netherlands."
-      }
-    ]
   },
   "costs": {
     "title": "Costs & Transparency",

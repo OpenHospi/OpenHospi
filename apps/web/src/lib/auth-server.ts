@@ -1,7 +1,14 @@
 import { withRLS } from "@openhospi/database";
-import { houseMembers, houses, profilePhotos, profiles, rooms } from "@openhospi/database/schema";
+import {
+  houseMembers,
+  houses,
+  processingRestrictions,
+  profilePhotos,
+  profiles,
+  rooms,
+} from "@openhospi/database/schema";
 import type { HouseMemberRole } from "@openhospi/shared/enums";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -108,4 +115,20 @@ export async function requireCompleteProfile(userId: string) {
   if (result.needsRedirect) {
     redirect("/onboarding");
   }
+}
+
+export async function isRestricted(userId: string): Promise<boolean> {
+  const [restriction] = await withRLS(userId, (tx) =>
+    tx
+      .select({ id: processingRestrictions.id })
+      .from(processingRestrictions)
+      .where(
+        and(
+          eq(processingRestrictions.userId, userId),
+          isNull(processingRestrictions.liftedAt),
+        ),
+      )
+      .limit(1),
+  );
+  return !!restriction;
 }

@@ -30,7 +30,12 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
             title: t("legal"),
             links: [
                 {href: "/privacy", label: t("links.privacy")},
+                {href: "/cookies", label: t("links.cookies")},
                 {href: "/terms", label: t("links.terms")},
+                {href: "/processing-register", label: t("links.processingRegister")},
+                {href: "/legal-basis", label: t("links.legalBasis")},
+                {href: "/data-processors", label: t("links.dataProcessors")},
+                {href: "/dpia", label: t("links.dpia")},
             ],
         },
         {
@@ -102,9 +107,17 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 <Separator className="my-8"/>
 
                 <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                    <p className="text-sm text-muted-foreground">
-                        &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
-                    </p>
+                    <div className="flex flex-col items-center gap-1 sm:items-start">
+                        <p className="text-sm text-muted-foreground">
+                            &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
+                        </p>
+                        <a
+                            href="mailto:info@openhospi.nl"
+                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            info@openhospi.nl
+                        </a>
+                    </div>
                     <div className="flex items-center gap-4">
                         <TrustpilotWidget score={trustpilotScore} />
                         <LanguageSwitcher/>

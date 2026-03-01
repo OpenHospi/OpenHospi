@@ -10,6 +10,7 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "reports": "Meldingen",
+      "dataRequests": "Gegevensverzoeken",
       "auditLog": "Auditlog"
     },
     "userMenu": {},
@@ -77,6 +78,46 @@
       "statusUpdated": "Meldingsstatus bijgewerkt",
       "searchStatus": "Status zoeken...",
       "noStatusFound": "Geen status gevonden"
+    },
+    "dataRequests": {
+      "title": "Gegevensverzoeken",
+      "description": "Beheer AVG-verzoeken van betrokkenen.",
+      "empty": "Geen gegevensverzoeken gevonden.",
+      "stats": {
+        "pending": "In afwachting",
+        "inProgress": "In behandeling"
+      },
+      "colUser": "Gebruiker",
+      "colType": "Type",
+      "colStatus": "Status",
+      "colDate": "Datum",
+      "types": {
+        "access": "Inzage",
+        "rectification": "Rectificatie",
+        "erasure": "Verwijdering",
+        "restriction": "Beperking",
+        "portability": "Overdraagbaarheid",
+        "objection": "Bezwaar"
+      },
+      "statuses": {
+        "pending": "In afwachting",
+        "in_progress": "In behandeling",
+        "completed": "Afgerond",
+        "denied": "Afgewezen"
+      },
+      "detail": {
+        "title": "Verzoekdetails",
+        "userInfo": "Gebruikersinformatie",
+        "requestInfo": "Verzoekinformatie",
+        "adminNotes": "Beheerdersnotities",
+        "notesPlaceholder": "Voeg interne notities toe over dit verzoek...",
+        "updateStatus": "Status bijwerken",
+        "backToList": "Terug naar gegevensverzoeken",
+        "liftRestriction": "Verwerkingsbeperking opheffen",
+        "statusUpdated": "Verzoekstatus bijgewerkt"
+      },
+      "filterByStatus": "Filteren op status",
+      "allStatuses": "Alle statussen"
     },
     "auditLog": {
       "title": "Auditlog",

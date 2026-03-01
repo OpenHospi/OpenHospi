@@ -4,6 +4,7 @@ import { requireSession } from "@/lib/auth-server";
 import { getConversationMembers, getMessages } from "@/lib/chat";
 
 import { getBlockedUsers } from "../block-actions";
+
 import { ChatView } from "./chat-view";
 
 type Props = {

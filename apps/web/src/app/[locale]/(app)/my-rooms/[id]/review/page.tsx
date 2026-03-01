@@ -1,10 +1,10 @@
+import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 
-import { requireHousemate, requireSession } from "@/lib/auth-server";
 import { getRoomApplicants } from "@/lib/applicants";
+import { requireHousemate, requireSession } from "@/lib/auth-server";
 
 import { ReviewModeClient } from "./review-mode-client";
 

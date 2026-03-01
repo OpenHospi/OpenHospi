@@ -80,12 +80,6 @@ export async function ProfileDetails({ profile }: Props) {
               <p>{profile.availableFrom}</p>
             </div>
           )}
-          {profile.showInstagram && profile.instagramHandle && (
-            <div>
-              <span className="text-muted-foreground">Instagram</span>
-              <p>@{profile.instagramHandle}</p>
-            </div>
-          )}
         </CardContent>
       </Card>
 

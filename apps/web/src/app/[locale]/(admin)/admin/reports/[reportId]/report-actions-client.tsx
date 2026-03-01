@@ -1,8 +1,8 @@
 "use client";
 
 import { Ban, ShieldCheck, Trash2, XCircle } from "lucide-react";
-import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import {

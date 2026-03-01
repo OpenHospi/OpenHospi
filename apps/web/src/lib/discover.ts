@@ -1,5 +1,5 @@
 import { db, withRLS } from "@openhospi/database";
-import { profiles, roomPhotos, rooms } from "@openhospi/database/schema";
+import { processingRestrictions, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
 import {
@@ -22,6 +22,7 @@ import {
   lt,
   lte,
   or,
+  sql,
   type SQL,
 } from "drizzle-orm";
 
@@ -135,6 +136,11 @@ function buildDiscoverConditions(
 
   // Exclude rooms from blocked/blocking users
   conditions.push(notBlockedBy(rooms.ownerId, userId));
+
+  // Exclude rooms from users with active processing restrictions (Art. 18)
+  conditions.push(
+    sql`NOT EXISTS (SELECT 1 FROM ${processingRestrictions} WHERE ${processingRestrictions.userId} = ${rooms.ownerId} AND ${processingRestrictions.liftedAt} IS NULL)`,
+  );
 
   // Vereniging visibility: show non-vereniging rooms + rooms matching user's vereniging
   if (userVereniging) {

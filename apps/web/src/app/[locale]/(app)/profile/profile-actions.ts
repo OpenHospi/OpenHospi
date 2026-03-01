@@ -31,8 +31,6 @@ export async function updateProfile(data: EditProfileData) {
         maxRent: d.maxRent != null ? String(d.maxRent) : null,
         availableFrom: d.availableFrom,
         vereniging: d.vereniging || null,
-        instagramHandle: d.instagramHandle || null,
-        showInstagram: d.showInstagram,
       })
       .where(eq(profiles.id, session.user.id)),
   );

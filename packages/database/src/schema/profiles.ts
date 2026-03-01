@@ -1,7 +1,6 @@
 import { isNotNull, sql } from "drizzle-orm";
 import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
-  boolean,
   date,
   index,
   jsonb,
@@ -46,8 +45,6 @@ export const profiles = pgTable(
     maxRent: numeric("max_rent", { precision: 7, scale: 2 }),
     availableFrom: date("available_from"),
     preferredCity: cityEnum("preferred_city"),
-    instagramHandle: text("instagram_handle"),
-    showInstagram: boolean("show_instagram").default(false),
     lifestyleTags: lifestyleTagEnum("lifestyle_tags").array().default([]),
     languages: languageEnum("languages").array().default([]),
     preferredLocale: localeEnum("preferred_locale").default("nl"),

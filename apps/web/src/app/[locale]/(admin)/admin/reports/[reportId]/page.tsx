@@ -5,13 +5,14 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { StorageImage } from "@/components/storage-image";
-import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { UserAvatar } from "@/components/user-avatar";
 
 import { getReportDetail, getRoomDetail, getUserDetail } from "../../actions";
+
 import { ReportActions } from "./report-actions-client";
 import { ReportStatusSelector } from "./report-status-selector";
 import { RoomDetailDialog } from "./room-detail-dialog";

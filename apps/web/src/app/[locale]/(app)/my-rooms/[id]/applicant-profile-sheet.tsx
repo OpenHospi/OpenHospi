@@ -125,9 +125,6 @@ export function ApplicantProfileSheet({
                 {tEnums(`vereniging.${applicant.vereniging}`)}
               </p>
             )}
-            {applicant.showInstagram && applicant.instagramHandle && (
-              <p className="text-sm text-muted-foreground">@{applicant.instagramHandle}</p>
-            )}
           </div>
 
           {/* Bio */}

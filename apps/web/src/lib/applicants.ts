@@ -25,8 +25,6 @@ export type RoomApplicant = {
   lifestyleTags: string[];
   vereniging: string | null;
   institutionDomain: string;
-  instagramHandle: string | null;
-  showInstagram: boolean | null;
   personalMessage: string | null;
   status: ApplicationStatus;
   appliedAt: Date;
@@ -54,8 +52,6 @@ export async function getRoomApplicants(roomId: string, userId: string): Promise
         lifestyleTags: profiles.lifestyleTags,
         vereniging: profiles.vereniging,
         institutionDomain: profiles.institutionDomain,
-        instagramHandle: profiles.instagramHandle,
-        showInstagram: profiles.showInstagram,
       })
       .from(applications)
       .innerJoin(profiles, eq(profiles.id, applications.userId))

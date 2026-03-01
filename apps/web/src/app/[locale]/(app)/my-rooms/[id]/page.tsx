@@ -1,8 +1,8 @@
+import { RoomStatus } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { RoomStatus } from "@openhospi/shared/enums";
 
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";

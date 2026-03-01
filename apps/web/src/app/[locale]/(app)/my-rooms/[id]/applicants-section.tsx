@@ -1,8 +1,8 @@
+import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Focus } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

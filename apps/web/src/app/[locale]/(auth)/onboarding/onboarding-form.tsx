@@ -98,8 +98,6 @@ export function OnboardingForm({ initialData }: Props) {
             maxRent: initialData.maxRent ? Number(initialData.maxRent) : undefined,
             availableFrom: initialData.availableFrom ?? "",
             vereniging: (initialData.vereniging as PreferencesStepData["vereniging"]) ?? undefined,
-            instagramHandle: initialData.instagramHandle ?? "",
-            showInstagram: initialData.showInstagram ?? false,
           }}
           onBack={() => setStep(4)}
         />

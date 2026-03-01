@@ -71,9 +71,9 @@ export async function getAggregateStats(): Promise<AggregateStats> {
     room: 0,
   };
 
-  pendingByTypeRows.forEach((row) => {
+  for (const row of pendingByTypeRows) {
     pendingReportsByType[row.type as ReportType] = row.count;
-  });
+  }
 
   return {
     totalUsers: totalUsersRow?.count ?? 0,

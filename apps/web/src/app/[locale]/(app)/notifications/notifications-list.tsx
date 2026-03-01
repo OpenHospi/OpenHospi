@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import type { NotificationItem } from "@/lib/notifications";
+import { cn } from "@/lib/utils";
 
 import { markNotificationReadAction, markAllReadAction } from "./notification-actions";
-import { Button } from "@/components/ui/button";
+
 
 type Props = {
   notifications: NotificationItem[];

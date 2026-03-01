@@ -319,6 +319,10 @@ export const AdminAction = defineEnum([
   "remove_listing",
   "remove_message",
   "dismiss_report",
+  "process_data_request",
+  "lift_restriction",
+  "export_user_data",
+  "view_user_data",
 ] as const);
 export type AdminAction = (typeof AdminAction.values)[number];
 
@@ -539,6 +543,42 @@ export const Vereniging = defineEnum([
   "other",
 ] as const);
 export type Vereniging = (typeof Vereniging.values)[number];
+
+// ─── GDPR / Privacy ──────────────────────────────────────────────────────
+
+export const ConsentPurpose = defineEnum([
+  "essential",
+  "functional",
+  "push_notifications",
+  "analytics",
+] as const);
+export type ConsentPurpose = (typeof ConsentPurpose.values)[number];
+
+export const LegalBasis = defineEnum([
+  "consent",
+  "contract",
+  "legal_obligation",
+  "legitimate_interest",
+] as const);
+export type LegalBasis = (typeof LegalBasis.values)[number];
+
+export const DataRequestType = defineEnum([
+  "access",
+  "rectification",
+  "erasure",
+  "restriction",
+  "portability",
+  "objection",
+] as const);
+export type DataRequestType = (typeof DataRequestType.values)[number];
+
+export const DataRequestStatus = defineEnum([
+  "pending",
+  "in_progress",
+  "completed",
+  "denied",
+] as const);
+export type DataRequestStatus = (typeof DataRequestStatus.values)[number];
 
 // ─── Transition maps ──────────────────────────────────────────────────────
 

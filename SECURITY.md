@@ -15,8 +15,10 @@ If you discover a security vulnerability in OpenHospi, please report it responsi
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 
-Instead, please use [GitHub Security Advisories](https://github.com/rubentalstra/OpenHospi/security/advisories/new) to
-report the vulnerability privately.
+Instead:
+
+1. **Preferred:** Use [GitHub Security Advisories](https://github.com/rubentalstra/OpenHospi/security/advisories/new) to report the vulnerability privately.
+2. **Alternative:** Email **security@openhospi.nl** with details of the vulnerability.
 
 ### What to include
 

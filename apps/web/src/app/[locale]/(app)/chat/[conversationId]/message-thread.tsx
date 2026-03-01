@@ -2,16 +2,17 @@
 
 import { decryptFromGroup, importPrivateKey, importPublicKey } from "@openhospi/crypto";
 import type { EncryptedKey } from "@openhospi/crypto";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-
-import { getStoredPrivateKey } from "@/lib/crypto-store";
-import { supabase } from "@/lib/supabase-client";
-import type { MessageItem } from "@/lib/chat";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MessageBubble } from "@/components/app/message-bubble";
-import { fetchPublicKeys } from "../key-actions";
+import type { MessageItem } from "@/lib/chat";
+import { getStoredPrivateKey } from "@/lib/crypto-store";
+import { supabase } from "@/lib/supabase-client";
+
+
 import { markConversationRead } from "../chat-actions";
+import { fetchPublicKeys } from "../key-actions";
 
 type Props = {
   conversationId: string;

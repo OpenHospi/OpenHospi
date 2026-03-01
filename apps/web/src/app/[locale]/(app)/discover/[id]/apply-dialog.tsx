@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ export function ApplyDialog({ roomId }: Props) {
     defaultValues: { personalMessage: "" },
   });
 
-  const messageLength = form.watch("personalMessage")?.length ?? 0;
+  const messageLength = useWatch({ control: form.control, name: "personalMessage" })?.length ?? 0;
 
   function onSubmit(data: ApplyToRoomData) {
     startTransition(async () => {

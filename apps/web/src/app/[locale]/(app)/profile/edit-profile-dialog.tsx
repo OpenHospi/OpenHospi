@@ -23,7 +23,7 @@ import { getInstitution } from "@openhospi/surfconext";
 import { Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -109,8 +109,8 @@ export function EditProfileDialog({ profile }: Props) {
     });
   }
 
-  const selectedTags = form.watch("lifestyleTags") ?? [];
-  const selectedLanguages = form.watch("languages") ?? [];
+  const selectedTags = useWatch({ control: form.control, name: "lifestyleTags" }) ?? [];
+  const selectedLanguages = useWatch({ control: form.control, name: "languages" }) ?? [];
 
   function toggleTag(tag: LifestyleTag) {
     const current = form.getValues("lifestyleTags") ?? [];

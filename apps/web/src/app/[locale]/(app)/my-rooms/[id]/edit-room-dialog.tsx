@@ -19,7 +19,7 @@ import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { AddressAutocomplete } from "@/components/app/address-autocomplete";
@@ -115,11 +115,11 @@ export function EditRoomDialog({ room }: Props) {
     },
   });
 
-  const rentalType = form.watch("rentalType");
-  const utilitiesIncluded = form.watch("utilitiesIncluded");
-  const selectedFeatures = form.watch("features") ?? [];
-  const selectedLocationTags = form.watch("locationTags") ?? [];
-  const selectedLanguages = form.watch("acceptedLanguages") ?? [];
+  const rentalType = useWatch({ control: form.control, name: "rentalType" });
+  const utilitiesIncluded = useWatch({ control: form.control, name: "utilitiesIncluded" });
+  const selectedFeatures = useWatch({ control: form.control, name: "features" }) ?? [];
+  const selectedLocationTags = useWatch({ control: form.control, name: "locationTags" }) ?? [];
+  const selectedLanguages = useWatch({ control: form.control, name: "acceptedLanguages" }) ?? [];
 
   function toggleArrayField<T extends string>(
     name: "features" | "locationTags" | "acceptedLanguages",
@@ -131,6 +131,12 @@ export function EditRoomDialog({ room }: Props) {
     } else {
       form.setValue(name, [...current, value] as never, { shouldValidate: true });
     }
+  }
+
+  let defaultAddress = "";
+  if (room.streetName) {
+    const street = [room.streetName, room.houseNumber].filter(Boolean).join(" ");
+    defaultAddress = room.postalCode ? `${street}, ${room.postalCode}` : street;
   }
 
   function onSubmit(data: EditRoomData) {
@@ -237,12 +243,7 @@ export function EditRoomDialog({ room }: Props) {
             <div className="space-y-2">
               <FormLabel>{t("fields.address")}</FormLabel>
               <AddressAutocomplete
-                defaultDisplayValue={
-                  room.streetName
-                    ? [room.streetName, room.houseNumber].filter(Boolean).join(" ") +
-                      (room.postalCode ? `, ${room.postalCode}` : "")
-                    : ""
-                }
+                defaultDisplayValue={defaultAddress}
                 onSelect={(result) => {
                   form.setValue("streetName", result.streetName, { shouldValidate: true });
                   form.setValue("houseNumber", result.houseNumber, { shouldValidate: true });

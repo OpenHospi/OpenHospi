@@ -2,10 +2,10 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
-import importX from "eslint-plugin-import-x";
+import { flatConfigs as importXConfigs } from "eslint-plugin-import-x";
 import noSecrets from "eslint-plugin-no-secrets";
 import security from "eslint-plugin-security";
-import sonarjs from "eslint-plugin-sonarjs";
+import { configs as sonarjsConfigs } from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
 
 const eslintConfig = defineConfig([
@@ -54,8 +54,8 @@ const eslintConfig = defineConfig([
   },
 
   // ── Import ordering & validation ──
-  importX.flatConfigs.recommended,
-  importX.flatConfigs.typescript,
+  importXConfigs.recommended,
+  importXConfigs.typescript,
   {
     rules: {
       "import-x/order": [
@@ -85,7 +85,7 @@ const eslintConfig = defineConfig([
   },
 
   // ── Code quality (SonarJS) ──
-  sonarjs.configs.recommended,
+  sonarjsConfigs.recommended,
 
   // ── Unicorn best practices (cherry-picked) ──
   {

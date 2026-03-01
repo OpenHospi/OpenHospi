@@ -7,7 +7,7 @@ import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from "@openhospi
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -72,8 +72,8 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
     },
   });
 
-  const rentalType = form.watch("rentalType");
-  const utilitiesIncluded = form.watch("utilitiesIncluded");
+  const rentalType = useWatch({ control: form.control, name: "rentalType" });
+  const utilitiesIncluded = useWatch({ control: form.control, name: "utilitiesIncluded" });
 
   function onSubmit(data: RoomDetailsData) {
     startTransition(async () => {

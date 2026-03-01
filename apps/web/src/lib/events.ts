@@ -90,7 +90,7 @@ export async function getEventDetail(eventId: string, userId: string): Promise<E
       .innerJoin(profiles, eq(profiles.id, hospiInvitations.userId))
       .where(eq(hospiInvitations.eventId, eventId));
 
-    return { ...event, invitees };
+    return { ...event, invitees } as EventDetail;
   });
 }
 

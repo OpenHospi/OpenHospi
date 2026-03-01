@@ -1,5 +1,6 @@
 "use client";
 
+import { COPY_FEEDBACK_TIMEOUT_MS } from "@openhospi/shared/constants";
 import { Check, Copy } from "lucide-react";
 import { useCallback, useState } from "react";
 
@@ -11,7 +12,7 @@ export function CopyButton({ text }: { text: string }) {
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(text);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), COPY_FEEDBACK_TIMEOUT_MS);
   }, [text]);
 
   return (

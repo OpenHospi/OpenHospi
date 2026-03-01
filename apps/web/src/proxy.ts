@@ -1,3 +1,4 @@
+import { SESSION_COOKIE_NAME } from "@openhospi/shared/constants";
 import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
@@ -138,7 +139,7 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   const routeType = classifyBarePath(barePath);
 
   // Auth check: protected app routes require session cookie
-  if (routeType === "app" && !request.cookies.get("better-auth.session_token")) {
+  if (routeType === "app" && !request.cookies.get(SESSION_COOKIE_NAME)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

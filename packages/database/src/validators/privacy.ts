@@ -1,3 +1,4 @@
+import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
 import { ConsentPurpose, DataRequestType } from "@openhospi/shared/enums";
 import { z } from "zod";
 
@@ -8,11 +9,11 @@ export const updateConsentSchema = z.object({
 
 export const submitDataRequestSchema = z.object({
   type: z.enum(DataRequestType.values),
-  description: z.string().min(10).max(2000),
+  description: z.string().min(10).max(MAX_NOTES_LENGTH),
 });
 
 export const requestProcessingRestrictionSchema = z.object({
-  reason: z.string().min(10).max(2000),
+  reason: z.string().min(10).max(MAX_NOTES_LENGTH),
 });
 
 export type UpdateConsentData = z.infer<typeof updateConsentSchema>;

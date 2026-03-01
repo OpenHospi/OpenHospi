@@ -135,6 +135,7 @@ export async function getReports(
 
   return rows.map((r) => ({
     ...r,
+    reporterId: r.reporterId ?? "",
     reporterName: r.reporterName ?? "Unknown",
     reportedUserName: null,
   }));
@@ -187,6 +188,7 @@ export async function getReportDetail(reportId: string): Promise<ReportDetail | 
 
   return {
     ...row,
+    reporterId: row.reporterId ?? "",
     reporterName: row.reporterName ?? "Unknown",
     reportedUserName,
     reportedUserBanned,

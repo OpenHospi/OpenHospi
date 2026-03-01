@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RoomBasicInfoData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema } from "@openhospi/database/validators";
+import { MAX_ROOM_DESCRIPTION_LENGTH } from "@openhospi/shared/constants";
 import { City } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -39,8 +40,6 @@ type Props = {
   defaultValues: Partial<RoomBasicInfoData>;
   onNext: () => void;
 };
-
-const MAX_DESCRIPTION_LENGTH = 2000;
 
 export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   const t = useTranslations("app.rooms");
@@ -113,14 +112,14 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                     <Textarea
                       placeholder={t("placeholders.description")}
                       className="min-h-24 resize-none"
-                      maxLength={MAX_DESCRIPTION_LENGTH}
+                      maxLength={MAX_ROOM_DESCRIPTION_LENGTH}
                       {...field}
                     />
                   </FormControl>
                   <div className="flex items-center justify-between">
                     <FormDescription>{t("wizard.helpers.description")}</FormDescription>
                     <span className="text-xs text-muted-foreground">
-                      {descriptionValue.length}/{MAX_DESCRIPTION_LENGTH}
+                      {descriptionValue.length}/{MAX_ROOM_DESCRIPTION_LENGTH}
                     </span>
                   </div>
                   <FormMessage />

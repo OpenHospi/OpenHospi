@@ -1,5 +1,6 @@
 "use client";
 
+import { LEGAL_HEADER_OFFSET } from "@openhospi/shared/constants";
 import { useCallback } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,8 +9,6 @@ interface TocEntry {
   id: string;
   title: string;
 }
-
-const HEADER_OFFSET = 96;
 
 interface LegalTableOfContentsProps {
   entries: TocEntry[];
@@ -27,7 +26,7 @@ export function LegalTableOfContents({
       if (!el) return;
 
       const top =
-        el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+        el.getBoundingClientRect().top + window.scrollY - LEGAL_HEADER_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
       history.replaceState(null, "", `#${id}`);
     },

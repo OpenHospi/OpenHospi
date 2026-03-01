@@ -1,10 +1,9 @@
 "use client";
 
+import { CONSENT_CHANGE_EVENT, CONSENT_STORAGE_KEY } from "@openhospi/shared/constants";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useSyncExternalStore } from "react";
-
-const CONSENT_STORAGE_KEY = "openhospi_consent";
 
 function getAnalyticsConsent(): boolean {
   try {
@@ -18,10 +17,10 @@ function getAnalyticsConsent(): boolean {
 }
 
 function subscribe(callback: () => void) {
-  window.addEventListener("openhospi:consent-change", callback);
+  window.addEventListener(CONSENT_CHANGE_EVENT, callback);
   window.addEventListener("storage", callback);
   return () => {
-    window.removeEventListener("openhospi:consent-change", callback);
+    window.removeEventListener(CONSENT_CHANGE_EVENT, callback);
     window.removeEventListener("storage", callback);
   };
 }

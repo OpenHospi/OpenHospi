@@ -1,4 +1,4 @@
-import { GenderPreference } from "@openhospi/shared/enums";
+import { ApplicationStatus, GenderPreference } from "@openhospi/shared/enums";
 import { Check, Globe, Home, MapPin, Ruler, Settings, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -144,17 +144,23 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
   }
 
   const isOwner = room.ownerId === user.id;
+  const isInvitee =
+    isOwner ||
+    (existingApplication != null &&
+      [ApplicationStatus.invited, ApplicationStatus.attending, ApplicationStatus.accepted].includes(
+        existingApplication.status,
+      ));
   const cityName = tEnums(`city.${room.city}`);
 
-  // Format address for header
+  // Format address — full address only for invitees/owner, street name for all authenticated
   const addressParts = [cityName];
   if (room.neighborhood) addressParts.push(room.neighborhood);
   if (room.streetName) {
-    const street = [room.streetName, room.houseNumber].filter(Boolean).join(" ");
-    if (room.postalCode) {
-      addressParts.push(`${street}, ${room.postalCode}`);
+    if (isInvitee) {
+      const street = [room.streetName, room.houseNumber].filter(Boolean).join(" ");
+      addressParts.push(room.postalCode ? `${street}, ${room.postalCode}` : street);
     } else {
-      addressParts.push(street);
+      addressParts.push(room.streetName);
     }
   }
 

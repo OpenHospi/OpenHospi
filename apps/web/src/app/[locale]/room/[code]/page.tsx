@@ -23,6 +23,7 @@ export async function generateMetadata({
   const room = await getRoomByShareLink(code);
   if (!room || room.status !== RoomStatus.active) return { title: t("title") };
 
+
   const cityName = tEnums(`city.${room.city}`);
   return { title: `${room.title} — ${cityName}` };
 }
@@ -62,6 +63,7 @@ export default async function JoinRoomPage({ params }: Props) {
   await requireSession();
 
   const t = await getTranslations({ locale, namespace: "app.join" });
+  const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomByShareLink(code);
@@ -76,7 +78,7 @@ export default async function JoinRoomPage({ params }: Props) {
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline">
-              <Link href="/discover">{t("cancel")}</Link>
+              <Link href="/discover">{tCommon("cancel")}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -111,7 +113,7 @@ export default async function JoinRoomPage({ params }: Props) {
 
           <div className="flex gap-3">
             <Button asChild variant="outline" className="flex-1">
-              <Link href="/discover">{t("cancel")}</Link>
+              <Link href="/discover">{tCommon("cancel")}</Link>
             </Button>
           </div>
         </CardContent>

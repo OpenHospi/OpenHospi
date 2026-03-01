@@ -154,7 +154,9 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
   const room = await getPublicRoom(roomId);
   if (!room) notFound();
 
-  const t = await getTranslations({ locale, namespace: "public.room" });
+  const t = await getTranslations({ locale, namespace: "app.roomDetail" });
+  const tPublic = await getTranslations({ locale, namespace: "public.room" });
+  const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const loginUrl = getLoginUrl();
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
@@ -209,18 +211,18 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="text-2xl font-bold">€{room.totalCost}</span>
-                <span className="text-muted-foreground">{t("perMonth")}</span>
+                <span className="text-muted-foreground">{tCommon("perMonth")}</span>
               </div>
               {room.roomSizeM2 && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Ruler className="size-4" />
-                  <span>{t("roomSize", { size: room.roomSizeM2 })}</span>
+                  <span>{tPublic("roomSize", { size: room.roomSizeM2 })}</span>
                 </div>
               )}
               {room.totalHousemates != null && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Users className="size-4" />
-                  <span>{t("housemates", { count: room.totalHousemates })}</span>
+                  <span>{tCommon("housemates", { count: room.totalHousemates })}</span>
                 </div>
               )}
               {room.houseType && (
@@ -329,7 +331,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                 <CardTitle>
                   <span className="text-2xl">€{room.totalCost}</span>
                   <span className="text-base font-normal text-muted-foreground">
-                    {t("perMonth")}
+                    {tCommon("perMonth")}
                   </span>
                 </CardTitle>
               </CardHeader>
@@ -399,7 +401,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                 )}
 
                 <Button asChild className="w-full">
-                  <a href={loginUrl}>{t("loginToApply")}</a>
+                  <a href={loginUrl}>{tPublic("loginToApply")}</a>
                 </Button>
               </CardContent>
             </Card>

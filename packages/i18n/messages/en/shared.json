@@ -20,7 +20,20 @@
       "owner": "Owner",
       "studyProgramme": "Study programme",
       "memberSince": "Member since",
-      "rentPrice": "Rent price"
+      "rentPrice": "Rent price",
+      "save": "Save",
+      "edit": "Edit",
+      "close": "Close",
+      "submit": "Submit",
+      "next": "Next",
+      "back": "Back",
+      "logout": "Log out",
+      "perMonth": "/mo",
+      "comingSoon": "Coming soon",
+      "noResults": "No results found.",
+      "optional": "optional",
+      "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}",
+      "backToApp": "Back to app"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -237,7 +250,7 @@
       "unitas_sa": "Unitas SA",
       "arboricultura": "Arboricultura",
       "sv_creas": "SV Creas",
-      "sv_campuscafe_lokaal_99": "SV Campuscaf\u00e9 Lokaal 99",
+      "sv_campuscafe_lokaal_99": "SV Campuscafé Lokaal 99",
       "quercus": "Quercus",
       "trolleystam": "Trolleystam",
       "sv_maximus": "SV Maximus",
@@ -282,7 +295,7 @@
       "radix": "Radix",
       "hsv": "HSV",
       "intac": "Intac",
-      "la_confrerie": "La Confr\u00e9rie",
+      "la_confrerie": "La Confrérie",
       "aegee_groningen": "AEGEE Groningen",
       "albertus_magnus": "Albertus Magnus",
       "ffj_bernlef": "FFJ Bernlef",
@@ -453,6 +466,645 @@
     "reminder": {
       "title": "Event reminder",
       "body": "{eventTitle} starts at {time}"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "description": "Log in with your university account to access OpenHospi.",
+      "surfconextButton": "Log in with SURFconext",
+      "surfconextDescription": "Use your university or hogeschool account.",
+      "error": "Login failed. Please try again.",
+      "devOrDivider": "or",
+      "devGithubButton": "Log in with GitHub (Dev)",
+      "devGithubDescription": "Development only. Uses GitHub for local testing."
+    }
+  },
+  "app": {
+    "sidebar": {
+      "discover": "Discover",
+      "myRooms": "My Rooms",
+      "applications": "Applications",
+      "invitations": "Invitations",
+      "chat": "Chat"
+    },
+    "userMenu": {
+      "profile": "My profile",
+      "settings": "Settings"
+    },
+    "discover": {
+      "title": "Discover rooms",
+      "roomCount": "Showing {showing} of {total} rooms",
+      "empty": "No rooms match your filters. Try adjusting your search.",
+      "filters": {
+        "city": "City",
+        "cityPlaceholder": "All cities",
+        "minPrice": "Min price",
+        "maxPrice": "Max price",
+        "houseType": "House type",
+        "houseTypePlaceholder": "All types",
+        "furnishing": "Furnishing",
+        "furnishingPlaceholder": "All",
+        "availableFrom": "Available from",
+        "features": "Features",
+        "featuresPlaceholder": "Select features...",
+        "locationTags": "Location",
+        "locationTagsPlaceholder": "Select tags...",
+        "sort": "Sort by",
+        "sortNewest": "Newest first",
+        "sortCheapest": "Cheapest first",
+        "sortMostExpensive": "Most expensive first",
+        "clearFilters": "Clear filters",
+        "selectedCount": "{count} selected",
+        "showFilters": "Show filters",
+        "hideFilters": "Hide filters"
+      },
+      "card": {},
+      "loadMore": "Load more"
+    },
+    "profile": {
+      "title": "My profile",
+      "institution": "Institution",
+      "editTitle": "Edit profile",
+      "editSuccess": "Profile updated",
+      "bio": "About me",
+      "studyInfo": "Study info",
+      "studyProgram": "Study program",
+      "studyLevel": "Study level",
+      "gender": "Gender",
+      "birthDate": "Date of birth",
+      "preferences": "Preferences",
+      "preferredCity": "Preferred city",
+      "maxRent": "Max rent",
+      "availableFrom": "Available from",
+      "lifestyleTags": "Lifestyle",
+      "languages": "Spoken languages",
+      "completeness": {
+        "title": "Profile {completed}/{total} complete",
+        "photo": "Profile photo",
+        "bio": "Bio",
+        "studyProgram": "Study program",
+        "birthDate": "Date of birth",
+        "preferredCity": "Preferred city",
+        "lifestyleTags": "Lifestyle tags (2+)",
+        "vereniging": "Association"
+      }
+    },
+    "onboarding": {
+      "title": "Complete your profile",
+      "stepOf": "Step {current} of {total}",
+      "steps": {
+        "about": "About you",
+        "personality": "Personality",
+        "languages": "Languages",
+        "photos": "Photos",
+        "preferences": "Preferences"
+      },
+      "stepDescriptions": {
+        "step1": "Tell us a bit about yourself.",
+        "step2": "What describes you best?",
+        "step3": "Which languages do you speak?",
+        "step4": "Add photos so houses get to know you.",
+        "step5": "What are you looking for?"
+      },
+      "fields": {
+        "gender": "Gender",
+        "birthDate": "Date of birth",
+        "studyProgram": "Study program",
+        "studyLevel": "Study level",
+        "bio": "About me",
+        "preferredCity": "Preferred city",
+        "maxRent": "Max rent",
+        "availableFrom": "Available from",
+        "vereniging": "Student association",
+        "instagram": "Instagram",
+        "showInstagram": "Show Instagram on profile"
+      },
+      "placeholders": {
+        "studyProgram": "e.g. Computer Science",
+        "studyLevel": "Select your level",
+        "bio": "Tell something about yourself...",
+        "preferredCity": "Select a city",
+        "maxRent": "e.g. 600",
+        "vereniging": "e.g. Vindicat",
+        "searchVereniging": "Search association..."
+      },
+      "photoSlots": {
+        "slot1": "Your best photo",
+        "slot2": "In your free time",
+        "slot3": "Show your personality",
+        "slot4": "With friends or housemates",
+        "slot5": "Your study or work"
+      },
+      "genderPreferNotToSayHint": "You will only see rooms that are open to everyone. Rooms looking specifically for a man or a woman won't appear in your results.",
+      "required": "Required",
+      "dragToReorder": "Drag to reorder",
+      "complete": "Complete profile",
+      "noSelection": "No selection",
+      "tagCounter": "{count}/{max} selected (min {min})",
+      "languageCounter": "{count} of {min}–{max} languages",
+      "validation": {
+        "minTags": "Select at least {min} tags",
+        "minLanguages": "Select at least {min} language"
+      }
+    },
+    "rooms": {
+      "title": "My Rooms",
+      "empty": "You haven't listed any rooms yet.",
+      "createFirst": "Create your first listing",
+      "createNew": "New room",
+      "applicants": {
+        "title": "Applicants",
+        "empty": "No applications yet. Share your room to attract applicants.",
+        "viewProfile": "View profile",
+        "liked": "liked",
+        "maybe": "maybe",
+        "rejected": "rejected",
+        "invite": "Invite",
+        "accept": "Accept",
+        "notChosen": "Not chosen",
+        "acceptConfirmTitle": "Accept applicant",
+        "acceptConfirmDescription": "Are you sure you want to accept {name}? This action cannot be undone.",
+        "statusError": "Could not update status",
+        "statusUpdated": "Status updated",
+        "reviewError": "Could not submit review",
+        "reviewSubmitted": "Review submitted",
+        "aboutThem": "About",
+        "lifestyle": "Lifestyle",
+        "personalMessage": "Personal message",
+        "yourReview": "Your review",
+        "decision": "Decision",
+        "notes": "Notes",
+        "notesPlaceholder": "Add optional notes about this applicant...",
+        "submitReview": "Submit review",
+        "yearsOld": "years old",
+        "reviewMode": "Review mode"
+      },
+      "houseSetup": {
+        "title": "Set up your property first",
+        "description": "Before you can list a room, you need to create a house. A house groups your rooms together and lets you invite housemates.",
+        "benefits": {
+          "rooms": {
+            "title": "Group your rooms",
+            "description": "Organise all rooms under one house for a clear overview."
+          },
+          "housemates": {
+            "title": "Invite housemates",
+            "description": "Add current housemates so they can help review applicants."
+          }
+        },
+        "form": {
+          "title": "Create your house",
+          "description": "Give your house a recognisable name — you can change it later.",
+          "nameLabel": "House name",
+          "namePlaceholder": "e.g. Keizersgracht 42",
+          "submit": "Create house & continue"
+        },
+        "errors": {
+          "INVALID_NAME": "Name must be at least 2 characters.",
+          "RATE_LIMITED": "Too many requests. Please try again later."
+        }
+      },
+      "housePicker": {
+        "title": "Which house is this room in?",
+        "description": "Select the house where this room is located.",
+        "roomCount": "{count, plural, =0 {No rooms yet} =1 {1 room} other {# rooms}}",
+        "createNew": "Create a new house",
+        "continue": "Continue"
+      },
+      "wizard": {
+        "stepOf": "Step {current} of {total}",
+        "steps": {
+          "basicInfo": "Basic info",
+          "details": "Room details",
+          "preferences": "Preferences",
+          "photos": "Photos"
+        },
+        "stepDescriptions": {
+          "step1": "Give your room a title and location.",
+          "step2": "Add pricing, availability, and room details.",
+          "step3": "Set preferences and features for your room.",
+          "step4": "Upload photos to show your room."
+        },
+        "sections": {
+          "location": "Location",
+          "pricing": "Pricing",
+          "property": "Property details",
+          "availability": "Availability",
+          "features": "Room features & location",
+          "preferences": "Tenant preferences",
+          "association": "Association"
+        },
+        "sectionDescriptions": {
+          "features": "Highlight what makes your room and location special.",
+          "preferences": "Describe who you're looking for as a new housemate.",
+          "association": "Optionally link this room to a student association."
+        },
+        "helpers": {
+          "title": "A catchy title helps your room stand out.",
+          "description": "Describe what makes this room and house special."
+        },
+        "photoGuidance": "Upload at least 1 photo to publish. The first photo is your cover.",
+        "photoCount": "{count}/{max} photos"
+      },
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "city": "City",
+        "neighborhood": "Neighborhood",
+        "address": "Address",
+        "streetName": "Street name",
+        "houseNumber": "Number",
+        "postalCode": "Postal code",
+        "acceptedLanguages": "Accepted languages",
+        "rentPrice": "Monthly rent",
+        "deposit": "Deposit",
+        "utilitiesIncluded": "Gas, water & electricity",
+        "serviceCosts": "Service costs",
+        "estimatedUtilitiesCosts": "Estimated utility costs",
+        "roomSize": "Room size (m²)",
+        "availableFrom": "Available from",
+        "availableUntil": "Available until",
+        "rentalType": "Rental type",
+        "houseType": "House type",
+        "furnishing": "Furnishing",
+        "totalHousemates": "Total housemates",
+        "features": "Features",
+        "locationTags": "Location",
+        "preferredGender": "Preferred gender",
+        "preferredAgeMin": "Min age",
+        "preferredAgeMax": "Max age",
+        "preferredLifestyleTags": "Preferred lifestyle",
+        "roomVereniging": "Association"
+      },
+      "placeholders": {
+        "title": "e.g. Cozy room in student house",
+        "description": "Describe the room and house...",
+        "neighborhood": "e.g. Centrum",
+        "address": "e.g. Keizersgracht 1",
+        "searchAddress": "Search for an address...",
+        "rentPrice": "e.g. 450",
+        "deposit": "e.g. 450",
+        "serviceCosts": "e.g. 75",
+        "estimatedUtilitiesCosts": "e.g. 75",
+        "roomSize": "e.g. 12",
+        "totalHousemates": "e.g. 5",
+        "searchVereniging": "Search association..."
+      },
+      "helpers": {
+        "serviceCosts": "e.g. cleaning, internet, VvE contribution"
+      },
+      "utilities": {
+        "included": "Included in rent",
+        "not_included": "Not included, tenant arranges own",
+        "estimated": "Not included, estimated advance"
+      },
+      "photoSlots": {
+        "slot1": "Cover photo",
+        "slot2": "Room overview",
+        "slot3": "Bathroom/kitchen",
+        "slot4": "Common area",
+        "slot5": "Outside/street",
+        "slot6": "Extra",
+        "slot7": "Extra",
+        "slot8": "Extra",
+        "slot9": "Extra",
+        "slot10": "Extra"
+      },
+      "actions": {
+        "publish": "Publish room",
+        "saveDraft": "Save as draft",
+        "pause": "Pause listing",
+        "activate": "Activate listing",
+        "close": "Close listing",
+        "edit": "Edit room"
+      },
+      "shareLink": {
+        "title": "Share link",
+        "copy": "Copy link",
+        "copied": "Link copied!",
+        "regenerate": "Regenerate link",
+        "regenerateConfirm": "This will invalidate the old link. Continue?",
+        "expiry": "Expires at",
+        "maxUses": "Max uses",
+        "useCount": "{count} times used",
+        "noExpiry": "No expiry",
+        "noLimit": "No limit"
+      },
+      "status": {
+        "confirmClose": "Are you sure you want to close this listing? This cannot be undone.",
+        "confirmCloseTitle": "Close listing",
+        "publishError": "Upload at least 1 photo before publishing.",
+        "published": "Room published!",
+        "paused": "Room paused",
+        "activated": "Room activated",
+        "closed": "Room closed",
+        "updated": "Room updated",
+        "draftSaved": "Draft saved",
+        "RATE_LIMITED": "Too many rooms created today. Please try again later."
+      },
+      "manage": {
+        "title": "Room management",
+        "details": "Room details",
+        "noDescription": "No description"
+      },
+      "noSelection": "No selection",
+      "reviewMode": {
+        "title": "Review mode",
+        "backToOverview": "Back to overview",
+        "about": "About",
+        "personalMessage": "Personal message",
+        "housemateReviews": "Housemate reviews",
+        "reviewError": "Could not submit review",
+        "allReviewed": "All applicants reviewed!",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "events": {
+        "title": "Hospi Events",
+        "empty": "No events yet. Create one to invite applicants.",
+        "create": "Create event",
+        "createTitle": "Create hospi event",
+        "createSubmit": "Create event",
+        "createError": "Could not create event",
+        "created": "Event created",
+        "cancelled": "Cancelled",
+        "cancelEvent": "Cancel event",
+        "cancelConfirmTitle": "Cancel event",
+        "cancelConfirmDescription": "Are you sure you want to cancel this event? All invitees will be notified.",
+        "keepEvent": "Keep event",
+        "confirmCancel": "Cancel event",
+        "cancelError": "Could not cancel event",
+        "cancelledSuccess": "Event cancelled",
+        "addToCalendar": "Add to calendar",
+        "detailTitle": "Event details",
+        "backToRoom": "Back to room",
+        "invitees": "Invitees",
+        "noInvitees": "No invitees yet. Use the invite button to add applicants.",
+        "attendingCount": "{attending} / {total} attending",
+        "maxAttendees": "Max {count} attendees",
+        "fields": {
+          "title": "Title",
+          "date": "Date",
+          "startTime": "Start time",
+          "endTime": "End time",
+          "duration": "Duration",
+          "customEndTime": "Set custom end time",
+          "location": "Location",
+          "description": "Description",
+          "maxAttendees": "Max attendees",
+          "notes": "Internal notes"
+        }
+      },
+      "invite": {
+        "inviteApplicants": "Invite applicants",
+        "title": "Invite applicants to event",
+        "noInvitable": "No applicants available to invite.",
+        "selected": "{count} selected",
+        "selectAllLiked": "Select all liked",
+        "submit": "Invite {count} applicants",
+        "error": "Could not send invitations",
+        "success": "Invited {count} applicants"
+      },
+      "voting": {
+        "title": "Voting",
+        "description": "Rank applicants by preference. All housemates can see each other's votes.",
+        "backToRoom": "Back to room",
+        "yourRanking": "Your ranking",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "submitVotes": "Submit votes",
+        "updateVotes": "Update votes",
+        "submitted": "Votes submitted",
+        "submitError": "Could not submit votes",
+        "noApplicants": "No applicants available for voting yet. Applicants need to be invited and attend an event first.",
+        "voteBoard": "Vote board",
+        "applicant": "Applicant",
+        "total": "Total",
+        "openVoting": "Open voting",
+        "sectionDescription": "Rank applicants together and view each other's votes transparently."
+      },
+      "closeRoom": {
+        "title": "Close listing",
+        "description": "Choose a new housemate or close the listing without selecting anyone. All applicants will be notified.",
+        "chooseApplicant": "Choose new housemate",
+        "chooseHint": "Click to select an applicant, or close without choosing anyone.",
+        "noApplicants": "No active applicants. The listing will simply be closed.",
+        "rankScore": "Vote score: {score}",
+        "closeWithChoice": "Close and accept",
+        "closeWithoutChoice": "Close without choosing",
+        "confirmTitle": "Are you sure?",
+        "confirmWithChoice": "The selected applicant will be notified as accepted. All others will be notified as not chosen. This cannot be undone.",
+        "confirmWithoutChoice": "All applicants will be notified as not chosen. This cannot be undone.",
+        "confirm": "Close listing",
+        "success": "Listing closed",
+        "error": "Could not close listing"
+      }
+    },
+    "roomDetail": {
+      "location": "Location",
+      "approximateLocation": "Approximate location — exact address shared after application",
+      "ageRange": "{min}–{max} years",
+      "acceptedLanguages": "Spoken languages",
+      "rentInclUtilities": "Rent (incl. utilities)",
+      "utilitiesNotIncluded": "Utilities not included",
+      "utilitiesEstimated": "Utilities (estimated)",
+      "estimatedTotal": "Total (estimated)",
+      "total": "Total",
+      "whoWereLookingFor": "Who we're looking for",
+      "everyoneWelcome": "Everyone welcome",
+      "details": "Room details",
+      "description": "Description",
+      "features": "Features",
+      "locationTags": "Location",
+      "preferences": "Looking for",
+      "availableFrom": "Available from {date}",
+      "availableUntil": "until {date}",
+      "deposit": "Deposit",
+      "utilitiesIncluded": "Utilities included",
+      "serviceCosts": "Service costs",
+      "rent": "Rent",
+      "totalCost": "Total",
+      "rentalType": "Rental type",
+      "notFound": "Room not found",
+      "notAvailable": "This room is no longer accepting applications.",
+      "backToDiscover": "Back to discover",
+      "manageRoom": "Manage this room",
+      "viewApplication": "View your application",
+      "apply": "Apply to this room",
+      "applyTitle": "Apply to this room",
+      "personalMessage": "Personal message",
+      "personalMessagePlaceholder": "Tell the housemates why you'd be a great fit...",
+      "personalMessageHint": "Minimum {min} characters",
+      "submitApplication": "Submit application",
+      "applySuccess": "Application submitted!",
+      "postedBy": "Posted by",
+      "photoCount": "{count, plural, one {1 photo} other {# photos}}",
+      "photoIndex": "Photo {index}",
+      "showAllPhotos": "Show all {count} photos",
+      "availability": "Availability",
+      "errors": {
+        "invalid_data": "Please check your message and try again.",
+        "room_not_active": "This room is no longer accepting applications.",
+        "is_housemate": "You are already a housemate of this room.",
+        "already_applied": "You have already applied to this room.",
+        "RATE_LIMITED": "Too many attempts. Please try again later."
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "pushNotifications": {
+        "title": "Push notifications",
+        "description": "Manage browser push notifications to stay updated on new messages, applications, and events."
+      },
+      "exportSuccess": "Data exported successfully",
+      "exportRateLimited": "Too many export requests today. Please try again later.",
+      "dataExport": {
+        "title": "Export your data",
+        "description": "Download all your personal data as a JSON file. This includes your profile, rooms, applications, and reviews.",
+        "button": "Export data"
+      },
+      "dangerZone": {
+        "title": "Danger zone",
+        "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+        "deleteButton": "Delete account",
+        "confirmTitle": "Are you sure?",
+        "confirmDescription": "This will permanently delete your account, profile, rooms, applications, and all associated data. This action cannot be undone.",
+        "confirmDelete": "Delete my account"
+      }
+    },
+    "errors": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "retry": "Try again",
+      "notFoundTitle": "Page not found",
+      "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+      "backToDiscover": "Back to discover"
+    },
+    "applications": {
+      "title": "My Applications",
+      "empty": "You haven't applied to any rooms yet.",
+      "discoverRooms": "Discover rooms",
+      "appliedOn": "Applied {date}",
+      "detailTitle": "Application details",
+      "statusTitle": "Application status",
+      "yourMessage": "Your message",
+      "viewRoom": "View room",
+      "withdraw": "Withdraw application",
+      "withdrawSuccess": "Application withdrawn",
+      "withdrawConfirmTitle": "Withdraw application",
+      "withdrawConfirmDescription": "Are you sure you want to withdraw your application? This cannot be undone.",
+      "eventInvitation": "Event Invitation",
+      "eventInvitationDescription": "You've been invited to a hospi event for this room.",
+      "errors": {
+        "not_found": "Application not found.",
+        "cannot_withdraw": "This application can no longer be withdrawn."
+      }
+    },
+    "join": {
+      "title": "Join this house",
+      "description": "You've been invited to join as a housemate.",
+      "joinButton": "Join this house",
+      "success": "You've joined the house!",
+      "errors": {
+        "INVALID_LINK": "This share link is invalid or the room no longer exists.",
+        "LINK_EXPIRED": "This share link has expired.",
+        "LINK_MAX_USED": "This share link has reached its maximum number of uses.",
+        "ALREADY_MEMBER": "You are already a member of this house.",
+        "IS_OWNER": "You are the owner of this room.",
+        "ROOM_NOT_ACTIVE": "This room is no longer active.",
+        "RATE_LIMITED": "Too many attempts. Please try again later."
+      }
+    },
+    "house": {
+      "create": {
+        "title": "Create house",
+        "description": "Create your house to start listing rooms.",
+        "nameLabel": "House name",
+        "namePlaceholder": "e.g. Keizersgracht 42 or Villa Volta",
+        "submit": "Create house"
+      },
+      "members": {
+        "title": "Housemates",
+        "description": "The members of your house."
+      },
+      "invite": {
+        "title": "Invite housemates",
+        "description": "Share this link with your housemates so they can join."
+      },
+      "rooms": {
+        "title": "Rooms",
+        "untitled": "Untitled room"
+      }
+    },
+    "joinHouse": {
+      "title": "Join this house",
+      "description": "You've been invited to join {name}.",
+      "joinButton": "Join",
+      "success": "You've joined the house!",
+      "errors": {
+        "INVALID_LINK": "This invite link is invalid.",
+        "ALREADY_MEMBER": "You are already a member of this house."
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications yet",
+      "markAllRead": "Mark all as read"
+    },
+    "push": {
+      "enable": "Enable push notifications",
+      "disable": "Disable push notifications",
+      "unsupported": "Push notifications are not supported in this browser"
+    },
+    "chat": {
+      "title": "Chat",
+      "empty": "No conversations yet. Conversations are created when you're invited to a hospi.",
+      "conversation": "Conversation",
+      "encrypted_message": "Encrypted message",
+      "no_messages": "No messages yet",
+      "members_count": "{count, plural, one {# member} other {# members}}",
+      "message_placeholder": "Write a message...",
+      "decrypting": "Decrypting messages...",
+      "decryption_failed": "Could not decrypt message",
+      "send": "Send",
+      "block_user": "Block user",
+      "unblock_user": "Unblock",
+      "report_message": "Report message",
+      "report_user": "Report {name}",
+      "blocked": "You have blocked this user"
+    },
+    "invitations": {
+      "title": "Invitations",
+      "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
+      "cancelled": "Cancelled",
+      "attend": "Attend",
+      "maybe": "Maybe",
+      "decline": "Decline",
+      "declineReasonLabel": "Why can't you attend?",
+      "declineReasonPlaceholder": "Please share why you can't make it...",
+      "confirmDecline": "Confirm decline",
+      "cancelDecline": "Cancel",
+      "rsvpSuccess": "Response saved",
+      "errors": {
+        "not_found": "Invitation not found",
+        "invalid_transition": "This response is no longer available",
+        "event_cancelled": "This event has been cancelled",
+        "deadline_passed": "The RSVP deadline has passed",
+        "event_full": "This event is full"
+      }
+    },
+    "report": {
+      "button": "Report",
+      "title": "Submit a report",
+      "description": "Help us keep OpenHospi safe. Reports are reviewed by our admin team.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "Select a reason...",
+      "descriptionLabel": "Additional details (optional)",
+      "descriptionPlaceholder": "Tell us what happened...",
+      "submit": "Submit report",
+      "success": "Report submitted. Thank you.",
+      "error": "Failed to submit report. Please try again."
     }
   }
 }

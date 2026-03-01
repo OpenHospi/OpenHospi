@@ -47,6 +47,7 @@ type Props = {
 
 export function CloseRoomDialog({ roomId, applicants }: Props) {
   const t = useTranslations("app.rooms.closeRoom");
+  const tCommon = useTranslations("common.labels");
   const tActions = useTranslations("app.rooms.actions");
   const [open, setOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -149,7 +150,7 @@ export function CloseRoomDialog({ roomId, applicants }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>{t("cancel")}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isPending}>{tCommon("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirm}
               disabled={isPending}

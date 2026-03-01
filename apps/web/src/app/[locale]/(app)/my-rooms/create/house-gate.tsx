@@ -121,6 +121,7 @@ function HouseSetup() {
 
 function HousePicker({ houses }: { houses: OwnerHouse[] }) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selectedId, setSelectedId] = useState<string>(houses[0]?.id ?? "");
@@ -238,7 +239,7 @@ function HousePicker({ houses }: { houses: OwnerHouse[] }) {
                   onClick={() => setShowCreate(false)}
                   disabled={isPending}
                 >
-                  {t("actions.back")}
+                  {tCommon("back")}
                 </Button>
                 <Button type="submit" className="flex-1" disabled={isPending}>
                   {isPending && <Loader2 className="animate-spin" />}

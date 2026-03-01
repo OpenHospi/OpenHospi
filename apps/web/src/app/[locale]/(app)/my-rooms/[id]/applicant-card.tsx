@@ -41,6 +41,7 @@ type Props = {
 
 export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
   const t = useTranslations("app.rooms.applicants");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -247,7 +248,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={() => handleStatusChange(ApplicationStatus.accepted)}>
               {t("accept")}
             </AlertDialogAction>

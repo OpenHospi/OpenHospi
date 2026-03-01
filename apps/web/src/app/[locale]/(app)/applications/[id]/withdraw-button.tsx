@@ -27,6 +27,7 @@ type Props = {
 
 export function WithdrawButton({ applicationId }: Props) {
   const t = useTranslations("app.applications");
+  const tCommon = useTranslations("common.labels");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -58,7 +59,7 @@ export function WithdrawButton({ applicationId }: Props) {
           <AlertDialogDescription>{t("withdrawConfirmDescription")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+          <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleWithdraw}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"

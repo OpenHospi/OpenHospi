@@ -26,6 +26,7 @@ type UserMenuProps = {
 
 export function UserMenu({ user }: UserMenuProps) {
   const t = useTranslations("app.userMenu");
+  const tCommon = useTranslations("common.labels");
   const router = useRouter();
   const { isMobile } = useSidebar();
 
@@ -94,7 +95,7 @@ export function UserMenu({ user }: UserMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
-          {t("logout")}
+          {tCommon("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

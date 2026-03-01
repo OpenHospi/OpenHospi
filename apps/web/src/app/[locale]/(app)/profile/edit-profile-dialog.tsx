@@ -74,6 +74,7 @@ type Props = {
 
 export function EditProfileDialog({ profile }: Props) {
   const t = useTranslations("app.profile");
+  const tCommon = useTranslations("common.labels");
   const tOnboarding = useTranslations("app.onboarding");
   const tEnums = useTranslations("enums");
   const [open, setOpen] = useState(false);
@@ -145,7 +146,7 @@ export function EditProfileDialog({ profile }: Props) {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Pencil className="size-4" />
-          {t("edit")}
+          {tCommon("edit")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
@@ -446,11 +447,11 @@ export function EditProfileDialog({ profile }: Props) {
 
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                {t("cancel")}
+                {tCommon("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="animate-spin" />}
-                {t("save")}
+                {tCommon("save")}
               </Button>
             </div>
           </form>

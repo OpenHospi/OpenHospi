@@ -25,6 +25,7 @@ import { deleteAccount, exportData } from "./actions";
 
 export function SettingsContent() {
   const t = useTranslations("app.settings");
+  const tCommon = useTranslations("common.labels");
   const router = useRouter();
   const [isExporting, startExport] = useTransition();
   const [isDeleting, startDelete] = useTransition();
@@ -100,7 +101,7 @@ export function SettingsContent() {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>{t("dangerZone.cancel")}</AlertDialogCancel>
+                <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDelete}
                   disabled={isDeleting}

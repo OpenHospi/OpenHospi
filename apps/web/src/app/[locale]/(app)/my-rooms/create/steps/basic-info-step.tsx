@@ -44,6 +44,7 @@ const MAX_DESCRIPTION_LENGTH = 2000;
 
 export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
 
@@ -165,7 +166,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.neighborhood")}{" "}
-                    <span className="font-normal text-muted-foreground">({t("optional")})</span>
+                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder={t("placeholders.neighborhood")} {...field} />
@@ -202,7 +203,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
         <div className="flex justify-end">
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin" />}
-            {t("actions.next")}
+            {tCommon("next")}
           </Button>
         </div>
       </form>

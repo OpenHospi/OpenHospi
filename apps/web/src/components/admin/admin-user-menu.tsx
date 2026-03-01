@@ -25,7 +25,7 @@ type AdminUserMenuProps = {
 };
 
 export function AdminUserMenu({ user }: AdminUserMenuProps) {
-  const t = useTranslations("admin.userMenu");
+  const tCommon = useTranslations("common.labels");
   const router = useRouter();
   const { isMobile } = useSidebar();
 
@@ -84,13 +84,13 @@ export function AdminUserMenu({ user }: AdminUserMenuProps) {
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => router.push("/discover")}>
             <Home />
-            {t("backToApp")}
+            {tCommon("backToApp")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
-          {t("logout")}
+          {tCommon("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

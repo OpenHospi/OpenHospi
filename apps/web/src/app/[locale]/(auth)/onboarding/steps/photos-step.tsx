@@ -137,6 +137,7 @@ function SortableSlot({
 
 export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
   const t = useTranslations("app.onboarding");
+  const tCommon = useTranslations("common.labels");
   const tErrors = useTranslations("common.errors");
   const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -314,10 +315,10 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack}>
-          {t("back")}
+          {tCommon("back")}
         </Button>
         <Button onClick={onNext} disabled={!hasRequiredPhoto || isPending}>
-          {t("next")}
+          {tCommon("next")}
         </Button>
       </div>
     </div>

@@ -58,12 +58,17 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - `src/components/ui/` — shadcn/ui components (don't modify unless necessary)
 - `src/components/marketing/` — custom marketing components
 - `src/i18n/` — internationalization config
-- `src/messages/` — translation JSON files (nl.json, en.json, de.json)
+- `src/messages/` — translation JSON files (see i18n section below)
 
 ### i18n (next-intl)
-- Translation files: `packages/i18n/messages/{nl,en,de}/{shared,web}.json`
-- **Never duplicate translation keys.** Generic labels (e.g. "Cancel", "City", "Status", "Title", "Bio") belong in `common.labels` in `shared.json` — not repeated per feature namespace
-- Use `useTranslations("common")` (or `getTranslations({ namespace: "common" })` server-side) for shared labels alongside feature-specific translations
+- Translation files: `packages/i18n/messages/{nl,en,de}/{shared,web,admin,app}.json`
+- `shared.json` — Keys used by BOTH web and mobile: common, enums, notifications, auth, app screens
+- `web.json` — Web-only: marketing pages (home, about, safety, costs, etc.) and public SEO pages
+- `admin.json` — Admin dashboard (web-only)
+- `app.json` — Mobile-only keys (currently empty, will grow with mobile app)
+- Loading: `@openhospi/i18n/web` merges shared + web + admin; `@openhospi/i18n/app` merges shared + app
+- **ZERO duplication rule**: If a label (cancel, save, next, back, etc.) is used across 2+ features, it goes in `common.labels` — never repeated per feature namespace
+- Use `useTranslations("common.labels")` / `getTranslations("common.labels")` alongside feature translations for shared labels
 - Feature-specific text stays in its own namespace (e.g. `admin.reports`, `app.rooms`)
 - Before adding a new translation key, check if the same label already exists in `common.labels` or another namespace
 

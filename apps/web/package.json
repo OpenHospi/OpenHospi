@@ -20,6 +20,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
+    "@icons-pack/react-simple-icons": "^13.11.2",
     "@openhospi/crypto": "workspace:*",
     "@openhospi/database": "workspace:*",
     "@openhospi/i18n": "workspace:*",

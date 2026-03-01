@@ -1,5 +1,6 @@
-import { AlertTriangle, Github, Heart, User } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { AlertTriangle, Heart, User } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -22,12 +23,12 @@ export async function generateMetadata({
 
 const sectionConfig: {
   key: "mission" | "crisis" | "builtBy" | "openSource";
-  icon: LucideIcon;
+  icon: ComponentType<SVGProps<SVGSVGElement> & { color?: string }>;
 }[] = [
   { key: "mission", icon: Heart },
   { key: "crisis", icon: AlertTriangle },
   { key: "builtBy", icon: User },
-  { key: "openSource", icon: Github },
+  { key: "openSource", icon: SiGithub },
 ];
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -66,7 +67,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Github className="size-4" />
+                      <SiGithub className="size-4" color="currentColor" />
                       {t("openSource.cta")}
                     </a>
                   </Button>

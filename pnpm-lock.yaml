@@ -125,6 +125,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.2(react@19.2.3))
+      '@icons-pack/react-simple-icons':
+        specifier: ^13.11.2
+        version: 13.11.2(react@19.2.3)
       '@openhospi/crypto':
         specifier: workspace:*
         version: link:../../packages/crypto
@@ -1702,6 +1705,12 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@icons-pack/react-simple-icons@13.11.2':
+    resolution: {integrity: sha512-IiYWH7Dlp4HvTxsL9Mh/1tjKKhLikKzL+578H1ngQkoREhfXaS9yNl1SXkjNGEAYqNH2w5/tBQc0uXLWAkcSFA==}
+    engines: {node: '>=24', pnpm: '>=10'}
+    peerDependencies:
+      react: ^16.13 || ^17 || ^18 || ^19
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -9759,6 +9768,10 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@icons-pack/react-simple-icons@13.11.2(react@19.2.3)':
+    dependencies:
+      react: 19.2.3
 
   '@img/colour@1.0.0': {}
 

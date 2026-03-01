@@ -2,7 +2,7 @@
 
 import logo from "@openhospi/shared/assets/logo.svg";
 import {APP_NAME} from "@openhospi/shared/constants";
-import {Github, Instagram} from "lucide-react";
+import { SiGithub, SiInstagram } from "@icons-pack/react-simple-icons";
 import Image from "next/image";
 import {useLocale, useTranslations} from "next-intl";
 
@@ -63,7 +63,7 @@ export function MarketingFooter() {
                                 className="text-muted-foreground hover:text-foreground transition-colors"
                                 aria-label="GitHub"
                             >
-                                <Github className="size-5"/>
+                                <SiGithub className="size-5" color="currentColor" />
                             </a>
                             <Badge variant="outline" className="text-xs">
                                 {t("openSource")}
@@ -75,7 +75,7 @@ export function MarketingFooter() {
                                 className="text-muted-foreground hover:text-foreground transition-colors"
                                 aria-label="Instagram"
                             >
-                                <Instagram className="size-5"/>
+                                <SiInstagram className="size-5" color="currentColor" />
                             </a>
                         </div>
                     </div>

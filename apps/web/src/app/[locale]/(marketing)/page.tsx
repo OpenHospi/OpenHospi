@@ -1,6 +1,6 @@
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import {
   BadgeCheck,
-  Github,
   HandCoins,
   Lock,
   LogIn,
@@ -120,7 +120,7 @@ export default function HomePage() {
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <Github className="mx-auto size-12 text-primary" />
+            <SiGithub className="mx-auto size-12" color="currentColor" />
             <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
               {t("openSource.title")}
             </h2>
@@ -132,7 +132,7 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Github className="size-4" />
+                  <SiGithub className="size-4" color="currentColor" />
                   {t("openSource.cta")}
                 </a>
               </Button>

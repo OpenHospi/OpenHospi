@@ -6,7 +6,7 @@ import type { RoomPhoto } from "@openhospi/database/types";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
 
 export async function saveRoomPhoto(
@@ -14,6 +14,8 @@ export async function saveRoomPhoto(
 ): Promise<{ error?: string; photo?: RoomPhoto }> {
   const session = await requireSession();
   const userId = session.user.id;
+  const restricted = await requireNotRestricted(userId);
+  if (restricted) return restricted;
 
   const file = formData.get("file") as File | null;
   const roomId = formData.get("roomId") as string | null;
@@ -56,6 +58,8 @@ export async function saveRoomPhoto(
 export async function deleteRoomPhoto(roomId: string, slot: number): Promise<{ error?: string }> {
   const session = await requireSession();
   const userId = session.user.id;
+  const restricted = await requireNotRestricted(userId);
+  if (restricted) return restricted;
 
   if (slot < 1 || slot > 10) return { error: "Invalid slot" };
 

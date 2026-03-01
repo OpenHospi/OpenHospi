@@ -15,10 +15,13 @@ import { and, count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = editRoomSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -71,6 +74,9 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
 
 export async function updateRoomStatus(roomId: string, status: string) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   await requireRoomOwnership(roomId, session.user.id);
 
   return withRLS(session.user.id, async (tx) => {
@@ -105,6 +111,9 @@ export async function updateRoomStatus(roomId: string, status: string) {
 
 export async function regenerateShareLink(roomId: string) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   await requireRoomOwnership(roomId, session.user.id);
 
   await withRLS(session.user.id, (tx) =>
@@ -123,6 +132,9 @@ export async function regenerateShareLink(roomId: string) {
 
 export async function updateShareLinkSettings(roomId: string, data: ShareLinkSettingsData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = shareLinkSettingsSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 

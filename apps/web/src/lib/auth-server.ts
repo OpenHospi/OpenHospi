@@ -117,16 +117,20 @@ export async function requireCompleteProfile(userId: string) {
   }
 }
 
+export async function requireNotRestricted(userId: string) {
+  if (await isRestricted(userId)) {
+    return { error: "PROCESSING_RESTRICTED" as const };
+  }
+  return null;
+}
+
 export async function isRestricted(userId: string): Promise<boolean> {
   const [restriction] = await withRLS(userId, (tx) =>
     tx
       .select({ id: processingRestrictions.id })
       .from(processingRestrictions)
       .where(
-        and(
-          eq(processingRestrictions.userId, userId),
-          isNull(processingRestrictions.liftedAt),
-        ),
+        and(eq(processingRestrictions.userId, userId), isNull(processingRestrictions.liftedAt)),
       )
       .limit(1),
   );

@@ -5,7 +5,7 @@ import { blocks, conversationMembers, messageReceipts, messages } from "@openhos
 import { and, eq, inArray, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { getOrCreateHospiConversation } from "@/lib/chat";
 
 export async function sendMessage(
@@ -18,6 +18,9 @@ export async function sendMessage(
 ) {
   const session = await requireSession();
   const userId = session.user.id;
+
+  const restricted = await requireNotRestricted(userId);
+  if (restricted) throw new Error(restricted.error);
 
   // Check for bidirectional blocks with any conversation member
   const members = await db

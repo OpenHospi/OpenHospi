@@ -8,7 +8,8 @@
       "fileTooLarge": "Datei ist zu groß. Maximale Größe ist {maxSize} MB.",
       "invalidFileType": "Ungültiger Dateityp. Bitte JPEG, PNG oder WebP verwenden.",
       "uploadFailed": "Upload fehlgeschlagen. Bitte versuche es erneut.",
-      "deleteFailed": "Löschen fehlgeschlagen. Bitte versuche es erneut."
+      "deleteFailed": "Löschen fehlgeschlagen. Bitte versuche es erneut.",
+      "processingRestricted": "Die Verarbeitung deines Kontos ist derzeit eingeschränkt. Du kannst dies unter Einstellungen > Datenschutz verwalten."
     },
     "labels": {
       "title": "Titel",
@@ -958,6 +959,16 @@
         "already_applied": "Du hast dich bereits für dieses Zimmer beworben.",
         "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
       }
+    },
+    "privacyAccept": {
+      "title": "Datenschutzerklärung aktualisiert",
+      "description": "Unsere Datenschutzerklärung wurde aktualisiert. Bitte überprüfe die Änderungen und akzeptiere, um OpenHospi weiter nutzen zu können.",
+      "summary": "Die aktualisierte Datenschutzerklärung beschreibt, wie wir deine personenbezogenen Daten in Übereinstimmung mit der DSGVO erfassen, verwenden und schützen.",
+      "acceptButton": "Ich akzeptiere",
+      "viewFullPolicy": "Vollständige Datenschutzerklärung anzeigen"
+    },
+    "restricted": {
+      "banner": "Die Verarbeitung deines Kontos ist eingeschränkt. Einige Funktionen sind nicht verfügbar. Du kannst dies unter Einstellungen > Datenschutz verwalten."
     },
     "consent": {
       "title": "Wir verwenden Cookies",

@@ -49,6 +49,7 @@ export const profiles = pgTable(
     languages: languageEnum("languages").array().default([]),
     preferredLocale: localeEnum("preferred_locale").default("nl"),
     notificationPreferences: jsonb("notification_preferences"),
+    privacyPolicyAcceptedVersion: text("privacy_policy_accepted_version"),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

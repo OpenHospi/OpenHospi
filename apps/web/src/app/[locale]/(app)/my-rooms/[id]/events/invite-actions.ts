@@ -16,7 +16,7 @@ import {
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { getOrCreateHospiConversation } from "@/lib/chat";
 import { notifyUser } from "@/lib/notifications";
 
@@ -26,6 +26,9 @@ export async function batchInviteApplicants(
   applicationIds: string[],
 ) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   await requireHousemate(roomId, session.user.id);
 
   if (applicationIds.length === 0) return { error: "no_applications" };
@@ -113,6 +116,8 @@ export async function batchInviteApplicants(
 
 export async function removeInvitation(invitationId: string, roomId: string) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   await withRLS(session.user.id, async (tx) => {
     await tx.delete(hospiInvitations).where(eq(hospiInvitations.id, invitationId));

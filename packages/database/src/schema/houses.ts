@@ -12,8 +12,7 @@ export const houses = pgTable(
     name: text("name").notNull(),
     inviteCode: uuid("invite_code").unique().defaultRandom(),
     createdBy: uuid("created_by")
-      .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
@@ -52,7 +51,7 @@ export const houseMembers = pgTable(
       .references(() => houses.id, { onDelete: "cascade" }),
     userId: uuid("user_id")
       .notNull()
-      .references(() => profiles.id),
+      .references(() => profiles.id, { onDelete: "cascade" }),
     role: houseMemberRoleEnum("role").notNull().default("member"),
     joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow(),
   },

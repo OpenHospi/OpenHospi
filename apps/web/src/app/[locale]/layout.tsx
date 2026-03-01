@@ -1,14 +1,13 @@
 import type { Locale } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { ConsentGatedAnalytics } from "@/components/app/consent-gated-analytics";
 import { CookieConsentBanner } from "@/components/app/cookie-consent-banner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -70,8 +69,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
-        <Analytics />
-        <SpeedInsights />
+        <ConsentGatedAnalytics />
       </body>
     </html>
   );

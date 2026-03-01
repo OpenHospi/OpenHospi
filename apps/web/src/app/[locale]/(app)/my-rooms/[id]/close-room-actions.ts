@@ -10,11 +10,14 @@ import {
 import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
 
 export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: string) {
   const { user } = await requireSession();
+  const restricted = await requireNotRestricted(user.id);
+  if (restricted) throw new Error(restricted.error);
+
   await requireRoomOwnership(roomId, user.id);
 
   const roomTitle = await withRLS(user.id, async (tx) => {

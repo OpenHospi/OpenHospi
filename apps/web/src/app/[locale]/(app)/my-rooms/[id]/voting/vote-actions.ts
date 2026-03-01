@@ -4,7 +4,7 @@ import { withRLS } from "@openhospi/database";
 import { votes } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 
-import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
 
 export async function submitVotes(
   roomId: string,
@@ -12,6 +12,9 @@ export async function submitVotes(
   round: number = 1,
 ) {
   const { user } = await requireSession();
+  const restricted = await requireNotRestricted(user.id);
+  if (restricted) throw new Error(restricted.error);
+
   await requireHousemate(roomId, user.id);
 
   await withRLS(user.id, async (tx) => {

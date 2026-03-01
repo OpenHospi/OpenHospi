@@ -23,7 +23,7 @@ const appPaths = [
   "/my-house",
   "/join",
 ];
-const authPaths = ["/login", "/onboarding"];
+const authPaths = ["/login", "/onboarding", "/privacy-accept"];
 const adminPaths = ["/admin"];
 
 const localePattern = /^\/(?:nl|en|de)(\/|$)/;

@@ -13,7 +13,7 @@ import {
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
 
 type RLSTransaction = Parameters<Parameters<typeof withRLS>[1]>[0];
@@ -73,6 +73,9 @@ async function handleApplicationStatusOnRsvp(
 
 export async function respondToInvitation(invitationId: string, data: RsvpData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = rsvpSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" };
 

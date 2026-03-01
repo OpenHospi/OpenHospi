@@ -8,12 +8,16 @@ import {
   consentRecords,
   conversationMembers,
   dataRequests,
+  hospiEvents,
+  hospiInvitations,
   houseMembers,
   notifications,
+  processingRestrictions,
   profilePhotos,
   profiles,
   publicKeys,
   pushSubscriptions,
+  reports,
   reviews,
   roomPhotos,
   rooms,
@@ -95,6 +99,25 @@ export async function exportData() {
       })
       .from(dataRequests)
       .where(eq(dataRequests.userId, userId));
+    const userRestrictions = await tx
+      .select()
+      .from(processingRestrictions)
+      .where(eq(processingRestrictions.userId, userId));
+    const userReports = await tx
+      .select({
+        id: reports.id,
+        reportType: reports.reportType,
+        reason: reports.reason,
+        status: reports.status,
+        createdAt: reports.createdAt,
+      })
+      .from(reports)
+      .where(eq(reports.reporterId, userId));
+    const userEvents = await tx.select().from(hospiEvents).where(eq(hospiEvents.createdBy, userId));
+    const userInvitations = await tx
+      .select()
+      .from(hospiInvitations)
+      .where(eq(hospiInvitations.userId, userId));
 
     return {
       _metadata: {
@@ -118,6 +141,10 @@ export async function exportData() {
       consents: userConsents,
       consentHistory: userConsentHistory,
       dataRequests: userDataRequests,
+      processingRestrictions: userRestrictions,
+      reports: userReports,
+      events: userEvents,
+      invitations: userInvitations,
     };
   });
 
@@ -169,6 +196,10 @@ export async function exportDataCSV() {
     ["consents.csv", data.consents],
     ["consent-history.csv", data.consentHistory],
     ["data-requests.csv", data.dataRequests],
+    ["processing-restrictions.csv", data.processingRestrictions],
+    ["reports.csv", data.reports],
+    ["events.csv", data.events],
+    ["invitations.csv", data.invitations],
   ];
 
   const csvFiles: Record<string, string> = {};

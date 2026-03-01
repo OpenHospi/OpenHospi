@@ -21,7 +21,7 @@ export const publicKeys = pgTable(
     {
         userId: uuid("user_id")
             .primaryKey()
-            .references(() => profiles.id),
+            .references(() => profiles.id, { onDelete: "cascade" }),
         publicKeyJwk: jsonb("public_key_jwk").notNull(),
         createdAt: timestamp("created_at", {withTimezone: true}).notNull().defaultNow(),
         rotatedAt: timestamp("rotated_at", {withTimezone: true}),
@@ -64,7 +64,7 @@ export const privateKeyBackups = pgTable(
     {
         userId: uuid("user_id")
             .primaryKey()
-            .references(() => profiles.id),
+            .references(() => profiles.id, { onDelete: "cascade" }),
         encryptedPrivateKey: text("encrypted_private_key").notNull(),
         backupIv: text("backup_iv").notNull(),
         backupKey: text("backup_key").notNull(),
@@ -111,11 +111,10 @@ export const reports = pgTable(
         id: uuid("id").defaultRandom().primaryKey(),
         reportType: reportTypeEnum("report_type").notNull(),
         reporterId: uuid("reporter_id")
-            .notNull()
-            .references(() => profiles.id),
-        reportedUserId: uuid("reported_user_id").references(() => profiles.id),
-        reportedRoomId: uuid("reported_room_id").references(() => rooms.id),
-        reportedMessageId: uuid("reported_message_id").references(() => messages.id),
+            .references(() => profiles.id, { onDelete: "set null" }),
+        reportedUserId: uuid("reported_user_id").references(() => profiles.id, { onDelete: "set null" }),
+        reportedRoomId: uuid("reported_room_id").references(() => rooms.id, { onDelete: "set null" }),
+        reportedMessageId: uuid("reported_message_id").references(() => messages.id, { onDelete: "set null" }),
         reason: reportReasonEnum("reason").notNull(),
         description: text("description"),
         decryptedMessageText: text("decrypted_message_text"),
@@ -178,10 +177,10 @@ export const blocks = pgTable(
     {
         blockerId: uuid("blocker_id")
             .notNull()
-            .references(() => profiles.id),
+            .references(() => profiles.id, { onDelete: "cascade" }),
         blockedId: uuid("blocked_id")
             .notNull()
-            .references(() => profiles.id),
+            .references(() => profiles.id, { onDelete: "cascade" }),
         createdAt: timestamp("created_at", {withTimezone: true}).notNull().defaultNow(),
     },
     (table) => [

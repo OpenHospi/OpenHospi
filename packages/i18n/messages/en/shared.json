@@ -8,7 +8,8 @@
       "fileTooLarge": "File is too large. Maximum size is {maxSize} MB.",
       "invalidFileType": "Invalid file type. Please use JPEG, PNG, or WebP.",
       "uploadFailed": "Upload failed. Please try again.",
-      "deleteFailed": "Delete failed. Please try again."
+      "deleteFailed": "Delete failed. Please try again.",
+      "processingRestricted": "Your account processing is currently restricted. You can manage this in Settings > Privacy."
     },
     "labels": {
       "title": "Title",
@@ -958,6 +959,16 @@
         "already_applied": "You have already applied to this room.",
         "RATE_LIMITED": "Too many attempts. Please try again later."
       }
+    },
+    "privacyAccept": {
+      "title": "Privacy policy updated",
+      "description": "We have updated our privacy policy. Please review the changes and accept to continue using OpenHospi.",
+      "summary": "The updated privacy policy covers how we collect, use, and protect your personal data in compliance with the AVG/GDPR.",
+      "acceptButton": "I accept",
+      "viewFullPolicy": "View full privacy policy"
+    },
+    "restricted": {
+      "banner": "Your account processing is restricted. Some features are unavailable. You can manage this in Settings > Privacy."
     },
     "consent": {
       "title": "We use cookies",

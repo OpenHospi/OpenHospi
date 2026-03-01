@@ -8,11 +8,14 @@ import { editProfileSchema } from "@openhospi/database/validators";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
 
 export async function updateProfile(data: EditProfileData) {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
+
   const parsed = editProfileSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };
 
@@ -43,6 +46,8 @@ export async function saveProfilePhoto(
   formData: FormData,
 ): Promise<{ error?: string; photo?: ProfilePhoto }> {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   const file = formData.get("file") as File | null;
   const slot = Number(formData.get("slot"));
@@ -82,6 +87,8 @@ export async function reorderProfilePhotos(
   swaps: { photoId: string; newSlot: number }[],
 ): Promise<{ error?: string }> {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   if (swaps.length === 0) return {};
   if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 5)) return { error: "Invalid slot" };
@@ -125,6 +132,8 @@ export async function reorderProfilePhotos(
 
 export async function deleteProfilePhoto(slot: number): Promise<{ error?: string }> {
   const session = await requireSession();
+  const restricted = await requireNotRestricted(session.user.id);
+  if (restricted) return restricted;
 
   if (slot < 1 || slot > 5) return { error: "Invalid slot" };
 

@@ -86,6 +86,7 @@ export function CookieConsentBanner() {
     setConsent(newConsent);
     setVisible(false);
     setManageOpen(false);
+    window.dispatchEvent(new CustomEvent("openhospi:consent-change"));
     await recordConsent(consentToEntries(newConsent));
   }, []);
 

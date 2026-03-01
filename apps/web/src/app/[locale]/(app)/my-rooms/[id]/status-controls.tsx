@@ -1,7 +1,8 @@
 "use client";
 
 import { RoomStatus } from "@openhospi/shared/enums";
-import { Loader2, Pause, Play, XCircle } from "lucide-react";
+import { Loader2, Pause, Pencil, Play, Rocket, Trash2, XCircle } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -22,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import type { Room } from "@/lib/rooms";
 import type { CloseRoomApplicant } from "@/lib/votes";
 
-import { updateRoomStatus } from "./actions";
+import { deleteRoom, updateRoomStatus } from "./actions";
 import { CloseRoomDialog } from "./close-room-dialog";
 
 type Props = {
@@ -32,8 +33,10 @@ type Props = {
 
 export function StatusControls({ room, closeApplicants = [] }: Props) {
   const t = useTranslations("app.rooms");
+  const tCommon = useTranslations("common.labels");
   const [isPending, startTransition] = useTransition();
   const [closeOpen, setCloseOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const router = useRouter();
 
   function handleStatusChange(status: string) {
@@ -51,10 +54,56 @@ export function StatusControls({ room, closeApplicants = [] }: Props) {
     });
   }
 
+  function handleDelete() {
+    startTransition(async () => {
+      await deleteRoom(room.id);
+    });
+  }
+
   if (room.status === RoomStatus.closed) return null;
 
   return (
     <div className="flex flex-wrap gap-2">
+      {room.status === RoomStatus.draft && (
+        <>
+          <Button onClick={() => handleStatusChange(RoomStatus.active)} disabled={isPending}>
+            {isPending ? <Loader2 className="animate-spin" /> : <Rocket className="size-4" />}
+            {t("actions.publish")}
+          </Button>
+
+          <Button variant="outline" asChild>
+            <Link href={`/my-rooms/create?id=${room.id}`}>
+              <Pencil className="size-4" />
+              {t("actions.continueEditing")}
+            </Link>
+          </Button>
+
+          <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={isPending}>
+                <Trash2 className="size-4" />
+                {t("actions.deleteDraft")}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("status.confirmDeleteTitle")}</AlertDialogTitle>
+                <AlertDialogDescription>{t("status.confirmDelete")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {t("actions.deleteDraft")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      )}
+
       {room.status === RoomStatus.active && (
         <Button
           variant="outline"

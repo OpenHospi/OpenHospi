@@ -777,7 +777,9 @@
         "pause": "Pauzeer advertentie",
         "activate": "Activeer advertentie",
         "close": "Sluit advertentie",
-        "edit": "Bewerk kamer"
+        "edit": "Bewerk kamer",
+        "continueEditing": "Verder bewerken",
+        "deleteDraft": "Concept verwijderen"
       },
       "shareLink": {
         "title": "Deellink",
@@ -801,7 +803,9 @@
         "closed": "Kamer gesloten",
         "updated": "Kamer bijgewerkt",
         "draftSaved": "Concept opgeslagen",
-        "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw."
+        "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw.",
+        "confirmDeleteTitle": "Concept verwijderen?",
+        "confirmDelete": "Dit concept wordt permanent verwijderd."
       },
       "manage": {
         "title": "Kamerbeheer",

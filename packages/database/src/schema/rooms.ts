@@ -118,6 +118,11 @@ export const rooms = pgTable(
       using: sql`${table.ownerId} = ${authUid}`,
       withCheck: sql`${table.ownerId} = ${authUid}`,
     }),
+    pgPolicy("rooms_delete_own", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.ownerId} = ${authUid}`,
+    }),
   ],
 );
 

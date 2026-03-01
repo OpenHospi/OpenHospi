@@ -777,7 +777,9 @@
         "pause": "Anzeige pausieren",
         "activate": "Anzeige aktivieren",
         "close": "Anzeige schließen",
-        "edit": "Zimmer bearbeiten"
+        "edit": "Zimmer bearbeiten",
+        "continueEditing": "Weiter bearbeiten",
+        "deleteDraft": "Entwurf löschen"
       },
       "shareLink": {
         "title": "Teilen-Link",
@@ -801,7 +803,9 @@
         "closed": "Zimmer geschlossen",
         "updated": "Zimmer aktualisiert",
         "draftSaved": "Entwurf gespeichert",
-        "RATE_LIMITED": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut."
+        "RATE_LIMITED": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut.",
+        "confirmDeleteTitle": "Entwurf löschen?",
+        "confirmDelete": "Dieser Entwurf wird dauerhaft gelöscht."
       },
       "manage": {
         "title": "Zimmerverwaltung",

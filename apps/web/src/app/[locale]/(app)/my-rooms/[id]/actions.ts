@@ -11,8 +11,9 @@ import {
   RoomStatus,
   UtilitiesIncluded,
 } from "@openhospi/shared/enums";
-import { count, eq, sql } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 
@@ -41,8 +42,10 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
         deposit: d.deposit != null ? String(d.deposit) : null,
         utilitiesIncluded: d.utilitiesIncluded ?? UtilitiesIncluded.included,
         serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
-        estimatedUtilitiesCosts: d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
-          ? String(d.estimatedUtilitiesCosts) : null,
+        estimatedUtilitiesCosts:
+          d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
+            ? String(d.estimatedUtilitiesCosts)
+            : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
         availableUntil: d.rentalType === RentalType.permanent ? null : d.availableUntil || null,
@@ -139,4 +142,25 @@ export async function updateShareLinkSettings(roomId: string, data: ShareLinkSet
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };
+}
+
+export async function deleteRoom(roomId: string) {
+  const session = await requireSession();
+  await requireRoomOwnership(roomId, session.user.id);
+
+  await withRLS(session.user.id, async (tx) => {
+    const [room] = await tx
+      .select({ status: rooms.status })
+      .from(rooms)
+      .where(eq(rooms.id, roomId));
+
+    if (room?.status !== RoomStatus.draft) {
+      throw new Error("Only draft rooms can be deleted");
+    }
+
+    await tx.delete(rooms).where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.draft)));
+  });
+
+  revalidatePath("/my-rooms");
+  redirect("/my-rooms");
 }

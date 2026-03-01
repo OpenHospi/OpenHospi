@@ -12,14 +12,20 @@ import {
   roomDetailsSchema,
   roomPreferencesSchema,
 } from "@openhospi/database/validators";
-import { GenderPreference, HouseMemberRole, RentalType, RoomStatus, UtilitiesIncluded } from "@openhospi/shared/enums";
+import {
+  GenderPreference,
+  HouseMemberRole,
+  RentalType,
+  RoomStatus,
+  UtilitiesIncluded,
+} from "@openhospi/shared/enums";
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { getUserOwnerHouses } from "@/lib/houses";
 import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
-import { createDraftRoom } from "@/lib/rooms";
+import { createDraftRoom, getExistingDraft } from "@/lib/rooms";
 
 export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
   const session = await requireSession();
@@ -36,7 +42,8 @@ export async function createDraftRoomAction(): Promise<{ id?: string; error?: st
 
   if (userHouses.length === 1) {
     try {
-      const id = await createDraftRoom(session.user.id, userHouses[0].id);
+      const existingId = await getExistingDraft(session.user.id, userHouses[0].id);
+      const id = existingId ?? (await createDraftRoom(session.user.id, userHouses[0].id));
       return { id };
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to create room";
@@ -117,7 +124,8 @@ export async function createDraftRoomForHouse(
   }
 
   try {
-    const roomId = await createDraftRoom(session.user.id, houseId);
+    const existingId = await getExistingDraft(session.user.id, houseId);
+    const roomId = existingId ?? (await createDraftRoom(session.user.id, houseId));
     return { id: roomId };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to create room";
@@ -132,7 +140,17 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  const { title, description, city, neighborhood, streetName, houseNumber, postalCode, latitude, longitude } = parsed.data;
+  const {
+    title,
+    description,
+    city,
+    neighborhood,
+    streetName,
+    houseNumber,
+    postalCode,
+    latitude,
+    longitude,
+  } = parsed.data;
   await withRLS(session.user.id, (tx) =>
     tx
       .update(rooms)
@@ -169,8 +187,10 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
         deposit: d.deposit != null ? String(d.deposit) : null,
         utilitiesIncluded: d.utilitiesIncluded ?? UtilitiesIncluded.included,
         serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
-        estimatedUtilitiesCosts: d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
-          ? String(d.estimatedUtilitiesCosts) : null,
+        estimatedUtilitiesCosts:
+          d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
+            ? String(d.estimatedUtilitiesCosts)
+            : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
         availableUntil: d.rentalType === RentalType.permanent ? null : d.availableUntil || null,

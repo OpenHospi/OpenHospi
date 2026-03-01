@@ -1156,6 +1156,8 @@
       "utilitiesExcluded": "Nebenkosten nicht inklusive",
       "serviceCosts": "Nebenkosten",
       "rent": "Kaltmiete",
+      "rentAllIn": "Miete (all-in)",
+      "total": "Gesamt",
       "totalCost": "Gesamt",
       "roomSize": "{size} m²",
       "rentalType": "Mietart"

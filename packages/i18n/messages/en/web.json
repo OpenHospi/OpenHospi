@@ -1179,6 +1179,8 @@
       "utilitiesExcluded": "Utilities not included",
       "serviceCosts": "Service costs",
       "rent": "Rent",
+      "rentAllIn": "Rent (all-in)",
+      "total": "Total",
       "totalCost": "Total",
       "roomSize": "{size} m²",
       "rentalType": "Rental type"

@@ -1,5 +1,5 @@
 import { City, GenderPreference } from "@openhospi/shared/enums";
-import { ArrowLeft, CalendarDays, Home, MapPin, Ruler, Users } from "lucide-react";
+import { ArrowLeft, Check, Home, MapPin, Ruler, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -253,34 +253,6 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                 )}
                 <dt className="text-muted-foreground">{t("rentalType")}</dt>
                 <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
-                {room.deposit != null && (
-                  <>
-                    <dt className="text-muted-foreground">{t("deposit")}</dt>
-                    <dd>€{room.deposit}</dd>
-                  </>
-                )}
-                {room.utilitiesIncluded && (
-                  <>
-                    <dt className="text-muted-foreground">{t("utilitiesIncluded")}</dt>
-                    <dd />
-                  </>
-                )}
-                {!room.utilitiesIncluded && room.serviceCosts != null && (
-                  <>
-                    <dt className="text-muted-foreground">{t("rent")}</dt>
-                    <dd>€{room.rentPrice}</dd>
-                    <dt className="text-muted-foreground">{t("serviceCosts")}</dt>
-                    <dd>€{room.serviceCosts}</dd>
-                    <dt className="text-muted-foreground">{t("totalCost")}</dt>
-                    <dd>€{room.totalCost}</dd>
-                  </>
-                )}
-                {!room.utilitiesIncluded && room.serviceCosts == null && (
-                  <>
-                    <dt className="text-muted-foreground">{t("utilitiesExcluded")}</dt>
-                    <dd />
-                  </>
-                )}
                 {room.availableFrom && (
                   <>
                     <dt className="text-muted-foreground">
@@ -353,18 +325,70 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
           {/* Sidebar CTA */}
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarDays className="size-5" />€{room.totalCost}
-                  {t("perMonth")}
+              <CardHeader className="pb-3">
+                <CardTitle>
+                  <span className="text-2xl">€{room.totalCost}</span>
+                  <span className="text-base font-normal text-muted-foreground">
+                    {t("perMonth")}
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                {/* Cost breakdown */}
+                <div className="space-y-1.5 text-sm">
+                  {room.utilitiesIncluded ? (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t("rentAllIn")}</span>
+                        <span>€{room.totalCost}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-green-600">
+                        <Check className="size-3.5" />
+                        <span className="text-xs">{t("utilitiesIncluded")}</span>
+                      </div>
+                    </>
+                  ) : room.serviceCosts != null ? (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t("rent")}</span>
+                        <span>€{room.rentPrice}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t("serviceCosts")}</span>
+                        <span>€{room.serviceCosts}</span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between font-medium">
+                        <span>{t("total")}</span>
+                        <span>€{room.totalCost}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t("rent")}</span>
+                        <span>€{room.rentPrice}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{t("utilitiesExcluded")}</p>
+                    </>
+                  )}
+
+                  {room.deposit != null && (
+                    <div className="flex justify-between pt-1">
+                      <span className="text-muted-foreground">{t("deposit")}</span>
+                      <span>€{room.deposit}</span>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
                 {room.availableFrom && (
                   <p className="text-sm text-muted-foreground">
                     {t("availableFrom", { date: room.availableFrom })}
                   </p>
                 )}
+
                 <Button asChild className="w-full">
                   <a href={loginUrl}>{t("loginToApply")}</a>
                 </Button>

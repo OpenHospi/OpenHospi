@@ -1179,6 +1179,8 @@
       "utilitiesExcluded": "Exclusief gas/water/licht",
       "serviceCosts": "Servicekosten",
       "rent": "Kale huur",
+      "rentAllIn": "Huur (all-in)",
+      "total": "Totaal",
       "totalCost": "Totaal",
       "roomSize": "{size} m²",
       "rentalType": "Huurtype"

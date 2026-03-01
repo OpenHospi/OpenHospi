@@ -38,7 +38,7 @@ export function LegalTableOfContents({
     <Card className="mb-12 py-4">
       <CardContent className="py-0">
         <p className="mb-3 text-sm font-semibold text-foreground">{label}</p>
-        <ol className="columns-1 gap-x-8 space-y-1 sm:columns-2">
+        <ol className="space-y-1">
           {entries.map((entry) => (
             <li key={entry.id}>
               <a

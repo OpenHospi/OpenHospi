@@ -1,4 +1,4 @@
-preserve_hierarchy: true
+preserve_hierarchy: 1
 export_languages:
   - en
   - de

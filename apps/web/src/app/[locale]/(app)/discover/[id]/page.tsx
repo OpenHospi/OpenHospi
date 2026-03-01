@@ -1,5 +1,5 @@
 import { ApplicationStatus, GenderPreference } from "@openhospi/shared/enums";
-import { Check, Globe, Home, MapPin, Ruler, Settings, Users } from "lucide-react";
+import { Check, Home, MapPin, Ruler, Settings, UserRound, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -206,6 +206,16 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
                 <span>{tEnums(`house_type.${room.houseType}`)}</span>
               </div>
             )}
+            {room.preferredGender && room.preferredGender !== GenderPreference.no_preference && (
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <UserRound className="size-4" />
+                <span>
+                  {tEnums(`gender_preference.${room.preferredGender}`)}
+                  {room.preferredAgeMin != null && room.preferredAgeMax != null &&
+                    ` · ${t("ageRange", { min: room.preferredAgeMin, max: room.preferredAgeMax })}`}
+                </span>
+              </div>
+            )}
           </div>
 
           <Separator />
@@ -230,14 +240,10 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
               )}
               <dt className="text-muted-foreground">{t("rentalType")}</dt>
               <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
-              {room.availableFrom && (
+              {room.acceptedLanguages.length > 0 && (
                 <>
-                  <dt className="text-muted-foreground">{t("availability")}</dt>
-                  <dd>
-                    {t("availableFrom", { date: room.availableFrom })}
-                    {room.availableUntil &&
-                      ` ${t("availableUntil", { date: room.availableUntil })}`}
-                  </dd>
+                  <dt className="text-muted-foreground">{t("acceptedLanguages")}</dt>
+                  <dd>{room.acceptedLanguages.map((lang) => tEnums(`language_enum.${lang}`)).join(", ")}</dd>
                 </>
               )}
             </dl>
@@ -281,57 +287,6 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
               <p className="mt-2 text-xs text-muted-foreground">{t("approximateLocation")}</p>
             </div>
           )}
-
-          {/* Preferences */}
-          <div>
-            <h2 className="text-lg font-semibold">{t("whoWereLookingFor")}</h2>
-            <div className="mt-3 space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge
-                  variant={
-                    room.preferredGender === GenderPreference.no_preference
-                      ? "secondary"
-                      : "default"
-                  }
-                >
-                  {room.preferredGender === GenderPreference.no_preference
-                    ? t("everyoneWelcome")
-                    : tEnums(`gender_preference.${room.preferredGender}`)}
-                </Badge>
-                {room.preferredAgeMin != null && room.preferredAgeMax != null && (
-                  <span className="text-sm text-muted-foreground">
-                    {t("ageRange", { min: room.preferredAgeMin, max: room.preferredAgeMax })}
-                  </span>
-                )}
-              </div>
-
-              {room.acceptedLanguages.length > 0 && (
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <Globe className="size-4" />
-                    <span>{t("acceptedLanguages")}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {room.acceptedLanguages.map((lang) => (
-                      <Badge key={lang} variant="outline">
-                        {tEnums(`language_enum.${lang}`)}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {room.preferredLifestyleTags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {room.preferredLifestyleTags.map((tag) => (
-                    <Badge key={tag} variant="outline">
-                      {tEnums(`lifestyle_tag.${tag}`)}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* Sidebar */}

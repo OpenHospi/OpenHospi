@@ -35,7 +35,9 @@
       "housemates": "{count, plural, =1 {1 housemate} other {# housemates}}",
       "backToApp": "Back to app",
       "show": "Show",
-      "hide": "Hide"
+      "hide": "Hide",
+      "onThisPage": "On this page",
+      "linkToSection": "Link to {title}"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",

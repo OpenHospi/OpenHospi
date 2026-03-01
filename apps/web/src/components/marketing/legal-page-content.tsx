@@ -30,6 +30,10 @@ export async function LegalPageContent({
   hasIntro,
 }: LegalPageContentProps) {
   const t = await getTranslations({ locale, namespace });
+  const tCommon = await getTranslations({
+    locale,
+    namespace: "common.labels",
+  });
   const sections = t.raw("sections") as unknown[];
 
   // Build section data
@@ -42,6 +46,7 @@ export async function LegalPageContent({
     return {
       id: `section-${i}`,
       title,
+      linkAriaLabel: tCommon("linkToSection", { title }),
       content: hasContent ? t(`sections.${i}.content`) : undefined,
       items,
       mode: getSectionMode(namespace, items),
@@ -66,7 +71,10 @@ export async function LegalPageContent({
       )}
 
       {tocEntries.length > 3 && (
-        <LegalTableOfContents entries={tocEntries} />
+        <LegalTableOfContents
+          entries={tocEntries}
+          label={tCommon("onThisPage")}
+        />
       )}
 
       <div className="space-y-10">

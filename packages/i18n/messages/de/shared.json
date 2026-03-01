@@ -35,7 +35,9 @@
       "housemates": "{count, plural, =1 {1 Mitbewohner} other {# Mitbewohner}}",
       "backToApp": "Zurück zur App",
       "show": "Anzeigen",
-      "hide": "Ausblenden"
+      "hide": "Ausblenden",
+      "onThisPage": "Auf dieser Seite",
+      "linkToSection": "Link zu {title}"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",

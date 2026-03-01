@@ -6,7 +6,17 @@ import { Link as LinkIcon } from "lucide-react";
 
 const HEADER_OFFSET = 96;
 
-export function LegalHeadingLink({ id, title }: { id: string; title: string }) {
+interface LegalHeadingLinkProps {
+  id: string;
+  title: string;
+  ariaLabel: string;
+}
+
+export function LegalHeadingLink({
+  id,
+  title,
+  ariaLabel,
+}: LegalHeadingLinkProps) {
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
@@ -27,7 +37,7 @@ export function LegalHeadingLink({ id, title }: { id: string; title: string }) {
       <a
         href={`#${id}`}
         onClick={handleClick}
-        aria-label={`Link to ${title}`}
+        aria-label={ariaLabel}
         className="text-muted-foreground/0 transition-colors group-hover:text-muted-foreground"
       >
         <LinkIcon className="size-4" />

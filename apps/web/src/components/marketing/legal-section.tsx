@@ -42,6 +42,7 @@ function renderItemText(item: string): ReactNode {
 interface LegalSectionProps {
     id: string;
     title: string;
+    linkAriaLabel: string;
     content?: string;
     items: string[];
     mode: SectionMode;
@@ -50,13 +51,14 @@ interface LegalSectionProps {
 export function LegalSection({
                                  id,
                                  title,
+                                 linkAriaLabel,
                                  content,
                                  items,
                                  mode,
                              }: LegalSectionProps) {
     return (
         <article id={id} data-legal-section className="scroll-mt-24">
-            <LegalHeadingLink id={id} title={title}/>
+            <LegalHeadingLink id={id} title={title} ariaLabel={linkAriaLabel}/>
 
             {content && (
                 <p className="mt-3 leading-relaxed text-muted-foreground">

@@ -206,16 +206,14 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
                 <span>{tEnums(`house_type.${room.houseType}`)}</span>
               </div>
             )}
-            {room.preferredGender && room.preferredGender !== GenderPreference.no_preference && (
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <UserRound className="size-4" />
-                <span>
-                  {tEnums(`gender_preference.${room.preferredGender}`)}
-                  {room.preferredAgeMin != null && room.preferredAgeMax != null &&
-                    ` · ${t("ageRange", { min: room.preferredAgeMin, max: room.preferredAgeMax })}`}
-                </span>
-              </div>
-            )}
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <UserRound className="size-4" />
+              <span>
+                {tEnums(`gender_preference.${room.preferredGender || GenderPreference.no_preference}`)}
+                {room.preferredAgeMin != null && room.preferredAgeMax != null &&
+                  ` · ${t("ageRange", { min: room.preferredAgeMin, max: room.preferredAgeMax })}`}
+              </span>
+            </div>
           </div>
 
           <Separator />

@@ -24,9 +24,7 @@ export default async function ChatPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold">
-        {(await getTranslations("app.chat"))("title")}
-      </h1>
+      <h1 className="text-2xl font-bold">{(await getTranslations("app.chat"))("title")}</h1>
       <ConversationList conversations={conversations} currentUserId={user.id} />
     </div>
   );

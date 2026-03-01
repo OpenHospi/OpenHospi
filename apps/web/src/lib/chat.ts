@@ -20,9 +20,7 @@ export async function getOrCreateHospiConversation(
   const [existing] = await db
     .select({ id: conversations.id })
     .from(conversations)
-    .where(
-      and(eq(conversations.roomId, roomId), eq(conversations.seekerUserId, seekerUserId)),
-    );
+    .where(and(eq(conversations.roomId, roomId), eq(conversations.seekerUserId, seekerUserId)));
 
   if (existing) return existing.id;
 
@@ -65,10 +63,7 @@ export async function getConversations(userId: string): Promise<ConversationList
         roomId: conversations.roomId,
       })
       .from(conversations)
-      .innerJoin(
-        conversationMembers,
-        eq(conversationMembers.conversationId, conversations.id),
-      )
+      .innerJoin(conversationMembers, eq(conversationMembers.conversationId, conversations.id))
       .where(eq(conversationMembers.userId, userId))
       .orderBy(desc(conversations.createdAt));
 
@@ -85,24 +80,31 @@ export async function getConversations(userId: string): Promise<ConversationList
           ),
         );
 
-      const hasBlock = otherMembers.length > 0
-        ? await tx
-            .select({ blockerId: blocks.blockerId })
-            .from(blocks)
-            .where(
-              or(
-                and(
-                  eq(blocks.blockerId, userId),
-                  sql`${blocks.blockedId} IN (${sql.join(otherMembers.map((m) => sql`${m.userId}`), sql`, `)})`,
+      const hasBlock =
+        otherMembers.length > 0
+          ? await tx
+              .select({ blockerId: blocks.blockerId })
+              .from(blocks)
+              .where(
+                or(
+                  and(
+                    eq(blocks.blockerId, userId),
+                    sql`${blocks.blockedId} IN (${sql.join(
+                      otherMembers.map((m) => sql`${m.userId}`),
+                      sql`, `,
+                    )})`,
+                  ),
+                  and(
+                    eq(blocks.blockedId, userId),
+                    sql`${blocks.blockerId} IN (${sql.join(
+                      otherMembers.map((m) => sql`${m.userId}`),
+                      sql`, `,
+                    )})`,
+                  ),
                 ),
-                and(
-                  eq(blocks.blockedId, userId),
-                  sql`${blocks.blockerId} IN (${sql.join(otherMembers.map((m) => sql`${m.userId}`), sql`, `)})`,
-                ),
-              ),
-            )
-            .limit(1)
-        : [];
+              )
+              .limit(1)
+          : [];
 
       if (hasBlock.length === 0) {
         filteredConvos.push(conv);
@@ -139,17 +141,9 @@ export async function getConversations(userId: string): Promise<ConversationList
         .from(messages)
         .leftJoin(
           messageReceipts,
-          and(
-            eq(messageReceipts.messageId, messages.id),
-            eq(messageReceipts.userId, userId),
-          ),
+          and(eq(messageReceipts.messageId, messages.id), eq(messageReceipts.userId, userId)),
         )
-        .where(
-          and(
-            eq(messages.conversationId, conv.id),
-            isNull(messageReceipts.readAt),
-          ),
-        );
+        .where(and(eq(messages.conversationId, conv.id), isNull(messageReceipts.readAt)));
 
       // Get members
       const members = await tx
@@ -261,10 +255,7 @@ export async function getUnreadChatCount(userId: string): Promise<number> {
       )
       .leftJoin(
         messageReceipts,
-        and(
-          eq(messageReceipts.messageId, messages.id),
-          eq(messageReceipts.userId, userId),
-        ),
+        and(eq(messageReceipts.messageId, messages.id), eq(messageReceipts.userId, userId)),
       )
       .where(isNull(messageReceipts.readAt));
 

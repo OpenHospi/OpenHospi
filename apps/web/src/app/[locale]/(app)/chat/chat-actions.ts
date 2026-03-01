@@ -1,12 +1,7 @@
 "use server";
 
 import { db, withRLS } from "@openhospi/database";
-import {
-  blocks,
-  conversationMembers,
-  messageReceipts,
-  messages,
-} from "@openhospi/database/schema";
+import { blocks, conversationMembers, messageReceipts, messages } from "@openhospi/database/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -102,10 +97,7 @@ export async function markConversationRead(conversationId: string) {
         .update(messageReceipts)
         .set({ status: "read", readAt: new Date() })
         .where(
-          and(
-            eq(messageReceipts.messageId, receipt.messageId),
-            eq(messageReceipts.userId, userId),
-          ),
+          and(eq(messageReceipts.messageId, receipt.messageId), eq(messageReceipts.userId, userId)),
         );
     }
   });
@@ -119,11 +111,7 @@ export async function openChat(roomId: string, seekerUserId: string, memberUserI
   // Ensure the current user is in the member list
   const allMembers = [...new Set([...memberUserIds, seekerUserId])];
 
-  const conversationId = await getOrCreateHospiConversation(
-    roomId,
-    seekerUserId,
-    allMembers,
-  );
+  const conversationId = await getOrCreateHospiConversation(roomId, seekerUserId, allMembers);
 
   return { conversationId };
 }

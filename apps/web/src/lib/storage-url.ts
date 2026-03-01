@@ -11,15 +11,17 @@
  * @param bucket - The storage bucket name
  * @returns Full public URL
  */
-export function getStoragePublicUrl(pathOrUrl: string, bucket: "profile-photos" | "room-photos"): string {
-    // If it's already a URL, return as is
-    if (pathOrUrl.includes("://")) {
-        return pathOrUrl;
-    }
+export function getStoragePublicUrl(
+  pathOrUrl: string,
+  bucket: "profile-photos" | "room-photos",
+): string {
+  // If it's already a URL, return as is
+  if (pathOrUrl.includes("://")) {
+    return pathOrUrl;
+  }
 
-    // Construct the public URL
-    // Get the Supabase URL from environment or use localhost for development
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "http://127.0.0.1:54321";
-    return `${supabaseUrl}/storage/v1/object/public/${bucket}/${pathOrUrl}`;
+  // Construct the public URL
+  // Get the Supabase URL from environment or use localhost for development
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "http://127.0.0.1:54321";
+  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${pathOrUrl}`;
 }
-

@@ -1,37 +1,51 @@
-"use client";
+import { Mail } from "lucide-react";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Check, Copy, Mail } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
+import { CopyButton } from "./_components/copy-button";
 
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [text]);
-
-  return (
-    <Button variant="ghost" size="icon" className="size-7 shrink-0" onClick={handleCopy}>
-      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-    </Button>
-  );
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return {
+    title: t("missingAssociation.title"),
+    description: t("missingAssociation.description"),
+    alternates: alternatesForPath(locale, "/missing-association"),
+  };
 }
 
-export default function MissingAssociationPage() {
-  const t = useTranslations("missingAssociation");
+export default async function MissingAssociationPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "missingAssociation" });
+  const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
 
   const emailTo = "me@rubentalstra.nl";
   const subject = t("emailSubject");
   const body = t("emailBody");
 
+  // Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation)
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("home"), path: "" },
+    { name: t("title"), path: "/missing-association" },
+  ]);
+
   return (
     <section className="py-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <Mail className="mx-auto size-12 text-primary" />

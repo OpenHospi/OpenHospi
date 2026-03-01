@@ -97,11 +97,7 @@ export function ChatInput({ conversationId, currentUserId, members }: Props) {
           rows={1}
           className="flex-1 resize-none"
         />
-        <Button
-          onClick={handleSubmit}
-          disabled={!text.trim() || isPending}
-          size="icon"
-        >
+        <Button onClick={handleSubmit} disabled={!text.trim() || isPending} size="icon">
           <Send className="h-4 w-4" />
         </Button>
       </div>

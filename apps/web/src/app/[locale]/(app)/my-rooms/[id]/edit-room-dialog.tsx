@@ -93,9 +93,12 @@ export function EditRoomDialog({ room }: Props) {
       longitude: room.longitude ?? undefined,
       rentPrice: Number(room.rentPrice),
       deposit: room.deposit ? Number(room.deposit) : undefined,
-      utilitiesIncluded: (room.utilitiesIncluded as EditRoomData["utilitiesIncluded"]) ?? UtilitiesIncluded.included,
+      utilitiesIncluded:
+        (room.utilitiesIncluded as EditRoomData["utilitiesIncluded"]) ?? UtilitiesIncluded.included,
       serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
-      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ? Number(room.estimatedUtilitiesCosts) : undefined,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
+        ? Number(room.estimatedUtilitiesCosts)
+        : undefined,
       roomSizeM2: room.roomSizeM2 ?? undefined,
       availableFrom: room.availableFrom ?? "",
       availableUntil: room.availableUntil ?? "",
@@ -655,7 +658,9 @@ export function EditRoomDialog({ room }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.roomVereniging")}{" "}
-                    <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
+                    <span className="text-muted-foreground font-normal">
+                      ({tCommon("optional")})
+                    </span>
                   </FormLabel>
                   <Combobox
                     value={field.value ?? null}

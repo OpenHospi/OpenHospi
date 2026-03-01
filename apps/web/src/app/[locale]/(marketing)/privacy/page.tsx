@@ -1,16 +1,42 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Separator } from "@/components/ui/separator";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 
-export default function PrivacyPage() {
-  const t = useTranslations("privacy");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return {
+    title: t("privacy.title"),
+    description: t("privacy.description"),
+    alternates: alternatesForPath(locale, "/privacy"),
+  };
+}
+
+export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "privacy" });
+  const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
 
   const sectionCount = 7;
 
+  // Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation)
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("home"), path: "" },
+    { name: t("title"), path: "/privacy" },
+  ]);
+
   return (
     <section className="py-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
+
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t("lastUpdated")}</p>

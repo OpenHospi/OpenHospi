@@ -166,7 +166,9 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                 <FormItem>
                   <FormLabel>
                     {t("fields.neighborhood")}{" "}
-                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
+                    <span className="font-normal text-muted-foreground">
+                      ({tCommon("optional")})
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder={t("placeholders.neighborhood")} {...field} />

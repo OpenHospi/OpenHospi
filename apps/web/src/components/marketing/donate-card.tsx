@@ -23,7 +23,9 @@ export function DonateCard({ name, price, badge, description, ctaLabel }: Donate
         <p className="text-2xl font-bold text-primary">{price}</p>
       </CardHeader>
       <CardContent>
-        <Badge variant="secondary" className="rounded-full">{badge}</Badge>
+        <Badge variant="secondary" className="rounded-full">
+          {badge}
+        </Badge>
         <p className="mt-3 text-sm text-muted-foreground">{description}</p>
         <div className="mt-6">
           <Button asChild variant="outline" className="w-full">

@@ -1,4 +1,66 @@
 {
+  "seo": {
+    "home": {
+      "title": "Gratis Studentenhuisvesting — Kamers Zoeken & Aanbieden",
+      "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via SURFconext. Geen kosten, geen tussenpersonen."
+    },
+    "about": {
+      "title": "Over OpenHospi — Onze Missie & Verhaal",
+      "description": "Lees over de missie van OpenHospi om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken voor elke student."
+    },
+    "costs": {
+      "title": "Kosten & Transparantie — Hoe We Gratis Blijven",
+      "description": "OpenHospi is gratis voor alle studenten. Bekijk precies wat het kost om het platform te draaien en waar donaties naartoe gaan."
+    },
+    "findARoom": {
+      "title": "Kamer Zoeken — Gratis Studentenhuisvesting",
+      "description": "Vind je volgende studentenkamer gratis op OpenHospi. Geverifieerde studenten, versleutelde chat en eerlijke zichtbaarheid voor iedereen."
+    },
+    "listARoom": {
+      "title": "Kamer Aanbieden — Vind Je Volgende Huisgenoot",
+      "description": "Bied je studentenkamer gratis aan op OpenHospi. Bereik geverifieerde studenten door heel Nederland — geen advertentiekosten."
+    },
+    "safety": {
+      "title": "Veiligheid & Vertrouwen — Hoe We Je Beschermen",
+      "description": "SURFconext-verificatie, end-to-end versleutelde chat, AVG-conform en open-source transparantie. Je veiligheid is onze prioriteit."
+    },
+    "privacy": {
+      "title": "Privacybeleid",
+      "description": "Hoe OpenHospi je persoonsgegevens verzamelt, gebruikt en beschermt. AVG-conform, geen trackers, geen dataverkoop."
+    },
+    "terms": {
+      "title": "Algemene Voorwaarden",
+      "description": "Gebruiksvoorwaarden voor OpenHospi, het gratis studentenhuisvestingsplatform voor Nederland."
+    },
+    "missingAssociation": {
+      "title": "Vereniging Mist? — Laat Het Ons Weten",
+      "description": "Staat jouw studentenvereniging niet op OpenHospi? Neem contact op en we voegen hem toe."
+    },
+    "rooms": {
+      "title": "Studentenkamers in Nederland",
+      "description": "Bekijk beschikbare studentenkamers in Nederlandse steden. Gratis, geverifieerd en eerlijk voor elke student."
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "rooms": "Studentenkamers"
+    },
+    "faq": {
+      "costs": [
+        { "question": "Is OpenHospi echt gratis?", "answer": "Ja, OpenHospi is volledig gratis voor alle studenten. Er zijn geen verborgen kosten, geen premium plannen en geen advertenties. We worden gefinancierd door donaties en sponsoring." },
+        { "question": "Hoe wordt OpenHospi gefinancierd?", "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective." },
+        { "question": "Wordt OpenHospi ooit betaald?", "answer": "Nee. OpenHospi wordt nooit freemium of pay-to-win. Geen student hoeft ooit te betalen om het platform te gebruiken of meer zichtbaarheid te krijgen." }
+      ],
+      "safety": [
+        { "question": "Hoe worden gebruikers geverifieerd op OpenHospi?", "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten en medewerkers van Nederlandse onderwijsinstellingen het platform kunnen gebruiken." },
+        { "question": "Zijn mijn berichten privé?", "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld. Zelfs OpenHospi kan je gesprekken niet lezen." },
+        { "question": "Wat gebeurt er als ik een gebruiker meld?", "answer": "Meldingen worden beoordeeld door ons team. We handelen snel, inclusief het blokkeren van gebruikers die onze voorwaarden schenden." }
+      ],
+      "findARoom": [
+        { "question": "Hoe vind ik een kamer op OpenHospi?", "answer": "Log in met je SURFconext-account, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt." },
+        { "question": "Wat is hospiteren?", "answer": "Hospiteren is de traditionele Nederlandse manier om huisgenoten te vinden. Huizen nodigen kandidaten uit voor een bezoek zodat beide kanten kunnen zien of het een goede match is voordat je intrekt." }
+      ]
+    }
+  },
   "metadata": {
     "title": "OpenHospi — Gratis studentenhuisvesting",
     "description": "Het gratis, open-source platform voor studentenhuisvesting in Nederland."

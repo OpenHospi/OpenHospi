@@ -1,10 +1,24 @@
-"use client";
-
 import { AlertTriangle, Github, Heart, User } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return {
+    title: t("about.title"),
+    description: t("about.description"),
+    alternates: alternatesForPath(locale, "/about"),
+  };
+}
 
 const sectionConfig: {
   key: "mission" | "crisis" | "builtBy" | "openSource";
@@ -16,11 +30,23 @@ const sectionConfig: {
   { key: "openSource", icon: Github },
 ];
 
-export default function AboutPage() {
-  const t = useTranslations("about");
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "about" });
+  const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
+
+  // Safe: all content from our i18n translations, not user input
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("home"), path: "" },
+    { name: t("title"), path: "/about" },
+  ]);
 
   return (
     <section className="py-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
 

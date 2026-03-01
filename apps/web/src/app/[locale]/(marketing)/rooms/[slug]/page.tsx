@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 import { getStoragePublicUrl } from "@/lib/storage-url";
 import { getLoginUrl } from "@/lib/urls";
 
@@ -35,6 +36,7 @@ export async function generateMetadata({
     return {
       title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
+      alternates: alternatesForPath(locale, `/rooms/${slug}`),
     };
   }
 
@@ -53,6 +55,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: alternatesForPath(locale, `/rooms/${slug}`),
     openGraph: {
       title,
       description,
@@ -88,9 +91,17 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
   const rooms = await getPublicRoomsByCity(city, 6);
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const cityName = tEnums(`city.${city}`);
   const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
   const loginUrl = getLoginUrl();
+
+  // Safe: JSON-LD from i18n translations and DB, sanitized in seo.ts (per Next.js docs recommendation)
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("home"), path: "" },
+    { name: tSeo("rooms"), path: "/rooms" },
+    { name: cityName, path: `/rooms/${city}` },
+  ]);
 
   // Safe: all values come from our DB and i18n — no user-supplied HTML
   const jsonLdScript = JSON.stringify({
@@ -107,6 +118,7 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
 
   return (
     <section className="py-24">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -157,11 +169,20 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
   const t = await getTranslations({ locale, namespace: "app.roomDetail" });
   const tPublic = await getTranslations({ locale, namespace: "public.room" });
   const tCommon = await getTranslations({ locale, namespace: "common.labels" });
+  const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const loginUrl = getLoginUrl();
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const cityName = tEnums(`city.${room.city}`);
   const coverPhoto = room.photos[0];
+
+  // Safe: JSON-LD from i18n translations and DB, sanitized in seo.ts (per Next.js docs recommendation)
+  const roomBreadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("home"), path: "" },
+    { name: tSeo("rooms"), path: "/rooms" },
+    { name: cityName, path: `/rooms/${room.city}` },
+    { name: room.title, path: `/rooms/${roomId}` },
+  ]);
 
   // Safe: all values come from our DB — no user-supplied HTML
   const jsonLdScript = JSON.stringify({
@@ -185,6 +206,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
 
   return (
     <section className="py-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: roomBreadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -340,7 +362,9 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                 <div className="space-y-1.5 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      {room.utilitiesIncluded === UtilitiesIncluded.included ? t("rentInclUtilities") : t("rent")}
+                      {room.utilitiesIncluded === UtilitiesIncluded.included
+                        ? t("rentInclUtilities")
+                        : t("rent")}
                     </span>
                     <span>&euro;{room.rentPrice}</span>
                   </div>
@@ -352,19 +376,27 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
                     </div>
                   )}
 
-                  {room.utilitiesIncluded === UtilitiesIncluded.estimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("utilitiesEstimated")}</span>
-                      <span>&euro;{room.estimatedUtilitiesCosts}</span>
-                    </div>
-                  )}
+                  {room.utilitiesIncluded === UtilitiesIncluded.estimated &&
+                    room.estimatedUtilitiesCosts != null &&
+                    room.estimatedUtilitiesCosts > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t("utilitiesEstimated")}</span>
+                        <span>&euro;{room.estimatedUtilitiesCosts}</span>
+                      </div>
+                    )}
 
                   {((room.serviceCosts != null && room.serviceCosts > 0) ||
-                    (room.utilitiesIncluded === UtilitiesIncluded.estimated && room.estimatedUtilitiesCosts != null && room.estimatedUtilitiesCosts > 0)) && (
+                    (room.utilitiesIncluded === UtilitiesIncluded.estimated &&
+                      room.estimatedUtilitiesCosts != null &&
+                      room.estimatedUtilitiesCosts > 0)) && (
                     <>
                       <Separator />
                       <div className="flex justify-between font-medium">
-                        <span>{room.utilitiesIncluded === UtilitiesIncluded.estimated ? t("estimatedTotal") : t("total")}</span>
+                        <span>
+                          {room.utilitiesIncluded === UtilitiesIncluded.estimated
+                            ? t("estimatedTotal")
+                            : t("total")}
+                        </span>
                         <span>&euro;{room.totalCost}</span>
                       </div>
                     </>

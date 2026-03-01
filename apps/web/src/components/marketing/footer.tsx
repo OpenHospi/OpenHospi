@@ -4,16 +4,18 @@ import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Github } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
 
 import { LanguageSwitcher } from "./language-switcher";
+import { TrustpilotWidget } from "./trustpilot-widget";
 
 export function MarketingFooter() {
   const t = useTranslations("footer");
+  const locale = useLocale();
 
   const linkGroups = [
     {
@@ -95,7 +97,10 @@ export function MarketingFooter() {
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
           </p>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-4">
+            <TrustpilotWidget locale={locale} />
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
     </footer>

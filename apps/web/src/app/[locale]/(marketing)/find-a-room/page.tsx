@@ -1,5 +1,3 @@
-"use client";
-
 import {
   HandCoins,
   LogIn,
@@ -13,18 +11,38 @@ import {
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { StepList } from "@/components/marketing/step-list";
 import { Button } from "@/components/ui/button";
+import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
 import { getLoginUrl } from "@/lib/urls";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return {
+    title: t("findARoom.title"),
+    description: t("findARoom.description"),
+    alternates: alternatesForPath(locale, "/find-a-room"),
+  };
+}
 
 const whyIcons = [ShieldCheck, HandCoins, MessageCircle, Scale] as const;
 const stepIcons: LucideIcon[] = [LogIn, UserPlus, Search, Mail, Users, PartyPopper];
 
-export default function FindARoomPage() {
-  const t = useTranslations("findRoom");
+export default async function FindARoomPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "findRoom" });
+  const tSeo = await getTranslations({ locale, namespace: "seo" });
   const loginUrl = getLoginUrl();
 
   const steps = Array.from({ length: 6 }, (_, i) => ({
@@ -32,8 +50,20 @@ export default function FindARoomPage() {
     description: t(`steps.items.${i}.description`),
   }));
 
+  // Safe: all content from our i18n translations, not user input
+  const breadcrumbs = breadcrumbJsonLd(locale, [
+    { name: tSeo("breadcrumbs.home"), path: "" },
+    { name: t("title"), path: "/find-a-room" },
+  ]);
+
+  const faqItems = tSeo.raw("faq.findARoom") as { question: string; answer: string }[];
+  const faq = faqJsonLd(faqItems);
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faq }} />
+
       {/* Hero */}
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

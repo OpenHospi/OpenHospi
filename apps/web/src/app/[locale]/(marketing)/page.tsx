@@ -9,13 +9,30 @@ import {
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 import { CtaSection } from "@/components/marketing/cta-section";
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { Hero } from "@/components/marketing/hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { alternatesForPath, organizationJsonLd } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.home" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: alternatesForPath(locale, ""),
+  };
+}
 
 const featureIcons = {
   free: HandCoins,
@@ -29,8 +46,13 @@ const stepIcons = [LogIn, Search, UserCheck] as const;
 export default function HomePage() {
   const t = useTranslations("home");
 
+  // Safe: all content from our i18n translations and constants, not user input
+  const orgJsonLd = organizationJsonLd();
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgJsonLd }} />
+
       {/* Hero */}
       <Hero />
 

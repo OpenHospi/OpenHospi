@@ -332,9 +332,7 @@ function MultiSelect({
     >
       <ComboboxChips ref={anchor}>
         {values.map((item) => (
-          <ComboboxChip key={item}>
-            {renderLabel(item)}
-          </ComboboxChip>
+          <ComboboxChip key={item}>{renderLabel(item)}</ComboboxChip>
         ))}
         <ComboboxChipsInput placeholder={values.length === 0 ? placeholder : ""} />
       </ComboboxChips>

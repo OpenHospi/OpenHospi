@@ -280,7 +280,9 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                 <FormItem>
                   <FormLabel>
                     {t("fields.roomVereniging")}{" "}
-                    <span className="font-normal text-muted-foreground">({tCommon("optional")})</span>
+                    <span className="font-normal text-muted-foreground">
+                      ({tCommon("optional")})
+                    </span>
                   </FormLabel>
                   <Combobox
                     value={field.value ?? null}

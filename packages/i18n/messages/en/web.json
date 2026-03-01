@@ -46,18 +46,42 @@
     },
     "faq": {
       "costs": [
-        { "question": "Is OpenHospi really free?", "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships." },
-        { "question": "How is OpenHospi funded?", "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective." },
-        { "question": "Will OpenHospi ever become paid?", "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility." }
+        {
+          "question": "Is OpenHospi really free?",
+          "answer": "Yes, OpenHospi is completely free for all students. There are no hidden fees, no premium plans, and no ads. We are funded by donations and sponsorships."
+        },
+        {
+          "question": "How is OpenHospi funded?",
+          "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective."
+        },
+        {
+          "question": "Will OpenHospi ever become paid?",
+          "answer": "No. OpenHospi will never be freemium or pay-to-win. No student will ever have to pay to use the platform or get more visibility."
+        }
       ],
       "safety": [
-        { "question": "How are users verified on OpenHospi?", "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform." },
-        { "question": "Are my messages private?", "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations." },
-        { "question": "What happens when I report a user?", "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service." }
+        {
+          "question": "How are users verified on OpenHospi?",
+          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students and staff of Dutch educational institutions can use the platform."
+        },
+        {
+          "question": "Are my messages private?",
+          "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted. Not even OpenHospi can read your conversations."
+        },
+        {
+          "question": "What happens when I report a user?",
+          "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service."
+        }
       ],
       "findARoom": [
-        { "question": "How do I find a room on OpenHospi?", "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like." },
-        { "question": "What is hospiteren?", "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in." }
+        {
+          "question": "How do I find a room on OpenHospi?",
+          "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like."
+        },
+        {
+          "question": "What is hospiteren?",
+          "answer": "Hospiteren is the traditional Dutch way of finding housemates. Houses invite candidates for a visit so both sides can see if it's a good fit before moving in."
+        }
       ]
     }
   },

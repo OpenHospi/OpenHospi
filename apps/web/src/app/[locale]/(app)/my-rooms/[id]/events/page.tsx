@@ -1,7 +1,7 @@
 import type { Locale } from "@openhospi/i18n";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +24,7 @@ export default async function EventsPage({ params }: Props) {
   const { user } = await requireSession();
 
   const events = await getRoomEvents(roomId, user.id);
+  const format = await getFormatter();
   const t = await getTranslations("app.rooms.events");
 
   return (
@@ -60,8 +61,9 @@ export default async function EventsPage({ params }: Props) {
                 <CardContent className="space-y-1 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="size-3.5" />
-                    {event.eventDate} · {event.timeStart}
-                    {event.timeEnd && ` – ${event.timeEnd}`}
+                    {format.dateTime(new Date(event.eventDate + "T00:00:00"), "short")} ·{" "}
+                    {event.timeStart.slice(0, 5)}
+                    {event.timeEnd && ` – ${event.timeEnd.slice(0, 5)}`}
                   </div>
                   {event.location && (
                     <div className="flex items-center gap-1.5">

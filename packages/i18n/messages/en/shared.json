@@ -892,8 +892,9 @@
         "addToCalendar": "Add to calendar",
         "detailTitle": "Event details",
         "backToRoom": "Back to room",
+        "backToEvents": "Back to events",
         "invitees": "Invitees",
-        "noInvitees": "No invitees yet. Use the invite button to add applicants.",
+        "noInvitees": "No invitees yet.",
         "attendingCount": "{attending} / {total} attending",
         "maxAttendees": "Max {count} attendees",
         "fields": {

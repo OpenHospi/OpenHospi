@@ -5,7 +5,6 @@ import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
 import {
   ApplicationStatus,
-  INVITABLE_APPLICATION_STATUSES,
   ReviewDecision,
 } from "@openhospi/shared/enums";
 import { Check, Loader2, UserCircle, X } from "lucide-react";
@@ -95,13 +94,17 @@ export function ApplicantDetailPanel({ applicant, roomId, currentUserId }: Props
 
   function handleStatusChange(newStatus: ApplicationStatus) {
     startTransition(async () => {
-      const result = await updateApplicationStatus(roomId, applicant.applicationId, newStatus);
-      if (result?.error) {
+      try {
+        const result = await updateApplicationStatus(roomId, applicant.applicationId, newStatus);
+        if (result?.error) {
+          toast.error(t("statusError"));
+          return;
+        }
+        toast.success(t("statusUpdated"));
+        router.refresh();
+      } catch {
         toast.error(t("statusError"));
-        return;
       }
-      toast.success(t("statusUpdated"));
-      router.refresh();
     });
   }
 
@@ -267,56 +270,41 @@ export function ApplicantDetailPanel({ applicant, roomId, currentUserId }: Props
         </Form>
       </div>
 
-      {/* Status action buttons */}
-      {((INVITABLE_APPLICATION_STATUSES as readonly string[]).includes(applicant.status) ||
-        applicant.status === ApplicationStatus.invited) && (
+      {/* Status action buttons — Accept / Not Chosen (only when invited) */}
+      {applicant.status === ApplicationStatus.invited && (
         <div className="flex flex-wrap gap-2 border-t pt-4">
-          {(INVITABLE_APPLICATION_STATUSES as readonly string[]).includes(applicant.status) && (
-            <Button
-              variant="outline"
-              onClick={() => handleStatusChange(ApplicationStatus.invited)}
-              disabled={isPending}
-            >
-              {isPending && <Loader2 className="animate-spin" />}
-              {t("invite")}
-            </Button>
-          )}
-          {applicant.status === ApplicationStatus.invited && (
-            <>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button disabled={isPending}>
-                    <Check className="size-4" />
-                    {t("accept")}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>{t("acceptConfirmTitle")}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t("acceptConfirmDescription", { name: applicant.firstName })}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => handleStatusChange(ApplicationStatus.accepted)}
-                    >
-                      {t("accept")}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <Button
-                variant="outline"
-                onClick={() => handleStatusChange(ApplicationStatus.not_chosen)}
-                disabled={isPending}
-              >
-                <X className="size-4" />
-                {t("notChosen")}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button disabled={isPending}>
+                <Check className="size-4" />
+                {t("accept")}
               </Button>
-            </>
-          )}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("acceptConfirmTitle")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("acceptConfirmDescription", { name: applicant.firstName })}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => handleStatusChange(ApplicationStatus.accepted)}
+                >
+                  {t("accept")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Button
+            variant="outline"
+            onClick={() => handleStatusChange(ApplicationStatus.not_chosen)}
+            disabled={isPending}
+          >
+            <X className="size-4" />
+            {t("notChosen")}
+          </Button>
         </div>
       )}
     </div>

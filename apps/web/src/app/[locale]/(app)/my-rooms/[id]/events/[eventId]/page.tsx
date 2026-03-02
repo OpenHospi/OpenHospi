@@ -1,7 +1,7 @@
 import type { Locale } from "@openhospi/i18n";
 import { ArrowLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +48,7 @@ export default async function EventDetailPage({ params }: Props) {
   }
 
   const applicants = await getRoomApplicants(roomId, user.id);
+  const format = await getFormatter();
   const t = await getTranslations("app.rooms.events");
   const tEnums = await getTranslations("enums");
   const isCreator = event.createdBy === user.id;
@@ -63,9 +64,9 @@ export default async function EventDetailPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Button variant="ghost" size="sm" asChild>
-        <Link href={`/my-rooms/${roomId}`}>
+        <Link href={`/my-rooms/${roomId}/events`}>
           <ArrowLeft className="size-4" />
-          {t("backToRoom")}
+          {t("backToEvents")}
         </Link>
       </Button>
 
@@ -78,12 +79,12 @@ export default async function EventDetailPage({ params }: Props) {
         <div className="space-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Calendar className="size-4" />
-            {event.eventDate}
+            {format.dateTime(new Date(event.eventDate + "T00:00:00"), "short")}
           </div>
           <div className="flex items-center gap-2">
             <Clock className="size-4" />
-            {event.timeStart}
-            {event.timeEnd && ` – ${event.timeEnd}`}
+            {event.timeStart.slice(0, 5)}
+            {event.timeEnd && ` – ${event.timeEnd.slice(0, 5)}`}
           </div>
           {event.location && (
             <div className="flex items-center gap-2">

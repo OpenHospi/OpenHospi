@@ -892,8 +892,9 @@
         "addToCalendar": "Zum Kalender hinzufügen",
         "detailTitle": "Veranstaltungsdetails",
         "backToRoom": "Zurück zum Zimmer",
+        "backToEvents": "Zurück zu Veranstaltungen",
         "invitees": "Eingeladene",
-        "noInvitees": "Noch keine Eingeladenen. Nutze die Einladungsfunktion, um Bewerber hinzuzufügen.",
+        "noInvitees": "Noch keine Eingeladenen.",
         "attendingCount": "{attending} / {total} teilnehmend",
         "maxAttendees": "Max {count} Teilnehmer",
         "fields": {

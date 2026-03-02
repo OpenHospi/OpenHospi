@@ -892,8 +892,9 @@
         "addToCalendar": "Toevoegen aan agenda",
         "detailTitle": "Evenementdetails",
         "backToRoom": "Terug naar kamer",
+        "backToEvents": "Terug naar evenementen",
         "invitees": "Genodigden",
-        "noInvitees": "Nog geen genodigden. Gebruik de uitnodigknop om kandidaten toe te voegen.",
+        "noInvitees": "Nog geen genodigden.",
         "attendingCount": "{attending} / {total} aanwezig",
         "maxAttendees": "Max {count} deelnemers",
         "fields": {

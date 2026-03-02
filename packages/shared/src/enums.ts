@@ -607,7 +607,7 @@ export const VALID_APPLICATION_TRANSITIONS: Record<
   seen: ["liked", "maybe", "rejected", "withdrawn"],
   liked: ["invited", "maybe", "rejected", "withdrawn"],
   maybe: ["liked", "invited", "rejected", "withdrawn"],
-  rejected: [],
+  rejected: ["liked", "maybe"],
   invited: [
     "attending",
     "not_attending",
@@ -678,7 +678,26 @@ export function isTerminalApplicationStatus(
 }
 
 export const INVITABLE_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
-  ApplicationStatus.seen,
   ApplicationStatus.liked,
   ApplicationStatus.maybe,
 ] as const;
+
+export const REVIEW_PHASE_STATUSES: readonly ApplicationStatus[] = [
+  ApplicationStatus.seen,
+  ApplicationStatus.liked,
+  ApplicationStatus.maybe,
+  ApplicationStatus.rejected,
+] as const;
+
+export function isReviewPhaseStatus(status: ApplicationStatus): boolean {
+  return (REVIEW_PHASE_STATUSES as readonly string[]).includes(status);
+}
+
+export const REVIEW_DECISION_TO_APPLICATION_STATUS: Record<
+  ReviewDecision,
+  ApplicationStatus
+> = {
+  like: ApplicationStatus.liked,
+  maybe: ApplicationStatus.maybe,
+  reject: ApplicationStatus.rejected,
+};

@@ -3,7 +3,7 @@
 import { MAX_DECLINE_REASON_LENGTH } from "@openhospi/shared/constants";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { Calendar, Check, Clock, Loader2, MapPin, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -26,6 +26,7 @@ type Props = {
 export function InvitationCard({ invitation }: Props) {
   const t = useTranslations("app.invitations");
   const tEnums = useTranslations("enums");
+  const format = useFormatter();
   const [isPending, startTransition] = useTransition();
   const [showDeclineForm, setShowDeclineForm] = useState(false);
   const [declineReason, setDeclineReason] = useState("");
@@ -91,12 +92,12 @@ export function InvitationCard({ invitation }: Props) {
         <div className="space-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Calendar className="size-3.5" />
-            {invitation.eventDate}
+            {format.dateTime(new Date(invitation.eventDate + "T00:00:00"), "short")}
           </div>
           <div className="flex items-center gap-1.5">
             <Clock className="size-3.5" />
-            {invitation.timeStart}
-            {invitation.timeEnd && ` – ${invitation.timeEnd}`}
+            {invitation.timeStart.slice(0, 5)}
+            {invitation.timeEnd && ` – ${invitation.timeEnd.slice(0, 5)}`}
           </div>
           {invitation.location && (
             <div className="flex items-center gap-1.5">

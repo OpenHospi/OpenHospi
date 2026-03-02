@@ -67,8 +67,9 @@ export const privateKeyBackups = pgTable(
             .references(() => profiles.id, { onDelete: "cascade" }),
         encryptedPrivateKey: text("encrypted_private_key").notNull(),
         backupIv: text("backup_iv").notNull(),
-        backupKey: text("backup_key").notNull(),
+        salt: text("salt").notNull(), // PBKDF2 salt (base64)
         createdAt: timestamp("created_at", {withTimezone: true}).notNull().defaultNow(),
+        updatedAt: timestamp("updated_at", {withTimezone: true}).notNull().defaultNow(),
     },
     (table) => [
         pgPolicy("private_key_backups_select", {

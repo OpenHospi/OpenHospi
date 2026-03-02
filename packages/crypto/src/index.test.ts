@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  createBackup,
-  decryptBackup,
   decryptFromGroup,
+  decryptPrivateKeyBackup,
+  deriveKeyFromPIN,
   encryptForGroup,
+  encryptPrivateKeyBackup,
   exportPrivateKey,
   exportPublicKey,
   fromBase64,
@@ -369,40 +370,115 @@ describe("base64 helpers", () => {
   });
 });
 
-// ── Backup Encrypt / Decrypt ──
+// ── PIN Key Derivation ──
 
-describe("backup encrypt / decrypt", () => {
-  it("createBackup → decryptBackup roundtrip: recovered JWK matches original", async () => {
+describe("deriveKeyFromPIN", () => {
+  it("derives a usable AES-256 key from a PIN and salt", async () => {
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const key = await deriveKeyFromPIN("123456", salt, 1000); // Low iterations for test speed
+
+    expect(key).toBeInstanceOf(CryptoKey);
+    expect(key.algorithm).toMatchObject({ name: "AES-GCM", length: 256 });
+  });
+
+  it("same PIN + salt → same key (deterministic): can decrypt with re-derived key", async () => {
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const key1 = await deriveKeyFromPIN("123456", salt, 1000);
+    const key2 = await deriveKeyFromPIN("123456", salt, 1000);
+
+    // Encrypt with key1, decrypt with key2 — should succeed if keys are identical
+    const kp = await generateKeyPair();
+    const privJwk = await exportPrivateKey(kp.privateKey);
+    const backup = await encryptPrivateKeyBackup(privJwk, key1);
+    const recovered = await decryptPrivateKeyBackup(backup.ciphertext, backup.iv, key2);
+    expect(recovered).toEqual(privJwk);
+  });
+
+  it("different PINs → different keys: decryption fails", async () => {
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const key1 = await deriveKeyFromPIN("123456", salt, 1000);
+    const key2 = await deriveKeyFromPIN("654321", salt, 1000);
+
+    const kp = await generateKeyPair();
+    const privJwk = await exportPrivateKey(kp.privateKey);
+    const backup = await encryptPrivateKeyBackup(privJwk, key1);
+    await expect(decryptPrivateKeyBackup(backup.ciphertext, backup.iv, key2)).rejects.toThrow();
+  });
+
+  it("different salts → different keys: decryption fails", async () => {
+    const salt1 = crypto.getRandomValues(new Uint8Array(32));
+    const salt2 = crypto.getRandomValues(new Uint8Array(32));
+    const key1 = await deriveKeyFromPIN("123456", salt1, 1000);
+    const key2 = await deriveKeyFromPIN("123456", salt2, 1000);
+
+    const kp = await generateKeyPair();
+    const privJwk = await exportPrivateKey(kp.privateKey);
+    const backup = await encryptPrivateKeyBackup(privJwk, key1);
+    await expect(decryptPrivateKeyBackup(backup.ciphertext, backup.iv, key2)).rejects.toThrow();
+  });
+});
+
+// ── Private Key Backup Encrypt / Decrypt ──
+
+describe("private key backup encrypt / decrypt", () => {
+  it("encrypt → decrypt roundtrip: recovered JWK matches original", async () => {
     const kp = await generateKeyPair();
     const privJwk = await exportPrivateKey(kp.privateKey);
 
-    const backup = await createBackup(privJwk);
-    const recovered = await decryptBackup(backup);
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const wrappingKey = await deriveKeyFromPIN("123456", salt, 1000);
+
+    const backup = await encryptPrivateKeyBackup(privJwk, wrappingKey);
+    const recovered = await decryptPrivateKeyBackup(backup.ciphertext, backup.iv, wrappingKey);
 
     expect(recovered).toEqual(privJwk);
   });
 
-  it("tampered encrypted data → decryptBackup throws", async () => {
+  it("wrong wrapping key → decryption throws (GCM auth failure)", async () => {
     const kp = await generateKeyPair();
     const privJwk = await exportPrivateKey(kp.privateKey);
-    const backup = await createBackup(privJwk);
 
-    // Flip a byte in the encrypted data
-    const bytes = fromBase64(backup.encryptedPrivateKey);
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const wrappingKey = await deriveKeyFromPIN("123456", salt, 1000);
+    const wrongKey = await deriveKeyFromPIN("654321", salt, 1000);
+
+    const backup = await encryptPrivateKeyBackup(privJwk, wrappingKey);
+
+    await expect(
+      decryptPrivateKeyBackup(backup.ciphertext, backup.iv, wrongKey),
+    ).rejects.toThrow();
+  });
+
+  it("tampered ciphertext → throws", async () => {
+    const kp = await generateKeyPair();
+    const privJwk = await exportPrivateKey(kp.privateKey);
+
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const wrappingKey = await deriveKeyFromPIN("123456", salt, 1000);
+
+    const backup = await encryptPrivateKeyBackup(privJwk, wrappingKey);
+
+    const bytes = fromBase64(backup.ciphertext);
     bytes[0] ^= 0xff;
-    const tampered = { ...backup, encryptedPrivateKey: toBase64(bytes) };
+    const tampered = toBase64(bytes);
 
-    await expect(decryptBackup(tampered)).rejects.toThrow();
+    await expect(
+      decryptPrivateKeyBackup(tampered, backup.iv, wrappingKey),
+    ).rejects.toThrow();
   });
 
-  it("two backups of same key → different ciphertext (random AES key per backup)", async () => {
+  it("two backups of same key → different ciphertext (random IV)", async () => {
     const kp = await generateKeyPair();
     const privJwk = await exportPrivateKey(kp.privateKey);
 
-    const backup1 = await createBackup(privJwk);
-    const backup2 = await createBackup(privJwk);
+    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const wrappingKey = await deriveKeyFromPIN("123456", salt, 1000);
 
-    expect(backup1.encryptedPrivateKey).not.toBe(backup2.encryptedPrivateKey);
-    expect(backup1.backupKey).not.toBe(backup2.backupKey);
+    const backup1 = await encryptPrivateKeyBackup(privJwk, wrappingKey);
+    const backup2 = await encryptPrivateKeyBackup(privJwk, wrappingKey);
+
+    expect(backup1.ciphertext).not.toBe(backup2.ciphertext);
+    expect(backup1.iv).not.toBe(backup2.iv);
   });
+
 });

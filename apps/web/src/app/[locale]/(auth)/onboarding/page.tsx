@@ -6,7 +6,12 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
-import { getProfile, isProfileComplete, type ProfileWithPhotos } from "@/lib/profile";
+import {
+  getProfile,
+  hasEncryptionKeyBackup,
+  isProfileComplete,
+  type ProfileWithPhotos,
+} from "@/lib/profile";
 
 import { OnboardingForm } from "./onboarding-form";
 
@@ -33,7 +38,7 @@ export default async function OnboardingPage({ params }: Props) {
 
   const profile = await getProfile(user.id);
 
-  if (profile && isProfileComplete(profile)) {
+  if (profile && isProfileComplete(profile) && (await hasEncryptionKeyBackup(user.id))) {
     redirect({ href: "/discover", locale });
   }
 
@@ -52,5 +57,5 @@ export default async function OnboardingPage({ params }: Props) {
     photos: profile?.photos ?? [],
   };
 
-  return <OnboardingForm initialData={initialData} />;
+  return <OnboardingForm initialData={initialData} userId={user.id} />;
 }

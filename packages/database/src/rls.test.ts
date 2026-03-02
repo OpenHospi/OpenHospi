@@ -158,7 +158,7 @@ describe("RLS policies (integration)", () => {
     ]);
 
     await db.insert(privateKeyBackups).values({
-      userId: USER_A, encryptedPrivateKey: "enc-key-a", backupIv: "iv-a", backupKey: "key-a",
+      userId: USER_A, encryptedPrivateKey: "enc-key-a", backupIv: "iv-a", salt: "salt-a",
     });
 
     await db.insert(blocks).values({ blockerId: USER_A, blockedId: USER_B });
@@ -511,7 +511,7 @@ describe("RLS policies (integration)", () => {
     it("user can insert own backup", async () => {
       const [row] = await withRLS(USER_B, (tx) =>
         tx.insert(privateKeyBackups).values({
-          userId: USER_B, encryptedPrivateKey: "enc-key-b", backupIv: "iv-b", backupKey: "key-b",
+          userId: USER_B, encryptedPrivateKey: "enc-key-b", backupIv: "iv-b", salt: "salt-b",
         }).returning(),
       );
       expect(row.userId).toBe(USER_B);
@@ -523,7 +523,7 @@ describe("RLS policies (integration)", () => {
       await expect(
         withRLS(USER_B, (tx) =>
           tx.insert(privateKeyBackups).values({
-            userId: USER_C, encryptedPrivateKey: "fake", backupIv: "fake", backupKey: "fake",
+            userId: USER_C, encryptedPrivateKey: "fake", backupIv: "fake", salt: "fake",
           }),
         ),
       ).rejects.toThrow();

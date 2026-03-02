@@ -1,10 +1,11 @@
 "use client";
 
-import { Flag, MoreVertical, ShieldBan, ShieldCheck, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Flag, MoreVertical, ShieldBan, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
+import { KeyRecoveryDialog } from "@/components/app/key-recovery-dialog";
 import { ReportDialog } from "@/components/app/report-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useEncryptionKey } from "@/hooks/use-encryption-key";
 import { Link } from "@/i18n/navigation-app";
 import type { MessageItem } from "@/lib/chat";
 
@@ -39,6 +42,7 @@ export function ChatView({
 }: Props) {
   const t = useTranslations("app.chat");
   const [isPending, startTransition] = useTransition();
+  const { privateKey, status } = useEncryptionKey(currentUserId);
 
   const otherMembers = members.filter((m) => m.userId !== currentUserId);
   const title = otherMembers.map((m) => m.firstName).join(", ") || t("conversation");
@@ -67,6 +71,42 @@ export function ChatView({
         toast.error("Error");
       }
     });
+  }
+
+  // Loading state while checking encryption keys
+  if (status === "loading") {
+    return (
+      <div className="flex h-[calc(100vh-8rem)] flex-col">
+        <div className="flex items-center gap-3 border-b px-4 py-3">
+          <Skeleton className="h-8 w-8 rounded" />
+          <Skeleton className="h-5 w-40" />
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <span className="text-muted-foreground text-sm">{t("decrypting")}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Key recovery needed
+  if (status === "needs-recovery" || status === "needs-setup") {
+    return (
+      <div className="flex h-[calc(100vh-8rem)] flex-col">
+        <div className="flex items-center gap-3 border-b px-4 py-3">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/chat">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate font-semibold">{title}</h2>
+          </div>
+        </div>
+        <div className="flex flex-1 items-center justify-center p-4">
+          <KeyRecoveryDialog userId={currentUserId} />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -132,6 +172,7 @@ export function ChatView({
         conversationId={conversationId}
         currentUserId={currentUserId}
         initialMessages={initialMessages}
+        privateKey={privateKey!}
       />
 
       {/* Input */}
@@ -144,6 +185,7 @@ export function ChatView({
           conversationId={conversationId}
           currentUserId={currentUserId}
           members={members}
+          privateKey={privateKey!}
         />
       )}
     </div>

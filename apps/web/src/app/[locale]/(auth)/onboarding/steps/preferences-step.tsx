@@ -29,14 +29,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@/lib/form-utils";
 
-import { finishOnboarding, savePreferencesStep } from "../actions";
+import { savePreferencesStep } from "../actions";
 
 type Props = {
   defaultValues: Partial<PreferencesStepData>;
   onBack: () => void;
+  onNext: () => void;
 };
 
-export function PreferencesStep({ defaultValues, onBack }: Props) {
+export function PreferencesStep({ defaultValues, onBack, onNext }: Props) {
   const t = useTranslations("app.onboarding");
   const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
@@ -60,7 +61,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
         return;
       }
 
-      await finishOnboarding();
+      onNext();
     });
   }
 
@@ -174,7 +175,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
           </Button>
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin" />}
-            {t("complete")}
+            {tCommon("next")}
           </Button>
         </div>
       </form>

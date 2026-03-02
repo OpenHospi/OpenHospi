@@ -96,7 +96,7 @@ export const TRUSTPILOT_URL =
 export const TRUSTPILOT_CACHE_REVALIDATE_SECONDS = 86400;
 
 // Multi-step forms
-export const ONBOARDING_TOTAL_STEPS = 5;
+export const ONBOARDING_TOTAL_STEPS = 6;
 export const ROOM_CREATE_TOTAL_STEPS = 4;
 
 // OG Image & icon dimensions
@@ -109,6 +109,10 @@ export const ADDRESS_DEBOUNCE_MS = 300;
 
 // Auth
 export const SESSION_COOKIE_NAME = "better-auth.session_token";
+
+// E2EE key backup
+export const PBKDF2_ITERATIONS = 600_000;
+export const PIN_LENGTH = 6;
 
 // Rate limits (per day)
 export const RATE_LIMIT_APPLY = 20;

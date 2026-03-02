@@ -1,57 +1,112 @@
 "use client";
 
 import {
-  createBackup,
-  decryptBackup,
+  deriveKeyFromPIN,
+  encryptPrivateKeyBackup,
+  decryptPrivateKeyBackup,
   exportPrivateKey,
   exportPublicKey,
   generateKeyPair,
   importPrivateKey,
-  type BackupData,
+  toBase64,
+  fromBase64,
 } from "@openhospi/crypto";
+import { PBKDF2_ITERATIONS } from "@openhospi/shared/constants";
 
-import { getStoredPrivateKey, storePrivateKey } from "./crypto-store";
+import { deleteStoredPrivateKey, getStoredPrivateKey, storePrivateKey } from "./crypto-store";
 
-/**
- * Ensures the user has a key pair available.
- *
- * Priority: IndexedDB → server backup → generate new pair.
- * Returns the private key (CryptoKey) for use in encryption/decryption.
- */
-export async function ensureKeys(
+export type KeyStatus = "ready" | "needs-recovery" | "needs-setup";
+
+export async function getKeyStatus(
   userId: string,
-  fetchBackup: () => Promise<BackupData | null>,
-  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
-  uploadBackup: (data: BackupData) => Promise<void>,
-): Promise<CryptoKey> {
-  // 1. Try IndexedDB
+  fetchBackup: () => Promise<{ salt: string } | null>,
+): Promise<KeyStatus> {
   const storedJwk = await getStoredPrivateKey(userId);
-  if (storedJwk) {
-    return importPrivateKey(storedJwk);
-  }
+  if (storedJwk) return "ready";
 
-  // 2. Try server backup
   const backup = await fetchBackup();
-  if (backup) {
-    const privateKeyJwk = await decryptBackup(backup);
-    await storePrivateKey(userId, privateKeyJwk);
-    return importPrivateKey(privateKeyJwk);
-  }
+  if (backup) return "needs-recovery";
 
-  // 3. Generate new key pair
+  return "needs-setup";
+}
+
+export async function setupKeysWithPIN(
+  userId: string,
+  pin: string,
+  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
+  uploadBackup: (data: {
+    encryptedPrivateKey: string;
+    backupIv: string;
+    salt: string;
+  }) => Promise<void>,
+): Promise<void> {
+  // Generate new key pair
   const keyPair = await generateKeyPair();
   const publicKeyJwk = await exportPublicKey(keyPair.publicKey);
   const privateKeyJwk = await exportPrivateKey(keyPair.privateKey);
 
+  // Derive wrapping key from PIN
+  const salt = crypto.getRandomValues(new Uint8Array(32));
+  const wrappingKey = await deriveKeyFromPIN(pin, salt, PBKDF2_ITERATIONS);
+
+  // Encrypt private key
+  const backup = await encryptPrivateKeyBackup(privateKeyJwk, wrappingKey);
+
+  // Upload to server
+  await uploadPublicKey(publicKeyJwk);
+  await uploadBackup({
+    encryptedPrivateKey: backup.ciphertext,
+    backupIv: backup.iv,
+    salt: toBase64(salt),
+  });
+
   // Store locally
   await storePrivateKey(userId, privateKeyJwk);
+}
 
-  // Upload public key to server
+export async function recoverKeysWithPIN(
+  userId: string,
+  pin: string,
+  backup: { encryptedPrivateKey: string; backupIv: string; salt: string },
+): Promise<void> {
+  const salt = fromBase64(backup.salt);
+  const wrappingKey = await deriveKeyFromPIN(pin, salt, PBKDF2_ITERATIONS);
+
+  const privateKeyJwk = await decryptPrivateKeyBackup(
+    backup.encryptedPrivateKey,
+    backup.backupIv,
+    wrappingKey,
+  );
+
+  // Store locally
+  await storePrivateKey(userId, privateKeyJwk);
+}
+
+export async function resetKeys(
+  userId: string,
+  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
+  deleteBackup: () => Promise<void>,
+): Promise<void> {
+  // Delete old local key
+  await deleteStoredPrivateKey(userId);
+
+  // Delete old backup from server
+  await deleteBackup();
+
+  // Generate fresh key pair
+  const keyPair = await generateKeyPair();
+  const publicKeyJwk = await exportPublicKey(keyPair.publicKey);
+  const privateKeyJwk = await exportPrivateKey(keyPair.privateKey);
+
+  // Upload new public key (replaces old one via upsert)
   await uploadPublicKey(publicKeyJwk);
 
-  // Create encrypted backup on server
-  const backupData = await createBackup(privateKeyJwk);
-  await uploadBackup(backupData);
+  // Store new private key locally (backup will be set up separately)
+  await storePrivateKey(userId, privateKeyJwk);
+}
 
-  return keyPair.privateKey;
+export async function importAndStoreKey(userId: string): Promise<CryptoKey | null> {
+  const storedJwk = await getStoredPrivateKey(userId);
+  if (!storedJwk) return null;
+  return importPrivateKey(storedJwk);
 }

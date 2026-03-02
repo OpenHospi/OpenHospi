@@ -4,7 +4,6 @@ import {
   decryptFromGroup,
   decryptPrivateKeyBackup,
   deriveKeyFromPIN,
-  deriveKeyFromPRF,
   encryptForGroup,
   encryptPrivateKeyBackup,
   exportPrivateKey,
@@ -419,45 +418,6 @@ describe("deriveKeyFromPIN", () => {
   });
 });
 
-// ── PRF Key Derivation ──
-
-describe("deriveKeyFromPRF", () => {
-  it("derives a usable AES-256 key from PRF output and salt", async () => {
-    const prfOutput = crypto.getRandomValues(new Uint8Array(32)).buffer;
-    const salt = crypto.getRandomValues(new Uint8Array(32));
-    const key = await deriveKeyFromPRF(prfOutput, salt);
-
-    expect(key).toBeInstanceOf(CryptoKey);
-    expect(key.algorithm).toMatchObject({ name: "AES-GCM", length: 256 });
-  });
-
-  it("same PRF output + salt → same key (deterministic): can decrypt with re-derived key", async () => {
-    const prfOutput = crypto.getRandomValues(new Uint8Array(32)).buffer;
-    const salt = crypto.getRandomValues(new Uint8Array(32));
-    const key1 = await deriveKeyFromPRF(prfOutput, salt);
-    const key2 = await deriveKeyFromPRF(prfOutput, salt);
-
-    const kp = await generateKeyPair();
-    const privJwk = await exportPrivateKey(kp.privateKey);
-    const backup = await encryptPrivateKeyBackup(privJwk, key1);
-    const recovered = await decryptPrivateKeyBackup(backup.ciphertext, backup.iv, key2);
-    expect(recovered).toEqual(privJwk);
-  });
-
-  it("different PRF outputs → different keys: decryption fails", async () => {
-    const prfOutput1 = crypto.getRandomValues(new Uint8Array(32)).buffer;
-    const prfOutput2 = crypto.getRandomValues(new Uint8Array(32)).buffer;
-    const salt = crypto.getRandomValues(new Uint8Array(32));
-    const key1 = await deriveKeyFromPRF(prfOutput1, salt);
-    const key2 = await deriveKeyFromPRF(prfOutput2, salt);
-
-    const kp = await generateKeyPair();
-    const privJwk = await exportPrivateKey(kp.privateKey);
-    const backup = await encryptPrivateKeyBackup(privJwk, key1);
-    await expect(decryptPrivateKeyBackup(backup.ciphertext, backup.iv, key2)).rejects.toThrow();
-  });
-});
-
 // ── Private Key Backup Encrypt / Decrypt ──
 
 describe("private key backup encrypt / decrypt", () => {
@@ -521,17 +481,4 @@ describe("private key backup encrypt / decrypt", () => {
     expect(backup1.iv).not.toBe(backup2.iv);
   });
 
-  it("PRF-derived key: encrypt → decrypt roundtrip works", async () => {
-    const kp = await generateKeyPair();
-    const privJwk = await exportPrivateKey(kp.privateKey);
-
-    const prfOutput = crypto.getRandomValues(new Uint8Array(32)).buffer;
-    const salt = crypto.getRandomValues(new Uint8Array(32));
-    const wrappingKey = await deriveKeyFromPRF(prfOutput, salt);
-
-    const backup = await encryptPrivateKeyBackup(privJwk, wrappingKey);
-    const recovered = await decryptPrivateKeyBackup(backup.ciphertext, backup.iv, wrappingKey);
-
-    expect(recovered).toEqual(privJwk);
-  });
 });

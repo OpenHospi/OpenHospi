@@ -1,7 +1,7 @@
 "use server";
 
 import { db, withRLS } from "@openhospi/database";
-import { encryptionCredentials, privateKeyBackups, publicKeys } from "@openhospi/database/schema";
+import { privateKeyBackups, publicKeys } from "@openhospi/database/schema";
 import { eq, inArray } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
@@ -21,7 +21,6 @@ export async function uploadPublicKey(publicKeyJwk: JsonWebKey) {
 export async function uploadKeyBackup(data: {
   encryptedPrivateKey: string;
   backupIv: string;
-  backupType: "passkey" | "pin";
   salt: string;
 }) {
   const session = await requireSession();
@@ -39,7 +38,6 @@ export async function uploadKeyBackup(data: {
 export async function fetchKeyBackup(): Promise<{
   encryptedPrivateKey: string;
   backupIv: string;
-  backupType: string;
   salt: string;
   createdAt: Date;
 } | null> {
@@ -50,7 +48,6 @@ export async function fetchKeyBackup(): Promise<{
       .select({
         encryptedPrivateKey: privateKeyBackups.encryptedPrivateKey,
         backupIv: privateKeyBackups.backupIv,
-        backupType: privateKeyBackups.backupType,
         salt: privateKeyBackups.salt,
         createdAt: privateKeyBackups.createdAt,
       })
@@ -65,8 +62,6 @@ export async function deleteKeyBackup() {
   const session = await requireSession();
 
   await db.delete(privateKeyBackups).where(eq(privateKeyBackups.userId, session.user.id));
-
-  await db.delete(encryptionCredentials).where(eq(encryptionCredentials.userId, session.user.id));
 }
 
 export async function fetchPublicKeys(

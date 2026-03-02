@@ -622,15 +622,12 @@
       "security": {
         "e2ee_title": "Ende-zu-Ende-verschlüsselte Chats",
         "e2ee_description": "OpenHospi verschlüsselt alle deine Chats Ende-zu-Ende. Nur du und die andere Person können Nachrichten lesen.",
-        "use_passkey": "Mit Passkey schützen",
-        "use_pin": "Stattdessen PIN verwenden",
+        "use_pin": "PIN verwenden",
         "enter_pin": "Wähle eine 6-stellige PIN",
         "confirm_pin": "PIN bestätigen",
         "setup_pin": "Mit PIN einrichten",
         "pin_length_error": "PIN muss 6 Ziffern haben",
         "pin_mismatch": "PINs stimmen nicht überein",
-        "prf_not_supported": "Dein Browser unterstützt keine Passkeys für Verschlüsselung. Richte stattdessen eine PIN ein.",
-        "prf_fallback": "Passkey-Verschlüsselung auf diesem Gerät nicht verfügbar. Bitte verwende eine PIN.",
         "setup_success": "Chat-Verschlüsselung erfolgreich eingerichtet",
         "setup_error": "Verschlüsselung konnte nicht eingerichtet werden. Bitte versuche es erneut."
       }
@@ -1243,7 +1240,6 @@
       "encryption": {
         "unlock_title": "Entsperre deine Chats",
         "unlock_description": "Deine Verschlüsselungsschlüssel müssen auf diesem Gerät wiederhergestellt werden.",
-        "unlock_passkey": "Mit Passkey entsperren",
         "unlock_pin": "Mit PIN entsperren",
         "enter_pin": "Gib deine PIN ein",
         "confirm_pin": "PIN bestätigen",
@@ -1256,8 +1252,7 @@
         "start_fresh_confirm": "Neu starten",
         "reset_error": "Verschlüsselungsschlüssel konnten nicht zurückgesetzt werden. Bitte versuche es erneut.",
         "setup_title": "Chat-Verschlüsselung einrichten",
-        "setup_description": "Schütze deine Nachrichten mit einem Passkey oder einer PIN.",
-        "use_passkey": "Mit Passkey schützen",
+        "setup_description": "Schütze deine Nachrichten mit einer PIN.",
         "setup_with_pin": "Mit PIN einrichten",
         "pin_length_error": "PIN muss 6 Ziffern haben",
         "pin_mismatch": "PINs stimmen nicht überein",

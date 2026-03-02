@@ -622,15 +622,12 @@
       "security": {
         "e2ee_title": "End-to-end encrypted chats",
         "e2ee_description": "OpenHospi encrypts all your chats end-to-end. Only you and the other person can read messages.",
-        "use_passkey": "Protect with passkey",
-        "use_pin": "Use PIN code instead",
+        "use_pin": "Use PIN code",
         "enter_pin": "Choose a 6-digit PIN",
         "confirm_pin": "Confirm your PIN",
         "setup_pin": "Set up with PIN",
         "pin_length_error": "PIN must be 6 digits",
         "pin_mismatch": "PINs do not match",
-        "prf_not_supported": "Your browser doesn't support passkeys for encryption. Set up a PIN code instead.",
-        "prf_fallback": "Passkey encryption not available on this device. Please use a PIN code instead.",
         "setup_success": "Chat encryption set up successfully",
         "setup_error": "Could not set up encryption. Please try again."
       }
@@ -1243,7 +1240,6 @@
       "encryption": {
         "unlock_title": "Unlock your chats",
         "unlock_description": "Your encryption keys need to be restored on this device.",
-        "unlock_passkey": "Unlock with passkey",
         "unlock_pin": "Unlock with PIN",
         "enter_pin": "Enter your PIN",
         "confirm_pin": "Confirm your PIN",
@@ -1256,8 +1252,7 @@
         "start_fresh_confirm": "Start fresh",
         "reset_error": "Could not reset encryption keys. Please try again.",
         "setup_title": "Set up chat encryption",
-        "setup_description": "Protect your messages with a passkey or PIN.",
-        "use_passkey": "Protect with passkey",
+        "setup_description": "Protect your messages with a PIN.",
         "setup_with_pin": "Set up with PIN",
         "pin_length_error": "PIN must be 6 digits",
         "pin_mismatch": "PINs do not match",

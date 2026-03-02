@@ -622,15 +622,12 @@
       "security": {
         "e2ee_title": "End-to-end versleutelde chats",
         "e2ee_description": "OpenHospi versleutelt al je chats end-to-end. Alleen jij en de andere persoon kunnen berichten lezen.",
-        "use_passkey": "Beveilig met passkey",
         "use_pin": "Gebruik pincode",
         "enter_pin": "Kies een 6-cijferige PIN",
         "confirm_pin": "Bevestig je PIN",
         "setup_pin": "Instellen met PIN",
         "pin_length_error": "PIN moet 6 cijfers zijn",
         "pin_mismatch": "Pincodes komen niet overeen",
-        "prf_not_supported": "Je browser ondersteunt geen passkeys voor versleuteling. Stel een pincode in.",
-        "prf_fallback": "Passkey-versleuteling niet beschikbaar op dit apparaat. Gebruik een pincode.",
         "setup_success": "Chatversleuteling succesvol ingesteld",
         "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw."
       }
@@ -1243,7 +1240,6 @@
       "encryption": {
         "unlock_title": "Ontgrendel je chats",
         "unlock_description": "Je versleutelingssleutels moeten worden hersteld op dit apparaat.",
-        "unlock_passkey": "Ontgrendel met passkey",
         "unlock_pin": "Ontgrendel met PIN",
         "enter_pin": "Voer je PIN in",
         "confirm_pin": "Bevestig je PIN",
@@ -1256,8 +1252,7 @@
         "start_fresh_confirm": "Opnieuw beginnen",
         "reset_error": "Kon versleutelingssleutels niet resetten. Probeer het opnieuw.",
         "setup_title": "Chatversleuteling instellen",
-        "setup_description": "Bescherm je berichten met een passkey of PIN.",
-        "use_passkey": "Beveilig met passkey",
+        "setup_description": "Bescherm je berichten met een PIN.",
         "setup_with_pin": "Instellen met PIN",
         "pin_length_error": "PIN moet 6 cijfers zijn",
         "pin_mismatch": "Pincodes komen niet overeen",

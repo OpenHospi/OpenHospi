@@ -10,13 +10,11 @@ import type { KeyStatus } from "@/lib/key-management";
 type UseEncryptionKeyResult = {
   privateKey: CryptoKey | null;
   status: "loading" | KeyStatus;
-  backupType: "passkey" | "pin" | null;
 };
 
 export function useEncryptionKey(userId: string): UseEncryptionKeyResult {
   const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
   const [status, setStatus] = useState<"loading" | KeyStatus>("loading");
-  const [backupType, setBackupType] = useState<"passkey" | "pin" | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,7 +35,6 @@ export function useEncryptionKey(userId: string): UseEncryptionKeyResult {
       const backup = await fetchKeyBackup();
       if (!cancelled) {
         if (backup) {
-          setBackupType(backup.backupType as "passkey" | "pin");
           setStatus("needs-recovery");
         } else {
           setStatus("needs-setup");
@@ -50,5 +47,5 @@ export function useEncryptionKey(userId: string): UseEncryptionKeyResult {
     };
   }, [userId]);
 
-  return { privateKey, status, backupType };
+  return { privateKey, status };
 }

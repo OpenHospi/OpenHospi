@@ -26,8 +26,6 @@
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "@openhospi/surfconext": "workspace:*",
-    "@simplewebauthn/browser": "^13.2.2",
-    "@simplewebauthn/server": "^13.2.3",
     "@supabase/supabase-js": "^2.98.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.36.3",

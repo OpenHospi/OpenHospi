@@ -212,22 +212,6 @@ export async function deriveKeyFromPIN(
   );
 }
 
-export async function deriveKeyFromPRF(
-  prfOutput: ArrayBuffer,
-  salt: Uint8Array,
-): Promise<CryptoKey> {
-  const hkdfKey = await crypto.subtle.importKey("raw", prfOutput, "HKDF", false, ["deriveKey"]);
-  const encoder = new TextEncoder();
-
-  return crypto.subtle.deriveKey(
-    { name: "HKDF", hash: "SHA-256", salt: salt as BufferSource, info: encoder.encode("openhospi-e2ee-backup") },
-    hkdfKey,
-    ALGO_AES,
-    false,
-    ["wrapKey", "unwrapKey", "encrypt", "decrypt"],
-  );
-}
-
 // ── Backup Encrypt / Decrypt ──
 
 export async function encryptPrivateKeyBackup(

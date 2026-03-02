@@ -2,7 +2,7 @@
 
 import { PIN_LENGTH } from "@openhospi/shared/constants";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { Fingerprint, KeyRound, Loader2 } from "lucide-react";
+import { KeyRound, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -13,12 +13,6 @@ import {
   uploadKeyBackup,
   uploadPublicKey,
 } from "@/app/[locale]/(app)/chat/key-actions";
-import {
-  generatePasskeyAuthentication,
-  generatePasskeyRegistration,
-  verifyPasskeyAuthentication,
-  verifyPasskeyRegistration,
-} from "@/app/[locale]/(app)/chat/webauthn-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -35,14 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import {
-  recoverKeysWithPasskey,
-  recoverKeysWithPIN,
-  resetKeys,
-  setupKeysWithPasskey,
-  setupKeysWithPIN,
-} from "@/lib/key-management";
-import { isPRFSupported } from "@/lib/passkey-crypto";
+import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from "@/lib/key-management";
 
 type Props = {
   userId: string;
@@ -51,7 +38,6 @@ type Props = {
 type BackupInfo = {
   encryptedPrivateKey: string;
   backupIv: string;
-  backupType: string;
   salt: string;
 } | null;
 
@@ -65,40 +51,17 @@ export function KeyRecoveryDialog({ userId }: Props) {
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState<string | null>(null);
   const [showSetup, setShowSetup] = useState(false);
-  const [prfSupported, setPrfSupported] = useState<boolean | null>(null);
   const [setupPin, setSetupPin] = useState("");
   const [setupConfirmPin, setSetupConfirmPin] = useState("");
   const [setupPinError, setSetupPinError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [backupResult] = await Promise.all([
-        fetchKeyBackup(),
-        isPRFSupported().then(setPrfSupported),
-      ]);
+      const backupResult = await fetchKeyBackup();
       setBackup(backupResult);
       setLoading(false);
     })();
   }, []);
-
-  function handlePasskeyRecovery() {
-    if (!backup) return;
-
-    startTransition(async () => {
-      try {
-        await recoverKeysWithPasskey(
-          userId,
-          backup,
-          generatePasskeyAuthentication,
-          verifyPasskeyAuthentication,
-        );
-        toast.success(t("recovery_success"));
-        window.location.reload();
-      } catch {
-        toast.error(t("recovery_error"));
-      }
-    });
-  }
 
   function handlePinRecovery() {
     if (!backup) return;
@@ -125,24 +88,6 @@ export function KeyRecoveryDialog({ userId }: Props) {
         setBackup(null);
       } catch {
         toast.error(t("reset_error"));
-      }
-    });
-  }
-
-  function handleSetupPasskey() {
-    startTransition(async () => {
-      try {
-        await setupKeysWithPasskey(
-          userId,
-          generatePasskeyRegistration,
-          verifyPasskeyRegistration,
-          uploadPublicKey,
-          uploadKeyBackup,
-        );
-        toast.success(t("setup_success"));
-        window.location.reload();
-      } catch {
-        toast.error(t("setup_error"));
       }
     });
   }
@@ -187,21 +132,6 @@ export function KeyRecoveryDialog({ userId }: Props) {
           <CardDescription>{t("setup_description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {prfSupported && (
-            <Button
-              className="w-full justify-start gap-3"
-              onClick={handleSetupPasskey}
-              disabled={isPending}
-            >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Fingerprint className="h-4 w-4" />
-              )}
-              {t("use_passkey")}
-            </Button>
-          )}
-
           <div className="space-y-3">
             <div className="space-y-2">
               <Label>{t("enter_pin")}</Label>
@@ -243,7 +173,6 @@ export function KeyRecoveryDialog({ userId }: Props) {
 
             <Button
               className="w-full"
-              variant="outline"
               onClick={handleSetupPin}
               disabled={
                 isPending || setupPin.length !== PIN_LENGTH || setupConfirmPin.length !== PIN_LENGTH
@@ -267,58 +196,41 @@ export function KeyRecoveryDialog({ userId }: Props) {
         <CardDescription>{t("unlock_description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {backup.backupType === "passkey" && (
-          <Button
-            className="w-full justify-start gap-3"
-            onClick={handlePasskeyRecovery}
-            disabled={isPending}
-          >
-            {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Fingerprint className="h-4 w-4" />
-            )}
-            {t("unlock_passkey")}
-          </Button>
-        )}
-
-        {backup.backupType === "pin" && (
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label>{t("enter_pin")}</Label>
-              <InputOTP
-                maxLength={PIN_LENGTH}
-                pattern={REGEXP_ONLY_DIGITS}
-                value={pin}
-                onChange={(val) => {
-                  setPin(val);
-                  setPinError(null);
-                }}
-              >
-                <InputOTPGroup>
-                  {Array.from({ length: PIN_LENGTH }, (_, i) => (
-                    <InputOTPSlot key={i} index={i} />
-                  ))}
-                </InputOTPGroup>
-              </InputOTP>
-            </div>
-
-            {pinError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pinError}</AlertDescription>
-              </Alert>
-            )}
-
-            <Button
-              className="w-full"
-              onClick={handlePinRecovery}
-              disabled={isPending || pin.length !== PIN_LENGTH}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label>{t("enter_pin")}</Label>
+            <InputOTP
+              maxLength={PIN_LENGTH}
+              pattern={REGEXP_ONLY_DIGITS}
+              value={pin}
+              onChange={(val) => {
+                setPin(val);
+                setPinError(null);
+              }}
             >
-              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {t("unlock_pin")}
-            </Button>
+              <InputOTPGroup>
+                {Array.from({ length: PIN_LENGTH }, (_, i) => (
+                  <InputOTPSlot key={i} index={i} />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
           </div>
-        )}
+
+          {pinError && (
+            <Alert variant="destructive">
+              <AlertDescription>{pinError}</AlertDescription>
+            </Alert>
+          )}
+
+          <Button
+            className="w-full"
+            onClick={handlePinRecovery}
+            disabled={isPending || pin.length !== PIN_LENGTH}
+          >
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {t("unlock_pin")}
+          </Button>
+        </div>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>

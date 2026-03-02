@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@/lib/form-utils";
 import type { PreferencesStepData } from "@openhospi/database/validators";
 import { preferencesStepSchema } from "@openhospi/database/validators";
 import { City, Vereniging } from "@openhospi/shared/enums";
@@ -28,6 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@/lib/form-utils";
 
 import { finishOnboarding, savePreferencesStep } from "../actions";
 

@@ -1,6 +1,6 @@
-import type { Locale } from "@openhospi/i18n";
 import { db } from "@openhospi/database";
 import { houses } from "@openhospi/database/schema";
+import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
 import { Home } from "lucide-react";
 import { hasLocale } from "next-intl";

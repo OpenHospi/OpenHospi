@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@/lib/form-utils";
 import type { ReviewData } from "@openhospi/database/validators";
 import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
@@ -29,6 +28,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
+import { zodResolver } from "@/lib/form-utils";
 
 import { submitReview } from "./applicant-actions";
 

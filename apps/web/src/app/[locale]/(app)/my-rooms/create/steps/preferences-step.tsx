@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@/lib/form-utils";
 import type { RoomPreferencesData } from "@openhospi/database/validators";
 import { roomPreferencesSchema } from "@openhospi/database/validators";
 import {
@@ -38,6 +37,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { zodResolver } from "@/lib/form-utils";
 import { cn } from "@/lib/utils";
 
 import { savePreferences } from "../actions";

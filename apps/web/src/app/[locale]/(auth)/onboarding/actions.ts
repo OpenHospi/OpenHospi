@@ -1,6 +1,5 @@
 "use server";
 
-import type { Locale } from "@openhospi/i18n";
 import { withRLS } from "@openhospi/database";
 import { profiles } from "@openhospi/database/schema";
 import {
@@ -13,6 +12,7 @@ import {
   type PersonalityStepData,
   type PreferencesStepData,
 } from "@openhospi/database/validators";
+import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 

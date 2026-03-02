@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@/lib/form-utils";
 import type { CreateEventData } from "@openhospi/database/validators";
 import { createEventSchema } from "@openhospi/database/validators";
 import {
@@ -34,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
+import { zodResolver } from "@/lib/form-utils";
 import { cn } from "@/lib/utils";
 
 import { createEvent } from "./event-actions";

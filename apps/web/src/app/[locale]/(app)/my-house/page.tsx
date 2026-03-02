@@ -1,6 +1,6 @@
-import type { Locale } from "@openhospi/i18n";
 import { withRLS } from "@openhospi/database";
 import { houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
+import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";

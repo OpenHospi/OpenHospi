@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@/lib/form-utils";
 import type { RoomBasicInfoData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema } from "@openhospi/database/validators";
 import { MAX_ROOM_DESCRIPTION_LENGTH } from "@openhospi/shared/constants";
@@ -32,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@/lib/form-utils";
 
 import { saveBasicInfo } from "../actions";
 

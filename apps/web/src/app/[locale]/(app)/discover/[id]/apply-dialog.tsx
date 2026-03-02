@@ -1,6 +1,5 @@
 "use client";
 
-import {zodResolver} from "@/lib/form-utils";
 import type {ApplyToRoomData} from "@openhospi/database/validators";
 import {applyToRoomSchema} from "@openhospi/database/validators";
 import {
@@ -31,6 +30,7 @@ import {
 } from "@/components/ui/form";
 import {Textarea} from "@/components/ui/textarea";
 import {useRouter} from "@/i18n/navigation-app";
+import {zodResolver} from "@/lib/form-utils";
 
 import {applyToRoom} from "./actions";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@/lib/form-utils";
 import type { RoomDetailsData } from "@openhospi/database/validators";
 import { roomDetailsSchema } from "@openhospi/database/validators";
 import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from "@openhospi/shared/enums";
@@ -37,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@/lib/form-utils";
 
 import { saveDetails } from "../actions";
 

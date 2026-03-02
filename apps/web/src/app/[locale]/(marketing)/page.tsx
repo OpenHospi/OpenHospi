@@ -1,5 +1,5 @@
-import type { Locale } from "@openhospi/i18n";
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import type { Locale } from "@openhospi/i18n";
 import {
   BadgeCheck,
   HandCoins,

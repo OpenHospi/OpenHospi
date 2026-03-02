@@ -1,6 +1,5 @@
 "use client";
 
-import {zodResolver} from "@/lib/form-utils";
 import type {EditProfileData} from "@openhospi/database/validators";
 import {editProfileSchema} from "@openhospi/database/validators";
 import {
@@ -62,6 +61,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {Textarea} from "@/components/ui/textarea";
+import {zodResolver} from "@/lib/form-utils";
 import type {Profile} from "@/lib/profile";
 import {cn} from "@/lib/utils";
 

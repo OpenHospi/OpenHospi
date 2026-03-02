@@ -1,5 +1,5 @@
-import type { Locale } from "@openhospi/i18n";
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import type { Locale } from "@openhospi/i18n";
 import { AlertTriangle, Heart, User } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";

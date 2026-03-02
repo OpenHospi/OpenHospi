@@ -8,6 +8,10 @@
   },
   "scripts": {
     "dev": "pnpm --filter @openhospi/web dev",
+    "dev:mobile": "pnpm --filter @openhospi/mobile start",
+    "dev:mobile:android": "pnpm --filter @openhospi/mobile android",
+    "dev:mobile:ios": "pnpm --filter @openhospi/mobile ios",
+    "dev:mobile:web": "pnpm --filter @openhospi/mobile web",
     "build": "pnpm --filter @openhospi/web build",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint --fix",
@@ -28,7 +32,9 @@
     "supabase:status": "supabase status",
     "supabase:reset": "supabase db reset && pnpm db:push:local && pnpm db:setup:storage:local && pnpm db:seed:local",
     "i18n:check": "i18n-check --source nl --locales packages/i18n/messages",
-    "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
+    "expo:doctor": "cd apps/mobile && npx expo-doctor@latest",
+    "expo:install": "pnpm --filter @openhospi/mobile exec expo install",
+    "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist **/.expo"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

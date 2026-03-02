@@ -331,7 +331,9 @@ export function SortablePhotoGrid({
     if (!file || activeSlot === null) return;
 
     if (file.size > maxFileSize) {
-      toast.error(tErrors("fileTooLarge", { maxSize: String(Math.round(maxFileSize / 1024 / 1024)) }));
+      toast.error(
+        tErrors("fileTooLarge", { maxSize: String(Math.round(maxFileSize / 1024 / 1024)) }),
+      );
       e.target.value = "";
       return;
     }

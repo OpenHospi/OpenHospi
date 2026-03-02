@@ -1,21 +1,27 @@
 "use client";
 
-import { MAX_ROOM_PHOTO_SIZE, MAX_ROOM_PHOTOS, ROOM_PHOTO_SLOTS } from "@openhospi/shared/constants";
+import {
+  MAX_ROOM_PHOTO_SIZE,
+  MAX_ROOM_PHOTOS,
+  ROOM_PHOTO_SLOTS,
+} from "@openhospi/shared/constants";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useTransition } from "react";
 import { toast } from "sonner";
 
-import {
-  SortablePhotoGrid,
-  type SortablePhoto,
-} from "@/components/app/sortable-photo-grid";
+import { SortablePhotoGrid, type SortablePhoto } from "@/components/app/sortable-photo-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import type { RoomPhoto } from "@/lib/rooms";
 
 import { publishRoom } from "../actions";
-import { deleteRoomPhoto, reorderRoomPhotos, saveRoomPhoto, updatePhotoCaption } from "../photo-actions";
+import {
+  deleteRoomPhoto,
+  reorderRoomPhotos,
+  saveRoomPhoto,
+  updatePhotoCaption,
+} from "../photo-actions";
 
 type Props = {
   roomId: string;
@@ -41,8 +47,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
   );
 
   const getSlotClassName = useCallback(
-    (slot: number) =>
-      slot === 1 ? "col-span-2 row-span-2 aspect-4/3" : "aspect-square",
+    (slot: number) => (slot === 1 ? "col-span-2 row-span-2 aspect-4/3" : "aspect-square"),
     [],
   );
 

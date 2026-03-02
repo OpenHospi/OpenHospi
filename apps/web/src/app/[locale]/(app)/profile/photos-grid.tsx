@@ -5,10 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
-import {
-  SortablePhotoGrid,
-  type SortablePhoto,
-} from "@/components/app/sortable-photo-grid";
+import { SortablePhotoGrid, type SortablePhoto } from "@/components/app/sortable-photo-grid";
 import { Badge } from "@/components/ui/badge";
 import type { ProfilePhoto } from "@/lib/profile";
 

@@ -111,44 +111,46 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
       </div>
       <RoomDetailContent
         room={applyRoomToDetail(room)}
-      context={{
-        isAuthenticated: true,
-        isOwner,
-        isInvitee,
-        existingApplication,
-        loginUrl: null,
-      }}
-      sidebarActions={
-        <>
-          {isOwner && (
-            <Button asChild variant="outline" className="w-full">
-              <Link href={`/my-rooms/${room.id}`}>
-                <Settings className="size-4" />
-                {t("manageRoom")}
-              </Link>
-            </Button>
-          )}
-          {!isOwner && existingApplication && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
-                  {tEnums(`application_status.${existingApplication.status}`)}
-                </Badge>
-              </div>
+        context={{
+          isAuthenticated: true,
+          isOwner,
+          isInvitee,
+          existingApplication,
+          loginUrl: null,
+        }}
+        sidebarActions={
+          <>
+            {isOwner && (
               <Button asChild variant="outline" className="w-full">
-                <Link href={`/applications/${existingApplication.id}`}>{t("viewApplication")}</Link>
+                <Link href={`/my-rooms/${room.id}`}>
+                  <Settings className="size-4" />
+                  {t("manageRoom")}
+                </Link>
               </Button>
-            </div>
-          )}
-          {!isOwner && !existingApplication && <ApplyDialog roomId={room.id} />}
-          {!isOwner && (
-            <div className="pt-2">
-              <ReportDialog type="room" targetId={room.id} />
-            </div>
-          )}
-        </>
-      }
-    />
+            )}
+            {!isOwner && existingApplication && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
+                    {tEnums(`application_status.${existingApplication.status}`)}
+                  </Badge>
+                </div>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href={`/applications/${existingApplication.id}`}>
+                    {t("viewApplication")}
+                  </Link>
+                </Button>
+              </div>
+            )}
+            {!isOwner && !existingApplication && <ApplyDialog roomId={room.id} />}
+            {!isOwner && (
+              <div className="pt-2">
+                <ReportDialog type="room" targetId={room.id} />
+              </div>
+            )}
+          </>
+        }
+      />
     </>
   );
 }

@@ -10,10 +10,7 @@ import {
   reorderProfilePhotos,
   saveProfilePhoto,
 } from "@/app/[locale]/(app)/profile/profile-actions";
-import {
-  SortablePhotoGrid,
-  type SortablePhoto,
-} from "@/components/app/sortable-photo-grid";
+import { SortablePhotoGrid, type SortablePhoto } from "@/components/app/sortable-photo-grid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ProfilePhoto } from "@/lib/profile";
@@ -97,9 +94,7 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
 
   const renderEmptyExtra = useCallback(
     (slot: number) =>
-      slot === 1 ? (
-        <span className="text-xs font-medium text-primary">{t("required")}</span>
-      ) : null,
+      slot === 1 ? <span className="text-xs font-medium text-primary">{t("required")}</span> : null,
     [t],
   );
 

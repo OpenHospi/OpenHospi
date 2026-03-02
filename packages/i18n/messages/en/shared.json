@@ -9,7 +9,10 @@
       "invalidFileType": "Invalid file type. Please use JPEG, PNG, or WebP.",
       "uploadFailed": "Upload failed. Please try again.",
       "deleteFailed": "Delete failed. Please try again.",
-      "processingRestricted": "Your account processing is currently restricted. You can manage this in Settings > Privacy."
+      "processingRestricted": "Your account processing is currently restricted. You can manage this in Settings > Privacy.",
+      "createFailed": "Aanmaken mislukt. Probeer het opnieuw.",
+      "notAuthenticated": "Niet ingelogd.",
+      "invalidData": "Ongeldige gegevens."
     },
     "labels": {
       "title": "Title",
@@ -670,7 +673,8 @@
         },
         "errors": {
           "INVALID_NAME": "Name must be at least 2 characters.",
-          "RATE_LIMITED": "Too many requests. Please try again later."
+          "RATE_LIMITED": "Too many requests. Please try again later.",
+          "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
         }
       },
       "housePicker": {
@@ -715,6 +719,12 @@
         "photoGuidance": "Upload at least 1 photo to publish. The first photo is your cover.",
         "photoCount": "{count}/{max} photos"
       },
+      "captions": {
+        "placeholder": "Voeg een beschrijving toe...",
+        "saved": "Bijschrift opgeslagen",
+        "charCount": "{count}/{max}"
+      },
+      "dragToReorder": "Sleep om te herordenen",
       "fields": {
         "title": "Title",
         "description": "Description",
@@ -813,7 +823,10 @@
         "draftSaved": "Draft saved",
         "RATE_LIMITED": "Too many rooms created today. Please try again later.",
         "confirmDeleteTitle": "Delete draft?",
-        "confirmDelete": "This will permanently delete this draft room."
+        "confirmDelete": "This will permanently delete this draft room.",
+        "invalidTransition": "Ongeldige statusovergang.",
+        "NO_HOUSE": "Geen huis gevonden.",
+        "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
       },
       "manage": {
         "title": "Room management",

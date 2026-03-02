@@ -26,7 +26,7 @@ function CostBreakdown({
     RoomDetail,
     "utilitiesIncluded" | "totalCost" | "rentPrice" | "serviceCosts" | "estimatedUtilitiesCosts"
   >;
-  t: (key: string) => string;
+  t: (key: any) => string;
 }) {
   const isIncluded = room.utilitiesIncluded === UtilitiesIncluded.included;
   const isEstimated = room.utilitiesIncluded === UtilitiesIncluded.estimated;
@@ -129,7 +129,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
             {room.roomSizeM2 && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 <Ruler className="size-4" />
-                <span>{t("roomSize", { size: room.roomSizeM2 })}</span>
+                <span>{t("roomSize", { size: String(room.roomSizeM2) })}</span>
               </div>
             )}
             {room.totalHousemates != null && (
@@ -148,11 +148,11 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               <UserRound className="size-4" />
               <span>
                 {tEnums(
-                  `gender_preference.${room.preferredGender || GenderPreference.no_preference}`,
+                  `gender_preference.${room.preferredGender || GenderPreference.no_preference}` as any,
                 )}
                 {room.preferredAgeMin != null &&
                   room.preferredAgeMax != null &&
-                  ` · ${t("ageRange", { min: room.preferredAgeMin, max: room.preferredAgeMax })}`}
+                  ` · ${t("ageRange", { min: String(room.preferredAgeMin), max: String(room.preferredAgeMax) })}`}
               </span>
             </div>
           </div>
@@ -262,7 +262,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                     <p className="truncate text-xs text-muted-foreground">
                       {room.owner.studyProgram}
                       {room.owner.studyLevel &&
-                        ` · ${tEnums("study_level." + room.owner.studyLevel)}`}
+                        ` · ${tEnums(("study_level." + room.owner.studyLevel) as any)}`}
                     </p>
                   )}
                   <div className="mt-1">

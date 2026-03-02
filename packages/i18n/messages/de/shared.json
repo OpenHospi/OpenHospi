@@ -532,14 +532,22 @@
         "showFilters": "Filter anzeigen",
         "hideFilters": "Filter ausblenden"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Nu beschikbaar",
+        "availableFrom": "Vanaf {date}",
+        "until": "tot {date}"
+      },
       "loadMore": "Mehr laden"
     },
     "profile": {
       "title": "Mein Profil",
       "institution": "Einrichtung",
-      "editTitle": "Profil bearbeiten",
       "editSuccess": "Profil aktualisiert",
+      "editBio": "Bio bewerken",
+      "editAbout": "Over mij bewerken",
+      "editPreferences": "Voorkeuren bewerken",
+      "editLanguages": "Talen bewerken",
+      "editLifestyle": "Levensstijl bewerken",
       "bio": "Über mich",
       "studyInfo": "Studieninformation",
       "studyProgram": "Studiengang",
@@ -552,16 +560,7 @@
       "availableFrom": "Verfügbar ab",
       "lifestyleTags": "Lebensstil",
       "languages": "Gesprochene Sprachen",
-      "completeness": {
-        "title": "Profil {completed}/{total} vollständig",
-        "photo": "Profilfoto",
-        "bio": "Bio",
-        "studyProgram": "Studiengang",
-        "birthDate": "Geburtsdatum",
-        "preferredCity": "Bevorzugte Stadt",
-        "lifestyleTags": "Lebensstil-Tags (2+)",
-        "vereniging": "Verein"
-      }
+      "vereniging": "Vereniging"
     },
     "onboarding": {
       "title": "Vervollständige dein Profil",
@@ -753,7 +752,8 @@
         "preferredAgeMin": "Mindestalter",
         "preferredAgeMax": "Höchstalter",
         "preferredLifestyleTags": "Gewünschter Lebensstil",
-        "roomVereniging": "Vereinigung"
+        "roomVereniging": "Vereinigung",
+        "availableUntilHint": "Verplicht bij onderhuur en tijdelijke verhuur"
       },
       "placeholders": {
         "title": "z.B. Gemütliches Zimmer in WG",
@@ -771,6 +771,9 @@
       },
       "helpers": {
         "serviceCosts": "z.B. Reinigung, Internet, VvE-Beitrag"
+      },
+      "validation": {
+        "availableUntilRequired": "Een einddatum is verplicht voor onderhuur en tijdelijke verhuur"
       },
       "utilities": {
         "included": "In der Miete enthalten",

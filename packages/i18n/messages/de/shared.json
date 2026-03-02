@@ -752,7 +752,8 @@
         "preferredAgeMin": "Mindestalter",
         "preferredAgeMax": "Höchstalter",
         "preferredLifestyleTags": "Gewünschter Lebensstil",
-        "roomVereniging": "Vereinigung"
+        "roomVereniging": "Vereinigung",
+        "availableUntilHint": "Erforderlich bei Untermiete und befristeter Vermietung"
       },
       "placeholders": {
         "title": "z.B. Gemütliches Zimmer in WG",
@@ -770,6 +771,9 @@
       },
       "helpers": {
         "serviceCosts": "z.B. Reinigung, Internet, VvE-Beitrag"
+      },
+      "validation": {
+        "availableUntilRequired": "Ein Enddatum ist für Untermiete und befristete Vermietung erforderlich"
       },
       "utilities": {
         "included": "In der Miete enthalten",

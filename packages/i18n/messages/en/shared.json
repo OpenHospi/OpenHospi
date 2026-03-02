@@ -752,7 +752,8 @@
         "preferredAgeMin": "Min age",
         "preferredAgeMax": "Max age",
         "preferredLifestyleTags": "Preferred lifestyle",
-        "roomVereniging": "Association"
+        "roomVereniging": "Association",
+        "availableUntilHint": "Required for sublet and temporary rentals"
       },
       "placeholders": {
         "title": "e.g. Cozy room in student house",
@@ -770,6 +771,9 @@
       },
       "helpers": {
         "serviceCosts": "e.g. cleaning, internet, VvE contribution"
+      },
+      "validation": {
+        "availableUntilRequired": "An end date is required for sublet and temporary rentals"
       },
       "utilities": {
         "included": "Included in rent",

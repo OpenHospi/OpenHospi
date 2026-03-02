@@ -773,7 +773,30 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
         ],
       }),
       roomVereniging: f.default({ defaultValue: null }),
-      availableUntil: f.default({ defaultValue: null }),
+      availableUntil: f.valuesFromArray({
+        values: [
+          null,         // 0  permanent
+          null,         // 1  permanent
+          "2026-09-01", // 2  temporary  (~5 months after availableFrom)
+          null,         // 3  permanent
+          null,         // 4  permanent
+          null,         // 5  permanent
+          "2026-12-01", // 6  sublet     (~6 months after availableFrom)
+          null,         // 7  permanent
+          "2026-07-01", // 8  temporary  (~3 months after availableFrom)
+          null,         // 9  permanent
+          null,         // 10 permanent
+          null,         // 11 permanent
+          "2026-10-01", // 12 temporary  (~6 months after availableFrom)
+          null,         // 13 permanent
+          null,         // 14 permanent
+          null,         // 15 permanent
+          "2027-02-01", // 16 sublet     (~6 months after availableFrom)
+          null,         // 17 permanent
+          null,         // 18 permanent
+          null,         // 19 permanent
+        ],
+      }),
       preferredGender: f.valuesFromArray({
         values: [
           "no_preference",
@@ -1111,8 +1134,9 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       backupKey: f.string(),
     },
   },
-  // blocks, conversationMembers, messageReceipts have composite PKs —
-  // drizzle-seed can't guarantee unique combinations, so they stay empty
+  // Tables with composite PKs — drizzle-seed can't guarantee unique combinations,
+  // so they stay empty: blocks, conversationMembers, messageReceipts, activeConsents
+  activeConsents: { count: 0 },
   reports: {
     count: 10,
     columns: {

@@ -24,11 +24,7 @@ export default async function ApplicantsPage({ params }: Props) {
   return (
     <>
       <MarkSeenEffect roomId={roomId} />
-      <ApplicantMasterDetail
-        applicants={applicants}
-        roomId={roomId}
-        currentUserId={user.id}
-      />
+      <ApplicantMasterDetail applicants={applicants} roomId={roomId} currentUserId={user.id} />
     </>
   );
 }

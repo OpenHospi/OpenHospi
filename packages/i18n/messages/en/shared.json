@@ -922,8 +922,8 @@
       "voting": {
         "title": "Voting",
         "description": "Rank applicants by preference. All housemates can see each other's votes.",
-        "backToRoom": "Back to room",
         "yourRanking": "Your ranking",
+        "dragToReorder": "Drag to reorder",
         "moveUp": "Move up",
         "moveDown": "Move down",
         "submitVotes": "Submit votes",

@@ -75,21 +75,14 @@ function ApplicantRow({
           <span className="truncate text-sm font-medium">
             {applicant.firstName} {applicant.lastName}
           </span>
-          {reviewDot && (
-            <span className={cn("size-2 shrink-0 rounded-full", reviewDot)} />
-          )}
+          {reviewDot && <span className={cn("size-2 shrink-0 rounded-full", reviewDot)} />}
         </div>
         <p className="truncate text-xs text-muted-foreground">
           {applicant.studyProgram}
           {age && <> · {age}</>}
         </p>
       </div>
-      <Badge
-        className={cn(
-          "shrink-0 text-xs",
-          APPLICATION_STATUS_COLORS[applicant.status],
-        )}
-      >
+      <Badge className={cn("shrink-0 text-xs", APPLICATION_STATUS_COLORS[applicant.status])}>
         {tEnums(`application_status.${applicant.status}`)}
       </Badge>
     </button>

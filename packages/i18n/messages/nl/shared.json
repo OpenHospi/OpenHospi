@@ -922,8 +922,8 @@
       "voting": {
         "title": "Stemming",
         "description": "Rangschik kandidaten op voorkeur. Alle huisgenoten kunnen elkaars stemmen zien.",
-        "backToRoom": "Terug naar kamer",
         "yourRanking": "Jouw rangschikking",
+        "dragToReorder": "Verslepen om te herordenen",
         "moveUp": "Omhoog",
         "moveDown": "Omlaag",
         "submitVotes": "Stemmen indienen",

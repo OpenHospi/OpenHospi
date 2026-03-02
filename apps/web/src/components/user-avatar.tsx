@@ -49,7 +49,11 @@ export function UserAvatar({ avatarUrl, userName, size = "md", className }: User
     </div>
   ) : (
     <div
-      className={cn("bg-primary/10 flex shrink-0 items-center justify-center rounded-full font-semibold text-primary", sizeClasses[size], className)}
+      className={cn(
+        "bg-primary/10 flex shrink-0 items-center justify-center rounded-full font-semibold text-primary",
+        sizeClasses[size],
+        className,
+      )}
     >
       {initials}
     </div>

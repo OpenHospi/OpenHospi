@@ -58,7 +58,10 @@ export async function createDraftRoom(userId: string, houseId: string): Promise<
   return roomId;
 }
 
-export const getRoom = cache(async function getRoom(roomId: string, userId: string): Promise<RoomWithPhotos | null> {
+export const getRoom = cache(async function getRoom(
+  roomId: string,
+  userId: string,
+): Promise<RoomWithPhotos | null> {
   return withRLS(userId, async (tx) => {
     const [room] = await tx
       .select()

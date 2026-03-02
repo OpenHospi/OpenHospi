@@ -922,8 +922,8 @@
       "voting": {
         "title": "Abstimmung",
         "description": "Bewerber nach Präferenz ordnen. Alle Mitbewohner können die Stimmen der anderen sehen.",
-        "backToRoom": "Zurück zum Zimmer",
         "yourRanking": "Deine Rangfolge",
+        "dragToReorder": "Zum Neuordnen ziehen",
         "moveUp": "Nach oben",
         "moveDown": "Nach unten",
         "submitVotes": "Stimmen abgeben",

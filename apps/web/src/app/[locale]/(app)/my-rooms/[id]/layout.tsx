@@ -37,9 +37,7 @@ export default async function RoomManagementLayout({ children, params }: Props) 
       : [];
 
   const applicantCount =
-    room.status !== RoomStatus.draft
-      ? (await getRoomApplicants(id, user.id)).length
-      : 0;
+    room.status !== RoomStatus.draft ? (await getRoomApplicants(id, user.id)).length : 0;
 
   return (
     <div className="space-y-6">
@@ -51,11 +49,7 @@ export default async function RoomManagementLayout({ children, params }: Props) 
         </div>
       </div>
 
-      <RoomTabs
-        roomId={room.id}
-        roomStatus={room.status}
-        applicantCount={applicantCount}
-      />
+      <RoomTabs roomId={room.id} roomStatus={room.status} applicantCount={applicantCount} />
 
       {children}
     </div>

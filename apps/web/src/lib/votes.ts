@@ -1,6 +1,10 @@
 import { withRLS } from "@openhospi/database";
 import { applications, profiles, votes } from "@openhospi/database/schema";
-import { ApplicationStatus, isTerminalApplicationStatus } from "@openhospi/shared/enums";
+import {
+  ApplicationStatus,
+  isTerminalApplicationStatus,
+  type StudyLevel,
+} from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne, sum } from "drizzle-orm";
 
 const VOTABLE_STATUSES = [ApplicationStatus.invited, ApplicationStatus.attending] as const;
@@ -12,6 +16,9 @@ export type VotableApplicant = {
   lastName: string;
   avatarUrl: string | null;
   status: string;
+  studyProgram: string | null;
+  studyLevel: StudyLevel | null;
+  birthDate: string | null;
 };
 
 export type VoteBallot = {
@@ -39,6 +46,9 @@ export async function getVotableApplicants(
         lastName: profiles.lastName,
         avatarUrl: profiles.avatarUrl,
         status: applications.status,
+        studyProgram: profiles.studyProgram,
+        studyLevel: profiles.studyLevel,
+        birthDate: profiles.birthDate,
       })
       .from(applications)
       .innerJoin(profiles, eq(profiles.id, applications.userId))
@@ -189,6 +199,9 @@ async function getVotableApplicantsInTx(
       lastName: profiles.lastName,
       avatarUrl: profiles.avatarUrl,
       status: applications.status,
+      studyProgram: profiles.studyProgram,
+      studyLevel: profiles.studyLevel,
+      birthDate: profiles.birthDate,
     })
     .from(applications)
     .innerJoin(profiles, eq(profiles.id, applications.userId))

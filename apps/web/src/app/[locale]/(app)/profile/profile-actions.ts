@@ -4,7 +4,7 @@ import { withRLS } from "@openhospi/database";
 import { profilePhotos, profiles } from "@openhospi/database/schema";
 import type { EditProfileData } from "@openhospi/database/validators";
 import { editProfileSchema } from "@openhospi/database/validators";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
@@ -104,7 +104,7 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
       for (const swap of swaps) {
         await tx
           .update(profilePhotos)
-          .set({ slot: sql`-${swap.newSlot}` })
+          .set({ slot: -swap.newSlot })
           .where(eq(profilePhotos.id, swap.photoId));
       }
 

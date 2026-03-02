@@ -3,7 +3,7 @@
 import { withRLS } from "@openhospi/database";
 import { roomPhotos } from "@openhospi/database/schema";
 import { roomPhotoCaptionSchema } from "@openhospi/database/validators";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
@@ -147,7 +147,7 @@ export async function reorderRoomPhotos(
       for (const swap of swaps) {
         await tx
           .update(roomPhotos)
-          .set({ slot: sql`-${swap.newSlot}` })
+          .set({ slot: -swap.newSlot })
           .where(eq(roomPhotos.id, swap.photoId));
       }
 

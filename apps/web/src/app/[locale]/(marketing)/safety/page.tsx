@@ -5,6 +5,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -44,7 +45,6 @@ export default async function SafetyPage({ params }: { params: Promise<{ locale:
   return (
     <section className="py-24">
       {/* Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation) */}
-      import {routing} from "@/i18n/routing";
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faq }} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

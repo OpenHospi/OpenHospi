@@ -57,7 +57,7 @@ export default async function MyHousePage({ params }: Props) {
   });
 
   if (!data) {
-    redirect({ href: "/my-house/create", locale });
+    return redirect({ href: "/my-house/create", locale });
   }
 
   return (

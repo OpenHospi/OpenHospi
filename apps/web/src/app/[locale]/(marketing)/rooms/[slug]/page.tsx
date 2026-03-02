@@ -1,3 +1,4 @@
+import type { SupportedLocale } from "@openhospi/shared/constants";
 import { City } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
@@ -9,6 +10,7 @@ import { RoomCard } from "@/components/app/room-card";
 import { RoomDetailContent } from "@/components/app/room-detail-content";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
 import { publicRoomToDetail } from "@/lib/room-detail";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
@@ -27,6 +29,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
 
   if (isCity(slug)) {
     const tEnums = await getTranslations({ locale, namespace: "enums" });
@@ -87,7 +90,7 @@ export default async function RoomSlugPage({ params }: Props) {
 
 // ── City Page ────────────────────────────────────────────────────────────────
 
-async function CityPage({ locale, city }: { locale: string; city: string }) {
+async function CityPage({ locale, city }: { locale: SupportedLocale; city: string }) {
   const rooms = await getPublicRoomsByCity(city, 6);
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
@@ -165,7 +168,7 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
 
 // ── Room Detail Page ─────────────────────────────────────────────────────────
 
-async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: string }) {
+async function RoomDetailPage({ locale, roomId }: { locale: SupportedLocale; roomId: string }) {
   const room = await getPublicRoom(roomId);
   if (!room) notFound();
 
@@ -206,7 +209,6 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
   return (
     <section className="py-12">
       {/* Safe: JSON-LD from i18n translations and DB — no user-supplied HTML */}
-      import {routing} from "@/i18n/routing";
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: roomBreadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">

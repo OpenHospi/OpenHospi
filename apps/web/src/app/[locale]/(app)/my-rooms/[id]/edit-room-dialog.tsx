@@ -665,7 +665,7 @@ export function EditRoomDialog({ room }: Props) {
 
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                {t("actions.back")}
+                {tCommon("back")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="animate-spin" />}

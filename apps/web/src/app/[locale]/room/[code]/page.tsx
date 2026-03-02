@@ -109,7 +109,7 @@ export default async function JoinRoomPage({ params }: Props) {
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="size-4" />
-                {t("housemates", { count: room.housemateCount })}
+                {tCommon("housemates", { count: room.housemateCount })}
               </span>
             </div>
           </div>

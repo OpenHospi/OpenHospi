@@ -28,7 +28,7 @@ export async function CompletenessCard({ profile }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t("completeness.title", { completed, total })}</CardTitle>
+        <CardTitle className="text-base">{t("completeness.title", { completed: String(completed), total: String(total) })}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <Progress value={(completed / total) * 100} />

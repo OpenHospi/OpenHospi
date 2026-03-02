@@ -1,15 +1,53 @@
 import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
 
-// Combined regex for auto-linking legal text.
-// Priority: email > law article > Dutch phone > URL with protocol > bare domain
-//
-// Law article sub-patterns:
-//   1) [Aa]rt. N ... LAWNAME  — handles EN (1)(c), NL , lid N, onder X, and DE Abs. N lit. X
-//   2) Telecommunicatiewet [Aa]rt. N.Na — reversed format (law name first)
-//
-const LINK_PATTERN =
-  /([\w.+-]+@[\w-]+\.[\w.-]+)|(?:\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:\(\d+\)(?:\([a-z]\))?|(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+){1,4},?|\s+(?:to|tot\s+en\s+met|bis)\s+\d+)?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b|\bTelecommunicatiewet\s+[Aa]rt\.?\s*[\d.]+\w?)|(\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b)|(https?:\/\/\S+?)(?=[),\s]|$)|((?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/\S*?)?)(?=[),\s]|$)/g;
+// Split into individual patterns for auto-linking legal text.
+// Priority is enforced by order in the array below.
+
+// 1. Email addresses (user@domain.tld)
+const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
+
+// 2. Law article references — split into sub-patterns to stay under complexity limit.
+//    EN parenthetical style: Art. 6(1)(c) GDPR
+const LAW_ARTICLE_PAREN_RE =
+  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\(\d+\)(?:\([a-z]\))?\s+(?:GDPR|AVG|DSGVO|UAVG)\b/g;
+
+//    NL keyword style: Art. 13, lid 1, onder a AVG
+const LAW_ARTICLE_KEYWORD_RE =
+  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+){1,4},?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
+
+//    Range style: Art. 12 to 14 GDPR / Art. 12 tot en met 14 AVG / Art. 12 bis 14 DSGVO
+const LAW_ARTICLE_RANGE_RE =
+  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\s+(?:to|tot\s+en\s+met|bis)\s+\d+\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
+
+//    Simple style: Art. 6 GDPR (no parenthetical, no keyword, no range)
+const LAW_ARTICLE_SIMPLE_RE =
+  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
+
+// 2b. Telecommunicatiewet Art. N.Na — reversed format (law name first)
+const TELECOM_ARTICLE_RE = /\bTelecommunicatiewet\s+[Aa]rt\.?\s*[\d.]+\w?/g;
+
+// 3. Dutch phone numbers (e.g. 070 888 85 00)
+const PHONE_RE = /\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b/g;
+
+// 4. URLs with protocol — use negated class instead of lazy \S+? to avoid backtracking
+const URL_RE = /https?:\/\/[^\s),]+/g;
+
+// 5. Bare domain names — use negated class instead of lazy \S*? to avoid backtracking
+const DOMAIN_RE = /(?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?/g;
+
+// All patterns in priority order (more specific patterns first)
+const PATTERNS = [
+  EMAIL_RE,
+  LAW_ARTICLE_PAREN_RE,
+  LAW_ARTICLE_KEYWORD_RE,
+  LAW_ARTICLE_RANGE_RE,
+  LAW_ARTICLE_SIMPLE_RE,
+  TELECOM_ARTICLE_RE,
+  PHONE_RE,
+  URL_RE,
+  DOMAIN_RE,
+];
 
 const GDPR_LAWS: Record<string, string> = {
   GDPR: "https://gdpr.eu/article-",
@@ -19,11 +57,29 @@ const GDPR_LAWS: Record<string, string> = {
   Telecommunicatiewet: "https://wetten.overheid.nl/BWBR0009950/",
 };
 
-// Extracts article number (group 1) and law name (group 2) from a matched string.
-// Uses [\s\S]*? to bridge all three notation styles (EN parens, NL comma, DE keyword).
- 
-const GDPR_ARTICLE_RE =
-  /[Aa]rt\.?\s*(\d+(?:\.\d+\w?)?)[\s\S]*?(GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)/;
+// Extracts article number and law name from a matched article string.
+// The law name always appears at the end after whitespace.
+function extractArticle(match: string): { articleNum: string; law: string } | null {
+  const lawNames = ["GDPR", "AVG", "DSGVO", "UAVG", "Telecommunicatiewet"];
+  for (const law of lawNames) {
+    if (match.endsWith(law)) {
+      const numMatch = /\d+(?:\.\d+\w?)?/.exec(match);
+      if (numMatch) {
+        return { articleNum: numMatch[0], law };
+      }
+    }
+  }
+  return null;
+}
+
+/** Strip trailing punctuation that got captured by greedy URL/domain patterns. */
+function stripTrailing(s: string): string {
+  let end = s.length;
+  while (end > 0 && (s[end - 1] === "." || s[end - 1] === ")")) {
+    end--;
+  }
+  return end === s.length ? s : s.slice(0, end);
+}
 
 function classifyAndRender(match: string, key: number): ReactNode {
   const linkClass =
@@ -55,9 +111,9 @@ function classifyAndRender(match: string, key: number): ReactNode {
   }
 
   // GDPR / AVG / DSGVO / UAVG article reference
-  const articleMatch = GDPR_ARTICLE_RE.exec(match);
-  if (articleMatch) {
-    const [, articleNum, law] = articleMatch;
+  const articleInfo = extractArticle(match);
+  if (articleInfo) {
+    const { articleNum, law } = articleInfo;
     const base = GDPR_LAWS[law];
     const href = law === "UAVG" || law === "Telecommunicatiewet" ? base : `${base}${articleNum}/`;
     return (
@@ -80,7 +136,7 @@ function classifyAndRender(match: string, key: number): ReactNode {
 
   // URL with protocol
   if (match.startsWith("http")) {
-    const cleaned = match.replace(/[.)]+$/, "");
+    const cleaned = stripTrailing(match);
     return (
       <a key={key} href={cleaned} target="_blank" rel="noopener noreferrer" className={linkClass}>
         {cleaned}
@@ -89,7 +145,8 @@ function classifyAndRender(match: string, key: number): ReactNode {
     );
   }
 
-  const cleaned = match.replace(/[.)]+$/, "");
+  // Bare domain
+  const cleaned = stripTrailing(match);
   return (
     <a
       key={key}
@@ -104,23 +161,40 @@ function classifyAndRender(match: string, key: number): ReactNode {
   );
 }
 
+interface EarliestMatch {
+  index: number;
+  text: string;
+}
+
+/** Find the earliest match across all patterns starting from the given position. */
+function findEarliestMatch(text: string, fromIndex: number): EarliestMatch | null {
+  let best: EarliestMatch | null = null;
+
+  for (const re of PATTERNS) {
+    re.lastIndex = fromIndex;
+    const m = re.exec(text);
+    if (m && (best === null || m.index < best.index || (m.index === best.index && m[0].length > best.text.length))) {
+      best = { index: m.index, text: m[0] };
+    }
+  }
+
+  return best;
+}
+
 export function AutoLinkedText({ text }: { text: string }) {
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
   let matchCount = 0;
 
-  // Reset regex state
-  // eslint-disable-next-line react-hooks/immutability
-  LINK_PATTERN.lastIndex = 0;
-
-  let match: RegExpExecArray | null;
-  while ((match = LINK_PATTERN.exec(text)) !== null) {
+  let match = findEarliestMatch(text, 0);
+  while (match) {
     // Push preceding plain text
     if (match.index > lastIndex) {
       nodes.push(text.slice(lastIndex, match.index));
     }
-    nodes.push(classifyAndRender(match[0], matchCount++));
-    lastIndex = match.index + match[0].length;
+    nodes.push(classifyAndRender(match.text, matchCount++));
+    lastIndex = match.index + match.text.length;
+    match = findEarliestMatch(text, lastIndex);
   }
 
   // Push remaining text

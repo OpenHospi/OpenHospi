@@ -36,7 +36,7 @@ export function WithdrawButton({ applicationId }: Props) {
     startTransition(async () => {
       const result = await withdrawApplication(applicationId);
       if (result?.error) {
-        toast.error(t(`errors.${result.error}` as any));
+        toast.error(t(`errors.${result.error}` as Parameters<typeof t>[0]));
         return;
       }
       toast.success(t("withdrawSuccess"));

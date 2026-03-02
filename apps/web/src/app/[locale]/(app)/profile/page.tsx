@@ -7,11 +7,15 @@ import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getProfile } from "@/lib/profile";
 
-import { CompletenessCard } from "./completeness-card";
-import { EditProfileDialog } from "./edit-profile-dialog";
 import { PhotosGrid } from "./photos-grid";
-import { ProfileDetails } from "./profile-details";
 import { ProfileHeader } from "./profile-header";
+import {
+  AboutCard,
+  BioCard,
+  LanguagesCard,
+  LifestyleCard,
+  PreferencesCard,
+} from "./profile-section-dialogs";
 
 export async function generateMetadata({
   params,
@@ -39,16 +43,15 @@ export default async function ProfilePage({ params }: Props) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between">
-        <ProfileHeader profile={profile} />
-        <EditProfileDialog profile={profile} />
-      </div>
-
+      <ProfileHeader profile={profile} />
       <PhotosGrid photos={profile.photos} editable />
-
-      <ProfileDetails profile={profile} />
-
-      <CompletenessCard profile={profile} />
+      <BioCard profile={profile} />
+      <div className="grid gap-6 md:grid-cols-2">
+        <AboutCard profile={profile} />
+        <PreferencesCard profile={profile} />
+      </div>
+      <LanguagesCard profile={profile} />
+      <LifestyleCard profile={profile} />
     </div>
   );
 }

@@ -538,8 +538,12 @@
     "profile": {
       "title": "My profile",
       "institution": "Institution",
-      "editTitle": "Edit profile",
       "editSuccess": "Profile updated",
+      "editBio": "Edit bio",
+      "editAbout": "Edit about",
+      "editPreferences": "Edit preferences",
+      "editLanguages": "Edit languages",
+      "editLifestyle": "Edit lifestyle",
       "bio": "About me",
       "studyInfo": "Study info",
       "studyProgram": "Study program",
@@ -552,16 +556,7 @@
       "availableFrom": "Available from",
       "lifestyleTags": "Lifestyle",
       "languages": "Spoken languages",
-      "completeness": {
-        "title": "Profile {completed}/{total} complete",
-        "photo": "Profile photo",
-        "bio": "Bio",
-        "studyProgram": "Study program",
-        "birthDate": "Date of birth",
-        "preferredCity": "Preferred city",
-        "lifestyleTags": "Lifestyle tags (2+)",
-        "vereniging": "Association"
-      }
+      "vereniging": "Association"
     },
     "onboarding": {
       "title": "Complete your profile",

@@ -538,8 +538,12 @@
     "profile": {
       "title": "Mein Profil",
       "institution": "Einrichtung",
-      "editTitle": "Profil bearbeiten",
       "editSuccess": "Profil aktualisiert",
+      "editBio": "Bio bearbeiten",
+      "editAbout": "Über mich bearbeiten",
+      "editPreferences": "Präferenzen bearbeiten",
+      "editLanguages": "Sprachen bearbeiten",
+      "editLifestyle": "Lebensstil bearbeiten",
       "bio": "Über mich",
       "studyInfo": "Studieninformation",
       "studyProgram": "Studiengang",
@@ -552,16 +556,7 @@
       "availableFrom": "Verfügbar ab",
       "lifestyleTags": "Lebensstil",
       "languages": "Gesprochene Sprachen",
-      "completeness": {
-        "title": "Profil {completed}/{total} vollständig",
-        "photo": "Profilfoto",
-        "bio": "Bio",
-        "studyProgram": "Studiengang",
-        "birthDate": "Geburtsdatum",
-        "preferredCity": "Bevorzugte Stadt",
-        "lifestyleTags": "Lebensstil-Tags (2+)",
-        "vereniging": "Verein"
-      }
+      "vereniging": "Verein"
     },
     "onboarding": {
       "title": "Vervollständige dein Profil",

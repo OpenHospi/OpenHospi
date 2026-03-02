@@ -3,32 +3,35 @@ import type { ReactNode } from "react";
 
 // Split into individual patterns for auto-linking legal text.
 // Priority is enforced by order in the array below.
+// All quantifiers are bounded (RFC/DNS limits) and [a-zA-Z]? replaces \w? to avoid digit overlap.
 
-// 1. Email addresses (user@domain.tld)
-// eslint-disable-next-line sonarjs/slow-regex -- bounded by literal @ separator, no backtracking risk
-const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
+// 1. Email addresses (user@domain.tld) — local ≤64, labels ≤63, ≤10 domain levels
+// eslint-disable-next-line security/detect-unsafe-regex -- bounded nested quantifiers; literal . separators prevent backtracking
+const EMAIL_RE = /[\w.+-]{1,64}@[a-zA-Z0-9-]{1,63}(?:\.[a-zA-Z0-9-]{1,63}){1,10}/g;
 
 // 2. Law article references — split into sub-patterns to stay under complexity limit.
 //    EN parenthetical style: Art. 6(1)(c) GDPR
 const LAW_ARTICLE_PAREN_RE =
-  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\(\d+\)(?:\([a-z]\))?\s+(?:GDPR|AVG|DSGVO|UAVG)\b/g;
+  // eslint-disable-next-line security/detect-unsafe-regex -- bounded quantifiers, no overlapping classes
+  /\b[Aa]rt\.?\s{0,5}\d{1,10}(?:\.\d{1,10}[a-zA-Z]?)?\(\d{1,5}\)(?:\([a-z]\))?\s{1,5}(?:GDPR|AVG|DSGVO|UAVG)\b/g;
 
 //    NL keyword style: Art. 13, lid 1, onder a AVG
 const LAW_ARTICLE_KEYWORD_RE =
-  // eslint-disable-next-line sonarjs/regex-complexity -- legal citation format requires keyword alternations
-  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+){1,4},?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
+  // eslint-disable-next-line security/detect-unsafe-regex, sonarjs/regex-complexity -- legal citation format requires keyword alternations
+  /\b[Aa]rt\.?\s{0,5}\d{1,10}(?:\.\d{1,10}[a-zA-Z]?)?(?:[,\s]{1,5}(?:lid|onder|Abs\.|lit\.|Nr\.)\s{0,3}[a-zA-Z0-9]{1,10}){1,4},?\s{1,5}(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
 
 //    Range style: Art. 12 to 14 GDPR / Art. 12 tot en met 14 AVG / Art. 12 bis 14 DSGVO
 const LAW_ARTICLE_RANGE_RE =
-  // eslint-disable-next-line sonarjs/regex-complexity -- legal citation range format requires law name alternations
-  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\s+(?:to|tot\s+en\s+met|bis)\s+\d+\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
+  // eslint-disable-next-line security/detect-unsafe-regex, sonarjs/regex-complexity -- legal citation range format requires law name alternations
+  /\b[Aa]rt\.?\s{0,5}\d{1,10}(?:\.\d{1,10}[a-zA-Z]?)?\s{1,5}(?:to|tot\s{1,3}en\s{1,3}met|bis)\s{1,5}\d{1,10}\s{1,5}(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
 
 //    Simple style: Art. 6 GDPR (no parenthetical, no keyword, no range)
 const LAW_ARTICLE_SIMPLE_RE =
-  /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
+  // eslint-disable-next-line security/detect-unsafe-regex -- bounded quantifiers, no overlapping classes
+  /\b[Aa]rt\.?\s{0,5}\d{1,10}(?:\.\d{1,10}[a-zA-Z]?)?\s{1,5}(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
 
 // 2b. Telecommunicatiewet Art. N.Na — reversed format (law name first)
-const TELECOM_ARTICLE_RE = /\bTelecommunicatiewet\s+[Aa]rt\.?\s*[\d.]+\w?/g;
+const TELECOM_ARTICLE_RE = /\bTelecommunicatiewet\s{1,5}[Aa]rt\.?\s{0,5}[\d.]{1,20}[a-zA-Z]?/g;
 
 // 3. Dutch phone numbers (e.g. 070 888 85 00)
 const PHONE_RE = /\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b/g;
@@ -37,8 +40,8 @@ const PHONE_RE = /\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b/g;
 const URL_RE = /https?:\/\/[^\s),]+/g;
 
 // 5. Bare domain names — use negated class instead of lazy \S*? to avoid backtracking
-// eslint-disable-next-line sonarjs/slow-regex -- bounded by literal dots between segments, no quadratic risk
-const DOMAIN_RE = /(?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?/g;
+// eslint-disable-next-line security/detect-unsafe-regex -- bounded nested quantifiers; literal . separators prevent backtracking
+const DOMAIN_RE = /(?:[a-zA-Z0-9-]{1,63}\.){1,10}(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?/g;
 
 // All patterns in priority order (more specific patterns first)
 const PATTERNS = [
@@ -67,7 +70,8 @@ function extractArticle(match: string): { articleNum: string; law: string } | nu
   const lawNames = ["GDPR", "AVG", "DSGVO", "UAVG", "Telecommunicatiewet"];
   for (const law of lawNames) {
     if (match.endsWith(law)) {
-      const numMatch = /\d+(?:\.\d+\w?)?/.exec(match);
+      // eslint-disable-next-line security/detect-unsafe-regex -- bounded, non-overlapping classes (\d vs [a-zA-Z])
+      const numMatch = /\d{1,10}(?:\.\d{1,10}[a-zA-Z]?)?/.exec(match);
       if (numMatch) {
         return { articleNum: numMatch[0], law };
       }

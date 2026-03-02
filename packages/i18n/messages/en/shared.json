@@ -440,16 +440,16 @@
     },
     "admin_action": {
       "view_report": "View report",
-      "update_report": "Update report",
+      "update_report": "Melding bijwerken",
       "suspend_user": "Suspend user",
       "unsuspend_user": "Unsuspend user",
       "remove_listing": "Remove listing",
       "remove_message": "Remove message",
       "dismiss_report": "Dismiss report",
-      "process_data_request": "Process data request",
-      "lift_restriction": "Lift restriction",
-      "export_user_data": "Export user data",
-      "view_user_data": "View user data"
+      "process_data_request": "Gegevensverzoek verwerken",
+      "lift_restriction": "Beperking opheffen",
+      "export_user_data": "Gebruikersgegevens exporteren",
+      "view_user_data": "Gebruikersgegevens bekijken"
     }
   },
   "notifications": {

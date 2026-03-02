@@ -1,16 +1,15 @@
 "use client";
 
 import { Bell } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation-app";
 import type { NotificationItem } from "@/lib/notifications";
 import { cn } from "@/lib/utils";
 
 import { markNotificationReadAction, markAllReadAction } from "./notification-actions";
-
 
 type Props = {
   notifications: NotificationItem[];

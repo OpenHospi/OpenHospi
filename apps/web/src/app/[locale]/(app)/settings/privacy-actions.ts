@@ -65,10 +65,7 @@ export async function updateConsent(purpose: ConsentPurpose, granted: boolean) {
 export async function getActiveConsents() {
   const session = await requireSession();
   return withRLS(session.user.id, (tx) =>
-    tx
-      .select()
-      .from(activeConsents)
-      .where(eq(activeConsents.userId, session.user.id)),
+    tx.select().from(activeConsents).where(eq(activeConsents.userId, session.user.id)),
   );
 }
 
@@ -101,9 +98,7 @@ export async function submitDataRequest(data: SubmitDataRequestData) {
   return { success: true };
 }
 
-export async function requestProcessingRestriction(
-  data: RequestProcessingRestrictionData,
-) {
+export async function requestProcessingRestriction(data: RequestProcessingRestrictionData) {
   const session = await requireSession();
   const parsed = requestProcessingRestrictionSchema.safeParse(data);
   if (!parsed.success) return { error: "Invalid data" };

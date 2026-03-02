@@ -1,13 +1,16 @@
+import type { SupportedLocale } from "@openhospi/shared/constants";
 import { City } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { RoomCard } from "@/components/app/room-card";
 import { RoomDetailContent } from "@/components/app/room-detail-content";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
 import { publicRoomToDetail } from "@/lib/room-detail";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
@@ -26,11 +29,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
 
   if (isCity(slug)) {
     const tEnums = await getTranslations({ locale, namespace: "enums" });
     const t = await getTranslations({ locale, namespace: "public.cityPage" });
-    const cityName = tEnums(`city.${slug}`);
+    const cityName = tEnums(`city.${slug}` as any);
     return {
       title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
@@ -42,7 +46,7 @@ export async function generateMetadata({
   if (!room) return { title: "Not found" };
 
   const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = tEnums(`city.${room.city}` as any);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
@@ -74,6 +78,7 @@ type Props = {
 
 export default async function RoomSlugPage({ params }: Props) {
   const { locale, slug } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   if (isCity(slug)) {
@@ -85,12 +90,12 @@ export default async function RoomSlugPage({ params }: Props) {
 
 // ── City Page ────────────────────────────────────────────────────────────────
 
-async function CityPage({ locale, city }: { locale: string; city: string }) {
+async function CityPage({ locale, city }: { locale: SupportedLocale; city: string }) {
   const rooms = await getPublicRoomsByCity(city, 6);
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
-  const cityName = tEnums(`city.${city}`);
+  const cityName = tEnums(`city.${city}` as any);
   const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
   const loginUrl = getLoginUrl();
 
@@ -163,14 +168,14 @@ async function CityPage({ locale, city }: { locale: string; city: string }) {
 
 // ── Room Detail Page ─────────────────────────────────────────────────────────
 
-async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: string }) {
+async function RoomDetailPage({ locale, roomId }: { locale: SupportedLocale; roomId: string }) {
   const room = await getPublicRoom(roomId);
   if (!room) notFound();
 
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const loginUrl = getLoginUrl();
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = tEnums(`city.${room.city}` as any);
   const coverPhoto = room.photos[0];
 
   // Safe: JSON-LD from i18n translations and DB, sanitized in seo.ts (per Next.js docs recommendation)
@@ -206,7 +211,6 @@ async function RoomDetailPage({ locale, roomId }: { locale: string; roomId: stri
       {/* Safe: JSON-LD from i18n translations and DB — no user-supplied HTML */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: roomBreadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
-
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <RoomDetailContent
           room={publicRoomToDetail(room)}

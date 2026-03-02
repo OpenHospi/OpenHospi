@@ -39,13 +39,13 @@ export async function ProfileDetails({ profile }: Props) {
           {profile.studyLevel && (
             <div>
               <span className="text-muted-foreground">{t("studyLevel")}</span>
-              <p>{tEnums(`study_level.${profile.studyLevel}`)}</p>
+              <p>{tEnums(`study_level.${profile.studyLevel}` as any)}</p>
             </div>
           )}
           {profile.gender && (
             <div>
               <span className="text-muted-foreground">{t("gender")}</span>
-              <p>{tEnums(`gender.${profile.gender}`)}</p>
+              <p>{tEnums(`gender.${profile.gender}` as any)}</p>
             </div>
           )}
           {profile.birthDate && (
@@ -65,7 +65,7 @@ export async function ProfileDetails({ profile }: Props) {
           {profile.preferredCity && (
             <div>
               <span className="text-muted-foreground">{t("preferredCity")}</span>
-              <p>{tEnums(`city.${profile.preferredCity}`)}</p>
+              <p>{tEnums(`city.${profile.preferredCity}` as any)}</p>
             </div>
           )}
           {profile.maxRent && (
@@ -92,7 +92,7 @@ export async function ProfileDetails({ profile }: Props) {
             <div className="flex flex-wrap gap-2">
               {profile.lifestyleTags.map((tag) => (
                 <Badge key={tag} variant="secondary">
-                  {tEnums(`lifestyle_tag.${tag}`)}
+                  {tEnums(`lifestyle_tag.${tag}` as any)}
                 </Badge>
               ))}
             </div>

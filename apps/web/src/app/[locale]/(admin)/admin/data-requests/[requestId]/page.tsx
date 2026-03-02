@@ -2,7 +2,7 @@
 
 import { DataRequestStatus } from "@openhospi/shared/enums";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "@/i18n/navigation-app";
 
 import { getDataRequestDetail, updateDataRequestStatus } from "../../data-request-actions";
 
@@ -94,9 +95,9 @@ export default function DataRequestDetailPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-2">
-              <Badge variant="outline">{t(`types.${detail.type}`)}</Badge>
+              <Badge variant="outline">{t(`types.${detail.type}` as any)}</Badge>
               <Badge className={STATUS_COLORS[detail.status] ?? ""}>
-                {t(`statuses.${detail.status}`)}
+                {t(`statuses.${detail.status}` as any)}
               </Badge>
             </div>
             <p className="text-sm">
@@ -132,25 +133,19 @@ export default function DataRequestDetailPage() {
           />
 
           <div className="flex items-center gap-3">
-            <Select
-              value={newStatus}
-              onValueChange={(v) => setNewStatus(v as DataRequestStatus)}
-            >
+            <Select value={newStatus} onValueChange={(v) => setNewStatus(v as DataRequestStatus)}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder={t("detail.updateStatus")} />
               </SelectTrigger>
               <SelectContent>
                 {DataRequestStatus.values.map((s) => (
                   <SelectItem key={s} value={s}>
-                    {t(`statuses.${s}`)}
+                    {t(`statuses.${s}` as any)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Button
-              onClick={handleUpdateStatus}
-              disabled={isUpdating || !newStatus}
-            >
+            <Button onClick={handleUpdateStatus} disabled={isUpdating || !newStatus}>
               {isUpdating && <Loader2 className="animate-spin" />}
               {t("detail.updateStatus")}
             </Button>

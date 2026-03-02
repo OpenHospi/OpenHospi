@@ -1,9 +1,11 @@
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 
 import { createHouse } from "../actions";
@@ -14,6 +16,7 @@ type Props = {
 
 export default async function CreateHousePage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   await requireSession();
 

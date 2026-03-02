@@ -6,7 +6,6 @@ import {
   ReviewDecision,
 } from "@openhospi/shared/enums";
 import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -26,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
@@ -108,12 +108,12 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
                 {applicant.firstName} {applicant.lastName}
               </h3>
               <Badge className={cn("shrink-0", APPLICATION_STATUS_COLORS[applicant.status])}>
-                {tEnums(`application_status.${applicant.status}`)}
+                {tEnums(`application_status.${applicant.status}` as any)}
               </Badge>
             </div>
             <p className="truncate text-sm text-muted-foreground">
               {applicant.studyProgram}
-              {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
+              {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}` as any)}</>}
               {age && <> · {age}</>}
             </p>
             <InstitutionBadge domain={applicant.institutionDomain} />
@@ -131,7 +131,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
             <div className="flex flex-wrap gap-1">
               {applicant.lifestyleTags.slice(0, 4).map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">
-                  {tEnums(`lifestyle_tag.${tag}`)}
+                  {tEnums(`lifestyle_tag.${tag}` as any)}
                 </Badge>
               ))}
               {applicant.lifestyleTags.length > 4 && (

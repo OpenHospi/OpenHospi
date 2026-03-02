@@ -2,8 +2,6 @@
 
 import { ReviewDecision } from "@openhospi/shared/enums";
 import { ArrowLeft, Minus, ThumbsDown, ThumbsUp, UserCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -13,6 +11,7 @@ import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Link, useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
 import { cn } from "@/lib/utils";
 
@@ -134,12 +133,12 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
         {applicant.studyProgram && (
           <p className="text-sm text-muted-foreground">
             {applicant.studyProgram}
-            {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
+            {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}` as any)}</>}
           </p>
         )}
         {applicant.vereniging && (
           <p className="text-sm text-muted-foreground">
-            {tEnums(`vereniging.${applicant.vereniging}`)}
+            {tEnums(`vereniging.${applicant.vereniging}` as any)}
           </p>
         )}
       </div>
@@ -157,7 +156,7 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
         <div className="flex flex-wrap gap-1">
           {applicant.lifestyleTags.map((tag) => (
             <Badge key={tag} variant="outline" className="text-xs">
-              {tEnums(`lifestyle_tag.${tag}`)}
+              {tEnums(`lifestyle_tag.${tag}` as any)}
             </Badge>
           ))}
         </div>
@@ -190,7 +189,7 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
                     rv.decision === "reject" && "border-red-500 text-red-700 dark:text-red-400",
                   )}
                 >
-                  {tEnums(`review_decision.${rv.decision}`)}
+                  {tEnums(`review_decision.${rv.decision}` as any)}
                 </Badge>
                 <span className="font-medium">{rv.reviewerName}</span>
                 {rv.notes && <span className="text-muted-foreground">— {rv.notes}</span>}

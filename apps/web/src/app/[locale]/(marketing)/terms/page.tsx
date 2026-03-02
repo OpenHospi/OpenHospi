@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { LegalPageContent } from "@/components/marketing/legal-page-content";
+import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -10,6 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "seo" });
   return {
     title: t("terms.title"),
@@ -20,6 +23,7 @@ export async function generateMetadata({
 
 export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "terms" });

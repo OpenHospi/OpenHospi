@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowDown, ArrowUp, Check, Loader2, UserCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter } from "@/i18n/navigation-app";
 import type { VotableApplicant, VoteBoard } from "@/lib/votes";
 
 import { submitVotes } from "./vote-actions";

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getProfile } from "@/lib/profile";
 
@@ -16,6 +18,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.profile" });
   return { title: t("title") };
 }
@@ -26,6 +29,7 @@ type Props = {
 
 export default async function ProfilePage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 

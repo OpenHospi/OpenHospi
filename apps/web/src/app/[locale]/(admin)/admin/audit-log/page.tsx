@@ -1,3 +1,4 @@
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { routing } from "@/i18n/routing";
 
 import { getAuditLog } from "../actions";
 
@@ -19,6 +21,7 @@ type Props = {
 
 export default async function AuditLogPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   const { page: pageParam } = await searchParams;
   setRequestLocale(locale);
 
@@ -58,7 +61,7 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
                   </TableCell>
                   <TableCell>{entry.adminName}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}`)}</Badge>
+                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}` as any)}</Badge>
                     {entry.targetType && (
                       <span className="text-muted-foreground ml-2 text-xs">{entry.targetType}</span>
                     )}

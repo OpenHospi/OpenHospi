@@ -1,11 +1,10 @@
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Focus } from "lucide-react";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation-app";
 import { getRoomApplicants } from "@/lib/applicants";
 
 import { ApplicantCard } from "./applicant-card";

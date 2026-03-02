@@ -39,7 +39,7 @@ export async function ApplicationCard({ application }: Props) {
           <Badge
             className={cn("absolute top-2 right-2", APPLICATION_STATUS_COLORS[application.status])}
           >
-            {tEnums(`application_status.${application.status}`)}
+            {tEnums(`application_status.${application.status}` as any)}
           </Badge>
           {application.roomPhotoCount > 1 && (
             <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-0.5 text-xs font-medium text-white">
@@ -50,7 +50,7 @@ export async function ApplicationCard({ application }: Props) {
         </div>
         <CardHeader className="pb-2">
           <h3 className="truncate font-semibold">{application.roomTitle}</h3>
-          <p className="text-sm text-muted-foreground">{tEnums(`city.${application.roomCity}`)}</p>
+          <p className="text-sm text-muted-foreground">{tEnums(`city.${application.roomCity}` as any)}</p>
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">

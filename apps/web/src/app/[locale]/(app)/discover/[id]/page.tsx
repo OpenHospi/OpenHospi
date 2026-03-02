@@ -1,6 +1,7 @@
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { Settings } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ReportDialog } from "@/components/app/report-dialog";
@@ -8,6 +9,7 @@ import { RoomDetailContent } from "@/components/app/room-detail-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { getApplicationForRoom, getRoomDetailForApply } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 import { getRoomMetadata } from "@/lib/discover";
@@ -23,13 +25,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
   const { locale, id } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.roomDetail" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomMetadata(id);
   if (!room) return { title: t("notFound") };
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = tEnums(`city.${room.city}` as any);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
@@ -60,6 +63,7 @@ type Props = {
 
 export default async function DiscoverRoomDetailPage({ params }: Props) {
   const { locale, id } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 
@@ -118,7 +122,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
-                  {tEnums(`application_status.${existingApplication.status}`)}
+                  {tEnums(`application_status.${existingApplication.status}` as any)}
                 </Badge>
               </div>
               <Button asChild variant="outline" className="w-full">

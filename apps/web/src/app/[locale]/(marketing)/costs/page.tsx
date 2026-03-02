@@ -1,6 +1,7 @@
 import { Building2, Cloud, Code, ExternalLink, Globe, Heart, Smartphone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { CostCard } from "@/components/marketing/cost-card";
@@ -15,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -23,6 +25,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "seo" });
   return {
     title: t("costs.title"),
@@ -39,6 +42,7 @@ const infrastructureGroupIndex = 0;
 
 export default async function CostsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "costs" });
@@ -81,21 +85,21 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
             {([0, 1, 2] as const).map((groupIndex) => {
               const items = Array.from({ length: groupItemCounts[groupIndex] }, (_, j) => {
                 const base = {
-                  name: t(`breakdown.groups.${groupIndex}.items.${j}.name`),
-                  description: t(`breakdown.groups.${groupIndex}.items.${j}.description`),
+                  name: t(`breakdown.groups.${groupIndex}.items.${j}.name` as any),
+                  description: t(`breakdown.groups.${groupIndex}.items.${j}.description` as any),
                 };
 
                 if (groupIndex === infrastructureGroupIndex) {
                   return {
                     ...base,
-                    current: t(`breakdown.groups.${groupIndex}.items.${j}.current`),
-                    atScale: t(`breakdown.groups.${groupIndex}.items.${j}.atScale`),
+                    current: t(`breakdown.groups.${groupIndex}.items.${j}.current` as any),
+                    atScale: t(`breakdown.groups.${groupIndex}.items.${j}.atScale` as any),
                   };
                 }
 
                 return {
                   ...base,
-                  cost: t(`breakdown.groups.${groupIndex}.items.${j}.cost`),
+                  cost: t(`breakdown.groups.${groupIndex}.items.${j}.cost` as any),
                 };
               });
 
@@ -103,8 +107,8 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
                 <CostCard
                   key={groupIndex}
                   icon={groupIcons[groupIndex]}
-                  name={t(`breakdown.groups.${groupIndex}.name`)}
-                  description={t(`breakdown.groups.${groupIndex}.description`)}
+                  name={t(`breakdown.groups.${groupIndex}.name` as any)}
+                  description={t(`breakdown.groups.${groupIndex}.description` as any)}
                   items={items}
                 />
               );
@@ -135,9 +139,9 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
               <TableBody>
                 {([0, 1, 2, 3, 4, 5] as const).map((i) => (
                   <TableRow key={i}>
-                    <TableCell className="font-medium">{t(`summary.rows.${i}.name`)}</TableCell>
-                    <TableCell className="text-right">{t(`summary.rows.${i}.current`)}</TableCell>
-                    <TableCell className="text-right">{t(`summary.rows.${i}.atScale`)}</TableCell>
+                    <TableCell className="font-medium">{t(`summary.rows.${i}.name` as any)}</TableCell>
+                    <TableCell className="text-right">{t(`summary.rows.${i}.current` as any)}</TableCell>
+                    <TableCell className="text-right">{t(`summary.rows.${i}.atScale` as any)}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow className="border-t-2 font-bold">
@@ -164,8 +168,8 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
               <FeatureCard
                 key={i}
                 icon={pillarIcons[i]}
-                title={t(`keepFree.pillars.${i}.title`)}
-                description={t(`keepFree.pillars.${i}.description`)}
+                title={t(`keepFree.pillars.${i}.title` as any)}
+                description={t(`keepFree.pillars.${i}.description` as any)}
               />
             ))}
           </div>
@@ -180,10 +184,10 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
             {([0, 1, 2] as const).map((i) => (
               <DonateCard
                 key={i}
-                name={t(`donate.tiers.${i}.name`)}
-                price={t(`donate.tiers.${i}.price`)}
-                badge={t(`donate.tiers.${i}.badge`)}
-                description={t(`donate.tiers.${i}.description`)}
+                name={t(`donate.tiers.${i}.name` as any)}
+                price={t(`donate.tiers.${i}.price` as any)}
+                badge={t(`donate.tiers.${i}.badge` as any)}
+                description={t(`donate.tiers.${i}.description` as any)}
                 ctaLabel={t("donate.cta")}
               />
             ))}

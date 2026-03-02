@@ -1,5 +1,7 @@
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getConversationMembers, getMessages } from "@/lib/chat";
 
@@ -13,12 +15,14 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.chat" });
   return { title: t("conversation") };
 }
 
 export default async function ConversationPage({ params }: Props) {
   const { locale, conversationId } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 

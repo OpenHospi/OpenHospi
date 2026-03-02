@@ -3,8 +3,8 @@ import { profiles } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 
@@ -13,6 +13,8 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { NotificationBell } from "@/components/app/notification-bell";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Link, redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth-server";
 
 type Props = {
@@ -22,6 +24,7 @@ type Props = {
 
 export default async function AppLayout({ children, params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
   const session = await getSession();
@@ -39,7 +42,7 @@ export default async function AppLayout({ children, params }: Props) {
     );
 
     if (profile?.privacyPolicyAcceptedVersion !== PRIVACY_POLICY_VERSION) {
-      redirect(`/${locale}/privacy-accept`);
+      redirect(`/${locale}/privacy-accept` as any);
     }
 
     restricted = await isRestricted(session.user.id);

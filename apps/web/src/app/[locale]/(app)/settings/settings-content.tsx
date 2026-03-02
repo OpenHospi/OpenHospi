@@ -13,7 +13,6 @@ import {
   Smartphone,
   Trash2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -43,6 +42,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "@/i18n/navigation-app";
 import { authClient } from "@/lib/auth-client";
 
 import { deleteAccount, exportData, exportDataCSV } from "./actions";
@@ -239,9 +239,9 @@ export function SettingsContent() {
               return (
                 <div key={purpose} className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <p className="text-sm font-medium">{tConsent(`purposes.${purpose}.name`)}</p>
+                    <p className="text-sm font-medium">{tConsent(`purposes.${purpose}.name` as any)}</p>
                     <p className="text-xs text-muted-foreground">
-                      {tConsent(`purposes.${purpose}.description`)}
+                      {tConsent(`purposes.${purpose}.description` as any)}
                     </p>
                   </div>
                   <Switch
@@ -287,7 +287,7 @@ export function SettingsContent() {
                     className="flex items-center justify-between rounded-lg border p-3"
                   >
                     <span className="text-sm font-medium">
-                      {t(`privacy.dataOverview.categories.${cat}`)}
+                      {t(`privacy.dataOverview.categories.${cat}` as any)}
                     </span>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
@@ -386,7 +386,7 @@ export function SettingsContent() {
                 <SelectContent>
                   {DataRequestType.values.map((type) => (
                     <SelectItem key={type} value={type}>
-                      {t(`privacy.dataRequest.types.${type}`)}
+                      {t(`privacy.dataRequest.types.${type}` as any)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -443,7 +443,7 @@ export function SettingsContent() {
                     >
                       <div className="space-y-0.5">
                         <p className="text-sm font-medium">
-                          {tConsent(`purposes.${record.purpose}.name`)}
+                          {tConsent(`purposes.${record.purpose}.name` as any)}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(record.createdAt).toLocaleDateString()}

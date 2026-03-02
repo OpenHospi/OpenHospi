@@ -146,10 +146,10 @@ export function CookieConsentBanner() {
                 >
                   <div className="space-y-0.5 pr-4">
                     <p className="text-sm font-medium leading-none">
-                      {t(`purposes.${purpose}.name`)}
+                      {t(`purposes.${purpose}.name` as any)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`purposes.${purpose}.description`)}
+                      {t(`purposes.${purpose}.description` as any)}
                     </p>
                   </div>
                   <Switch

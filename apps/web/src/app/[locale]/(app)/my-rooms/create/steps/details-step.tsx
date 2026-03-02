@@ -195,7 +195,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={option} />
-                          {t(`utilities.${option}`)}
+                          {t(`utilities.${option}` as any)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -279,7 +279,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                     <SelectContent>
                       {HouseType.values.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {tEnums(`house_type.${type}`)}
+                          {tEnums(`house_type.${type}` as any)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -304,7 +304,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                     <SelectContent>
                       {Furnishing.values.map((f) => (
                         <SelectItem key={f} value={f}>
-                          {tEnums(`furnishing.${f}`)}
+                          {tEnums(`furnishing.${f}` as any)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -359,7 +359,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={type} />
-                          {tEnums(`rental_type.${type}`)}
+                          {tEnums(`rental_type.${type}` as any)}
                         </Label>
                       ))}
                     </RadioGroup>

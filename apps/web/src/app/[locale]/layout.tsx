@@ -1,4 +1,4 @@
-import type { Locale } from "@openhospi/i18n";
+import type { WebMessages } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
 import type { Metadata } from "next";
@@ -29,6 +29,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "metadata" });
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl"),
@@ -57,12 +58,12 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   setRequestLocale(locale);
 
-  const messages = await getMessages(locale as Locale);
+  const messages = await getMessages(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages as WebMessages}>
           <ThemeProvider>
             {children}
             <CookieConsentBanner />

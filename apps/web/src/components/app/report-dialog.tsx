@@ -116,7 +116,7 @@ export function ReportDialog({
               <SelectContent>
                 {ReportReason.values.map((r) => (
                   <SelectItem key={r} value={r}>
-                    {tEnums(`report_reason.${r}`)}
+                    {tEnums(`report_reason.${r}` as any)}
                   </SelectItem>
                 ))}
               </SelectContent>

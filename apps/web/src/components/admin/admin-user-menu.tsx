@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronsUpDown, Home, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
+import { useRouter } from "@/i18n/navigation-app";
 import { authClient } from "@/lib/auth-client";
 
 type AdminUserMenuProps = {

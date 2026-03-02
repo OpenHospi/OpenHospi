@@ -2,11 +2,13 @@ import { db } from "@openhospi/database";
 import { houses } from "@openhospi/database/schema";
 import { eq } from "drizzle-orm";
 import { Home } from "lucide-react";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 
 import { JoinHouseButton } from "./join-house-button";
@@ -25,6 +27,7 @@ async function getHouseByInviteCode(code: string) {
 
 export default async function JoinHousePage({ params }: Props) {
   const { locale, code } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   await requireSession();
 

@@ -1,5 +1,5 @@
 import { ReportStatus, ReportType } from "@openhospi/shared/enums";
-import Link from "next/link";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 
 import { getReports } from "../actions";
 
@@ -36,6 +38,7 @@ const TYPE_COLORS: Record<string, string> = {
 export default async function AdminReportsPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { status, type } = await searchParams;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "admin" });
@@ -68,7 +71,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                 return (
                   <TabsTrigger key={s} value={s} asChild>
                     <Link href={`/admin/reports?status=${s}${typeParam}`}>
-                      {tEnums(`report_status.${s}`)}
+                      {tEnums(`report_status.${s}` as any)}
                     </Link>
                   </TabsTrigger>
                 );
@@ -100,7 +103,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                     : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
               >
-                {tEnums(`report_type.${t_}`)}
+                {tEnums(`report_type.${t_}` as any)}
               </Link>
             ))}
           </div>
@@ -135,7 +138,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                   <TableCell>
                     <Link href={`/admin/reports/${report.id}`} className="block">
                       <Badge className={TYPE_COLORS[report.reportType] ?? ""}>
-                        {tEnums(`report_type.${report.reportType}`)}
+                        {tEnums(`report_type.${report.reportType}` as any)}
                       </Badge>
                     </Link>
                   </TableCell>
@@ -152,13 +155,13 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                       href={`/admin/reports/${report.id}`}
                       className="text-primary hover:underline"
                     >
-                      {tEnums(`report_reason.${report.reason}`)}
+                      {tEnums(`report_reason.${report.reason}` as any)}
                     </Link>
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/reports/${report.id}`} className="block">
                       <Badge className={STATUS_COLORS[report.status] ?? ""}>
-                        {tEnums(`report_status.${report.status}`)}
+                        {tEnums(`report_status.${report.status}` as any)}
                       </Badge>
                     </Link>
                   </TableCell>

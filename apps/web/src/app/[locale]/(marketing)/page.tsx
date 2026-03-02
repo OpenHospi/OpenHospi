@@ -10,7 +10,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import type { Metadata } from "next";
-import { useTranslations } from "next-intl";
+import { hasLocale, useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 
 import { CtaSection } from "@/components/marketing/cta-section";
@@ -18,6 +18,7 @@ import { FeatureCard } from "@/components/marketing/feature-card";
 import { Hero } from "@/components/marketing/hero";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { routing } from "@/i18n/routing";
 import { alternatesForPath, organizationJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -26,6 +27,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "seo.home" });
   return {
     title: t("title"),
@@ -67,8 +69,8 @@ export default function HomePage() {
               <FeatureCard
                 key={key}
                 icon={featureIcons[key]}
-                title={t(`features.${key}.title`)}
-                description={t(`features.${key}.description`)}
+                title={t(`features.${key}.title` as any)}
+                description={t(`features.${key}.description` as any)}
               />
             ))}
           </div>
@@ -89,9 +91,9 @@ export default function HomePage() {
                   <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
                     <Icon className="size-7 text-primary" />
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold">{t(`howItWorks.${step}.title`)}</h3>
+                  <h3 className="mt-4 text-lg font-semibold">{t(`howItWorks.${step}.title` as any)}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {t(`howItWorks.${step}.description`)}
+                    {t(`howItWorks.${step}.description` as any)}
                   </p>
                 </div>
               );

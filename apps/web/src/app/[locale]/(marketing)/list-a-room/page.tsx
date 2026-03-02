@@ -11,11 +11,13 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { StepList } from "@/components/marketing/step-list";
 import { Button } from "@/components/ui/button";
+import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 import { getLoginUrl } from "@/lib/urls";
 
@@ -25,6 +27,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "seo" });
   return {
     title: t("listARoom.title"),
@@ -38,6 +41,7 @@ const stepIcons: LucideIcon[] = [LogIn, Home, Share2, Eye, ClipboardList, Sparkl
 
 export default async function ListARoomPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "listRoom" });
@@ -45,8 +49,8 @@ export default async function ListARoomPage({ params }: { params: Promise<{ loca
   const loginUrl = getLoginUrl();
 
   const steps = Array.from({ length: 6 }, (_, i) => ({
-    title: t(`steps.items.${i}.title`),
-    description: t(`steps.items.${i}.description`),
+    title: t(`steps.items.${i}.title` as any),
+    description: t(`steps.items.${i}.description` as any),
   }));
 
   // Safe: all content from our i18n translations, not user input
@@ -78,8 +82,8 @@ export default async function ListARoomPage({ params }: { params: Promise<{ loca
               <FeatureCard
                 key={i}
                 icon={whyIcons[i]}
-                title={t(`why.items.${i}.title`)}
-                description={t(`why.items.${i}.description`)}
+                title={t(`why.items.${i}.title` as any)}
+                description={t(`why.items.${i}.description` as any)}
               />
             ))}
           </div>

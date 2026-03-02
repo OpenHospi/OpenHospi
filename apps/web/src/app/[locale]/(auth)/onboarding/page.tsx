@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getProfile, isProfileComplete, type ProfileWithPhotos } from "@/lib/profile";
 
@@ -13,6 +15,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.onboarding" });
   return { title: t("title") };
 }
@@ -23,13 +26,14 @@ type Props = {
 
 export default async function OnboardingPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 
   const profile = await getProfile(user.id);
 
   if (profile && isProfileComplete(profile)) {
-    redirect("/discover");
+    redirect({ href: "/discover", locale });
   }
 
   const initialData: Partial<ProfileWithPhotos> = {

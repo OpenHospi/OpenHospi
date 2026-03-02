@@ -32,13 +32,13 @@ export async function RoomCard({ room }: Props) {
         )}
         {room.houseType && (
           <Badge variant="secondary" className="absolute top-2 left-2">
-            {tEnums(`house_type.${room.houseType}`)}
+            {tEnums(`house_type.${room.houseType}` as any)}
           </Badge>
         )}
       </div>
       <CardHeader className="pb-2">
         <h3 className="truncate font-semibold">{room.title}</h3>
-        <p className="text-sm text-muted-foreground">{tEnums(`city.${room.city}`)}</p>
+        <p className="text-sm text-muted-foreground">{tEnums(`city.${room.city}` as any)}</p>
       </CardHeader>
       <CardContent className="flex items-center justify-between text-sm">
         <span className="font-semibold">

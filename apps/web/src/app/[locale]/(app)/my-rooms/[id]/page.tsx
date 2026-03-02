@@ -1,9 +1,10 @@
 import { RoomStatus } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-
+import { redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getRoom } from "@/lib/rooms";
 import { getCloseRoomApplicants } from "@/lib/votes";
@@ -24,6 +25,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.rooms" });
   return { title: t("manage.title") };
 }
@@ -34,12 +36,13 @@ type Props = {
 
 export default async function RoomDetailPage({ params }: Props) {
   const { locale, id } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 
   const room = await getRoom(id, user.id);
   if (!room) {
-    return redirect("/my-rooms");
+    return redirect({ href: "/my-rooms", locale });
   }
 
   const closeApplicants =

@@ -1,5 +1,5 @@
 import { DataRequestStatus } from "@openhospi/shared/enums";
-import Link from "next/link";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 
 import { getDataRequests, getDataRequestStats } from "../data-request-actions";
 
@@ -31,6 +33,7 @@ const STATUS_COLORS: Record<string, string> = {
 export default async function AdminDataRequestsPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { status } = await searchParams;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "admin.dataRequests" });
@@ -84,9 +87,7 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
             </TabsTrigger>
             {DataRequestStatus.values.map((s) => (
               <TabsTrigger key={s} value={s} asChild>
-                <Link href={`/admin/data-requests?status=${s}`}>
-                  {t(`statuses.${s}`)}
-                </Link>
+                <Link href={`/admin/data-requests?status=${s}`}>{t(`statuses.${s}` as any)}</Link>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -125,13 +126,13 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/data-requests/${request.id}`} className="block">
-                      <Badge variant="outline">{t(`types.${request.type}`)}</Badge>
+                      <Badge variant="outline">{t(`types.${request.type}` as any)}</Badge>
                     </Link>
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/data-requests/${request.id}`} className="block">
                       <Badge className={STATUS_COLORS[request.status] ?? ""}>
-                        {t(`statuses.${request.status}`)}
+                        {t(`statuses.${request.status}` as any)}
                       </Badge>
                     </Link>
                   </TableCell>

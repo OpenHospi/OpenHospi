@@ -1,6 +1,9 @@
 import { OG_IMAGE_SIZE } from "@openhospi/shared/constants";
 import { ImageResponse } from "next/og";
+import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+
+import { routing } from "@/i18n/routing";
 
 export const alt = "Safety & Trust";
 export const size = OG_IMAGE_SIZE;
@@ -8,6 +11,7 @@ export const contentType = "image/png";
 
 export default async function OGImage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return new Response("Not found", { status: 404 });
   const t = await getTranslations({ locale, namespace: "seo.safety" });
 
   return new ImageResponse(

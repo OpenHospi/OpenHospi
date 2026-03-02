@@ -6,7 +6,6 @@ import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
 import { ReviewDecision } from "@openhospi/shared/enums";
 import { Loader2, UserCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -28,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
 
 import { submitReview } from "./applicant-actions";
@@ -111,18 +111,18 @@ export function ApplicantProfileSheet({
                   {age} {t("yearsOld")}
                 </>
               )}
-              {applicant.gender && <> · {tEnums(`gender.${applicant.gender}`)}</>}
+              {applicant.gender && <> · {tEnums(`gender.${applicant.gender}` as any)}</>}
             </p>
             <InstitutionBadge domain={applicant.institutionDomain} />
             {applicant.studyProgram && (
               <p className="text-sm">
                 {applicant.studyProgram}
-                {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
+                {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}` as any)}</>}
               </p>
             )}
             {applicant.vereniging && (
               <p className="text-sm text-muted-foreground">
-                {tEnums(`vereniging.${applicant.vereniging}`)}
+                {tEnums(`vereniging.${applicant.vereniging}` as any)}
               </p>
             )}
           </div>
@@ -144,7 +144,7 @@ export function ApplicantProfileSheet({
               <div className="mt-1 flex flex-wrap gap-1">
                 {applicant.lifestyleTags.map((tag) => (
                   <Badge key={tag} variant="outline" className="text-xs">
-                    {tEnums(`lifestyle_tag.${tag}`)}
+                    {tEnums(`lifestyle_tag.${tag}` as any)}
                   </Badge>
                 ))}
               </div>
@@ -184,7 +184,7 @@ export function ApplicantProfileSheet({
                               className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                             >
                               <RadioGroupItem value={d} />
-                              {tEnums(`review_decision.${d}`)}
+                              {tEnums(`review_decision.${d}` as any)}
                             </Label>
                           ))}
                         </RadioGroup>

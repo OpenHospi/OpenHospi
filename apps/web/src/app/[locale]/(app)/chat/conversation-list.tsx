@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@/i18n/navigation-app";
 import type { ConversationListItem } from "@/lib/chat";
 
 type Props = {

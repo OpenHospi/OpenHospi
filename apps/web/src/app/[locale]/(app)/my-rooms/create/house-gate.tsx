@@ -1,7 +1,6 @@
 "use client";
 
 import { Building2, Home, Loader2, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "@/i18n/navigation-app";
 import { cn } from "@/lib/utils";
 
 import { createDraftRoomForHouse, createHouseAndContinue } from "./actions";
@@ -31,7 +31,7 @@ function useCreateHouseHandler() {
   return async (formData: FormData) => {
     const result = await createHouseAndContinue(formData);
     if (result.error) {
-      toast.error(t(`houseSetup.errors.${result.error}`));
+      toast.error(t(`houseSetup.errors.${result.error}` as any));
       return;
     }
     if (result.id) {

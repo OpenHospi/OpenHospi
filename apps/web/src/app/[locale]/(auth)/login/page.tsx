@@ -2,10 +2,12 @@ import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { getSession } from "@/lib/auth-server";
 
 import { LoginButton } from "./login-button";
@@ -16,6 +18,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "auth.login" });
   return { title: t("title") };
 }
@@ -26,10 +29,11 @@ type Props = {
 
 export default async function LoginPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const session = await getSession();
-  if (session) redirect("/discover");
+  if (session) redirect({ href: "/discover", locale });
 
   const t = await getTranslations({ locale, namespace: "auth.login" });
 

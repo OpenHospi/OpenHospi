@@ -3,7 +3,6 @@
 import { MAX_DECLINE_REASON_LENGTH } from "@openhospi/shared/constants";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { Calendar, Check, Clock, Loader2, MapPin, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -13,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "@/i18n/navigation-app";
 import type { UserInvitation } from "@/lib/invitations";
 import { INVITATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
@@ -42,7 +42,7 @@ export function InvitationCard({ invitation }: Props) {
     startTransition(async () => {
       const result = await respondToInvitation(invitation.invitationId, { status });
       if (result?.error) {
-        toast.error(t(`errors.${result.error}`));
+        toast.error(t(`errors.${result.error}` as any));
         return;
       }
       toast.success(t("rsvpSuccess"));
@@ -58,7 +58,7 @@ export function InvitationCard({ invitation }: Props) {
         declineReason: declineReason.trim(),
       });
       if (result?.error) {
-        toast.error(t(`errors.${result.error}`));
+        toast.error(t(`errors.${result.error}` as any));
         return;
       }
       toast.success(t("rsvpSuccess"));
@@ -83,7 +83,7 @@ export function InvitationCard({ invitation }: Props) {
                 : INVITATION_STATUS_COLORS[invitation.status],
             )}
           >
-            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}`)}
+            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}` as any)}
           </Badge>
         </div>
       </CardHeader>

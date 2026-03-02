@@ -16,7 +16,7 @@ export async function RoomDetails({ room }: Props) {
       <h2 className="text-lg font-semibold">{t("manage.details")}</h2>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Detail label={t("fields.city")} value={tEnums(`city.${room.city}`)} />
+        <Detail label={t("fields.city")} value={tEnums(`city.${room.city}` as any)} />
         {room.neighborhood && <Detail label={t("fields.neighborhood")} value={room.neighborhood} />}
         {room.streetName && (
           <Detail
@@ -35,7 +35,7 @@ export async function RoomDetails({ room }: Props) {
         <Detail
           label={t("fields.utilitiesIncluded")}
           value={
-            room.utilitiesIncluded ? tEnums(`utilities_included.${room.utilitiesIncluded}`) : "—"
+            room.utilitiesIncluded ? tEnums(`utilities_included.${room.utilitiesIncluded}` as any) : "—"
           }
         />
         {room.estimatedUtilitiesCosts != null && (
@@ -51,12 +51,12 @@ export async function RoomDetails({ room }: Props) {
         {room.availableUntil && (
           <Detail label={t("fields.availableUntil")} value={room.availableUntil} />
         )}
-        <Detail label={t("fields.rentalType")} value={tEnums(`rental_type.${room.rentalType}`)} />
+        <Detail label={t("fields.rentalType")} value={tEnums(`rental_type.${room.rentalType}` as any)} />
         {room.houseType && (
-          <Detail label={t("fields.houseType")} value={tEnums(`house_type.${room.houseType}`)} />
+          <Detail label={t("fields.houseType")} value={tEnums(`house_type.${room.houseType}` as any)} />
         )}
         {room.furnishing && (
-          <Detail label={t("fields.furnishing")} value={tEnums(`furnishing.${room.furnishing}`)} />
+          <Detail label={t("fields.furnishing")} value={tEnums(`furnishing.${room.furnishing}` as any)} />
         )}
         {room.totalHousemates && (
           <Detail label={t("fields.totalHousemates")} value={String(room.totalHousemates)} />
@@ -64,12 +64,12 @@ export async function RoomDetails({ room }: Props) {
         {room.roomVereniging && (
           <Detail
             label={t("fields.roomVereniging")}
-            value={tEnums(`vereniging.${room.roomVereniging}`)}
+            value={tEnums(`vereniging.${room.roomVereniging}` as any)}
           />
         )}
         <Detail
           label={t("fields.preferredGender")}
-          value={tEnums(`gender_preference.${room.preferredGender}`)}
+          value={tEnums(`gender_preference.${room.preferredGender}` as any)}
         />
         {room.preferredAgeMin && (
           <Detail label={t("fields.preferredAgeMin")} value={String(room.preferredAgeMin)} />
@@ -92,7 +92,7 @@ export async function RoomDetails({ room }: Props) {
           <div className="flex flex-wrap gap-1.5">
             {(room.features ?? []).map((f) => (
               <Badge key={f} variant="secondary">
-                {tEnums(`room_feature.${f}`)}
+                {tEnums(`room_feature.${f}` as any)}
               </Badge>
             ))}
           </div>
@@ -107,7 +107,7 @@ export async function RoomDetails({ room }: Props) {
           <div className="flex flex-wrap gap-1.5">
             {(room.locationTags ?? []).map((tag) => (
               <Badge key={tag} variant="secondary">
-                {tEnums(`location_tag.${tag}`)}
+                {tEnums(`location_tag.${tag}` as any)}
               </Badge>
             ))}
           </div>

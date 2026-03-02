@@ -6,7 +6,11 @@
  * but we store the JWK for portability across browsers.
  */
 
-import { INDEXED_DB_NAME, INDEXED_DB_STORE_NAME, INDEXED_DB_VERSION } from "@openhospi/shared/constants";
+import {
+  INDEXED_DB_NAME,
+  INDEXED_DB_STORE_NAME,
+  INDEXED_DB_VERSION,
+} from "@openhospi/shared/constants";
 
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {

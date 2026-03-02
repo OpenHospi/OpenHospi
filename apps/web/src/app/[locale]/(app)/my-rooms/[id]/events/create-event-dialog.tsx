@@ -10,7 +10,6 @@ import {
   MAX_EVENT_TITLE_LENGTH,
 } from "@openhospi/shared/constants";
 import { Loader2, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -34,6 +33,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "@/i18n/navigation-app";
 import { cn } from "@/lib/utils";
 
 import { createEvent } from "./event-actions";

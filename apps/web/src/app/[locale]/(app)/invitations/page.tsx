@@ -1,5 +1,7 @@
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getUserInvitations } from "@/lib/invitations";
 
@@ -7,6 +9,7 @@ import { InvitationCard } from "./invitation-card";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.invitations" });
   return { title: t("title") };
 }
@@ -17,6 +20,7 @@ type Props = {
 
 export default async function InvitationsPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 

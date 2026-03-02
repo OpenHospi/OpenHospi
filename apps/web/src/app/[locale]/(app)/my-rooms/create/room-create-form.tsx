@@ -7,10 +7,10 @@ import type {
 } from "@openhospi/database/validators";
 import { ROOM_CREATE_TOTAL_STEPS } from "@openhospi/shared/constants";
 import { Check } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { useRouter } from "@/i18n/navigation-app";
 import type { RoomPhoto, RoomWithPhotos } from "@/lib/rooms";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +50,10 @@ export function RoomCreateForm({ room }: Props) {
             return (
               <li
                 key={key}
-                className={cn("relative flex items-center", index < ROOM_CREATE_TOTAL_STEPS - 1 && "flex-1")}
+                className={cn(
+                  "relative flex items-center",
+                  index < ROOM_CREATE_TOTAL_STEPS - 1 && "flex-1",
+                )}
               >
                 <button
                   type="button"
@@ -78,7 +81,7 @@ export function RoomCreateForm({ room }: Props) {
                     isCurrent ? "font-medium text-foreground" : "text-muted-foreground",
                   )}
                 >
-                  {t(`wizard.steps.${key}`)}
+                  {t(`wizard.steps.${key}` as any)}
                 </span>
 
                 {/* Connector line */}
@@ -100,10 +103,10 @@ export function RoomCreateForm({ room }: Props) {
       <div className="pt-6 sm:pt-8">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">
-            {t(`wizard.steps.${stepKeys[step - 1]}`)}
+            {t(`wizard.steps.${stepKeys[step - 1]}` as any)}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {t(`wizard.stepDescriptions.step${step}`)}
+            {t(`wizard.stepDescriptions.step${step}` as any)}
           </p>
         </div>
 

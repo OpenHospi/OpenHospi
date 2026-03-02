@@ -1,8 +1,10 @@
 import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireHousemate, requireSession } from "@/lib/auth-server";
 import { getRoomVotes } from "@/lib/votes";
 
@@ -18,12 +20,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.rooms.voting" });
   return { title: t("title") };
 }
 
 export default async function VotingPage({ params }: Props) {
   const { locale, id: roomId } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
   await requireHousemate(roomId, user.id);

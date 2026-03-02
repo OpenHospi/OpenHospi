@@ -1,6 +1,6 @@
 import type { Locale } from "@openhospi/i18n";
 import { ApplicationStatus } from "@openhospi/shared/enums";
-import { Settings } from "lucide-react";
+import { ArrowLeft, Settings } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -100,45 +100,57 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
       ).includes(existingApplication.status));
 
   return (
-    <RoomDetailContent
-      room={applyRoomToDetail(room)}
-      context={{
-        isAuthenticated: true,
-        isOwner,
-        isInvitee,
-        existingApplication,
-        loginUrl: null,
-      }}
-      sidebarActions={
-        <>
-          {isOwner && (
-            <Button asChild variant="outline" className="w-full">
-              <Link href={`/my-rooms/${room.id}`}>
-                <Settings className="size-4" />
-                {t("manageRoom")}
-              </Link>
-            </Button>
-          )}
-          {!isOwner && existingApplication && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
-                  {tEnums(`application_status.${existingApplication.status}`)}
-                </Badge>
-              </div>
+    <>
+      <div className="mb-4">
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/discover">
+            <ArrowLeft className="size-4" />
+            {t("backToDiscover")}
+          </Link>
+        </Button>
+      </div>
+      <RoomDetailContent
+        room={applyRoomToDetail(room)}
+        context={{
+          isAuthenticated: true,
+          isOwner,
+          isInvitee,
+          existingApplication,
+          loginUrl: null,
+        }}
+        sidebarActions={
+          <>
+            {isOwner && (
               <Button asChild variant="outline" className="w-full">
-                <Link href={`/applications/${existingApplication.id}`}>{t("viewApplication")}</Link>
+                <Link href={`/my-rooms/${room.id}`}>
+                  <Settings className="size-4" />
+                  {t("manageRoom")}
+                </Link>
               </Button>
-            </div>
-          )}
-          {!isOwner && !existingApplication && <ApplyDialog roomId={room.id} />}
-          {!isOwner && (
-            <div className="pt-2">
-              <ReportDialog type="room" targetId={room.id} />
-            </div>
-          )}
-        </>
-      }
-    />
+            )}
+            {!isOwner && existingApplication && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
+                    {tEnums(`application_status.${existingApplication.status}`)}
+                  </Badge>
+                </div>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href={`/applications/${existingApplication.id}`}>
+                    {t("viewApplication")}
+                  </Link>
+                </Button>
+              </div>
+            )}
+            {!isOwner && !existingApplication && <ApplyDialog roomId={room.id} />}
+            {!isOwner && (
+              <div className="pt-2">
+                <ReportDialog type="room" targetId={room.id} />
+              </div>
+            )}
+          </>
+        }
+      />
+    </>
   );
 }

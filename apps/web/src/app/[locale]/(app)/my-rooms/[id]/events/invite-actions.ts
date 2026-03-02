@@ -31,7 +31,7 @@ export async function batchInviteApplicants(
 
   await requireHousemate(roomId, session.user.id);
 
-  if (applicationIds.length === 0) return { error: "no_applications" };
+  if (applicationIds.length === 0) return { error: "no_applications" as const };
 
   await withRLS(session.user.id, async (tx) => {
     // Verify event exists and belongs to this room

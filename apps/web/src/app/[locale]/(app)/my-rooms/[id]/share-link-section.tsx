@@ -2,7 +2,7 @@
 
 import { COPY_FEEDBACK_TIMEOUT_MS } from "@openhospi/shared/constants";
 import { Check, Copy, Loader2, RefreshCw } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ type Props = {
 
 export function ShareLinkSection({ room }: Props) {
   const t = useTranslations("app.rooms.shareLink");
+  const format = useFormatter();
   const [isPending, startTransition] = useTransition();
   const [copied, setCopied] = useState(false);
   const router = useRouter();
@@ -65,7 +66,7 @@ export function ShareLinkSection({ room }: Props) {
         </span>
         <span>
           {room.shareLinkExpiresAt
-            ? `${t("expiry")}: ${new Date(room.shareLinkExpiresAt).toLocaleDateString()}`
+            ? `${t("expiry")}: ${format.dateTime(new Date(room.shareLinkExpiresAt), "short")}`
             : t("noExpiry")}
         </span>
       </div>

@@ -552,7 +552,8 @@
       "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
       "goToApp": "In App ansehen",
       "notFoundDescription": "Dieses Zimmer wurde möglicherweise entfernt oder ist nicht mehr verfügbar.",
-      "roomSize": "{size} m²"
+      "roomSize": "{size} m²",
+      "backToCity": "Zurück zu {city}"
     }
   },
   "missingAssociation": {

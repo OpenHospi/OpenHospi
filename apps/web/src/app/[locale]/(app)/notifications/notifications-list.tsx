@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ type Props = {
 
 export function NotificationsList({ notifications }: Props) {
   const t = useTranslations("app.notifications");
+  const format = useFormatter();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -75,7 +76,7 @@ export function NotificationsList({ notifications }: Props) {
                 <p className="font-medium">{notification.title}</p>
                 <p className="mt-0.5 text-sm text-muted-foreground">{notification.body}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {new Date(notification.createdAt).toLocaleString()}
+                  {format.dateTime(new Date(notification.createdAt), "dateTime")}
                 </p>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import type { Locale } from "@openhospi/i18n";
 import { DataRequestStatus } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +38,7 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "admin.dataRequests" });
+  const format = await getFormatter();
 
   const filterStatus =
     status && DataRequestStatus.values.includes(status as DataRequestStatus)
@@ -140,11 +141,7 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
                     </Link>
                   </TableCell>
                   <TableCell className="text-right text-sm text-muted-foreground">
-                    {request.createdAt.toLocaleDateString(locale, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {format.dateTime(request.createdAt, "short")}
                   </TableCell>
                 </TableRow>
               ))}

@@ -54,6 +54,11 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
             priority
             sizes="100vw"
           />
+          {photos[0].caption && (
+            <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-6 text-xs text-white">
+              {photos[0].caption}
+            </span>
+          )}
         </div>
         <PhotoLightbox
           photos={photos}
@@ -91,6 +96,11 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
                 priority={i === 0}
                 sizes="50vw"
               />
+              {photo.caption && (
+                <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-6 text-xs text-white">
+                  {photo.caption}
+                </span>
+              )}
             </div>
           ))}
         </div>
@@ -130,6 +140,11 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
             priority
             sizes="100vw"
           />
+          {photos[0].caption && (
+            <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-6 text-xs text-white">
+              {photos[0].caption}
+            </span>
+          )}
         </div>
         <button
           type="button"
@@ -163,6 +178,11 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
               priority
               sizes="50vw"
             />
+            {photos[0].caption && (
+              <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-6 text-xs text-white">
+                {photos[0].caption}
+              </span>
+            )}
           </div>
 
           {/* Thumbnails — right half, 2x2 grid */}
@@ -188,6 +208,11 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
                 className="object-cover"
                 sizes="25vw"
               />
+              {photo.caption && (
+                <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-6 text-xs text-white">
+                  {photo.caption}
+                </span>
+              )}
             </div>
           ))}
 

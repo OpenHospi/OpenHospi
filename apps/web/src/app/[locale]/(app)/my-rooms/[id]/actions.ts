@@ -25,7 +25,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
   if (restricted) return restricted;
 
   const parsed = editRoomSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await requireRoomOwnership(roomId, session.user.id);
 
@@ -89,7 +89,7 @@ export async function updateRoomStatus(roomId: string, status: string) {
     const current = room?.status as RoomStatus;
 
     if (!isValidRoomTransition(current, status as RoomStatus)) {
-      return { error: "Invalid status transition" };
+      return { error: "invalidTransition" as const };
     }
 
     if (current === RoomStatus.draft && status === RoomStatus.active) {
@@ -97,7 +97,7 @@ export async function updateRoomStatus(roomId: string, status: string) {
         .select({ count: count() })
         .from(roomPhotos)
         .where(eq(roomPhotos.roomId, roomId));
-      if (photoCount.count === 0) return { error: "publishError" };
+      if (photoCount.count === 0) return { error: "publishError" as const };
     }
 
     await tx
@@ -138,7 +138,7 @@ export async function updateShareLinkSettings(roomId: string, data: ShareLinkSet
   if (restricted) return restricted;
 
   const parsed = shareLinkSettingsSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await requireRoomOwnership(roomId, session.user.id);
 

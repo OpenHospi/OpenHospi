@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,21 @@ type Props = {
 
 export function ConversationList({ conversations, currentUserId }: Props) {
   const t = useTranslations("app.chat");
+  const format = useFormatter();
+
+  function formatTime(date: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const hours = diff / (1000 * 60 * 60);
+
+    if (hours < 24) {
+      return format.dateTime(date, { hour: "2-digit", minute: "2-digit" });
+    }
+    if (hours < 168) {
+      return format.dateTime(date, { weekday: "short" });
+    }
+    return format.dateTime(date, "short");
+  }
 
   if (conversations.length === 0) {
     return (
@@ -64,18 +79,4 @@ export function ConversationList({ conversations, currentUserId }: Props) {
       })}
     </div>
   );
-}
-
-function formatTime(date: Date): string {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const hours = diff / (1000 * 60 * 60);
-
-  if (hours < 24) {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  }
-  if (hours < 168) {
-    return date.toLocaleDateString([], { weekday: "short" });
-  }
-  return date.toLocaleDateString([], { day: "numeric", month: "short" });
 }

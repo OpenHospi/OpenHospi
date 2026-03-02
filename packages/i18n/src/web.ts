@@ -1,6 +1,7 @@
 import type { Locale } from "./index.js";
+import type { WebMessages } from "./types.js";
 
-export async function getMessages(locale: Locale) {
+export async function getMessages(locale: Locale): Promise<WebMessages> {
   switch (locale) {
     case "en": {
       const [shared, web, admin, legal] = await Promise.all([

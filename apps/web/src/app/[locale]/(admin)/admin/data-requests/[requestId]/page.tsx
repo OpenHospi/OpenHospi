@@ -3,7 +3,7 @@
 import { DataRequestStatus } from "@openhospi/shared/enums";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -35,6 +35,7 @@ export default function DataRequestDetailPage() {
   const params = useParams<{ requestId: string }>();
   const router = useRouter();
   const t = useTranslations("admin.dataRequests");
+  const format = useFormatter();
 
   const [detail, setDetail] = useState<RequestDetail>(null);
   const [newStatus, setNewStatus] = useState<DataRequestStatus | "">("");
@@ -102,13 +103,7 @@ export default function DataRequestDetailPage() {
                 {t(`statuses.${detail.status}` as Parameters<typeof t>[0])}
               </Badge>
             </div>
-            <p className="text-sm">
-              {detail.createdAt.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
+            <p className="text-sm">{format.dateTime(detail.createdAt, "dateTime")}</p>
             {detail.description && (
               <p className="text-sm text-muted-foreground">{detail.description}</p>
             )}

@@ -97,9 +97,6 @@ const nextConfig: NextConfig = {
 
 const withNextIntl = createNextIntlPlugin({
   requestConfig: "./src/i18n/request.ts",
-  experimental: {
-    createMessagesDeclaration: "../../packages/i18n/messages/nl/shared.json",
-  },
 });
 
 export default withNextIntl(nextConfig);

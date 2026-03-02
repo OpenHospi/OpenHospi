@@ -40,7 +40,7 @@ export async function exportData() {
   const userId = session.user.id;
 
   if (!(await checkRateLimit(rateLimiters.exportData, userId))) {
-    return { error: "RATE_LIMITED" };
+    return { error: "RATE_LIMITED" as const };
   }
 
   const data = await withRLS(userId, async (tx) => {
@@ -177,7 +177,7 @@ export async function exportDataCSV() {
   if ("error" in result) return result;
 
   const { data } = result;
-  if (!data) return { error: "NO_DATA" };
+  if (!data) return { error: "NO_DATA" as const };
 
   const categories: [string, Record<string, unknown>[]][] = [
     ["profile.csv", data.profile ? [data.profile] : []],
@@ -212,7 +212,7 @@ export async function exportDataCSV() {
 
 export async function updatePreferredLocale(locale: SupportedLocale) {
   if (!SUPPORTED_LOCALES.includes(locale)) {
-    return { error: "INVALID_LOCALE" };
+    return { error: "INVALID_LOCALE" as const };
   }
   const session = await requireSession();
   await withRLS(session.user.id, async (tx) => {

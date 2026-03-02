@@ -16,12 +16,12 @@ export async function withdrawApplication(applicationId: string) {
       .select({ roomId: applications.roomId, status: applications.status })
       .from(applications)
       .where(and(eq(applications.id, applicationId), eq(applications.userId, session.user.id)));
-    if (!app) return { error: "not_found" };
+    if (!app) return { error: "not_found" as const };
 
     if (
       !isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.withdrawn)
     ) {
-      return { error: "cannot_withdraw" };
+      return { error: "cannot_withdraw" as const };
     }
 
     await tx

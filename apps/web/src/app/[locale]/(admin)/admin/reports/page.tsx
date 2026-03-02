@@ -1,7 +1,7 @@
 import type { Locale } from "@openhospi/i18n";
 import { ReportStatus, ReportType } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -44,6 +44,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
 
   const t = await getTranslations({ locale, namespace: "admin" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const format = await getFormatter();
 
   const filterStatus =
     status && ReportStatus.values.includes(status as ReportStatus)
@@ -171,11 +172,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                       href={`/admin/reports/${report.id}`}
                       className="text-primary hover:underline"
                     >
-                      {report.createdAt.toLocaleDateString(locale, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {format.dateTime(report.createdAt, "short")}
                     </Link>
                   </TableCell>
                 </TableRow>

@@ -84,7 +84,7 @@ export async function getConsentHistory() {
 export async function submitDataRequest(data: SubmitDataRequestData) {
   const session = await requireSession();
   const parsed = submitDataRequestSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await withRLS(session.user.id, (tx) =>
     tx.insert(dataRequests).values({
@@ -101,7 +101,7 @@ export async function submitDataRequest(data: SubmitDataRequestData) {
 export async function requestProcessingRestriction(data: RequestProcessingRestrictionData) {
   const session = await requireSession();
   const parsed = requestProcessingRestrictionSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await withRLS(session.user.id, (tx) =>
     tx

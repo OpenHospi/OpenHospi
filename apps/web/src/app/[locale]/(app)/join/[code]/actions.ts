@@ -8,9 +8,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 
-type JoinResult = { success: true } | { error: "INVALID_LINK" | "ALREADY_MEMBER" };
-
-export async function joinHouse(inviteCode: string): Promise<JoinResult> {
+export async function joinHouse(inviteCode: string) {
   const session = await requireSession();
   const userId = session.user.id;
   const restricted = await requireNotRestricted(userId);
@@ -25,14 +23,14 @@ export async function joinHouse(inviteCode: string): Promise<JoinResult> {
       .from(houses)
       .where(eq(houses.inviteCode, inviteCode));
 
-    if (!house) return { error: "INVALID_LINK" };
+    if (!house) return { error: "INVALID_LINK" as const };
 
     const [existing] = await tx
       .select({ id: houseMembers.id })
       .from(houseMembers)
       .where(and(eq(houseMembers.houseId, house.id), eq(houseMembers.userId, userId)));
 
-    if (existing) return { error: "ALREADY_MEMBER" };
+    if (existing) return { error: "ALREADY_MEMBER" as const };
 
     await tx.insert(houseMembers).values({
       houseId: house.id,

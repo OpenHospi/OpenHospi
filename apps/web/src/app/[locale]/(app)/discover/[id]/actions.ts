@@ -17,10 +17,10 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
   if (restricted) return restricted;
 
   const parsed = applyToRoomSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" };
+  if (!parsed.success) return { error: "invalid_data" as const };
 
   if (!(await checkRateLimit(rateLimiters.apply, session.user.id))) {
-    return { error: "RATE_LIMITED" };
+    return { error: "RATE_LIMITED" as const };
   }
 
   return withRLS(session.user.id, async (tx) => {
@@ -29,7 +29,7 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
       .from(rooms)
       .where(eq(rooms.id, roomId));
     if (!room || room.status !== RoomStatus.active) {
-      return { error: "room_not_active" };
+      return { error: "room_not_active" as const };
     }
 
     const [member] = await tx
@@ -38,7 +38,7 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
       .innerJoin(houses, eq(houseMembers.houseId, houses.id))
       .where(and(eq(houseMembers.houseId, room.houseId), eq(houseMembers.userId, session.user.id)));
     if (member) {
-      return { error: "is_housemate" };
+      return { error: "is_housemate" as const };
     }
 
     try {
@@ -52,7 +52,7 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
         e instanceof Error &&
         e.message.includes("duplicate key value violates unique constraint")
       ) {
-        return { error: "already_applied" };
+        return { error: "already_applied" as const };
       }
       throw e;
     }

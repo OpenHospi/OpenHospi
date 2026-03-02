@@ -37,7 +37,7 @@ export default async function MissingAssociationPage({
   const t = await getTranslations({ locale, namespace: "missingAssociation" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
 
-  const emailTo = "me@rubentalstra.nl";
+  const emailTo = "info@openhospi.nl";
   const subject = t("emailSubject");
   const body = t("emailBody");
 

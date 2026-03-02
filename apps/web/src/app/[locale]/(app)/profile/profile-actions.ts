@@ -2,10 +2,9 @@
 
 import { withRLS } from "@openhospi/database";
 import { profilePhotos, profiles } from "@openhospi/database/schema";
-import type { ProfilePhoto } from "@openhospi/database/types";
 import type { EditProfileData } from "@openhospi/database/validators";
 import { editProfileSchema } from "@openhospi/database/validators";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
@@ -17,7 +16,7 @@ export async function updateProfile(data: EditProfileData) {
   if (restricted) return restricted;
 
   const parsed = editProfileSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   const d = parsed.data;
   await withRLS(session.user.id, (tx) =>
@@ -42,9 +41,7 @@ export async function updateProfile(data: EditProfileData) {
   return { success: true };
 }
 
-export async function saveProfilePhoto(
-  formData: FormData,
-): Promise<{ error?: string; photo?: ProfilePhoto }> {
+export async function saveProfilePhoto(formData: FormData) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
@@ -52,8 +49,8 @@ export async function saveProfilePhoto(
   const file = formData.get("file") as File | null;
   const slot = Number(formData.get("slot"));
 
-  if (!file) return { error: "Missing file" };
-  if (slot < 1 || slot > 5) return { error: "Invalid slot" };
+  if (!file) return { error: "uploadFailed" as const };
+  if (slot < 1 || slot > 5) return { error: "uploadFailed" as const };
 
   let url: string | undefined;
 
@@ -78,20 +75,18 @@ export async function saveProfilePhoto(
     return { photo };
   } catch (e) {
     if (url) await deletePhotoFromStorage(url).catch(() => {});
-    const message = e instanceof Error ? e.message : "Save failed";
-    return { error: message };
+    console.error(e);
+    return { error: "uploadFailed" as const };
   }
 }
 
-export async function reorderProfilePhotos(
-  swaps: { photoId: string; newSlot: number }[],
-): Promise<{ error?: string }> {
+export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: number }[]) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
   if (swaps.length === 0) return {};
-  if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 5)) return { error: "Invalid slot" };
+  if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 5)) return { error: "uploadFailed" as const };
 
   try {
     const ids = swaps.map((s) => s.photoId);
@@ -109,7 +104,7 @@ export async function reorderProfilePhotos(
       for (const swap of swaps) {
         await tx
           .update(profilePhotos)
-          .set({ slot: sql`-${swap.newSlot}` })
+          .set({ slot: -swap.newSlot })
           .where(eq(profilePhotos.id, swap.photoId));
       }
 
@@ -125,17 +120,17 @@ export async function reorderProfilePhotos(
     revalidatePath("/profile");
     return {};
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Reorder failed";
-    return { error: message };
+    console.error(e);
+    return { error: "uploadFailed" as const };
   }
 }
 
-export async function deleteProfilePhoto(slot: number): Promise<{ error?: string }> {
+export async function deleteProfilePhoto(slot: number) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
-  if (slot < 1 || slot > 5) return { error: "Invalid slot" };
+  if (slot < 1 || slot > 5) return { error: "deleteFailed" as const };
 
   try {
     const [photo] = await withRLS(session.user.id, (tx) =>
@@ -145,7 +140,7 @@ export async function deleteProfilePhoto(slot: number): Promise<{ error?: string
         .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot))),
     );
 
-    if (!photo) return { error: "Photo not found" };
+    if (!photo) return { error: "deleteFailed" as const };
 
     await deletePhotoFromStorage(photo.url);
 
@@ -158,7 +153,7 @@ export async function deleteProfilePhoto(slot: number): Promise<{ error?: string
     revalidatePath("/profile");
     return {};
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Delete failed";
-    return { error: message };
+    console.error(e);
+    return { error: "deleteFailed" as const };
   }
 }

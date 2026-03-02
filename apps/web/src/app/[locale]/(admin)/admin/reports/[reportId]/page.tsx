@@ -3,7 +3,7 @@ import type { ReportStatus } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,7 @@ export default async function ReportDetailPage({ params }: Props) {
 
   const t = await getTranslations({ locale, namespace: "admin" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const format = await getFormatter();
 
   const report = await getReportDetail(reportId);
   if (!report) notFound();
@@ -180,7 +181,7 @@ export default async function ReportDetailPage({ params }: Props) {
             )}
             <div>
               <p className="text-muted-foreground text-sm">{t("reports.colDate")}</p>
-              <p className="font-medium">{report.createdAt.toLocaleString()}</p>
+              <p className="font-medium">{format.dateTime(report.createdAt, "dateTime")}</p>
             </div>
           </CardContent>
         </Card>
@@ -230,7 +231,7 @@ export default async function ReportDetailPage({ params }: Props) {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              {t("reports.resolvedAt", { date: report.resolvedAt.toLocaleString() })}
+              {t("reports.resolvedAt", { date: format.dateTime(report.resolvedAt, "dateTime") })}
             </p>
           </CardContent>
         </Card>

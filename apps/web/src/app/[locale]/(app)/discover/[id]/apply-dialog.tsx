@@ -41,6 +41,7 @@ type Props = {
 export function ApplyDialog({ roomId }: Props) {
   const t = useTranslations("app.roomDetail");
   const tCommon = useTranslations("common.labels");
+  const tCommonErrors = useTranslations("common.errors");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -56,7 +57,11 @@ export function ApplyDialog({ roomId }: Props) {
     startTransition(async () => {
       const result = await applyToRoom(roomId, data);
       if (result?.error) {
-        toast.error((t as unknown as (key: string) => string)(`errors.${result.error}`));
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tCommonErrors("processingRestricted"));
+        } else {
+          toast.error(t(`errors.${result.error}`));
+        }
         return;
       }
       toast.success(t("applySuccess"));

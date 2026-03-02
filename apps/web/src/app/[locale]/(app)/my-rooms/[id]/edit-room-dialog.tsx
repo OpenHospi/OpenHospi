@@ -154,7 +154,7 @@ export function EditRoomDialog({ room }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline">
           <Pencil className="size-4" />
           {t("actions.edit")}
         </Button>

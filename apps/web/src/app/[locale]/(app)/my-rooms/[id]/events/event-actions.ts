@@ -17,7 +17,7 @@ export async function createEvent(roomId: string, data: CreateEventData) {
   if (restricted) return restricted;
 
   const parsed = createEventSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" };
+  if (!parsed.success) return { error: "invalid_data" as const };
 
   await requireHousemate(roomId, session.user.id);
 
@@ -51,7 +51,7 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
   if (restricted) return restricted;
 
   const parsed = createEventSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" };
+  if (!parsed.success) return { error: "invalid_data" as const };
 
   await withRLS(session.user.id, async (tx) => {
     await tx

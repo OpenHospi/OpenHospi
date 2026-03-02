@@ -53,16 +53,17 @@ export default async function RoomDetailPage({ params }: Props) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <RoomHeader room={room} />
-        <EditRoomDialog room={room} />
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusControls room={room} closeApplicants={closeApplicants} />
+          <EditRoomDialog room={room} />
+        </div>
       </div>
 
       <RoomPhotosGrid roomId={room.id} photos={room.photos} />
 
       <RoomDetails room={room} />
-
-      <StatusControls room={room} closeApplicants={closeApplicants} />
 
       {room.status !== RoomStatus.draft && <ApplicantsSection roomId={room.id} userId={user.id} />}
 

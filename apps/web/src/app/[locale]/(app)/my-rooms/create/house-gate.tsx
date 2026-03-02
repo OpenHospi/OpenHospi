@@ -26,12 +26,17 @@ type Props = {
 
 function useCreateHouseHandler() {
   const t = useTranslations("app.rooms");
+  const tCommonErrors = useTranslations("common.errors");
   const router = useRouter();
 
   return async (formData: FormData) => {
     const result = await createHouseAndContinue(formData);
     if (result.error) {
-      toast.error((t as unknown as (key: string) => string)(`houseSetup.errors.${result.error}`));
+      if (result.error === "PROCESSING_RESTRICTED") {
+        toast.error(tCommonErrors("processingRestricted"));
+      } else {
+        toast.error(t(`houseSetup.errors.${result.error}`));
+      }
       return;
     }
     if (result.id) {
@@ -129,6 +134,7 @@ function HouseSetup() {
 function HousePicker({ houses }: { houses: OwnerHouse[] }) {
   const t = useTranslations("app.rooms");
   const tCommon = useTranslations("common.labels");
+  const tCommonErrors = useTranslations("common.errors");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selectedId, setSelectedId] = useState<string>(houses[0]?.id ?? "");
@@ -139,7 +145,11 @@ function HousePicker({ houses }: { houses: OwnerHouse[] }) {
     startTransition(async () => {
       const result = await createDraftRoomForHouse(selectedId);
       if (result.error) {
-        toast.error(result.error);
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tCommonErrors("processingRestricted"));
+        } else {
+          toast.error(t(`status.${result.error}`));
+        }
         return;
       }
       if (result.id) {

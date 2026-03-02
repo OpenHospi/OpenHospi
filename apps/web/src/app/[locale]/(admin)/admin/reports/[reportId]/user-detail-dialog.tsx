@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { InstitutionBadge } from "@/components/app/institution-badge";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,7 @@ type Props = {
 export function UserDetailDialog({ user, children }: Props) {
   const t = useTranslations("admin.reports");
   const tCommon = useTranslations("common.labels");
+  const format = useFormatter();
 
   return (
     <Dialog>
@@ -66,7 +67,7 @@ export function UserDetailDialog({ user, children }: Props) {
             )}
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("memberSince")}</p>
-              <p className="font-medium">{user.createdAt.toLocaleDateString()}</p>
+              <p className="font-medium">{format.dateTime(user.createdAt, "short")}</p>
             </div>
           </div>
         </div>

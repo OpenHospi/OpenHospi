@@ -22,7 +22,7 @@ import { requireSession } from "@/lib/auth-server";
 export async function saveAboutStep(data: AboutStepData) {
   const session = await requireSession();
   const parsed = aboutStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   const { gender, birthDate, studyProgram, studyLevel, bio } = parsed.data;
 
@@ -45,7 +45,7 @@ export async function saveAboutStep(data: AboutStepData) {
 export async function savePersonalityStep(data: PersonalityStepData) {
   const session = await requireSession();
   const parsed = personalityStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await withRLS(session.user.id, (tx) =>
     tx
@@ -60,7 +60,7 @@ export async function savePersonalityStep(data: PersonalityStepData) {
 export async function saveLanguagesStep(data: LanguagesStepData) {
   const session = await requireSession();
   const parsed = languagesStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await withRLS(session.user.id, (tx) =>
     tx
@@ -75,7 +75,7 @@ export async function saveLanguagesStep(data: LanguagesStepData) {
 export async function savePreferencesStep(data: PreferencesStepData) {
   const session = await requireSession();
   const parsed = preferencesStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   const { preferredCity, maxRent, availableFrom, vereniging } = parsed.data;
 

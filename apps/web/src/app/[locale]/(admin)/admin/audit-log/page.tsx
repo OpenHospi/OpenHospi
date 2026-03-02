@@ -1,6 +1,6 @@
 import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,6 +28,7 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
 
   const t = await getTranslations({ locale, namespace: "admin" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const format = await getFormatter();
 
   const page = Math.max(1, Number(pageParam) || 1);
   const { entries, total } = await getAuditLog(page);
@@ -58,7 +59,7 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
               {entries.map((entry) => (
                 <TableRow key={entry.id}>
                   <TableCell className="text-muted-foreground whitespace-nowrap">
-                    {entry.createdAt.toLocaleString()}
+                    {format.dateTime(entry.createdAt, "dateTime")}
                   </TableCell>
                   <TableCell>{entry.adminName}</TableCell>
                   <TableCell>

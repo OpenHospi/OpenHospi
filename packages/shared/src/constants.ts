@@ -16,6 +16,8 @@ export const MAX_NOTES_LENGTH = 2000;
 export const MAX_PROFILE_PHOTOS = 5;
 export const MAX_ROOM_PHOTOS = 10;
 export const MAX_PHOTO_CAPTION_LENGTH = 200;
+export const ROOM_PHOTO_SLOTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+export type RoomPhotoSlot = (typeof ROOM_PHOTO_SLOTS)[number];
 
 // Lifestyle tag limits
 export const MIN_LIFESTYLE_TAGS = 2;

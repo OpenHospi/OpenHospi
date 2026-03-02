@@ -34,7 +34,7 @@ export async function submitReview(roomId: string, applicantUserId: string, data
   if (restricted) return restricted;
 
   const parsed = reviewSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" };
+  if (!parsed.success) return { error: "invalid_data" as const };
 
   await requireHousemate(roomId, session.user.id);
 
@@ -78,11 +78,11 @@ export async function updateApplicationStatus(
       .select({ status: applications.status })
       .from(applications)
       .where(and(eq(applications.id, applicationId), eq(applications.roomId, roomId)));
-    if (!app) return { error: "not_found" };
+    if (!app) return { error: "not_found" as const };
 
     const currentStatus = app.status as ApplicationStatus;
     if (!isValidApplicationTransition(currentStatus, newStatus)) {
-      return { error: "invalid_transition" };
+      return { error: "invalid_transition" as const };
     }
 
     await tx

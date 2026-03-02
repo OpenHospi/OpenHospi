@@ -47,6 +47,8 @@ export type DiscoverRoom = {
   furnishing: Furnishing | null;
   roomSizeM2: number | null;
   availableFrom: string | null;
+  availableUntil: string | null;
+  rentalType: RentalType | null;
   totalHousemates: number | null;
   features: RoomFeature[];
   locationTags: LocationTag[];
@@ -229,6 +231,8 @@ export async function getDiscoverRooms(
         furnishing: rooms.furnishing,
         roomSizeM2: rooms.roomSizeM2,
         availableFrom: rooms.availableFrom,
+        availableUntil: rooms.availableUntil,
+        rentalType: rooms.rentalType,
         totalHousemates: rooms.totalHousemates,
         features: rooms.features,
         locationTags: rooms.locationTags,
@@ -377,6 +381,8 @@ export async function getPublicRoomsByCity(city: City, limit: number): Promise<D
       furnishing: rooms.furnishing,
       roomSizeM2: rooms.roomSizeM2,
       availableFrom: rooms.availableFrom,
+      availableUntil: rooms.availableUntil,
+      rentalType: rooms.rentalType,
       totalHousemates: rooms.totalHousemates,
       features: rooms.features,
       locationTags: rooms.locationTags,

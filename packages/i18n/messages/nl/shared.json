@@ -532,7 +532,11 @@
         "showFilters": "Toon filters",
         "hideFilters": "Verberg filters"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Nu beschikbaar",
+        "availableFrom": "Vanaf {date}",
+        "until": "tot {date}"
+      },
       "loadMore": "Meer laden"
     },
     "profile": {

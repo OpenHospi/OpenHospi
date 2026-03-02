@@ -7,7 +7,7 @@ export default function DiscoverLoading() {
       <Skeleton className="h-12 w-full" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-64 rounded-lg" />
+          <Skeleton key={i} className="h-80 rounded-xl" />
         ))}
       </div>
     </div>

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
 import type { RoomSummary } from "@/lib/rooms";
 import { ROOM_STATUS_COLORS } from "@/lib/status-colors";
@@ -19,8 +19,8 @@ export async function RoomCard({ room }: Props) {
 
   return (
     <Link href={`/my-rooms/${room.id}`}>
-      <Card className="overflow-hidden transition-shadow hover:shadow-md">
-        <div className="relative aspect-video bg-muted">
+      <Card className="overflow-hidden pt-0 transition-shadow hover:shadow-md">
+        <div className="relative aspect-4/3 bg-muted">
           {room.coverPhotoUrl ? (
             <StorageImage
               src={room.coverPhotoUrl}
@@ -34,25 +34,25 @@ export async function RoomCard({ room }: Props) {
               <Home className="size-8 text-muted-foreground" />
             </div>
           )}
-          <Badge className={cn("absolute top-2 right-2", ROOM_STATUS_COLORS[room.status])}>
-            {tEnums(`room_status.${room.status}`)}
-          </Badge>
         </div>
-        <CardHeader className="pb-2">
-          <h3 className="truncate font-semibold">{room.title || t("wizard.steps.basicInfo")}</h3>
+        <CardHeader>
+          <CardTitle className="truncate">{room.title || t("wizard.steps.basicInfo")}</CardTitle>
+          <CardDescription className="flex items-center gap-2">
+            {tEnums(`city.${room.city}`)}
+            <Badge className={cn(ROOM_STATUS_COLORS[room.status])}>
+              {tEnums(`room_status.${room.status}`)}
+            </Badge>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{tEnums(`city.${room.city}`)}</span>
-          <span className="flex items-center gap-2">
-            {room.applicantCount > 0 && (
-              <span className="flex items-center gap-1">
-                <FileText className="size-3.5" />
-                {room.applicantCount}
-              </span>
-            )}
-            <span>€{room.totalCost}/mo</span>
-          </span>
-        </CardContent>
+        <CardFooter className="mt-auto justify-between border-t text-sm text-muted-foreground">
+          <span>€{room.totalCost}/mo</span>
+          {room.applicantCount > 0 && (
+            <span className="flex items-center gap-1">
+              <FileText className="size-3.5" />
+              {room.applicantCount}
+            </span>
+          )}
+        </CardFooter>
       </Card>
     </Link>
   );

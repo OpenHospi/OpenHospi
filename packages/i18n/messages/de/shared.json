@@ -532,7 +532,11 @@
         "showFilters": "Filter anzeigen",
         "hideFilters": "Filter ausblenden"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Sofort verfügbar",
+        "availableFrom": "Ab {date}",
+        "until": "bis {date}"
+      },
       "loadMore": "Mehr laden"
     },
     "profile": {

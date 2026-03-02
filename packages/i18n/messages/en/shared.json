@@ -532,7 +532,11 @@
         "showFilters": "Show filters",
         "hideFilters": "Hide filters"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Available now",
+        "availableFrom": "From {date}",
+        "until": "until {date}"
+      },
       "loadMore": "Load more"
     },
     "profile": {

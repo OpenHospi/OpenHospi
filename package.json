@@ -11,6 +11,8 @@
     "build": "pnpm --filter @openhospi/web build",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint --fix",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r format:check",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:watch": "vitest",

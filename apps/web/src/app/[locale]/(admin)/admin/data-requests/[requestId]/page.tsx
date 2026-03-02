@@ -95,7 +95,9 @@ export default function DataRequestDetailPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-2">
-              <Badge variant="outline">{t(`types.${detail.type}` as Parameters<typeof t>[0])}</Badge>
+              <Badge variant="outline">
+                {t(`types.${detail.type}` as Parameters<typeof t>[0])}
+              </Badge>
               <Badge className={STATUS_COLORS[detail.status] ?? ""}>
                 {t(`statuses.${detail.status}` as Parameters<typeof t>[0])}
               </Badge>

@@ -285,7 +285,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             placeholder={t("featuresPlaceholder")}
             renderLabel={(v) => tEnums(`room_feature.${v as RoomFeature}`)}
             onChange={(v) => updateFilter("features", v.length > 0 ? v : undefined)}
-            selectedCountLabel={(count) => t("selectedCount", { count:String( String(count) )})}
+            selectedCountLabel={(count) => t("selectedCount", { count: String(String(count)) })}
           />
         </div>
 
@@ -298,7 +298,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             placeholder={t("locationTagsPlaceholder")}
             renderLabel={(v) => tEnums(`location_tag.${v as LocationTag}`)}
             onChange={(v) => updateFilter("locationTags", v.length > 0 ? v : undefined)}
-            selectedCountLabel={(count) => t("selectedCount", { count:String( String(count) )})}
+            selectedCountLabel={(count) => t("selectedCount", { count: String(String(count)) })}
           />
         </div>
       </div>

@@ -1,148 +1,148 @@
-import {withRLS} from "@openhospi/database";
+import { withRLS } from "@openhospi/database";
 import {
-    houseMembers,
-    houses,
-    processingRestrictions,
-    profilePhotos,
-    profiles,
-    rooms,
+  houseMembers,
+  houses,
+  processingRestrictions,
+  profilePhotos,
+  profiles,
+  rooms,
 } from "@openhospi/database/schema";
-import type {Locale} from "@openhospi/i18n";
-import type {HouseMemberRole} from "@openhospi/shared/enums";
-import {and, eq, inArray, isNull} from "drizzle-orm";
-import {headers} from "next/headers";
-import {getLocale} from "next-intl/server";
+import type { Locale } from "@openhospi/i18n";
+import type { HouseMemberRole } from "@openhospi/shared/enums";
+import { and, eq, inArray, isNull } from "drizzle-orm";
+import { headers } from "next/headers";
+import { getLocale } from "next-intl/server";
 
-import {redirect} from "@/i18n/navigation-app";
+import { redirect } from "@/i18n/navigation-app";
 
-import {auth} from "./auth";
-import type {HousePermission} from "./permissions";
-import {hasPermission} from "./permissions";
+import { auth } from "./auth";
+import type { HousePermission } from "./permissions";
+import { hasPermission } from "./permissions";
 
 export async function getSession() {
-    return auth.api.getSession({headers: await headers()});
+  return auth.api.getSession({ headers: await headers() });
 }
 
 export async function requireSession() {
-    const session = await getSession();
-    if (!session) {
-        const locale = (await getLocale()) as Locale;
-        return redirect({href: "/login", locale});
-    }
-    return session;
+  const session = await getSession();
+  if (!session) {
+    const locale = (await getLocale()) as Locale;
+    return redirect({ href: "/login", locale });
+  }
+  return session;
 }
 
 export async function requireAdmin() {
-    const session = await requireSession();
-    const userWithRole = session.user as typeof session.user & { role?: string };
-    if (userWithRole.role !== "admin") {
-        const locale = (await getLocale()) as Locale;
-        redirect({href: "/login", locale});
-    }
-    return session;
+  const session = await requireSession();
+  const userWithRole = session.user as typeof session.user & { role?: string };
+  if (userWithRole.role !== "admin") {
+    const locale = (await getLocale()) as Locale;
+    redirect({ href: "/login", locale });
+  }
+  return session;
 }
 
 export async function requireRoomOwnership(roomId: string, userId: string) {
-    const room = await withRLS(userId, async (tx) => {
-        const [r] = await tx
-            .select({id: rooms.id})
-            .from(rooms)
-            .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, userId)));
-        return r;
-    });
-    if (!room) throw new Error("Room not found");
+  const room = await withRLS(userId, async (tx) => {
+    const [r] = await tx
+      .select({ id: rooms.id })
+      .from(rooms)
+      .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, userId)));
+    return r;
+  });
+  if (!room) throw new Error("Room not found");
 }
 
 export async function requireHousemate(
-    roomId: string,
-    userId: string,
-    roles?: string[],
+  roomId: string,
+  userId: string,
+  roles?: string[],
 ): Promise<string> {
-    const row = await withRLS(userId, async (tx) => {
-        const conditions = [eq(rooms.id, roomId), eq(houseMembers.userId, userId)];
-        if (roles) {
-            conditions.push(inArray(houseMembers.role, roles as HouseMemberRole[]));
-        }
+  const row = await withRLS(userId, async (tx) => {
+    const conditions = [eq(rooms.id, roomId), eq(houseMembers.userId, userId)];
+    if (roles) {
+      conditions.push(inArray(houseMembers.role, roles as HouseMemberRole[]));
+    }
 
-        const [r] = await tx
-            .select({role: houseMembers.role})
-            .from(houseMembers)
-            .innerJoin(houses, eq(houseMembers.houseId, houses.id))
-            .innerJoin(rooms, eq(rooms.houseId, houses.id))
-            .where(and(...conditions));
-        return r;
-    });
-    if (!row) throw new Error("Not a housemate");
-    return row.role!;
+    const [r] = await tx
+      .select({ role: houseMembers.role })
+      .from(houseMembers)
+      .innerJoin(houses, eq(houseMembers.houseId, houses.id))
+      .innerJoin(rooms, eq(rooms.houseId, houses.id))
+      .where(and(...conditions));
+    return r;
+  });
+  if (!row) throw new Error("Not a housemate");
+  return row.role!;
 }
 
 export async function requireHousePermission(
-    roomId: string,
-    userId: string,
-    permission: HousePermission,
+  roomId: string,
+  userId: string,
+  permission: HousePermission,
 ): Promise<void> {
-    const role = await requireHousemate(roomId, userId);
-    if (!hasPermission(role as HouseMemberRole, permission)) {
-        throw new Error("Forbidden");
-    }
+  const role = await requireHousemate(roomId, userId);
+  if (!hasPermission(role as HouseMemberRole, permission)) {
+    throw new Error("Forbidden");
+  }
 }
 
 export async function requireCompleteProfile(userId: string) {
-    const result = await withRLS(userId, async (tx) => {
-        const [profile] = await tx
-            .select({
-                gender: profiles.gender,
-                birthDate: profiles.birthDate,
-                studyProgram: profiles.studyProgram,
-                preferredCity: profiles.preferredCity,
-                availableFrom: profiles.availableFrom,
-                lifestyleTags: profiles.lifestyleTags,
-            })
-            .from(profiles)
-            .where(eq(profiles.id, userId));
+  const result = await withRLS(userId, async (tx) => {
+    const [profile] = await tx
+      .select({
+        gender: profiles.gender,
+        birthDate: profiles.birthDate,
+        studyProgram: profiles.studyProgram,
+        preferredCity: profiles.preferredCity,
+        availableFrom: profiles.availableFrom,
+        lifestyleTags: profiles.lifestyleTags,
+      })
+      .from(profiles)
+      .where(eq(profiles.id, userId));
 
-        if (!profile) return {needsRedirect: true};
+    if (!profile) return { needsRedirect: true };
 
-        const hasPhoto = await tx
-            .select({id: profilePhotos.id})
-            .from(profilePhotos)
-            .where(eq(profilePhotos.userId, userId))
-            .limit(1);
+    const hasPhoto = await tx
+      .select({ id: profilePhotos.id })
+      .from(profilePhotos)
+      .where(eq(profilePhotos.userId, userId))
+      .limit(1);
 
-        const complete =
-            profile.gender !== null &&
-            profile.birthDate !== null &&
-            profile.studyProgram !== null &&
-            profile.preferredCity !== null &&
-            profile.availableFrom !== null &&
-            (profile.lifestyleTags?.length ?? 0) >= 2 &&
-            hasPhoto.length > 0;
+    const complete =
+      profile.gender !== null &&
+      profile.birthDate !== null &&
+      profile.studyProgram !== null &&
+      profile.preferredCity !== null &&
+      profile.availableFrom !== null &&
+      (profile.lifestyleTags?.length ?? 0) >= 2 &&
+      hasPhoto.length > 0;
 
-        return {needsRedirect: !complete};
-    });
+    return { needsRedirect: !complete };
+  });
 
-    if (result.needsRedirect) {
-        const locale = (await getLocale()) as Locale;
-        redirect({href: "/onboarding", locale});
-    }
+  if (result.needsRedirect) {
+    const locale = (await getLocale()) as Locale;
+    redirect({ href: "/onboarding", locale });
+  }
 }
 
 export async function requireNotRestricted(userId: string) {
-    if (await isRestricted(userId)) {
-        return {error: "PROCESSING_RESTRICTED" as const};
-    }
-    return null;
+  if (await isRestricted(userId)) {
+    return { error: "PROCESSING_RESTRICTED" as const };
+  }
+  return null;
 }
 
 export async function isRestricted(userId: string): Promise<boolean> {
-    const [restriction] = await withRLS(userId, (tx) =>
-        tx
-            .select({id: processingRestrictions.id})
-            .from(processingRestrictions)
-            .where(
-                and(eq(processingRestrictions.userId, userId), isNull(processingRestrictions.liftedAt)),
-            )
-            .limit(1),
-    );
-    return !!restriction;
+  const [restriction] = await withRLS(userId, (tx) =>
+    tx
+      .select({ id: processingRestrictions.id })
+      .from(processingRestrictions)
+      .where(
+        and(eq(processingRestrictions.userId, userId), isNull(processingRestrictions.liftedAt)),
+      )
+      .limit(1),
+  );
+  return !!restriction;
 }

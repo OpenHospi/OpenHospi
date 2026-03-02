@@ -127,7 +127,9 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/data-requests/${request.id}`} className="block">
-                      <Badge variant="outline">{t(`types.${request.type}` as Parameters<typeof t>[0])}</Badge>
+                      <Badge variant="outline">
+                        {t(`types.${request.type}` as Parameters<typeof t>[0])}
+                      </Badge>
                     </Link>
                   </TableCell>
                   <TableCell>

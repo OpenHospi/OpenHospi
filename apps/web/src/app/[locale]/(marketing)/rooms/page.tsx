@@ -72,7 +72,7 @@ export default async function RoomsIndexPage({ params }: Props) {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold">{tEnums(`city.${city}`)}</p>
                     <p className="text-sm text-muted-foreground">
-                      {t("roomsAvailable", { count:String( String(count) )})}
+                      {t("roomsAvailable", { count: String(String(count)) })}
                     </p>
                   </div>
                 </CardContent>

@@ -386,11 +386,7 @@ export async function getPublicRoomsByCity(city: City, limit: number): Promise<D
     .from(rooms)
     .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
     .where(
-      and(
-        eq(rooms.status, RoomStatus.active),
-        isNull(rooms.roomVereniging),
-        eq(rooms.city, city),
-      ),
+      and(eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging), eq(rooms.city, city)),
     )
     .orderBy(desc(rooms.createdAt))
     .limit(limit);

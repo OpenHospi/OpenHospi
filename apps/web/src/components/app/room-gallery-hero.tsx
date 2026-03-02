@@ -137,7 +137,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
           className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-foreground shadow-md"
         >
           <Camera className="size-4" />
-          {t("showAllPhotos", { count:String( String(count) )})}
+          {t("showAllPhotos", { count: String(String(count)) })}
         </button>
       </div>
 
@@ -199,7 +199,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
               className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-foreground shadow-md"
             >
               <Camera className="size-4" />
-              {t("showAllPhotos", { count:String( String(count) )})}
+              {t("showAllPhotos", { count: String(String(count)) })}
             </button>
           )}
         </div>

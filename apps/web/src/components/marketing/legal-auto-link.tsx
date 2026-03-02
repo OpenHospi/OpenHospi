@@ -177,7 +177,12 @@ function findEarliestMatch(text: string, fromIndex: number): EarliestMatch | nul
   for (const re of PATTERNS) {
     re.lastIndex = fromIndex;
     const m = re.exec(text);
-    if (m && (best === null || m.index < best.index || (m.index === best.index && m[0].length > best.text.length))) {
+    if (
+      m &&
+      (best === null ||
+        m.index < best.index ||
+        (m.index === best.index && m[0].length > best.text.length))
+    ) {
       best = { index: m.index, text: m[0] };
     }
   }

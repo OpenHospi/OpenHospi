@@ -1,5 +1,5 @@
 import { withRLS } from "@openhospi/database";
-import { profilePhotos, profiles } from "@openhospi/database/schema";
+import { privateKeyBackups, profilePhotos, profiles } from "@openhospi/database/schema";
 import type { Profile, ProfilePhoto } from "@openhospi/database/types";
 import { eq } from "drizzle-orm";
 
@@ -33,6 +33,17 @@ export async function getProfile(userId: string): Promise<ProfileWithPhotos | nu
 
     return { ...profile, photos };
   });
+}
+
+export async function hasEncryptionKeyBackup(userId: string): Promise<boolean> {
+  const result = await withRLS(userId, (tx) =>
+    tx
+      .select({ userId: privateKeyBackups.userId })
+      .from(privateKeyBackups)
+      .where(eq(privateKeyBackups.userId, userId))
+      .limit(1),
+  );
+  return result.length > 0;
 }
 
 export async function getProfilePhotos(userId: string): Promise<ProfilePhoto[]> {

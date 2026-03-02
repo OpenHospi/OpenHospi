@@ -204,7 +204,7 @@ export async function deriveKeyFromPIN(
   ]);
 
   return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations, hash: "SHA-256" },
+    { name: "PBKDF2", salt: salt as BufferSource, iterations, hash: "SHA-256" },
     keyMaterial,
     ALGO_AES,
     false,
@@ -220,7 +220,7 @@ export async function deriveKeyFromPRF(
   const encoder = new TextEncoder();
 
   return crypto.subtle.deriveKey(
-    { name: "HKDF", hash: "SHA-256", salt, info: encoder.encode("openhospi-e2ee-backup") },
+    { name: "HKDF", hash: "SHA-256", salt: salt as BufferSource, info: encoder.encode("openhospi-e2ee-backup") },
     hkdfKey,
     ALGO_AES,
     false,

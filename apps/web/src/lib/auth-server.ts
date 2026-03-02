@@ -2,6 +2,7 @@ import { withRLS } from "@openhospi/database";
 import {
   houseMembers,
   houses,
+  privateKeyBackups,
   processingRestrictions,
   profilePhotos,
   profiles,
@@ -109,6 +110,12 @@ export async function requireCompleteProfile(userId: string) {
       .where(eq(profilePhotos.userId, userId))
       .limit(1);
 
+    const hasBackup = await tx
+      .select({ userId: privateKeyBackups.userId })
+      .from(privateKeyBackups)
+      .where(eq(privateKeyBackups.userId, userId))
+      .limit(1);
+
     const complete =
       profile.gender !== null &&
       profile.birthDate !== null &&
@@ -116,7 +123,8 @@ export async function requireCompleteProfile(userId: string) {
       profile.preferredCity !== null &&
       profile.availableFrom !== null &&
       (profile.lifestyleTags?.length ?? 0) >= 2 &&
-      hasPhoto.length > 0;
+      hasPhoto.length > 0 &&
+      hasBackup.length > 0;
 
     return { needsRedirect: !complete };
   });

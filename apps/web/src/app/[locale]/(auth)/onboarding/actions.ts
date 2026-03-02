@@ -95,8 +95,7 @@ export async function savePreferencesStep(data: PreferencesStepData) {
 }
 
 export async function finishOnboarding() {
-  const session = await requireSession();
-  if (!session) return;
+  await requireSession();
   const locale = (await getLocale()) as Locale;
   redirect({ href: "/discover", locale });
 }

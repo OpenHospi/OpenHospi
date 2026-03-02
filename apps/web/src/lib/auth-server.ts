@@ -27,7 +27,7 @@ export async function requireSession() {
     const session = await getSession();
     if (!session) {
         const locale = (await getLocale()) as Locale;
-        redirect({href: "/login", locale});
+        return redirect({href: "/login", locale});
     }
     return session;
 }

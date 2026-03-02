@@ -134,12 +134,12 @@
       "privacy": "Datenschutz",
       "cookies": "Cookie-Richtlinie",
       "terms": "AGB",
+      "about": "Über uns",
+      "missingAssociation": "Vereinigung fehlt?",
       "processingRegister": "Verarbeitungsverzeichnis",
       "legalBasis": "Rechtsgrundlage",
       "dataProcessors": "Auftragsverarbeiter",
-      "dpia": "DSFA",
-      "about": "Über uns",
-      "missingAssociation": "Vereinigung fehlt?"
+      "dpia": "DSFA"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
     "openSource": "Open Source",
@@ -552,7 +552,8 @@
       "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
       "goToApp": "In App ansehen",
       "notFoundDescription": "Dieses Zimmer wurde möglicherweise entfernt oder ist nicht mehr verfügbar.",
-      "roomSize": "{size} m²"
+      "roomSize": "{size} m²",
+      "backToCity": "Terug naar {city}"
     }
   },
   "missingAssociation": {

@@ -46,7 +46,7 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
     if (houses.length === 1) {
       const existingDraftId = await getExistingDraft(user.id, houses[0].id);
       const roomId = existingDraftId ?? (await createDraftRoom(user.id, houses[0].id));
-      return redirect({ href: `/my-rooms/create?id=${roomId}` as any, locale });
+      return redirect({ href: `/my-rooms/create?id=${roomId}` as Parameters<typeof redirect>[0]["href"], locale });
     }
 
     // Multiple houses — show picker

@@ -110,7 +110,7 @@ export function PhotosStep({roomId, photos, onPhotosChange, onBack, onPublished}
         startTransition(async () => {
             const result = await publishRoom(roomId);
             if (result?.error) {
-                toast.error(t(`status.${result.error}` as any));
+                toast.error((t as unknown as (key: string) => string)(`status.${result.error}`));
                 return;
             }
             toast.success(t("status.published"));
@@ -163,7 +163,7 @@ export function PhotosStep({roomId, photos, onPhotosChange, onBack, onPublished}
                                         <>
                                             <StorageImage
                                                 src={photo.url}
-                                                alt={t(`photoSlots.slot${slot}` as any)}
+                                                alt={(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
                                                 bucket="room-photos"
                                                 fill
                                                 className="object-cover"
@@ -197,7 +197,7 @@ export function PhotosStep({roomId, photos, onPhotosChange, onBack, onPublished}
                                                 <Camera className="size-6 text-muted-foreground"/>
                                             )}
                                             <span className="text-xs text-muted-foreground">
-                        {t(`photoSlots.slot${slot}` as any)}
+                        {(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
                       </span>
                                         </Button>
                                     )}

@@ -443,7 +443,7 @@ export function SettingsContent() {
                     >
                       <div className="space-y-0.5">
                         <p className="text-sm font-medium">
-                          {tConsent(`purposes.${record.purpose}.name` as any)}
+                          {tConsent(`purposes.${record.purpose}.name` as Parameters<typeof tConsent>[0])}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(record.createdAt).toLocaleDateString()}

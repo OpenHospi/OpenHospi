@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 // Priority is enforced by order in the array below.
 
 // 1. Email addresses (user@domain.tld)
+// eslint-disable-next-line sonarjs/slow-regex -- bounded by literal @ separator, no backtracking risk
 const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 
 // 2. Law article references — split into sub-patterns to stay under complexity limit.
@@ -14,10 +15,12 @@ const LAW_ARTICLE_PAREN_RE =
 
 //    NL keyword style: Art. 13, lid 1, onder a AVG
 const LAW_ARTICLE_KEYWORD_RE =
+  // eslint-disable-next-line sonarjs/regex-complexity -- legal citation format requires keyword alternations
   /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+){1,4},?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
 
 //    Range style: Art. 12 to 14 GDPR / Art. 12 tot en met 14 AVG / Art. 12 bis 14 DSGVO
 const LAW_ARTICLE_RANGE_RE =
+  // eslint-disable-next-line sonarjs/regex-complexity -- legal citation range format requires law name alternations
   /\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?\s+(?:to|tot\s+en\s+met|bis)\s+\d+\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b/g;
 
 //    Simple style: Art. 6 GDPR (no parenthetical, no keyword, no range)
@@ -34,6 +37,7 @@ const PHONE_RE = /\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b/g;
 const URL_RE = /https?:\/\/[^\s),]+/g;
 
 // 5. Bare domain names — use negated class instead of lazy \S*? to avoid backtracking
+// eslint-disable-next-line sonarjs/slow-regex -- bounded by literal dots between segments, no quadratic risk
 const DOMAIN_RE = /(?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?/g;
 
 // All patterns in priority order (more specific patterns first)

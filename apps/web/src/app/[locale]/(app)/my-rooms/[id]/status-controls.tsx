@@ -42,13 +42,12 @@ export function StatusControls({room, closeApplicants = []}: Props) {
         startTransition(async () => {
             const result = await updateRoomStatus(room.id, status);
             if (result?.error) {
-                toast.error(t(`status.${result.error}` as any));
+                toast.error((t as unknown as (key: string) => string)(`status.${result.error}`));
                 return;
             }
-            const messageKey =
-                status === RoomStatus.active ? "activated" as const
-                    : status === RoomStatus.paused ? "paused" as const
-                        : "closed" as const;
+            let messageKey: "activated" | "paused" | "closed" = "closed";
+            if (status === RoomStatus.active) messageKey = "activated";
+            else if (status === RoomStatus.paused) messageKey = "paused";
             toast.success(t(`status.${messageKey}`));
             router.refresh();
         });

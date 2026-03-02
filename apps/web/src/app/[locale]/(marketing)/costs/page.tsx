@@ -86,21 +86,21 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
             {([0, 1, 2] as const).map((groupIndex) => {
               const items = Array.from({ length: groupItemCounts[groupIndex] }, (_, j) => {
                 const base = {
-                  name: t(`breakdown.groups.${groupIndex}.items.${j}.name` as any),
-                  description: t(`breakdown.groups.${groupIndex}.items.${j}.description` as any),
+                  name: t(`breakdown.groups.${groupIndex}.items.${j}.name` as Parameters<typeof t>[0]),
+                  description: t(`breakdown.groups.${groupIndex}.items.${j}.description` as Parameters<typeof t>[0]),
                 };
 
                 if (groupIndex === infrastructureGroupIndex) {
                   return {
                     ...base,
-                    current: t(`breakdown.groups.${groupIndex}.items.${j}.current` as any),
-                    atScale: t(`breakdown.groups.${groupIndex}.items.${j}.atScale` as any),
+                    current: t(`breakdown.groups.${groupIndex}.items.${j}.current` as Parameters<typeof t>[0]),
+                    atScale: t(`breakdown.groups.${groupIndex}.items.${j}.atScale` as Parameters<typeof t>[0]),
                   };
                 }
 
                 return {
                   ...base,
-                  cost: t(`breakdown.groups.${groupIndex}.items.${j}.cost` as any),
+                  cost: t(`breakdown.groups.${groupIndex}.items.${j}.cost` as Parameters<typeof t>[0]),
                 };
               });
 

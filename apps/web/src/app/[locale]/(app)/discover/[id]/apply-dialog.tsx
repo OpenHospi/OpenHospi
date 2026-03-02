@@ -56,7 +56,7 @@ export function ApplyDialog({roomId}: Props) {
         startTransition(async () => {
             const result = await applyToRoom(roomId, data);
             if (result?.error) {
-                toast.error(t(`errors.${result.error}` as Parameters<typeof t>[0]));
+                toast.error((t as unknown as (key: string) => string)(`errors.${result.error}`));
                 return;
             }
             toast.success(t("applySuccess"));

@@ -132,7 +132,7 @@ export function RoomPhotosGrid({roomId, photos: initialPhotos}: Props) {
                                 <>
                                     <StorageImage
                                         src={photo.url}
-                                        alt={t(`photoSlots.slot${slot}` as any)}
+                                        alt={(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
                                         bucket="room-photos"
                                         fill
                                         className="object-cover"
@@ -160,7 +160,7 @@ export function RoomPhotosGrid({roomId, photos: initialPhotos}: Props) {
                                         <Camera className="size-5 text-muted-foreground"/>
                                     )}
                                     <span className="text-xs text-muted-foreground">
-                    {t(`photoSlots.slot${slot}` as any)}
+                    {(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
                   </span>
                                 </Button>
                             )}

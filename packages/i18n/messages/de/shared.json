@@ -41,7 +41,8 @@
       "show": "Anzeigen",
       "hide": "Ausblenden",
       "onThisPage": "Auf dieser Seite",
-      "linkToSection": "Link zu {title}"
+      "linkToSection": "Link zu {title}",
+      "apply": "Bewerben"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -663,7 +664,10 @@
         "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
         "submitReview": "Bewertung speichern",
         "yearsOld": "Jahre alt",
-        "reviewMode": "Überprüfungsmodus"
+        "reviewMode": "Überprüfungsmodus",
+        "selectApplicant": "Wähle einen Bewerber aus, um das Profil anzuzeigen",
+        "applied": "Beworben",
+        "backToList": "Zurück zur Liste"
       },
       "houseSetup": {
         "title": "Richte zuerst dein Haus ein",
@@ -849,7 +853,13 @@
       "manage": {
         "title": "Zimmerverwaltung",
         "details": "Zimmerdetails",
-        "noDescription": "Keine Beschreibung"
+        "noDescription": "Keine Beschreibung",
+        "tabs": {
+          "overview": "Übersicht",
+          "applicants": "Bewerbungen",
+          "events": "Veranstaltungen",
+          "voting": "Abstimmung"
+        }
       },
       "noSelection": "Keine Auswahl",
       "reviewMode": {

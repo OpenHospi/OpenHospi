@@ -41,7 +41,8 @@
       "show": "Tonen",
       "hide": "Verbergen",
       "onThisPage": "Op deze pagina",
-      "linkToSection": "Link naar {title}"
+      "linkToSection": "Link naar {title}",
+      "apply": "Aanmelden"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",
@@ -663,7 +664,10 @@
         "notesPlaceholder": "Voeg optionele notities toe over deze kandidaat...",
         "submitReview": "Beoordeling opslaan",
         "yearsOld": "jaar oud",
-        "reviewMode": "Beoordelingsmodus"
+        "reviewMode": "Beoordelingsmodus",
+        "selectApplicant": "Selecteer een kandidaat om het profiel te bekijken",
+        "applied": "Aangemeld",
+        "backToList": "Terug naar lijst"
       },
       "houseSetup": {
         "title": "Stel eerst je woning in",
@@ -849,7 +853,13 @@
       "manage": {
         "title": "Kamerbeheer",
         "details": "Kamerdetails",
-        "noDescription": "Geen beschrijving"
+        "noDescription": "Geen beschrijving",
+        "tabs": {
+          "overview": "Overzicht",
+          "applicants": "Aanmeldingen",
+          "events": "Evenementen",
+          "voting": "Stemmen"
+        }
       },
       "noSelection": "Geen selectie",
       "reviewMode": {

@@ -2,7 +2,7 @@ import { db } from "@openhospi/database";
 import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
-import { count, eq } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import { Home, MapPin, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -14,27 +14,6 @@ import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale; code: string }>;
-}): Promise<Metadata> {
-  const { locale, code } = await params;
-  if (!hasLocale(routing.locales, locale)) return {};
-  const t = await getTranslations({ locale, namespace: "app.join" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
-
-  const room = await getRoomByShareLink(code);
-  if (!room || room.status !== RoomStatus.active) return { title: t("title") };
-
-  const cityName = tEnums(`city.${room.city}`);
-  return { title: `${room.title} — ${cityName}` };
-}
-
-type Props = {
-  params: Promise<{ locale: Locale; code: string }>;
-};
-
 async function getRoomByShareLink(code: string) {
   const [room] = await db
     .select({
@@ -43,6 +22,9 @@ async function getRoomByShareLink(code: string) {
       city: rooms.city,
       status: rooms.status,
       houseId: rooms.houseId,
+      shareLinkExpiresAt: rooms.shareLinkExpiresAt,
+      shareLinkMaxUses: rooms.shareLinkMaxUses,
+      shareLinkUseCount: rooms.shareLinkUseCount,
     })
     .from(rooms)
     .where(eq(rooms.shareLink, code));
@@ -60,6 +42,50 @@ async function getRoomByShareLink(code: string) {
   return { ...room, housemateCount: result?.count ?? 0 };
 }
 
+type ShareLinkError = "INVALID_LINK" | "LINK_EXPIRED" | "LINK_MAX_USED" | "ROOM_NOT_ACTIVE";
+
+function validateShareLink(room: NonNullable<Awaited<ReturnType<typeof getRoomByShareLink>>>): ShareLinkError | null {
+  if (room.status !== RoomStatus.active) return "ROOM_NOT_ACTIVE";
+
+  if (room.shareLinkExpiresAt && new Date(room.shareLinkExpiresAt) < new Date()) {
+    return "LINK_EXPIRED";
+  }
+
+  if (room.shareLinkMaxUses && (room.shareLinkUseCount ?? 0) >= room.shareLinkMaxUses) {
+    return "LINK_MAX_USED";
+  }
+
+  return null;
+}
+
+async function incrementShareLinkUseCount(roomId: string) {
+  await db
+    .update(rooms)
+    .set({ shareLinkUseCount: sql`${rooms.shareLinkUseCount} + 1` })
+    .where(eq(rooms.id, roomId));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale; code: string }>;
+}): Promise<Metadata> {
+  const { locale, code } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
+  const t = await getTranslations({ locale, namespace: "app.join" });
+  const tEnums = await getTranslations({ locale, namespace: "enums" });
+
+  const room = await getRoomByShareLink(code);
+  if (!room || validateShareLink(room)) return { title: t("title") };
+
+  const cityName = tEnums(`city.${room.city}`);
+  return { title: `${room.title} — ${cityName}` };
+}
+
+type Props = {
+  params: Promise<{ locale: Locale; code: string }>;
+};
+
 export default async function JoinRoomPage({ params }: Props) {
   const { locale, code } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
@@ -72,7 +98,7 @@ export default async function JoinRoomPage({ params }: Props) {
 
   const room = await getRoomByShareLink(code);
 
-  if (!room || room.status !== RoomStatus.active) {
+  if (!room) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-4">
         <Card className="w-full max-w-lg text-center">
@@ -89,6 +115,28 @@ export default async function JoinRoomPage({ params }: Props) {
       </div>
     );
   }
+
+  const error = validateShareLink(room);
+  if (error) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center p-4">
+        <Card className="w-full max-w-lg text-center">
+          <CardHeader>
+            <CardTitle>{t("title")}</CardTitle>
+            <CardDescription>{t(`errors.${error}`)}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="outline">
+              <Link href="/discover">{tCommon("cancel")}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Valid share link — increment use count
+  await incrementShareLinkUseCount(room.id);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-4">
@@ -118,6 +166,9 @@ export default async function JoinRoomPage({ params }: Props) {
           <div className="flex gap-3">
             <Button asChild variant="outline" className="flex-1">
               <Link href="/discover">{tCommon("cancel")}</Link>
+            </Button>
+            <Button asChild className="flex-1">
+              <Link href={`/discover/${room.id}`}>{tCommon("apply")}</Link>
             </Button>
           </div>
         </CardContent>

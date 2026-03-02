@@ -2,7 +2,7 @@
 
 import { COPY_FEEDBACK_TIMEOUT_MS } from "@openhospi/shared/constants";
 import { Check, Copy, Loader2, RefreshCw } from "lucide-react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -20,11 +20,12 @@ type Props = {
 export function ShareLinkSection({ room }: Props) {
   const t = useTranslations("app.rooms.shareLink");
   const format = useFormatter();
+  const locale = useLocale();
   const [isPending, startTransition] = useTransition();
   const [copied, setCopied] = useState(false);
   const router = useRouter();
 
-  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/room/${room.shareLink}`;
+  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${locale}/room/${room.shareLink}`;
 
   async function handleCopy() {
     await navigator.clipboard.writeText(shareUrl);

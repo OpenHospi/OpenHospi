@@ -1,25 +1,33 @@
+import type { Locale } from "@openhospi/i18n";
 import { Calendar, MapPin, Users } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
+import { requireSession } from "@/lib/auth-server";
 import { getRoomEvents } from "@/lib/events";
 import { cn } from "@/lib/utils";
 
-import { CreateEventDialog } from "./events/create-event-dialog";
+import { CreateEventDialog } from "./create-event-dialog";
 
 type Props = {
-  roomId: string;
-  userId: string;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
-export async function EventsSection({ roomId, userId }: Props) {
-  const events = await getRoomEvents(roomId, userId);
+export default async function EventsPage({ params }: Props) {
+  const { locale, id: roomId } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
+  setRequestLocale(locale);
+  const { user } = await requireSession();
+
+  const events = await getRoomEvents(roomId, user.id);
   const t = await getTranslations("app.rooms.events");
 
   return (
-    <section className="space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t("title")}</h2>
         <CreateEventDialog roomId={roomId} />
@@ -74,6 +82,6 @@ export async function EventsSection({ roomId, userId }: Props) {
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }

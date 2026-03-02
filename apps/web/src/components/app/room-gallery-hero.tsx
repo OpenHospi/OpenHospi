@@ -18,9 +18,10 @@ type Photo = {
 type Props = {
   photos: Photo[];
   roomTitle: string;
+  bucket?: "room-photos" | "profile-photos";
 };
 
-export function RoomGalleryHero({ photos, roomTitle }: Props) {
+export function RoomGalleryHero({ photos, roomTitle, bucket = "room-photos" }: Props) {
   const t = useTranslations("app.roomDetail");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -48,7 +49,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
           <StorageImage
             src={photos[0].url}
             alt={roomTitle}
-            bucket="room-photos"
+            bucket={bucket}
             fill
             className="object-cover"
             priority
@@ -65,7 +66,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
           initialIndex={lightboxIndex}
           open={lightboxOpen}
           onOpenChange={setLightboxOpen}
-          bucket="room-photos"
+          bucket={bucket}
         />
       </>
     );
@@ -90,7 +91,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
               <StorageImage
                 src={photo.url}
                 alt={`${roomTitle} — ${i + 1}`}
-                bucket="room-photos"
+                bucket={bucket}
                 fill
                 className="object-cover"
                 priority={i === 0}
@@ -109,7 +110,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
           initialIndex={lightboxIndex}
           open={lightboxOpen}
           onOpenChange={setLightboxOpen}
-          bucket="room-photos"
+          bucket={bucket}
         />
       </>
     );
@@ -134,7 +135,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
           <StorageImage
             src={photos[0].url}
             alt={roomTitle}
-            bucket="room-photos"
+            bucket={bucket}
             fill
             className="object-cover"
             priority
@@ -172,7 +173,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
             <StorageImage
               src={photos[0].url}
               alt={roomTitle}
-              bucket="room-photos"
+              bucket={bucket}
               fill
               className="object-cover"
               priority
@@ -203,7 +204,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
               <StorageImage
                 src={photo.url}
                 alt={`${roomTitle} — ${i + 2}`}
-                bucket="room-photos"
+                bucket={bucket}
                 fill
                 className="object-cover"
                 sizes="25vw"
@@ -235,7 +236,7 @@ export function RoomGalleryHero({ photos, roomTitle }: Props) {
         initialIndex={lightboxIndex}
         open={lightboxOpen}
         onOpenChange={setLightboxOpen}
-        bucket="room-photos"
+        bucket={bucket}
       />
     </>
   );

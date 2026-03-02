@@ -41,7 +41,8 @@
       "show": "Show",
       "hide": "Hide",
       "onThisPage": "On this page",
-      "linkToSection": "Link to {title}"
+      "linkToSection": "Link to {title}",
+      "apply": "Apply"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -663,7 +664,10 @@
         "notesPlaceholder": "Add optional notes about this applicant...",
         "submitReview": "Submit review",
         "yearsOld": "years old",
-        "reviewMode": "Review mode"
+        "reviewMode": "Review mode",
+        "selectApplicant": "Select an applicant to view their profile",
+        "applied": "Applied",
+        "backToList": "Back to list"
       },
       "houseSetup": {
         "title": "Set up your property first",
@@ -849,7 +853,13 @@
       "manage": {
         "title": "Room management",
         "details": "Room details",
-        "noDescription": "No description"
+        "noDescription": "No description",
+        "tabs": {
+          "overview": "Overview",
+          "applicants": "Applicants",
+          "events": "Events",
+          "voting": "Voting"
+        }
       },
       "noSelection": "No selection",
       "reviewMode": {

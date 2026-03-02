@@ -1,6 +1,7 @@
 "use client";
 
 import { StorageImage } from "@/components/storage-image";
+import { cn } from "@/lib/utils";
 
 type UserAvatarProps = {
   avatarUrl: string | null | undefined;
@@ -22,8 +23,7 @@ const sizeClasses = {
  * - Storage path to public URL conversion
  * - Initials generation (up to 2 letters)
  */
-export function UserAvatar({ avatarUrl, userName, size = "md", className = "" }: UserAvatarProps) {
-  // Get initials (max 2 characters)
+export function UserAvatar({ avatarUrl, userName, size = "md", className }: UserAvatarProps) {
   const getInitials = (name: string): string => {
     const parts = name.trim().split(/\s+/);
     if (parts.length >= 2) {
@@ -37,7 +37,7 @@ export function UserAvatar({ avatarUrl, userName, size = "md", className = "" }:
 
   return hasValidAvatar ? (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-full ${sizeClasses[size]} ${className}`}
+      className={cn("relative shrink-0 overflow-hidden rounded-full", sizeClasses[size], className)}
     >
       <StorageImage
         src={avatarUrl}
@@ -49,7 +49,7 @@ export function UserAvatar({ avatarUrl, userName, size = "md", className = "" }:
     </div>
   ) : (
     <div
-      className={`bg-primary/10 flex shrink-0 items-center justify-center rounded-full font-semibold text-primary ${sizeClasses[size]} ${className}`}
+      className={cn("bg-primary/10 flex shrink-0 items-center justify-center rounded-full font-semibold text-primary", sizeClasses[size], className)}
     >
       {initials}
     </div>

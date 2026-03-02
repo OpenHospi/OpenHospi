@@ -16,6 +16,7 @@ import {
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { logStatusTransition } from "@/lib/application-history";
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { getOrCreateHospiConversation } from "@/lib/chat";
 import { notifyUser } from "@/lib/notifications";
@@ -79,6 +80,14 @@ export async function batchInviteApplicants(
           .update(applications)
           .set({ status: ApplicationStatus.invited })
           .where(eq(applications.id, app.id));
+
+        await logStatusTransition(
+          tx,
+          app.id,
+          app.status as ApplicationStatus,
+          ApplicationStatus.invited,
+          session.user.id,
+        );
       }
 
       // Notify invitee

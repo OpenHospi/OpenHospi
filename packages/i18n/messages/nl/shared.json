@@ -1171,6 +1171,20 @@
       "withdrawConfirmDescription": "Weet je zeker dat je je aanmelding wilt intrekken? Dit kan niet ongedaan worden gemaakt.",
       "eventInvitation": "Evenementuitnodiging",
       "eventInvitationDescription": "Je bent uitgenodigd voor een hospi-evenement voor deze kamer.",
+      "timeline": {
+        "title": "Verloop aanmelding",
+        "sent": "Je hebt je aangemeld voor deze kamer",
+        "seen": "Je aanmelding is bekeken",
+        "liked": "Je bent geliked door de kamereigenaar",
+        "maybe": "Je bent gemarkeerd als misschien",
+        "rejected": "Je aanmelding is afgewezen",
+        "invited": "Je bent uitgenodigd voor een hospi-evenement",
+        "attending": "Je hebt je aanwezigheid bevestigd",
+        "not_attending": "Je hebt de uitnodiging afgeslagen",
+        "accepted": "Gefeliciteerd! Je bent gekozen",
+        "not_chosen": "De kamer is vergeven",
+        "withdrawn": "Je hebt je aanmelding ingetrokken"
+      },
       "errors": {
         "not_found": "Aanmelding niet gevonden.",
         "cannot_withdraw": "Deze aanmelding kan niet meer worden ingetrokken."

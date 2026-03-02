@@ -3,22 +3,22 @@ import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { InvitationCard } from "@/app/[locale]/(app)/invitations/invitation-card";
 import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getApplicationDetail } from "@/lib/applications";
+import { getApplicationDetail, getApplicationStatusHistory } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 import { getInvitationForApplication } from "@/lib/invitations";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
+import { ApplicationTimeline } from "./application-timeline";
 import { WithdrawButton } from "./withdraw-button";
 
 export async function generateMetadata({
@@ -42,20 +42,21 @@ export default async function ApplicationDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const { user } = await requireSession();
 
-  const application = await getApplicationDetail(id, user.id);
+  const [application, history, invitation] = await Promise.all([
+    getApplicationDetail(id, user.id),
+    getApplicationStatusHistory(id, user.id),
+    getInvitationForApplication(id, user.id),
+  ]);
+
   if (!application) {
     return redirect({ href: "/applications", locale });
   }
 
-  const invitation = await getInvitationForApplication(id, user.id);
-
   const t = await getTranslations({ locale, namespace: "app.applications" });
   const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const format = await getFormatter();
 
   const isTerminal = isTerminalApplicationStatus(application.status);
-  const appliedDate = format.dateTime(new Date(application.appliedAt), "short");
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -90,7 +91,9 @@ export default async function ApplicationDetailPage({ params }: Props) {
             </p>
             <p className="mt-2 text-lg font-bold">
               €{application.roomRentPrice}
-              <span className="text-sm font-normal text-muted-foreground">/mo</span>
+              <span className="text-sm font-normal text-muted-foreground">
+                {tCommon("perMonth")}
+              </span>
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
               {application.roomHouseType && (
@@ -110,27 +113,23 @@ export default async function ApplicationDetailPage({ params }: Props) {
         </div>
       </Card>
 
-      {/* Status section */}
+      {/* Timeline card */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("statusTitle")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between">
+            <CardTitle>{t("timeline.title")}</CardTitle>
             <Badge className={cn("text-sm", APPLICATION_STATUS_COLORS[application.status])}>
               {tEnums(`application_status.${application.status}`)}
             </Badge>
-            <span className="text-sm text-muted-foreground">
-              {t("appliedOn", { date: appliedDate })}
-            </span>
           </div>
-
-          {!isTerminal && (
-            <>
-              <Separator />
-              <WithdrawButton applicationId={application.id} />
-            </>
-          )}
+        </CardHeader>
+        <CardContent>
+          <ApplicationTimeline
+            history={history}
+            appliedAt={application.appliedAt}
+            currentStatus={application.status}
+            updatedAt={application.updatedAt}
+          />
         </CardContent>
       </Card>
 
@@ -155,6 +154,13 @@ export default async function ApplicationDetailPage({ params }: Props) {
             </p>
           </CardContent>
         </Card>
+      )}
+
+      {/* Withdraw */}
+      {!isTerminal && (
+        <div className="flex justify-end">
+          <WithdrawButton applicationId={application.id} />
+        </div>
       )}
     </div>
   );

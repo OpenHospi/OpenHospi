@@ -1171,6 +1171,20 @@
       "withdrawConfirmDescription": "Bist du sicher, dass du deine Bewerbung zurückziehen möchtest? Dies kann nicht rückgängig gemacht werden.",
       "eventInvitation": "Veranstaltungseinladung",
       "eventInvitationDescription": "Du wurdest zu einem Hospi-Event für dieses Zimmer eingeladen.",
+      "timeline": {
+        "title": "Bewerbungsverlauf",
+        "sent": "Du hast dich für dieses Zimmer beworben",
+        "seen": "Deine Bewerbung wurde angesehen",
+        "liked": "Du wurdest vom Zimmereigentümer geliked",
+        "maybe": "Du wurdest als Vielleicht markiert",
+        "rejected": "Deine Bewerbung wurde abgelehnt",
+        "invited": "Du wurdest zu einem Hospi-Event eingeladen",
+        "attending": "Du hast deine Teilnahme bestätigt",
+        "not_attending": "Du hast die Einladung abgelehnt",
+        "accepted": "Herzlichen Glückwunsch! Du wurdest ausgewählt",
+        "not_chosen": "Das Zimmer wurde vergeben",
+        "withdrawn": "Du hast deine Bewerbung zurückgezogen"
+      },
       "errors": {
         "not_found": "Bewerbung nicht gefunden.",
         "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."

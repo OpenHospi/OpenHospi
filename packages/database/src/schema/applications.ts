@@ -87,3 +87,30 @@ export const reviews = pgTable(
     }),
   ],
 );
+
+export const applicationStatusHistory = pgTable(
+  "application_status_history",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    applicationId: uuid("application_id")
+      .notNull()
+      .references(() => applications.id, { onDelete: "cascade" }),
+    fromStatus: applicationStatusEnum("from_status"),
+    toStatus: applicationStatusEnum("to_status").notNull(),
+    changedAt: timestamp("changed_at", { withTimezone: true }).notNull().defaultNow(),
+    changedBy: uuid("changed_by").references(() => profiles.id, { onDelete: "set null" }),
+  },
+  (table) => [
+    index("idx_app_status_history_app_id").on(table.applicationId),
+    pgPolicy("app_status_history_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from applications where applications.id = ${table.applicationId} and (applications.user_id = (select auth.uid()) or exists(select 1 from room_members_rls where room_members_rls.room_id = applications.room_id and room_members_rls.user_id = (select auth.uid()))))`,
+    }),
+    pgPolicy("app_status_history_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`exists(select 1 from applications where applications.id = ${table.applicationId} and (applications.user_id = (select auth.uid()) or exists(select 1 from room_members_rls where room_members_rls.room_id = applications.room_id and room_members_rls.user_id = (select auth.uid()))))`,
+    }),
+  ],
+);

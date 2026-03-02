@@ -10,6 +10,7 @@ import {
 import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { logStatusTransition } from "@/lib/application-history";
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
 
@@ -46,10 +47,20 @@ export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: 
 
     // If a chosen applicant is specified, set them to accepted
     if (chosenApplicationId) {
+      const chosenApp = nonTerminalApps.find((a) => a.id === chosenApplicationId);
       await tx
         .update(applications)
         .set({ status: ApplicationStatus.accepted })
         .where(and(eq(applications.id, chosenApplicationId), eq(applications.roomId, roomId)));
+      if (chosenApp) {
+        await logStatusTransition(
+          tx,
+          chosenApplicationId,
+          chosenApp.status as ApplicationStatus,
+          ApplicationStatus.accepted,
+          user.id,
+        );
+      }
     }
 
     // Set all other non-terminal applications to not_chosen
@@ -59,6 +70,13 @@ export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: 
         .update(applications)
         .set({ status: ApplicationStatus.not_chosen })
         .where(eq(applications.id, app.id));
+      await logStatusTransition(
+        tx,
+        app.id,
+        app.status as ApplicationStatus,
+        ApplicationStatus.not_chosen,
+        user.id,
+      );
     }
 
     // Close the room

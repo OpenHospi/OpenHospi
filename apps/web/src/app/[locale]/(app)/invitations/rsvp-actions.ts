@@ -13,6 +13,7 @@ import {
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { logStatusTransition } from "@/lib/application-history";
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
 
@@ -22,6 +23,7 @@ async function tryUpdateApplicationStatus(
   tx: RLSTransaction,
   applicationId: string,
   targetStatus: ApplicationStatus,
+  changedBy: string,
 ) {
   const [app] = await tx
     .select({ status: applications.status })
@@ -33,6 +35,14 @@ async function tryUpdateApplicationStatus(
       .update(applications)
       .set({ status: targetStatus })
       .where(eq(applications.id, applicationId));
+
+    await logStatusTransition(
+      tx,
+      applicationId,
+      app.status as ApplicationStatus,
+      targetStatus,
+      changedBy,
+    );
   }
 }
 
@@ -45,7 +55,7 @@ async function handleApplicationStatusOnRsvp(
   invitationId: string,
 ) {
   if (newStatus === InvitationStatus.attending) {
-    await tryUpdateApplicationStatus(tx, applicationId, ApplicationStatus.attending);
+    await tryUpdateApplicationStatus(tx, applicationId, ApplicationStatus.attending, userId);
     return;
   }
 
@@ -67,7 +77,7 @@ async function handleApplicationStatusOnRsvp(
     .limit(1);
 
   if (!otherAttending) {
-    await tryUpdateApplicationStatus(tx, applicationId, ApplicationStatus.not_attending);
+    await tryUpdateApplicationStatus(tx, applicationId, ApplicationStatus.not_attending, userId);
   }
 }
 

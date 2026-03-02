@@ -3,10 +3,7 @@
 import type { ReviewData } from "@openhospi/database/validators";
 import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
-import {
-  ApplicationStatus,
-  ReviewDecision,
-} from "@openhospi/shared/enums";
+import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
 import { Check, Loader2, UserCircle, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
@@ -289,9 +286,7 @@ export function ApplicantDetailPanel({ applicant, roomId, currentUserId }: Props
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => handleStatusChange(ApplicationStatus.accepted)}
-                >
+                <AlertDialogAction onClick={() => handleStatusChange(ApplicationStatus.accepted)}>
                   {t("accept")}
                 </AlertDialogAction>
               </AlertDialogFooter>

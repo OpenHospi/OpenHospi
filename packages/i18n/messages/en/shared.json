@@ -1171,6 +1171,20 @@
       "withdrawConfirmDescription": "Are you sure you want to withdraw your application? This cannot be undone.",
       "eventInvitation": "Event Invitation",
       "eventInvitationDescription": "You've been invited to a hospi event for this room.",
+      "timeline": {
+        "title": "Application timeline",
+        "sent": "You applied to this room",
+        "seen": "Your application was viewed",
+        "liked": "You were liked by the room owner",
+        "maybe": "You were marked as maybe",
+        "rejected": "Your application was rejected",
+        "invited": "You were invited to a hospi event",
+        "attending": "You confirmed attendance",
+        "not_attending": "You declined the event invitation",
+        "accepted": "Congratulations! You've been chosen",
+        "not_chosen": "The room has been filled",
+        "withdrawn": "You withdrew your application"
+      },
       "errors": {
         "not_found": "Application not found.",
         "cannot_withdraw": "This application can no longer be withdrawn."

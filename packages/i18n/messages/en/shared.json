@@ -628,6 +628,7 @@
         "setup_pin": "Set up with PIN",
         "pin_length_error": "PIN must be 6 digits",
         "pin_mismatch": "PINs do not match",
+        "pin_hint": "This PIN protects your encryption key. You'll need it to recover your chats on a new device.",
         "setup_success": "Chat encryption set up successfully",
         "setup_error": "Could not set up encryption. Please try again."
       }

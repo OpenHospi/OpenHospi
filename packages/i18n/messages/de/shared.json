@@ -628,6 +628,7 @@
         "setup_pin": "Mit PIN einrichten",
         "pin_length_error": "PIN muss 6 Ziffern haben",
         "pin_mismatch": "PINs stimmen nicht überein",
+        "pin_hint": "Diese PIN schützt deinen Verschlüsselungsschlüssel. Du brauchst sie, um deine Chats auf einem neuen Gerät wiederherzustellen.",
         "setup_success": "Chat-Verschlüsselung erfolgreich eingerichtet",
         "setup_error": "Verschlüsselung konnte nicht eingerichtet werden. Bitte versuche es erneut."
       }

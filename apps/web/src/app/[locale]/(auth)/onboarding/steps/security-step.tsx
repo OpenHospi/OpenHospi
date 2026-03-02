@@ -2,7 +2,7 @@
 
 import { PIN_LENGTH } from "@openhospi/shared/constants";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -45,24 +45,24 @@ export function SecurityStep({ userId, onBack }: Props) {
     startTransition(async () => {
       try {
         await setupKeysWithPIN(userId, pin, uploadPublicKey, uploadKeyBackup);
-        toast.success(tSecurity("setup_success"));
-        await finishOnboarding();
       } catch {
         toast.error(tSecurity("setup_error"));
+        return;
       }
+      await finishOnboarding();
     });
   }
 
   return (
     <div className="space-y-6">
       <Alert>
-        <Lock className="h-4 w-4" />
+        <ShieldCheck />
         <AlertTitle>{tSecurity("e2ee_title")}</AlertTitle>
         <AlertDescription>{tSecurity("e2ee_description")}</AlertDescription>
       </Alert>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
+      <div className="space-y-5">
+        <div className="flex flex-col items-center gap-2">
           <Label>{tSecurity("enter_pin")}</Label>
           <InputOTP
             maxLength={PIN_LENGTH}
@@ -78,7 +78,7 @@ export function SecurityStep({ userId, onBack }: Props) {
           </InputOTP>
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col items-center gap-2">
           <Label>{tSecurity("confirm_pin")}</Label>
           <InputOTP
             maxLength={PIN_LENGTH}
@@ -100,19 +100,19 @@ export function SecurityStep({ userId, onBack }: Props) {
           </Alert>
         )}
 
-        <Button
-          className="w-full"
-          onClick={handlePinSetup}
-          disabled={isPending || pin.length !== PIN_LENGTH || confirmPin.length !== PIN_LENGTH}
-        >
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {tSecurity("setup_pin")}
-        </Button>
+        <p className="text-muted-foreground text-center text-xs">{tSecurity("pin_hint")}</p>
       </div>
 
       <div className="flex justify-between">
         <Button variant="outline" type="button" onClick={onBack} disabled={isPending}>
           {tCommon("back")}
+        </Button>
+        <Button
+          onClick={handlePinSetup}
+          disabled={isPending || pin.length !== PIN_LENGTH || confirmPin.length !== PIN_LENGTH}
+        >
+          {isPending && <Loader2 className="animate-spin" />}
+          {tSecurity("setup_pin")}
         </Button>
       </div>
     </div>

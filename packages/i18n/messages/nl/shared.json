@@ -628,6 +628,7 @@
         "setup_pin": "Instellen met PIN",
         "pin_length_error": "PIN moet 6 cijfers zijn",
         "pin_mismatch": "Pincodes komen niet overeen",
+        "pin_hint": "Deze PIN beschermt je versleutelingssleutel. Je hebt hem nodig om je chats op een nieuw apparaat te herstellen.",
         "setup_success": "Chatversleuteling succesvol ingesteld",
         "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw."
       }

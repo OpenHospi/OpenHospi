@@ -9,7 +9,10 @@
       "invalidFileType": "Ungültiger Dateityp. Bitte JPEG, PNG oder WebP verwenden.",
       "uploadFailed": "Upload fehlgeschlagen. Bitte versuche es erneut.",
       "deleteFailed": "Löschen fehlgeschlagen. Bitte versuche es erneut.",
-      "processingRestricted": "Die Verarbeitung deines Kontos ist derzeit eingeschränkt. Du kannst dies unter Einstellungen > Datenschutz verwalten."
+      "processingRestricted": "Die Verarbeitung deines Kontos ist derzeit eingeschränkt. Du kannst dies unter Einstellungen > Datenschutz verwalten.",
+      "createFailed": "Aanmaken mislukt. Probeer het opnieuw.",
+      "notAuthenticated": "Niet ingelogd.",
+      "invalidData": "Ongeldige gegevens."
     },
     "labels": {
       "title": "Titel",
@@ -670,7 +673,8 @@
         },
         "errors": {
           "INVALID_NAME": "Der Name muss mindestens 2 Zeichen lang sein.",
-          "RATE_LIMITED": "Zu viele Anfragen. Bitte versuche es später erneut."
+          "RATE_LIMITED": "Zu viele Anfragen. Bitte versuche es später erneut.",
+          "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
         }
       },
       "housePicker": {
@@ -715,6 +719,12 @@
         "photoGuidance": "Lade mindestens 1 Foto hoch, um zu veröffentlichen. Das erste Foto ist dein Titelbild.",
         "photoCount": "{count}/{max} Fotos"
       },
+      "captions": {
+        "placeholder": "Voeg een beschrijving toe...",
+        "saved": "Bijschrift opgeslagen",
+        "charCount": "{count}/{max}"
+      },
+      "dragToReorder": "Sleep om te herordenen",
       "fields": {
         "title": "Titel",
         "description": "Beschreibung",
@@ -813,7 +823,10 @@
         "draftSaved": "Entwurf gespeichert",
         "RATE_LIMITED": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut.",
         "confirmDeleteTitle": "Entwurf löschen?",
-        "confirmDelete": "Dieser Entwurf wird dauerhaft gelöscht."
+        "confirmDelete": "Dieser Entwurf wird dauerhaft gelöscht.",
+        "invalidTransition": "Ongeldige statusovergang.",
+        "NO_HOUSE": "Geen huis gevonden.",
+        "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
       },
       "manage": {
         "title": "Zimmerverwaltung",

@@ -719,6 +719,12 @@
         "photoGuidance": "Lade mindestens 1 Foto hoch, um zu veröffentlichen. Das erste Foto ist dein Titelbild.",
         "photoCount": "{count}/{max} Fotos"
       },
+      "captions": {
+        "placeholder": "Beschreibung hinzufügen...",
+        "saved": "Bildunterschrift gespeichert",
+        "charCount": "{count}/{max}"
+      },
+      "dragToReorder": "Ziehen zum Umsortieren",
       "fields": {
         "title": "Titel",
         "description": "Beschreibung",

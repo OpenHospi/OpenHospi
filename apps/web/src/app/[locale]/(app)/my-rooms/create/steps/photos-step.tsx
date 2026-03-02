@@ -1,24 +1,21 @@
 "use client";
 
-import {
-  ALLOWED_IMAGE_TYPES,
-  MAX_ROOM_PHOTO_SIZE,
-  MAX_ROOM_PHOTOS,
-  ROOM_PHOTO_SLOTS,
-} from "@openhospi/shared/constants";
-import { Camera, Loader2, X } from "lucide-react";
+import { MAX_ROOM_PHOTO_SIZE, MAX_ROOM_PHOTOS, ROOM_PHOTO_SLOTS } from "@openhospi/shared/constants";
+import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useState, useTransition } from "react";
+import { useCallback, useTransition } from "react";
 import { toast } from "sonner";
 
-import { StorageImage } from "@/components/storage-image";
+import {
+  SortablePhotoGrid,
+  type SortablePhoto,
+} from "@/components/app/sortable-photo-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import type { RoomPhoto } from "@/lib/rooms";
-import { cn } from "@/lib/utils";
 
 import { publishRoom } from "../actions";
-import { deleteRoomPhoto, saveRoomPhoto } from "../photo-actions";
+import { deleteRoomPhoto, reorderRoomPhotos, saveRoomPhoto, updatePhotoCaption } from "../photo-actions";
 
 type Props = {
   roomId: string;
@@ -28,92 +25,103 @@ type Props = {
   onPublished: () => void;
 };
 
+const SLOTS = [...ROOM_PHOTO_SLOTS];
+
 export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished }: Props) {
   const t = useTranslations("app.rooms");
   const tCommon = useTranslations("common.labels");
   const tErrors = useTranslations("common.errors");
-  const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [activeSlot, setActiveSlot] = useState<number | null>(null);
 
-  const slots = ROOM_PHOTO_SLOTS;
   const hasPhoto = photos.length > 0;
 
-  function getPhotoForSlot(slot: number) {
-    return photos.find((p) => p.slot === slot);
-  }
+  const getSlotLabel = useCallback(
+    (slot: number) => t(`photoSlots.slot${slot}` as Parameters<typeof t>[0]),
+    [t],
+  );
 
-  function handleUploadClick(slot: number) {
-    setActiveSlot(slot);
-    fileInputRef.current?.click();
-  }
+  const getSlotClassName = useCallback(
+    (slot: number) =>
+      slot === 1 ? "col-span-2 row-span-2 aspect-4/3" : "aspect-square",
+    [],
+  );
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file || activeSlot === null) return;
-
-    if (file.size > MAX_ROOM_PHOTO_SIZE) {
-      toast.error(
-        tErrors("fileTooLarge", { maxSize: String(Math.round(MAX_ROOM_PHOTO_SIZE / 1024 / 1024)) }),
-      );
-      e.target.value = "";
-      return;
-    }
-
-    if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
-      toast.error(tErrors("invalidFileType"));
-      e.target.value = "";
-      return;
-    }
-
-    const slot = activeSlot;
-    setUploadingSlot(slot);
-
-    startTransition(async () => {
-      try {
-        const formData = new FormData();
-        formData.set("file", file);
-        formData.set("roomId", roomId);
-        formData.set("slot", String(slot));
-        const result = await saveRoomPhoto(formData);
-        setUploadingSlot(null);
-
-        if (result.error) {
-          if (result.error === "PROCESSING_RESTRICTED") {
-            toast.error(tErrors("processingRestricted"));
-          } else {
-            toast.error(tErrors(result.error));
-          }
-          return;
+  const handleUpload = useCallback(
+    async (slot: number, file: File): Promise<SortablePhoto | null> => {
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("roomId", roomId);
+      formData.set("slot", String(slot));
+      const result = await saveRoomPhoto(formData);
+      if (result.error) {
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tErrors("processingRestricted"));
+        } else {
+          toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
         }
-
-        if (result.photo) {
-          onPhotosChange([...photos.filter((p) => p.slot !== slot), result.photo]);
-        }
-      } catch {
-        setUploadingSlot(null);
-        toast.error(tErrors("uploadFailed"));
+        return null;
       }
-    });
+      return result.photo ?? null;
+    },
+    [roomId, tErrors],
+  );
 
-    e.target.value = "";
-  }
-
-  function handleDelete(slot: number) {
-    startTransition(async () => {
+  const handleDelete = useCallback(
+    async (slot: number): Promise<boolean> => {
       const result = await deleteRoomPhoto(roomId, slot);
       if (result?.error) {
         if (result.error === "PROCESSING_RESTRICTED") {
           toast.error(tErrors("processingRestricted"));
         } else {
-          toast.error(tErrors(result.error));
+          toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
         }
-        return;
+        return false;
       }
-      onPhotosChange(photos.filter((p) => p.slot !== slot));
-    });
-  }
+      return true;
+    },
+    [roomId, tErrors],
+  );
+
+  const handleReorder = useCallback(
+    async (swaps: { photoId: string; newSlot: number }[]): Promise<boolean> => {
+      const result = await reorderRoomPhotos(roomId, swaps);
+      if (result.error) {
+        toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
+        return false;
+      }
+      return true;
+    },
+    [roomId, tErrors],
+  );
+
+  const handleCaptionSave = useCallback(
+    async (slot: number, caption: string | null): Promise<boolean> => {
+      const result = await updatePhotoCaption(roomId, slot, caption);
+      if (result?.error) {
+        toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
+        return false;
+      }
+      return true;
+    },
+    [roomId, tErrors],
+  );
+
+  const handlePhotosChange = useCallback(
+    (newPhotos: SortablePhoto[]) => {
+      onPhotosChange(newPhotos as RoomPhoto[]);
+    },
+    [onPhotosChange],
+  );
+
+  const renderPhotoOverlay = useCallback(
+    (_photo: SortablePhoto, slot: number) =>
+      slot === 1 ? (
+        <span className="absolute bottom-1 left-8 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">
+          Cover
+        </span>
+      ) : null,
+    [],
+  );
 
   function handlePublish() {
     startTransition(async () => {
@@ -122,7 +130,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
         if (result.error === "PROCESSING_RESTRICTED") {
           toast.error(tErrors("processingRestricted"));
         } else {
-          toast.error(t(`status.${result.error}`));
+          toast.error(t(`status.${result.error}` as Parameters<typeof t>[0]));
         }
         return;
       }
@@ -138,14 +146,6 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
 
   return (
     <div className="space-y-6">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
-        className="hidden"
-        onChange={handleFileChange}
-      />
-
       <Card>
         <CardContent className="space-y-4 pt-6">
           <div className="flex items-center justify-between">
@@ -158,68 +158,25 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-            {slots.map((slot) => {
-              const photo = getPhotoForSlot(slot);
-              const isUploading = uploadingSlot === slot;
-              const isCover = slot === 1;
-
-              return (
-                <div
-                  key={slot}
-                  className={cn(
-                    "relative overflow-hidden rounded-lg border-2 border-dashed",
-                    isCover && "col-span-2 row-span-2",
-                    isCover ? "aspect-4/3" : "aspect-square",
-                    slot === 1 && !photo && "border-primary",
-                    photo && "border-solid border-muted",
-                  )}
-                >
-                  {photo ? (
-                    <>
-                      <StorageImage
-                        src={photo.url}
-                        alt={t(`photoSlots.slot${slot}`)}
-                        bucket="room-photos"
-                        fill
-                        className="object-cover"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(slot)}
-                        className="absolute top-1 right-1 size-auto rounded-full bg-black/60 p-1 text-white hover:bg-black/80 hover:text-white"
-                        disabled={isPending}
-                      >
-                        <X className="size-4" />
-                      </Button>
-                      {isCover && (
-                        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">
-                          Cover
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleUploadClick(slot)}
-                      disabled={isUploading || isPending}
-                      className="size-full flex-col gap-1 p-2 hover:bg-muted/50"
-                    >
-                      {isUploading ? (
-                        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-                      ) : (
-                        <Camera className="size-6 text-muted-foreground" />
-                      )}
-                      <span className="text-xs text-muted-foreground">
-                        {t(`photoSlots.slot${slot}`)}
-                      </span>
-                    </Button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <SortablePhotoGrid
+            photos={photos}
+            slots={SLOTS}
+            bucket="room-photos"
+            maxFileSize={MAX_ROOM_PHOTO_SIZE}
+            editable
+            getSlotLabel={getSlotLabel}
+            dragLabel={t("dragToReorder")}
+            onUpload={handleUpload}
+            onDelete={handleDelete}
+            onReorder={handleReorder}
+            onPhotosChange={handlePhotosChange}
+            onCaptionSave={handleCaptionSave}
+            captionPlaceholder={t("captions.placeholder")}
+            renderPhotoOverlay={renderPhotoOverlay}
+            highlightEmptySlot={1}
+            getSlotClassName={getSlotClassName}
+            gridClassName="grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4"
+          />
         </CardContent>
 
         <CardFooter className="flex justify-between border-t pt-6">

@@ -719,6 +719,12 @@
         "photoGuidance": "Upload minstens 1 foto om te publiceren. De eerste foto is je omslagfoto.",
         "photoCount": "{count}/{max} foto's"
       },
+      "captions": {
+        "placeholder": "Voeg een beschrijving toe...",
+        "saved": "Bijschrift opgeslagen",
+        "charCount": "{count}/{max}"
+      },
+      "dragToReorder": "Sleep om te herordenen",
       "fields": {
         "title": "Titel",
         "description": "Beschrijving",

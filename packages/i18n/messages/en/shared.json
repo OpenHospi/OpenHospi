@@ -719,6 +719,12 @@
         "photoGuidance": "Upload at least 1 photo to publish. The first photo is your cover.",
         "photoCount": "{count}/{max} photos"
       },
+      "captions": {
+        "placeholder": "Add a description...",
+        "saved": "Caption saved",
+        "charCount": "{count}/{max}"
+      },
+      "dragToReorder": "Drag to reorder",
       "fields": {
         "title": "Title",
         "description": "Description",

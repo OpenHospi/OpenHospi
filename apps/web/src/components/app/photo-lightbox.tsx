@@ -118,6 +118,12 @@ export function PhotoLightbox({
             )}
           </Carousel>
 
+          {photos[selectedIndex]?.caption && (
+            <p className="mt-3 max-w-2xl text-center text-sm text-white/90">
+              {photos[selectedIndex].caption}
+            </p>
+          )}
+
           {photos.length > 1 && (
             <p className="mt-4 text-sm text-white/70">
               {t("counter", {

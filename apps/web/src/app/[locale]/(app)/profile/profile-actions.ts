@@ -80,9 +80,7 @@ export async function saveProfilePhoto(formData: FormData) {
   }
 }
 
-export async function reorderProfilePhotos(
-  swaps: { photoId: string; newSlot: number }[],
-) {
+export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: number }[]) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;

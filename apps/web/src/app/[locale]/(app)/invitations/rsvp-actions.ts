@@ -116,7 +116,8 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
       .where(eq(hospiEvents.id, invitation.eventId));
 
     if (!event || event.cancelledAt) return { error: "event_cancelled" as const };
-    if (event.rsvpDeadline && new Date() > event.rsvpDeadline) return { error: "deadline_passed" as const };
+    if (event.rsvpDeadline && new Date() > event.rsvpDeadline)
+      return { error: "deadline_passed" as const };
 
     // Check capacity
     if (newStatus === InvitationStatus.attending && event.maxAttendees) {

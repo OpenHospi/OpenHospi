@@ -103,9 +103,7 @@ export default function DataRequestDetailPage() {
                 {t(`statuses.${detail.status}` as Parameters<typeof t>[0])}
               </Badge>
             </div>
-            <p className="text-sm">
-              {format.dateTime(detail.createdAt, "dateTime")}
-            </p>
+            <p className="text-sm">{format.dateTime(detail.createdAt, "dateTime")}</p>
             {detail.description && (
               <p className="text-sm text-muted-foreground">{detail.description}</p>
             )}

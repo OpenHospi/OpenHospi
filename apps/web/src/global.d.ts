@@ -2,12 +2,6 @@ import type { WebMessages } from "@openhospi/i18n";
 
 import type { routing } from "@/i18n/routing";
 
-declare module "@openhospi/shared/assets/logo.svg" {
-  import type { StaticImageData } from "next/image";
-  const content: StaticImageData;
-  export default content;
-}
-
 declare module "next-intl" {
   interface AppConfig {
     Locale: (typeof routing.locales)[number];

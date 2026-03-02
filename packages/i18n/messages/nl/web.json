@@ -552,7 +552,8 @@
       "loginToApply": "Log in met SURFconext om te reageren",
       "goToApp": "Bekijk in app",
       "notFoundDescription": "Deze kamer is mogelijk verwijderd of niet meer beschikbaar.",
-      "roomSize": "{size} m²"
+      "roomSize": "{size} m²",
+      "backToCity": "Terug naar {city}"
     }
   },
   "missingAssociation": {

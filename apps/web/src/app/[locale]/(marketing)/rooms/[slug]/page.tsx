@@ -176,6 +176,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: Locale; roomId: stri
 
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const tRoom = await getTranslations({ locale, namespace: "public.room" });
   const loginUrl = getLoginUrl();
   const cityName = tEnums(`city.${room.city}`);
   const coverPhoto = room.photos[0];
@@ -214,6 +215,14 @@ async function RoomDetailPage({ locale, roomId }: { locale: Locale; roomId: stri
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: roomBreadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-4">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href={`/rooms/${room.city}`}>
+              <ArrowLeft className="size-4" />
+              {tRoom("backToCity", { city: cityName })}
+            </Link>
+          </Button>
+        </div>
         <RoomDetailContent
           room={publicRoomToDetail(room)}
           context={{

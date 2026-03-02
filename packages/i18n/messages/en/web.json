@@ -552,7 +552,8 @@
       "loginToApply": "Log in with SURFconext to apply",
       "goToApp": "View in app",
       "notFoundDescription": "This room may have been removed or is no longer available.",
-      "roomSize": "{size} m²"
+      "roomSize": "{size} m²",
+      "backToCity": "Back to {city}"
     }
   },
   "missingAssociation": {

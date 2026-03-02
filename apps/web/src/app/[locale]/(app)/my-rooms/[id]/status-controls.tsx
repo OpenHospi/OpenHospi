@@ -1,7 +1,7 @@
 "use client";
 
 import { RoomStatus } from "@openhospi/shared/enums";
-import { Loader2, Pause, Pencil, Play, Rocket, Trash2, XCircle } from "lucide-react";
+import { Loader2, Pause, Play, Rocket, Trash2, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Link, useRouter } from "@/i18n/navigation-app";
+import { useRouter } from "@/i18n/navigation-app";
 import type { Room } from "@/lib/rooms";
 import type { CloseRoomApplicant } from "@/lib/votes";
 
@@ -73,13 +73,6 @@ export function StatusControls({ room, closeApplicants = [] }: Props) {
           <Button onClick={() => handleStatusChange(RoomStatus.active)} disabled={isPending}>
             {isPending ? <Loader2 className="animate-spin" /> : <Rocket className="size-4" />}
             {t("actions.publish")}
-          </Button>
-
-          <Button variant="outline" asChild>
-            <Link href={`/my-rooms/create?id=${room.id}`}>
-              <Pencil className="size-4" />
-              {t("actions.continueEditing")}
-            </Link>
           </Button>
 
           <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>

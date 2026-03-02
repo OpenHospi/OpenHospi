@@ -532,14 +532,22 @@
         "showFilters": "Show filters",
         "hideFilters": "Hide filters"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Nu beschikbaar",
+        "availableFrom": "Vanaf {date}",
+        "until": "tot {date}"
+      },
       "loadMore": "Load more"
     },
     "profile": {
       "title": "My profile",
       "institution": "Institution",
-      "editTitle": "Edit profile",
       "editSuccess": "Profile updated",
+      "editBio": "Bio bewerken",
+      "editAbout": "Over mij bewerken",
+      "editPreferences": "Voorkeuren bewerken",
+      "editLanguages": "Talen bewerken",
+      "editLifestyle": "Levensstijl bewerken",
       "bio": "About me",
       "studyInfo": "Study info",
       "studyProgram": "Study program",
@@ -552,16 +560,7 @@
       "availableFrom": "Available from",
       "lifestyleTags": "Lifestyle",
       "languages": "Spoken languages",
-      "completeness": {
-        "title": "Profile {completed}/{total} complete",
-        "photo": "Profile photo",
-        "bio": "Bio",
-        "studyProgram": "Study program",
-        "birthDate": "Date of birth",
-        "preferredCity": "Preferred city",
-        "lifestyleTags": "Lifestyle tags (2+)",
-        "vereniging": "Association"
-      }
+      "vereniging": "Vereniging"
     },
     "onboarding": {
       "title": "Complete your profile",
@@ -753,7 +752,8 @@
         "preferredAgeMin": "Min age",
         "preferredAgeMax": "Max age",
         "preferredLifestyleTags": "Preferred lifestyle",
-        "roomVereniging": "Association"
+        "roomVereniging": "Association",
+        "availableUntilHint": "Verplicht bij onderhuur en tijdelijke verhuur"
       },
       "placeholders": {
         "title": "e.g. Cozy room in student house",
@@ -771,6 +771,9 @@
       },
       "helpers": {
         "serviceCosts": "e.g. cleaning, internet, VvE contribution"
+      },
+      "validation": {
+        "availableUntilRequired": "Een einddatum is verplicht voor onderhuur en tijdelijke verhuur"
       },
       "utilities": {
         "included": "Included in rent",

@@ -41,12 +41,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -111,10 +106,7 @@ function profileToFormDefaults(profile: ProfileWithPhotos): EditProfileData {
   };
 }
 
-function useSectionSubmit(
-  profile: ProfileWithPhotos,
-  onSuccess: () => void,
-) {
+function useSectionSubmit(profile: ProfileWithPhotos, onSuccess: () => void) {
   const t = useTranslations("app.profile");
   const [isPending, startTransition] = useTransition();
 
@@ -194,7 +186,11 @@ export function BioCard({ profile }: CardProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea className="min-h-32 resize-none" maxLength={MAX_BIO_LENGTH} {...field} />
+                    <Textarea
+                      className="min-h-32 resize-none"
+                      maxLength={MAX_BIO_LENGTH}
+                      {...field}
+                    />
                   </FormControl>
                   <p className="text-xs text-muted-foreground">
                     {(field.value ?? "").length}/{MAX_BIO_LENGTH}
@@ -402,7 +398,10 @@ export function PreferencesCard({ profile }: CardProps) {
           {profile.maxRent && (
             <div>
               <dt className="text-muted-foreground">{t("maxRent")}</dt>
-              <dd>&euro;{profile.maxRent}{tCommon("perMonth")}</dd>
+              <dd>
+                &euro;{profile.maxRent}
+                {tCommon("perMonth")}
+              </dd>
             </div>
           )}
           {profile.availableFrom && (
@@ -548,7 +547,11 @@ export function LanguagesCard({ profile }: CardProps) {
   function toggleLanguage(lang: Language) {
     const current = form.getValues("languages") ?? [];
     if (current.includes(lang)) {
-      form.setValue("languages", current.filter((l) => l !== lang), { shouldValidate: true });
+      form.setValue(
+        "languages",
+        current.filter((l) => l !== lang),
+        { shouldValidate: true },
+      );
     } else if (current.length < MAX_LANGUAGES) {
       form.setValue("languages", [...current, lang], { shouldValidate: true });
     }
@@ -636,7 +639,11 @@ export function LifestyleCard({ profile }: CardProps) {
   function toggleTag(tag: LifestyleTag) {
     const current = form.getValues("lifestyleTags") ?? [];
     if (current.includes(tag)) {
-      form.setValue("lifestyleTags", current.filter((t) => t !== tag), { shouldValidate: true });
+      form.setValue(
+        "lifestyleTags",
+        current.filter((t) => t !== tag),
+        { shouldValidate: true },
+      );
     } else if (current.length < MAX_LIFESTYLE_TAGS) {
       form.setValue("lifestyleTags", [...current, tag], { shouldValidate: true });
     }

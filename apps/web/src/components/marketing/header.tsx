@@ -54,7 +54,10 @@ export function MarketingHeader() {
           <NavigationMenuList>
             {navLinks.map(({ href, key }) => (
               <NavigationMenuItem key={key}>
-                <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>
+                <NavigationMenuLink
+                  asChild
+                  className={cn(navigationMenuTriggerStyle(), "bg-transparent")}
+                >
                   <Link href={href}>{t(`nav.${key}`)}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>

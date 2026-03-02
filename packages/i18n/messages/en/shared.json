@@ -570,14 +570,16 @@
         "personality": "Personality",
         "languages": "Languages",
         "photos": "Photos",
-        "preferences": "Preferences"
+        "preferences": "Preferences",
+        "security": "Chatbeveiliging"
       },
       "stepDescriptions": {
         "step1": "Tell us a bit about yourself.",
         "step2": "What describes you best?",
         "step3": "Which languages do you speak?",
         "step4": "Add photos so houses get to know you.",
-        "step5": "What are you looking for?"
+        "step5": "What are you looking for?",
+        "step6": "Bescherm je chatberichten"
       },
       "fields": {
         "gender": "Gender",
@@ -616,6 +618,19 @@
       "validation": {
         "minTags": "Select at least {min} tags",
         "minLanguages": "Select at least {min} language"
+      },
+      "security": {
+        "e2ee_title": "End-to-end versleutelde chats",
+        "e2ee_description": "OpenHospi versleutelt al je chats end-to-end. Alleen jij en de andere persoon kunnen berichten lezen.",
+        "use_pin": "Gebruik pincode",
+        "enter_pin": "Kies een 6-cijferige PIN",
+        "confirm_pin": "Bevestig je PIN",
+        "setup_pin": "Instellen met PIN",
+        "pin_length_error": "PIN moet 6 cijfers zijn",
+        "pin_mismatch": "Pincodes komen niet overeen",
+        "pin_hint": "Deze PIN beschermt je versleutelingssleutel. Je hebt hem nodig om je chats op een nieuw apparaat te herstellen.",
+        "setup_success": "Chatversleuteling succesvol ingesteld",
+        "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw."
       }
     },
     "rooms": {
@@ -1221,7 +1236,30 @@
       "unblock_user": "Unblock",
       "report_message": "Report message",
       "report_user": "Report {name}",
-      "blocked": "You have blocked this user"
+      "blocked": "You have blocked this user",
+      "key_reset_message": "Bericht van voor het opnieuw instellen van de sleutel — kan niet worden ontsleuteld",
+      "encryption": {
+        "unlock_title": "Ontgrendel je chats",
+        "unlock_description": "Je versleutelingssleutels moeten worden hersteld op dit apparaat.",
+        "unlock_pin": "Ontgrendel met PIN",
+        "enter_pin": "Voer je PIN in",
+        "confirm_pin": "Bevestig je PIN",
+        "wrong_pin": "Onjuiste PIN. Probeer het opnieuw.",
+        "recovery_success": "Chats succesvol ontgrendeld",
+        "recovery_error": "Kon chats niet ontgrendelen. Probeer het opnieuw.",
+        "start_fresh": "Toegang kwijt? Begin opnieuw",
+        "start_fresh_title": "Opnieuw beginnen?",
+        "start_fresh_warning": "Je verliest toegang tot oude berichten. Dit kan niet ongedaan worden gemaakt.",
+        "start_fresh_confirm": "Opnieuw beginnen",
+        "reset_error": "Kon versleutelingssleutels niet resetten. Probeer het opnieuw.",
+        "setup_title": "Chatversleuteling instellen",
+        "setup_description": "Bescherm je berichten met een PIN.",
+        "setup_with_pin": "Instellen met PIN",
+        "pin_length_error": "PIN moet 6 cijfers zijn",
+        "pin_mismatch": "Pincodes komen niet overeen",
+        "setup_success": "Chatversleuteling succesvol ingesteld",
+        "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw."
+      }
     },
     "invitations": {
       "title": "Invitations",

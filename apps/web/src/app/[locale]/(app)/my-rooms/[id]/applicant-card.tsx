@@ -5,7 +5,7 @@ import {
   INVITABLE_APPLICATION_STATUSES,
   ReviewDecision,
 } from "@openhospi/shared/enums";
-import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, UserCircle, X } from "lucide-react";
+import { Check, Loader2, Minus, ThumbsDown, ThumbsUp, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -21,10 +21,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
@@ -93,15 +93,11 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
     <>
       <Card className="overflow-hidden">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
-          <Avatar className="size-12">
-            {applicant.avatarUrl ? (
-              <AvatarImage src={applicant.avatarUrl} alt={applicant.firstName} />
-            ) : (
-              <AvatarFallback>
-                <UserCircle className="size-8" />
-              </AvatarFallback>
-            )}
-          </Avatar>
+          <UserAvatar
+            avatarUrl={applicant.avatarUrl}
+            userName={`${applicant.firstName} ${applicant.lastName}`}
+            size="lg"
+          />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h3 className="truncate font-semibold">

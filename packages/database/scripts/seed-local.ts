@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { reset, seed } from "drizzle-seed";
@@ -685,9 +685,9 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "permanent",
           "temporary",
           "permanent",
-          "permanent",
-          "permanent",
           "sublet",
+          "permanent",
+          "permanent",
           "permanent",
           "permanent",
           "permanent",
@@ -1111,8 +1111,9 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       backupKey: f.string(),
     },
   },
-  // blocks, conversationMembers, messageReceipts have composite PKs —
-  // drizzle-seed can't guarantee unique combinations, so they stay empty
+  // Tables with composite PKs — drizzle-seed can't guarantee unique combinations,
+  // so they stay empty: blocks, conversationMembers, messageReceipts, activeConsents
+  activeConsents: { count: 0 },
   reports: {
     count: 10,
     columns: {
@@ -1187,6 +1188,17 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
     },
   },
 }));
+
+// ── Fix availableUntil for non-permanent rooms ──────────────────────
+// drizzle-seed shuffles column values independently, so we can't rely
+// on array index alignment. Instead, set availableUntil post-seed based
+// on actual rentalType and availableFrom values.
+await db
+  .update(schema.rooms)
+  .set({
+    availableUntil: sql`(${schema.rooms.availableFrom}::date + interval '5 months')::date`,
+  })
+  .where(inArray(schema.rooms.rentalType, ["temporary", "sublet"]));
 
 // ── Photo seeding ────────────────────────────────────────────────────
 

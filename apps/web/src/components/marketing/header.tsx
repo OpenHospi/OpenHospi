@@ -19,6 +19,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Link } from "@/i18n/navigation";
 import { getLoginUrl } from "@/lib/urls";
+import { cn } from "@/lib/utils";
 
 import { LanguageSwitcher } from "./language-switcher";
 
@@ -53,7 +54,10 @@ export function MarketingHeader() {
           <NavigationMenuList>
             {navLinks.map(({ href, key }) => (
               <NavigationMenuItem key={key}>
-                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink
+                  asChild
+                  className={cn(navigationMenuTriggerStyle(), "bg-transparent")}
+                >
                   <Link href={href}>{t(`nav.${key}`)}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>

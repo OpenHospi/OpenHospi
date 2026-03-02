@@ -532,14 +532,22 @@
         "showFilters": "Toon filters",
         "hideFilters": "Verberg filters"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Nu beschikbaar",
+        "availableFrom": "Vanaf {date}",
+        "until": "tot {date}"
+      },
       "loadMore": "Meer laden"
     },
     "profile": {
       "title": "Mijn profiel",
       "institution": "Instelling",
-      "editTitle": "Profiel bewerken",
       "editSuccess": "Profiel bijgewerkt",
+      "editBio": "Bio bewerken",
+      "editAbout": "Over mij bewerken",
+      "editPreferences": "Voorkeuren bewerken",
+      "editLanguages": "Talen bewerken",
+      "editLifestyle": "Levensstijl bewerken",
       "bio": "Over mij",
       "studyInfo": "Studie-informatie",
       "studyProgram": "Studie",
@@ -552,16 +560,7 @@
       "availableFrom": "Beschikbaar vanaf",
       "lifestyleTags": "Levensstijl",
       "languages": "Gesproken talen",
-      "completeness": {
-        "title": "Profiel {completed}/{total} compleet",
-        "photo": "Profielfoto",
-        "bio": "Bio",
-        "studyProgram": "Studie",
-        "birthDate": "Geboortedatum",
-        "preferredCity": "Voorkeursstad",
-        "lifestyleTags": "Levensstijl tags (2+)",
-        "vereniging": "Vereniging"
-      }
+      "vereniging": "Vereniging"
     },
     "onboarding": {
       "title": "Maak je profiel compleet",
@@ -753,7 +752,8 @@
         "preferredAgeMin": "Min leeftijd",
         "preferredAgeMax": "Max leeftijd",
         "preferredLifestyleTags": "Gewenste levensstijl",
-        "roomVereniging": "Vereniging"
+        "roomVereniging": "Vereniging",
+        "availableUntilHint": "Verplicht bij onderhuur en tijdelijke verhuur"
       },
       "placeholders": {
         "title": "bijv. Gezellige kamer in studentenhuis",
@@ -771,6 +771,9 @@
       },
       "helpers": {
         "serviceCosts": "Bijv. schoonmaak, internet, VvE-bijdrage"
+      },
+      "validation": {
+        "availableUntilRequired": "Een einddatum is verplicht voor onderhuur en tijdelijke verhuur"
       },
       "utilities": {
         "included": "Inbegrepen in de huur",

@@ -10,6 +10,19 @@ import { revalidatePath } from "next/cache";
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
 
+type Tx = Parameters<Parameters<typeof withRLS>[1]>[0];
+
+async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
+  const [slot1] = await tx
+    .select({ url: profilePhotos.url })
+    .from(profilePhotos)
+    .where(and(eq(profilePhotos.userId, userId), eq(profilePhotos.slot, 1)));
+  await tx
+    .update(profiles)
+    .set({ avatarUrl: slot1?.url ?? null })
+    .where(eq(profiles.id, userId));
+}
+
 export async function updateProfile(data: EditProfileData) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
@@ -29,6 +42,7 @@ export async function updateProfile(data: EditProfileData) {
         studyLevel: d.studyLevel || null,
         bio: d.bio || null,
         lifestyleTags: d.lifestyleTags,
+        languages: d.languages,
         preferredCity: d.preferredCity,
         maxRent: d.maxRent != null ? String(d.maxRent) : null,
         availableFrom: d.availableFrom,
@@ -60,16 +74,18 @@ export async function saveProfilePhoto(formData: FormData) {
     url = await uploadPhotoToStorage(file, "profile-photos", path);
 
     const photoUrl = url;
-    const [photo] = await withRLS(session.user.id, (tx) =>
-      tx
+    const [photo] = await withRLS(session.user.id, async (tx) => {
+      const [inserted] = await tx
         .insert(profilePhotos)
         .values({ userId: session.user.id, slot, url: photoUrl })
         .onConflictDoUpdate({
           target: [profilePhotos.userId, profilePhotos.slot],
           set: { url: photoUrl, uploadedAt: new Date() },
         })
-        .returning(),
-    );
+        .returning();
+      await syncAvatarUrl(tx, session.user.id);
+      return [inserted];
+    });
 
     revalidatePath("/profile");
     return { photo };
@@ -115,6 +131,8 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
           .set({ slot: swap.newSlot })
           .where(eq(profilePhotos.id, swap.photoId));
       }
+
+      await syncAvatarUrl(tx, session.user.id);
     });
 
     revalidatePath("/profile");
@@ -144,11 +162,12 @@ export async function deleteProfilePhoto(slot: number) {
 
     await deletePhotoFromStorage(photo.url);
 
-    await withRLS(session.user.id, (tx) =>
-      tx
+    await withRLS(session.user.id, async (tx) => {
+      await tx
         .delete(profilePhotos)
-        .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot))),
-    );
+        .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot)));
+      await syncAvatarUrl(tx, session.user.id);
+    });
 
     revalidatePath("/profile");
     return {};

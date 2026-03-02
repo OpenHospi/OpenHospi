@@ -532,14 +532,22 @@
         "showFilters": "Filter anzeigen",
         "hideFilters": "Filter ausblenden"
       },
-      "card": {},
+      "card": {
+        "availableNow": "Sofort verfügbar",
+        "availableFrom": "Ab {date}",
+        "until": "bis {date}"
+      },
       "loadMore": "Mehr laden"
     },
     "profile": {
       "title": "Mein Profil",
       "institution": "Einrichtung",
-      "editTitle": "Profil bearbeiten",
       "editSuccess": "Profil aktualisiert",
+      "editBio": "Bio bearbeiten",
+      "editAbout": "Über mich bearbeiten",
+      "editPreferences": "Präferenzen bearbeiten",
+      "editLanguages": "Sprachen bearbeiten",
+      "editLifestyle": "Lebensstil bearbeiten",
       "bio": "Über mich",
       "studyInfo": "Studieninformation",
       "studyProgram": "Studiengang",
@@ -552,16 +560,7 @@
       "availableFrom": "Verfügbar ab",
       "lifestyleTags": "Lebensstil",
       "languages": "Gesprochene Sprachen",
-      "completeness": {
-        "title": "Profil {completed}/{total} vollständig",
-        "photo": "Profilfoto",
-        "bio": "Bio",
-        "studyProgram": "Studiengang",
-        "birthDate": "Geburtsdatum",
-        "preferredCity": "Bevorzugte Stadt",
-        "lifestyleTags": "Lebensstil-Tags (2+)",
-        "vereniging": "Verein"
-      }
+      "vereniging": "Verein"
     },
     "onboarding": {
       "title": "Vervollständige dein Profil",
@@ -753,7 +752,8 @@
         "preferredAgeMin": "Mindestalter",
         "preferredAgeMax": "Höchstalter",
         "preferredLifestyleTags": "Gewünschter Lebensstil",
-        "roomVereniging": "Vereinigung"
+        "roomVereniging": "Vereinigung",
+        "availableUntilHint": "Erforderlich bei Untermiete und befristeter Vermietung"
       },
       "placeholders": {
         "title": "z.B. Gemütliches Zimmer in WG",
@@ -771,6 +771,9 @@
       },
       "helpers": {
         "serviceCosts": "z.B. Reinigung, Internet, VvE-Beitrag"
+      },
+      "validation": {
+        "availableUntilRequired": "Ein Enddatum ist für Untermiete und befristete Vermietung erforderlich"
       },
       "utilities": {
         "included": "In der Miete enthalten",

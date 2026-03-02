@@ -3,7 +3,6 @@
 import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
+import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/i18n/navigation-app";
 import { authClient } from "@/lib/auth-client";
 
 type UserMenuProps = {
   user: {
     name: string;
-    image?: string | null;
+    avatarUrl: string | null;
   };
 };
 
@@ -29,13 +29,6 @@ export function UserMenu({ user }: UserMenuProps) {
   const tCommon = useTranslations("common.labels");
   const router = useRouter();
   const { isMobile } = useSidebar();
-
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 
   function handleLogout() {
     authClient.signOut({
@@ -54,10 +47,12 @@ export function UserMenu({ user }: UserMenuProps) {
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
-          <Avatar size="sm" className="rounded-lg">
-            {user.image && <AvatarImage src={user.image} alt={user.name} />}
-            <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            avatarUrl={user.avatarUrl}
+            userName={user.name}
+            size="sm"
+            className="rounded-lg"
+          />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">{user.name}</span>
           </div>
@@ -72,10 +67,12 @@ export function UserMenu({ user }: UserMenuProps) {
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar size="sm" className="rounded-lg">
-              {user.image && <AvatarImage src={user.image} alt={user.name} />}
-              <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              avatarUrl={user.avatarUrl}
+              userName={user.name}
+              size="sm"
+              className="rounded-lg"
+            />
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">{user.name}</span>
             </div>

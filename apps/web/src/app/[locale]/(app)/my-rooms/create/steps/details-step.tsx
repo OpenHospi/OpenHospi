@@ -393,6 +393,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
+                      <FormDescription>{t("fields.availableUntilHint")}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

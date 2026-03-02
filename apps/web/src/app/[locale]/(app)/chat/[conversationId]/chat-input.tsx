@@ -1,13 +1,12 @@
 "use client";
 
-import { encryptForGroup, importPrivateKey, importPublicKey } from "@openhospi/crypto";
+import { encryptForGroup, importPublicKey } from "@openhospi/crypto";
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { getStoredPrivateKey } from "@/lib/crypto-store";
 import { supabase } from "@/lib/supabase-client";
 
 import { sendMessage } from "../chat-actions";
@@ -17,9 +16,10 @@ type Props = {
   conversationId: string;
   currentUserId: string;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
+  privateKey: CryptoKey;
 };
 
-export function ChatInput({ conversationId, currentUserId, members }: Props) {
+export function ChatInput({ conversationId, currentUserId, members, privateKey }: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -30,12 +30,6 @@ export function ChatInput({ conversationId, currentUserId, members }: Props) {
     if (!trimmed || isPending) return;
 
     startTransition(async () => {
-      // Load keys
-      const privateKeyJwk = await getStoredPrivateKey(currentUserId);
-      if (!privateKeyJwk) return;
-
-      const privateKey = await importPrivateKey(privateKeyJwk);
-
       // Get public keys of all members
       const memberIds = members.map((m) => m.userId);
       const pubKeys = await fetchPublicKeys(memberIds);

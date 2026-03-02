@@ -14,7 +14,7 @@ import {
 } from "./privacy";
 import { profilePhotos, profiles } from "./profiles";
 import { roomPhotos, rooms } from "./rooms";
-import { blocks, privateKeyBackups, publicKeys, reports } from "./security";
+import { blocks, encryptionCredentials, privateKeyBackups, publicKeys, reports } from "./security";
 
 export const relations = defineRelations(
   {
@@ -49,6 +49,7 @@ export const relations = defineRelations(
     // Security
     publicKeys,
     privateKeyBackups,
+    encryptionCredentials,
     reports,
     blocks,
     // Notifications
@@ -268,6 +269,12 @@ export const relations = defineRelations(
     privateKeyBackups: {
       user: r.one.profiles({
         from: r.privateKeyBackups.userId,
+        to: r.profiles.id,
+      }),
+    },
+    encryptionCredentials: {
+      user: r.one.profiles({
+        from: r.encryptionCredentials.userId,
         to: r.profiles.id,
       }),
     },

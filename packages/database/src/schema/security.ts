@@ -2,12 +2,14 @@ import {sql} from "drizzle-orm";
 import {authUid, authenticatedRole} from "drizzle-orm/supabase";
 import {
     index,
+    integer,
     jsonb,
     pgPolicy,
     pgTable,
     primaryKey,
     text,
     timestamp,
+    unique,
     uuid,
 } from "drizzle-orm/pg-core";
 
@@ -67,8 +69,10 @@ export const privateKeyBackups = pgTable(
             .references(() => profiles.id, { onDelete: "cascade" }),
         encryptedPrivateKey: text("encrypted_private_key").notNull(),
         backupIv: text("backup_iv").notNull(),
-        backupKey: text("backup_key").notNull(),
+        backupType: text("backup_type").notNull(), // "passkey" | "pin"
+        salt: text("salt").notNull(), // HKDF salt (passkey) or PBKDF2 salt (PIN), base64
         createdAt: timestamp("created_at", {withTimezone: true}).notNull().defaultNow(),
+        updatedAt: timestamp("updated_at", {withTimezone: true}).notNull().defaultNow(),
     },
     (table) => [
         pgPolicy("private_key_backups_select", {
@@ -96,6 +100,56 @@ export const privateKeyBackups = pgTable(
             ${authUid}`,
         }),
         pgPolicy("private_key_backups_delete", {
+            for: "delete",
+            to: authenticatedRole,
+            using: sql`${table.userId}
+            =
+            ${authUid}`,
+        }),
+    ],
+);
+
+export const encryptionCredentials = pgTable(
+    "encryption_credentials",
+    {
+        id: text("id").primaryKey(),
+        userId: uuid("user_id")
+            .notNull()
+            .references(() => profiles.id, { onDelete: "cascade" }),
+        credentialId: text("credential_id").notNull(),
+        publicKey: text("public_key").notNull(),
+        counter: integer("counter").notNull(),
+        transports: text("transports"),
+        createdAt: timestamp("created_at", {withTimezone: true}).notNull().defaultNow(),
+    },
+    (table) => [
+        unique("encryption_credentials_user_id_unique").on(table.userId),
+        index("idx_encryption_credentials_user_id").on(table.userId),
+        pgPolicy("encryption_credentials_select", {
+            for: "select",
+            to: authenticatedRole,
+            using: sql`${table.userId}
+            =
+            ${authUid}`,
+        }),
+        pgPolicy("encryption_credentials_insert", {
+            for: "insert",
+            to: authenticatedRole,
+            withCheck: sql`${table.userId}
+            =
+            ${authUid}`,
+        }),
+        pgPolicy("encryption_credentials_update", {
+            for: "update",
+            to: authenticatedRole,
+            using: sql`${table.userId}
+            =
+            ${authUid}`,
+            withCheck: sql`${table.userId}
+            =
+            ${authUid}`,
+        }),
+        pgPolicy("encryption_credentials_delete", {
             for: "delete",
             to: authenticatedRole,
             using: sql`${table.userId}

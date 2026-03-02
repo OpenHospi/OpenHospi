@@ -1,7 +1,7 @@
 "use server";
 
 import { db, withRLS } from "@openhospi/database";
-import { privateKeyBackups, publicKeys } from "@openhospi/database/schema";
+import { encryptionCredentials, privateKeyBackups, publicKeys } from "@openhospi/database/schema";
 import { eq, inArray } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth-server";
@@ -21,23 +21,27 @@ export async function uploadPublicKey(publicKeyJwk: JsonWebKey) {
 export async function uploadKeyBackup(data: {
   encryptedPrivateKey: string;
   backupIv: string;
-  backupKey: string;
+  backupType: "passkey" | "pin";
+  salt: string;
 }) {
   const session = await requireSession();
+  const now = new Date();
 
   await db
     .insert(privateKeyBackups)
-    .values({ userId: session.user.id, ...data })
+    .values({ userId: session.user.id, ...data, updatedAt: now })
     .onConflictDoUpdate({
       target: privateKeyBackups.userId,
-      set: data,
+      set: { ...data, updatedAt: now },
     });
 }
 
 export async function fetchKeyBackup(): Promise<{
   encryptedPrivateKey: string;
   backupIv: string;
-  backupKey: string;
+  backupType: string;
+  salt: string;
+  createdAt: Date;
 } | null> {
   const session = await requireSession();
 
@@ -46,13 +50,23 @@ export async function fetchKeyBackup(): Promise<{
       .select({
         encryptedPrivateKey: privateKeyBackups.encryptedPrivateKey,
         backupIv: privateKeyBackups.backupIv,
-        backupKey: privateKeyBackups.backupKey,
+        backupType: privateKeyBackups.backupType,
+        salt: privateKeyBackups.salt,
+        createdAt: privateKeyBackups.createdAt,
       })
       .from(privateKeyBackups)
       .where(eq(privateKeyBackups.userId, session.user.id)),
   );
 
   return backup ?? null;
+}
+
+export async function deleteKeyBackup() {
+  const session = await requireSession();
+
+  await db.delete(privateKeyBackups).where(eq(privateKeyBackups.userId, session.user.id));
+
+  await db.delete(encryptionCredentials).where(eq(encryptionCredentials.userId, session.user.id));
 }
 
 export async function fetchPublicKeys(

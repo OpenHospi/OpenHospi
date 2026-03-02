@@ -191,34 +191,66 @@ export async function decryptFromGroup(
   return new TextDecoder().decode(plaintextBuf);
 }
 
-// ── Backup Encrypt / Decrypt ──
+// ── Key Derivation for Backup Protection ──
 
-export type BackupData = {
-  encryptedPrivateKey: string;
-  backupIv: string;
-  backupKey: string;
-};
+export async function deriveKeyFromPIN(
+  pin: string,
+  salt: Uint8Array,
+  iterations = 600_000,
+): Promise<CryptoKey> {
+  const encoder = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(pin), "PBKDF2", false, [
+    "deriveKey",
+  ]);
 
-export async function createBackup(privateKeyJwk: JsonWebKey): Promise<BackupData> {
-  const backupKey = await crypto.subtle.generateKey(ALGO_AES, true, ["encrypt", "decrypt"]);
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encoded = new TextEncoder().encode(JSON.stringify(privateKeyJwk));
-  const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, backupKey, encoded);
-  const rawKey = await crypto.subtle.exportKey("raw", backupKey);
-
-  return {
-    encryptedPrivateKey: toBase64(encrypted),
-    backupIv: toBase64(iv),
-    backupKey: toBase64(rawKey),
-  };
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations, hash: "SHA-256" },
+    keyMaterial,
+    ALGO_AES,
+    false,
+    ["wrapKey", "unwrapKey", "encrypt", "decrypt"],
+  );
 }
 
-export async function decryptBackup(backup: BackupData): Promise<JsonWebKey> {
-  const rawKey = fromBase64(backup.backupKey);
-  const key = await crypto.subtle.importKey("raw", rawKey, ALGO_AES, false, ["decrypt"]);
-  const iv = fromBase64(backup.backupIv);
-  const ciphertext = fromBase64(backup.encryptedPrivateKey);
-  const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+export async function deriveKeyFromPRF(
+  prfOutput: ArrayBuffer,
+  salt: Uint8Array,
+): Promise<CryptoKey> {
+  const hkdfKey = await crypto.subtle.importKey("raw", prfOutput, "HKDF", false, ["deriveKey"]);
+  const encoder = new TextEncoder();
+
+  return crypto.subtle.deriveKey(
+    { name: "HKDF", hash: "SHA-256", salt, info: encoder.encode("openhospi-e2ee-backup") },
+    hkdfKey,
+    ALGO_AES,
+    false,
+    ["wrapKey", "unwrapKey", "encrypt", "decrypt"],
+  );
+}
+
+// ── Backup Encrypt / Decrypt ──
+
+export async function encryptPrivateKeyBackup(
+  privateKeyJwk: JsonWebKey,
+  wrappingKey: CryptoKey,
+): Promise<{ ciphertext: string; iv: string }> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encoded = new TextEncoder().encode(JSON.stringify(privateKeyJwk));
+  const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, wrappingKey, encoded);
+
+  return { ciphertext: toBase64(encrypted), iv: toBase64(iv) };
+}
+
+export async function decryptPrivateKeyBackup(
+  ciphertext: string,
+  iv: string,
+  wrappingKey: CryptoKey,
+): Promise<JsonWebKey> {
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: fromBase64(iv) },
+    wrappingKey,
+    fromBase64(ciphertext),
+  );
 
   return JSON.parse(new TextDecoder().decode(decrypted));
 }

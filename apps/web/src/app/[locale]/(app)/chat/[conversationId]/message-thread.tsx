@@ -1,13 +1,12 @@
 "use client";
 
-import { decryptFromGroup, importPrivateKey, importPublicKey } from "@openhospi/crypto";
+import { decryptFromGroup, importPublicKey } from "@openhospi/crypto";
 import type { EncryptedKey } from "@openhospi/crypto";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MessageBubble } from "@/components/app/message-bubble";
 import type { MessageItem } from "@/lib/chat";
-import { getStoredPrivateKey } from "@/lib/crypto-store";
 import { supabase } from "@/lib/supabase-client";
 
 import { markConversationRead } from "../chat-actions";
@@ -17,6 +16,7 @@ type Props = {
   conversationId: string;
   currentUserId: string;
   initialMessages: MessageItem[];
+  privateKey: CryptoKey;
 };
 
 type DecryptedMessage = {
@@ -29,7 +29,12 @@ type DecryptedMessage = {
   createdAt: Date;
 };
 
-export function MessageThread({ conversationId, currentUserId, initialMessages }: Props) {
+export function MessageThread({
+  conversationId,
+  currentUserId,
+  initialMessages,
+  privateKey,
+}: Props) {
   const t = useTranslations("app.chat");
   const [decryptedMessages, setDecryptedMessages] = useState<DecryptedMessage[]>([]);
   const [isDecrypting, setIsDecrypting] = useState(true);
@@ -37,11 +42,6 @@ export function MessageThread({ conversationId, currentUserId, initialMessages }
 
   const decryptMessages = useCallback(
     async (msgs: MessageItem[]) => {
-      const privateKeyJwk = await getStoredPrivateKey(currentUserId);
-      if (!privateKeyJwk) return [];
-
-      const privateKey = await importPrivateKey(privateKeyJwk);
-
       // Fetch public keys for all senders
       const senderIds = [...new Set(msgs.map((m) => m.senderId))];
       const pubKeys = await fetchPublicKeys(senderIds);
@@ -93,7 +93,7 @@ export function MessageThread({ conversationId, currentUserId, initialMessages }
             senderId: msg.senderId,
             senderFirstName: msg.senderFirstName,
             senderAvatarUrl: msg.senderAvatarUrl,
-            plaintext: t("decryption_failed"),
+            plaintext: t("key_reset_message"),
             messageType: msg.messageType,
             createdAt: msg.createdAt,
           });
@@ -101,7 +101,7 @@ export function MessageThread({ conversationId, currentUserId, initialMessages }
       }
       return results;
     },
-    [currentUserId, t],
+    [currentUserId, privateKey, t],
   );
 
   // Initial decryption

@@ -570,14 +570,16 @@
         "personality": "Personality",
         "languages": "Languages",
         "photos": "Photos",
-        "preferences": "Preferences"
+        "preferences": "Preferences",
+        "security": "Chat security"
       },
       "stepDescriptions": {
         "step1": "Tell us a bit about yourself.",
         "step2": "What describes you best?",
         "step3": "Which languages do you speak?",
         "step4": "Add photos so houses get to know you.",
-        "step5": "What are you looking for?"
+        "step5": "What are you looking for?",
+        "step6": "Protect your chat messages"
       },
       "fields": {
         "gender": "Gender",
@@ -616,6 +618,21 @@
       "validation": {
         "minTags": "Select at least {min} tags",
         "minLanguages": "Select at least {min} language"
+      },
+      "security": {
+        "e2ee_title": "End-to-end encrypted chats",
+        "e2ee_description": "OpenHospi encrypts all your chats end-to-end. Only you and the other person can read messages.",
+        "use_passkey": "Protect with passkey",
+        "use_pin": "Use PIN code instead",
+        "enter_pin": "Choose a 6-digit PIN",
+        "confirm_pin": "Confirm your PIN",
+        "setup_pin": "Set up with PIN",
+        "pin_length_error": "PIN must be 6 digits",
+        "pin_mismatch": "PINs do not match",
+        "prf_not_supported": "Your browser doesn't support passkeys for encryption. Set up a PIN code instead.",
+        "prf_fallback": "Passkey encryption not available on this device. Please use a PIN code instead.",
+        "setup_success": "Chat encryption set up successfully",
+        "setup_error": "Could not set up encryption. Please try again."
       }
     },
     "rooms": {
@@ -1221,7 +1238,32 @@
       "unblock_user": "Unblock",
       "report_message": "Report message",
       "report_user": "Report {name}",
-      "blocked": "You have blocked this user"
+      "blocked": "You have blocked this user",
+      "key_reset_message": "Message from before key reset — cannot be decrypted",
+      "encryption": {
+        "unlock_title": "Unlock your chats",
+        "unlock_description": "Your encryption keys need to be restored on this device.",
+        "unlock_passkey": "Unlock with passkey",
+        "unlock_pin": "Unlock with PIN",
+        "enter_pin": "Enter your PIN",
+        "confirm_pin": "Confirm your PIN",
+        "wrong_pin": "Incorrect PIN. Please try again.",
+        "recovery_success": "Chats unlocked successfully",
+        "recovery_error": "Could not unlock chats. Please try again.",
+        "start_fresh": "Lost access? Start fresh",
+        "start_fresh_title": "Start fresh?",
+        "start_fresh_warning": "You'll lose access to old messages. This cannot be undone.",
+        "start_fresh_confirm": "Start fresh",
+        "reset_error": "Could not reset encryption keys. Please try again.",
+        "setup_title": "Set up chat encryption",
+        "setup_description": "Protect your messages with a passkey or PIN.",
+        "use_passkey": "Protect with passkey",
+        "setup_with_pin": "Set up with PIN",
+        "pin_length_error": "PIN must be 6 digits",
+        "pin_mismatch": "PINs do not match",
+        "setup_success": "Chat encryption set up successfully",
+        "setup_error": "Could not set up encryption. Please try again."
+      }
     },
     "invitations": {
       "title": "Invitations",

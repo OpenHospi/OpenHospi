@@ -13,14 +13,16 @@ import { LanguagesStep } from "./steps/languages-step";
 import { PersonalityStep } from "./steps/personality-step";
 import { PhotosStep } from "./steps/photos-step";
 import { PreferencesStep } from "./steps/preferences-step";
+import { SecurityStep } from "./steps/security-step";
 
 type Props = {
   initialData: Partial<ProfileWithPhotos>;
+  userId: string;
 };
 
-export function OnboardingForm({ initialData }: Props) {
+export function OnboardingForm({ initialData, userId }: Props) {
   const t = useTranslations("app.onboarding");
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
   const [photos, setPhotos] = useState<ProfilePhoto[]>(initialData.photos ?? []);
 
   const stepTitles = [
@@ -29,6 +31,7 @@ export function OnboardingForm({ initialData }: Props) {
     t("steps.languages"),
     t("steps.photos"),
     t("steps.preferences"),
+    t("steps.security"),
   ];
 
   return (
@@ -101,8 +104,11 @@ export function OnboardingForm({ initialData }: Props) {
             vereniging: (initialData.vereniging as PreferencesStepData["vereniging"]) ?? undefined,
           }}
           onBack={() => setStep(4)}
+          onNext={() => setStep(6)}
         />
       )}
+
+      {step === 6 && <SecurityStep userId={userId} onBack={() => setStep(5)} />}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { reset, seed } from "drizzle-seed";
@@ -685,9 +685,9 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "permanent",
           "temporary",
           "permanent",
-          "permanent",
-          "permanent",
           "sublet",
+          "permanent",
+          "permanent",
           "permanent",
           "permanent",
           "permanent",
@@ -773,30 +773,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
         ],
       }),
       roomVereniging: f.default({ defaultValue: null }),
-      availableUntil: f.valuesFromArray({
-        values: [
-          null,         // 0  permanent
-          null,         // 1  permanent
-          "2026-09-01", // 2  temporary  (~5 months after availableFrom)
-          null,         // 3  permanent
-          null,         // 4  permanent
-          null,         // 5  permanent
-          "2026-12-01", // 6  sublet     (~6 months after availableFrom)
-          null,         // 7  permanent
-          "2026-07-01", // 8  temporary  (~3 months after availableFrom)
-          null,         // 9  permanent
-          null,         // 10 permanent
-          null,         // 11 permanent
-          "2026-10-01", // 12 temporary  (~6 months after availableFrom)
-          null,         // 13 permanent
-          null,         // 14 permanent
-          null,         // 15 permanent
-          "2027-02-01", // 16 sublet     (~6 months after availableFrom)
-          null,         // 17 permanent
-          null,         // 18 permanent
-          null,         // 19 permanent
-        ],
-      }),
+      availableUntil: f.default({ defaultValue: null }),
       preferredGender: f.valuesFromArray({
         values: [
           "no_preference",
@@ -1211,6 +1188,17 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
     },
   },
 }));
+
+// ── Fix availableUntil for non-permanent rooms ──────────────────────
+// drizzle-seed shuffles column values independently, so we can't rely
+// on array index alignment. Instead, set availableUntil post-seed based
+// on actual rentalType and availableFrom values.
+await db
+  .update(schema.rooms)
+  .set({
+    availableUntil: sql`(${schema.rooms.availableFrom}::date + interval '5 months')::date`,
+  })
+  .where(inArray(schema.rooms.rentalType, ["temporary", "sublet"]));
 
 // ── Photo seeding ────────────────────────────────────────────────────
 

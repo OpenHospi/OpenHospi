@@ -195,11 +195,11 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               )}
               {room.availableFrom && (
                 <>
-                  <dt className="text-muted-foreground">
-                    {t("availableFrom", { date: room.availableFrom })}
-                  </dt>
+                  <dt className="text-muted-foreground">{t("availability")}</dt>
                   <dd>
-                    {room.availableUntil && t("availableUntil", { date: room.availableUntil })}
+                    {t("availableFrom", { date: room.availableFrom })}
+                    {room.availableUntil &&
+                      ` · ${t("availableUntil", { date: room.availableUntil })}`}
                   </dd>
                 </>
               )}
@@ -314,6 +314,8 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               {room.availableFrom && (
                 <p className="text-sm text-muted-foreground">
                   {t("availableFrom", { date: room.availableFrom })}
+                  {room.availableUntil &&
+                    ` · ${t("availableUntil", { date: room.availableUntil })}`}
                 </p>
               )}
 

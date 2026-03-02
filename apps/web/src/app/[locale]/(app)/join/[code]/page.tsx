@@ -1,5 +1,6 @@
 import { db } from "@openhospi/database";
 import { houses } from "@openhospi/database/schema";
+import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
 import { Home } from "lucide-react";
 import { hasLocale } from "next-intl";
@@ -14,7 +15,7 @@ import { requireSession } from "@/lib/auth-server";
 import { JoinHouseButton } from "./join-house-button";
 
 type Props = {
-  params: Promise<{ locale: string; code: string }>;
+  params: Promise<{ locale: Locale; code: string }>;
 };
 
 async function getHouseByInviteCode(code: string) {

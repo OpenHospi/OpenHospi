@@ -12,9 +12,11 @@ import {
   type PersonalityStepData,
   type PreferencesStepData,
 } from "@openhospi/database/validators";
+import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
+import { redirect } from "@/i18n/navigation-app";
 import { requireSession } from "@/lib/auth-server";
 
 export async function saveAboutStep(data: AboutStepData) {
@@ -93,7 +95,7 @@ export async function savePreferencesStep(data: PreferencesStepData) {
 }
 
 export async function finishOnboarding() {
-  const session = await requireSession();
-  if (!session) return;
-  redirect("/discover");
+  await requireSession();
+  const locale = (await getLocale()) as Locale;
+  redirect({ href: "/discover", locale });
 }

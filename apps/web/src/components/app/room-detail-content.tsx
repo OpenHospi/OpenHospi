@@ -26,7 +26,17 @@ function CostBreakdown({
     RoomDetail,
     "utilitiesIncluded" | "totalCost" | "rentPrice" | "serviceCosts" | "estimatedUtilitiesCosts"
   >;
-  t: (key: any) => string;
+  t: (
+    key:
+      | "rentInclUtilities"
+      | "rent"
+      | "serviceCosts"
+      | "utilitiesEstimated"
+      | "estimatedTotal"
+      | "total"
+      | "utilitiesIncluded"
+      | "utilitiesNotIncluded",
+  ) => string;
 }) {
   const isIncluded = room.utilitiesIncluded === UtilitiesIncluded.included;
   const isEstimated = room.utilitiesIncluded === UtilitiesIncluded.estimated;
@@ -90,7 +100,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
   const tCommon = await getTranslations("common.labels");
   const tEnums = await getTranslations("enums");
 
-  const cityName = tEnums(`city.${room.city}` as any);
+  const cityName = tEnums(`city.${room.city}`);
 
   // Build address parts based on auth level
   const addressParts = [cityName];
@@ -141,14 +151,14 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
             {room.houseType && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 <Home className="size-4" />
-                <span>{tEnums(`house_type.${room.houseType}` as any)}</span>
+                <span>{tEnums(`house_type.${room.houseType}`)}</span>
               </div>
             )}
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <UserRound className="size-4" />
               <span>
                 {tEnums(
-                  `gender_preference.${room.preferredGender || GenderPreference.no_preference}` as any,
+                  `gender_preference.${room.preferredGender || GenderPreference.no_preference}`,
                 )}
                 {room.preferredAgeMin != null &&
                   room.preferredAgeMax != null &&
@@ -174,11 +184,15 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               {room.furnishing && (
                 <>
                   <dt className="text-muted-foreground">{tEnums("furnishing_label")}</dt>
-                  <dd>{tEnums(`furnishing.${room.furnishing}` as any)}</dd>
+                  <dd>{tEnums(`furnishing.${room.furnishing}`)}</dd>
                 </>
               )}
-              <dt className="text-muted-foreground">{t("rentalType")}</dt>
-              <dd>{tEnums(`rental_type.${room.rentalType}` as any)}</dd>
+              {room.rentalType && (
+                <>
+                  <dt className="text-muted-foreground">{t("rentalType")}</dt>
+                  <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
+                </>
+              )}
               {room.availableFrom && (
                 <>
                   <dt className="text-muted-foreground">
@@ -194,7 +208,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                   <dt className="text-muted-foreground">{t("acceptedLanguages")}</dt>
                   <dd>
                     {room.acceptedLanguages
-                      .map((lang) => tEnums(`language_enum.${lang}` as any))
+                      .map((lang) => tEnums(`language_enum.${lang}`))
                       .join(", ")}
                   </dd>
                 </>
@@ -209,7 +223,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               <div className="mt-2 flex flex-wrap gap-2">
                 {room.features.map((f) => (
                   <Badge key={f} variant="secondary">
-                    {tEnums(`room_feature.${f}` as any)}
+                    {tEnums(`room_feature.${f}`)}
                   </Badge>
                 ))}
               </div>
@@ -223,7 +237,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               <div className="mt-2 flex flex-wrap gap-2">
                 {room.locationTags.map((tag) => (
                   <Badge key={tag} variant="outline">
-                    {tEnums(`location_tag.${tag}` as any)}
+                    {tEnums(`location_tag.${tag}`)}
                   </Badge>
                 ))}
               </div>
@@ -262,7 +276,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                     <p className="truncate text-xs text-muted-foreground">
                       {room.owner.studyProgram}
                       {room.owner.studyLevel &&
-                        ` · ${tEnums(("study_level." + room.owner.studyLevel) as any)}`}
+                        " · " + tEnums(`study_level.${room.owner.studyLevel}`)}
                     </p>
                   )}
                   <div className="mt-1">

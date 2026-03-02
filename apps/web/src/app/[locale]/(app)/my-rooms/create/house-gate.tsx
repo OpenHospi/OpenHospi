@@ -31,7 +31,7 @@ function useCreateHouseHandler() {
   return async (formData: FormData) => {
     const result = await createHouseAndContinue(formData);
     if (result.error) {
-      toast.error(t(`houseSetup.errors.${result.error}` as any));
+      toast.error((t as unknown as (key: string) => string)(`houseSetup.errors.${result.error}`));
       return;
     }
     if (result.id) {

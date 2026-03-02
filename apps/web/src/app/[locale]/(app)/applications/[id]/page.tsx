@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
@@ -23,7 +24,7 @@ import { WithdrawButton } from "./withdraw-button";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -32,7 +33,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
 export default async function ApplicationDetailPage({ params }: Props) {
@@ -84,7 +85,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
           <div className="flex-1 p-4">
             <h2 className="text-xl font-semibold">{application.roomTitle}</h2>
             <p className="text-sm text-muted-foreground">
-              {tEnums(`city.${application.roomCity}` as any)}
+              {tEnums(`city.${application.roomCity}`)}
             </p>
             <p className="mt-2 text-lg font-bold">
               €{application.roomRentPrice}
@@ -92,7 +93,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
               {application.roomHouseType && (
-                <span>{tEnums(`house_type.${application.roomHouseType}` as any)}</span>
+                <span>{tEnums(`house_type.${application.roomHouseType}`)}</span>
               )}
               {application.roomSizeM2 && <span>· {application.roomSizeM2} m²</span>}
               {application.roomTotalHousemates != null && (
@@ -116,7 +117,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-3">
             <Badge className={cn("text-sm", APPLICATION_STATUS_COLORS[application.status])}>
-              {tEnums(`application_status.${application.status}` as any)}
+              {tEnums(`application_status.${application.status}`)}
             </Badge>
             <span className="text-sm text-muted-foreground">
               {t("appliedOn", { date: appliedDate })}

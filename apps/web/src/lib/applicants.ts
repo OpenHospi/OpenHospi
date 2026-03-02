@@ -1,6 +1,7 @@
 import { withRLS } from "@openhospi/database";
 import { applications, profilePhotos, profiles, reviews } from "@openhospi/database/schema";
 import { MAX_APPLICANTS_PER_PAGE } from "@openhospi/shared/constants";
+import type { Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne } from "drizzle-orm";
 
@@ -17,13 +18,13 @@ export type RoomApplicant = {
   firstName: string;
   lastName: string;
   avatarUrl: string | null;
-  gender: string | null;
+  gender: Gender | null;
   birthDate: string | null;
   studyProgram: string | null;
-  studyLevel: string | null;
+  studyLevel: StudyLevel | null;
   bio: string | null;
-  lifestyleTags: string[];
-  vereniging: string | null;
+  lifestyleTags: LifestyleTag[];
+  vereniging: Vereniging | null;
   institutionDomain: string;
   personalMessage: string | null;
   status: ApplicationStatus;

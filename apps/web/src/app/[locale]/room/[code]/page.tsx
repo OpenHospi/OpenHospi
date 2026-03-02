@@ -1,5 +1,6 @@
 import { db } from "@openhospi/database";
 import { houseMembers, houses, rooms } from "@openhospi/database/schema";
+import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { count, eq } from "drizzle-orm";
 import { Home, MapPin, Users } from "lucide-react";
@@ -16,7 +17,7 @@ import { requireSession } from "@/lib/auth-server";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; code: string }>;
+  params: Promise<{ locale: Locale; code: string }>;
 }): Promise<Metadata> {
   const { locale, code } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -26,12 +27,12 @@ export async function generateMetadata({
   const room = await getRoomByShareLink(code);
   if (!room || room.status !== RoomStatus.active) return { title: t("title") };
 
-  const cityName = tEnums(`city.${room.city}` as any);
+  const cityName = tEnums(`city.${room.city}`);
   return { title: `${room.title} — ${cityName}` };
 }
 
 type Props = {
-  params: Promise<{ locale: string; code: string }>;
+  params: Promise<{ locale: Locale; code: string }>;
 };
 
 async function getRoomByShareLink(code: string) {
@@ -105,7 +106,7 @@ export default async function JoinRoomPage({ params }: Props) {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MapPin className="size-4" />
-                {tEnums(`city.${room.city}` as any)}
+                {tEnums(`city.${room.city}`)}
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="size-4" />

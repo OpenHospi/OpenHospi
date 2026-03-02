@@ -4,6 +4,7 @@ import { withRLS } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
 import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
+import type { Locale } from "@openhospi/i18n";
 import {
   GenderPreference,
   isValidRoomTransition,
@@ -13,8 +14,9 @@ import {
 } from "@openhospi/shared/enums";
 import { and, count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
+import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
@@ -174,5 +176,6 @@ export async function deleteRoom(roomId: string) {
   });
 
   revalidatePath("/my-rooms");
-  redirect("/my-rooms");
+  const locale = (await getLocale()) as Locale;
+  redirect({ href: "/my-rooms", locale });
 }

@@ -7,7 +7,7 @@ import {
   processingRestrictions,
   profiles,
 } from "@openhospi/database/schema";
-import { AdminAction, type DataRequestStatus } from "@openhospi/shared/enums";
+import { AdminAction, type DataRequestStatus, type DataRequestType } from "@openhospi/shared/enums";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -18,8 +18,8 @@ export type DataRequestListItem = {
   userId: string;
   userName: string;
   userEmail: string;
-  type: string;
-  status: string;
+  type: DataRequestType;
+  status: DataRequestStatus;
   description: string | null;
   createdAt: Date;
 };

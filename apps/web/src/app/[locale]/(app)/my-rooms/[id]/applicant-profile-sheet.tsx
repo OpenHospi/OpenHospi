@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { ReviewData } from "@openhospi/database/validators";
 import { reviewSchema } from "@openhospi/database/validators";
 import { MAX_NOTES_LENGTH } from "@openhospi/shared/constants";
@@ -29,6 +28,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
+import { zodResolver } from "@/lib/form-utils";
 
 import { submitReview } from "./applicant-actions";
 
@@ -56,8 +56,7 @@ export function ApplicantProfileSheet({
   const myReview = applicant.reviews.find((r) => r.reviewerId === currentUserId);
 
   const form = useForm<ReviewData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(reviewSchema as any),
+    resolver: zodResolver(reviewSchema),
     defaultValues: {
       decision: myReview?.decision ?? undefined,
       notes: myReview?.notes ?? "",
@@ -111,18 +110,18 @@ export function ApplicantProfileSheet({
                   {age} {t("yearsOld")}
                 </>
               )}
-              {applicant.gender && <> · {tEnums(`gender.${applicant.gender}` as any)}</>}
+              {applicant.gender && <> · {tEnums(`gender.${applicant.gender}`)}</>}
             </p>
             <InstitutionBadge domain={applicant.institutionDomain} />
             {applicant.studyProgram && (
               <p className="text-sm">
                 {applicant.studyProgram}
-                {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}` as any)}</>}
+                {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
               </p>
             )}
             {applicant.vereniging && (
               <p className="text-sm text-muted-foreground">
-                {tEnums(`vereniging.${applicant.vereniging}` as any)}
+                {tEnums(`vereniging.${applicant.vereniging}`)}
               </p>
             )}
           </div>
@@ -144,7 +143,7 @@ export function ApplicantProfileSheet({
               <div className="mt-1 flex flex-wrap gap-1">
                 {applicant.lifestyleTags.map((tag) => (
                   <Badge key={tag} variant="outline" className="text-xs">
-                    {tEnums(`lifestyle_tag.${tag}` as any)}
+                    {tEnums(`lifestyle_tag.${tag}`)}
                   </Badge>
                 ))}
               </div>
@@ -184,7 +183,7 @@ export function ApplicantProfileSheet({
                               className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                             >
                               <RadioGroupItem value={d} />
-                              {tEnums(`review_decision.${d}` as any)}
+                              {tEnums(`review_decision.${d}`)}
                             </Label>
                           ))}
                         </RadioGroup>

@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { ReportStatus, ReportType } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -18,7 +19,7 @@ import { routing } from "@/i18n/routing";
 import { getReports } from "../actions";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ status?: string; type?: string }>;
 };
 
@@ -71,7 +72,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                 return (
                   <TabsTrigger key={s} value={s} asChild>
                     <Link href={`/admin/reports?status=${s}${typeParam}`}>
-                      {tEnums(`report_status.${s}` as any)}
+                      {tEnums(`report_status.${s}`)}
                     </Link>
                   </TabsTrigger>
                 );
@@ -103,7 +104,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                     : "bg-muted text-muted-foreground hover:bg-accent"
                 }`}
               >
-                {tEnums(`report_type.${t_}` as any)}
+                {tEnums(`report_type.${t_}`)}
               </Link>
             ))}
           </div>
@@ -138,7 +139,7 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                   <TableCell>
                     <Link href={`/admin/reports/${report.id}`} className="block">
                       <Badge className={TYPE_COLORS[report.reportType] ?? ""}>
-                        {tEnums(`report_type.${report.reportType}` as any)}
+                        {tEnums(`report_type.${report.reportType}`)}
                       </Badge>
                     </Link>
                   </TableCell>
@@ -155,13 +156,13 @@ export default async function AdminReportsPage({ params, searchParams }: Props) 
                       href={`/admin/reports/${report.id}`}
                       className="text-primary hover:underline"
                     >
-                      {tEnums(`report_reason.${report.reason}` as any)}
+                      {tEnums(`report_reason.${report.reason}`)}
                     </Link>
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/reports/${report.id}`} className="block">
                       <Badge className={STATUS_COLORS[report.status] ?? ""}>
-                        {tEnums(`report_status.${report.status}` as any)}
+                        {tEnums(`report_status.${report.status}`)}
                       </Badge>
                     </Link>
                   </TableCell>

@@ -7,10 +7,13 @@ import {
   profiles,
   rooms,
 } from "@openhospi/database/schema";
+import type { Locale } from "@openhospi/i18n";
 import type { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
+
+import { redirect } from "@/i18n/navigation-app";
 
 import { auth } from "./auth";
 import type { HousePermission } from "./permissions";
@@ -22,14 +25,20 @@ export async function getSession() {
 
 export async function requireSession() {
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) {
+    const locale = (await getLocale()) as Locale;
+    return redirect({ href: "/login", locale });
+  }
   return session;
 }
 
 export async function requireAdmin() {
   const session = await requireSession();
   const userWithRole = session.user as typeof session.user & { role?: string };
-  if (userWithRole.role !== "admin") redirect("/login");
+  if (userWithRole.role !== "admin") {
+    const locale = (await getLocale()) as Locale;
+    redirect({ href: "/login", locale });
+  }
   return session;
 }
 
@@ -113,7 +122,8 @@ export async function requireCompleteProfile(userId: string) {
   });
 
   if (result.needsRedirect) {
-    redirect("/onboarding");
+    const locale = (await getLocale()) as Locale;
+    redirect({ href: "/onboarding", locale });
   }
 }
 

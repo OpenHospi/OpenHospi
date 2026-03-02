@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { AboutStepData } from "@openhospi/database/validators";
 import { aboutStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
@@ -32,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@/lib/form-utils";
 
 import { saveAboutStep } from "../actions";
 
@@ -48,8 +48,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<AboutStepData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(aboutStepSchema as any),
+    resolver: zodResolver(aboutStepSchema),
     defaultValues: {
       gender: defaultValues.gender,
       birthDate: defaultValues.birthDate ?? "",
@@ -91,7 +90,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
                       className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                     >
                       <RadioGroupItem value={g} />
-                      {tEnums(`gender.${g}` as any)}
+                      {tEnums(`gender.${g}`)}
                     </Label>
                   ))}
                 </RadioGroup>
@@ -153,7 +152,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
                     : StudyLevel.values
                   ).map((level) => (
                     <SelectItem key={level} value={level}>
-                      {tEnums(`study_level.${level}` as any)}
+                      {tEnums(`study_level.${level}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -15,7 +16,7 @@ import { routing } from "@/i18n/routing";
 import { getAuditLog } from "../actions";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ page?: string }>;
 };
 
@@ -61,7 +62,7 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
                   </TableCell>
                   <TableCell>{entry.adminName}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}` as any)}</Badge>
+                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}`)}</Badge>
                     {entry.targetType && (
                       <span className="text-muted-foreground ml-2 text-xs">{entry.targetType}</span>
                     )}

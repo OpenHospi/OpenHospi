@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -17,7 +18,7 @@ import { DiscoverLoadMore } from "./discover-load-more";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -26,7 +27,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
@@ -57,14 +58,16 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
 
   return {
     filters: {
-      city: first("city"),
+      city: first("city") as DiscoverFilters["city"],
       minPrice: minPriceStr ? Number(minPriceStr) : undefined,
       maxPrice: maxPriceStr ? Number(maxPriceStr) : undefined,
-      houseType: first("houseType"),
-      furnishing: first("furnishing"),
+      houseType: first("houseType") as DiscoverFilters["houseType"],
+      furnishing: first("furnishing") as DiscoverFilters["furnishing"],
       availableFrom: first("availableFrom"),
-      features: featuresStr ? featuresStr.split(",") : undefined,
-      locationTags: locationTagsStr ? locationTagsStr.split(",") : undefined,
+      features: featuresStr ? (featuresStr.split(",") as DiscoverFilters["features"]) : undefined,
+      locationTags: locationTagsStr
+        ? (locationTagsStr.split(",") as DiscoverFilters["locationTags"])
+        : undefined,
     },
     sort,
     cursor,

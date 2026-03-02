@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { ShieldCheck } from "lucide-react";
 import { hasLocale } from "next-intl";
@@ -11,7 +12,7 @@ import { getSession } from "@/lib/auth-server";
 import { AdminLoginButton } from "./admin-login-button";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function AdminLoginPage({ params }: Props) {

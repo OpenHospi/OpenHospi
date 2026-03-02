@@ -32,7 +32,7 @@ export async function ProfileHeader({ profile }: Props) {
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{institution.short}</Badge>
           {profile.vereniging && (
-            <Badge variant="outline">{tEnums(`vereniging.${profile.vereniging}` as any)}</Badge>
+            <Badge variant="outline">{tEnums(`vereniging.${profile.vereniging}`)}</Badge>
           )}
         </div>
       </div>

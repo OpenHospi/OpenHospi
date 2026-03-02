@@ -42,7 +42,7 @@ export function InvitationCard({ invitation }: Props) {
     startTransition(async () => {
       const result = await respondToInvitation(invitation.invitationId, { status });
       if (result?.error) {
-        toast.error(t(`errors.${result.error}` as any));
+        toast.error(t(`errors.${result.error}` as Parameters<typeof t>[0]));
         return;
       }
       toast.success(t("rsvpSuccess"));
@@ -58,7 +58,7 @@ export function InvitationCard({ invitation }: Props) {
         declineReason: declineReason.trim(),
       });
       if (result?.error) {
-        toast.error(t(`errors.${result.error}` as any));
+        toast.error(t(`errors.${result.error}` as Parameters<typeof t>[0]));
         return;
       }
       toast.success(t("rsvpSuccess"));
@@ -83,7 +83,7 @@ export function InvitationCard({ invitation }: Props) {
                 : INVITATION_STATUS_COLORS[invitation.status],
             )}
           >
-            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}` as any)}
+            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}`)}
           </Badge>
         </div>
       </CardHeader>

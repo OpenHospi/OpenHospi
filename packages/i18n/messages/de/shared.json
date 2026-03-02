@@ -440,11 +440,16 @@
     },
     "admin_action": {
       "view_report": "Meldung ansehen",
+      "update_report": "Meldung aktualisieren",
       "suspend_user": "Benutzer sperren",
       "unsuspend_user": "Sperre aufheben",
       "remove_listing": "Anzeige entfernen",
       "remove_message": "Nachricht entfernen",
-      "dismiss_report": "Meldung ablehnen"
+      "dismiss_report": "Meldung ablehnen",
+      "process_data_request": "Datenanfrage bearbeiten",
+      "lift_restriction": "Einschränkung aufheben",
+      "export_user_data": "Benutzerdaten exportieren",
+      "view_user_data": "Benutzerdaten einsehen"
     }
   },
   "notifications": {

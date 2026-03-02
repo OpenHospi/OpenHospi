@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
 import type { Metadata } from "next";
@@ -15,7 +16,7 @@ import { LoginButton } from "./login-button";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -24,7 +25,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function LoginPage({ params }: Props) {

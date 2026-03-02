@@ -35,14 +35,14 @@ export async function RoomCard({ room }: Props) {
             </div>
           )}
           <Badge className={cn("absolute top-2 right-2", ROOM_STATUS_COLORS[room.status])}>
-            {tEnums(`room_status.${room.status}` as any)}
+            {tEnums(`room_status.${room.status}`)}
           </Badge>
         </div>
         <CardHeader className="pb-2">
           <h3 className="truncate font-semibold">{room.title || t("wizard.steps.basicInfo")}</h3>
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{tEnums(`city.${room.city}` as any)}</span>
+          <span>{tEnums(`city.${room.city}`)}</span>
           <span className="flex items-center gap-2">
             {room.applicantCount > 0 && (
               <span className="flex items-center gap-1">

@@ -1,6 +1,7 @@
 import { withRLS } from "@openhospi/database";
 import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
+import type { City } from "@openhospi/shared/enums";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 
@@ -11,7 +12,7 @@ export type RoomWithPhotos = Room & { photos: RoomPhoto[] };
 export type RoomSummary = {
   id: string;
   title: string;
-  city: string;
+  city: City;
   rentPrice: number;
   serviceCosts: number | null;
   totalCost: number;

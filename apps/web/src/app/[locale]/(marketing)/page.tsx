@@ -1,4 +1,5 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import type { Locale } from "@openhospi/i18n";
 import {
   BadgeCheck,
   HandCoins,
@@ -24,7 +25,7 @@ import { alternatesForPath, organizationJsonLd } from "@/lib/seo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -69,8 +70,8 @@ export default function HomePage() {
               <FeatureCard
                 key={key}
                 icon={featureIcons[key]}
-                title={t(`features.${key}.title` as any)}
-                description={t(`features.${key}.description` as any)}
+                title={t(`features.${key}.title`)}
+                description={t(`features.${key}.description`)}
               />
             ))}
           </div>
@@ -91,9 +92,9 @@ export default function HomePage() {
                   <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
                     <Icon className="size-7 text-primary" />
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold">{t(`howItWorks.${step}.title` as any)}</h3>
+                  <h3 className="mt-4 text-lg font-semibold">{t(`howItWorks.${step}.title`)}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {t(`howItWorks.${step}.description` as any)}
+                    {t(`howItWorks.${step}.description`)}
                   </p>
                 </div>
               );

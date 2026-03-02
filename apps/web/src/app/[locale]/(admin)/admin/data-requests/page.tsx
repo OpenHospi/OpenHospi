@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { DataRequestStatus } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -19,7 +20,7 @@ import { routing } from "@/i18n/routing";
 import { getDataRequests, getDataRequestStats } from "../data-request-actions";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ status?: string }>;
 };
 
@@ -87,7 +88,7 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
             </TabsTrigger>
             {DataRequestStatus.values.map((s) => (
               <TabsTrigger key={s} value={s} asChild>
-                <Link href={`/admin/data-requests?status=${s}`}>{t(`statuses.${s}` as any)}</Link>
+                <Link href={`/admin/data-requests?status=${s}`}>{t(`statuses.${s}`)}</Link>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -126,13 +127,15 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/data-requests/${request.id}`} className="block">
-                      <Badge variant="outline">{t(`types.${request.type}` as any)}</Badge>
+                      <Badge variant="outline">
+                        {t(`types.${request.type}` as Parameters<typeof t>[0])}
+                      </Badge>
                     </Link>
                   </TableCell>
                   <TableCell>
                     <Link href={`/admin/data-requests/${request.id}`} className="block">
                       <Badge className={STATUS_COLORS[request.status] ?? ""}>
-                        {t(`statuses.${request.status}` as any)}
+                        {t(`statuses.${request.status}` as Parameters<typeof t>[0])}
                       </Badge>
                     </Link>
                   </TableCell>

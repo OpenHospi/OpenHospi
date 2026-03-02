@@ -23,7 +23,7 @@ export function JoinHouseButton({ code }: Props) {
     startTransition(async () => {
       const result = await joinHouse(code);
       if ("error" in result) {
-        toast.error(t(`errors.${result.error}` as any));
+        toast.error((t as unknown as (key: string) => string)(`errors.${result.error}`));
         return;
       }
       toast.success(t("success"));

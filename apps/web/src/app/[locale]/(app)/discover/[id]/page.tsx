@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { Settings } from "lucide-react";
 import type { Metadata } from "next";
@@ -22,7 +23,7 @@ import { ApplyDialog } from "./apply-dialog";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }): Promise<Metadata> {
   const { locale, id } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -32,7 +33,7 @@ export async function generateMetadata({
   const room = await getRoomMetadata(id);
   if (!room) return { title: t("notFound") };
 
-  const cityName = tEnums(`city.${room.city}` as any);
+  const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
@@ -58,7 +59,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
 export default async function DiscoverRoomDetailPage({ params }: Props) {
@@ -122,7 +123,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Badge className={APPLICATION_STATUS_COLORS[existingApplication.status]}>
-                  {tEnums(`application_status.${existingApplication.status}` as any)}
+                  {tEnums(`application_status.${existingApplication.status}`)}
                 </Badge>
               </div>
               <Button asChild variant="outline" className="w-full">

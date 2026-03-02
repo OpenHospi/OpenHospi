@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -12,7 +13,7 @@ import { CopyButton } from "./_components/copy-button";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -27,7 +28,7 @@ export async function generateMetadata({
 export default async function MissingAssociationPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;

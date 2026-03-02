@@ -2,11 +2,13 @@
 
 import { db, withRLS } from "@openhospi/database";
 import { houseMembers, houses } from "@openhospi/database/schema";
+import type { Locale } from "@openhospi/i18n";
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
+import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 
 export async function createHouse(formData: FormData): Promise<void> {
@@ -36,7 +38,8 @@ export async function createHouse(formData: FormData): Promise<void> {
     });
   });
 
-  redirect("/my-house");
+  const locale = (await getLocale()) as Locale;
+  redirect({ href: "/my-house", locale });
 }
 
 export async function regenerateInviteCode() {

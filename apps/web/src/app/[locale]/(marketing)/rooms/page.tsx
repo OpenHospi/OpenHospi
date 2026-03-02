@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { MapPin } from "lucide-react";
 import type { Metadata } from "next";
@@ -17,7 +18,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -30,7 +31,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function RoomsIndexPage({ params }: Props) {
@@ -69,9 +70,9 @@ export default async function RoomsIndexPage({ params }: Props) {
                 <CardContent className="flex items-center gap-3 p-4">
                   <MapPin className="size-5 text-primary" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{tEnums(`city.${city}` as any)}</p>
+                    <p className="truncate font-semibold">{tEnums(`city.${city}`)}</p>
                     <p className="text-sm text-muted-foreground">
-                      {t("roomsAvailable", { count:String( String(count) )})}
+                      {t("roomsAvailable", { count: String(String(count)) })}
                     </p>
                   </div>
                 </CardContent>

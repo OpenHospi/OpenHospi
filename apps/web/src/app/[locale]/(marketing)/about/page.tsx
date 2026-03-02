@@ -1,4 +1,5 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import type { Locale } from "@openhospi/i18n";
 import { AlertTriangle, Heart, User } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -12,7 +13,7 @@ import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -34,7 +35,7 @@ const sectionConfig: {
   { key: "openSource", icon: SiGithub },
 ];
 
-export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
@@ -60,9 +61,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <div key={key}>
               <div className="flex items-center gap-3">
                 <Icon className="size-6 text-primary" />
-                <h2 className="text-2xl font-bold">{t(`${key}.title` as any)}</h2>
+                <h2 className="text-2xl font-bold">{t(`${key}.title`)}</h2>
               </div>
-              <p className="mt-4 text-muted-foreground">{t(`${key}.description` as any)}</p>
+              <p className="mt-4 text-muted-foreground">{t(`${key}.description`)}</p>
               {key === "openSource" && (
                 <div className="mt-6">
                   <Button variant="outline" asChild>

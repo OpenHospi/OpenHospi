@@ -8,9 +8,15 @@
   },
   "scripts": {
     "dev": "pnpm --filter @openhospi/web dev",
+    "dev:mobile": "pnpm --filter @openhospi/mobile start",
+    "dev:mobile:android": "pnpm --filter @openhospi/mobile android",
+    "dev:mobile:ios": "pnpm --filter @openhospi/mobile ios",
+    "dev:mobile:web": "pnpm --filter @openhospi/mobile web",
     "build": "pnpm --filter @openhospi/web build",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint --fix",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r format:check",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -26,7 +32,9 @@
     "supabase:status": "supabase status",
     "supabase:reset": "supabase db reset && pnpm db:push:local && pnpm db:setup:storage:local && pnpm db:seed:local",
     "i18n:check": "i18n-check --source nl --locales packages/i18n/messages",
-    "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
+    "expo:doctor": "cd apps/mobile && npx expo-doctor@latest",
+    "expo:install": "pnpm --filter @openhospi/mobile exec expo install",
+    "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist **/.expo"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -39,7 +47,15 @@
     "overrides": {
       "@types/react": "^19.2.14",
       "@types/react-dom": "^19.2.3",
-      "drizzle-orm": "1.0.0-beta.15-859cf75"
+      "drizzle-orm": "1.0.0-beta.15-859cf75",
+      "rollup": ">=4.59.0",
+      "hono": ">=4.12.2",
+      "minimatch@3": "3.1.4",
+      "minimatch@9": "9.0.7",
+      "minimatch@10": "10.2.3",
+      "ajv@6": "6.14.0",
+      "esbuild": ">=0.25.0",
+      "lodash": ">=4.17.23"
     }
   },
   "devDependencies": {

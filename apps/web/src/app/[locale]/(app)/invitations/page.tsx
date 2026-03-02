@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -7,7 +8,7 @@ import { getUserInvitations } from "@/lib/invitations";
 
 import { InvitationCard } from "./invitation-card";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.invitations" });
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function InvitationsPage({ params }: Props) {

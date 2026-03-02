@@ -29,14 +29,18 @@ export default async function AppLayout({ children, params }: Props) {
 
   const session = await getSession();
   let restricted = false;
+  let avatarUrl: string | null = null;
 
   if (session) {
     await requireCompleteProfile(session.user.id);
 
-    // Check privacy policy version
+    // Check privacy policy version + fetch avatar
     const [profile] = await withRLS(session.user.id, (tx) =>
       tx
-        .select({ privacyPolicyAcceptedVersion: profiles.privacyPolicyAcceptedVersion })
+        .select({
+          privacyPolicyAcceptedVersion: profiles.privacyPolicyAcceptedVersion,
+          avatarUrl: profiles.avatarUrl,
+        })
         .from(profiles)
         .where(eq(profiles.id, session.user.id)),
     );
@@ -45,12 +49,13 @@ export default async function AppLayout({ children, params }: Props) {
       redirect({ href: "/privacy-accept", locale });
     }
 
+    avatarUrl = profile?.avatarUrl ?? null;
     restricted = await isRestricted(session.user.id);
   }
 
   const user = {
     name: session?.user.name || "User",
-    image: session?.user.image ?? null,
+    avatarUrl,
   };
 
   return (

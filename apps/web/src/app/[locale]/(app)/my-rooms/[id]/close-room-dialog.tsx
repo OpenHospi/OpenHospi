@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, UserCircle, XCircle } from "lucide-react";
+import { Loader2, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -15,7 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/i18n/navigation-app";
 import { cn } from "@/lib/utils";
 
@@ -106,15 +106,11 @@ export function CloseRoomDialog({ roomId, applicants }: Props) {
                       setSelectedId(selectedId === a.applicationId ? undefined : a.applicationId)
                     }
                   >
-                    <Avatar>
-                      {a.avatarUrl ? (
-                        <AvatarImage src={a.avatarUrl} alt={a.firstName} />
-                      ) : (
-                        <AvatarFallback>
-                          <UserCircle className="size-5" />
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
+                    <UserAvatar
+                      avatarUrl={a.avatarUrl}
+                      userName={`${a.firstName} ${a.lastName}`}
+                      size="sm"
+                    />
                     <span className="flex-1 text-sm font-medium">
                       {a.firstName} {a.lastName}
                     </span>

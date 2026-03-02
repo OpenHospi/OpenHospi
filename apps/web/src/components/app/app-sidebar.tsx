@@ -21,7 +21,7 @@ import { UserMenu } from "./user-menu";
 type AppSidebarProps = {
   user: {
     name: string;
-    image?: string | null;
+    avatarUrl: string | null;
   };
 };
 

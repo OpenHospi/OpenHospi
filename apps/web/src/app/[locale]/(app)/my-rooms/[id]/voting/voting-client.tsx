@@ -1,11 +1,10 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Check, Loader2, UserCircle } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/i18n/navigation-app";
 import type { VotableApplicant, VoteBoard } from "@/lib/votes";
 
@@ -99,15 +99,11 @@ export function VotingClient({ roomId, currentUserId, voteBoard }: Props) {
               <span className="w-6 text-center text-sm font-bold text-muted-foreground">
                 {index + 1}
               </span>
-              <Avatar>
-                {applicant.avatarUrl ? (
-                  <AvatarImage src={applicant.avatarUrl} alt={applicant.firstName} />
-                ) : (
-                  <AvatarFallback>
-                    <UserCircle className="size-5" />
-                  </AvatarFallback>
-                )}
-              </Avatar>
+              <UserAvatar
+                avatarUrl={applicant.avatarUrl}
+                userName={`${applicant.firstName} ${applicant.lastName}`}
+                size="sm"
+              />
               <span className="flex-1 text-sm font-medium">
                 {applicant.firstName} {applicant.lastName}
               </span>

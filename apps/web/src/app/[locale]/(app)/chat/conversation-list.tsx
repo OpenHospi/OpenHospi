@@ -2,8 +2,8 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { UserAvatar } from "@/components/user-avatar";
 import { Link } from "@/i18n/navigation-app";
 import type { ConversationListItem } from "@/lib/chat";
 
@@ -51,9 +51,11 @@ export function ConversationList({ conversations, currentUserId }: Props) {
             href={`/chat/${conv.id}`}
             className="hover:bg-muted/50 flex items-center gap-3 p-4 transition-colors"
           >
-            <Avatar>
-              <AvatarFallback>{displayName.charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              avatarUrl={otherMembers[0]?.avatarUrl ?? null}
+              userName={displayName}
+              size="md"
+            />
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between">
                 <span className="truncate font-medium">{displayName}</span>

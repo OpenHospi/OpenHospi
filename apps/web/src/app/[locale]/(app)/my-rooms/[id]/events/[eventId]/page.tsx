@@ -1,13 +1,13 @@
 import type { Locale } from "@openhospi/i18n";
-import { ArrowLeft, Calendar, Clock, MapPin, Users, UserCircle } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UserAvatar } from "@/components/user-avatar";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getRoomApplicants } from "@/lib/applicants";
@@ -130,15 +130,11 @@ export default async function EventDetailPage({ params }: Props) {
                       <div className="space-y-2">
                         {grouped[status].map((invitee) => (
                           <div key={invitee.invitationId} className="flex items-center gap-3">
-                            <Avatar>
-                              {invitee.avatarUrl ? (
-                                <AvatarImage src={invitee.avatarUrl} alt={invitee.firstName} />
-                              ) : (
-                                <AvatarFallback>
-                                  <UserCircle className="size-5" />
-                                </AvatarFallback>
-                              )}
-                            </Avatar>
+                            <UserAvatar
+                              avatarUrl={invitee.avatarUrl}
+                              userName={`${invitee.firstName} ${invitee.lastName}`}
+                              size="sm"
+                            />
                             <span className="text-sm font-medium">
                               {invitee.firstName} {invitee.lastName}
                             </span>

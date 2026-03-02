@@ -276,7 +276,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                     <p className="truncate text-xs text-muted-foreground">
                       {room.owner.studyProgram}
                       {room.owner.studyLevel &&
-                        ` · ${tEnums(`study_level.${room.owner.studyLevel}`)}`}
+                        " · " + tEnums(`study_level.${room.owner.studyLevel}`)}
                     </p>
                   )}
                   <div className="mt-1">

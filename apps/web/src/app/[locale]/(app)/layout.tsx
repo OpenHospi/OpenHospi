@@ -1,6 +1,5 @@
 import { withRLS } from "@openhospi/database";
 import { profiles } from "@openhospi/database/schema";
-import type { Locale } from "@openhospi/i18n";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 import { AlertTriangle } from "lucide-react";

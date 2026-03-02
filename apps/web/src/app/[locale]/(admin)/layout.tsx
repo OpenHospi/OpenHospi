@@ -1,4 +1,3 @@
-import type { Locale } from "@openhospi/i18n";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";

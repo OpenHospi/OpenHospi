@@ -1,4 +1,4 @@
-import type { Locale, WebMessages  } from "@openhospi/i18n";
+import type { WebMessages } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
 import type { Metadata } from "next";

@@ -2,6 +2,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
 import { flatConfigs as importXConfigs } from "eslint-plugin-import-x";
 import noSecrets from "eslint-plugin-no-secrets";
 import security from "eslint-plugin-security";
@@ -56,6 +57,16 @@ const eslintConfig = defineConfig([
   // ── Import ordering & validation ──
   importXConfigs.recommended,
   importXConfigs.typescript,
+  {
+    settings: {
+      "import-x/resolver-next": [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          project: "./tsconfig.json",
+        }),
+      ],
+    },
+  },
   {
     rules: {
       "import-x/order": [

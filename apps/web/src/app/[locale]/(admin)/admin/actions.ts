@@ -11,6 +11,7 @@ import {
   session,
   user,
 } from "@openhospi/database/schema";
+import type { City, ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -26,7 +27,7 @@ export type AggregateStats = {
   activeListings: number;
   pendingReports: number;
   pendingReportsByType: Record<ReportType, number>;
-  listingsByCity: { city: string; count: number }[];
+  listingsByCity: { city: City; count: number }[];
 };
 
 export async function getAggregateStats(): Promise<AggregateStats> {
@@ -96,9 +97,9 @@ export type ReportListItem = {
   reportedUserName: string | null;
   reportedRoomId: string | null;
   reportedMessageId: string | null;
-  reason: string;
+  reason: ReportReason;
   description: string | null;
-  status: string;
+  status: ReportStatus;
   createdAt: Date;
 };
 
@@ -198,9 +199,9 @@ export async function getReportDetail(reportId: string): Promise<ReportDetail | 
 export type RoomDetail = {
   id: string;
   title: string;
-  city: string;
+  city: City;
   rentPrice: string;
-  status: string;
+  status: RoomStatus;
   description: string | null;
   ownerName: string;
   coverPhotoUrl: string | null;
@@ -463,7 +464,7 @@ export type AuditLogEntry = {
   id: string;
   adminUserId: string;
   adminName: string;
-  action: string;
+  action: AdminAction;
   targetType: string | null;
   targetId: string | null;
   reason: string;

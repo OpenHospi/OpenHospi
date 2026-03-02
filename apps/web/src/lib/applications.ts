@@ -21,7 +21,7 @@ export type UserApplication = {
   id: string;
   roomId: string;
   roomTitle: string;
-  roomCity: string;
+  roomCity: City;
   roomRentPrice: number;
   roomCoverPhotoUrl: string | null;
   roomPhotoCount: number;
@@ -33,13 +33,13 @@ export type UserApplication = {
 
 export type ApplicationDetail = UserApplication & {
   roomDescription: string | null;
-  roomHouseType: string | null;
-  roomFurnishing: string | null;
+  roomHouseType: HouseType | null;
+  roomFurnishing: Furnishing | null;
   roomSizeM2: number | null;
   roomTotalHousemates: number | null;
   roomAvailableFrom: string | null;
-  roomFeatures: string[];
-  roomLocationTags: string[];
+  roomFeatures: RoomFeature[];
+  roomLocationTags: LocationTag[];
 };
 
 export type RoomDetailForApply = {

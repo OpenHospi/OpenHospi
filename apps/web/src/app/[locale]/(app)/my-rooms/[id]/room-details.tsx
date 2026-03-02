@@ -51,7 +51,9 @@ export async function RoomDetails({ room }: Props) {
         {room.availableUntil && (
           <Detail label={t("fields.availableUntil")} value={room.availableUntil} />
         )}
-        <Detail label={t("fields.rentalType")} value={tEnums(`rental_type.${room.rentalType}`)} />
+        {room.rentalType && (
+          <Detail label={t("fields.rentalType")} value={tEnums(`rental_type.${room.rentalType}`)} />
+        )}
         {room.houseType && (
           <Detail label={t("fields.houseType")} value={tEnums(`house_type.${room.houseType}`)} />
         )}
@@ -67,10 +69,12 @@ export async function RoomDetails({ room }: Props) {
             value={tEnums(`vereniging.${room.roomVereniging}`)}
           />
         )}
-        <Detail
-          label={t("fields.preferredGender")}
-          value={tEnums(`gender_preference.${room.preferredGender}`)}
-        />
+        {room.preferredGender && (
+          <Detail
+            label={t("fields.preferredGender")}
+            value={tEnums(`gender_preference.${room.preferredGender}`)}
+          />
+        )}
         {room.preferredAgeMin && (
           <Detail label={t("fields.preferredAgeMin")} value={String(room.preferredAgeMin)} />
         )}

@@ -329,13 +329,13 @@ export function EditProfileDialog({profile}: Props) {
                                         value={field.value ?? null}
                                         onValueChange={field.onChange}
                                         items={City.values}
-                                        itemToStringLabel={(city) => tEnums(`city.${city}`)}
+                                        itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
                                     >
                                         <ComboboxInput placeholder={tOnboarding("placeholders.preferredCity")}/>
                                         <ComboboxContent>
                                             <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                                             <ComboboxList>
-                                                {(city) => (
+                                                {(city: City) => (
                                                     <ComboboxItem key={city} value={city}>
                                                         {tEnums(`city.${city}`)}
                                                     </ComboboxItem>
@@ -388,7 +388,7 @@ export function EditProfileDialog({profile}: Props) {
                                             form.setValue("vereniging", val ?? undefined, {shouldValidate: true})
                                         }
                                         items={Vereniging.values}
-                                        itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                                        itemToStringLabel={(v: Vereniging) => tEnums(`vereniging.${v}`)}
                                     >
                                         <ComboboxInput
                                             placeholder={tOnboarding("placeholders.searchVereniging")}
@@ -397,7 +397,7 @@ export function EditProfileDialog({profile}: Props) {
                                         <ComboboxContent>
                                             <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                                             <ComboboxList>
-                                                {(v) => (
+                                                {(v: Vereniging) => (
                                                     <ComboboxItem key={v} value={v}>
                                                         {tEnums(`vereniging.${v}`)}
                                                     </ComboboxItem>

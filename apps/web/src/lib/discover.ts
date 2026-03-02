@@ -8,6 +8,7 @@ import type {
   HouseType,
   RentalType,
   UtilitiesIncluded,
+  Vereniging,
 } from "@openhospi/shared/enums";
 import {
   DiscoverSort,
@@ -151,7 +152,7 @@ function buildDiscoverConditions(
   // Vereniging visibility: show non-vereniging rooms + rooms matching user's vereniging
   if (userVereniging) {
     conditions.push(
-      or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging))!,
+      or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging as Vereniging))!,
     );
   } else {
     conditions.push(isNull(rooms.roomVereniging));

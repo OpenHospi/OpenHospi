@@ -58,14 +58,16 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
 
   return {
     filters: {
-      city: first("city"),
+      city: first("city") as DiscoverFilters["city"],
       minPrice: minPriceStr ? Number(minPriceStr) : undefined,
       maxPrice: maxPriceStr ? Number(maxPriceStr) : undefined,
-      houseType: first("houseType"),
-      furnishing: first("furnishing"),
+      houseType: first("houseType") as DiscoverFilters["houseType"],
+      furnishing: first("furnishing") as DiscoverFilters["furnishing"],
       availableFrom: first("availableFrom"),
-      features: featuresStr ? featuresStr.split(",") : undefined,
-      locationTags: locationTagsStr ? locationTagsStr.split(",") : undefined,
+      features: featuresStr ? (featuresStr.split(",") as DiscoverFilters["features"]) : undefined,
+      locationTags: locationTagsStr
+        ? (locationTagsStr.split(",") as DiscoverFilters["locationTags"])
+        : undefined,
     },
     sort,
     cursor,

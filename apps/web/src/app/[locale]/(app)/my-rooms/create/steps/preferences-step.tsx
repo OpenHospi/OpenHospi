@@ -264,13 +264,13 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
                     }
                     items={Vereniging.values}
-                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                    itemToStringLabel={(v: Vereniging) => tEnums(`vereniging.${v}`)}
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
                       <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                       <ComboboxList>
-                        {(v) => (
+                        {(v: Vereniging) => (
                           <ComboboxItem key={v} value={v}>
                             {tEnums(`vereniging.${v}`)}
                           </ComboboxItem>

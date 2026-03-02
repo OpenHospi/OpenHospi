@@ -1,6 +1,6 @@
 import type { Locale } from "@openhospi/i18n";
-import type { SupportedLocale } from "@openhospi/shared/constants";
-import { City } from "@openhospi/shared/enums";
+import type { City } from "@openhospi/shared/enums";
+import { City as CityEnum } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -21,7 +21,7 @@ import { getLoginUrl } from "@/lib/urls";
 export const dynamic = "force-dynamic";
 
 function isCity(slug: string): boolean {
-  return City.values.includes(slug as (typeof City.values)[number]);
+  return CityEnum.values.includes(slug as (typeof CityEnum.values)[number]);
 }
 
 export async function generateMetadata({
@@ -35,7 +35,8 @@ export async function generateMetadata({
   if (isCity(slug)) {
     const tEnums = await getTranslations({ locale, namespace: "enums" });
     const t = await getTranslations({ locale, namespace: "public.cityPage" });
-    const cityName = tEnums(`city.${slug}`);
+    const validCity = slug as City;
+    const cityName = tEnums(`city.${validCity}`);
     return {
       title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
@@ -83,7 +84,7 @@ export default async function RoomSlugPage({ params }: Props) {
   setRequestLocale(locale);
 
   if (isCity(slug)) {
-    return <CityPage locale={locale} city={slug} />;
+    return <CityPage locale={locale} city={slug as City} />;
   }
 
   return <RoomDetailPage locale={locale} roomId={slug} />;
@@ -91,7 +92,7 @@ export default async function RoomSlugPage({ params }: Props) {
 
 // ── City Page ────────────────────────────────────────────────────────────────
 
-async function CityPage({ locale, city }: { locale: SupportedLocale; city: string }) {
+async function CityPage({ locale, city }: { locale: Locale; city: City }) {
   const rooms = await getPublicRoomsByCity(city, 6);
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
@@ -169,7 +170,7 @@ async function CityPage({ locale, city }: { locale: SupportedLocale; city: strin
 
 // ── Room Detail Page ─────────────────────────────────────────────────────────
 
-async function RoomDetailPage({ locale, roomId }: { locale: SupportedLocale; roomId: string }) {
+async function RoomDetailPage({ locale, roomId }: { locale: Locale; roomId: string }) {
   const room = await getPublicRoom(roomId);
   if (!room) notFound();
 

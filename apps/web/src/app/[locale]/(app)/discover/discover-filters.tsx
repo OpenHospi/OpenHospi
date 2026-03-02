@@ -178,13 +178,13 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             value={filters.city ?? null}
             onValueChange={(v) => updateFilter("city", v ?? undefined)}
             items={City.values}
-            itemToStringLabel={(city) => tEnums(`city.${city}`)}
+            itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
           >
             <ComboboxInput placeholder={t("cityPlaceholder")} showClear />
             <ComboboxContent>
               <ComboboxEmpty>{t("cityPlaceholder")}</ComboboxEmpty>
               <ComboboxList>
-                {(city) => (
+                {(city: City) => (
                   <ComboboxItem key={city} value={city}>
                     {tEnums(`city.${city}`)}
                   </ComboboxItem>
@@ -283,7 +283,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             values={filters.features ?? []}
             options={RoomFeature.values as unknown as string[]}
             placeholder={t("featuresPlaceholder")}
-            renderLabel={(v) => tEnums(`room_feature.${v}`)}
+            renderLabel={(v) => tEnums(`room_feature.${v as RoomFeature}`)}
             onChange={(v) => updateFilter("features", v.length > 0 ? v : undefined)}
             selectedCountLabel={(count) => t("selectedCount", { count:String( String(count) )})}
           />
@@ -296,7 +296,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             values={filters.locationTags ?? []}
             options={LocationTag.values as unknown as string[]}
             placeholder={t("locationTagsPlaceholder")}
-            renderLabel={(v) => tEnums(`location_tag.${v}`)}
+            renderLabel={(v) => tEnums(`location_tag.${v as LocationTag}`)}
             onChange={(v) => updateFilter("locationTags", v.length > 0 ? v : undefined)}
             selectedCountLabel={(count) => t("selectedCount", { count:String( String(count) )})}
           />

@@ -57,7 +57,7 @@ export function RoomCreateForm({ room }: Props) {
               >
                 <button
                   type="button"
-                  onClick={() => isClickable && setStep(stepNum)}
+                  onClick={() => isClickable && setStep(stepNum as 1 | 2 | 3 | 4)}
                   disabled={!isClickable}
                   className={cn(
                     "relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors",

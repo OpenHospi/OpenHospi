@@ -9,9 +9,8 @@ import type { z } from "zod";
  */
 export function zodResolver<T extends z.ZodType<FieldValues>>(
   schema: T,
-  ...args: Parameters<typeof _zodResolver> extends [unknown, ...infer R] ? R : never
 ): Resolver<z.infer<T>> {
-  return _zodResolver(schema as Parameters<typeof _zodResolver>[0], ...args) as unknown as Resolver<
+  return _zodResolver(schema as Parameters<typeof _zodResolver>[0]) as unknown as Resolver<
     z.infer<T>
   >;
 }

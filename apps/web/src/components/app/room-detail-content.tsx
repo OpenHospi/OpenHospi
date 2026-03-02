@@ -187,8 +187,12 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                   <dd>{tEnums(`furnishing.${room.furnishing}`)}</dd>
                 </>
               )}
-              <dt className="text-muted-foreground">{t("rentalType")}</dt>
-              <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
+              {room.rentalType && (
+                <>
+                  <dt className="text-muted-foreground">{t("rentalType")}</dt>
+                  <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
+                </>
+              )}
               {room.availableFrom && (
                 <>
                   <dt className="text-muted-foreground">
@@ -272,7 +276,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                     <p className="truncate text-xs text-muted-foreground">
                       {room.owner.studyProgram}
                       {room.owner.studyLevel &&
-                        ` · ${tEnums(("study_level." + room.owner.studyLevel))}`}
+                        ` · ${tEnums(`study_level.${room.owner.studyLevel}`)}`}
                     </p>
                   )}
                   <div className="mt-1">

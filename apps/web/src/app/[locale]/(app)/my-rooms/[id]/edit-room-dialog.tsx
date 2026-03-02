@@ -204,13 +204,13 @@ export function EditRoomDialog({ room }: Props) {
                     value={field.value ?? null}
                     onValueChange={field.onChange}
                     items={City.values}
-                    itemToStringLabel={(city) => tEnums(`city.${city}`)}
+                    itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
                   >
                     <ComboboxInput placeholder={t("fields.city")} />
                     <ComboboxContent>
                       <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                       <ComboboxList>
-                        {(city) => (
+                        {(city: City) => (
                           <ComboboxItem key={city} value={city}>
                             {tEnums(`city.${city}`)}
                           </ComboboxItem>
@@ -641,13 +641,13 @@ export function EditRoomDialog({ room }: Props) {
                       form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
                     }
                     items={Vereniging.values}
-                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                    itemToStringLabel={(v: Vereniging) => tEnums(`vereniging.${v}`)}
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
                       <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
                       <ComboboxList>
-                        {(v) => (
+                        {(v: Vereniging) => (
                           <ComboboxItem key={v} value={v}>
                             {tEnums(`vereniging.${v}`)}
                           </ComboboxItem>

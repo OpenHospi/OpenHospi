@@ -33,6 +33,7 @@ type Props = {
 export function StatusControls({ room, closeApplicants = [] }: Props) {
   const t = useTranslations("app.rooms");
   const tCommon = useTranslations("common.labels");
+  const tCommonErrors = useTranslations("common.errors");
   const [isPending, startTransition] = useTransition();
   const [closeOpen, setCloseOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -42,7 +43,11 @@ export function StatusControls({ room, closeApplicants = [] }: Props) {
     startTransition(async () => {
       const result = await updateRoomStatus(room.id, status);
       if (result?.error) {
-        toast.error((t as unknown as (key: string) => string)(`status.${result.error}`));
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tCommonErrors("processingRestricted"));
+        } else {
+          toast.error(t(`status.${result.error}`));
+        }
         return;
       }
       let messageKey: "activated" | "paused" | "closed" = "closed";

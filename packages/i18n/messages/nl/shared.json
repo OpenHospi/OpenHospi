@@ -9,7 +9,10 @@
       "invalidFileType": "Ongeldig bestandstype. Gebruik JPEG, PNG of WebP.",
       "uploadFailed": "Uploaden mislukt. Probeer het opnieuw.",
       "deleteFailed": "Verwijderen mislukt. Probeer het opnieuw.",
-      "processingRestricted": "De verwerking van je account is momenteel beperkt. Je kunt dit beheren in Instellingen > Privacy."
+      "processingRestricted": "De verwerking van je account is momenteel beperkt. Je kunt dit beheren in Instellingen > Privacy.",
+      "createFailed": "Aanmaken mislukt. Probeer het opnieuw.",
+      "notAuthenticated": "Niet ingelogd.",
+      "invalidData": "Ongeldige gegevens."
     },
     "labels": {
       "title": "Titel",
@@ -670,7 +673,8 @@
         },
         "errors": {
           "INVALID_NAME": "Naam moet minstens 2 tekens bevatten.",
-          "RATE_LIMITED": "Te veel verzoeken. Probeer het later opnieuw."
+          "RATE_LIMITED": "Te veel verzoeken. Probeer het later opnieuw.",
+          "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
         }
       },
       "housePicker": {
@@ -813,7 +817,10 @@
         "draftSaved": "Concept opgeslagen",
         "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw.",
         "confirmDeleteTitle": "Concept verwijderen?",
-        "confirmDelete": "Dit concept wordt permanent verwijderd."
+        "confirmDelete": "Dit concept wordt permanent verwijderd.",
+        "invalidTransition": "Ongeldige statusovergang.",
+        "NO_HOUSE": "Geen huis gevonden.",
+        "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
       },
       "manage": {
         "title": "Kamerbeheer",

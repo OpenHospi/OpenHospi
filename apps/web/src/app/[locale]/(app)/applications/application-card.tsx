@@ -1,5 +1,5 @@
 import { Camera, Home } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
@@ -16,8 +16,9 @@ type Props = {
 export async function ApplicationCard({ application }: Props) {
   const t = await getTranslations("app.applications");
   const tEnums = await getTranslations("enums");
+  const format = await getFormatter();
 
-  const appliedDate = new Date(application.appliedAt).toLocaleDateString();
+  const appliedDate = format.dateTime(new Date(application.appliedAt), "short");
 
   return (
     <Link href={`/applications/${application.id}`}>

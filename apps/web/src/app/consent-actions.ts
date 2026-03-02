@@ -17,7 +17,7 @@ type ConsentEntry = {
 
 export async function recordConsent(consents: ConsentEntry[]) {
   const session = await getSession();
-  if (!session) return { error: "Not authenticated" };
+  if (!session) return { error: "notAuthenticated" as const };
 
   const h = await headers();
   const ipAddress = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;

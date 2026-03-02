@@ -27,19 +27,19 @@ import { getUserOwnerHouses } from "@/lib/houses";
 import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 import { createDraftRoom, getExistingDraft } from "@/lib/rooms";
 
-export async function createDraftRoomAction(): Promise<{ id?: string; error?: string }> {
+export async function createDraftRoomAction() {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
   if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
-    return { error: "RATE_LIMITED" };
+    return { error: "RATE_LIMITED" as const };
   }
 
   const userHouses = await getUserOwnerHouses(session.user.id);
 
   if (userHouses.length === 0) {
-    return { error: "NO_HOUSE" };
+    return { error: "NO_HOUSE" as const };
   }
 
   if (userHouses.length === 1) {
@@ -48,29 +48,27 @@ export async function createDraftRoomAction(): Promise<{ id?: string; error?: st
       const id = existingId ?? (await createDraftRoom(session.user.id, userHouses[0].id));
       return { id };
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Failed to create room";
-      return { error: message };
+      console.error(e);
+      return { error: "createFailed" as const };
     }
   }
 
   // Multiple houses — the page should show house picker
-  return { error: "PICK_HOUSE" };
+  return { error: "PICK_HOUSE" as const };
 }
 
-export async function createHouseAndContinue(
-  formData: FormData,
-): Promise<{ id?: string; error?: string }> {
+export async function createHouseAndContinue(formData: FormData) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
   if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
-    return { error: "RATE_LIMITED" };
+    return { error: "RATE_LIMITED" as const };
   }
 
   const name = formData.get("name") as string;
   if (!name || name.trim().length < 2) {
-    return { error: "INVALID_NAME" };
+    return { error: "INVALID_NAME" as const };
   }
 
   const houseId = crypto.randomUUID();
@@ -94,20 +92,18 @@ export async function createHouseAndContinue(
     revalidatePath("/my-house");
     return { id: roomId };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Failed to create room";
-    return { error: message };
+    console.error(e);
+    return { error: "createFailed" as const };
   }
 }
 
-export async function createDraftRoomForHouse(
-  houseId: string,
-): Promise<{ id?: string; error?: string }> {
+export async function createDraftRoomForHouse(houseId: string) {
   const session = await requireSession();
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
   if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
-    return { error: "RATE_LIMITED" };
+    return { error: "RATE_LIMITED" as const };
   }
 
   // Verify user owns this house
@@ -126,7 +122,7 @@ export async function createDraftRoomForHouse(
   });
 
   if (!membership) {
-    return { error: "NO_HOUSE" };
+    return { error: "NO_HOUSE" as const };
   }
 
   try {
@@ -134,8 +130,8 @@ export async function createDraftRoomForHouse(
     const roomId = existingId ?? (await createDraftRoom(session.user.id, houseId));
     return { id: roomId };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Failed to create room";
-    return { error: message };
+    console.error(e);
+    return { error: "createFailed" as const };
   }
 }
 
@@ -145,7 +141,7 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
   if (restricted) return restricted;
 
   const parsed = roomBasicInfoSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await requireRoomOwnership(roomId, session.user.id);
 
@@ -186,7 +182,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
   if (restricted) return restricted;
 
   const parsed = roomDetailsSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await requireRoomOwnership(roomId, session.user.id);
 
@@ -223,7 +219,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
   if (restricted) return restricted;
 
   const parsed = roomPreferencesSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid data" };
+  if (!parsed.success) return { error: "invalidData" as const };
 
   await requireRoomOwnership(roomId, session.user.id);
 
@@ -260,7 +256,7 @@ export async function publishRoom(roomId: string) {
       .from(roomPhotos)
       .where(eq(roomPhotos.roomId, roomId));
     if (photoCount.count === 0) {
-      return { error: "publishError" };
+      return { error: "publishError" as const };
     }
 
     await tx

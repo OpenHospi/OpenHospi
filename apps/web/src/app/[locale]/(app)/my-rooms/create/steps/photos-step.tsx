@@ -4,6 +4,7 @@ import {
   ALLOWED_IMAGE_TYPES,
   MAX_ROOM_PHOTO_SIZE,
   MAX_ROOM_PHOTOS,
+  ROOM_PHOTO_SLOTS,
 } from "@openhospi/shared/constants";
 import { Camera, Loader2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -36,7 +37,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
 
-  const slots = Array.from({ length: MAX_ROOM_PHOTOS }, (_, i) => i + 1);
+  const slots = ROOM_PHOTO_SLOTS;
   const hasPhoto = photos.length > 0;
 
   function getPhotoForSlot(slot: number) {
@@ -79,7 +80,11 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
         setUploadingSlot(null);
 
         if (result.error) {
-          toast.error(result.error);
+          if (result.error === "PROCESSING_RESTRICTED") {
+            toast.error(tErrors("processingRestricted"));
+          } else {
+            toast.error(tErrors(result.error));
+          }
           return;
         }
 
@@ -99,7 +104,11 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
     startTransition(async () => {
       const result = await deleteRoomPhoto(roomId, slot);
       if (result?.error) {
-        toast.error(result.error);
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tErrors("processingRestricted"));
+        } else {
+          toast.error(tErrors(result.error));
+        }
         return;
       }
       onPhotosChange(photos.filter((p) => p.slot !== slot));
@@ -110,7 +119,11 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
     startTransition(async () => {
       const result = await publishRoom(roomId);
       if (result?.error) {
-        toast.error((t as unknown as (key: string) => string)(`status.${result.error}`));
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tErrors("processingRestricted"));
+        } else {
+          toast.error(t(`status.${result.error}`));
+        }
         return;
       }
       toast.success(t("status.published"));
@@ -166,7 +179,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
                     <>
                       <StorageImage
                         src={photo.url}
-                        alt={(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
+                        alt={t(`photoSlots.slot${slot}`)}
                         bucket="room-photos"
                         fill
                         className="object-cover"
@@ -199,7 +212,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
                         <Camera className="size-6 text-muted-foreground" />
                       )}
                       <span className="text-xs text-muted-foreground">
-                        {(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
+                        {t(`photoSlots.slot${slot}`)}
                       </span>
                     </Button>
                   )}

@@ -3,7 +3,7 @@ import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { InvitationCard } from "@/app/[locale]/(app)/invitations/invitation-card";
 import { StorageImage } from "@/components/storage-image";
@@ -52,9 +52,10 @@ export default async function ApplicationDetailPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "app.applications" });
   const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const format = await getFormatter();
 
   const isTerminal = isTerminalApplicationStatus(application.status);
-  const appliedDate = new Date(application.appliedAt).toLocaleDateString();
+  const appliedDate = format.dateTime(new Date(application.appliedAt), "short");
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">

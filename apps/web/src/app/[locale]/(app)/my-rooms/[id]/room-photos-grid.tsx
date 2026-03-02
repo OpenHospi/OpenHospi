@@ -3,7 +3,7 @@
 import {
   ALLOWED_IMAGE_TYPES,
   MAX_ROOM_PHOTO_SIZE,
-  MAX_ROOM_PHOTOS,
+  ROOM_PHOTO_SLOTS,
 } from "@openhospi/shared/constants";
 import { Camera, Loader2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -31,7 +31,7 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
 
-  const slots = Array.from({ length: MAX_ROOM_PHOTOS }, (_, i) => i + 1);
+  const slots = ROOM_PHOTO_SLOTS;
 
   function getPhotoForSlot(slot: number) {
     return photos.find((p) => p.slot === slot);
@@ -52,7 +52,11 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
       setUploadingSlot(null);
 
       if (result.error) {
-        toast.error(result.error);
+        if (result.error === "PROCESSING_RESTRICTED") {
+          toast.error(tErrors("processingRestricted"));
+        } else {
+          toast.error(tErrors(result.error));
+        }
         return;
       }
 
@@ -93,7 +97,11 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
   async function performDelete(slot: number) {
     const result = await deleteRoomPhoto(roomId, slot);
     if (result?.error) {
-      toast.error(result.error);
+      if (result.error === "PROCESSING_RESTRICTED") {
+        toast.error(tErrors("processingRestricted"));
+      } else {
+        toast.error(tErrors(result.error));
+      }
       return;
     }
     setPhotos((prev) => prev.filter((p) => p.slot !== slot));
@@ -132,7 +140,7 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
                 <>
                   <StorageImage
                     src={photo.url}
-                    alt={(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
+                    alt={t(`photoSlots.slot${slot}`)}
                     bucket="room-photos"
                     fill
                     className="object-cover"
@@ -160,7 +168,7 @@ export function RoomPhotosGrid({ roomId, photos: initialPhotos }: Props) {
                     <Camera className="size-5 text-muted-foreground" />
                   )}
                   <span className="text-xs text-muted-foreground">
-                    {(t as unknown as (key: string) => string)(`photoSlots.slot${slot}`)}
+                    {t(`photoSlots.slot${slot}`)}
                   </span>
                 </Button>
               )}

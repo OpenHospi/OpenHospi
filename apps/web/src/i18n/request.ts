@@ -1,4 +1,3 @@
-import type { WebMessages } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
@@ -11,6 +10,23 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    messages: (await getMessages(locale)) as WebMessages,
+    messages: await getMessages(locale),
+    timeZone: "Europe/Amsterdam",
+    formats: {
+      dateTime: {
+        short: { day: "numeric", month: "short", year: "numeric" },
+        long: { day: "numeric", month: "long", year: "numeric" },
+        dateTime: {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        },
+      },
+      number: {
+        currency: { style: "currency", currency: "EUR" },
+      },
+    },
   };
 });

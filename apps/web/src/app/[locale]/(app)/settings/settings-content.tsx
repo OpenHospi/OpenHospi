@@ -13,7 +13,7 @@ import {
   Smartphone,
   Trash2,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -60,6 +60,7 @@ export function SettingsContent() {
   const t = useTranslations("app.settings");
   const tConsent = useTranslations("app.consent");
   const tCommon = useTranslations("common.labels");
+  const format = useFormatter();
   const router = useRouter();
   const [isExporting, startExport] = useTransition();
   const [isDeleting, startDelete] = useTransition();
@@ -448,7 +449,7 @@ export function SettingsContent() {
                           )}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {new Date(record.createdAt).toLocaleDateString()}
+                          {format.dateTime(new Date(record.createdAt), "short")}
                         </p>
                       </div>
                       <Badge variant={record.granted ? "default" : "secondary"}>
@@ -497,7 +498,7 @@ export function SettingsContent() {
                           {session.current
                             ? t("account.sessions.current")
                             : t("account.sessions.lastActive", {
-                                date: new Date(session.createdAt).toLocaleDateString(),
+                                date: format.dateTime(new Date(session.createdAt), "short"),
                               })}
                         </p>
                       </div>

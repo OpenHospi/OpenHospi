@@ -1,4 +1,16 @@
-import type { ApplicationStatus } from "@openhospi/shared/enums";
+import type {
+  ApplicationStatus,
+  City,
+  Furnishing,
+  GenderPreference,
+  HouseType,
+  Language,
+  LocationTag,
+  RentalType,
+  RoomFeature,
+  StudyLevel,
+  UtilitiesIncluded,
+} from "@openhospi/shared/enums";
 
 import type { RoomDetailForApply } from "@/lib/applications";
 import type { PublicRoom } from "@/lib/discover";
@@ -7,7 +19,7 @@ export type RoomDetail = {
   id: string;
   title: string;
   description: string | null;
-  city: string;
+  city: City;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;
@@ -16,23 +28,23 @@ export type RoomDetail = {
   longitude: number | null;
   rentPrice: number;
   deposit: number | null;
-  utilitiesIncluded: string | null;
+  utilitiesIncluded: UtilitiesIncluded | null;
   serviceCosts: number | null;
   estimatedUtilitiesCosts: number | null;
   totalCost: number;
   roomSizeM2: number | null;
   availableFrom: string | null;
   availableUntil: string | null;
-  rentalType: string | null;
-  houseType: string | null;
-  furnishing: string | null;
+  rentalType: RentalType | null;
+  houseType: HouseType | null;
+  furnishing: Furnishing | null;
   totalHousemates: number | null;
-  features: string[];
-  locationTags: string[];
-  preferredGender: string | null;
+  features: RoomFeature[];
+  locationTags: LocationTag[];
+  preferredGender: GenderPreference | null;
   preferredAgeMin: number | null;
   preferredAgeMax: number | null;
-  acceptedLanguages: string[];
+  acceptedLanguages: Language[];
   ownerId: string | null;
   photos: { id: string; slot: number; url: string; caption: string | null }[];
   owner: {
@@ -40,7 +52,7 @@ export type RoomDetail = {
     lastName: string;
     avatarUrl: string | null;
     studyProgram: string | null;
-    studyLevel: string | null;
+    studyLevel: StudyLevel | null;
     institutionDomain: string;
   } | null;
 };

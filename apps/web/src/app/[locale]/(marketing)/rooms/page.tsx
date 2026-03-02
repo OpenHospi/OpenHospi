@@ -70,7 +70,7 @@ export default async function RoomsIndexPage({ params }: Props) {
                 <CardContent className="flex items-center gap-3 p-4">
                   <MapPin className="size-5 text-primary" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{tEnums(`city.${city}` as any)}</p>
+                    <p className="truncate font-semibold">{tEnums(`city.${city}`)}</p>
                     <p className="text-sm text-muted-foreground">
                       {t("roomsAvailable", { count:String( String(count) )})}
                     </p>

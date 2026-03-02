@@ -50,9 +50,9 @@ export default async function FindARoomPage({ params }: { params: Promise<{ loca
   const tSeo = await getTranslations({ locale, namespace: "seo" });
   const loginUrl = getLoginUrl();
 
-  const steps = Array.from({ length: 6 }, (_, i) => ({
-    title: t(`steps.items.${i}.title` as any),
-    description: t(`steps.items.${i}.description` as any),
+  const steps = ([0, 1, 2, 3, 4, 5] as const).map((i) => ({
+    title: t(`steps.items.${i}.title`),
+    description: t(`steps.items.${i}.description`),
   }));
 
   // Safe: all content from our i18n translations, not user input
@@ -88,8 +88,8 @@ export default async function FindARoomPage({ params }: { params: Promise<{ loca
               <FeatureCard
                 key={i}
                 icon={whyIcons[i]}
-                title={t(`why.items.${i}.title` as any)}
-                description={t(`why.items.${i}.description` as any)}
+                title={t(`why.items.${i}.title`)}
+                description={t(`why.items.${i}.description`)}
               />
             ))}
           </div>

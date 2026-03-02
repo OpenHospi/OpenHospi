@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/lib/form-utils";
 import type { RoomDetailsData } from "@openhospi/database/validators";
 import { roomDetailsSchema } from "@openhospi/database/validators";
 import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from "@openhospi/shared/enums";
@@ -54,8 +54,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<RoomDetailsData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(roomDetailsSchema as any),
+    resolver: zodResolver(roomDetailsSchema),
     defaultValues: {
       rentPrice: defaultValues.rentPrice ?? undefined,
       deposit: defaultValues.deposit ?? undefined,
@@ -195,7 +194,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={option} />
-                          {t(`utilities.${option}` as any)}
+                          {t(`utilities.${option}`)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -279,7 +278,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                     <SelectContent>
                       {HouseType.values.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {tEnums(`house_type.${type}` as any)}
+                          {tEnums(`house_type.${type}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -304,7 +303,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                     <SelectContent>
                       {Furnishing.values.map((f) => (
                         <SelectItem key={f} value={f}>
-                          {tEnums(`furnishing.${f}` as any)}
+                          {tEnums(`furnishing.${f}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -359,7 +358,7 @@ export function DetailsStep({ roomId, defaultValues, onBack, onNext }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={type} />
-                          {tEnums(`rental_type.${type}` as any)}
+                          {tEnums(`rental_type.${type}`)}
                         </Label>
                       ))}
                     </RadioGroup>

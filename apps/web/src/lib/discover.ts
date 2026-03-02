@@ -2,6 +2,13 @@ import { db, withRLS } from "@openhospi/database";
 import { processingRestrictions, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
+import type {
+  City,
+  Furnishing,
+  HouseType,
+  RentalType,
+  UtilitiesIncluded,
+} from "@openhospi/shared/enums";
 import {
   DiscoverSort,
   GenderPreference,
@@ -31,30 +38,30 @@ import { notBlockedBy } from "@/lib/block-filter";
 export type DiscoverRoom = {
   id: string;
   title: string;
-  city: string;
+  city: City;
   rentPrice: number;
   serviceCosts: number | null;
   totalCost: number;
-  houseType: string | null;
-  furnishing: string | null;
+  houseType: HouseType | null;
+  furnishing: Furnishing | null;
   roomSizeM2: number | null;
   availableFrom: string | null;
   totalHousemates: number | null;
-  features: string[];
-  locationTags: string[];
+  features: RoomFeature[];
+  locationTags: LocationTag[];
   coverPhotoUrl: string | null;
   createdAt: Date;
 };
 
 export type DiscoverFilters = {
-  city?: string;
+  city?: City;
   minPrice?: number;
   maxPrice?: number;
-  houseType?: string;
-  furnishing?: string;
+  houseType?: HouseType;
+  furnishing?: Furnishing;
   availableFrom?: string;
-  features?: string[];
-  locationTags?: string[];
+  features?: RoomFeature[];
+  locationTags?: LocationTag[];
 };
 
 export type { DiscoverSort };
@@ -73,26 +80,26 @@ export type PublicRoom = {
   id: string;
   title: string;
   description: string | null;
-  city: string;
+  city: City;
   neighborhood: string | null;
   latitude: number | null;
   longitude: number | null;
   rentPrice: number;
   deposit: number | null;
-  utilitiesIncluded: string | null;
+  utilitiesIncluded: UtilitiesIncluded | null;
   serviceCosts: number | null;
   estimatedUtilitiesCosts: number | null;
   totalCost: number;
   roomSizeM2: number | null;
   availableFrom: string | null;
   availableUntil: string | null;
-  rentalType: string | null;
-  houseType: string | null;
-  furnishing: string | null;
+  rentalType: RentalType | null;
+  houseType: HouseType | null;
+  furnishing: Furnishing | null;
   totalHousemates: number | null;
-  features: string[];
-  locationTags: string[];
-  preferredGender: string | null;
+  features: RoomFeature[];
+  locationTags: LocationTag[];
+  preferredGender: GenderPreference | null;
   preferredAgeMin: number | null;
   preferredAgeMax: number | null;
   createdAt: Date;
@@ -100,11 +107,10 @@ export type PublicRoom = {
 };
 
 export type CityWithCount = {
-  city: string;
+  city: City;
   count: number;
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any -- Dynamic filter values from URL params can't be statically typed as Drizzle enum values */
 function buildCursorCondition(sort: DiscoverSort, cursor: DiscoverCursor) {
   if (sort === DiscoverSort.cheapest) {
     return or(
@@ -145,7 +151,7 @@ function buildDiscoverConditions(
   // Vereniging visibility: show non-vereniging rooms + rooms matching user's vereniging
   if (userVereniging) {
     conditions.push(
-      or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging as any))!,
+      or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userVereniging))!,
     );
   } else {
     conditions.push(isNull(rooms.roomVereniging));
@@ -155,26 +161,26 @@ function buildDiscoverConditions(
   if (userGender) {
     conditions.push(
       or(
-        eq(rooms.preferredGender, GenderPreference.no_preference as any),
-        eq(rooms.preferredGender, userGender as any),
+        eq(rooms.preferredGender, GenderPreference.no_preference),
+        eq(rooms.preferredGender, userGender as GenderPreference),
       )!,
     );
   } else {
-    conditions.push(eq(rooms.preferredGender, GenderPreference.no_preference as any));
+    conditions.push(eq(rooms.preferredGender, GenderPreference.no_preference));
   }
 
-  if (filters.city) conditions.push(eq(rooms.city, filters.city as any));
+  if (filters.city) conditions.push(eq(rooms.city, filters.city));
   if (filters.minPrice != null) conditions.push(gte(rooms.totalCost, String(filters.minPrice)));
   if (filters.maxPrice != null) conditions.push(lte(rooms.totalCost, String(filters.maxPrice)));
-  if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType as any));
-  if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing as any));
+  if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType));
+  if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing));
   if (filters.availableFrom) conditions.push(lte(rooms.availableFrom, filters.availableFrom));
   if (filters.features?.length)
     conditions.push(arrayContains(rooms.features, filters.features as RoomFeature[]));
   if (filters.locationTags?.length)
     conditions.push(arrayContains(rooms.locationTags, filters.locationTags as LocationTag[]));
 
-  if (cursor) conditions.push(buildCursorCondition(sort, cursor) as any);
+  if (cursor) conditions.push(buildCursorCondition(sort, cursor)!);
 
   return conditions;
 }
@@ -265,7 +271,7 @@ export async function getDiscoverRooms(
 export type RoomMetadata = {
   title: string;
   description: string | null;
-  city: string;
+  city: City;
   totalCost: number;
   roomSizeM2: number | null;
   coverPhotoPath: string | null;
@@ -357,7 +363,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
   };
 }
 
-export async function getPublicRoomsByCity(city: string, limit: number): Promise<DiscoverRoom[]> {
+export async function getPublicRoomsByCity(city: City, limit: number): Promise<DiscoverRoom[]> {
   const rows = await db
     .select({
       id: rooms.id,
@@ -382,7 +388,7 @@ export async function getPublicRoomsByCity(city: string, limit: number): Promise
       and(
         eq(rooms.status, RoomStatus.active),
         isNull(rooms.roomVereniging),
-        eq(rooms.city, city as any),
+        eq(rooms.city, city),
       ),
     )
     .orderBy(desc(rooms.createdAt))

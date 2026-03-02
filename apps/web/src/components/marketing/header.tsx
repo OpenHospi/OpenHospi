@@ -55,7 +55,7 @@ export function MarketingHeader() {
                         {navLinks.map(({href, key}) => (
                             <NavigationMenuItem key={key}>
                                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                                    <Link href={href}>{t(`nav.${key}` as any)}</Link>
+                                    <Link href={href}>{t(`nav.${key}`)}</Link>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                         ))}
@@ -94,7 +94,7 @@ export function MarketingHeader() {
                                         asChild
                                         onClick={() => setOpen(false)}
                                     >
-                                        <Link href={href}>{t(`nav.${key}` as any)}</Link>
+                                        <Link href={href}>{t(`nav.${key}`)}</Link>
                                     </Button>
                                 ))}
                                 <div className="mt-4">

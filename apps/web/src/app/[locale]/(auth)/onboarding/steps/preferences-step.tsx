@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/lib/form-utils";
 import type { PreferencesStepData } from "@openhospi/database/validators";
 import { preferencesStepSchema } from "@openhospi/database/validators";
 import { City, Vereniging } from "@openhospi/shared/enums";
@@ -43,8 +43,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<PreferencesStepData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(preferencesStepSchema as any),
+    resolver: zodResolver(preferencesStepSchema),
     defaultValues: {
       preferredCity: defaultValues.preferredCity,
       maxRent: defaultValues.maxRent ?? undefined,
@@ -78,7 +77,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                 value={field.value ?? null}
                 onValueChange={field.onChange}
                 items={City.values}
-                itemToStringLabel={(city) => tEnums(`city.${city}` as any)}
+                itemToStringLabel={(city) => tEnums(`city.${city}`)}
               >
                 <ComboboxInput placeholder={t("placeholders.preferredCity")} />
                 <ComboboxContent>
@@ -86,7 +85,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   <ComboboxList>
                     {(city) => (
                       <ComboboxItem key={city} value={city}>
-                        {tEnums(`city.${city}` as any)}
+                        {tEnums(`city.${city}`)}
                       </ComboboxItem>
                     )}
                   </ComboboxList>
@@ -150,7 +149,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   form.setValue("vereniging", val ?? undefined, { shouldValidate: true })
                 }
                 items={Vereniging.values}
-                itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
+                itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
               >
                 <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                 <ComboboxContent>
@@ -158,7 +157,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   <ComboboxList>
                     {(v) => (
                       <ComboboxItem key={v} value={v}>
-                        {tEnums(`vereniging.${v}` as any)}
+                        {tEnums(`vereniging.${v}`)}
                       </ComboboxItem>
                     )}
                   </ComboboxList>

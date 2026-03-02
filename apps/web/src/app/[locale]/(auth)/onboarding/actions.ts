@@ -1,5 +1,6 @@
 "use server";
 
+import type { Locale } from "@openhospi/i18n";
 import { withRLS } from "@openhospi/database";
 import { profiles } from "@openhospi/database/schema";
 import {
@@ -13,8 +14,9 @@ import {
   type PreferencesStepData,
 } from "@openhospi/database/validators";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
+import { redirect } from "@/i18n/navigation-app";
 import { requireSession } from "@/lib/auth-server";
 
 export async function saveAboutStep(data: AboutStepData) {
@@ -95,5 +97,6 @@ export async function savePreferencesStep(data: PreferencesStepData) {
 export async function finishOnboarding() {
   const session = await requireSession();
   if (!session) return;
-  redirect("/discover");
+  const locale = (await getLocale()) as Locale;
+  redirect({ href: "/discover", locale });
 }

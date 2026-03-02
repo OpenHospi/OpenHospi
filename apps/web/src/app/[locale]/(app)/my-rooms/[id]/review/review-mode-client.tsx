@@ -133,12 +133,12 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
         {applicant.studyProgram && (
           <p className="text-sm text-muted-foreground">
             {applicant.studyProgram}
-            {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}` as any)}</>}
+            {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
           </p>
         )}
         {applicant.vereniging && (
           <p className="text-sm text-muted-foreground">
-            {tEnums(`vereniging.${applicant.vereniging}` as any)}
+            {tEnums(`vereniging.${applicant.vereniging}`)}
           </p>
         )}
       </div>
@@ -156,7 +156,7 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
         <div className="flex flex-wrap gap-1">
           {applicant.lifestyleTags.map((tag) => (
             <Badge key={tag} variant="outline" className="text-xs">
-              {tEnums(`lifestyle_tag.${tag}` as any)}
+              {tEnums(`lifestyle_tag.${tag}`)}
             </Badge>
           ))}
         </div>
@@ -189,7 +189,7 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
                     rv.decision === "reject" && "border-red-500 text-red-700 dark:text-red-400",
                   )}
                 >
-                  {tEnums(`review_decision.${rv.decision}` as any)}
+                  {tEnums(`review_decision.${rv.decision}`)}
                 </Badge>
                 <span className="font-medium">{rv.reviewerName}</span>
                 {rv.notes && <span className="text-muted-foreground">— {rv.notes}</span>}

@@ -50,7 +50,7 @@ export function RoomDetailDialog({ room, children }: Props) {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("city")}</p>
-              <p className="font-medium">{tEnums(`city.${room.city}` as any)}</p>
+              <p className="font-medium">{tEnums(`city.${room.city}`)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("rentPrice")}</p>
@@ -58,7 +58,7 @@ export function RoomDetailDialog({ room, children }: Props) {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("status")}</p>
-              <Badge>{tEnums(`room_status.${room.status}` as any)}</Badge>
+              <Badge>{tEnums(`room_status.${room.status}`)}</Badge>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("owner")}</p>

@@ -63,7 +63,7 @@ export default async function AdminDashboardPage({ params }: Props) {
             <div className="space-y-2">
               {stats.listingsByCity.map((row) => (
                 <div key={row.city} className="flex items-center justify-between">
-                  <span className="text-sm">{tEnums(`city.${row.city}` as any)}</span>
+                  <span className="text-sm">{tEnums(`city.${row.city}`)}</span>
                   <span className="text-muted-foreground text-sm font-medium">{row.count}</span>
                 </div>
               ))}

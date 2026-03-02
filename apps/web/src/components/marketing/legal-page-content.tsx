@@ -1,4 +1,4 @@
-import type {SupportedLocale} from "@openhospi/shared/constants";
+import type {Locale} from "@openhospi/i18n";
 import {getTranslations} from "next-intl/server";
 
 import {Separator} from "@/components/ui/separator";
@@ -7,9 +7,18 @@ import {isRiskSection} from "./legal-risk-badge";
 import {LegalSection, type SectionMode} from "./legal-section";
 import {LegalTableOfContents} from "./legal-toc";
 
+type LegalNamespace =
+    | "privacy"
+    | "cookies"
+    | "terms"
+    | "legalBasis"
+    | "dataProcessors"
+    | "processingRegister"
+    | "dpia";
+
 interface LegalPageContentProps {
-    locale: SupportedLocale;
-    namespace: string;
+    locale: Locale;
+    namespace: LegalNamespace;
     hasIntro?: boolean;
 }
 
@@ -22,8 +31,7 @@ function getSectionMode(namespace: string, items: string[]): SectionMode {
 }
 
 export async function LegalPageContent({locale, namespace, hasIntro}: LegalPageContentProps) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const t: any = await getTranslations({ locale, namespace } as any);
+    const t = await getTranslations({locale, namespace});
     const tCommon = await getTranslations({
         locale,
         namespace: "common.labels",
@@ -32,16 +40,19 @@ export async function LegalPageContent({locale, namespace, hasIntro}: LegalPageC
 
     // Build section data
     const sectionData = sections.map((_, i) => {
-        const hasContent = t.has(`sections.${i}.content`);
-        const hasItems = t.has(`sections.${i}.items`);
-        const items = hasItems ? (t.raw(`sections.${i}.items`) as string[]) : [];
-        const title = t(`sections.${i}.title` as any);
+        const titleKey = `sections.${i}.title` as Parameters<typeof t>[0];
+        const contentKey = `sections.${i}.content` as Parameters<typeof t>[0];
+        const itemsKey = `sections.${i}.items` as Parameters<typeof t.raw>[0];
+        const hasContent = t.has(contentKey);
+        const hasItems = t.has(itemsKey);
+        const items = hasItems ? (t.raw(itemsKey) as string[]) : [];
+        const title = t(titleKey);
 
         return {
             id: `section-${i}`,
             title,
             linkAriaLabel: tCommon("linkToSection", {title}),
-            content: hasContent ? t(`sections.${i}.content` as any) : undefined,
+            content: hasContent ? t(contentKey) : undefined,
             items,
             mode: getSectionMode(namespace, items),
         };

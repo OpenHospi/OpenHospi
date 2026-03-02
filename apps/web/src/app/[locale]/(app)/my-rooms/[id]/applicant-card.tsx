@@ -108,12 +108,12 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
                 {applicant.firstName} {applicant.lastName}
               </h3>
               <Badge className={cn("shrink-0", APPLICATION_STATUS_COLORS[applicant.status])}>
-                {tEnums(`application_status.${applicant.status}` as any)}
+                {tEnums(`application_status.${applicant.status}`)}
               </Badge>
             </div>
             <p className="truncate text-sm text-muted-foreground">
               {applicant.studyProgram}
-              {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}` as any)}</>}
+              {applicant.studyLevel && <> · {tEnums(`study_level.${applicant.studyLevel}`)}</>}
               {age && <> · {age}</>}
             </p>
             <InstitutionBadge domain={applicant.institutionDomain} />
@@ -131,7 +131,7 @@ export function ApplicantCard({ applicant, roomId, currentUserId }: Props) {
             <div className="flex flex-wrap gap-1">
               {applicant.lifestyleTags.slice(0, 4).map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">
-                  {tEnums(`lifestyle_tag.${tag}` as any)}
+                  {tEnums(`lifestyle_tag.${tag}`)}
                 </Badge>
               ))}
               {applicant.lifestyleTags.length > 4 && (

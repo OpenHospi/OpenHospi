@@ -83,7 +83,7 @@ export function InvitationCard({ invitation }: Props) {
                 : INVITATION_STATUS_COLORS[invitation.status],
             )}
           >
-            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}` as any)}
+            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}`)}
           </Badge>
         </div>
       </CardHeader>

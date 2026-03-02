@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/lib/form-utils";
 import type { RoomPreferencesData } from "@openhospi/database/validators";
 import { roomPreferencesSchema } from "@openhospi/database/validators";
 import {
@@ -56,8 +56,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<RoomPreferencesData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(roomPreferencesSchema as any),
+    resolver: zodResolver(roomPreferencesSchema),
     defaultValues: {
       features: (defaultValues.features as RoomFeature[]) ?? [],
       locationTags: (defaultValues.locationTags as LocationTag[]) ?? [],
@@ -121,7 +120,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       )}
                       onClick={() => toggleArrayField("features", feature)}
                     >
-                      {tEnums(`room_feature.${feature}` as any)}
+                      {tEnums(`room_feature.${feature}`)}
                     </Badge>
                   );
                 })}
@@ -143,7 +142,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       )}
                       onClick={() => toggleArrayField("locationTags", tag)}
                     >
-                      {tEnums(`location_tag.${tag}` as any)}
+                      {tEnums(`location_tag.${tag}`)}
                     </Badge>
                   );
                 })}
@@ -177,7 +176,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={g} />
-                          {tEnums(`gender_preference.${g}` as any)}
+                          {tEnums(`gender_preference.${g}`)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -232,7 +231,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       )}
                       onClick={() => toggleArrayField("acceptedLanguages", lang)}
                     >
-                      {tEnums(`language_enum.${lang}` as any)}
+                      {tEnums(`language_enum.${lang}`)}
                     </Badge>
                   );
                 })}
@@ -265,7 +264,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
                     }
                     items={Vereniging.values}
-                    itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
@@ -273,7 +272,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       <ComboboxList>
                         {(v) => (
                           <ComboboxItem key={v} value={v}>
-                            {tEnums(`vereniging.${v}` as any)}
+                            {tEnums(`vereniging.${v}`)}
                           </ComboboxItem>
                         )}
                       </ComboboxList>

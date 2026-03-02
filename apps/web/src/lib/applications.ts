@@ -1,5 +1,17 @@
 import { withRLS } from "@openhospi/database";
 import { applications, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
+import type {
+  City,
+  Furnishing,
+  GenderPreference,
+  HouseType,
+  Language,
+  LocationTag,
+  RentalType,
+  RoomFeature,
+  StudyLevel,
+  UtilitiesIncluded,
+} from "@openhospi/shared/enums";
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 
@@ -34,7 +46,7 @@ export type RoomDetailForApply = {
   id: string;
   title: string;
   description: string | null;
-  city: string;
+  city: City;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;
@@ -43,24 +55,24 @@ export type RoomDetailForApply = {
   longitude: number | null;
   rentPrice: number;
   deposit: number | null;
-  utilitiesIncluded: string | null;
+  utilitiesIncluded: UtilitiesIncluded | null;
   serviceCosts: number | null;
   estimatedUtilitiesCosts: number | null;
   totalCost: number;
   roomSizeM2: number | null;
   availableFrom: string | null;
   availableUntil: string | null;
-  rentalType: string | null;
-  houseType: string | null;
-  furnishing: string | null;
+  rentalType: RentalType | null;
+  houseType: HouseType | null;
+  furnishing: Furnishing | null;
   totalHousemates: number | null;
-  features: string[];
-  locationTags: string[];
+  features: RoomFeature[];
+  locationTags: LocationTag[];
   roomVereniging: string | null;
-  preferredGender: string | null;
+  preferredGender: GenderPreference | null;
   preferredAgeMin: number | null;
   preferredAgeMax: number | null;
-  acceptedLanguages: string[];
+  acceptedLanguages: Language[];
   ownerId: string;
   createdAt: Date;
   photos: { id: string; slot: number; url: string; caption: string | null }[];
@@ -69,7 +81,7 @@ export type RoomDetailForApply = {
     lastName: string;
     avatarUrl: string | null;
     studyProgram: string | null;
-    studyLevel: string | null;
+    studyLevel: StudyLevel | null;
     institutionDomain: string;
   } | null;
 };

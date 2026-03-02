@@ -78,7 +78,7 @@ export function LanguagesStep({defaultValues, onBack, onNext}: Props) {
                             )}
                             onClick={() => toggle(lang)}
                         >
-                            {tEnums(`language_enum.${lang}` as any)}
+                            {tEnums(`language_enum.${lang}`)}
                         </Badge>
                     );
                 })}

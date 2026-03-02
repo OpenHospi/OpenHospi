@@ -44,7 +44,7 @@ export default async function EventDetailPage({params}: Props) {
 
     const event = await getEventDetail(eventId, user.id);
     if (!event || event.roomId !== roomId) {
-        return redirect(`/my-rooms/${roomId}` as any);
+        return redirect({href: `/my-rooms/${roomId}`, locale});
     }
 
     const applicants = await getRoomApplicants(roomId, user.id);
@@ -125,7 +125,7 @@ export default async function EventDetailPage({params}: Props) {
                                     grouped[status].length > 0 && (
                                         <div key={status}>
                                             <h4 className="mb-2 text-sm font-medium">
-                                                {tEnums(`invitation_status.${status}` as any)} ({grouped[status].length})
+                                                {tEnums(`invitation_status.${status}`)} ({grouped[status].length})
                                             </h4>
                                             <div className="space-y-2">
                                                 {grouped[status].map((invitee) => (
@@ -146,7 +146,7 @@ export default async function EventDetailPage({params}: Props) {
                                                         <Badge
                                                             className={cn("ml-auto shrink-0", INVITATION_STATUS_COLORS[status])}
                                                         >
-                                                            {tEnums(`invitation_status.${status}` as any)}
+                                                            {tEnums(`invitation_status.${status}`)}
                                                         </Badge>
                                                     </div>
                                                 ))}

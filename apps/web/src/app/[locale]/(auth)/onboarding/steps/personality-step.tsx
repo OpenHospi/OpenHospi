@@ -78,7 +78,7 @@ export function PersonalityStep({defaultValues, onBack, onNext}: Props) {
                             )}
                             onClick={() => toggle(tag)}
                         >
-                            {tEnums(`lifestyle_tag.${tag}` as any)}
+                            {tEnums(`lifestyle_tag.${tag}`)}
                         </Badge>
                     );
                 })}

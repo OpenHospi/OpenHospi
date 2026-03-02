@@ -108,8 +108,8 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
                 <CostCard
                   key={groupIndex}
                   icon={groupIcons[groupIndex]}
-                  name={t(`breakdown.groups.${groupIndex}.name` as any)}
-                  description={t(`breakdown.groups.${groupIndex}.description` as any)}
+                  name={t(`breakdown.groups.${groupIndex}.name`)}
+                  description={t(`breakdown.groups.${groupIndex}.description`)}
                   items={items}
                 />
               );
@@ -140,9 +140,9 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
               <TableBody>
                 {([0, 1, 2, 3, 4, 5] as const).map((i) => (
                   <TableRow key={i}>
-                    <TableCell className="font-medium">{t(`summary.rows.${i}.name` as any)}</TableCell>
-                    <TableCell className="text-right">{t(`summary.rows.${i}.current` as any)}</TableCell>
-                    <TableCell className="text-right">{t(`summary.rows.${i}.atScale` as any)}</TableCell>
+                    <TableCell className="font-medium">{t(`summary.rows.${i}.name`)}</TableCell>
+                    <TableCell className="text-right">{t(`summary.rows.${i}.current`)}</TableCell>
+                    <TableCell className="text-right">{t(`summary.rows.${i}.atScale`)}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow className="border-t-2 font-bold">
@@ -169,8 +169,8 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
               <FeatureCard
                 key={i}
                 icon={pillarIcons[i]}
-                title={t(`keepFree.pillars.${i}.title` as any)}
-                description={t(`keepFree.pillars.${i}.description` as any)}
+                title={t(`keepFree.pillars.${i}.title`)}
+                description={t(`keepFree.pillars.${i}.description`)}
               />
             ))}
           </div>
@@ -185,10 +185,10 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
             {([0, 1, 2] as const).map((i) => (
               <DonateCard
                 key={i}
-                name={t(`donate.tiers.${i}.name` as any)}
-                price={t(`donate.tiers.${i}.price` as any)}
-                badge={t(`donate.tiers.${i}.badge` as any)}
-                description={t(`donate.tiers.${i}.description` as any)}
+                name={t(`donate.tiers.${i}.name`)}
+                price={t(`donate.tiers.${i}.price`)}
+                badge={t(`donate.tiers.${i}.badge`)}
+                description={t(`donate.tiers.${i}.description`)}
                 ctaLabel={t("donate.cta")}
               />
             ))}

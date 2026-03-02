@@ -239,9 +239,9 @@ export function SettingsContent() {
               return (
                 <div key={purpose} className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <p className="text-sm font-medium">{tConsent(`purposes.${purpose}.name` as any)}</p>
+                    <p className="text-sm font-medium">{tConsent(`purposes.${purpose}.name`)}</p>
                     <p className="text-xs text-muted-foreground">
-                      {tConsent(`purposes.${purpose}.description` as any)}
+                      {tConsent(`purposes.${purpose}.description`)}
                     </p>
                   </div>
                   <Switch
@@ -287,7 +287,7 @@ export function SettingsContent() {
                     className="flex items-center justify-between rounded-lg border p-3"
                   >
                     <span className="text-sm font-medium">
-                      {t(`privacy.dataOverview.categories.${cat}` as any)}
+                      {t(`privacy.dataOverview.categories.${cat}`)}
                     </span>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
@@ -386,7 +386,7 @@ export function SettingsContent() {
                 <SelectContent>
                   {DataRequestType.values.map((type) => (
                     <SelectItem key={type} value={type}>
-                      {t(`privacy.dataRequest.types.${type}` as any)}
+                      {t(`privacy.dataRequest.types.${type}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -9,8 +9,7 @@ import type { ReactNode } from "react";
 //   2) Telecommunicatiewet [Aa]rt. N.Na — reversed format (law name first)
 //
 const LINK_PATTERN =
-  // eslint-disable-next-line security/detect-unsafe-regex, sonarjs/slow-regex, sonarjs/regex-complexity
-  /([\w.+-]+@[\w-]+\.[\w.-]+)|(?:\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:\(\d+\)(?:\([a-z]\))?|(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+)+,?|\s+(?:to|tot\s+en\s+met|bis)\s+\d+)?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b|\bTelecommunicatiewet\s+[Aa]rt\.?\s*[\d.]+\w?)|(\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b)|(https?:\/\/[^\s),]+)|((?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/[^\s),]*)?)/g;
+  /([\w.+-]+@[\w-]+\.[\w.-]+)|(?:\b[Aa]rt\.?\s*\d+(?:\.\d+\w?)?(?:\(\d+\)(?:\([a-z]\))?|(?:[,\s]+(?:lid|onder|Abs\.|lit\.|Nr\.)\s*\w+){1,4},?|\s+(?:to|tot\s+en\s+met|bis)\s+\d+)?\s+(?:GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)\b|\bTelecommunicatiewet\s+[Aa]rt\.?\s*[\d.]+\w?)|(\b0\d{2}\s\d{3}\s\d{2}\s\d{2}\b)|(https?:\/\/\S+?)(?=[),\s]|$)|((?:[\w-]+\.)+(?:nl|eu|com|org|de|io)(?:\/\S*?)?)(?=[),\s]|$)/g;
 
 const GDPR_LAWS: Record<string, string> = {
   GDPR: "https://gdpr.eu/article-",
@@ -81,8 +80,6 @@ function classifyAndRender(match: string, key: number): ReactNode {
 
   // URL with protocol
   if (match.startsWith("http")) {
-    // Strip trailing punctuation that's not part of the URL
-    // eslint-disable-next-line sonarjs/slow-regex
     const cleaned = match.replace(/[.)]+$/, "");
     return (
       <a key={key} href={cleaned} target="_blank" rel="noopener noreferrer" className={linkClass}>
@@ -92,8 +89,6 @@ function classifyAndRender(match: string, key: number): ReactNode {
     );
   }
 
-  // Bare domain
-  // eslint-disable-next-line sonarjs/slow-regex
   const cleaned = match.replace(/[.)]+$/, "");
   return (
     <a

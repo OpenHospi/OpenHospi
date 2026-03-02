@@ -45,10 +45,11 @@ export function StatusControls({room, closeApplicants = []}: Props) {
                 toast.error(t(`status.${result.error}` as any));
                 return;
             }
-            let messageKey = "closed";
-            if (status === RoomStatus.active) messageKey = "activated";
-            else if (status === RoomStatus.paused) messageKey = "paused";
-            toast.success(t(`status.${messageKey}` as any));
+            const messageKey =
+                status === RoomStatus.active ? "activated" as const
+                    : status === RoomStatus.paused ? "paused" as const
+                        : "closed" as const;
+            toast.success(t(`status.${messageKey}`));
             router.refresh();
         });
     }

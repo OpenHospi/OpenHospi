@@ -1,6 +1,6 @@
 "use client";
 
-import {zodResolver} from "@hookform/resolvers/zod";
+import {zodResolver} from "@/lib/form-utils";
 import type {ApplyToRoomData} from "@openhospi/database/validators";
 import {applyToRoomSchema} from "@openhospi/database/validators";
 import {
@@ -46,8 +46,7 @@ export function ApplyDialog({roomId}: Props) {
     const router = useRouter();
 
     const form = useForm<ApplyToRoomData>({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        resolver: zodResolver(applyToRoomSchema as any),
+        resolver: zodResolver(applyToRoomSchema),
         defaultValues: {personalMessage: ""},
     });
 

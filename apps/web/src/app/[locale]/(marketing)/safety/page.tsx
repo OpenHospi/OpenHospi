@@ -55,19 +55,22 @@ export default async function SafetyPage({ params }: { params: Promise<{ locale:
         </div>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {icons.map((Icon, i) => (
-            <Card key={i} className="border-0 bg-muted/50 shadow-none">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-primary/10">
-                  <Icon className="size-6 text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold">{t(`features.${i}.title` as any)}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {t(`features.${i}.description` as any)}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+          {([0, 1, 2, 3, 4, 5] as const).map((i) => {
+            const Icon = icons[i];
+            return (
+              <Card key={i} className="border-0 bg-muted/50 shadow-none">
+                <CardContent className="pt-6">
+                  <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-primary/10">
+                    <Icon className="size-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold">{t(`features.${i}.title`)}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(`features.${i}.description`)}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </section>

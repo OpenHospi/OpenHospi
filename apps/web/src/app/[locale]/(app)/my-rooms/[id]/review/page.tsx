@@ -36,7 +36,7 @@ export default async function ReviewModePage({ params }: Props) {
   const reviewable = allApplicants.filter((a) => !isTerminalApplicationStatus(a.status));
 
   if (reviewable.length === 0) {
-    return redirect(`/my-rooms/${id}` as any);
+    return redirect({ href: `/my-rooms/${id}`, locale });
   }
 
   return <ReviewModeClient applicants={reviewable} roomId={id} currentUserId={user.id} />;

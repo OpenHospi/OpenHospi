@@ -20,7 +20,7 @@ type Props = {
 
 export function OnboardingForm({initialData}: Props) {
     const t = useTranslations("app.onboarding");
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
     const [photos, setPhotos] = useState<ProfilePhoto[]>(initialData.photos ?? []);
 
     const stepTitles = [
@@ -43,7 +43,7 @@ export function OnboardingForm({initialData}: Props) {
 
             <div>
                 <h1 className="text-2xl font-bold tracking-tight">{stepTitles[step - 1]}</h1>
-                <p className="mt-1 text-sm text-muted-foreground">{t(`stepDescriptions.step${step}` as any)}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{t(`stepDescriptions.step${step}`)}</p>
             </div>
 
             {step === 1 && (

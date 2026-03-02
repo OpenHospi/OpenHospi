@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/lib/form-utils";
 import type { RoomBasicInfoData } from "@openhospi/database/validators";
 import { roomBasicInfoSchema } from "@openhospi/database/validators";
 import { MAX_ROOM_DESCRIPTION_LENGTH } from "@openhospi/shared/constants";
@@ -48,8 +48,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<RoomBasicInfoData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(roomBasicInfoSchema as any),
+    resolver: zodResolver(roomBasicInfoSchema),
     defaultValues: {
       title: defaultValues.title ?? "",
       description: defaultValues.description ?? "",
@@ -148,7 +147,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                     <SelectContent>
                       {City.values.map((city) => (
                         <SelectItem key={city} value={city}>
-                          {tEnums(`city.${city}` as any)}
+                          {tEnums(`city.${city}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>

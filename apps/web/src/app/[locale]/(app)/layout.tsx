@@ -43,7 +43,7 @@ export default async function AppLayout({ children, params }: Props) {
     );
 
     if (profile?.privacyPolicyAcceptedVersion !== PRIVACY_POLICY_VERSION) {
-      redirect(`/${locale}/privacy-accept` as any);
+      redirect({ href: "/privacy-accept", locale });
     }
 
     restricted = await isRestricted(session.user.id);

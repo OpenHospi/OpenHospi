@@ -1,6 +1,6 @@
 "use client";
 
-import {zodResolver} from "@hookform/resolvers/zod";
+import {zodResolver} from "@/lib/form-utils";
 import type {EditProfileData} from "@openhospi/database/validators";
 import {editProfileSchema} from "@openhospi/database/validators";
 import {
@@ -80,8 +80,7 @@ export function EditProfileDialog({profile}: Props) {
     const [isPending, startTransition] = useTransition();
 
     const form = useForm<EditProfileData>({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        resolver: zodResolver(editProfileSchema as any),
+        resolver: zodResolver(editProfileSchema),
         defaultValues: {
             gender: (profile.gender as EditProfileData["gender"]) ?? undefined,
             birthDate: profile.birthDate ?? "",
@@ -151,10 +150,8 @@ export function EditProfileDialog({profile}: Props) {
                     <DialogTitle>{t("editTitle")}</DialogTitle>
                 </DialogHeader>
 
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <Form {...(form as any)}>
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-5">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                         <FormField
                             control={form.control}
                             name="gender"
@@ -173,7 +170,7 @@ export function EditProfileDialog({profile}: Props) {
                                                     className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                                                 >
                                                     <RadioGroupItem value={g}/>
-                                                    {tEnums(`gender.${g}` as any)}
+                                                    {tEnums(`gender.${g}`)}
                                                 </Label>
                                             ))}
                                         </RadioGroup>
@@ -236,7 +233,7 @@ export function EditProfileDialog({profile}: Props) {
                                                     : StudyLevel.values
                                             ).map((level) => (
                                                 <SelectItem key={level} value={level}>
-                                                    {tEnums(`study_level.${level}` as any)}
+                                                    {tEnums(`study_level.${level}`)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -286,7 +283,7 @@ export function EditProfileDialog({profile}: Props) {
                                             )}
                                             onClick={() => toggleLanguage(lang)}
                                         >
-                                            {tEnums(`language_enum.${lang}` as any)}
+                                            {tEnums(`language_enum.${lang}`)}
                                         </Badge>
                                     );
                                 })}
@@ -315,7 +312,7 @@ export function EditProfileDialog({profile}: Props) {
                                             )}
                                             onClick={() => toggleTag(tag)}
                                         >
-                                            {tEnums(`lifestyle_tag.${tag}` as any)}
+                                            {tEnums(`lifestyle_tag.${tag}`)}
                                         </Badge>
                                     );
                                 })}
@@ -332,7 +329,7 @@ export function EditProfileDialog({profile}: Props) {
                                         value={field.value ?? null}
                                         onValueChange={field.onChange}
                                         items={City.values}
-                                        itemToStringLabel={(city) => tEnums(`city.${city}` as any)}
+                                        itemToStringLabel={(city) => tEnums(`city.${city}`)}
                                     >
                                         <ComboboxInput placeholder={tOnboarding("placeholders.preferredCity")}/>
                                         <ComboboxContent>
@@ -340,7 +337,7 @@ export function EditProfileDialog({profile}: Props) {
                                             <ComboboxList>
                                                 {(city) => (
                                                     <ComboboxItem key={city} value={city}>
-                                                        {tEnums(`city.${city}` as any)}
+                                                        {tEnums(`city.${city}`)}
                                                     </ComboboxItem>
                                                 )}
                                             </ComboboxList>
@@ -391,7 +388,7 @@ export function EditProfileDialog({profile}: Props) {
                                             form.setValue("vereniging", val ?? undefined, {shouldValidate: true})
                                         }
                                         items={Vereniging.values}
-                                        itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
+                                        itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
                                     >
                                         <ComboboxInput
                                             placeholder={tOnboarding("placeholders.searchVereniging")}
@@ -402,7 +399,7 @@ export function EditProfileDialog({profile}: Props) {
                                             <ComboboxList>
                                                 {(v) => (
                                                     <ComboboxItem key={v} value={v}>
-                                                        {tEnums(`vereniging.${v}` as any)}
+                                                        {tEnums(`vereniging.${v}`)}
                                                     </ComboboxItem>
                                                 )}
                                             </ComboboxList>

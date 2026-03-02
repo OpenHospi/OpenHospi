@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/lib/form-utils";
 import type { CreateEventData } from "@openhospi/database/validators";
 import { createEventSchema } from "@openhospi/database/validators";
 import {
@@ -71,8 +71,7 @@ export function CreateEventDialog({ roomId }: Props) {
   const router = useRouter();
 
   const form = useForm<CreateEventData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(createEventSchema as any),
+    resolver: zodResolver(createEventSchema),
     defaultValues: {
       title: "",
       description: "",

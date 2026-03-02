@@ -27,7 +27,7 @@ export function RoomCreateForm({ room }: Props) {
   const t = useTranslations("app.rooms");
   const locale = useLocale();
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [photos, setPhotos] = useState<RoomPhoto[]>(room.photos);
 
   const stepKeys = ["basicInfo", "details", "preferences", "photos"] as const;
@@ -81,7 +81,7 @@ export function RoomCreateForm({ room }: Props) {
                     isCurrent ? "font-medium text-foreground" : "text-muted-foreground",
                   )}
                 >
-                  {t(`wizard.steps.${key}` as any)}
+                  {t(`wizard.steps.${key}`)}
                 </span>
 
                 {/* Connector line */}
@@ -103,10 +103,10 @@ export function RoomCreateForm({ room }: Props) {
       <div className="pt-6 sm:pt-8">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">
-            {t(`wizard.steps.${stepKeys[step - 1]}` as any)}
+            {t(`wizard.steps.${stepKeys[step - 1]}`)}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {t(`wizard.stepDescriptions.step${step}` as any)}
+            {t(`wizard.stepDescriptions.step${step}`)}
           </p>
         </div>
 

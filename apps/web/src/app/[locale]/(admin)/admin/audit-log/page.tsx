@@ -62,7 +62,7 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
                   </TableCell>
                   <TableCell>{entry.adminName}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}` as any)}</Badge>
+                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}`)}</Badge>
                     {entry.targetType && (
                       <span className="text-muted-foreground ml-2 text-xs">{entry.targetType}</span>
                     )}

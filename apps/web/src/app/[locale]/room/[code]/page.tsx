@@ -27,7 +27,7 @@ export async function generateMetadata({
   const room = await getRoomByShareLink(code);
   if (!room || room.status !== RoomStatus.active) return { title: t("title") };
 
-  const cityName = tEnums(`city.${room.city}` as any);
+  const cityName = tEnums(`city.${room.city}`);
   return { title: `${room.title} — ${cityName}` };
 }
 
@@ -106,7 +106,7 @@ export default async function JoinRoomPage({ params }: Props) {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MapPin className="size-4" />
-                {tEnums(`city.${room.city}` as any)}
+                {tEnums(`city.${room.city}`)}
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="size-4" />

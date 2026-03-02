@@ -13,13 +13,13 @@ export async function CompletenessCard({ profile }: Props) {
   const t = await getTranslations("app.profile");
 
   const fields = [
-    { key: "photo", complete: profile.photos.length > 0 },
-    { key: "bio", complete: !!profile.bio },
-    { key: "studyProgram", complete: !!profile.studyProgram },
-    { key: "birthDate", complete: !!profile.birthDate },
-    { key: "preferredCity", complete: !!profile.preferredCity },
-    { key: "lifestyleTags", complete: (profile.lifestyleTags?.length ?? 0) >= 2 },
-    { key: "vereniging", complete: !!profile.vereniging },
+    { key: "photo" as const, complete: profile.photos.length > 0 },
+    { key: "bio" as const, complete: !!profile.bio },
+    { key: "studyProgram" as const, complete: !!profile.studyProgram },
+    { key: "birthDate" as const, complete: !!profile.birthDate },
+    { key: "preferredCity" as const, complete: !!profile.preferredCity },
+    { key: "lifestyleTags" as const, complete: (profile.lifestyleTags?.length ?? 0) >= 2 },
+    { key: "vereniging" as const, complete: !!profile.vereniging },
   ];
 
   const completed = fields.filter((f) => f.complete).length;
@@ -41,7 +41,7 @@ export async function CompletenessCard({ profile }: Props) {
                 <Circle className="size-4 text-muted-foreground" />
               )}
               <span className={field.complete ? "" : "text-muted-foreground"}>
-                {t(`completeness.${field.key}` as any)}
+                {t(`completeness.${field.key}`)}
               </span>
             </li>
           ))}

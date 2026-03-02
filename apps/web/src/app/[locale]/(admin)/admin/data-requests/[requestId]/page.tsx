@@ -140,7 +140,7 @@ export default function DataRequestDetailPage() {
               <SelectContent>
                 {DataRequestStatus.values.map((s) => (
                   <SelectItem key={s} value={s}>
-                    {t(`statuses.${s}` as any)}
+                    {t(`statuses.${s}`)}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -85,7 +85,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
           <div className="flex-1 p-4">
             <h2 className="text-xl font-semibold">{application.roomTitle}</h2>
             <p className="text-sm text-muted-foreground">
-              {tEnums(`city.${application.roomCity}` as any)}
+              {tEnums(`city.${application.roomCity}`)}
             </p>
             <p className="mt-2 text-lg font-bold">
               €{application.roomRentPrice}
@@ -93,7 +93,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
               {application.roomHouseType && (
-                <span>{tEnums(`house_type.${application.roomHouseType}` as any)}</span>
+                <span>{tEnums(`house_type.${application.roomHouseType}`)}</span>
               )}
               {application.roomSizeM2 && <span>· {application.roomSizeM2} m²</span>}
               {application.roomTotalHousemates != null && (
@@ -117,7 +117,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-3">
             <Badge className={cn("text-sm", APPLICATION_STATUS_COLORS[application.status])}>
-              {tEnums(`application_status.${application.status}` as any)}
+              {tEnums(`application_status.${application.status}`)}
             </Badge>
             <span className="text-sm text-muted-foreground">
               {t("appliedOn", { date: appliedDate })}

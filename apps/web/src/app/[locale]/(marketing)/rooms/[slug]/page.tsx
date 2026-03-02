@@ -35,7 +35,7 @@ export async function generateMetadata({
   if (isCity(slug)) {
     const tEnums = await getTranslations({ locale, namespace: "enums" });
     const t = await getTranslations({ locale, namespace: "public.cityPage" });
-    const cityName = tEnums(`city.${slug}` as any);
+    const cityName = tEnums(`city.${slug}`);
     return {
       title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
@@ -47,7 +47,7 @@ export async function generateMetadata({
   if (!room) return { title: "Not found" };
 
   const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const cityName = tEnums(`city.${room.city}` as any);
+  const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
@@ -96,7 +96,7 @@ async function CityPage({ locale, city }: { locale: SupportedLocale; city: strin
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
-  const cityName = tEnums(`city.${city}` as any);
+  const cityName = tEnums(`city.${city}`);
   const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
   const loginUrl = getLoginUrl();
 
@@ -176,7 +176,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: SupportedLocale; roo
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const loginUrl = getLoginUrl();
-  const cityName = tEnums(`city.${room.city}` as any);
+  const cityName = tEnums(`city.${room.city}`);
   const coverPhoto = room.photos[0];
 
   // Safe: JSON-LD from i18n translations and DB, sanitized in seo.ts (per Next.js docs recommendation)

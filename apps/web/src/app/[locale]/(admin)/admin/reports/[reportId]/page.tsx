@@ -62,7 +62,7 @@ export default async function ReportDetailPage({ params }: Props) {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("reports.detailTitle")}</h1>
           <Badge className={TYPE_COLORS[report.reportType] ?? ""} style={{ marginTop: "0.5rem" }}>
-            {tEnums(`report_type.${report.reportType}` as any)}
+            {tEnums(`report_type.${report.reportType}`)}
           </Badge>
         </div>
       </div>
@@ -82,7 +82,7 @@ export default async function ReportDetailPage({ params }: Props) {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{t("reports.colReason")}</p>
-              <p className="font-medium">{tEnums(`report_reason.${report.reason}` as any)}</p>
+              <p className="font-medium">{tEnums(`report_reason.${report.reason}`)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm mb-2">{t("reports.colReporter")}</p>

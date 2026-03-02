@@ -88,7 +88,7 @@ export default async function AdminDataRequestsPage({ params, searchParams }: Pr
             </TabsTrigger>
             {DataRequestStatus.values.map((s) => (
               <TabsTrigger key={s} value={s} asChild>
-                <Link href={`/admin/data-requests?status=${s}`}>{t(`statuses.${s}` as any)}</Link>
+                <Link href={`/admin/data-requests?status=${s}`}>{t(`statuses.${s}`)}</Link>
               </TabsTrigger>
             ))}
           </TabsList>

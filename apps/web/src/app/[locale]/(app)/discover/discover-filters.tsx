@@ -178,7 +178,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             value={filters.city ?? null}
             onValueChange={(v) => updateFilter("city", v ?? undefined)}
             items={City.values}
-            itemToStringLabel={(city) => tEnums(`city.${city}` as any)}
+            itemToStringLabel={(city) => tEnums(`city.${city}`)}
           >
             <ComboboxInput placeholder={t("cityPlaceholder")} showClear />
             <ComboboxContent>
@@ -186,7 +186,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
               <ComboboxList>
                 {(city) => (
                   <ComboboxItem key={city} value={city}>
-                    {tEnums(`city.${city}` as any)}
+                    {tEnums(`city.${city}`)}
                   </ComboboxItem>
                 )}
               </ComboboxList>
@@ -238,7 +238,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
               <SelectItem value="all">{t("houseTypePlaceholder")}</SelectItem>
               {HouseType.values.map((ht) => (
                 <SelectItem key={ht} value={ht}>
-                  {tEnums(`house_type.${ht}` as any)}
+                  {tEnums(`house_type.${ht}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -259,7 +259,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
               <SelectItem value="all">{t("furnishingPlaceholder")}</SelectItem>
               {Furnishing.values.map((f) => (
                 <SelectItem key={f} value={f}>
-                  {tEnums(`furnishing.${f}` as any)}
+                  {tEnums(`furnishing.${f}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -283,7 +283,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             values={filters.features ?? []}
             options={RoomFeature.values as unknown as string[]}
             placeholder={t("featuresPlaceholder")}
-            renderLabel={(v) => tEnums(`room_feature.${v}` as any)}
+            renderLabel={(v) => tEnums(`room_feature.${v}`)}
             onChange={(v) => updateFilter("features", v.length > 0 ? v : undefined)}
             selectedCountLabel={(count) => t("selectedCount", { count:String( String(count) )})}
           />
@@ -296,7 +296,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
             values={filters.locationTags ?? []}
             options={LocationTag.values as unknown as string[]}
             placeholder={t("locationTagsPlaceholder")}
-            renderLabel={(v) => tEnums(`location_tag.${v}` as any)}
+            renderLabel={(v) => tEnums(`location_tag.${v}`)}
             onChange={(v) => updateFilter("locationTags", v.length > 0 ? v : undefined)}
             selectedCountLabel={(count) => t("selectedCount", { count:String( String(count) )})}
           />

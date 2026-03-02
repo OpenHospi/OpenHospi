@@ -1,6 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/lib/form-utils";
 import type { EditRoomData } from "@openhospi/database/validators";
 import { editRoomSchema } from "@openhospi/database/validators";
 import {
@@ -78,8 +78,7 @@ export function EditRoomDialog({ room }: Props) {
   const router = useRouter();
 
   const form = useForm<EditRoomData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(editRoomSchema as any),
+    resolver: zodResolver(editRoomSchema),
     defaultValues: {
       title: room.title,
       description: room.description ?? "",
@@ -165,10 +164,8 @@ export function EditRoomDialog({ room }: Props) {
           <DialogTitle>{t("actions.edit")}</DialogTitle>
         </DialogHeader>
 
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <Form {...(form as any)}>
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-5">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="title"
@@ -207,7 +204,7 @@ export function EditRoomDialog({ room }: Props) {
                     value={field.value ?? null}
                     onValueChange={field.onChange}
                     items={City.values}
-                    itemToStringLabel={(city) => tEnums(`city.${city}` as any)}
+                    itemToStringLabel={(city) => tEnums(`city.${city}`)}
                   >
                     <ComboboxInput placeholder={t("fields.city")} />
                     <ComboboxContent>
@@ -215,7 +212,7 @@ export function EditRoomDialog({ room }: Props) {
                       <ComboboxList>
                         {(city) => (
                           <ComboboxItem key={city} value={city}>
-                            {tEnums(`city.${city}` as any)}
+                            {tEnums(`city.${city}`)}
                           </ComboboxItem>
                         )}
                       </ComboboxList>
@@ -335,7 +332,7 @@ export function EditRoomDialog({ room }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={option} />
-                          {t(`utilities.${option}` as any)}
+                          {t(`utilities.${option}`)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -399,7 +396,7 @@ export function EditRoomDialog({ room }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={type} />
-                          {tEnums(`rental_type.${type}` as any)}
+                          {tEnums(`rental_type.${type}`)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -455,7 +452,7 @@ export function EditRoomDialog({ room }: Props) {
                     <SelectContent>
                       {HouseType.values.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {tEnums(`house_type.${type}` as any)}
+                          {tEnums(`house_type.${type}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -480,7 +477,7 @@ export function EditRoomDialog({ room }: Props) {
                     <SelectContent>
                       {Furnishing.values.map((f) => (
                         <SelectItem key={f} value={f}>
-                          {tEnums(`furnishing.${f}` as any)}
+                          {tEnums(`furnishing.${f}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -519,7 +516,7 @@ export function EditRoomDialog({ room }: Props) {
                       )}
                       onClick={() => toggleArrayField("features", feature)}
                     >
-                      {tEnums(`room_feature.${feature}` as any)}
+                      {tEnums(`room_feature.${feature}`)}
                     </Badge>
                   );
                 })}
@@ -541,7 +538,7 @@ export function EditRoomDialog({ room }: Props) {
                       )}
                       onClick={() => toggleArrayField("locationTags", tag)}
                     >
-                      {tEnums(`location_tag.${tag}` as any)}
+                      {tEnums(`location_tag.${tag}`)}
                     </Badge>
                   );
                 })}
@@ -566,7 +563,7 @@ export function EditRoomDialog({ room }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={g} />
-                          {tEnums(`gender_preference.${g}` as any)}
+                          {tEnums(`gender_preference.${g}`)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -620,7 +617,7 @@ export function EditRoomDialog({ room }: Props) {
                       )}
                       onClick={() => toggleArrayField("acceptedLanguages", lang)}
                     >
-                      {tEnums(`language_enum.${lang}` as any)}
+                      {tEnums(`language_enum.${lang}`)}
                     </Badge>
                   );
                 })}
@@ -644,7 +641,7 @@ export function EditRoomDialog({ room }: Props) {
                       form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
                     }
                     items={Vereniging.values}
-                    itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
@@ -652,7 +649,7 @@ export function EditRoomDialog({ room }: Props) {
                       <ComboboxList>
                         {(v) => (
                           <ComboboxItem key={v} value={v}>
-                            {tEnums(`vereniging.${v}` as any)}
+                            {tEnums(`vereniging.${v}`)}
                           </ComboboxItem>
                         )}
                       </ComboboxList>

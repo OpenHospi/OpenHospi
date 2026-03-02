@@ -61,9 +61,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <div key={key}>
               <div className="flex items-center gap-3">
                 <Icon className="size-6 text-primary" />
-                <h2 className="text-2xl font-bold">{t(`${key}.title` as any)}</h2>
+                <h2 className="text-2xl font-bold">{t(`${key}.title`)}</h2>
               </div>
-              <p className="mt-4 text-muted-foreground">{t(`${key}.description` as any)}</p>
+              <p className="mt-4 text-muted-foreground">{t(`${key}.description`)}</p>
               {key === "openSource" && (
                 <div className="mt-6">
                   <Button variant="outline" asChild>

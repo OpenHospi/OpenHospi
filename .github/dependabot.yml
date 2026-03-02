@@ -1,0 +1,39 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Amsterdam
+    groups:
+      production:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: "drizzle-orm"
+      - dependency-name: "drizzle-kit"
+      - dependency-name: "drizzle-seed"
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Amsterdam
+    groups:
+      actions:
+        patterns:
+          - "*"

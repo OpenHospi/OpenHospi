@@ -25,7 +25,7 @@
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
     "supabase:reset": "supabase db reset && pnpm db:push:local && pnpm db:setup:storage:local && pnpm db:seed:local",
-    "i18n:check": "npx @lingual/i18n-check@latest --source nl --locales packages/i18n/messages",
+    "i18n:check": "i18n-check --source nl --locales packages/i18n/messages",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist"
   },
   "pnpm": {
@@ -43,6 +43,7 @@
     }
   },
   "devDependencies": {
+    "@lingual/i18n-check": "^0.8.19",
     "@vitest/coverage-v8": "^4.0.18",
     "dotenv": "^17.3.1",
     "typescript": "^5.9.3",

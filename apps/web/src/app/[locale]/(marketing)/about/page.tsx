@@ -1,10 +1,12 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { AlertTriangle, Heart, User } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ComponentType, SVGProps } from "react";
 
 import { Button } from "@/components/ui/button";
+import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -13,6 +15,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "seo" });
   return {
     title: t("about.title"),
@@ -33,6 +36,7 @@ const sectionConfig: {
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "about" });
@@ -56,9 +60,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <div key={key}>
               <div className="flex items-center gap-3">
                 <Icon className="size-6 text-primary" />
-                <h2 className="text-2xl font-bold">{t(`${key}.title`)}</h2>
+                <h2 className="text-2xl font-bold">{t(`${key}.title` as any)}</h2>
               </div>
-              <p className="mt-4 text-muted-foreground">{t(`${key}.description`)}</p>
+              <p className="mt-4 text-muted-foreground">{t(`${key}.description` as any)}</p>
               {key === "openSource" && (
                 <div className="mt-6">
                   <Button variant="outline" asChild>

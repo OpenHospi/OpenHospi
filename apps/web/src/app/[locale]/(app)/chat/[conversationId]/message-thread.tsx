@@ -10,7 +10,6 @@ import type { MessageItem } from "@/lib/chat";
 import { getStoredPrivateKey } from "@/lib/crypto-store";
 import { supabase } from "@/lib/supabase-client";
 
-
 import { markConversationRead } from "../chat-actions";
 import { fetchPublicKeys } from "../key-actions";
 

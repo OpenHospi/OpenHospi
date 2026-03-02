@@ -1,12 +1,12 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation-app";
 
 import { joinHouse } from "./actions";
 
@@ -23,7 +23,7 @@ export function JoinHouseButton({ code }: Props) {
     startTransition(async () => {
       const result = await joinHouse(code);
       if ("error" in result) {
-        toast.error(t(`errors.${result.error}`));
+        toast.error(t(`errors.${result.error}` as any));
         return;
       }
       toast.success(t("success"));

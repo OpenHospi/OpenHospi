@@ -10,7 +10,7 @@ import {
 import type { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { headers } from "next/headers";
-import { redirect } from "@/i18n/navigation-app";
+import { redirect } from "next/navigation";
 
 import { auth } from "./auth";
 import type { HousePermission } from "./permissions";

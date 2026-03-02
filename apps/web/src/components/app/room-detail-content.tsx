@@ -90,7 +90,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
   const tCommon = await getTranslations("common.labels");
   const tEnums = await getTranslations("enums");
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = tEnums(`city.${room.city}` as any);
 
   // Build address parts based on auth level
   const addressParts = [cityName];
@@ -141,7 +141,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
             {room.houseType && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 <Home className="size-4" />
-                <span>{tEnums(`house_type.${room.houseType}`)}</span>
+                <span>{tEnums(`house_type.${room.houseType}` as any)}</span>
               </div>
             )}
             <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -174,11 +174,11 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               {room.furnishing && (
                 <>
                   <dt className="text-muted-foreground">{tEnums("furnishing_label")}</dt>
-                  <dd>{tEnums(`furnishing.${room.furnishing}`)}</dd>
+                  <dd>{tEnums(`furnishing.${room.furnishing}` as any)}</dd>
                 </>
               )}
               <dt className="text-muted-foreground">{t("rentalType")}</dt>
-              <dd>{tEnums(`rental_type.${room.rentalType}`)}</dd>
+              <dd>{tEnums(`rental_type.${room.rentalType}` as any)}</dd>
               {room.availableFrom && (
                 <>
                   <dt className="text-muted-foreground">
@@ -194,7 +194,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
                   <dt className="text-muted-foreground">{t("acceptedLanguages")}</dt>
                   <dd>
                     {room.acceptedLanguages
-                      .map((lang) => tEnums(`language_enum.${lang}`))
+                      .map((lang) => tEnums(`language_enum.${lang}` as any))
                       .join(", ")}
                   </dd>
                 </>
@@ -209,7 +209,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               <div className="mt-2 flex flex-wrap gap-2">
                 {room.features.map((f) => (
                   <Badge key={f} variant="secondary">
-                    {tEnums(`room_feature.${f}`)}
+                    {tEnums(`room_feature.${f}` as any)}
                   </Badge>
                 ))}
               </div>
@@ -223,7 +223,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
               <div className="mt-2 flex flex-wrap gap-2">
                 {room.locationTags.map((tag) => (
                   <Badge key={tag} variant="outline">
-                    {tEnums(`location_tag.${tag}`)}
+                    {tEnums(`location_tag.${tag}` as any)}
                   </Badge>
                 ))}
               </div>

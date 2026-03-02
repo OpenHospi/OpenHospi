@@ -1,7 +1,7 @@
 import type { ReportStatus } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "@/i18n/navigation-app";
 import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { StorageImage } from "@/components/storage-image";
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { UserAvatar } from "@/components/user-avatar";
+import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 
 import { getReportDetail, getRoomDetail, getUserDetail } from "../../actions";
 
@@ -30,6 +32,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default async function ReportDetailPage({ params }: Props) {
   const { locale, reportId } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "admin" });
@@ -58,7 +61,7 @@ export default async function ReportDetailPage({ params }: Props) {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("reports.detailTitle")}</h1>
           <Badge className={TYPE_COLORS[report.reportType] ?? ""} style={{ marginTop: "0.5rem" }}>
-            {tEnums(`report_type.${report.reportType}`)}
+            {tEnums(`report_type.${report.reportType}` as any)}
           </Badge>
         </div>
       </div>
@@ -78,7 +81,7 @@ export default async function ReportDetailPage({ params }: Props) {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{t("reports.colReason")}</p>
-              <p className="font-medium">{tEnums(`report_reason.${report.reason}`)}</p>
+              <p className="font-medium">{tEnums(`report_reason.${report.reason}` as any)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm mb-2">{t("reports.colReporter")}</p>

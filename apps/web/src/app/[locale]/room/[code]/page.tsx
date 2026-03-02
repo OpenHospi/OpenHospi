@@ -4,11 +4,13 @@ import { RoomStatus } from "@openhospi/shared/enums";
 import { count, eq } from "drizzle-orm";
 import { Home, MapPin, Users } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 
 export async function generateMetadata({
@@ -17,13 +19,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string; code: string }>;
 }): Promise<Metadata> {
   const { locale, code } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.join" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomByShareLink(code);
   if (!room || room.status !== RoomStatus.active) return { title: t("title") };
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = tEnums(`city.${room.city}` as any);
   return { title: `${room.title} — ${cityName}` };
 }
 
@@ -58,6 +61,7 @@ async function getRoomByShareLink(code: string) {
 
 export default async function JoinRoomPage({ params }: Props) {
   const { locale, code } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   await requireSession();
 
@@ -101,7 +105,7 @@ export default async function JoinRoomPage({ params }: Props) {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MapPin className="size-4" />
-                {tEnums(`city.${room.city}`)}
+                {tEnums(`city.${room.city}` as any)}
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="size-4" />

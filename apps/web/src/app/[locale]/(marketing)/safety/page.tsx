@@ -1,6 +1,7 @@
 import { Code, EyeOff, Flag, Lock, Scale, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "seo" });
   return {
     title: t("safety.title"),
@@ -24,6 +26,7 @@ const icons: LucideIcon[] = [ShieldCheck, Lock, EyeOff, Scale, Code, Flag];
 
 export default async function SafetyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "safety" });
@@ -41,9 +44,9 @@ export default async function SafetyPage({ params }: { params: Promise<{ locale:
   return (
     <section className="py-24">
       {/* Safe: JSON-LD from i18n translations, sanitized in seo.ts (per Next.js docs recommendation) */}
+      import {routing} from "@/i18n/routing";
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faq }} />
-
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
@@ -57,9 +60,9 @@ export default async function SafetyPage({ params }: { params: Promise<{ locale:
                 <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-primary/10">
                   <Icon className="size-6 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold">{t(`features.${i}.title`)}</h3>
+                <h3 className="text-lg font-semibold">{t(`features.${i}.title` as any)}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {t(`features.${i}.description`)}
+                  {t(`features.${i}.description` as any)}
                 </p>
               </CardContent>
             </Card>

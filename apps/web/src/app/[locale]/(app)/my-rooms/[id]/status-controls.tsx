@@ -2,7 +2,6 @@
 
 import { RoomStatus } from "@openhospi/shared/enums";
 import { Loader2, Pause, Pencil, Play, Rocket, Trash2, XCircle } from "lucide-react";
-import { Link, useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -19,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Link, useRouter } from "@/i18n/navigation-app";
 import type { Room } from "@/lib/rooms";
 import type { CloseRoomApplicant } from "@/lib/votes";
 
@@ -42,13 +42,13 @@ export function StatusControls({ room, closeApplicants = [] }: Props) {
     startTransition(async () => {
       const result = await updateRoomStatus(room.id, status);
       if (result?.error) {
-        toast.error(t(`status.${result.error}`));
+        toast.error(t(`status.${result.error}` as any));
         return;
       }
       let messageKey = "closed";
       if (status === RoomStatus.active) messageKey = "activated";
       else if (status === RoomStatus.paused) messageKey = "paused";
-      toast.success(t(`status.${messageKey}`));
+      toast.success(t(`status.${messageKey}` as any));
       router.refresh();
     });
   }

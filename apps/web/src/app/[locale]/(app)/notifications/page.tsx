@@ -1,5 +1,7 @@
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getUserNotifications } from "@/lib/notifications";
 
@@ -7,6 +9,7 @@ import { NotificationsList } from "./notifications-list";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.notifications" });
   return { title: t("title") };
 }
@@ -17,6 +20,7 @@ type Props = {
 
 export default async function NotificationsPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 

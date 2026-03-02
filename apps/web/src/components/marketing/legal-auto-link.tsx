@@ -22,8 +22,9 @@ const GDPR_LAWS: Record<string, string> = {
 
 // Extracts article number (group 1) and law name (group 2) from a matched string.
 // Uses [\s\S]*? to bridge all three notation styles (EN parens, NL comma, DE keyword).
-// eslint-disable-next-line security/detect-unsafe-regex, sonarjs/slow-regex
-const GDPR_ARTICLE_RE = /[Aa]rt\.?\s*(\d+(?:\.\d+\w?)?)[\s\S]*?(GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)/;
+ 
+const GDPR_ARTICLE_RE =
+  /[Aa]rt\.?\s*(\d+(?:\.\d+\w?)?)[\s\S]*?(GDPR|AVG|DSGVO|UAVG|Telecommunicatiewet)/;
 
 function classifyAndRender(match: string, key: number): ReactNode {
   const linkClass =
@@ -59,18 +60,9 @@ function classifyAndRender(match: string, key: number): ReactNode {
   if (articleMatch) {
     const [, articleNum, law] = articleMatch;
     const base = GDPR_LAWS[law];
-    const href =
-      law === "UAVG" || law === "Telecommunicatiewet"
-        ? base
-        : `${base}${articleNum}/`;
+    const href = law === "UAVG" || law === "Telecommunicatiewet" ? base : `${base}${articleNum}/`;
     return (
-      <a
-        key={key}
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={linkClass}
-      >
+      <a key={key} href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>
         {match}
         <ExternalLink className="inline size-3" />
       </a>
@@ -93,13 +85,7 @@ function classifyAndRender(match: string, key: number): ReactNode {
     // eslint-disable-next-line sonarjs/slow-regex
     const cleaned = match.replace(/[.)]+$/, "");
     return (
-      <a
-        key={key}
-        href={cleaned}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={linkClass}
-      >
+      <a key={key} href={cleaned} target="_blank" rel="noopener noreferrer" className={linkClass}>
         {cleaned}
         <ExternalLink className="inline size-3" />
       </a>

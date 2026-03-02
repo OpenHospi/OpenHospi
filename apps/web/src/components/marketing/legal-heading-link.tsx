@@ -10,19 +10,14 @@ interface LegalHeadingLinkProps {
   ariaLabel: string;
 }
 
-export function LegalHeadingLink({
-  id,
-  title,
-  ariaLabel,
-}: LegalHeadingLinkProps) {
+export function LegalHeadingLink({ id, title, ariaLabel }: LegalHeadingLinkProps) {
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       const el = document.getElementById(id);
       if (!el) return;
 
-      const top =
-        el.getBoundingClientRect().top + window.scrollY - LEGAL_HEADER_OFFSET;
+      const top = el.getBoundingClientRect().top + window.scrollY - LEGAL_HEADER_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
       history.replaceState(null, "", `#${id}`);
     },

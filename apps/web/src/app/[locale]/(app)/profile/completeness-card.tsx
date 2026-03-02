@@ -41,7 +41,7 @@ export async function CompletenessCard({ profile }: Props) {
                 <Circle className="size-4 text-muted-foreground" />
               )}
               <span className={field.complete ? "" : "text-muted-foreground"}>
-                {t(`completeness.${field.key}`)}
+                {t(`completeness.${field.key}` as any)}
               </span>
             </li>
           ))}

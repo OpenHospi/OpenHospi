@@ -1,7 +1,6 @@
 "use client";
 
 import { BarChart3, ClipboardList, FileText, ScrollText, ShieldCheck } from "lucide-react";
-import { Link, usePathname } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 
 import {
@@ -15,6 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link, usePathname } from "@/i18n/navigation-app";
 
 import { AdminUserMenu } from "./admin-user-menu";
 

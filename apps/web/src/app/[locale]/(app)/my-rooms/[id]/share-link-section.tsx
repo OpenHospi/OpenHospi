@@ -2,13 +2,13 @@
 
 import { COPY_FEEDBACK_TIMEOUT_MS } from "@openhospi/shared/constants";
 import { Check, Copy, Loader2, RefreshCw } from "lucide-react";
-import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "@/i18n/navigation-app";
 import type { Room } from "@/lib/rooms";
 
 import { regenerateShareLink } from "./actions";

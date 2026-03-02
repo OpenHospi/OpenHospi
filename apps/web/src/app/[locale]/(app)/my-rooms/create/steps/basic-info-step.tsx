@@ -148,7 +148,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                     <SelectContent>
                       {City.values.map((city) => (
                         <SelectItem key={city} value={city}>
-                          {tEnums(`city.${city}`)}
+                          {tEnums(`city.${city}` as any)}
                         </SelectItem>
                       ))}
                     </SelectContent>

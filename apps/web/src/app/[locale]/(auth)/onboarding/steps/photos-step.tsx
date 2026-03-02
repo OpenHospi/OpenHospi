@@ -89,7 +89,7 @@ function SortableSlot({
         <>
           <StorageImage
             src={photo.url}
-            alt={t(`photoSlots.slot${slot}`)}
+            alt={t(`photoSlots.slot${slot}` as any)}
             bucket="profile-photos"
             fill
             className="object-cover"
@@ -97,7 +97,7 @@ function SortableSlot({
           {/* Gradient overlay with label */}
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 pt-6">
             {slot === 1 && <Badge className="mb-1">{t("required")}</Badge>}
-            <p className="text-xs font-medium text-white">{t(`photoSlots.slot${slot}`)}</p>
+            <p className="text-xs font-medium text-white">{t(`photoSlots.slot${slot}` as any)}</p>
           </div>
           {/* Grip handle */}
           <button
@@ -131,7 +131,7 @@ function SortableSlot({
           ) : (
             <Camera className="size-6 text-muted-foreground" />
           )}
-          <span className="text-xs text-muted-foreground">{t(`photoSlots.slot${slot}`)}</span>
+          <span className="text-xs text-muted-foreground">{t(`photoSlots.slot${slot}` as any)}</span>
           {slot === 1 && <span className="text-xs font-medium text-primary">{t("required")}</span>}
         </Button>
       )}

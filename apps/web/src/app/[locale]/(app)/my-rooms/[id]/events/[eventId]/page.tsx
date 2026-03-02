@@ -1,5 +1,5 @@
 import { ArrowLeft, Calendar, Clock, MapPin, Users, UserCircle } from "lucide-react";
-import { Link, redirect } from "@/i18n/navigation-app";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link, redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { getRoomApplicants } from "@/lib/applicants";
 import { requireHousemate, requireSession } from "@/lib/auth-server";
 import { getEventDetail } from "@/lib/events";
@@ -27,19 +29,21 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string; eventId: string }>;
 }) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.rooms.events" });
   return { title: t("detailTitle") };
 }
 
 export default async function EventDetailPage({ params }: Props) {
   const { locale, id: roomId, eventId } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
   await requireHousemate(roomId, user.id);
 
   const event = await getEventDetail(eventId, user.id);
   if (!event || event.roomId !== roomId) {
-    return redirect(`/my-rooms/${roomId}`);
+    return redirect(`/my-rooms/${roomId}` as any);
   }
 
   const applicants = await getRoomApplicants(roomId, user.id);
@@ -120,7 +124,7 @@ export default async function EventDetailPage({ params }: Props) {
                   grouped[status].length > 0 && (
                     <div key={status}>
                       <h4 className="mb-2 text-sm font-medium">
-                        {tEnums(`invitation_status.${status}`)} ({grouped[status].length})
+                        {tEnums(`invitation_status.${status}` as any)} ({grouped[status].length})
                       </h4>
                       <div className="space-y-2">
                         {grouped[status].map((invitee) => (
@@ -140,7 +144,7 @@ export default async function EventDetailPage({ params }: Props) {
                             <Badge
                               className={cn("ml-auto shrink-0", INVITATION_STATUS_COLORS[status])}
                             >
-                              {tEnums(`invitation_status.${status}`)}
+                              {tEnums(`invitation_status.${status}` as any)}
                             </Badge>
                           </div>
                         ))}

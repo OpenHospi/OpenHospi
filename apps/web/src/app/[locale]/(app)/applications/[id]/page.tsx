@@ -1,6 +1,7 @@
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { InvitationCard } from "@/app/[locale]/(app)/invitations/invitation-card";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link, redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { getApplicationDetail } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
 import { getInvitationForApplication } from "@/lib/invitations";
@@ -24,6 +26,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.applications" });
   return { title: t("detailTitle") };
 }
@@ -34,17 +37,19 @@ type Props = {
 
 export default async function ApplicationDetailPage({ params }: Props) {
   const { locale, id } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
 
   const application = await getApplicationDetail(id, user.id);
   if (!application) {
-    return redirect("/applications");
+    return redirect({ href: "/applications", locale });
   }
 
   const invitation = await getInvitationForApplication(id, user.id);
 
   const t = await getTranslations({ locale, namespace: "app.applications" });
+  const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const isTerminal = isTerminalApplicationStatus(application.status);
@@ -79,7 +84,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
           <div className="flex-1 p-4">
             <h2 className="text-xl font-semibold">{application.roomTitle}</h2>
             <p className="text-sm text-muted-foreground">
-              {tEnums(`city.${application.roomCity}`)}
+              {tEnums(`city.${application.roomCity}` as any)}
             </p>
             <p className="mt-2 text-lg font-bold">
               €{application.roomRentPrice}
@@ -87,11 +92,11 @@ export default async function ApplicationDetailPage({ params }: Props) {
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
               {application.roomHouseType && (
-                <span>{tEnums(`house_type.${application.roomHouseType}`)}</span>
+                <span>{tEnums(`house_type.${application.roomHouseType}` as any)}</span>
               )}
               {application.roomSizeM2 && <span>· {application.roomSizeM2} m²</span>}
               {application.roomTotalHousemates != null && (
-                <span>· {t("housemates", { count: application.roomTotalHousemates })}</span>
+                <span>· {tCommon("housemates", { count: application.roomTotalHousemates })}</span>
               )}
             </div>
             <div className="mt-3">
@@ -111,7 +116,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-3">
             <Badge className={cn("text-sm", APPLICATION_STATUS_COLORS[application.status])}>
-              {tEnums(`application_status.${application.status}`)}
+              {tEnums(`application_status.${application.status}` as any)}
             </Badge>
             <span className="text-sm text-muted-foreground">
               {t("appliedOn", { date: appliedDate })}

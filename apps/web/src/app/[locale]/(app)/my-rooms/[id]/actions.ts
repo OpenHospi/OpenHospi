@@ -13,7 +13,7 @@ import {
 } from "@openhospi/shared/enums";
 import { and, count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "@/i18n/navigation-app";
+import { redirect } from "next/navigation";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
 

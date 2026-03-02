@@ -1,7 +1,7 @@
 import { Bell } from "lucide-react";
-import { Link } from "@/i18n/navigation-app";
 
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation-app";
 import { getUnreadNotificationCount } from "@/lib/notifications";
 
 type Props = {

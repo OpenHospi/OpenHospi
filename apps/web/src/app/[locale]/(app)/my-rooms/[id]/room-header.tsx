@@ -17,7 +17,7 @@ export async function RoomHeader({ room }: Props) {
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-bold tracking-tight">{room.title || "Untitled room"}</h1>
         <Badge className={cn(ROOM_STATUS_COLORS[room.status])}>
-          {tEnums(`room_status.${room.status}`)}
+          {tEnums(`room_status.${room.status}` as any)}
         </Badge>
       </div>
     </div>

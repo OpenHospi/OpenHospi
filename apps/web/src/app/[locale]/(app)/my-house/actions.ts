@@ -5,7 +5,7 @@ import { houseMembers, houses } from "@openhospi/database/schema";
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "@/i18n/navigation-app";
+import { redirect } from "next/navigation";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 

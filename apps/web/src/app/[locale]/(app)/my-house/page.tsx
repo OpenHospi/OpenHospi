@@ -1,10 +1,12 @@
 import { withRLS } from "@openhospi/database";
 import { houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
 import { eq } from "drizzle-orm";
-import { redirect } from "@/i18n/navigation-app";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { redirect } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 
 type Props = {
@@ -13,6 +15,7 @@ type Props = {
 
 export default async function MyHousePage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const session = await requireSession();
   const userId = session.user.id;
@@ -54,7 +57,7 @@ export default async function MyHousePage({ params }: Props) {
   });
 
   if (!data) {
-    redirect("/my-house/create");
+    redirect({ href: "/my-house/create", locale });
   }
 
   return (

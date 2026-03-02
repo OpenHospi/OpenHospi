@@ -2,7 +2,6 @@
 
 import { INVITABLE_APPLICATION_STATUSES, ReviewDecision } from "@openhospi/shared/enums";
 import { Check, Loader2, UserPlus } from "lucide-react";
-import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useRouter } from "@/i18n/navigation-app";
 import type { RoomApplicant } from "@/lib/applicants";
 import { cn } from "@/lib/utils";
 

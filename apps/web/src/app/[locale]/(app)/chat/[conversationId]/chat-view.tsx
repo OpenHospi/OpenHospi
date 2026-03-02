@@ -1,7 +1,6 @@
 "use client";
 
-import { Flag, MoreVertical, ShieldBan, ShieldCheck, ArrowLeft  } from "lucide-react";
-import { Link } from "@/i18n/navigation-app";
+import { Flag, MoreVertical, ShieldBan, ShieldCheck, ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
@@ -15,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "@/i18n/navigation-app";
 import type { MessageItem } from "@/lib/chat";
 
 import { blockUser, unblockUser } from "../block-actions";

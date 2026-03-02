@@ -14,21 +14,13 @@ interface LegalPageContentProps {
 
 const CARD_NAMESPACES = new Set(["dataProcessors", "processingRegister"]);
 
-function getSectionMode(
-  namespace: string,
-  items: string[],
-): SectionMode {
+function getSectionMode(namespace: string, items: string[]): SectionMode {
   if (CARD_NAMESPACES.has(namespace)) return "card";
-  if (namespace === "dpia" && items.length > 0 && isRiskSection(items))
-    return "risk";
+  if (namespace === "dpia" && items.length > 0 && isRiskSection(items)) return "risk";
   return "prose";
 }
 
-export async function LegalPageContent({
-  locale,
-  namespace,
-  hasIntro,
-}: LegalPageContentProps) {
+export async function LegalPageContent({ locale, namespace, hasIntro }: LegalPageContentProps) {
   const t = await getTranslations({ locale, namespace });
   const tCommon = await getTranslations({
     locale,
@@ -41,13 +33,13 @@ export async function LegalPageContent({
     const hasContent = t.has(`sections.${i}.content`);
     const hasItems = t.has(`sections.${i}.items`);
     const items = hasItems ? (t.raw(`sections.${i}.items`) as string[]) : [];
-    const title = t(`sections.${i}.title`);
+    const title = t(`sections.${i}.title` as any);
 
     return {
       id: `section-${i}`,
       title,
       linkAriaLabel: tCommon("linkToSection", { title }),
-      content: hasContent ? t(`sections.${i}.content`) : undefined,
+      content: hasContent ? t(`sections.${i}.content` as any) : undefined,
       items,
       mode: getSectionMode(namespace, items),
     };
@@ -57,24 +49,15 @@ export async function LegalPageContent({
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-        {t("title")}
-      </h1>
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{t("lastUpdated")}</p>
 
       <Separator className="my-8" />
 
-      {hasIntro && (
-        <p className="mb-8 leading-relaxed text-muted-foreground">
-          {t("intro")}
-        </p>
-      )}
+      {hasIntro && <p className="mb-8 leading-relaxed text-muted-foreground">{t("intro")}</p>}
 
       {tocEntries.length > 3 && (
-        <LegalTableOfContents
-          entries={tocEntries}
-          label={tCommon("onThisPage")}
-        />
+        <LegalTableOfContents entries={tocEntries} label={tCommon("onThisPage")} />
       )}
 
       <div className="space-y-10">

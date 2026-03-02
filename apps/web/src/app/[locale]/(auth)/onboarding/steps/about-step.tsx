@@ -91,7 +91,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
                       className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                     >
                       <RadioGroupItem value={g} />
-                      {tEnums(`gender.${g}`)}
+                      {tEnums(`gender.${g}` as any)}
                     </Label>
                   ))}
                 </RadioGroup>
@@ -153,7 +153,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
                     : StudyLevel.values
                   ).map((level) => (
                     <SelectItem key={level} value={level}>
-                      {tEnums(`study_level.${level}`)}
+                      {tEnums(`study_level.${level}` as any)}
                     </SelectItem>
                   ))}
                 </SelectContent>

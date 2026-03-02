@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2, X } from "lucide-react";
-import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -17,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation-app";
 
 import { cancelEvent } from "../event-actions";
 

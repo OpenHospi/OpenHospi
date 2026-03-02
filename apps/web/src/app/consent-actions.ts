@@ -20,8 +20,7 @@ export async function recordConsent(consents: ConsentEntry[]) {
   if (!session) return { error: "Not authenticated" };
 
   const h = await headers();
-  const ipAddress =
-    h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+  const ipAddress = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
   const userAgent = h.get("user-agent") ?? null;
 
   await db.transaction(async (tx) => {

@@ -1,9 +1,9 @@
 import { Calendar, MapPin, Users } from "lucide-react";
-import { Link } from "@/i18n/navigation-app";
 import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation-app";
 import { getRoomEvents } from "@/lib/events";
 import { cn } from "@/lib/utils";
 

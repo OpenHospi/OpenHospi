@@ -1,7 +1,9 @@
 import { BarChart3, Building2, Flag, UserCheck, UserPlus, Users } from "lucide-react";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { routing } from "@/i18n/routing";
 
 import { getAggregateStats } from "./actions";
 
@@ -11,6 +13,7 @@ type Props = {
 
 export default async function AdminDashboardPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "admin" });
   const tEnums = await getTranslations({ locale, namespace: "enums" });
@@ -59,7 +62,7 @@ export default async function AdminDashboardPage({ params }: Props) {
             <div className="space-y-2">
               {stats.listingsByCity.map((row) => (
                 <div key={row.city} className="flex items-center justify-between">
-                  <span className="text-sm">{tEnums(`city.${row.city}`)}</span>
+                  <span className="text-sm">{tEnums(`city.${row.city}` as any)}</span>
                   <span className="text-muted-foreground text-sm font-medium">{row.count}</span>
                 </div>
               ))}

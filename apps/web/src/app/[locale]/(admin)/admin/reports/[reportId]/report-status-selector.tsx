@@ -44,7 +44,7 @@ export function ReportStatusSelector({ reportId, currentStatus }: Props) {
       value={currentStatus}
       onValueChange={handleStatusChange}
       items={ReportStatus.values}
-      itemToStringLabel={(s) => tEnums(`report_status.${s}`)}
+      itemToStringLabel={(s) => tEnums(`report_status.${s}` as any)}
     >
       <ComboboxInput className="w-50" placeholder={t("searchStatus")} disabled={isPending} />
       <ComboboxContent>
@@ -52,7 +52,7 @@ export function ReportStatusSelector({ reportId, currentStatus }: Props) {
         <ComboboxList>
           {(status) => (
             <ComboboxItem key={status} value={status}>
-              {tEnums(`report_status.${status}`)}
+              {tEnums(`report_status.${status}` as any)}
             </ComboboxItem>
           )}
         </ComboboxList>

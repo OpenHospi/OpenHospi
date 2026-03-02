@@ -173,7 +173,7 @@ export function EditProfileDialog({ profile }: Props) {
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={g} />
-                          {tEnums(`gender.${g}`)}
+                          {tEnums(`gender.${g}` as any)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -236,7 +236,7 @@ export function EditProfileDialog({ profile }: Props) {
                         : StudyLevel.values
                       ).map((level) => (
                         <SelectItem key={level} value={level}>
-                          {tEnums(`study_level.${level}`)}
+                          {tEnums(`study_level.${level}` as any)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -286,7 +286,7 @@ export function EditProfileDialog({ profile }: Props) {
                       )}
                       onClick={() => toggleLanguage(lang)}
                     >
-                      {tEnums(`language_enum.${lang}`)}
+                      {tEnums(`language_enum.${lang}` as any)}
                     </Badge>
                   );
                 })}
@@ -315,7 +315,7 @@ export function EditProfileDialog({ profile }: Props) {
                       )}
                       onClick={() => toggleTag(tag)}
                     >
-                      {tEnums(`lifestyle_tag.${tag}`)}
+                      {tEnums(`lifestyle_tag.${tag}` as any)}
                     </Badge>
                   );
                 })}
@@ -332,7 +332,7 @@ export function EditProfileDialog({ profile }: Props) {
                     value={field.value ?? null}
                     onValueChange={field.onChange}
                     items={City.values}
-                    itemToStringLabel={(city) => tEnums(`city.${city}`)}
+                    itemToStringLabel={(city) => tEnums(`city.${city}` as any)}
                   >
                     <ComboboxInput placeholder={tOnboarding("placeholders.preferredCity")} />
                     <ComboboxContent>
@@ -340,7 +340,7 @@ export function EditProfileDialog({ profile }: Props) {
                       <ComboboxList>
                         {(city) => (
                           <ComboboxItem key={city} value={city}>
-                            {tEnums(`city.${city}`)}
+                            {tEnums(`city.${city}` as any)}
                           </ComboboxItem>
                         )}
                       </ComboboxList>
@@ -391,7 +391,7 @@ export function EditProfileDialog({ profile }: Props) {
                       form.setValue("vereniging", val ?? undefined, { shouldValidate: true })
                     }
                     items={Vereniging.values}
-                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
                   >
                     <ComboboxInput
                       placeholder={tOnboarding("placeholders.searchVereniging")}
@@ -402,7 +402,7 @@ export function EditProfileDialog({ profile }: Props) {
                       <ComboboxList>
                         {(v) => (
                           <ComboboxItem key={v} value={v}>
-                            {tEnums(`vereniging.${v}`)}
+                            {tEnums(`vereniging.${v}` as any)}
                           </ComboboxItem>
                         )}
                       </ComboboxList>

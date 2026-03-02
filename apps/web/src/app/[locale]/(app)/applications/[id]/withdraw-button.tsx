@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2, XCircle } from "lucide-react";
-import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation-app";
 
 import { withdrawApplication } from "./actions";
 
@@ -36,7 +36,7 @@ export function WithdrawButton({ applicationId }: Props) {
     startTransition(async () => {
       const result = await withdrawApplication(applicationId);
       if (result?.error) {
-        toast.error(t(`errors.${result.error}`));
+        toast.error(t(`errors.${result.error}` as any));
         return;
       }
       toast.success(t("withdrawSuccess"));

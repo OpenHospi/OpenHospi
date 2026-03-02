@@ -15,23 +15,16 @@ interface LegalTableOfContentsProps {
   label: string;
 }
 
-export function LegalTableOfContents({
-  entries,
-  label,
-}: LegalTableOfContentsProps) {
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-      e.preventDefault();
-      const el = document.getElementById(id);
-      if (!el) return;
+export function LegalTableOfContents({ entries, label }: LegalTableOfContentsProps) {
+  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (!el) return;
 
-      const top =
-        el.getBoundingClientRect().top + window.scrollY - LEGAL_HEADER_OFFSET;
-      window.scrollTo({ top, behavior: "smooth" });
-      history.replaceState(null, "", `#${id}`);
-    },
-    [],
-  );
+    const top = el.getBoundingClientRect().top + window.scrollY - LEGAL_HEADER_OFFSET;
+    window.scrollTo({ top, behavior: "smooth" });
+    history.replaceState(null, "", `#${id}`);
+  }, []);
 
   return (
     <Card className="mb-12 py-4">

@@ -1,10 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { AutoLinkedText } from "./legal-auto-link";
 
@@ -12,14 +7,11 @@ const RISK_LABELS =
   /^(Likelihood|Impact|Residual risk|Waarschijnlijkheid|Restrisico|Wahrscheinlichkeit|Auswirkung|Restrisiko)\b/i;
 
 const RISK_COLORS: Record<string, string> = {
-  "very low":
-    "bg-green-500/15 text-green-800 border-green-500/25 dark:text-green-400",
+  "very low": "bg-green-500/15 text-green-800 border-green-500/25 dark:text-green-400",
   low: "bg-green-500/15 text-green-800 border-green-500/25 dark:text-green-400",
-  medium:
-    "bg-yellow-500/15 text-yellow-800 border-yellow-500/25 dark:text-yellow-400",
+  medium: "bg-yellow-500/15 text-yellow-800 border-yellow-500/25 dark:text-yellow-400",
   high: "bg-red-500/15 text-red-800 border-red-500/25 dark:text-red-400",
-  "very high":
-    "bg-red-500/15 text-red-800 border-red-500/25 dark:text-red-400",
+  "very high": "bg-red-500/15 text-red-800 border-red-500/25 dark:text-red-400",
 };
 
 // Maps NL/DE risk level words to the normalized English key used in RISK_COLORS
@@ -62,7 +54,10 @@ function parseRiskLevel(value: string): {
         return {
           level: LEVEL_ALIASES[alias],
           displayLabel: trimmed.slice(0, alias.length),
-          note: rest.replace(/^\s*\(/, "").replace(/\)\s*$/, "").trim(),
+          note: rest
+            .replace(/^\s*\(/, "")
+            .replace(/\)\s*$/, "")
+            .trim(),
         };
       }
     }
@@ -80,9 +75,7 @@ export function RiskLevelBadge({ value }: { value: string }) {
       <Badge variant="outline" className={colorClass}>
         {parsed.displayLabel.charAt(0).toUpperCase() + parsed.displayLabel.slice(1).toLowerCase()}
       </Badge>
-      {parsed.note && (
-        <span className="text-xs text-muted-foreground">{parsed.note}</span>
-      )}
+      {parsed.note && <span className="text-xs text-muted-foreground">{parsed.note}</span>}
     </span>
   );
 }
@@ -118,11 +111,7 @@ export function LegalRiskAssessment({ items }: { items: string[] }) {
                   {label}
                 </TableCell>
                 <TableCell className="text-muted-foreground whitespace-normal">
-                  {isRiskLabel ? (
-                    <RiskLevelBadge value={value} />
-                  ) : (
-                    <AutoLinkedText text={value} />
-                  )}
+                  {isRiskLabel ? <RiskLevelBadge value={value} /> : <AutoLinkedText text={value} />}
                 </TableCell>
               </TableRow>
             );

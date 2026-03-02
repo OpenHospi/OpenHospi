@@ -24,9 +24,7 @@ export type DataRequestListItem = {
   createdAt: Date;
 };
 
-export async function getDataRequests(
-  status?: DataRequestStatus,
-): Promise<DataRequestListItem[]> {
+export async function getDataRequests(status?: DataRequestStatus): Promise<DataRequestListItem[]> {
   await requireAdmin();
 
   const conditions = [];
@@ -122,12 +120,7 @@ export async function liftUserRestriction(userId: string, reason: string) {
   await db
     .update(processingRestrictions)
     .set({ liftedAt: new Date(), liftedBy: adminUserId })
-    .where(
-      and(
-        eq(processingRestrictions.userId, userId),
-        isNull(processingRestrictions.liftedAt),
-      ),
-    );
+    .where(and(eq(processingRestrictions.userId, userId), isNull(processingRestrictions.liftedAt)));
 
   await db.insert(adminAuditLog).values({
     adminUserId,

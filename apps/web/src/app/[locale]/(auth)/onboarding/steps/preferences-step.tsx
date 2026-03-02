@@ -78,7 +78,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                 value={field.value ?? null}
                 onValueChange={field.onChange}
                 items={City.values}
-                itemToStringLabel={(city) => tEnums(`city.${city}`)}
+                itemToStringLabel={(city) => tEnums(`city.${city}` as any)}
               >
                 <ComboboxInput placeholder={t("placeholders.preferredCity")} />
                 <ComboboxContent>
@@ -86,7 +86,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   <ComboboxList>
                     {(city) => (
                       <ComboboxItem key={city} value={city}>
-                        {tEnums(`city.${city}`)}
+                        {tEnums(`city.${city}` as any)}
                       </ComboboxItem>
                     )}
                   </ComboboxList>
@@ -150,7 +150,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   form.setValue("vereniging", val ?? undefined, { shouldValidate: true })
                 }
                 items={Vereniging.values}
-                itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
               >
                 <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                 <ComboboxContent>
@@ -158,7 +158,7 @@ export function PreferencesStep({ defaultValues, onBack }: Props) {
                   <ComboboxList>
                     {(v) => (
                       <ComboboxItem key={v} value={v}>
-                        {tEnums(`vereniging.${v}`)}
+                        {tEnums(`vereniging.${v}` as any)}
                       </ComboboxItem>
                     )}
                   </ComboboxList>

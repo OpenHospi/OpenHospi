@@ -1,11 +1,13 @@
 import { APP_NAME } from "@openhospi/shared/constants";
 import { MapPin } from "lucide-react";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import { getCitiesWithRoomCount } from "@/lib/discover";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 import { getLoginUrl } from "@/lib/urls";
@@ -18,6 +20,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "public.rooms" });
   return {
     title: `${t("title")} — ${APP_NAME}`,
@@ -32,6 +35,7 @@ type Props = {
 
 export default async function RoomsIndexPage({ params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const cities = await getCitiesWithRoomCount();
@@ -65,9 +69,9 @@ export default async function RoomsIndexPage({ params }: Props) {
                 <CardContent className="flex items-center gap-3 p-4">
                   <MapPin className="size-5 text-primary" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{tEnums(`city.${city}`)}</p>
+                    <p className="truncate font-semibold">{tEnums(`city.${city}` as any)}</p>
                     <p className="text-sm text-muted-foreground">
-                      {t("roomsAvailable", { count })}
+                      {t("roomsAvailable", { count:String( String(count) )})}
                     </p>
                   </div>
                 </CardContent>

@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2, UserCircle, XCircle } from "lucide-react";
-import { useRouter } from "@/i18n/navigation-app";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -27,6 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useRouter } from "@/i18n/navigation-app";
 import { cn } from "@/lib/utils";
 
 import { closeRoomWithChoice } from "./close-room-actions";

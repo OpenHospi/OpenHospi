@@ -1,9 +1,11 @@
 import { DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { RoomCard } from "@/components/app/room-card";
 import { Link } from "@/i18n/navigation-app";
+import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import type { DiscoverCursor, DiscoverFilters } from "@/lib/discover";
 import { getDiscoverRooms } from "@/lib/discover";
@@ -18,6 +20,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.discover" });
   return { title: t("title") };
 }
@@ -70,6 +73,7 @@ function parseSearchParams(sp: Record<string, string | string[] | undefined>): {
 
 export default async function DiscoverPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
   const { user } = await requireSession();
   const sp = await searchParams;

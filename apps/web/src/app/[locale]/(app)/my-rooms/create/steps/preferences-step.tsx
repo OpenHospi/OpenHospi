@@ -121,7 +121,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       )}
                       onClick={() => toggleArrayField("features", feature)}
                     >
-                      {tEnums(`room_feature.${feature}`)}
+                      {tEnums(`room_feature.${feature}` as any)}
                     </Badge>
                   );
                 })}
@@ -143,7 +143,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       )}
                       onClick={() => toggleArrayField("locationTags", tag)}
                     >
-                      {tEnums(`location_tag.${tag}`)}
+                      {tEnums(`location_tag.${tag}` as any)}
                     </Badge>
                   );
                 })}
@@ -177,7 +177,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                           className="border-input has-data-[state=checked]:border-primary flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm"
                         >
                           <RadioGroupItem value={g} />
-                          {tEnums(`gender_preference.${g}`)}
+                          {tEnums(`gender_preference.${g}` as any)}
                         </Label>
                       ))}
                     </RadioGroup>
@@ -232,7 +232,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       )}
                       onClick={() => toggleArrayField("acceptedLanguages", lang)}
                     >
-                      {tEnums(`language_enum.${lang}`)}
+                      {tEnums(`language_enum.${lang}` as any)}
                     </Badge>
                   );
                 })}
@@ -265,7 +265,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       form.setValue("roomVereniging", val ?? undefined, { shouldValidate: true })
                     }
                     items={Vereniging.values}
-                    itemToStringLabel={(v) => tEnums(`vereniging.${v}`)}
+                    itemToStringLabel={(v) => tEnums(`vereniging.${v}` as any)}
                   >
                     <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
                     <ComboboxContent>
@@ -273,7 +273,7 @@ export function PreferencesStep({ roomId, defaultValues, onBack, onNext }: Props
                       <ComboboxList>
                         {(v) => (
                           <ComboboxItem key={v} value={v}>
-                            {tEnums(`vereniging.${v}`)}
+                            {tEnums(`vereniging.${v}` as any)}
                           </ComboboxItem>
                         )}
                       </ComboboxList>

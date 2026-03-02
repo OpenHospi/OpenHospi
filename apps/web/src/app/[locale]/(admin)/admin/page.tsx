@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { BarChart3, Building2, Flag, UserCheck, UserPlus, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -8,7 +9,7 @@ import { routing } from "@/i18n/routing";
 import { getAggregateStats } from "./actions";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function AdminDashboardPage({ params }: Props) {

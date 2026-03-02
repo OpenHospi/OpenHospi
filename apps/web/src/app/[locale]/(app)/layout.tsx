@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { withRLS } from "@openhospi/database";
 import { profiles } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
@@ -19,7 +20,7 @@ import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth-ser
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function AppLayout({ children, params }: Props) {

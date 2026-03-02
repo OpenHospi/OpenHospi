@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import {ArrowLeft, Calendar, Clock, MapPin, Users, UserCircle} from "lucide-react";
 import {hasLocale} from "next-intl";
 import {getTranslations, setRequestLocale} from "next-intl/server";
@@ -20,13 +21,13 @@ import {InviteApplicantsDialog} from "../invite-applicants-dialog";
 import {CancelEventButton} from "./cancel-event-button";
 
 type Props = {
-    params: Promise<{ locale: string; id: string; eventId: string }>;
+    params: Promise<{ locale: Locale; id: string; eventId: string }>;
 };
 
 export async function generateMetadata({
                                            params,
                                        }: {
-    params: Promise<{ locale: string; id: string; eventId: string }>;
+    params: Promise<{ locale: Locale; id: string; eventId: string }>;
 }) {
     const {locale} = await params;
     if (!hasLocale(routing.locales, locale)) return {};

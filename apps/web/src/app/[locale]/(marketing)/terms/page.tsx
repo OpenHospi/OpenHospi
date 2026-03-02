@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -9,7 +10,7 @@ import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -21,7 +22,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function TermsPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);

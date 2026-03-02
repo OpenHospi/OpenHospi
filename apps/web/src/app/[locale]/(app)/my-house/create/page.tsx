@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -11,7 +12,7 @@ import { requireSession } from "@/lib/auth-server";
 import { createHouse } from "../actions";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function CreateHousePage({ params }: Props) {

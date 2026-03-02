@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { DiscoverSort } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -17,7 +18,7 @@ import { DiscoverLoadMore } from "./discover-load-more";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -26,7 +27,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 

@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { ReportStatus, ReportType } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -18,7 +19,7 @@ import { routing } from "@/i18n/routing";
 import { getReports } from "../actions";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ status?: string; type?: string }>;
 };
 

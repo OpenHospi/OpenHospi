@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { Code, EyeOff, Flag, Lock, Scale, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
@@ -11,7 +12,7 @@ import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -25,7 +26,7 @@ export async function generateMetadata({
 
 const icons: LucideIcon[] = [ShieldCheck, Lock, EyeOff, Scale, Code, Flag];
 
-export default async function SafetyPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function SafetyPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);

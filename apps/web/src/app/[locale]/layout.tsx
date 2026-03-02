@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import type { WebMessages } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { APP_NAME } from "@openhospi/shared/constants";
@@ -26,7 +27,7 @@ const geistMono = Geist_Mono({
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -43,7 +44,7 @@ export async function generateMetadata({
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export function generateStaticParams() {

@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import type { ReportStatus } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -21,7 +22,7 @@ import { RoomDetailDialog } from "./room-detail-dialog";
 import { UserDetailDialog } from "./user-detail-dialog";
 
 type Props = {
-  params: Promise<{ locale: string; reportId: string }>;
+  params: Promise<{ locale: Locale; reportId: string }>;
 };
 
 const TYPE_COLORS: Record<string, string> = {

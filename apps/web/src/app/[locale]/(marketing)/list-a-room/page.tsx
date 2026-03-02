@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import {
   ClipboardList,
   Eye,
@@ -24,7 +25,7 @@ import { getLoginUrl } from "@/lib/urls";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -39,7 +40,7 @@ export async function generateMetadata({
 const whyIcons = [ShieldCheck, HandCoins, ClipboardList, Link2] as const;
 const stepIcons: LucideIcon[] = [LogIn, Home, Share2, Eye, ClipboardList, Sparkles];
 
-export default async function ListARoomPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function ListARoomPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);

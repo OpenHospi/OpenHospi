@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -10,13 +11,13 @@ import { requireHousemate, requireSession } from "@/lib/auth-server";
 import { ReviewModeClient } from "./review-mode-client";
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};

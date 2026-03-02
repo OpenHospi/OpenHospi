@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -10,7 +11,7 @@ import { getBlockedUsers } from "../block-actions";
 import { ChatView } from "./chat-view";
 
 type Props = {
-  params: Promise<{ locale: string; conversationId: string }>;
+  params: Promise<{ locale: Locale; conversationId: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {

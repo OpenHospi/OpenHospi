@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -14,7 +15,7 @@ import { RoomCard } from "./room-card";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -23,7 +24,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function MyRoomsPage({ params }: Props) {

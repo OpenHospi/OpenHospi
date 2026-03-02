@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { AlertTriangle, Heart, User } from "lucide-react";
 import type { Metadata } from "next";
@@ -12,7 +13,7 @@ import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -34,7 +35,7 @@ const sectionConfig: {
   { key: "openSource", icon: SiGithub },
 ];
 
-export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);

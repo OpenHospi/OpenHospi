@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
@@ -23,7 +24,7 @@ import { WithdrawButton } from "./withdraw-button";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -32,7 +33,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
 export default async function ApplicationDetailPage({ params }: Props) {

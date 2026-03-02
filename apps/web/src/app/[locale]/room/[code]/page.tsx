@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { db } from "@openhospi/database";
 import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 import { RoomStatus } from "@openhospi/shared/enums";
@@ -16,7 +17,7 @@ import { requireSession } from "@/lib/auth-server";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; code: string }>;
+  params: Promise<{ locale: Locale; code: string }>;
 }): Promise<Metadata> {
   const { locale, code } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -31,7 +32,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string; code: string }>;
+  params: Promise<{ locale: Locale; code: string }>;
 };
 
 async function getRoomByShareLink(code: string) {

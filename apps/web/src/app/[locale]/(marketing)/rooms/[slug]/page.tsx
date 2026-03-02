@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import type { SupportedLocale } from "@openhospi/shared/constants";
 import { City } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
@@ -26,7 +27,7 @@ function isCity(slug: string): boolean {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; slug: string }>;
+  params: Promise<{ locale: Locale; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -73,7 +74,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string; slug: string }>;
+  params: Promise<{ locale: Locale; slug: string }>;
 };
 
 export default async function RoomSlugPage({ params }: Props) {

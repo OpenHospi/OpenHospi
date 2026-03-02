@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { Settings } from "lucide-react";
 import type { Metadata } from "next";
@@ -22,7 +23,7 @@ import { ApplyDialog } from "./apply-dialog";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }): Promise<Metadata> {
   const { locale, id } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -58,7 +59,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
 export default async function DiscoverRoomDetailPage({ params }: Props) {

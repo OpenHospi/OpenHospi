@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { OG_IMAGE_SIZE } from "@openhospi/shared/constants";
 import { ImageResponse } from "next/og";
 import { hasLocale } from "next-intl";
@@ -9,7 +10,7 @@ export const alt = "Safety & Trust";
 export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 
-export default async function OGImage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function OGImage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return new Response("Not found", { status: 404 });
   const t = await getTranslations({ locale, namespace: "seo.safety" });

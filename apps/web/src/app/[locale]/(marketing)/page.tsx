@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import {
   BadgeCheck,
@@ -24,7 +25,7 @@ import { alternatesForPath, organizationJsonLd } from "@/lib/seo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};

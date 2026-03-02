@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { APP_NAME, SUPPORTED_LOCALES } from "@openhospi/shared/constants";
 
 const BASE_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
@@ -6,7 +7,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl"
  * Returns `alternates` object for Next.js `generateMetadata`.
  * Next.js auto-generates `<link rel="canonical">` and `<link rel="alternate" hreflang="...">`.
  */
-export function alternatesForPath(locale: string, path: string) {
+export function alternatesForPath(locale: Locale, path: string) {
   return {
     canonical: `${BASE_URL}/${locale}${path}`,
     languages: Object.fromEntries(SUPPORTED_LOCALES.map((l) => [l, `${BASE_URL}/${l}${path}`])),
@@ -18,7 +19,7 @@ function sanitizeJsonLd(json: string): string {
   return json.replaceAll("<", "\\u003c");
 }
 
-export function breadcrumbJsonLd(locale: string, items: { name: string; path: string }[]): string {
+export function breadcrumbJsonLd(locale: Locale, items: { name: string; path: string }[]): string {
   return sanitizeJsonLd(
     JSON.stringify({
       "@context": "https://schema.org",

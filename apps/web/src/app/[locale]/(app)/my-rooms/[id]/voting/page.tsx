@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { ArrowLeft } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -11,13 +12,13 @@ import { getRoomVotes } from "@/lib/votes";
 import { VotingClient } from "./voting-client";
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 };
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: Locale; id: string }>;
 }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};

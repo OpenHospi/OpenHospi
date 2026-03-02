@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -11,7 +12,7 @@ import { requireAdmin } from "@/lib/auth-server";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 };
 
 export default async function AdminLayout({ children, params }: Props) {

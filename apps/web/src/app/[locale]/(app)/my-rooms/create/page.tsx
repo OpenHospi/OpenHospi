@@ -1,3 +1,4 @@
+import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -15,7 +16,7 @@ import { RoomCreateForm } from "./room-create-form";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -24,7 +25,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ id?: string }>;
 };
 

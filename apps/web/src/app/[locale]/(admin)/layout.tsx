@@ -12,7 +12,7 @@ import { requireAdmin } from "@/lib/auth-server";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function AdminLayout({ children, params }: Props) {

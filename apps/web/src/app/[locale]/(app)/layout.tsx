@@ -20,7 +20,7 @@ import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth-ser
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function AppLayout({ children, params }: Props) {

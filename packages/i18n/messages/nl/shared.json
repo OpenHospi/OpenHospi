@@ -440,11 +440,16 @@
     },
     "admin_action": {
       "view_report": "Melding bekijken",
+      "update_report": "Melding bijwerken",
       "suspend_user": "Gebruiker schorsen",
       "unsuspend_user": "Schorsing opheffen",
       "remove_listing": "Advertentie verwijderen",
       "remove_message": "Bericht verwijderen",
-      "dismiss_report": "Melding afwijzen"
+      "dismiss_report": "Melding afwijzen",
+      "process_data_request": "Gegevensverzoek verwerken",
+      "lift_restriction": "Beperking opheffen",
+      "export_user_data": "Gebruikersgegevens exporteren",
+      "view_user_data": "Gebruikersgegevens bekijken"
     }
   },
   "notifications": {

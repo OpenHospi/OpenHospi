@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function AdminPublicLayout({ children, params }: Props) {

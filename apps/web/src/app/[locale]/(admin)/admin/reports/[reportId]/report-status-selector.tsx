@@ -50,7 +50,7 @@ export function ReportStatusSelector({ reportId, currentStatus }: Props) {
       <ComboboxContent>
         <ComboboxEmpty>{t("noStatusFound")}</ComboboxEmpty>
         <ComboboxList>
-          {(status) => (
+          {(status: ReportStatus) => (
             <ComboboxItem key={status} value={status}>
               {tEnums(`report_status.${status}`)}
             </ComboboxItem>

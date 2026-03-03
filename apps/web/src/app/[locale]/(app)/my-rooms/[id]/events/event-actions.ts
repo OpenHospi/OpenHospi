@@ -5,7 +5,7 @@ import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import type { CreateEventData } from "@openhospi/database/validators";
 import { createEventSchema } from "@openhospi/database/validators";
 import { InvitationStatus } from "@openhospi/shared/enums";
-import { and, eq, ne } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
@@ -53,6 +53,8 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
   const parsed = createEventSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" as const };
 
+  await requireHousemate(roomId, session.user.id);
+
   await withRLS(session.user.id, async (tx) => {
     await tx
       .update(hospiEvents)
@@ -66,6 +68,7 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
         rsvpDeadline: parsed.data.rsvpDeadline || null,
         maxAttendees: parsed.data.maxAttendees || null,
         notes: parsed.data.notes || null,
+        sequence: sql`${hospiEvents.sequence} + 1`,
       })
       .where(and(eq(hospiEvents.id, eventId), eq(hospiEvents.createdBy, session.user.id)));
   });
@@ -83,7 +86,7 @@ export async function cancelEvent(eventId: string, roomId: string) {
   const result = await withRLS(session.user.id, async (tx) => {
     const [event] = await tx
       .update(hospiEvents)
-      .set({ cancelledAt: new Date() })
+      .set({ cancelledAt: new Date(), sequence: sql`${hospiEvents.sequence} + 1` })
       .where(and(eq(hospiEvents.id, eventId), eq(hospiEvents.createdBy, session.user.id)))
       .returning({ title: hospiEvents.title });
 

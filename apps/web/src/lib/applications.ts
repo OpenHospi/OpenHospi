@@ -1,5 +1,11 @@
 import { withRLS } from "@openhospi/database";
-import { applications, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
+import {
+  applications,
+  applicationStatusHistory,
+  profiles,
+  roomPhotos,
+  rooms,
+} from "@openhospi/database/schema";
 import type {
   City,
   Furnishing,
@@ -13,7 +19,7 @@ import type {
   UtilitiesIncluded,
 } from "@openhospi/shared/enums";
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
-import { and, count, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 
 import { notBlockedBy } from "@/lib/block-filter";
 
@@ -277,5 +283,35 @@ export async function getRoomDetailForApply(
       photos,
       owner: ownerProfile ?? null,
     };
+  });
+}
+
+export type StatusHistoryEntry = {
+  fromStatus: ApplicationStatus | null;
+  toStatus: ApplicationStatus;
+  changedAt: Date;
+};
+
+export async function getApplicationStatusHistory(
+  applicationId: string,
+  userId: string,
+): Promise<StatusHistoryEntry[]> {
+  return withRLS(userId, async (tx) => {
+    // Verify the user owns this application
+    const [app] = await tx
+      .select({ id: applications.id })
+      .from(applications)
+      .where(and(eq(applications.id, applicationId), eq(applications.userId, userId)));
+    if (!app) return [];
+
+    return tx
+      .select({
+        fromStatus: applicationStatusHistory.fromStatus,
+        toStatus: applicationStatusHistory.toStatus,
+        changedAt: applicationStatusHistory.changedAt,
+      })
+      .from(applicationStatusHistory)
+      .where(eq(applicationStatusHistory.applicationId, applicationId))
+      .orderBy(asc(applicationStatusHistory.changedAt));
   });
 }

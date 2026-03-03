@@ -1,82 +1,37 @@
 import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Main } from "@/components/layout";
 import { routing } from "@/i18n/routing";
 
 import { getAuditLog } from "../actions";
 
+import { AuditLogTable } from "./audit-log-table";
+
 type Props = {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ page?: string }>;
 };
 
-export default async function AuditLogPage({ params, searchParams }: Props) {
+export default async function AuditLogPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
-  const { page: pageParam } = await searchParams;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "admin" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const format = await getFormatter();
 
-  const page = Math.max(1, Number(pageParam) || 1);
-  const { entries, total } = await getAuditLog(page);
+  // Fetch all entries (no server-side pagination — client handles it via TanStack Table)
+  const { entries } = await getAuditLog(1, 1000);
 
   return (
-    <div className="space-y-6">
+    <Main fixed className="flex flex-col gap-4 sm:gap-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t("auditLog.title")}</h1>
+        <h2 className="text-2xl font-bold tracking-tight">{t("auditLog.title")}</h2>
         <p className="text-muted-foreground">{t("auditLog.description")}</p>
       </div>
-
-      {entries.length === 0 ? (
-        <div className="flex items-center justify-center rounded-lg border border-dashed p-12">
-          <p className="text-muted-foreground">{t("auditLog.empty")}</p>
-        </div>
-      ) : (
-        <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("auditLog.colTimestamp")}</TableHead>
-                <TableHead>{t("auditLog.colAdmin")}</TableHead>
-                <TableHead>{t("auditLog.colAction")}</TableHead>
-                <TableHead>{t("auditLog.colReason")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {entries.map((entry) => (
-                <TableRow key={entry.id}>
-                  <TableCell className="text-muted-foreground whitespace-nowrap">
-                    {format.dateTime(entry.createdAt, "dateTime")}
-                  </TableCell>
-                  <TableCell>{entry.adminName}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{tEnums(`admin_action.${entry.action}`)}</Badge>
-                    {entry.targetType && (
-                      <span className="text-muted-foreground ml-2 text-xs">{entry.targetType}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="max-w-xs truncate">{entry.reason}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          <p className="text-muted-foreground text-sm">{t("auditLog.total", { count: total })}</p>
-        </>
-      )}
-    </div>
+      <div className="-mx-4 flex-1 overflow-auto px-4 py-1">
+        <AuditLogTable data={entries} />
+      </div>
+    </Main>
   );
 }

@@ -11,11 +11,13 @@ import { supabase } from "@/lib/supabase-client";
 
 import { markConversationRead } from "../chat-actions";
 import { fetchPublicKeys } from "../key-actions";
+import { getRealtimeToken } from "../realtime-token-action";
 
 type Props = {
   conversationId: string;
   currentUserId: string;
   initialMessages: MessageItem[];
+  members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
   privateKey: CryptoKey;
 };
 
@@ -33,16 +35,17 @@ export function MessageThread({
   conversationId,
   currentUserId,
   initialMessages,
+  members,
   privateKey,
 }: Props) {
   const t = useTranslations("app.chat");
   const [decryptedMessages, setDecryptedMessages] = useState<DecryptedMessage[]>([]);
   const [isDecrypting, setIsDecrypting] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const seenIdsRef = useRef(new Set<string>());
 
   const decryptMessages = useCallback(
     async (msgs: MessageItem[]) => {
-      // Fetch public keys for all senders
       const senderIds = [...new Set(msgs.map((m) => m.senderId))];
       const pubKeys = await fetchPublicKeys(senderIds);
       const pubKeyMap = new Map<string, JsonWebKey>();
@@ -104,6 +107,12 @@ export function MessageThread({
     [currentUserId, privateKey, t],
   );
 
+  // Keep a stable ref so the subscription effect doesn't re-run when decryptMessages changes
+  const decryptMessagesRef = useRef(decryptMessages);
+  useEffect(() => {
+    decryptMessagesRef.current = decryptMessages;
+  }, [decryptMessages]);
+
   // Initial decryption
   useEffect(() => {
     let cancelled = false;
@@ -111,8 +120,11 @@ export function MessageThread({
       const decrypted = await decryptMessages(initialMessages);
       if (!cancelled) {
         setDecryptedMessages(decrypted.reverse());
+        // Track all initial message IDs for dedup
+        for (const msg of decrypted) {
+          seenIdsRef.current.add(msg.id);
+        }
         setIsDecrypting(false);
-        // Mark as read
         markConversationRead(conversationId);
       }
     })();
@@ -126,23 +138,74 @@ export function MessageThread({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [decryptedMessages]);
 
-  // Supabase Realtime subscription
+  // Supabase Realtime subscription via postgres_changes
   useEffect(() => {
-    const channel = supabase.channel(`chat:${conversationId}`);
+    let mounted = true;
 
-    channel
-      .on("broadcast", { event: "new_message" }, async (payload) => {
-        const msg = payload.payload as MessageItem;
-        const decrypted = await decryptMessages([msg]);
-        setDecryptedMessages((prev) => [...prev, ...decrypted]);
-        markConversationRead(conversationId);
-      })
-      .subscribe();
+    async function handleInsert(row: Record<string, unknown>) {
+      const messageId = row.id as string;
+      if (seenIdsRef.current.has(messageId)) return;
+      seenIdsRef.current.add(messageId);
+
+      const senderId = row.sender_id as string;
+      const member = members.find((m) => m.userId === senderId);
+
+      const msgItem: MessageItem = {
+        id: messageId,
+        senderId,
+        senderFirstName: member?.firstName ?? "",
+        senderAvatarUrl: member?.avatarUrl ?? null,
+        ciphertext: row.ciphertext as string,
+        iv: row.iv as string,
+        encryptedKeys: row.encrypted_keys as unknown,
+        messageType: (row.message_type as string) ?? "text",
+        createdAt: new Date(row.created_at as string),
+      };
+
+      const decrypted = await decryptMessagesRef.current([msgItem]);
+      if (!mounted) return;
+      setDecryptedMessages((prev) => [...prev, ...decrypted]);
+    }
+
+    (async () => {
+      const token = await getRealtimeToken();
+      if (!mounted) return;
+      supabase.realtime.setAuth(token);
+
+      supabase
+        .channel(`messages:${conversationId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `conversation_id=eq.${conversationId}`,
+          },
+          (payload) => {
+            if (!mounted) return;
+            handleInsert(payload.new as Record<string, unknown>);
+          },
+        )
+        .subscribe();
+    })();
 
     return () => {
-      supabase.removeChannel(channel);
+      mounted = false;
+      supabase.removeAllChannels();
     };
-  }, [conversationId, decryptMessages]);
+  }, [conversationId, members]);
+
+  // Mark as read when tab becomes visible
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        markConversationRead(conversationId);
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [conversationId]);
 
   if (isDecrypting) {
     return (

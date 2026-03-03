@@ -3,7 +3,6 @@
 import { db, withRLS } from "@openhospi/database";
 import { blocks, conversationMembers, messageReceipts, messages } from "@openhospi/database/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { getOrCreateHospiConversation } from "@/lib/chat";
@@ -95,17 +94,16 @@ export async function markConversationRead(conversationId: string) {
         ),
       );
 
-    for (const receipt of unreadReceipts) {
+    const unreadIds = unreadReceipts.map((r) => r.messageId);
+    if (unreadIds.length > 0) {
       await tx
         .update(messageReceipts)
         .set({ status: "read", readAt: new Date() })
         .where(
-          and(eq(messageReceipts.messageId, receipt.messageId), eq(messageReceipts.userId, userId)),
+          and(inArray(messageReceipts.messageId, unreadIds), eq(messageReceipts.userId, userId)),
         );
     }
   });
-
-  revalidatePath("/chat");
 }
 
 export async function openChat(roomId: string, seekerUserId: string, memberUserIds: string[]) {

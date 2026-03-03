@@ -4,6 +4,7 @@ import type { Room, RoomPhoto } from "@openhospi/database/types";
 import type { City } from "@openhospi/shared/enums";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
+import { cache } from "react";
 
 export type { Room, RoomPhoto };
 
@@ -57,7 +58,10 @@ export async function createDraftRoom(userId: string, houseId: string): Promise<
   return roomId;
 }
 
-export async function getRoom(roomId: string, userId: string): Promise<RoomWithPhotos | null> {
+export const getRoom = cache(async function getRoom(
+  roomId: string,
+  userId: string,
+): Promise<RoomWithPhotos | null> {
   return withRLS(userId, async (tx) => {
     const [room] = await tx
       .select()
@@ -74,7 +78,7 @@ export async function getRoom(roomId: string, userId: string): Promise<RoomWithP
 
     return { ...room, photos };
   });
-}
+});
 
 export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
   return withRLS(userId, async (tx) => {

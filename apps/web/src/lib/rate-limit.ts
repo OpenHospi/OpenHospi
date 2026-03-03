@@ -1,5 +1,6 @@
 import {
   RATE_LIMIT_APPLY,
+  RATE_LIMIT_CALENDAR_FEED,
   RATE_LIMIT_CREATE_ROOM,
   RATE_LIMIT_EXPORT_DATA,
   RATE_LIMIT_JOIN_SHARE_LINK,
@@ -28,6 +29,7 @@ export const rateLimiters = {
   createRoom: limiter(RATE_LIMIT_CREATE_ROOM, "1 d", "room"),
   exportData: limiter(RATE_LIMIT_EXPORT_DATA, "1 d", "export"),
   joinShareLink: limiter(RATE_LIMIT_JOIN_SHARE_LINK, "1 d", "join"),
+  calendarFeed: limiter(RATE_LIMIT_CALENDAR_FEED, "1 m", "cal"),
 } as const;
 
 /**

@@ -91,13 +91,9 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
   const isInvitee =
     isOwner ||
     (existingApplication != null &&
-      (
-        [
-          ApplicationStatus.invited,
-          ApplicationStatus.attending,
-          ApplicationStatus.accepted,
-        ] as string[]
-      ).includes(existingApplication.status));
+      ([ApplicationStatus.hospi, ApplicationStatus.accepted] as string[]).includes(
+        existingApplication.status,
+      ));
 
   return (
     <>

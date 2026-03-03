@@ -8,7 +8,10 @@ import { z } from "zod";
 import { applications } from "../schema/applications";
 
 export const applyToRoomSchema = createInsertSchema(applications, {
-  personalMessage: z.string().min(MIN_PERSONAL_MESSAGE_LENGTH).max(MAX_PERSONAL_MESSAGE_LENGTH),
+  personalMessage: z
+    .string()
+    .min(MIN_PERSONAL_MESSAGE_LENGTH, { message: "min_length" })
+    .max(MAX_PERSONAL_MESSAGE_LENGTH, { message: "max_length" }),
 }).pick({
   personalMessage: true,
 });

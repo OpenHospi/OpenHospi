@@ -41,7 +41,21 @@
       "show": "Tonen",
       "hide": "Verbergen",
       "onThisPage": "Op deze pagina",
-      "linkToSection": "Link naar {title}"
+      "linkToSection": "Link naar {title}",
+      "apply": "Aanmelden",
+      "rowsSelected": "{count} van {total} rij(en) geselecteerd",
+      "rowsPerPage": "Rijen per pagina",
+      "page": "Pagina {page} van {total}",
+      "columns": "Kolommen",
+      "reset": "Herstellen",
+      "search": "Zoeken...",
+      "sortAsc": "Oplopend",
+      "sortDesc": "Aflopend",
+      "hideColumn": "Kolom verbergen",
+      "first": "Eerste",
+      "last": "Laatste",
+      "previous": "Vorige",
+      "delete": "Verwijderen"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",
@@ -50,6 +64,22 @@
       "next": "Volgende foto",
       "counter": "{current} van {total}"
     }
+  },
+  "breadcrumbs": {
+    "discover": "Ontdekken",
+    "my-rooms": "Mijn Kamers",
+    "applications": "Aanmeldingen",
+    "chat": "Chat",
+    "settings": "Instellingen",
+    "profile": "Profiel",
+    "notifications": "Meldingen",
+    "applicants": "Aanmelders",
+    "details": "Details",
+    "events": "Evenementen",
+    "photos": "Foto's",
+    "reports": "Rapporten",
+    "audit-log": "Auditlog",
+    "data-requests": "Dataverzoeken"
   },
   "enums": {
     "language_enum": {
@@ -399,9 +429,7 @@
       "liked": "Leuk",
       "maybe": "Misschien",
       "rejected": "Afgewezen",
-      "invited": "Uitgenodigd",
-      "attending": "Komt",
-      "not_attending": "Komt niet",
+      "hospi": "Hospi",
       "accepted": "Geaccepteerd",
       "not_chosen": "Niet gekozen",
       "withdrawn": "Ingetrokken"
@@ -498,7 +526,6 @@
       "discover": "Ontdekken",
       "myRooms": "Mijn kamers",
       "applications": "Reacties",
-      "invitations": "Uitnodigingen",
       "chat": "Chat"
     },
     "userMenu": {
@@ -663,7 +690,10 @@
         "notesPlaceholder": "Voeg optionele notities toe over deze kandidaat...",
         "submitReview": "Beoordeling opslaan",
         "yearsOld": "jaar oud",
-        "reviewMode": "Beoordelingsmodus"
+        "reviewMode": "Beoordelingsmodus",
+        "selectApplicant": "Selecteer een kandidaat om het profiel te bekijken",
+        "applied": "Aangemeld",
+        "backToList": "Terug naar lijst"
       },
       "houseSetup": {
         "title": "Stel eerst je woning in",
@@ -849,7 +879,13 @@
       "manage": {
         "title": "Kamerbeheer",
         "details": "Kamerdetails",
-        "noDescription": "Geen beschrijving"
+        "noDescription": "Geen beschrijving",
+        "tabs": {
+          "overview": "Overzicht",
+          "applicants": "Aanmeldingen",
+          "hospi": "Hospi",
+          "voting": "Stemmen"
+        }
       },
       "noSelection": "Geen selectie",
       "reviewMode": {
@@ -880,10 +916,20 @@
         "cancelError": "Kon evenement niet annuleren",
         "cancelledSuccess": "Evenement geannuleerd",
         "addToCalendar": "Toevoegen aan agenda",
+        "addSingleEvent": "Dit evenement toevoegen",
+        "subscribeAll": "Abonneer op alle evenementen",
+        "subscribeToCalendar": "Abonneer op agenda",
+        "downloadIcs": "Download .ics",
+        "calendarUrlCopied": "Agenda-URL gekopieerd naar klembord",
+        "upcoming": "Aanstaande",
+        "past": "Afgelopen",
+        "hospiEnded": "Deze hospi is afgelopen. Klaar om te beslissen?",
+        "goToVoting": "Naar stemmen",
         "detailTitle": "Evenementdetails",
         "backToRoom": "Terug naar kamer",
+        "backToEvents": "Terug naar evenementen",
         "invitees": "Genodigden",
-        "noInvitees": "Nog geen genodigden. Gebruik de uitnodigknop om kandidaten toe te voegen.",
+        "noInvitees": "Nog geen genodigden.",
         "attendingCount": "{attending} / {total} aanwezig",
         "maxAttendees": "Max {count} deelnemers",
         "fields": {
@@ -912,8 +958,8 @@
       "voting": {
         "title": "Stemming",
         "description": "Rangschik kandidaten op voorkeur. Alle huisgenoten kunnen elkaars stemmen zien.",
-        "backToRoom": "Terug naar kamer",
         "yourRanking": "Jouw rangschikking",
+        "dragToReorder": "Verslepen om te herordenen",
         "moveUp": "Omhoog",
         "moveDown": "Omlaag",
         "submitVotes": "Stemmen indienen",
@@ -1036,6 +1082,7 @@
     },
     "settings": {
       "title": "Instellingen",
+      "description": "Beheer je voorkeuren, privacy en accountinstellingen.",
       "tabs": {
         "general": "Algemeen",
         "privacy": "Privacy",
@@ -1044,6 +1091,14 @@
       "pushNotifications": {
         "title": "Pushmeldingen",
         "description": "Beheer browserpushmeldingen om op de hoogte te blijven van nieuwe berichten, reacties en evenementen."
+      },
+      "calendar": {
+        "title": "Kalenderabonnement",
+        "description": "Abonneer je op je hospi-evenementenkalender. Agenda-apps ontvangen automatisch updates wanneer evenementen wijzigen.",
+        "urlCopied": "Kalender-URL gekopieerd naar klembord",
+        "regenerated": "Kalenderlink vernieuwd",
+        "regenerateButton": "Link vernieuwen",
+        "warning": "Iedereen met deze link kan je hospi-evenementen zien. Als je vermoedt dat de link is gelekt, vernieuw deze dan."
       },
       "exportSuccess": "Gegevens succesvol geëxporteerd",
       "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
@@ -1160,6 +1215,18 @@
       "withdrawConfirmDescription": "Weet je zeker dat je je aanmelding wilt intrekken? Dit kan niet ongedaan worden gemaakt.",
       "eventInvitation": "Evenementuitnodiging",
       "eventInvitationDescription": "Je bent uitgenodigd voor een hospi-evenement voor deze kamer.",
+      "timeline": {
+        "title": "Verloop aanmelding",
+        "sent": "Je hebt je aangemeld voor deze kamer",
+        "seen": "Je aanmelding is bekeken",
+        "liked": "Je bent geliked door de kamereigenaar",
+        "maybe": "Je bent gemarkeerd als misschien",
+        "rejected": "Je aanmelding is afgewezen",
+        "hospi": "Je bent uitgenodigd voor een hospi",
+        "accepted": "Gefeliciteerd! Je bent gekozen",
+        "not_chosen": "De kamer is vergeven",
+        "withdrawn": "Je hebt je aanmelding ingetrokken"
+      },
       "errors": {
         "not_found": "Aanmelding niet gevonden.",
         "cannot_withdraw": "Deze aanmelding kan niet meer worden ingetrokken."
@@ -1226,6 +1293,7 @@
       "empty": "Nog geen gesprekken. Gesprekken worden aangemaakt wanneer je wordt uitgenodigd voor een hospi.",
       "conversation": "Gesprek",
       "encrypted_message": "Versleuteld bericht",
+      "selectConversation": "Selecteer een gesprek om te beginnen met chatten",
       "no_messages": "Nog geen berichten",
       "members_count": "{count, plural, one {# lid} other {# leden}}",
       "message_placeholder": "Schrijf een bericht...",
@@ -1264,10 +1332,12 @@
     "invitations": {
       "title": "Uitnodigingen",
       "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
+      "hospiTitle": "Je bent uitgenodigd voor een hospi!",
       "cancelled": "Geannuleerd",
       "attend": "Aanwezig",
       "maybe": "Misschien",
       "decline": "Afwijzen",
+      "deadlineSoon": "RSVP-deadline: {deadline}",
       "declineReasonLabel": "Waarom kun je niet komen?",
       "declineReasonPlaceholder": "Deel alsjeblieft waarom je niet kunt komen...",
       "confirmDecline": "Afwijzing bevestigen",

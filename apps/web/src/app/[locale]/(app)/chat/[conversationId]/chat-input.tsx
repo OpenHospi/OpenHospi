@@ -7,19 +7,17 @@ import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/lib/supabase-client";
 
 import { sendMessage } from "../chat-actions";
 import { fetchPublicKeys } from "../key-actions";
 
 type Props = {
   conversationId: string;
-  currentUserId: string;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
   privateKey: CryptoKey;
 };
 
-export function ChatInput({ conversationId, currentUserId, members, privateKey }: Props) {
+export function ChatInput({ conversationId, members, privateKey }: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -44,29 +42,11 @@ export function ChatInput({ conversationId, currentUserId, members, privateKey }
       // Encrypt
       const encrypted = await encryptForGroup(trimmed, privateKey, recipientKeys);
 
-      // Send to server
-      const result = await sendMessage(conversationId, {
+      // Send to server — postgres_changes delivers the message to all members
+      await sendMessage(conversationId, {
         ciphertext: encrypted.ciphertext,
         iv: encrypted.iv,
         encryptedKeys: encrypted.encryptedKeys,
-      });
-
-      // Broadcast via Realtime
-      const channel = supabase.channel(`chat:${conversationId}`);
-      await channel.send({
-        type: "broadcast",
-        event: "new_message",
-        payload: {
-          id: result.messageId,
-          senderId: currentUserId,
-          senderFirstName: members.find((m) => m.userId === currentUserId)?.firstName ?? "",
-          senderAvatarUrl: members.find((m) => m.userId === currentUserId)?.avatarUrl ?? null,
-          ciphertext: encrypted.ciphertext,
-          iv: encrypted.iv,
-          encryptedKeys: encrypted.encryptedKeys,
-          messageType: "text",
-          createdAt: new Date(),
-        },
       });
 
       setText("");

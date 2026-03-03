@@ -4,10 +4,11 @@ import { withRLS } from "@openhospi/database";
 import { applications, houseMembers, houses, rooms } from "@openhospi/database/schema";
 import type { ApplyToRoomData } from "@openhospi/database/validators";
 import { applyToRoomSchema } from "@openhospi/database/validators";
-import { RoomStatus } from "@openhospi/shared/enums";
+import { ApplicationStatus, RoomStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { logStatusTransition } from "@/lib/application-history";
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
 
@@ -42,11 +43,16 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
     }
 
     try {
-      await tx.insert(applications).values({
-        roomId,
-        userId: session.user.id,
-        personalMessage: parsed.data.personalMessage,
-      });
+      const [newApp] = await tx
+        .insert(applications)
+        .values({
+          roomId,
+          userId: session.user.id,
+          personalMessage: parsed.data.personalMessage,
+        })
+        .returning({ id: applications.id });
+
+      await logStatusTransition(tx, newApp.id, null, ApplicationStatus.sent, session.user.id);
     } catch (e: unknown) {
       if (
         e instanceof Error &&

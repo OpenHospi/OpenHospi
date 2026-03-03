@@ -6,6 +6,7 @@ import { ApplicationStatus, isValidApplicationTransition } from "@openhospi/shar
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { logStatusTransition } from "@/lib/application-history";
 import { requireSession } from "@/lib/auth-server";
 
 export async function withdrawApplication(applicationId: string) {
@@ -28,6 +29,14 @@ export async function withdrawApplication(applicationId: string) {
       .update(applications)
       .set({ status: ApplicationStatus.withdrawn })
       .where(eq(applications.id, applicationId));
+
+    await logStatusTransition(
+      tx,
+      applicationId,
+      app.status as ApplicationStatus,
+      ApplicationStatus.withdrawn,
+      session.user.id,
+    );
 
     revalidatePath(`/applications/${applicationId}`);
     revalidatePath("/applications");

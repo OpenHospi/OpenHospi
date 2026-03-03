@@ -271,9 +271,7 @@ export const ApplicationStatus = defineEnum([
   "liked",
   "maybe",
   "rejected",
-  "invited",
-  "attending",
-  "not_attending",
+  "hospi",
   "accepted",
   "not_chosen",
   "withdrawn",
@@ -605,18 +603,10 @@ export const VALID_APPLICATION_TRANSITIONS: Record<
 > = {
   sent: ["seen", "withdrawn"],
   seen: ["liked", "maybe", "rejected", "withdrawn"],
-  liked: ["invited", "maybe", "rejected", "withdrawn"],
-  maybe: ["liked", "invited", "rejected", "withdrawn"],
-  rejected: [],
-  invited: [
-    "attending",
-    "not_attending",
-    "accepted",
-    "not_chosen",
-    "withdrawn",
-  ],
-  attending: ["accepted", "not_chosen"],
-  not_attending: [],
+  liked: ["hospi", "maybe", "rejected", "withdrawn"],
+  maybe: ["liked", "hospi", "rejected", "withdrawn"],
+  rejected: ["liked", "maybe"],
+  hospi: ["accepted", "not_chosen", "withdrawn"],
   accepted: [],
   not_chosen: [],
   withdrawn: [],
@@ -668,7 +658,6 @@ export const TERMINAL_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
   ApplicationStatus.accepted,
   ApplicationStatus.not_chosen,
   ApplicationStatus.withdrawn,
-  ApplicationStatus.not_attending,
 ] as const;
 
 export function isTerminalApplicationStatus(
@@ -678,7 +667,26 @@ export function isTerminalApplicationStatus(
 }
 
 export const INVITABLE_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
-  ApplicationStatus.seen,
   ApplicationStatus.liked,
   ApplicationStatus.maybe,
 ] as const;
+
+export const REVIEW_PHASE_STATUSES: readonly ApplicationStatus[] = [
+  ApplicationStatus.seen,
+  ApplicationStatus.liked,
+  ApplicationStatus.maybe,
+  ApplicationStatus.rejected,
+] as const;
+
+export function isReviewPhaseStatus(status: ApplicationStatus): boolean {
+  return (REVIEW_PHASE_STATUSES as readonly string[]).includes(status);
+}
+
+export const REVIEW_DECISION_TO_APPLICATION_STATUS: Record<
+  ReviewDecision,
+  ApplicationStatus
+> = {
+  like: ApplicationStatus.liked,
+  maybe: ApplicationStatus.maybe,
+  reject: ApplicationStatus.rejected,
+};

@@ -41,7 +41,21 @@
       "show": "Anzeigen",
       "hide": "Ausblenden",
       "onThisPage": "Auf dieser Seite",
-      "linkToSection": "Link zu {title}"
+      "linkToSection": "Link zu {title}",
+      "apply": "Bewerben",
+      "rowsSelected": "{count} von {total} Zeile(n) ausgewählt",
+      "rowsPerPage": "Zeilen pro Seite",
+      "page": "Seite {page} von {total}",
+      "columns": "Spalten",
+      "reset": "Zurücksetzen",
+      "search": "Suchen...",
+      "sortAsc": "Aufsteigend",
+      "sortDesc": "Absteigend",
+      "hideColumn": "Spalte ausblenden",
+      "first": "Erste",
+      "last": "Letzte",
+      "previous": "Vorherige",
+      "delete": "Löschen"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -50,6 +64,22 @@
       "next": "Nächstes Foto",
       "counter": "{current} von {total}"
     }
+  },
+  "breadcrumbs": {
+    "discover": "Entdecken",
+    "my-rooms": "Meine Zimmer",
+    "applications": "Bewerbungen",
+    "chat": "Chat",
+    "settings": "Einstellungen",
+    "profile": "Profil",
+    "notifications": "Benachrichtigungen",
+    "applicants": "Bewerber",
+    "details": "Details",
+    "events": "Veranstaltungen",
+    "photos": "Fotos",
+    "reports": "Berichte",
+    "audit-log": "Audit-Log",
+    "data-requests": "Datenanfragen"
   },
   "enums": {
     "language_enum": {
@@ -399,9 +429,7 @@
       "liked": "Gefällt",
       "maybe": "Vielleicht",
       "rejected": "Abgelehnt",
-      "invited": "Eingeladen",
-      "attending": "Nimmt teil",
-      "not_attending": "Nimmt nicht teil",
+      "hospi": "Hospi",
       "accepted": "Angenommen",
       "not_chosen": "Nicht gewählt",
       "withdrawn": "Zurückgezogen"
@@ -498,7 +526,6 @@
       "discover": "Entdecken",
       "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
-      "invitations": "Einladungen",
       "chat": "Chat"
     },
     "userMenu": {
@@ -663,7 +690,10 @@
         "notesPlaceholder": "Füge optionale Notizen über diesen Bewerber hinzu...",
         "submitReview": "Bewertung speichern",
         "yearsOld": "Jahre alt",
-        "reviewMode": "Überprüfungsmodus"
+        "reviewMode": "Überprüfungsmodus",
+        "selectApplicant": "Wähle einen Bewerber aus, um das Profil anzuzeigen",
+        "applied": "Beworben",
+        "backToList": "Zurück zur Liste"
       },
       "houseSetup": {
         "title": "Richte zuerst dein Haus ein",
@@ -849,7 +879,13 @@
       "manage": {
         "title": "Zimmerverwaltung",
         "details": "Zimmerdetails",
-        "noDescription": "Keine Beschreibung"
+        "noDescription": "Keine Beschreibung",
+        "tabs": {
+          "overview": "Übersicht",
+          "applicants": "Bewerbungen",
+          "hospi": "Hospi",
+          "voting": "Abstimmung"
+        }
       },
       "noSelection": "Keine Auswahl",
       "reviewMode": {
@@ -880,10 +916,20 @@
         "cancelError": "Veranstaltung konnte nicht abgesagt werden",
         "cancelledSuccess": "Veranstaltung abgesagt",
         "addToCalendar": "Zum Kalender hinzufügen",
+        "addSingleEvent": "Dieses Event hinzufügen",
+        "subscribeAll": "Alle Events abonnieren",
+        "subscribeToCalendar": "Kalender abonnieren",
+        "downloadIcs": ".ics herunterladen",
+        "calendarUrlCopied": "Kalender-URL in die Zwischenablage kopiert",
+        "upcoming": "Bevorstehend",
+        "past": "Vergangen",
+        "hospiEnded": "Dieses Hospi ist vorbei. Bereit zur Entscheidung?",
+        "goToVoting": "Zur Abstimmung",
         "detailTitle": "Veranstaltungsdetails",
         "backToRoom": "Zurück zum Zimmer",
+        "backToEvents": "Zurück zu Veranstaltungen",
         "invitees": "Eingeladene",
-        "noInvitees": "Noch keine Eingeladenen. Nutze die Einladungsfunktion, um Bewerber hinzuzufügen.",
+        "noInvitees": "Noch keine Eingeladenen.",
         "attendingCount": "{attending} / {total} teilnehmend",
         "maxAttendees": "Max {count} Teilnehmer",
         "fields": {
@@ -912,8 +958,8 @@
       "voting": {
         "title": "Abstimmung",
         "description": "Bewerber nach Präferenz ordnen. Alle Mitbewohner können die Stimmen der anderen sehen.",
-        "backToRoom": "Zurück zum Zimmer",
         "yourRanking": "Deine Rangfolge",
+        "dragToReorder": "Zum Neuordnen ziehen",
         "moveUp": "Nach oben",
         "moveDown": "Nach unten",
         "submitVotes": "Stimmen abgeben",
@@ -1036,6 +1082,7 @@
     },
     "settings": {
       "title": "Einstellungen",
+      "description": "Verwalte deine Einstellungen, Datenschutz und Kontoeinstellungen.",
       "tabs": {
         "general": "Allgemein",
         "privacy": "Datenschutz",
@@ -1044,6 +1091,14 @@
       "pushNotifications": {
         "title": "Push-Benachrichtigungen",
         "description": "Verwalte Browser-Push-Benachrichtigungen, um über neue Nachrichten, Bewerbungen und Veranstaltungen informiert zu bleiben."
+      },
+      "calendar": {
+        "title": "Kalenderabonnement",
+        "description": "Abonniere deinen Hospi-Veranstaltungskalender. Kalender-Apps erhalten automatisch Updates, wenn sich Veranstaltungen ändern.",
+        "urlCopied": "Kalender-URL in die Zwischenablage kopiert",
+        "regenerated": "Kalender-Link erneuert",
+        "regenerateButton": "Link erneuern",
+        "warning": "Jeder mit diesem Link kann deine Hospi-Veranstaltungen sehen. Wenn du vermutest, dass der Link kompromittiert wurde, erneuere ihn."
       },
       "exportSuccess": "Daten erfolgreich exportiert",
       "exportRateLimited": "Zu viele Exportanfragen heute. Bitte versuche es später erneut.",
@@ -1160,6 +1215,18 @@
       "withdrawConfirmDescription": "Bist du sicher, dass du deine Bewerbung zurückziehen möchtest? Dies kann nicht rückgängig gemacht werden.",
       "eventInvitation": "Veranstaltungseinladung",
       "eventInvitationDescription": "Du wurdest zu einem Hospi-Event für dieses Zimmer eingeladen.",
+      "timeline": {
+        "title": "Bewerbungsverlauf",
+        "sent": "Du hast dich für dieses Zimmer beworben",
+        "seen": "Deine Bewerbung wurde angesehen",
+        "liked": "Du wurdest vom Zimmereigentümer geliked",
+        "maybe": "Du wurdest als Vielleicht markiert",
+        "rejected": "Deine Bewerbung wurde abgelehnt",
+        "hospi": "Du wurdest zu einem Hospi eingeladen",
+        "accepted": "Herzlichen Glückwunsch! Du wurdest ausgewählt",
+        "not_chosen": "Das Zimmer wurde vergeben",
+        "withdrawn": "Du hast deine Bewerbung zurückgezogen"
+      },
       "errors": {
         "not_found": "Bewerbung nicht gefunden.",
         "cannot_withdraw": "Diese Bewerbung kann nicht mehr zurückgezogen werden."
@@ -1226,6 +1293,7 @@
       "empty": "Noch keine Gespräche. Gespräche werden erstellt, wenn du zu einem Hospi eingeladen wirst.",
       "conversation": "Gespräch",
       "encrypted_message": "Verschlüsselte Nachricht",
+      "selectConversation": "Wähle eine Unterhaltung aus, um mit dem Chatten zu beginnen",
       "no_messages": "Noch keine Nachrichten",
       "members_count": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
       "message_placeholder": "Nachricht schreiben...",
@@ -1264,10 +1332,12 @@
     "invitations": {
       "title": "Einladungen",
       "empty": "Noch keine Einladungen. Bewirb dich auf Zimmer, um Hospi-Einladungen zu erhalten.",
+      "hospiTitle": "Du bist zu einem Hospi eingeladen!",
       "cancelled": "Abgesagt",
       "attend": "Teilnehmen",
       "maybe": "Vielleicht",
       "decline": "Absagen",
+      "deadlineSoon": "RSVP-Frist: {deadline}",
       "declineReasonLabel": "Warum kannst du nicht teilnehmen?",
       "declineReasonPlaceholder": "Bitte teile mit, warum du nicht kommen kannst...",
       "confirmDecline": "Absage bestätigen",

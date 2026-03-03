@@ -1,6 +1,6 @@
 import { defineRelations } from "drizzle-orm";
 
-import { applications, reviews } from "./applications";
+import { applications, applicationStatusHistory, reviews } from "./applications";
 import { account, jwks, session, ssoProvider, user, verification } from "./auth";
 import { conversationMembers, conversations, messageReceipts, messages } from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
@@ -36,6 +36,7 @@ export const relations = defineRelations(
     roomPhotos,
     // Applications
     applications,
+    applicationStatusHistory,
     reviews,
     // Events
     hospiEvents,
@@ -150,6 +151,13 @@ export const relations = defineRelations(
       user: r.one.profiles({
         from: r.applications.userId,
         to: r.profiles.id,
+      }),
+      statusHistory: r.many.applicationStatusHistory(),
+    },
+    applicationStatusHistory: {
+      application: r.one.applications({
+        from: r.applicationStatusHistory.applicationId,
+        to: r.applications.id,
       }),
     },
     reviews: {

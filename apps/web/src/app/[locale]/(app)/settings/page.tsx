@@ -3,10 +3,12 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout";
+import { Separator } from "@/components/ui/separator";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 
-import { SettingsContent } from "./settings-content";
+import { SettingsLayout } from "./settings-layout";
 
 export async function generateMetadata({
   params,
@@ -31,9 +33,13 @@ export default async function SettingsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "app.settings" });
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-      <SettingsContent />
-    </div>
+    <Main fixed className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("description")}</p>
+      </div>
+      <Separator />
+      <SettingsLayout />
+    </Main>
   );
 }

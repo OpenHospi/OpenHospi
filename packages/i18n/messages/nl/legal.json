@@ -21,6 +21,7 @@
           "Sollicitatiegegevens — persoonlijk bericht en sollicitatiestatus",
           "Sessiegegevens — IP-adres en user agent voor beveiligingsdoeleinden",
           "Push-notificatietokens — voor het bezorgen van notificaties op je apparaat",
+          "Kalenderabonnementstoken — een unieke, geheime link waarmee je agenda-applicatie toegang heeft tot je hospi-evenementenplanning. Deze link vereist geen authenticatie en kan op elk moment worden ingetrokken via je instellingen",
           "Toestemmingsregistratie — je cookie- en privacyvoorkeuren, tijdstempels en privacybeleidversie",
           "Wij verzamelen geen bijzondere categorieën persoonsgegevens als bedoeld in art. 9, lid 1, AVG (waaronder gegevens over ras, politieke opvattingen, religie, gezondheid of seksuele gerichtheid). Indien je dergelijke gegevens vrijwillig deelt in je profiel of berichten, verwerken wij deze op grond van art. 9, lid 2, onder e, AVG (kennelijk door jou openbaar gemaakt)."
         ]
@@ -31,7 +32,7 @@
       },
       {
         "title": "5. Hoe we je gegevens gebruiken",
-        "content": "Wij gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden, conform het doelbindingsbeginsel (art. 5, lid 1, onder b, AVG): studenten matchen met kamers, communicatie faciliteren tussen zoekers en aanbieders, en het hospiteerproces beheren. Wij verkopen je gegevens niet, gebruiken ze niet voor reclame, profileren je niet voor marketingdoeleinden en delen ze niet met derden buiten hetgeen beschreven is in dit beleid."
+        "content": "Wij gebruiken je gegevens uitsluitend om het OpenHospi-platform te bieden, conform het doelbindingsbeginsel (art. 5, lid 1, onder b, AVG): studenten matchen met kamers, communicatie faciliteren tussen zoekers en aanbieders, het hospiteerproces beheren en kalendersynchronisatie. Wanneer je je abonneert op je hospi-kalender, serveren wij je evenementgegevens (titels, data, tijden, locaties) via een privé-URL. Kalender-applicaties (Google Calendar, Apple Calendar, Outlook) vragen deze URL periodiek op om je kalender actueel te houden. Wij verkopen je gegevens niet, gebruiken ze niet voor reclame, profileren je niet voor marketingdoeleinden en delen ze niet met derden buiten hetgeen beschreven is in dit beleid."
       },
       {
         "title": "6. Verplichting tot verstrekking van gegevens",
@@ -84,7 +85,7 @@
           "Recht op gegevenswissing (art. 17 AVG) — je kunt verzoeken om verwijdering van je gegevens, via Instellingen > Account verwijderen",
           "Recht op beperking van de verwerking (art. 18 AVG) — je kunt verzoeken om beperking van de verwerking met behoud van je gegevens",
           "Kennisgevingsplicht (art. 19 AVG) — wij stellen iedere ontvanger aan wie persoonsgegevens zijn verstrekt in kennis van rectificatie, wissing of beperking, tenzij dit onmogelijk blijkt of onevenredig veel inspanning vergt",
-          "Recht op overdraagbaarheid van gegevens (art. 20 AVG) — je kunt je gegevens in een gestructureerd, gangbaar en machineleesbaar formaat ontvangen (JSON of CSV), via Instellingen > Privacy > Gegevensexport",
+          "Recht op overdraagbaarheid van gegevens (art. 20 AVG) — je kunt je gegevens in een gestructureerd, gangbaar en machineleesbaar formaat ontvangen (JSON of CSV), via Instellingen > Privacy > Gegevensexport. De kalenderabonnementsfeed biedt ook overdraagbaarheid van hospi-evenementen in standaard iCalendar (ICS) formaat",
           "Recht van bezwaar (art. 21 AVG) — je kunt bezwaar maken tegen verwerking op grond van gerechtvaardigd belang"
         ]
       },
@@ -205,7 +206,8 @@
           "Indienen en verwerken van sollicitaties",
           "Chatberichten (end-to-end versleuteld)",
           "Beheer van huislidmaatschap",
-          "Stemmen over sollicitaties"
+          "Stemmen over sollicitaties",
+          "Kalenderabonnementsfeed"
         ]
       },
       {
@@ -413,6 +415,19 @@
           "Bewaartermijn — Tot uitschrijving door gebruiker of accountverwijdering",
           "Beveiliging — Web Push-protocol met end-to-end encryptie"
         ]
+      },
+      {
+        "title": "10. Kalenderabonnementsfeed",
+        "items": [
+          "Doel — Synchroniseren van hospi-evenementen met de agenda-applicatie van de gebruiker",
+          "Categorieën betrokkenen — Geregistreerde studenten die het kalenderabonnement hebben geactiveerd",
+          "Gegevenscategorieën — kalendertoken (UUID), hospi-evenementtitels, data, tijden, locaties",
+          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG) — gebruiker activeert het abonnement zelf",
+          "Ontvangers — Kalender-applicatieprovider van de gebruiker (Google, Apple, Microsoft, etc.)",
+          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn — Token bestaat zolang het account actief is; verwijderd bij accountverwijdering",
+          "Beveiliging — Onraadbaar UUID-token, alleen HTTPS, intrekbaar door gebruiker"
+        ]
       }
     ]
   },
@@ -497,11 +512,21 @@
         ]
       },
       {
-        "title": "9. Kinderen (art. 8 AVG)",
+        "title": "9. Risico: Lekkage kalender-feed-URL",
+        "items": [
+          "Risico — Iemand verkrijgt de kalenderabonnements-URL en kan hospi-evenementgegevens zien",
+          "Waarschijnlijkheid — Laag",
+          "Impact — Gemiddeld (evenementtitels, data, locaties blootgesteld — geen berichten of persoonsgegevens)",
+          "Maatregelen — Kalendertoken is een 128-bits onraadbare UUID. Alleen HTTPS. Token is op elk moment intrekbaar door de gebruiker via Instellingen. Gebruiker wordt gewaarschuwd over het delen van de URL",
+          "Restrisico — Aanvaardbaar"
+        ]
+      },
+      {
+        "title": "10. Kinderen (art. 8 AVG)",
         "content": "Alle gebruikers authenticeren via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
       },
       {
-        "title": "10. Conclusie",
+        "title": "11. Conclusie",
         "content": "De verwerkingsactiviteiten van OpenHospi presenteren aanvaardbare restrisico's na implementatie van maatregelen. Het platform implementeert gegevensbescherming door ontwerp en door standaardinstellingen (art. 25 AVG) door middel van end-to-end encryptie, Row-Level Security, dataminimalisatie, geautomatiseerde retentieregels en transparante verwerking. Er blijven geen hoge restrisico's over die voorafgaande raadpleging van de Autoriteit Persoonsgegevens vereisen op grond van art. 36 AVG."
       }
     ]

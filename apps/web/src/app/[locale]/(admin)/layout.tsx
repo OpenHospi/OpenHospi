@@ -4,8 +4,9 @@ import { setRequestLocale } from "next-intl/server";
 
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
+import { Breadcrumbs, Header } from "@/components/layout";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth-server";
 
@@ -26,15 +27,19 @@ export default async function AdminLayout({ children, params }: Props) {
       <AdminSidebar
         user={{ name: session.user.name ?? "Admin", image: session.user.image ?? null }}
       />
-      <SidebarInset>
-        <header className="flex h-14 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <div className="ml-auto flex items-center gap-2">
-            <AppLanguageSwitcher />
-            <ThemeToggle />
-          </div>
-        </header>
-        <main className="flex-1 p-6">{children}</main>
+      <SidebarInset className="has-data-[layout=fixed]:h-svh @container/content">
+        <Header
+          fixed
+          actions={
+            <>
+              <AppLanguageSwitcher />
+              <ThemeToggle />
+            </>
+          }
+        >
+          <Breadcrumbs />
+        </Header>
+        {children}
       </SidebarInset>
     </SidebarProvider>
   );

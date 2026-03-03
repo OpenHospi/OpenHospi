@@ -41,7 +41,21 @@
       "show": "Show",
       "hide": "Hide",
       "onThisPage": "On this page",
-      "linkToSection": "Link to {title}"
+      "linkToSection": "Link to {title}",
+      "apply": "Apply",
+      "rowsSelected": "{count} of {total} row(s) selected",
+      "rowsPerPage": "Rows per page",
+      "page": "Page {page} of {total}",
+      "columns": "Columns",
+      "reset": "Reset",
+      "search": "Search...",
+      "sortAsc": "Ascending",
+      "sortDesc": "Descending",
+      "hideColumn": "Hide column",
+      "first": "First",
+      "last": "Last",
+      "previous": "Previous",
+      "delete": "Delete"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -50,6 +64,22 @@
       "next": "Next photo",
       "counter": "{current} of {total}"
     }
+  },
+  "breadcrumbs": {
+    "discover": "Discover",
+    "my-rooms": "My Rooms",
+    "applications": "Applications",
+    "chat": "Chat",
+    "settings": "Settings",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "applicants": "Applicants",
+    "details": "Details",
+    "events": "Events",
+    "photos": "Photos",
+    "reports": "Reports",
+    "audit-log": "Audit Log",
+    "data-requests": "Data Requests"
   },
   "enums": {
     "language_enum": {
@@ -399,9 +429,7 @@
       "liked": "Liked",
       "maybe": "Maybe",
       "rejected": "Rejected",
-      "invited": "Invited",
-      "attending": "Attending",
-      "not_attending": "Not attending",
+      "hospi": "Hospi",
       "accepted": "Accepted",
       "not_chosen": "Not chosen",
       "withdrawn": "Withdrawn"
@@ -498,7 +526,6 @@
       "discover": "Discover",
       "myRooms": "My Rooms",
       "applications": "Applications",
-      "invitations": "Invitations",
       "chat": "Chat"
     },
     "userMenu": {
@@ -663,7 +690,10 @@
         "notesPlaceholder": "Add optional notes about this applicant...",
         "submitReview": "Submit review",
         "yearsOld": "years old",
-        "reviewMode": "Review mode"
+        "reviewMode": "Review mode",
+        "selectApplicant": "Select an applicant to view their profile",
+        "applied": "Applied",
+        "backToList": "Back to list"
       },
       "houseSetup": {
         "title": "Set up your property first",
@@ -849,7 +879,13 @@
       "manage": {
         "title": "Room management",
         "details": "Room details",
-        "noDescription": "No description"
+        "noDescription": "No description",
+        "tabs": {
+          "overview": "Overview",
+          "applicants": "Applicants",
+          "hospi": "Hospi",
+          "voting": "Voting"
+        }
       },
       "noSelection": "No selection",
       "reviewMode": {
@@ -880,10 +916,20 @@
         "cancelError": "Could not cancel event",
         "cancelledSuccess": "Event cancelled",
         "addToCalendar": "Add to calendar",
+        "addSingleEvent": "Add this event",
+        "subscribeAll": "Subscribe to all events",
+        "subscribeToCalendar": "Subscribe to calendar",
+        "downloadIcs": "Download .ics",
+        "calendarUrlCopied": "Calendar URL copied to clipboard",
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "hospiEnded": "This hospi has ended. Ready to decide?",
+        "goToVoting": "Go to voting",
         "detailTitle": "Event details",
         "backToRoom": "Back to room",
+        "backToEvents": "Back to events",
         "invitees": "Invitees",
-        "noInvitees": "No invitees yet. Use the invite button to add applicants.",
+        "noInvitees": "No invitees yet.",
         "attendingCount": "{attending} / {total} attending",
         "maxAttendees": "Max {count} attendees",
         "fields": {
@@ -912,8 +958,8 @@
       "voting": {
         "title": "Voting",
         "description": "Rank applicants by preference. All housemates can see each other's votes.",
-        "backToRoom": "Back to room",
         "yourRanking": "Your ranking",
+        "dragToReorder": "Drag to reorder",
         "moveUp": "Move up",
         "moveDown": "Move down",
         "submitVotes": "Submit votes",
@@ -1036,6 +1082,7 @@
     },
     "settings": {
       "title": "Settings",
+      "description": "Manage your preferences, privacy, and account settings.",
       "tabs": {
         "general": "General",
         "privacy": "Privacy",
@@ -1044,6 +1091,14 @@
       "pushNotifications": {
         "title": "Push notifications",
         "description": "Manage browser push notifications to stay updated on new messages, applications, and events."
+      },
+      "calendar": {
+        "title": "Calendar subscription",
+        "description": "Subscribe to your hospi events calendar. Calendar apps will automatically receive updates when events change.",
+        "urlCopied": "Calendar URL copied to clipboard",
+        "regenerated": "Calendar link regenerated",
+        "regenerateButton": "Regenerate link",
+        "warning": "Anyone with this link can see your hospi events. If you suspect it has been compromised, regenerate it."
       },
       "exportSuccess": "Data exported successfully",
       "exportRateLimited": "Too many export requests today. Please try again later.",
@@ -1160,6 +1215,18 @@
       "withdrawConfirmDescription": "Are you sure you want to withdraw your application? This cannot be undone.",
       "eventInvitation": "Event Invitation",
       "eventInvitationDescription": "You've been invited to a hospi event for this room.",
+      "timeline": {
+        "title": "Application timeline",
+        "sent": "You applied to this room",
+        "seen": "Your application was viewed",
+        "liked": "You were liked by the room owner",
+        "maybe": "You were marked as maybe",
+        "rejected": "Your application was rejected",
+        "hospi": "You were invited to a hospi",
+        "accepted": "Congratulations! You've been chosen",
+        "not_chosen": "The room has been filled",
+        "withdrawn": "You withdrew your application"
+      },
       "errors": {
         "not_found": "Application not found.",
         "cannot_withdraw": "This application can no longer be withdrawn."
@@ -1226,6 +1293,7 @@
       "empty": "No conversations yet. Conversations are created when you're invited to a hospi.",
       "conversation": "Conversation",
       "encrypted_message": "Encrypted message",
+      "selectConversation": "Select a conversation to start messaging",
       "no_messages": "No messages yet",
       "members_count": "{count, plural, one {# member} other {# members}}",
       "message_placeholder": "Write a message...",
@@ -1264,10 +1332,12 @@
     "invitations": {
       "title": "Invitations",
       "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
+      "hospiTitle": "You're invited to a hospi!",
       "cancelled": "Cancelled",
       "attend": "Attend",
       "maybe": "Maybe",
       "decline": "Decline",
+      "deadlineSoon": "RSVP deadline: {deadline}",
       "declineReasonLabel": "Why can't you attend?",
       "declineReasonPlaceholder": "Please share why you can't make it...",
       "confirmDecline": "Confirm decline",

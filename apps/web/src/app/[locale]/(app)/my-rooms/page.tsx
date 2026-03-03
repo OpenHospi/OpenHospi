@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
@@ -37,31 +38,33 @@ export default async function MyRoomsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "app.rooms" });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-        <Button asChild>
-          <Link href="/my-rooms/create">
-            <Plus className="size-4" />
-            {t("createNew")}
-          </Link>
-        </Button>
-      </div>
-
-      {rooms.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <p className="text-muted-foreground">{t("empty")}</p>
-          <Button asChild className="mt-4">
-            <Link href="/my-rooms/create">{t("createFirst")}</Link>
+    <Main fixed className="overflow-auto">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+          <Button asChild>
+            <Link href="/my-rooms/create">
+              <Plus className="size-4" />
+              {t("createNew")}
+            </Link>
           </Button>
         </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {rooms.map((room) => (
-            <RoomCard key={room.id} room={room} />
-          ))}
-        </div>
-      )}
-    </div>
+
+        {rooms.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+            <p className="text-muted-foreground">{t("empty")}</p>
+            <Button asChild className="mt-4">
+              <Link href="/my-rooms/create">{t("createFirst")}</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {rooms.map((room) => (
+              <RoomCard key={room.id} room={room} />
+            ))}
+          </div>
+        )}
+      </div>
+    </Main>
   );
 }

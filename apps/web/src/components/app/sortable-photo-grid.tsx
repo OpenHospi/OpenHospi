@@ -1,18 +1,6 @@
 "use client";
 
-import {
-  closestCenter,
-  DndContext,
-  type DragEndEvent,
-  DragOverlay,
-  type DragStartEvent,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { DragDropProvider, DragOverlay, useDraggable, useDroppable } from "@dnd-kit/react";
 import { ALLOWED_IMAGE_TYPES, MAX_PHOTO_CAPTION_LENGTH } from "@openhospi/shared/constants";
 import { Camera, GripVertical, Loader2, Pencil, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -133,7 +121,7 @@ function CaptionPopover({
   );
 }
 
-function SortableSlot({
+function PhotoSlot({
   item,
   bucket,
   editable,
@@ -166,23 +154,29 @@ function SortableSlot({
   renderPhotoOverlay?: (photo: SortablePhoto, slot: number) => React.ReactNode;
   renderEmptyExtra?: (slot: number) => React.ReactNode;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { ref: droppableRef, isDropTarget } = useDroppable({
+    id: item.id,
+    disabled: !editable,
+  });
+
+  const {
+    ref: draggableRef,
+    handleRef,
+    isDragging,
+  } = useDraggable({
     id: item.id,
     disabled: !editable || !item.photo,
   });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
 
   const { photo, slot } = item;
   const slotClass = getSlotClassName?.(slot);
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={(node) => {
+        droppableRef(node);
+        draggableRef(node);
+      }}
       className={cn(
         "relative overflow-hidden rounded-lg border-2",
         !slotClass && "aspect-square",
@@ -190,6 +184,7 @@ function SortableSlot({
         editable && !photo && "cursor-pointer hover:bg-muted/50",
         !photo && highlightEmptySlot === slot && "border-primary",
         isDragging && "opacity-40",
+        isDropTarget && !isDragging && "ring-2 ring-primary/50",
         slotClass,
       )}
     >
@@ -207,8 +202,8 @@ function SortableSlot({
             <>
               {/* Grip handle */}
               <button
-                {...attributes}
-                {...listeners}
+                ref={handleRef}
+                type="button"
                 aria-label={dragLabel}
                 className="absolute top-1 left-1 cursor-grab rounded-full bg-black/60 p-1 text-white opacity-100 hover:bg-black/80 sm:opacity-0 sm:group-hover:opacity-100 active:cursor-grabbing"
               >
@@ -281,7 +276,6 @@ export function SortablePhotoGrid({
   const [isPending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
-  const [dragActiveId, setDragActiveId] = useState<string | null>(null);
 
   function setPhotos(newPhotos: SortablePhoto[] | ((prev: SortablePhoto[]) => SortablePhoto[])) {
     const resolved = typeof newPhotos === "function" ? newPhotos(photos) : newPhotos;
@@ -299,13 +293,6 @@ export function SortablePhotoGrid({
     slot,
     photo: photos.find((p) => p.slot === slot),
   }));
-
-  const draggedItem = items.find((item) => item.id === dragActiveId);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
-  );
 
   async function performUpload(slot: number, file: File) {
     try {
@@ -363,17 +350,15 @@ export function SortablePhotoGrid({
     startTransition(() => performDelete(slot));
   }
 
-  function handleDragStart(event: DragStartEvent) {
-    setDragActiveId(event.active.id as string);
-  }
+  function handleDragEnd(
+    event: Parameters<NonNullable<React.ComponentProps<typeof DragDropProvider>["onDragEnd"]>>[0],
+  ) {
+    if (event.canceled) return;
+    const { source, target } = event.operation;
+    if (!target || !source || source.id === target.id) return;
 
-  function handleDragEnd(event: DragEndEvent) {
-    setDragActiveId(null);
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const activeItem = items.find((item) => item.id === active.id);
-    const overItem = items.find((item) => item.id === over.id);
+    const activeItem = items.find((item) => item.id === source.id);
+    const overItem = items.find((item) => item.id === target.id);
 
     if (!activeItem?.photo || !overItem) return;
 
@@ -405,7 +390,7 @@ export function SortablePhotoGrid({
     <div className={cn("grid", gridClassName)}>
       {items.map((item) => (
         <div key={item.id} className="group">
-          <SortableSlot
+          <PhotoSlot
             item={item}
             bucket={bucket}
             editable={editable}
@@ -441,35 +426,31 @@ export function SortablePhotoGrid({
         onChange={handleFileChange}
       />
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
-          {grid}
-        </SortableContext>
-
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        {grid}
         <DragOverlay>
-          {draggedItem?.photo ? (
-            <div
-              className={cn(
-                "overflow-hidden rounded-lg border-2 border-primary shadow-xl",
-                getSlotClassName?.(draggedItem.slot) ?? "aspect-square",
-              )}
-            >
-              <StorageImage
-                src={draggedItem.photo.url}
-                alt=""
-                bucket={bucket}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ) : null}
+          {(source) => {
+            const item = items.find((i) => i.id === source.id);
+            if (!item?.photo) return null;
+            return (
+              <div
+                className={cn(
+                  "overflow-hidden rounded-lg border-2 border-primary shadow-xl",
+                  getSlotClassName?.(item.slot) ?? "aspect-square",
+                )}
+              >
+                <StorageImage
+                  src={item.photo.url}
+                  alt=""
+                  bucket={bucket}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            );
+          }}
         </DragOverlay>
-      </DndContext>
+      </DragDropProvider>
     </div>
   );
 }

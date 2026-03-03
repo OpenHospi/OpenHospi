@@ -8,6 +8,7 @@ import {
   hospiInvitations,
   rooms,
 } from "@openhospi/database/schema";
+import { MAX_INVITATIONS_PER_EVENT } from "@openhospi/shared/constants";
 import {
   ApplicationStatus,
   INVITABLE_APPLICATION_STATUSES,
@@ -16,6 +17,7 @@ import {
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { logStatusTransition } from "@/lib/application-history";
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { getOrCreateHospiConversation } from "@/lib/chat";
 import { notifyUser } from "@/lib/notifications";
@@ -32,8 +34,10 @@ export async function batchInviteApplicants(
   await requireHousemate(roomId, session.user.id);
 
   if (applicationIds.length === 0) return { error: "no_applications" as const };
+  if (applicationIds.length > MAX_INVITATIONS_PER_EVENT)
+    return { error: "too_many_invitations" as const };
 
-  await withRLS(session.user.id, async (tx) => {
+  const invitedCount = await withRLS(session.user.id, async (tx) => {
     // Verify event exists and belongs to this room
     const [event] = await tx
       .select({ id: hospiEvents.id, title: hospiEvents.title, roomId: hospiEvents.roomId })
@@ -72,13 +76,19 @@ export async function batchInviteApplicants(
         .onConflictDoNothing();
 
       // Update application status to invited
-      if (
-        isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.invited)
-      ) {
+      if (isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.hospi)) {
         await tx
           .update(applications)
-          .set({ status: ApplicationStatus.invited })
+          .set({ status: ApplicationStatus.hospi })
           .where(eq(applications.id, app.id));
+
+        await logStatusTransition(
+          tx,
+          app.id,
+          app.status as ApplicationStatus,
+          ApplicationStatus.hospi,
+          session.user.id,
+        );
       }
 
       // Notify invitee
@@ -107,11 +117,13 @@ export async function batchInviteApplicants(
         await getOrCreateHospiConversation(roomId, app.userId, [...memberIds, app.userId]);
       }
     }
+
+    return apps.length;
   });
 
   revalidatePath(`/my-rooms/${roomId}`);
   revalidatePath(`/my-rooms/${roomId}/events/${eventId}`);
-  return { success: true, count: applicationIds.length };
+  return { success: true, count: invitedCount };
 }
 
 export async function removeInvitation(invitationId: string, roomId: string) {
@@ -119,9 +131,23 @@ export async function removeInvitation(invitationId: string, roomId: string) {
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
-  await withRLS(session.user.id, async (tx) => {
+  await requireHousemate(roomId, session.user.id);
+
+  const deleted = await withRLS(session.user.id, async (tx) => {
+    // Verify the invitation belongs to an event in this room
+    const [invitation] = await tx
+      .select({ eventId: hospiInvitations.eventId })
+      .from(hospiInvitations)
+      .innerJoin(hospiEvents, eq(hospiEvents.id, hospiInvitations.eventId))
+      .where(and(eq(hospiInvitations.id, invitationId), eq(hospiEvents.roomId, roomId)));
+
+    if (!invitation) return false;
+
     await tx.delete(hospiInvitations).where(eq(hospiInvitations.id, invitationId));
+    return true;
   });
+
+  if (!deleted) return { error: "not_found" as const };
 
   revalidatePath(`/my-rooms/${roomId}`);
   return { success: true };

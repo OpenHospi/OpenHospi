@@ -21,6 +21,7 @@
           "Bewerbungsdaten — persönliche Nachricht und Bewerbungsstatus",
           "Sitzungsdaten — IP-Adresse und User Agent für Sicherheitszwecke",
           "Push-Benachrichtigungstoken — für die Zustellung von Benachrichtigungen auf deinem Gerät",
+          "Kalenderabonnement-Token — ein einzigartiger, geheimer Link, der deiner Kalender-App Zugriff auf deinen Hospi-Veranstaltungsplan ermöglicht. Dieser Link erfordert keine Authentifizierung und kann jederzeit in deinen Einstellungen widerrufen werden",
           "Einwilligungsdatensätze — deine Cookie- und Datenschutzeinstellungen, Zeitstempel und Datenschutzerklärungsversion",
           "Wir erheben keine besonderen Kategorien personenbezogener Daten im Sinne von Art. 9 Abs. 1 DSGVO (einschließlich Daten, aus denen die rassische oder ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gesundheitsdaten oder Daten zur sexuellen Orientierung hervorgehen). Wenn du solche Daten freiwillig in deinem Profil oder in Nachrichten teilst, verarbeiten wir diese auf Grundlage von Art. 9 Abs. 2 lit. e DSGVO (personenbezogene Daten, die die betroffene Person offensichtlich öffentlich gemacht hat)."
         ]
@@ -31,7 +32,7 @@
       },
       {
         "title": "5. Wie wir deine Daten verwenden",
-        "content": "Wir verwenden deine Daten ausschließlich zur Bereitstellung der OpenHospi-Plattform, gemäß dem Grundsatz der Zweckbindung (Art. 5 Abs. 1 lit. b DSGVO): Vermittlung von Studierenden und Zimmern, Erleichterung der Kommunikation zwischen Suchenden und Anbietern und Verwaltung des Bewerbungsprozesses. Wir verkaufen deine Daten nicht, nutzen sie nicht für Werbung, erstellen kein Marketing-Profil und geben sie nicht an Dritte weiter, sofern nicht in dieser Erklärung beschrieben."
+        "content": "Wir verwenden deine Daten ausschließlich zur Bereitstellung der OpenHospi-Plattform, gemäß dem Grundsatz der Zweckbindung (Art. 5 Abs. 1 lit. b DSGVO): Vermittlung von Studierenden und Zimmern, Erleichterung der Kommunikation zwischen Suchenden und Anbietern, Verwaltung des Bewerbungsprozesses und Kalendersynchronisation. Wenn du deinen Hospi-Kalender abonnierst, stellen wir deine Veranstaltungsdetails (Titel, Daten, Zeiten, Orte) über eine private URL bereit. Kalender-Apps (Google Calendar, Apple Calendar, Outlook) rufen diese URL regelmäßig ab, um deinen Kalender aktuell zu halten. Wir verkaufen deine Daten nicht, nutzen sie nicht für Werbung, erstellen kein Marketing-Profil und geben sie nicht an Dritte weiter, sofern nicht in dieser Erklärung beschrieben."
       },
       {
         "title": "6. Pflicht zur Bereitstellung personenbezogener Daten",
@@ -84,7 +85,7 @@
           "Recht auf Löschung (Art. 17 DSGVO) — du kannst die Löschung deiner Daten verlangen, über Einstellungen > Konto löschen",
           "Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO) — du kannst die Einschränkung der Verarbeitung unter Beibehaltung deiner Daten verlangen",
           "Mitteilungspflicht (Art. 19 DSGVO) — wir teilen jedem Empfänger, dem personenbezogene Daten offengelegt wurden, jede Berichtigung, Löschung oder Einschränkung mit, es sei denn, dies erweist sich als unmöglich oder ist mit unverhältnismäßigem Aufwand verbunden",
-          "Recht auf Datenübertragbarkeit (Art. 20 DSGVO) — du kannst deine Daten in einem strukturierten, gängigen und maschinenlesbaren Format erhalten (JSON oder CSV), über Einstellungen > Datenschutz > Datenexport",
+          "Recht auf Datenübertragbarkeit (Art. 20 DSGVO) — du kannst deine Daten in einem strukturierten, gängigen und maschinenlesbaren Format erhalten (JSON oder CSV), über Einstellungen > Datenschutz > Datenexport. Der Kalenderabonnement-Feed bietet zudem Datenportabilität für Hospi-Veranstaltungen im standardisierten iCalendar-Format (ICS)",
           "Widerspruchsrecht (Art. 21 DSGVO) — du kannst der Verarbeitung auf Grundlage berechtigter Interessen widersprechen"
         ]
       },
@@ -205,7 +206,8 @@
           "Einreichung und Verarbeitung von Bewerbungen",
           "Chat-Messaging (Ende-zu-Ende verschlüsselt)",
           "Verwaltung der Hausmitgliedschaft",
-          "Abstimmung über Bewerbungen"
+          "Abstimmung über Bewerbungen",
+          "Kalenderabonnement-Feed"
         ]
       },
       {
@@ -413,6 +415,19 @@
           "Aufbewahrung — Bis zur Abmeldung durch den Nutzer oder Kontolöschung",
           "Sicherheit — Web-Push-Protokoll mit Ende-zu-Ende-Verschlüsselung"
         ]
+      },
+      {
+        "title": "10. Kalenderabonnement-Feed",
+        "items": [
+          "Zweck — Synchronisation von Hospi-Veranstaltungen mit der Kalender-App des Nutzers",
+          "Kategorien betroffener Personen — Registrierte Studierende, die das Kalenderabonnement aktiviert haben",
+          "Datenkategorien — Kalender-Token (UUID), Hospi-Veranstaltungstitel, Daten, Zeiten, Orte",
+          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) — Nutzer aktiviert das Abonnement selbst",
+          "Empfänger — Kalender-App-Anbieter des Nutzers (Google, Apple, Microsoft usw.)",
+          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung — Token besteht, solange das Konto aktiv ist; wird bei Kontolöschung gelöscht",
+          "Sicherheit — Nicht erratbares UUID-Token, nur HTTPS, durch Nutzer widerrufbar"
+        ]
       }
     ]
   },
@@ -497,11 +512,21 @@
         ]
       },
       {
-        "title": "9. Kinder (Art. 8 DSGVO)",
+        "title": "9. Risiko: Kalender-Feed-URL-Leck",
+        "items": [
+          "Risiko — Jemand erhält die Kalenderabonnement-URL und kann Hospi-Veranstaltungsdetails einsehen",
+          "Wahrscheinlichkeit — Gering",
+          "Auswirkung — Mittel (Veranstaltungstitel, Daten, Orte offengelegt — keine Nachrichten oder personenbezogene Daten)",
+          "Maßnahmen — Kalender-Token ist eine 128-Bit nicht erratbare UUID. Nur HTTPS. Token kann jederzeit vom Nutzer über Einstellungen widerrufen werden. Nutzer wird vor dem Teilen der URL gewarnt",
+          "Restrisiko — Akzeptabel"
+        ]
+      },
+      {
+        "title": "10. Kinder (Art. 8 DSGVO)",
         "content": "Alle Nutzer authentifizieren sich über SURFconext, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt wirksam sicher, dass alle Nutzer 16 Jahre oder älter sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO). Eine separate Altersverifikation ist daher nicht erforderlich."
       },
       {
-        "title": "10. Fazit",
+        "title": "11. Fazit",
         "content": "Die Verarbeitungstätigkeiten von OpenHospi weisen nach Umsetzung der Maßnahmen akzeptable Restrisiken auf. Die Plattform setzt Datenschutz durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen (Art. 25 DSGVO) um, durch Ende-zu-Ende-Verschlüsselung, Row-Level Security, Datenminimierung, automatisierte Aufbewahrungsregeln und transparente Verarbeitung. Es verbleiben keine hohen Restrisiken, die eine vorherige Konsultation der Autoriteit Persoonsgegevens gemäß Art. 36 DSGVO erfordern würden."
       }
     ]

@@ -1,7 +1,7 @@
 import type { Locale } from "@openhospi/i18n";
 import { ArrowLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +48,7 @@ export default async function EventDetailPage({ params }: Props) {
   }
 
   const applicants = await getRoomApplicants(roomId, user.id);
+  const format = await getFormatter();
   const t = await getTranslations("app.rooms.events");
   const tEnums = await getTranslations("enums");
   const isCreator = event.createdBy === user.id;
@@ -60,14 +61,46 @@ export default async function EventDetailPage({ params }: Props) {
     not_attending: event.invitees.filter((i) => i.status === "not_attending"),
   };
 
+  const isPast = event.eventDate < new Date().toISOString().split("T")[0];
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Button variant="ghost" size="sm" asChild>
-        <Link href={`/my-rooms/${roomId}`}>
+        <Link href={`/my-rooms/${roomId}/events`}>
           <ArrowLeft className="size-4" />
-          {t("backToRoom")}
+          {t("backToEvents")}
         </Link>
       </Button>
+
+      {/* RSVP summary bar */}
+      {event.invitees.length > 0 && (
+        <div className="flex flex-wrap gap-3 text-sm">
+          <span className="text-green-600 dark:text-green-400">
+            {grouped.attending.length} {tEnums("invitation_status.attending")}
+          </span>
+          <span className="text-blue-600 dark:text-blue-400">
+            {grouped.maybe.length} {tEnums("invitation_status.maybe")}
+          </span>
+          <span className="text-yellow-600 dark:text-yellow-400">
+            {grouped.pending.length} {tEnums("invitation_status.pending")}
+          </span>
+          <span className="text-gray-600 dark:text-gray-400">
+            {grouped.not_attending.length} {tEnums("invitation_status.not_attending")}
+          </span>
+        </div>
+      )}
+
+      {/* Post-event prompt */}
+      {isPast && !isCancelled && (
+        <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950">
+          <p className="text-sm font-medium text-purple-800 dark:text-purple-200">
+            {t("hospiEnded")}
+          </p>
+          <Button asChild variant="outline" size="sm" className="mt-2">
+            <Link href={`/my-rooms/${roomId}/voting`}>{t("goToVoting")}</Link>
+          </Button>
+        </div>
+      )}
 
       <div className="space-y-2">
         <div className="flex items-start justify-between">
@@ -78,12 +111,12 @@ export default async function EventDetailPage({ params }: Props) {
         <div className="space-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Calendar className="size-4" />
-            {event.eventDate}
+            {format.dateTime(new Date(event.eventDate + "T00:00:00"), "short")}
           </div>
           <div className="flex items-center gap-2">
             <Clock className="size-4" />
-            {event.timeStart}
-            {event.timeEnd && ` – ${event.timeEnd}`}
+            {event.timeStart.slice(0, 5)}
+            {event.timeEnd && ` – ${event.timeEnd.slice(0, 5)}`}
           </div>
           {event.location && (
             <div className="flex items-center gap-2">
@@ -161,11 +194,11 @@ export default async function EventDetailPage({ params }: Props) {
           <AddToCalendarButton
             uid={eventId}
             title={event.title}
-            description={event.description ?? undefined}
-            location={event.location}
             startDate={event.eventDate}
             startTime={event.timeStart}
             endTime={event.timeEnd}
+            location={event.location}
+            description={event.description}
           />
           {isCreator && <CancelEventButton eventId={eventId} roomId={roomId} />}
         </div>

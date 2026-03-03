@@ -1,186 +1,35 @@
 import type { Locale } from "@openhospi/i18n";
-import { ReportStatus, ReportType } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "@/i18n/navigation-app";
+import { Main } from "@/components/layout";
 import { routing } from "@/i18n/routing";
 
 import { getReports } from "../actions";
 
+import { ReportsTable } from "./reports-table";
+
 type Props = {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ status?: string; type?: string }>;
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  reviewing: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  resolved: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  dismissed: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  message: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  user: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  room: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-};
-
-export default async function AdminReportsPage({ params, searchParams }: Props) {
+export default async function AdminReportsPage({ params }: Props) {
   const { locale } = await params;
-  const { status, type } = await searchParams;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "admin" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const format = await getFormatter();
-
-  const filterStatus =
-    status && ReportStatus.values.includes(status as ReportStatus)
-      ? (status as ReportStatus)
-      : ReportStatus.values[0];
-
-  const filterType =
-    type && ReportType.values.includes(type as ReportType) ? (type as ReportType) : undefined;
-
-  const allReports = await getReports(filterStatus, filterType);
+  const allReports = await getReports();
 
   return (
-    <div className="space-y-6">
+    <Main fixed className="flex flex-col gap-4 sm:gap-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t("reports.title")}</h1>
+        <h2 className="text-2xl font-bold tracking-tight">{t("reports.title")}</h2>
         <p className="text-muted-foreground">{t("reports.description")}</p>
       </div>
-
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-sm font-semibold mb-3">{t("reports.filterByStatus")}</h3>
-          <Tabs defaultValue={filterStatus} value={filterStatus}>
-            <TabsList>
-              {ReportStatus.values.map((s) => {
-                const typeParam = filterType ? `&type=${filterType}` : "";
-                return (
-                  <TabsTrigger key={s} value={s} asChild>
-                    <Link href={`/admin/reports?status=${s}${typeParam}`}>
-                      {tEnums(`report_status.${s}`)}
-                    </Link>
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
-          </Tabs>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold mb-3">{t("reports.filterByType")}</h3>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href={`/admin/reports?status=${filterStatus}`}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                !filterType
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-accent"
-              }`}
-            >
-              {t("reports.allTypes")}
-            </Link>
-            {ReportType.values.map((t_) => (
-              <Link
-                key={t_}
-                href={`/admin/reports?status=${filterStatus}&type=${t_}`}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filterType === t_
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-accent"
-                }`}
-              >
-                {tEnums(`report_type.${t_}`)}
-              </Link>
-            ))}
-          </div>
-        </div>
+      <div className="-mx-4 flex-1 overflow-auto px-4 py-1">
+        <ReportsTable data={allReports} />
       </div>
-
-      {allReports.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12">
-          <p className="text-muted-foreground text-center mb-2">{t("reports.empty")}</p>
-          <p className="text-xs text-muted-foreground">
-            {filterType ? t("reports.emptyWithTypeFilter") : t("reports.emptyWithStatusFilter")}
-          </p>
-        </div>
-      ) : (
-        <div className="rounded-lg border overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-24">{t("reports.colType")}</TableHead>
-                <TableHead>{t("reports.colReporter")}</TableHead>
-                <TableHead>{t("reports.colReason")}</TableHead>
-                <TableHead className="w-32">{t("reports.colStatus")}</TableHead>
-                <TableHead className="w-32 text-right">{t("reports.colDate")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {allReports.map((report) => (
-                <TableRow
-                  key={report.id}
-                  className="hover:bg-muted/50 cursor-pointer transition-colors"
-                >
-                  <TableCell>
-                    <Link href={`/admin/reports/${report.id}`} className="block">
-                      <Badge className={TYPE_COLORS[report.reportType] ?? ""}>
-                        {tEnums(`report_type.${report.reportType}`)}
-                      </Badge>
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/admin/reports/${report.id}`}
-                      className="text-primary hover:underline font-medium"
-                    >
-                      {report.reporterName}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/admin/reports/${report.id}`}
-                      className="text-primary hover:underline"
-                    >
-                      {tEnums(`report_reason.${report.reason}`)}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/admin/reports/${report.id}`} className="block">
-                      <Badge className={STATUS_COLORS[report.status] ?? ""}>
-                        {tEnums(`report_status.${report.status}`)}
-                      </Badge>
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-right text-sm text-muted-foreground">
-                    <Link
-                      href={`/admin/reports/${report.id}`}
-                      className="text-primary hover:underline"
-                    >
-                      {format.dateTime(report.createdAt, "short")}
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
-    </div>
+    </Main>
   );
 }

@@ -2,6 +2,7 @@ import { RoomStatus } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getRoomApplicants } from "@/lib/applicants";
@@ -39,18 +40,18 @@ export default async function RoomManagementLayout({ children, params }: Props) 
     room.status !== RoomStatus.draft ? (await getRoomApplicants(id, user.id)).length : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <Main fixed fluid className="flex flex-col gap-0 p-0">
+      <div className="flex shrink-0 flex-wrap items-start justify-between gap-4 border-b px-4 py-4">
         <RoomHeader room={room} />
         <div className="flex flex-wrap items-center gap-2">
           <StatusControls room={room} closeApplicants={closeApplicants} />
           <EditRoomDialog room={room} />
         </div>
       </div>
-
-      <RoomTabs roomId={room.id} roomStatus={room.status} applicantCount={applicantCount} />
-
-      {children}
-    </div>
+      <div className="shrink-0 border-b px-4">
+        <RoomTabs roomId={room.id} roomStatus={room.status} applicantCount={applicantCount} />
+      </div>
+      <div className="flex-1 overflow-auto p-4">{children}</div>
+    </Main>
   );
 }

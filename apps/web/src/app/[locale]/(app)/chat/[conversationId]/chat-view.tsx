@@ -76,7 +76,7 @@ export function ChatView({
   // Loading state while checking encryption keys
   if (status === "loading") {
     return (
-      <div className="flex h-[calc(100vh-8rem)] flex-col">
+      <div className="flex h-full flex-col">
         <div className="flex items-center gap-3 border-b px-4 py-3">
           <Skeleton className="h-8 w-8 rounded" />
           <Skeleton className="h-5 w-40" />
@@ -91,7 +91,7 @@ export function ChatView({
   // Key recovery needed
   if (status === "needs-recovery" || status === "needs-setup") {
     return (
-      <div className="flex h-[calc(100vh-8rem)] flex-col">
+      <div className="flex h-full flex-col">
         <div className="flex items-center gap-3 border-b px-4 py-3">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/chat">
@@ -110,10 +110,10 @@ export function ChatView({
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] flex-col">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b px-4 py-3">
-        <Button variant="ghost" size="icon" asChild>
+      <div className="flex shrink-0 items-center gap-3 border-b px-4 py-3">
+        <Button variant="ghost" size="icon" asChild className="md:hidden">
           <Link href="/chat">
             <ArrowLeft className="h-4 w-4" />
           </Link>

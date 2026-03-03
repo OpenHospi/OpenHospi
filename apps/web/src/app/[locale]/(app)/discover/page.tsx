@@ -5,6 +5,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { RoomCard } from "@/components/app/room-card";
+import { Main } from "@/components/layout";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
@@ -106,29 +107,31 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-      </div>
-
-      <DiscoverFiltersPanel filters={filters} sort={sort} />
-
-      {rooms.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <p className="text-muted-foreground">{t("empty")}</p>
+    <Main fixed className="overflow-auto">
+      <div className="space-y-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
         </div>
-      ) : (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rooms.map((room) => (
-              <Link key={room.id} href={`/discover/${room.id}`}>
-                <RoomCard room={room} />
-              </Link>
-            ))}
+
+        <DiscoverFiltersPanel filters={filters} sort={sort} />
+
+        {rooms.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+            <p className="text-muted-foreground">{t("empty")}</p>
           </div>
-          {nextCursor && <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />}
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {rooms.map((room) => (
+                <Link key={room.id} href={`/discover/${room.id}`}>
+                  <RoomCard room={room} />
+                </Link>
+              ))}
+            </div>
+            {nextCursor && <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />}
+          </>
+        )}
+      </div>
+    </Main>
   );
 }

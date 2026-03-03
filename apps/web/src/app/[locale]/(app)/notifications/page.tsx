@@ -2,6 +2,7 @@ import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getUserNotifications } from "@/lib/notifications";
@@ -28,11 +29,13 @@ export default async function NotificationsPage({ params }: Props) {
   const notifications = await getUserNotifications(user.id);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold">
-        {(await getTranslations("app.notifications"))("title")}
-      </h1>
-      <NotificationsList notifications={notifications} />
-    </div>
+    <Main fixed className="overflow-auto mx-auto max-w-2xl">
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">
+          {(await getTranslations("app.notifications"))("title")}
+        </h2>
+        <NotificationsList notifications={notifications} />
+      </div>
+    </Main>
   );
 }

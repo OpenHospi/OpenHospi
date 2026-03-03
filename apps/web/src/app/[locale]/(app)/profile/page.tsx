@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getProfile } from "@/lib/profile";
@@ -42,16 +43,18 @@ export default async function ProfilePage({ params }: Props) {
   if (!profile) return null;
 
   return (
-    <div className="space-y-8">
-      <ProfileHeader profile={profile} />
-      <PhotosGrid photos={profile.photos} editable />
-      <BioCard profile={profile} />
-      <div className="grid gap-6 md:grid-cols-2">
-        <AboutCard profile={profile} />
-        <PreferencesCard profile={profile} />
+    <Main fixed className="overflow-auto">
+      <div className="space-y-8">
+        <ProfileHeader profile={profile} />
+        <PhotosGrid photos={profile.photos} editable />
+        <BioCard profile={profile} />
+        <div className="grid gap-6 md:grid-cols-2">
+          <AboutCard profile={profile} />
+          <PreferencesCard profile={profile} />
+        </div>
+        <LanguagesCard profile={profile} />
+        <LifestyleCard profile={profile} />
       </div>
-      <LanguagesCard profile={profile} />
-      <LifestyleCard profile={profile} />
-    </div>
+    </Main>
   );
 }

@@ -4,8 +4,9 @@ import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { UserAvatar } from "@/components/user-avatar";
-import { Link } from "@/i18n/navigation-app";
+import { Link, usePathname } from "@/i18n/navigation-app";
 import type { ConversationListItem } from "@/lib/chat";
+import { cn } from "@/lib/utils";
 
 type Props = {
   conversations: ConversationListItem[];
@@ -15,6 +16,7 @@ type Props = {
 export function ConversationList({ conversations, currentUserId }: Props) {
   const t = useTranslations("app.chat");
   const format = useFormatter();
+  const pathname = usePathname();
 
   function formatTime(date: Date): string {
     const now = new Date();
@@ -39,17 +41,21 @@ export function ConversationList({ conversations, currentUserId }: Props) {
   }
 
   return (
-    <div className="divide-y rounded-lg border">
+    <div className="divide-y">
       {conversations.map((conv) => {
         const otherMembers = conv.members.filter((m) => m.userId !== currentUserId);
         const displayName =
           conv.roomTitle ?? otherMembers.map((m) => m.firstName).join(", ") ?? t("conversation");
+        const isActive = pathname === `/chat/${conv.id}`;
 
         return (
           <Link
             key={conv.id}
             href={`/chat/${conv.id}`}
-            className="hover:bg-muted/50 flex items-center gap-3 p-4 transition-colors"
+            className={cn(
+              "flex items-center gap-3 p-4 transition-colors",
+              isActive ? "bg-muted" : "hover:bg-muted/50",
+            )}
           >
             <UserAvatar
               avatarUrl={otherMembers[0]?.avatarUrl ?? null}

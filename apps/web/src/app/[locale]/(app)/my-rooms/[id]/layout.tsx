@@ -1,4 +1,3 @@
-import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -17,7 +16,7 @@ import { StatusControls } from "./status-controls";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale; id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 };
 
 export default async function RoomManagementLayout({ children, params }: Props) {

@@ -1,24 +1,10 @@
 "use client";
 
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import {
-  closestCenter,
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
+import { useSortable, isSortable } from "@dnd-kit/react/sortable";
 import { ArrowDown, ArrowUp, Check, GripVertical, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type React from "react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -52,37 +38,67 @@ function getAge(birthDate: string | null): number | null {
   );
 }
 
+function ApplicantRowOverlay({ applicant, rank }: { applicant: VotableApplicant; rank: number }) {
+  const tEnums = useTranslations("enums");
+
+  const age = getAge(applicant.birthDate);
+  const subtitleParts = [
+    applicant.studyProgram,
+    applicant.studyLevel ? tEnums(`study_level.${applicant.studyLevel}`) : null,
+    age,
+  ].filter(Boolean);
+
+  return (
+    <div className="flex items-center gap-3 rounded-lg border bg-card px-3 py-3 shadow-lg ring-2 ring-primary">
+      <GripVertical className="size-4 text-muted-foreground" />
+
+      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+        {rank}
+      </span>
+
+      <UserAvatar
+        avatarUrl={applicant.avatarUrl}
+        userName={`${applicant.firstName} ${applicant.lastName}`}
+        size="sm"
+        className="rounded-lg"
+      />
+
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">
+          {applicant.firstName} {applicant.lastName}
+        </p>
+        {subtitleParts.length > 0 && (
+          <p className="truncate text-xs text-muted-foreground">{subtitleParts.join(" · ")}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SortableApplicantRow({
   applicant,
   rank,
+  index,
   isFirst,
   isLast,
   onMoveUp,
   onMoveDown,
-  isDragOverlay,
 }: {
   applicant: VotableApplicant;
   rank: number;
+  index: number;
   isFirst: boolean;
   isLast: boolean;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  isDragOverlay?: boolean;
 }) {
   const t = useTranslations("app.rooms.voting");
   const tEnums = useTranslations("enums");
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { ref, handleRef, isDragging } = useSortable({
     id: applicant.userId,
-    disabled: isDragOverlay,
+    index,
   });
-
-  const style = isDragOverlay
-    ? undefined
-    : {
-        transform: CSS.Transform.toString(transform),
-        transition,
-      };
 
   const age = getAge(applicant.birthDate);
   const subtitleParts = [
@@ -93,18 +109,14 @@ function SortableApplicantRow({
 
   return (
     <div
-      ref={isDragOverlay ? undefined : setNodeRef}
-      style={style}
-      className={`flex items-center gap-3 rounded-lg border bg-card px-3 py-3 ${
-        isDragging ? "opacity-50" : ""
-      } ${isDragOverlay ? "shadow-lg ring-2 ring-primary" : ""}`}
+      ref={ref}
+      className={`flex items-center gap-3 rounded-lg border bg-card px-3 py-3 ${isDragging ? "opacity-50" : ""}`}
     >
       <button
+        ref={handleRef}
         type="button"
         className="cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
         aria-label={t("dragToReorder")}
-        {...(isDragOverlay ? {} : attributes)}
-        {...(isDragOverlay ? {} : listeners)}
       >
         <GripVertical className="size-4" />
       </button>
@@ -170,37 +182,40 @@ export function VotingClient({ roomId, currentUserId, voteBoard }: Props) {
     : voteBoard.applicants;
 
   const [ranked, setRanked] = useState<VotableApplicant[]>(initialRanking);
-  const [activeId, setActiveId] = useState<string | null>(null);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
-  );
-
-  function handleDragStart(event: DragStartEvent) {
-    setActiveId(event.active.id as string);
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
-    setActiveId(null);
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    setRanked((prev) => {
-      const oldIndex = prev.findIndex((a) => a.userId === active.id);
-      const newIndex = prev.findIndex((a) => a.userId === over.id);
-      return arrayMove(prev, oldIndex, newIndex);
-    });
+  function handleDragEnd(
+    event: Parameters<NonNullable<React.ComponentProps<typeof DragDropProvider>["onDragEnd"]>>[0],
+  ) {
+    if (event.canceled) return;
+    const { source } = event.operation;
+    if (source && isSortable(source) && source.initialIndex !== source.index) {
+      setRanked((prev) => {
+        const next = [...prev];
+        const [item] = next.splice(source.initialIndex, 1);
+        next.splice(source.index, 0, item);
+        return next;
+      });
+    }
   }
 
   function moveUp(index: number) {
     if (index === 0) return;
-    setRanked((prev) => arrayMove(prev, index, index - 1));
+    setRanked((prev) => {
+      const next = [...prev];
+      const [item] = next.splice(index, 1);
+      next.splice(index - 1, 0, item);
+      return next;
+    });
   }
 
   function moveDown(index: number) {
     if (index === ranked.length - 1) return;
-    setRanked((prev) => arrayMove(prev, index, index + 1));
+    setRanked((prev) => {
+      const next = [...prev];
+      const [item] = next.splice(index, 1);
+      next.splice(index + 1, 0, item);
+      return next;
+    });
   }
 
   function handleSubmit() {
@@ -228,9 +243,6 @@ export function VotingClient({ roomId, currentUserId, voteBoard }: Props) {
     );
   }
 
-  const activeApplicant = activeId ? ranked.find((a) => a.userId === activeId) : null;
-  const activeIndex = activeId ? ranked.findIndex((a) => a.userId === activeId) : -1;
-
   return (
     <div className="space-y-6">
       {/* Ranking section */}
@@ -240,45 +252,30 @@ export function VotingClient({ roomId, currentUserId, voteBoard }: Props) {
           <p className="text-xs text-muted-foreground">{t("description")}</p>
         </div>
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={ranked.map((a) => a.userId)}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="space-y-2">
-              {ranked.map((applicant, index) => (
-                <SortableApplicantRow
-                  key={applicant.userId}
-                  applicant={applicant}
-                  rank={index + 1}
-                  isFirst={index === 0}
-                  isLast={index === ranked.length - 1}
-                  onMoveUp={() => moveUp(index)}
-                  onMoveDown={() => moveDown(index)}
-                />
-              ))}
-            </div>
-          </SortableContext>
-
-          <DragOverlay>
-            {activeApplicant ? (
+        <DragDropProvider onDragEnd={handleDragEnd}>
+          <div className="space-y-2">
+            {ranked.map((applicant, index) => (
               <SortableApplicantRow
-                applicant={activeApplicant}
-                rank={activeIndex + 1}
-                isFirst={false}
-                isLast={false}
-                onMoveUp={() => {}}
-                onMoveDown={() => {}}
-                isDragOverlay
+                key={applicant.userId}
+                applicant={applicant}
+                rank={index + 1}
+                index={index}
+                isFirst={index === 0}
+                isLast={index === ranked.length - 1}
+                onMoveUp={() => moveUp(index)}
+                onMoveDown={() => moveDown(index)}
               />
-            ) : null}
+            ))}
+          </div>
+          <DragOverlay>
+            {(source) => {
+              const applicant = ranked.find((a) => a.userId === source.id);
+              if (!applicant) return null;
+              const idx = ranked.findIndex((a) => a.userId === source.id);
+              return <ApplicantRowOverlay applicant={applicant} rank={idx + 1} />;
+            }}
           </DragOverlay>
-        </DndContext>
+        </DragDropProvider>
 
         <Button className="w-full" onClick={handleSubmit} disabled={isPending}>
           {isPending ? <Loader2 className="animate-spin" /> : <Check className="size-4" />}

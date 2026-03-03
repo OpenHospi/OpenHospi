@@ -1,15 +1,13 @@
 import type { ApplicationStatus } from "@openhospi/shared/enums";
 import {
-  CalendarCheck,
-  CalendarX,
   Eye,
   Heart,
   HelpCircle,
-  Mail,
   MinusCircle,
   Send,
   Trophy,
   Undo2,
+  Users,
   XCircle,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -27,9 +25,7 @@ const STATUS_ICONS: Record<ApplicationStatus, typeof Send> = {
   liked: Heart,
   maybe: HelpCircle,
   rejected: XCircle,
-  invited: Mail,
-  attending: CalendarCheck,
-  not_attending: CalendarX,
+  hospi: Users,
   accepted: Trophy,
   not_chosen: MinusCircle,
   withdrawn: Undo2,
@@ -41,9 +37,7 @@ const STATUS_ICON_COLORS: Record<ApplicationStatus, string> = {
   liked: "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300",
   maybe: "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300",
   rejected: "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300",
-  invited: "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300",
-  attending: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300",
-  not_attending: "bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300",
+  hospi: "bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300",
   accepted: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300",
   not_chosen: "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300",
   withdrawn: "bg-muted text-muted-foreground",

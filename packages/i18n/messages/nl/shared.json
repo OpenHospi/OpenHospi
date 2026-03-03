@@ -400,9 +400,7 @@
       "liked": "Leuk",
       "maybe": "Misschien",
       "rejected": "Afgewezen",
-      "invited": "Uitgenodigd",
-      "attending": "Komt",
-      "not_attending": "Komt niet",
+      "hospi": "Hospi",
       "accepted": "Geaccepteerd",
       "not_chosen": "Niet gekozen",
       "withdrawn": "Ingetrokken"
@@ -499,7 +497,6 @@
       "discover": "Ontdekken",
       "myRooms": "Mijn kamers",
       "applications": "Reacties",
-      "invitations": "Uitnodigingen",
       "chat": "Chat"
     },
     "userMenu": {
@@ -857,7 +854,7 @@
         "tabs": {
           "overview": "Overzicht",
           "applicants": "Aanmeldingen",
-          "events": "Evenementen",
+          "hospi": "Hospi",
           "voting": "Stemmen"
         }
       },
@@ -890,6 +887,13 @@
         "cancelError": "Kon evenement niet annuleren",
         "cancelledSuccess": "Evenement geannuleerd",
         "addToCalendar": "Toevoegen aan agenda",
+        "subscribeToCalendar": "Abonneer op agenda",
+        "downloadIcs": "Download .ics",
+        "calendarUrlCopied": "Agenda-URL gekopieerd naar klembord",
+        "upcoming": "Aanstaande",
+        "past": "Afgelopen",
+        "hospiEnded": "Deze hospi is afgelopen. Klaar om te beslissen?",
+        "goToVoting": "Naar stemmen",
         "detailTitle": "Evenementdetails",
         "backToRoom": "Terug naar kamer",
         "backToEvents": "Terug naar evenementen",
@@ -1056,6 +1060,14 @@
         "title": "Pushmeldingen",
         "description": "Beheer browserpushmeldingen om op de hoogte te blijven van nieuwe berichten, reacties en evenementen."
       },
+      "calendar": {
+        "title": "Kalenderabonnement",
+        "description": "Abonneer je op je hospi-evenementenkalender. Agenda-apps ontvangen automatisch updates wanneer evenementen wijzigen.",
+        "urlCopied": "Kalender-URL gekopieerd naar klembord",
+        "regenerated": "Kalenderlink vernieuwd",
+        "regenerateButton": "Link vernieuwen",
+        "warning": "Iedereen met deze link kan je hospi-evenementen zien. Als je vermoedt dat de link is gelekt, vernieuw deze dan."
+      },
       "exportSuccess": "Gegevens succesvol geëxporteerd",
       "exportRateLimited": "Te veel exportverzoeken vandaag. Probeer het later opnieuw.",
       "dataExport": {
@@ -1178,9 +1190,7 @@
         "liked": "Je bent geliked door de kamereigenaar",
         "maybe": "Je bent gemarkeerd als misschien",
         "rejected": "Je aanmelding is afgewezen",
-        "invited": "Je bent uitgenodigd voor een hospi-evenement",
-        "attending": "Je hebt je aanwezigheid bevestigd",
-        "not_attending": "Je hebt de uitnodiging afgeslagen",
+        "hospi": "Je bent uitgenodigd voor een hospi",
         "accepted": "Gefeliciteerd! Je bent gekozen",
         "not_chosen": "De kamer is vergeven",
         "withdrawn": "Je hebt je aanmelding ingetrokken"
@@ -1289,10 +1299,12 @@
     "invitations": {
       "title": "Uitnodigingen",
       "empty": "Nog geen uitnodigingen. Reageer op kamers om hospi-uitnodigingen te ontvangen.",
+      "hospiTitle": "Je bent uitgenodigd voor een hospi!",
       "cancelled": "Geannuleerd",
       "attend": "Aanwezig",
       "maybe": "Misschien",
       "decline": "Afwijzen",
+      "deadlineSoon": "RSVP-deadline: {deadline}",
       "declineReasonLabel": "Waarom kun je niet komen?",
       "declineReasonPlaceholder": "Deel alsjeblieft waarom je niet kunt komen...",
       "confirmDecline": "Afwijzing bevestigen",

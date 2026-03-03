@@ -30,6 +30,13 @@ export const roomMembersRls = pgView("room_members_rls", {
   sql`SELECT "rooms"."id" AS "room_id", "house_members"."user_id", "house_members"."role" FROM "house_members" INNER JOIN "rooms" ON "rooms"."house_id" = "house_members"."house_id"`,
 );
 
+export const hospiInvitationsRls = pgView("hospi_invitations_rls", {
+  eventId: uuid("event_id"),
+  userId: uuid("user_id"),
+}).as(
+  sql`SELECT "hospi_invitations"."event_id", "hospi_invitations"."user_id" FROM "hospi_invitations"`,
+);
+
 export const conversationMembersRls = pgView("conversation_members_rls", {
   conversationId: uuid("conversation_id"),
   userId: uuid("user_id"),

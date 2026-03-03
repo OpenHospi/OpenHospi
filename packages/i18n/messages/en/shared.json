@@ -400,9 +400,7 @@
       "liked": "Liked",
       "maybe": "Maybe",
       "rejected": "Rejected",
-      "invited": "Invited",
-      "attending": "Attending",
-      "not_attending": "Not attending",
+      "hospi": "Hospi",
       "accepted": "Accepted",
       "not_chosen": "Not chosen",
       "withdrawn": "Withdrawn"
@@ -499,7 +497,6 @@
       "discover": "Discover",
       "myRooms": "My Rooms",
       "applications": "Applications",
-      "invitations": "Invitations",
       "chat": "Chat"
     },
     "userMenu": {
@@ -857,7 +854,7 @@
         "tabs": {
           "overview": "Overview",
           "applicants": "Applicants",
-          "events": "Events",
+          "hospi": "Hospi",
           "voting": "Voting"
         }
       },
@@ -890,6 +887,13 @@
         "cancelError": "Could not cancel event",
         "cancelledSuccess": "Event cancelled",
         "addToCalendar": "Add to calendar",
+        "subscribeToCalendar": "Subscribe to calendar",
+        "downloadIcs": "Download .ics",
+        "calendarUrlCopied": "Calendar URL copied to clipboard",
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "hospiEnded": "This hospi has ended. Ready to decide?",
+        "goToVoting": "Go to voting",
         "detailTitle": "Event details",
         "backToRoom": "Back to room",
         "backToEvents": "Back to events",
@@ -1056,6 +1060,14 @@
         "title": "Push notifications",
         "description": "Manage browser push notifications to stay updated on new messages, applications, and events."
       },
+      "calendar": {
+        "title": "Calendar subscription",
+        "description": "Subscribe to your hospi events calendar. Calendar apps will automatically receive updates when events change.",
+        "urlCopied": "Calendar URL copied to clipboard",
+        "regenerated": "Calendar link regenerated",
+        "regenerateButton": "Regenerate link",
+        "warning": "Anyone with this link can see your hospi events. If you suspect it has been compromised, regenerate it."
+      },
       "exportSuccess": "Data exported successfully",
       "exportRateLimited": "Too many export requests today. Please try again later.",
       "dataExport": {
@@ -1178,9 +1190,7 @@
         "liked": "You were liked by the room owner",
         "maybe": "You were marked as maybe",
         "rejected": "Your application was rejected",
-        "invited": "You were invited to a hospi event",
-        "attending": "You confirmed attendance",
-        "not_attending": "You declined the event invitation",
+        "hospi": "You were invited to a hospi",
         "accepted": "Congratulations! You've been chosen",
         "not_chosen": "The room has been filled",
         "withdrawn": "You withdrew your application"
@@ -1289,10 +1299,12 @@
     "invitations": {
       "title": "Invitations",
       "empty": "No invitations yet. Apply to rooms to receive hospi event invitations.",
+      "hospiTitle": "You're invited to a hospi!",
       "cancelled": "Cancelled",
       "attend": "Attend",
       "maybe": "Maybe",
       "decline": "Decline",
+      "deadlineSoon": "RSVP deadline: {deadline}",
       "declineReasonLabel": "Why can't you attend?",
       "declineReasonPlaceholder": "Please share why you can't make it...",
       "confirmDecline": "Confirm decline",

@@ -268,7 +268,7 @@ export function ApplicantDetailPanel({ applicant, roomId, currentUserId }: Props
       </div>
 
       {/* Status action buttons — Accept / Not Chosen (only when invited) */}
-      {applicant.status === ApplicationStatus.invited && (
+      {applicant.status === ApplicationStatus.hospi && (
         <div className="flex flex-wrap gap-2 border-t pt-4">
           <AlertDialog>
             <AlertDialogTrigger asChild>

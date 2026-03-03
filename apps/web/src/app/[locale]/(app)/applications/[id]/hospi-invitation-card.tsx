@@ -2,7 +2,7 @@
 
 import { MAX_DECLINE_REASON_LENGTH } from "@openhospi/shared/constants";
 import { InvitationStatus } from "@openhospi/shared/enums";
-import { Calendar, Check, Clock, Loader2, MapPin, X } from "lucide-react";
+import { Calendar, Check, Clock, HelpCircle, Loader2, MapPin, X } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -21,9 +21,10 @@ import { respondToInvitation } from "./rsvp-actions";
 
 type Props = {
   invitation: UserInvitation;
+  calendarToken?: string | null;
 };
 
-export function InvitationCard({ invitation }: Props) {
+export function HospiInvitationCard({ invitation, calendarToken }: Props) {
   const t = useTranslations("app.invitations");
   const tEnums = useTranslations("enums");
   const format = useFormatter();
@@ -33,7 +34,17 @@ export function InvitationCard({ invitation }: Props) {
   const router = useRouter();
 
   const isCancelled = !!invitation.cancelledAt;
-  const isTerminal = invitation.status === InvitationStatus.not_attending;
+  const isDeclined = invitation.status === InvitationStatus.not_attending;
+  const hasResponded = invitation.status !== InvitationStatus.pending;
+
+  // Countdown for deadline < 48h — capture current time in state to avoid impure Date.now() during render
+  const [now] = useState(() => Date.now());
+  const deadlineSoon =
+    invitation.rsvpDeadline &&
+    !isCancelled &&
+    !isDeclined &&
+    new Date(invitation.rsvpDeadline).getTime() - now < 48 * 60 * 60 * 1000 &&
+    new Date(invitation.rsvpDeadline).getTime() > now;
 
   function handleRsvp(status: InvitationStatus) {
     if (status === InvitationStatus.not_attending) {
@@ -69,47 +80,54 @@ export function InvitationCard({ invitation }: Props) {
   }
 
   return (
-    <Card className={cn(isCancelled && "opacity-60")}>
+    <Card className={cn("border-l-4 border-l-purple-500", isCancelled && "opacity-60")}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-base">{invitation.eventTitle}</CardTitle>
-            <p className="text-sm text-muted-foreground">{invitation.roomTitle}</p>
-          </div>
-          <Badge
-            className={cn(
-              "shrink-0",
-              isCancelled
-                ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                : INVITATION_STATUS_COLORS[invitation.status],
-            )}
-          >
-            {isCancelled ? t("cancelled") : tEnums(`invitation_status.${invitation.status}`)}
-          </Badge>
+          <CardTitle className="text-base">{t("hospiTitle")}</CardTitle>
+          {isCancelled ? (
+            <Badge variant="destructive">{t("cancelled")}</Badge>
+          ) : (
+            hasResponded && (
+              <Badge className={cn("shrink-0", INVITATION_STATUS_COLORS[invitation.status])}>
+                {tEnums(`invitation_status.${invitation.status}`)}
+              </Badge>
+            )
+          )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="space-y-1 text-sm text-muted-foreground">
+      <CardContent className="space-y-4">
+        {/* Event details */}
+        <div className="space-y-1.5 text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">{invitation.eventTitle}</p>
           <div className="flex items-center gap-1.5">
-            <Calendar className="size-3.5" />
+            <Calendar className="size-3.5 shrink-0" />
             {format.dateTime(new Date(invitation.eventDate + "T00:00:00"), "short")}
           </div>
           <div className="flex items-center gap-1.5">
-            <Clock className="size-3.5" />
+            <Clock className="size-3.5 shrink-0" />
             {invitation.timeStart.slice(0, 5)}
             {invitation.timeEnd && ` – ${invitation.timeEnd.slice(0, 5)}`}
           </div>
           {invitation.location && (
             <div className="flex items-center gap-1.5">
-              <MapPin className="size-3.5" />
+              <MapPin className="size-3.5 shrink-0" />
               {invitation.location}
             </div>
           )}
         </div>
 
+        {/* Deadline warning */}
+        {deadlineSoon && (
+          <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
+            {t("deadlineSoon", {
+              deadline: format.relativeTime(new Date(invitation.rsvpDeadline!)),
+            })}
+          </p>
+        )}
+
         {/* RSVP buttons */}
-        {!isCancelled && !isTerminal && !showDeclineForm && (
-          <div className="flex gap-2">
+        {!isCancelled && !isDeclined && !showDeclineForm && (
+          <div className="flex flex-wrap gap-2">
             {invitation.status !== InvitationStatus.attending && (
               <Button
                 size="sm"
@@ -128,6 +146,7 @@ export function InvitationCard({ invitation }: Props) {
                   onClick={() => handleRsvp(InvitationStatus.maybe)}
                   disabled={isPending}
                 >
+                  <HelpCircle className="size-3.5" />
                   {t("maybe")}
                 </Button>
               )}
@@ -143,18 +162,56 @@ export function InvitationCard({ invitation }: Props) {
           </div>
         )}
 
+        {/* Change response when already responded (attending → can still decline) */}
+        {!isCancelled &&
+          hasResponded &&
+          !isDeclined &&
+          invitation.status !== InvitationStatus.pending && (
+            <div className="flex items-center gap-2">
+              {invitation.status === InvitationStatus.attending && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleRsvp(InvitationStatus.not_attending)}
+                  disabled={isPending}
+                >
+                  <X className="size-3.5" />
+                  {t("decline")}
+                </Button>
+              )}
+              {invitation.status === InvitationStatus.maybe && (
+                <>
+                  <Button
+                    size="sm"
+                    onClick={() => handleRsvp(InvitationStatus.attending)}
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <Check className="size-3.5" />
+                    )}
+                    {t("attend")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleRsvp(InvitationStatus.not_attending)}
+                    disabled={isPending}
+                  >
+                    <X className="size-3.5" />
+                    {t("decline")}
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+
         {/* Calendar export */}
         {!isCancelled &&
           (invitation.status === InvitationStatus.attending ||
             invitation.status === InvitationStatus.maybe) && (
-            <AddToCalendarButton
-              uid={invitation.invitationId}
-              title={invitation.eventTitle}
-              location={invitation.location}
-              startDate={invitation.eventDate}
-              startTime={invitation.timeStart}
-              endTime={invitation.timeEnd}
-            />
+            <AddToCalendarButton uid={invitation.eventId} calendarToken={calendarToken} />
           )}
 
         {/* Decline reason form */}

@@ -224,6 +224,25 @@ export async function updatePreferredLocale(locale: SupportedLocale) {
   return { success: true };
 }
 
+export async function getCalendarToken(): Promise<string | null> {
+  const session = await requireSession();
+  const [row] = await db
+    .select({ calendarToken: profiles.calendarToken })
+    .from(profiles)
+    .where(eq(profiles.id, session.user.id));
+  return row?.calendarToken ?? null;
+}
+
+export async function regenerateCalendarToken(): Promise<string> {
+  const session = await requireSession();
+  const newToken = crypto.randomUUID();
+  await db
+    .update(profiles)
+    .set({ calendarToken: newToken })
+    .where(eq(profiles.id, session.user.id));
+  return newToken;
+}
+
 export async function deleteAccount() {
   const session = await requireSession();
   const userId = session.user.id;

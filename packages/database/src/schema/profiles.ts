@@ -50,6 +50,7 @@ export const profiles = pgTable(
     preferredLocale: localeEnum("preferred_locale").default("nl"),
     notificationPreferences: jsonb("notification_preferences"),
     privacyPolicyAcceptedVersion: text("privacy_policy_accepted_version"),
+    calendarToken: uuid("calendar_token").defaultRandom().unique(),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

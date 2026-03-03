@@ -24,7 +24,7 @@ export function RoomTabs({ roomId, roomStatus, applicantCount }: Props) {
     ...(!isDraft
       ? [
           { value: "applicants", href: `${basePath}/applicants`, label: t("applicants") },
-          { value: "events", href: `${basePath}/events`, label: t("events") },
+          { value: "hospi", href: `${basePath}/events`, label: t("hospi") },
           { value: "voting", href: `${basePath}/voting`, label: t("voting") },
         ]
       : []),
@@ -33,7 +33,7 @@ export function RoomTabs({ roomId, roomStatus, applicantCount }: Props) {
   // Determine active tab from pathname
   let activeTab = "overview";
   if (pathname.startsWith(`${basePath}/applicants`)) activeTab = "applicants";
-  else if (pathname.startsWith(`${basePath}/events`)) activeTab = "events";
+  else if (pathname.startsWith(`${basePath}/events`)) activeTab = "hospi";
   else if (pathname.startsWith(`${basePath}/voting`)) activeTab = "voting";
 
   return (

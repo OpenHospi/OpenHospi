@@ -413,20 +413,14 @@ describe("E2E workflow tests (integration)", () => {
           tx.update(applications).set({ status: ApplicationStatus.liked }).where(eq(applications.id, tempApp.id)),
         );
 
-        // liked → invited (hospi-side)
-        expect(isValidApplicationTransition(ApplicationStatus.liked, ApplicationStatus.invited)).toBe(true);
+        // liked → hospi (hospi-side)
+        expect(isValidApplicationTransition(ApplicationStatus.liked, ApplicationStatus.hospi)).toBe(true);
         await withRLS(HOSPI_OWNER, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.invited }).where(eq(applications.id, tempApp.id)),
+          tx.update(applications).set({ status: ApplicationStatus.hospi }).where(eq(applications.id, tempApp.id)),
         );
 
-        // invited → attending (seeker-side)
-        expect(isValidApplicationTransition(ApplicationStatus.invited, ApplicationStatus.attending)).toBe(true);
-        await withRLS(SEEKER_2, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.attending }).where(eq(applications.id, tempApp.id)),
-        );
-
-        // attending → accepted (hospi-side)
-        expect(isValidApplicationTransition(ApplicationStatus.attending, ApplicationStatus.accepted)).toBe(true);
+        // hospi → accepted (hospi-side)
+        expect(isValidApplicationTransition(ApplicationStatus.hospi, ApplicationStatus.accepted)).toBe(true);
         await withRLS(HOSPI_OWNER, (tx) =>
           tx.update(applications).set({ status: ApplicationStatus.accepted }).where(eq(applications.id, tempApp.id)),
         );
@@ -444,11 +438,9 @@ describe("E2E workflow tests (integration)", () => {
       expect(isTerminalApplicationStatus(ApplicationStatus.rejected)).toBe(true);
       expect(isTerminalApplicationStatus(ApplicationStatus.withdrawn)).toBe(true);
       expect(isTerminalApplicationStatus(ApplicationStatus.not_chosen)).toBe(true);
-      expect(isTerminalApplicationStatus(ApplicationStatus.not_attending)).toBe(true);
 
       // No transitions from terminal statuses
       expect(VALID_APPLICATION_TRANSITIONS[ApplicationStatus.accepted]).toHaveLength(0);
-      expect(VALID_APPLICATION_TRANSITIONS[ApplicationStatus.rejected]).toHaveLength(0);
       expect(VALID_APPLICATION_TRANSITIONS[ApplicationStatus.withdrawn]).toHaveLength(0);
     });
 

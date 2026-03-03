@@ -2,11 +2,16 @@
 
 import { ConsentPurpose, DataRequestType } from "@openhospi/shared/enums";
 import {
+  Calendar,
+  Copy,
   Download,
+  Eye,
+  EyeOff,
   FileSpreadsheet,
   History,
   Loader2,
   Monitor,
+  RefreshCw,
   Send,
   Shield,
   ShieldOff,
@@ -45,7 +50,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
 import { authClient } from "@/lib/auth-client";
 
-import { deleteAccount, exportData, exportDataCSV } from "./actions";
+import {
+  deleteAccount,
+  exportData,
+  exportDataCSV,
+  getCalendarToken,
+  regenerateCalendarToken,
+} from "./actions";
 import {
   getActiveConsents,
   getConsentHistory,
@@ -86,6 +97,11 @@ export function SettingsContent() {
   // CSV export state
   const [isExportingCSV, startExportCSV] = useTransition();
 
+  // Calendar state
+  const [calendarToken, setCalendarToken] = useState<string | null>(null);
+  const [showCalendarUrl, setShowCalendarUrl] = useState(false);
+  const [isRegeneratingToken, startRegenerateToken] = useTransition();
+
   // Sessions state
   type SessionInfo = {
     token: string;
@@ -106,6 +122,7 @@ export function SettingsContent() {
     authClient.listSessions().then(({ data }) => {
       if (data) setSessions(data as unknown as SessionInfo[]);
     });
+    getCalendarToken().then(setCalendarToken);
   }, []);
 
   function handleExport() {
@@ -158,6 +175,21 @@ export function SettingsContent() {
     startDelete(async () => {
       await deleteAccount();
       router.push("/");
+    });
+  }
+
+  function handleCopyCalendarUrl() {
+    if (!calendarToken) return;
+    const url = `${window.location.origin}/api/calendar/${calendarToken}`;
+    navigator.clipboard.writeText(url);
+    toast.success(t("calendar.urlCopied"));
+  }
+
+  function handleRegenerateToken() {
+    startRegenerateToken(async () => {
+      const newToken = await regenerateCalendarToken();
+      setCalendarToken(newToken);
+      toast.success(t("calendar.regenerated"));
     });
   }
 
@@ -222,6 +254,55 @@ export function SettingsContent() {
           </CardHeader>
           <CardContent>
             <PushNotificationManager />
+          </CardContent>
+        </Card>
+
+        {/* Calendar subscription */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="size-5" />
+              {t("calendar.title")}
+            </CardTitle>
+            <CardDescription>{t("calendar.description")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {calendarToken && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 truncate rounded-md bg-muted px-3 py-2 text-sm">
+                    {showCalendarUrl
+                      ? `${window.location.origin}/api/calendar/${calendarToken}`
+                      : "••••••••••••••••••••••••••••••••••••"}
+                  </code>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowCalendarUrl(!showCalendarUrl)}
+                  >
+                    {showCalendarUrl ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={handleCopyCalendarUrl}>
+                    <Copy className="size-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">{t("calendar.warning")}</p>
+              </div>
+            )}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={handleRegenerateToken}
+                disabled={isRegeneratingToken}
+              >
+                {isRegeneratingToken ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <RefreshCw className="size-4" />
+                )}
+                {t("calendar.regenerateButton")}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </TabsContent>

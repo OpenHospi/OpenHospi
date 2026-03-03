@@ -21,6 +21,7 @@
           "Application data — personal message and application status",
           "Session data — IP address and user agent for security purposes",
           "Push notification tokens — for delivery of notifications to your device",
+          "Calendar subscription token — a unique, secret link that allows your calendar application to access your hospi event schedule. This link does not require authentication and can be revoked at any time from your settings",
           "Consent records — your cookie and privacy preferences, timestamps and privacy policy version",
           "We do not collect special categories of personal data as referred to in Art. 9(1) GDPR (including data revealing racial or ethnic origin, political opinions, religious beliefs, health or sexual orientation). If you voluntarily share such data in your profile or messages, we process it on the basis of Art. 9(2)(e) GDPR (manifestly made public by the data subject)."
         ]
@@ -31,7 +32,7 @@
       },
       {
         "title": "5. How we use your data",
-        "content": "We use your data solely to provide the OpenHospi platform, in accordance with the purpose limitation principle (Art. 5(1)(b) GDPR): matching students with rooms, facilitating communication between seekers and hosts, and managing the housing application process. We do not sell your data, use it for advertising, profile you for marketing purposes, or share it with third parties except as described in this policy."
+        "content": "We use your data solely to provide the OpenHospi platform, in accordance with the purpose limitation principle (Art. 5(1)(b) GDPR): matching students with rooms, facilitating communication between seekers and hosts, managing the housing application process, and calendar synchronisation. When you subscribe to your hospi calendar, we serve your event details (titles, dates, times, locations) through a private URL. Calendar applications (Google Calendar, Apple Calendar, Outlook) periodically request this URL to keep your calendar up to date. We do not sell your data, use it for advertising, profile you for marketing purposes, or share it with third parties except as described in this policy."
       },
       {
         "title": "6. Obligation to provide personal data",
@@ -84,7 +85,7 @@
           "Right to erasure (Art. 17 GDPR) — you can request erasure of your data, via Settings > Delete account",
           "Right to restriction of processing (Art. 18 GDPR) — you can request restriction of processing while retaining your data",
           "Notification obligation (Art. 19 GDPR) — we notify each recipient to whom personal data have been disclosed of any rectification, erasure, or restriction, unless this proves impossible or involves disproportionate effort",
-          "Right to data portability (Art. 20 GDPR) — you can receive your data in a structured, commonly used and machine-readable format (JSON or CSV), via Settings > Privacy > Data export",
+          "Right to data portability (Art. 20 GDPR) — you can receive your data in a structured, commonly used and machine-readable format (JSON or CSV), via Settings > Privacy > Data export. The calendar subscription feed also provides data portability for hospi events in standard iCalendar (ICS) format",
           "Right to object (Art. 21 GDPR) — you can object to processing based on legitimate interests"
         ]
       },
@@ -205,7 +206,8 @@
           "Application submission and processing",
           "Chat messaging (end-to-end encrypted)",
           "House membership management",
-          "Voting on applications"
+          "Voting on applications",
+          "Calendar subscription feed"
         ]
       },
       {
@@ -413,6 +415,19 @@
           "Retention — Until user unsubscribes or account deletion",
           "Security — Web Push protocol with end-to-end encryption"
         ]
+      },
+      {
+        "title": "10. Calendar subscription feed",
+        "items": [
+          "Purpose — Synchronising hospi events with the user's calendar application",
+          "Categories of data subjects — Registered students who have activated the calendar subscription",
+          "Data categories — calendar token (UUID), hospi event titles, dates, times, locations",
+          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR) — user explicitly activates the subscription",
+          "Recipients — User's calendar application provider (Google, Apple, Microsoft, etc.)",
+          "Transfers outside EEA — No, all processing within the EU/EEA",
+          "Retention — Token exists while account is active; deleted on account deletion",
+          "Security — Unguessable UUID token, HTTPS only, revocable by user"
+        ]
       }
     ]
   },
@@ -497,11 +512,21 @@
         ]
       },
       {
-        "title": "9. Children (Art. 8 GDPR)",
+        "title": "9. Risk: Calendar feed URL leakage",
+        "items": [
+          "Risk — Someone obtains the calendar subscription URL and can see hospi event details",
+          "Likelihood — Low",
+          "Impact — Medium (event titles, dates, locations exposed — no messages or personal data)",
+          "Mitigations — Calendar token is a 128-bit unguessable UUID. HTTPS only. Token is revocable by the user at any time via Settings. User is warned about sharing the URL",
+          "Residual risk — Acceptable"
+        ]
+      },
+      {
+        "title": "10. Children (Art. 8 GDPR)",
         "content": "All users authenticate via SURFconext, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR). No separate age verification is needed."
       },
       {
-        "title": "10. Conclusion",
+        "title": "11. Conclusion",
         "content": "The processing activities of OpenHospi present acceptable residual risks after implementation of mitigations. The platform implements data protection by design and by default (Art. 25 GDPR) through end-to-end encryption, Row-Level Security, data minimisation, automated retention rules, and transparent processing. No high residual risks remain that would require prior consultation with the Autoriteit Persoonsgegevens under Art. 36 GDPR."
       }
     ]

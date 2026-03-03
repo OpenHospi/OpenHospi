@@ -7,8 +7,6 @@ import {
 } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne, sum } from "drizzle-orm";
 
-const VOTABLE_STATUSES = [ApplicationStatus.invited, ApplicationStatus.attending] as const;
-
 export type VotableApplicant = {
   applicationId: string;
   userId: string;
@@ -52,9 +50,7 @@ export async function getVotableApplicants(
       })
       .from(applications)
       .innerJoin(profiles, eq(profiles.id, applications.userId))
-      .where(
-        and(eq(applications.roomId, roomId), inArray(applications.status, [...VOTABLE_STATUSES])),
-      )
+      .where(and(eq(applications.roomId, roomId), eq(applications.status, ApplicationStatus.hospi)))
       .orderBy(asc(profiles.firstName));
   });
 }
@@ -205,8 +201,6 @@ async function getVotableApplicantsInTx(
     })
     .from(applications)
     .innerJoin(profiles, eq(profiles.id, applications.userId))
-    .where(
-      and(eq(applications.roomId, roomId), inArray(applications.status, [...VOTABLE_STATUSES])),
-    )
+    .where(and(eq(applications.roomId, roomId), eq(applications.status, ApplicationStatus.hospi)))
     .orderBy(asc(profiles.firstName));
 }

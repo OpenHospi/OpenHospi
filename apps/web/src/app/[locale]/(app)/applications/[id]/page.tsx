@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { InvitationCard } from "@/app/[locale]/(app)/invitations/invitation-card";
 import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,11 +13,13 @@ import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getApplicationDetail, getApplicationStatusHistory } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
+import { getUserCalendarToken } from "@/lib/calendar-token";
 import { getInvitationForApplication } from "@/lib/invitations";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 
 import { ApplicationTimeline } from "./application-timeline";
+import { HospiInvitationCard } from "./hospi-invitation-card";
 import { WithdrawButton } from "./withdraw-button";
 
 export async function generateMetadata({
@@ -42,10 +43,11 @@ export default async function ApplicationDetailPage({ params }: Props) {
   setRequestLocale(locale);
   const { user } = await requireSession();
 
-  const [application, history, invitation] = await Promise.all([
+  const [application, history, invitation, calendarToken] = await Promise.all([
     getApplicationDetail(id, user.id),
     getApplicationStatusHistory(id, user.id),
     getInvitationForApplication(id, user.id),
+    getUserCalendarToken(user.id),
   ]);
 
   if (!application) {
@@ -113,6 +115,9 @@ export default async function ApplicationDetailPage({ params }: Props) {
         </div>
       </Card>
 
+      {/* Hospi invitation card — prominent, shown when invited */}
+      {invitation && <HospiInvitationCard invitation={invitation} calendarToken={calendarToken} />}
+
       {/* Timeline card */}
       <Card>
         <CardHeader>
@@ -132,15 +137,6 @@ export default async function ApplicationDetailPage({ params }: Props) {
           />
         </CardContent>
       </Card>
-
-      {/* Event invitation */}
-      {invitation && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-muted-foreground">{t("eventInvitation")}</h3>
-          <p className="text-sm text-muted-foreground">{t("eventInvitationDescription")}</p>
-          <InvitationCard invitation={invitation} />
-        </div>
-      )}
 
       {/* Personal message */}
       {application.personalMessage && (

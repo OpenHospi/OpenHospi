@@ -271,9 +271,7 @@ export const ApplicationStatus = defineEnum([
   "liked",
   "maybe",
   "rejected",
-  "invited",
-  "attending",
-  "not_attending",
+  "hospi",
   "accepted",
   "not_chosen",
   "withdrawn",
@@ -605,18 +603,10 @@ export const VALID_APPLICATION_TRANSITIONS: Record<
 > = {
   sent: ["seen", "withdrawn"],
   seen: ["liked", "maybe", "rejected", "withdrawn"],
-  liked: ["invited", "maybe", "rejected", "withdrawn"],
-  maybe: ["liked", "invited", "rejected", "withdrawn"],
+  liked: ["hospi", "maybe", "rejected", "withdrawn"],
+  maybe: ["liked", "hospi", "rejected", "withdrawn"],
   rejected: ["liked", "maybe"],
-  invited: [
-    "attending",
-    "not_attending",
-    "accepted",
-    "not_chosen",
-    "withdrawn",
-  ],
-  attending: ["accepted", "not_chosen"],
-  not_attending: [],
+  hospi: ["accepted", "not_chosen", "withdrawn"],
   accepted: [],
   not_chosen: [],
   withdrawn: [],
@@ -668,7 +658,6 @@ export const TERMINAL_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
   ApplicationStatus.accepted,
   ApplicationStatus.not_chosen,
   ApplicationStatus.withdrawn,
-  ApplicationStatus.not_attending,
 ] as const;
 
 export function isTerminalApplicationStatus(

@@ -1,85 +1,15 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { applications, hospiEvents, hospiInvitations } from "@openhospi/database/schema";
+import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import type { RsvpData } from "@openhospi/database/validators";
 import { rsvpSchema } from "@openhospi/database/validators";
-import {
-  ApplicationStatus,
-  InvitationStatus,
-  isValidApplicationTransition,
-  isValidInvitationTransition,
-} from "@openhospi/shared/enums";
-import { and, eq, ne, sql } from "drizzle-orm";
+import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
+import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { logStatusTransition } from "@/lib/application-history";
 import { requireNotRestricted, requireSession } from "@/lib/auth-server";
 import { notifyUser } from "@/lib/notifications";
-
-type RLSTransaction = Parameters<Parameters<typeof withRLS>[1]>[0];
-
-async function tryUpdateApplicationStatus(
-  tx: RLSTransaction,
-  applicationId: string,
-  targetStatus: ApplicationStatus,
-  changedBy: string,
-) {
-  const [app] = await tx
-    .select({ status: applications.status })
-    .from(applications)
-    .where(eq(applications.id, applicationId));
-
-  if (app && isValidApplicationTransition(app.status as ApplicationStatus, targetStatus)) {
-    await tx
-      .update(applications)
-      .set({ status: targetStatus })
-      .where(eq(applications.id, applicationId));
-
-    await logStatusTransition(
-      tx,
-      applicationId,
-      app.status as ApplicationStatus,
-      targetStatus,
-      changedBy,
-    );
-  }
-}
-
-async function handleApplicationStatusOnRsvp(
-  tx: RLSTransaction,
-  newStatus: InvitationStatus,
-  applicationId: string,
-  userId: string,
-  roomId: string,
-  invitationId: string,
-) {
-  if (newStatus === InvitationStatus.attending) {
-    await tryUpdateApplicationStatus(tx, applicationId, ApplicationStatus.attending, userId);
-    return;
-  }
-
-  if (newStatus !== InvitationStatus.not_attending) return;
-
-  // Only set not_attending if no other active attending invitations for this room
-  const [otherAttending] = await tx
-    .select({ id: hospiInvitations.id })
-    .from(hospiInvitations)
-    .innerJoin(hospiEvents, eq(hospiEvents.id, hospiInvitations.eventId))
-    .where(
-      and(
-        eq(hospiInvitations.userId, userId),
-        eq(hospiEvents.roomId, roomId),
-        eq(hospiInvitations.status, InvitationStatus.attending),
-        ne(hospiInvitations.id, invitationId),
-      ),
-    )
-    .limit(1);
-
-  if (!otherAttending) {
-    await tryUpdateApplicationStatus(tx, applicationId, ApplicationStatus.not_attending, userId);
-  }
-}
 
 export async function respondToInvitation(invitationId: string, data: RsvpData) {
   const session = await requireSession();
@@ -95,7 +25,6 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
         id: hospiInvitations.id,
         eventId: hospiInvitations.eventId,
         userId: hospiInvitations.userId,
-        applicationId: hospiInvitations.applicationId,
         status: hospiInvitations.status,
       })
       .from(hospiInvitations)
@@ -119,7 +48,6 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
         rsvpDeadline: hospiEvents.rsvpDeadline,
         maxAttendees: hospiEvents.maxAttendees,
         cancelledAt: hospiEvents.cancelledAt,
-        roomId: hospiEvents.roomId,
         createdBy: hospiEvents.createdBy,
       })
       .from(hospiEvents)
@@ -143,7 +71,7 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
       if (attendingCount >= event.maxAttendees) return { error: "event_full" as const };
     }
 
-    // Update invitation
+    // Update invitation only — don't touch application status
     await tx
       .update(hospiInvitations)
       .set({
@@ -152,18 +80,6 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
         declineReason: parsed.data.declineReason || null,
       })
       .where(eq(hospiInvitations.id, invitationId));
-
-    // Update application status
-    if (invitation.applicationId) {
-      await handleApplicationStatusOnRsvp(
-        tx,
-        newStatus,
-        invitation.applicationId,
-        session.user.id,
-        event.roomId,
-        invitationId,
-      );
-    }
 
     return { success: true, eventCreatorId: event.createdBy };
   });
@@ -177,6 +93,6 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
     });
   }
 
-  revalidatePath("/invitations");
+  revalidatePath("/applications");
   return { success: true };
 }

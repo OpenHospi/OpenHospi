@@ -73,19 +73,17 @@ export async function batchInviteApplicants(
         .onConflictDoNothing();
 
       // Update application status to invited
-      if (
-        isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.invited)
-      ) {
+      if (isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.hospi)) {
         await tx
           .update(applications)
-          .set({ status: ApplicationStatus.invited })
+          .set({ status: ApplicationStatus.hospi })
           .where(eq(applications.id, app.id));
 
         await logStatusTransition(
           tx,
           app.id,
           app.status as ApplicationStatus,
-          ApplicationStatus.invited,
+          ApplicationStatus.hospi,
           session.user.id,
         );
       }

@@ -400,9 +400,7 @@
       "liked": "Gefällt",
       "maybe": "Vielleicht",
       "rejected": "Abgelehnt",
-      "invited": "Eingeladen",
-      "attending": "Nimmt teil",
-      "not_attending": "Nimmt nicht teil",
+      "hospi": "Hospi",
       "accepted": "Angenommen",
       "not_chosen": "Nicht gewählt",
       "withdrawn": "Zurückgezogen"
@@ -499,7 +497,6 @@
       "discover": "Entdecken",
       "myRooms": "Meine Zimmer",
       "applications": "Bewerbungen",
-      "invitations": "Einladungen",
       "chat": "Chat"
     },
     "userMenu": {
@@ -857,7 +854,7 @@
         "tabs": {
           "overview": "Übersicht",
           "applicants": "Bewerbungen",
-          "events": "Veranstaltungen",
+          "hospi": "Hospi",
           "voting": "Abstimmung"
         }
       },
@@ -890,6 +887,13 @@
         "cancelError": "Veranstaltung konnte nicht abgesagt werden",
         "cancelledSuccess": "Veranstaltung abgesagt",
         "addToCalendar": "Zum Kalender hinzufügen",
+        "subscribeToCalendar": "Kalender abonnieren",
+        "downloadIcs": ".ics herunterladen",
+        "calendarUrlCopied": "Kalender-URL in die Zwischenablage kopiert",
+        "upcoming": "Bevorstehend",
+        "past": "Vergangen",
+        "hospiEnded": "Dieses Hospi ist vorbei. Bereit zur Entscheidung?",
+        "goToVoting": "Zur Abstimmung",
         "detailTitle": "Veranstaltungsdetails",
         "backToRoom": "Zurück zum Zimmer",
         "backToEvents": "Zurück zu Veranstaltungen",
@@ -1056,6 +1060,14 @@
         "title": "Push-Benachrichtigungen",
         "description": "Verwalte Browser-Push-Benachrichtigungen, um über neue Nachrichten, Bewerbungen und Veranstaltungen informiert zu bleiben."
       },
+      "calendar": {
+        "title": "Kalenderabonnement",
+        "description": "Abonniere deinen Hospi-Veranstaltungskalender. Kalender-Apps erhalten automatisch Updates, wenn sich Veranstaltungen ändern.",
+        "urlCopied": "Kalender-URL in die Zwischenablage kopiert",
+        "regenerated": "Kalender-Link erneuert",
+        "regenerateButton": "Link erneuern",
+        "warning": "Jeder mit diesem Link kann deine Hospi-Veranstaltungen sehen. Wenn du vermutest, dass der Link kompromittiert wurde, erneuere ihn."
+      },
       "exportSuccess": "Daten erfolgreich exportiert",
       "exportRateLimited": "Zu viele Exportanfragen heute. Bitte versuche es später erneut.",
       "dataExport": {
@@ -1178,9 +1190,7 @@
         "liked": "Du wurdest vom Zimmereigentümer geliked",
         "maybe": "Du wurdest als Vielleicht markiert",
         "rejected": "Deine Bewerbung wurde abgelehnt",
-        "invited": "Du wurdest zu einem Hospi-Event eingeladen",
-        "attending": "Du hast deine Teilnahme bestätigt",
-        "not_attending": "Du hast die Einladung abgelehnt",
+        "hospi": "Du wurdest zu einem Hospi eingeladen",
         "accepted": "Herzlichen Glückwunsch! Du wurdest ausgewählt",
         "not_chosen": "Das Zimmer wurde vergeben",
         "withdrawn": "Du hast deine Bewerbung zurückgezogen"
@@ -1289,10 +1299,12 @@
     "invitations": {
       "title": "Einladungen",
       "empty": "Noch keine Einladungen. Bewirb dich auf Zimmer, um Hospi-Einladungen zu erhalten.",
+      "hospiTitle": "Du bist zu einem Hospi eingeladen!",
       "cancelled": "Abgesagt",
       "attend": "Teilnehmen",
       "maybe": "Vielleicht",
       "decline": "Absagen",
+      "deadlineSoon": "RSVP-Frist: {deadline}",
       "declineReasonLabel": "Warum kannst du nicht teilnehmen?",
       "declineReasonPlaceholder": "Bitte teile mit, warum du nicht kommen kannst...",
       "confirmDecline": "Absage bestätigen",

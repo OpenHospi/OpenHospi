@@ -36,6 +36,7 @@ export const hospiEvents = pgTable(
     rsvpDeadline: timestamp("rsvp_deadline", { withTimezone: true }),
     maxAttendees: integer("max_attendees"),
     notes: text("notes"),
+    sequence: integer("sequence").notNull().default(0),
     cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
@@ -47,7 +48,7 @@ export const hospiEvents = pgTable(
     pgPolicy("hospi_events_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid())) or exists(select 1 from hospi_invitations where hospi_invitations.event_id = ${table.id} and hospi_invitations.user_id = (select auth.uid()))`,
+      using: sql`exists(select 1 from room_members_rls where room_members_rls.room_id = ${table.roomId} and room_members_rls.user_id = (select auth.uid())) or exists(select 1 from hospi_invitations_rls where hospi_invitations_rls.event_id = ${table.id} and hospi_invitations_rls.user_id = (select auth.uid()))`,
     }),
     pgPolicy("hospi_events_insert", {
       for: "insert",

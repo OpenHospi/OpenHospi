@@ -1,67 +1,61 @@
 "use client";
 
-import { computeEndDateTime, generateICS } from "@openhospi/shared/calendar";
-import { CalendarPlus } from "lucide-react";
+import { CalendarPlus, Download, Link2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   uid: string;
-  title: string;
-  description?: string;
-  location?: string | null;
-  startDate: string; // YYYY-MM-DD
-  startTime: string; // HH:MM
-  endTime?: string | null; // HH:MM
+  calendarToken?: string | null;
 };
 
-export function AddToCalendarButton({
-  uid,
-  title,
-  description,
-  location,
-  startDate,
-  startTime,
-  endTime,
-}: Props) {
+export function AddToCalendarButton({ uid, calendarToken }: Props) {
   const t = useTranslations("app.rooms.events");
 
   function handleDownload() {
-    const end = endTime
-      ? computeEndDateTime(startDate, startTime, endTime)
-      : computeEndDateTime(startDate, startTime, addHours(startTime, 2));
+    // Use the authenticated API endpoint for single-event download
+    window.open(`/api/calendar/event/${uid}`, "_blank");
+  }
 
-    const ics = generateICS({
-      uid: `${uid}@openhospi.nl`,
-      title,
-      description: description ?? undefined,
-      location: location ?? undefined,
-      startDate,
-      startTime,
-      endDate: end.endDate,
-      endTime: end.endTime,
+  function handleSubscribe() {
+    if (!calendarToken) return;
+    const subscribeUrl = `${window.location.origin}/api/calendar/${calendarToken}`;
+    const webcalUrl = subscribeUrl.replace(/^https?:/, "webcal:");
+    navigator.clipboard.writeText(subscribeUrl).then(() => {
+      toast.success(t("calendarUrlCopied"));
     });
-
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${title.replaceAll(/[^a-zA-Z0-9]/g, "_")}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // Also try to open webcal:// for native calendar apps
+    window.open(webcalUrl);
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleDownload}>
-      <CalendarPlus className="size-4" />
-      {t("addToCalendar")}
-    </Button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm">
+          <CalendarPlus className="size-4" />
+          {t("addToCalendar")}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        {calendarToken && (
+          <DropdownMenuItem onClick={handleSubscribe}>
+            <Link2 className="size-4" />
+            {t("subscribeToCalendar")}
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={handleDownload}>
+          <Download className="size-4" />
+          {t("downloadIcs")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
-}
-
-function addHours(time: string, hours: number): string {
-  const [h, m] = time.split(":").map(Number);
-  const newH = (h + hours) % 24;
-  return `${String(newH).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }

@@ -172,6 +172,7 @@ export function ChatView({
         conversationId={conversationId}
         currentUserId={currentUserId}
         initialMessages={initialMessages}
+        members={members}
         privateKey={privateKey!}
       />
 
@@ -181,12 +182,7 @@ export function ChatView({
           <p className="text-muted-foreground text-sm">{t("blocked")}</p>
         </div>
       ) : (
-        <ChatInput
-          conversationId={conversationId}
-          currentUserId={currentUserId}
-          members={members}
-          privateKey={privateKey!}
-        />
+        <ChatInput conversationId={conversationId} members={members} privateKey={privateKey!} />
       )}
     </div>
   );

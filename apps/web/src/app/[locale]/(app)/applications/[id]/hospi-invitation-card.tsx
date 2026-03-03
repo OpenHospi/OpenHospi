@@ -125,31 +125,26 @@ export function HospiInvitationCard({ invitation, calendarToken }: Props) {
           </p>
         )}
 
-        {/* RSVP buttons */}
-        {!isCancelled && !isDeclined && !showDeclineForm && (
+        {/* RSVP buttons — pending: show all three options */}
+        {!isCancelled && invitation.status === InvitationStatus.pending && !showDeclineForm && (
           <div className="flex flex-wrap gap-2">
-            {invitation.status !== InvitationStatus.attending && (
-              <Button
-                size="sm"
-                onClick={() => handleRsvp(InvitationStatus.attending)}
-                disabled={isPending}
-              >
-                {isPending ? <Loader2 className="animate-spin" /> : <Check className="size-3.5" />}
-                {t("attend")}
-              </Button>
-            )}
-            {invitation.status !== InvitationStatus.maybe &&
-              invitation.status !== InvitationStatus.attending && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleRsvp(InvitationStatus.maybe)}
-                  disabled={isPending}
-                >
-                  <HelpCircle className="size-3.5" />
-                  {t("maybe")}
-                </Button>
-              )}
+            <Button
+              size="sm"
+              onClick={() => handleRsvp(InvitationStatus.attending)}
+              disabled={isPending}
+            >
+              {isPending ? <Loader2 className="animate-spin" /> : <Check className="size-3.5" />}
+              {t("attend")}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleRsvp(InvitationStatus.maybe)}
+              disabled={isPending}
+            >
+              <HelpCircle className="size-3.5" />
+              {t("maybe")}
+            </Button>
             <Button
               size="sm"
               variant="outline"
@@ -162,50 +157,41 @@ export function HospiInvitationCard({ invitation, calendarToken }: Props) {
           </div>
         )}
 
-        {/* Change response when already responded (attending → can still decline) */}
-        {!isCancelled &&
-          hasResponded &&
-          !isDeclined &&
-          invitation.status !== InvitationStatus.pending && (
-            <div className="flex items-center gap-2">
-              {invitation.status === InvitationStatus.attending && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleRsvp(InvitationStatus.not_attending)}
-                  disabled={isPending}
-                >
-                  <X className="size-3.5" />
-                  {t("decline")}
-                </Button>
-              )}
-              {invitation.status === InvitationStatus.maybe && (
-                <>
-                  <Button
-                    size="sm"
-                    onClick={() => handleRsvp(InvitationStatus.attending)}
-                    disabled={isPending}
-                  >
-                    {isPending ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      <Check className="size-3.5" />
-                    )}
-                    {t("attend")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleRsvp(InvitationStatus.not_attending)}
-                    disabled={isPending}
-                  >
-                    <X className="size-3.5" />
-                    {t("decline")}
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
+        {/* Change response — attending: can decline */}
+        {!isCancelled && invitation.status === InvitationStatus.attending && !showDeclineForm && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => handleRsvp(InvitationStatus.not_attending)}
+            disabled={isPending}
+          >
+            <X className="size-3.5" />
+            {t("decline")}
+          </Button>
+        )}
+
+        {/* Change response — maybe: can attend or decline */}
+        {!isCancelled && invitation.status === InvitationStatus.maybe && !showDeclineForm && (
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              onClick={() => handleRsvp(InvitationStatus.attending)}
+              disabled={isPending}
+            >
+              {isPending ? <Loader2 className="animate-spin" /> : <Check className="size-3.5" />}
+              {t("attend")}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => handleRsvp(InvitationStatus.not_attending)}
+              disabled={isPending}
+            >
+              <X className="size-3.5" />
+              {t("decline")}
+            </Button>
+          </div>
+        )}
 
         {/* Calendar export */}
         {!isCancelled &&

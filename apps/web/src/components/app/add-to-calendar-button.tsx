@@ -61,6 +61,10 @@ export function AddToCalendarButton({
   const effectiveEndTime = endTime ?? addHours(startTime, 2);
   const end = computeEndDateTime(startDate, startTime, effectiveEndTime);
   const feedUrl = calendarToken ? `${window.location.origin}/api/calendar/${calendarToken}` : null;
+  const isLocalhost =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+  const showSubscribe = !!feedUrl && !isLocalhost;
 
   // ── Google Calendar ──
 
@@ -149,7 +153,7 @@ export function AddToCalendarButton({
               <CalendarPlus className="size-4" />
               {t("addSingleEvent")}
             </DropdownMenuItem>
-            {feedUrl && (
+            {showSubscribe && (
               <DropdownMenuItem onClick={handleGoogleSubscribe}>
                 <Link2 className="size-4" />
                 {t("subscribeAll")}
@@ -169,7 +173,7 @@ export function AddToCalendarButton({
               <Download className="size-4" />
               {t("addSingleEvent")}
             </DropdownMenuItem>
-            {feedUrl && (
+            {showSubscribe && (
               <DropdownMenuItem onClick={handleAppleSubscribe}>
                 <Link2 className="size-4" />
                 {t("subscribeAll")}
@@ -189,7 +193,7 @@ export function AddToCalendarButton({
               <CalendarPlus className="size-4" />
               {t("addSingleEvent")}
             </DropdownMenuItem>
-            {feedUrl && (
+            {showSubscribe && (
               <DropdownMenuItem onClick={handleOutlookSubscribe}>
                 <Link2 className="size-4" />
                 {t("subscribeAll")}

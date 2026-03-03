@@ -42,7 +42,7 @@ OpenHospi is in early development.
 
 ## License
 
-[MIT](LICENSE) — Ruben Talstra
+[AGPL-3.0](LICENSE) — Ruben Talstra
 
 ---
 

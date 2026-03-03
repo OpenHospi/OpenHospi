@@ -2,6 +2,7 @@
   "name": "openhospi",
   "private": true,
   "packageManager": "pnpm@10.30.3",
+  "license": "AGPL-3.0-only",
   "engines": {
     "node": ">=18.18.0",
     "pnpm": ">=9.0.0"

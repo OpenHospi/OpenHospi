@@ -13,10 +13,11 @@ import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getApplicationDetail, getApplicationStatusHistory } from "@/lib/applications";
 import { requireSession } from "@/lib/auth-server";
-import { getUserCalendarToken } from "@/lib/calendar-token";
 import { getInvitationForApplication } from "@/lib/invitations";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
+
+import { getCalendarToken } from "../../settings/actions";
 
 import { ApplicationTimeline } from "./application-timeline";
 import { HospiInvitationCard } from "./hospi-invitation-card";
@@ -47,7 +48,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
     getApplicationDetail(id, user.id),
     getApplicationStatusHistory(id, user.id),
     getInvitationForApplication(id, user.id),
-    getUserCalendarToken(user.id),
+    getCalendarToken(),
   ]);
 
   if (!application) {

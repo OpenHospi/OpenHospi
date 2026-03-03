@@ -51,7 +51,8 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
         createdBy: hospiEvents.createdBy,
       })
       .from(hospiEvents)
-      .where(eq(hospiEvents.id, invitation.eventId));
+      .where(eq(hospiEvents.id, invitation.eventId))
+      .for("update");
 
     if (!event || event.cancelledAt) return { error: "event_cancelled" as const };
     if (event.rsvpDeadline && new Date() > event.rsvpDeadline)

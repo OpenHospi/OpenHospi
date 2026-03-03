@@ -887,6 +887,8 @@
         "cancelError": "Veranstaltung konnte nicht abgesagt werden",
         "cancelledSuccess": "Veranstaltung abgesagt",
         "addToCalendar": "Zum Kalender hinzufügen",
+        "addSingleEvent": "Dieses Event hinzufügen",
+        "subscribeAll": "Alle Events abonnieren",
         "subscribeToCalendar": "Kalender abonnieren",
         "downloadIcs": ".ics herunterladen",
         "calendarUrlCopied": "Kalender-URL in die Zwischenablage kopiert",

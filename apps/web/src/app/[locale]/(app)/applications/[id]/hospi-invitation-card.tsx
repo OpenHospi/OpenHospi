@@ -211,7 +211,15 @@ export function HospiInvitationCard({ invitation, calendarToken }: Props) {
         {!isCancelled &&
           (invitation.status === InvitationStatus.attending ||
             invitation.status === InvitationStatus.maybe) && (
-            <AddToCalendarButton uid={invitation.eventId} calendarToken={calendarToken} />
+            <AddToCalendarButton
+              uid={invitation.eventId}
+              calendarToken={calendarToken}
+              title={invitation.eventTitle}
+              startDate={invitation.eventDate}
+              startTime={invitation.timeStart}
+              endTime={invitation.timeEnd}
+              location={invitation.location}
+            />
           )}
 
         {/* Decline reason form */}

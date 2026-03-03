@@ -47,12 +47,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ eventId
     lastModified: result.updatedAt,
   });
 
-  const filename = result.title.replaceAll(/[^a-zA-Z0-9]/g, "_");
+  const filename = result.title.replaceAll(/[^a-zA-Z0-9]/g, "_").slice(0, 100);
 
   return new Response(ics, {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
       "Content-Disposition": `attachment; filename="${filename}.ics"`,
+      "Cache-Control": "no-store, private",
     },
   });
 }

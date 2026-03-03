@@ -191,7 +191,15 @@ export default async function EventDetailPage({ params }: Props) {
       {!isCancelled && (
         <div className="flex flex-wrap gap-2">
           <InviteApplicantsDialog eventId={eventId} roomId={roomId} applicants={applicants} />
-          <AddToCalendarButton uid={eventId} />
+          <AddToCalendarButton
+            uid={eventId}
+            title={event.title}
+            startDate={event.eventDate}
+            startTime={event.timeStart}
+            endTime={event.timeEnd}
+            location={event.location}
+            description={event.description}
+          />
           {isCreator && <CancelEventButton eventId={eventId} roomId={roomId} />}
         </div>
       )}

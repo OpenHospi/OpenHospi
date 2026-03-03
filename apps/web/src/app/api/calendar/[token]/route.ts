@@ -1,19 +1,26 @@
 import { db } from "@openhospi/database";
-import { hospiEvents, hospiInvitations, profiles, rooms } from "@openhospi/database/schema";
+import { calendarTokens, hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema";
 import { computeEndDateTime, generateICSFeed } from "@openhospi/shared/calendar";
 import type { CalendarEvent } from "@openhospi/shared/calendar";
 import { eq, sql } from "drizzle-orm";
 
+import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
+
 export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
 
-  // Look up user by calendar token
-  const [profile] = await db
-    .select({ id: profiles.id })
-    .from(profiles)
-    .where(eq(profiles.calendarToken, token));
+  // Rate limit by token to prevent feed abuse
+  if (!(await checkRateLimit(rateLimiters.calendarFeed, token))) {
+    return new Response("Too Many Requests", { status: 429 });
+  }
 
-  if (!profile) {
+  // Look up user by calendar token
+  const [tokenRow] = await db
+    .select({ userId: calendarTokens.userId })
+    .from(calendarTokens)
+    .where(eq(calendarTokens.token, token));
+
+  if (!tokenRow) {
     return new Response("Not Found", { status: 404 });
   }
 
@@ -42,7 +49,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
     .innerJoin(hospiEvents, eq(hospiEvents.id, hospiInvitations.eventId))
     .innerJoin(rooms, eq(rooms.id, hospiEvents.roomId))
     .where(
-      sql`${hospiInvitations.userId} = ${profile.id} AND ${hospiEvents.eventDate} >= ${cutoffDate}`,
+      sql`${hospiInvitations.userId} = ${tokenRow.userId} AND ${hospiEvents.eventDate} >= ${cutoffDate}`,
     );
 
   const events: CalendarEvent[] = rows.map((row) => {

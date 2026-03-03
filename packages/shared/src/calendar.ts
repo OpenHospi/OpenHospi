@@ -132,7 +132,7 @@ function buildVEvent(event: CalendarEvent): string[] {
 
   const lines: string[] = [
     "BEGIN:VEVENT",
-    `UID:${event.uid}`,
+    `UID:${escapeICS(event.uid)}`,
     `DTSTAMP:${now}`,
     `DTSTART;TZID=Europe/Amsterdam:${dtStart}`,
     `DTEND;TZID=Europe/Amsterdam:${dtEnd}`,

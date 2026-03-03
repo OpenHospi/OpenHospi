@@ -887,6 +887,8 @@
         "cancelError": "Kon evenement niet annuleren",
         "cancelledSuccess": "Evenement geannuleerd",
         "addToCalendar": "Toevoegen aan agenda",
+        "addSingleEvent": "Dit evenement toevoegen",
+        "subscribeAll": "Abonneer op alle evenementen",
         "subscribeToCalendar": "Abonneer op agenda",
         "downloadIcs": "Download .ics",
         "calendarUrlCopied": "Agenda-URL gekopieerd naar klembord",

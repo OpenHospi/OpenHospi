@@ -178,11 +178,15 @@ export function SettingsContent() {
     });
   }
 
-  function handleCopyCalendarUrl() {
+  async function handleCopyCalendarUrl() {
     if (!calendarToken) return;
     const url = `${window.location.origin}/api/calendar/${calendarToken}`;
-    navigator.clipboard.writeText(url);
-    toast.success(t("calendar.urlCopied"));
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success(t("calendar.urlCopied"));
+    } catch {
+      toast.error(t("calendar.urlCopied"));
+    }
   }
 
   function handleRegenerateToken() {

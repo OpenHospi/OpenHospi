@@ -53,6 +53,8 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
   const parsed = createEventSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" as const };
 
+  await requireHousemate(roomId, session.user.id);
+
   await withRLS(session.user.id, async (tx) => {
     await tx
       .update(hospiEvents)

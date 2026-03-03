@@ -50,7 +50,6 @@ export const profiles = pgTable(
     preferredLocale: localeEnum("preferred_locale").default("nl"),
     notificationPreferences: jsonb("notification_preferences"),
     privacyPolicyAcceptedVersion: text("privacy_policy_accepted_version"),
-    calendarToken: uuid("calendar_token").defaultRandom().unique(),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -110,6 +109,48 @@ export const profilePhotos = pgTable(
       withCheck: sql`${table.userId} = ${authUid}`,
     }),
     pgPolicy("profile_photos_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+  ],
+);
+
+/**
+ * Separate table for calendar subscription tokens.
+ * Strict per-user RLS — only the owner can read their own token.
+ * This prevents the token from being exposed via the open profiles_select policy.
+ */
+export const calendarTokens = pgTable(
+  "calendar_tokens",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    token: uuid("token").notNull().defaultRandom().unique(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("idx_calendar_tokens_token").on(table.token),
+    pgPolicy("calendar_tokens_select_own", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("calendar_tokens_insert_own", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("calendar_tokens_update_own", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("calendar_tokens_delete_own", {
       for: "delete",
       to: authenticatedRole,
       using: sql`${table.userId} = ${authUid}`,

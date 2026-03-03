@@ -5,6 +5,7 @@ import {
   activeConsents,
   applications,
   blocks,
+  calendarTokens,
   consentRecords,
   conversationMembers,
   dataRequests,
@@ -227,20 +228,40 @@ export async function updatePreferredLocale(locale: SupportedLocale) {
 export async function getCalendarToken(): Promise<string | null> {
   const session = await requireSession();
   const [row] = await db
-    .select({ calendarToken: profiles.calendarToken })
-    .from(profiles)
-    .where(eq(profiles.id, session.user.id));
-  return row?.calendarToken ?? null;
+    .select({ token: calendarTokens.token })
+    .from(calendarTokens)
+    .where(eq(calendarTokens.userId, session.user.id));
+
+  if (row) return row.token;
+
+  // Auto-create token on first access
+  const [created] = await db
+    .insert(calendarTokens)
+    .values({ userId: session.user.id })
+    .onConflictDoNothing()
+    .returning({ token: calendarTokens.token });
+
+  return created?.token ?? null;
 }
 
 export async function regenerateCalendarToken(): Promise<string> {
   const session = await requireSession();
   const newToken = crypto.randomUUID();
-  await db
-    .update(profiles)
-    .set({ calendarToken: newToken })
-    .where(eq(profiles.id, session.user.id));
-  return newToken;
+  const [row] = await db
+    .update(calendarTokens)
+    .set({ token: newToken })
+    .where(eq(calendarTokens.userId, session.user.id))
+    .returning({ token: calendarTokens.token });
+
+  if (row) return row.token;
+
+  // Token row doesn't exist yet — create it
+  const [created] = await db
+    .insert(calendarTokens)
+    .values({ userId: session.user.id, token: newToken })
+    .returning({ token: calendarTokens.token });
+
+  return created.token;
 }
 
 export async function deleteAccount() {

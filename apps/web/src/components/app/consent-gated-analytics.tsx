@@ -10,7 +10,7 @@ function getAnalyticsConsent(): boolean {
     const raw = localStorage.getItem(CONSENT_STORAGE_KEY);
     if (!raw) return false;
     const parsed = JSON.parse(raw) as Record<string, boolean>;
-    return parsed.analytics === true;
+    return parsed.analytics;
   } catch {
     return false;
   }

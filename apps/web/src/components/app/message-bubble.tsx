@@ -29,7 +29,7 @@ export function MessageBubble({ id, isOwn, senderId, senderName, plaintext, crea
 
   return (
     <div className={cn("group flex", isOwn ? "justify-end" : "justify-start")}>
-      <div className="relative flex items-start gap-1">
+      <div className="relative flex max-w-[75%] items-start gap-1">
         {!isOwn && (
           <div className="mt-1 opacity-0 transition-opacity group-hover:opacity-100">
             <DropdownMenu>
@@ -56,7 +56,7 @@ export function MessageBubble({ id, isOwn, senderId, senderName, plaintext, crea
         )}
         <div
           className={cn(
-            "max-w-[75%] rounded-2xl px-4 py-2",
+            "rounded-2xl px-4 py-2",
             isOwn ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md",
           )}
         >

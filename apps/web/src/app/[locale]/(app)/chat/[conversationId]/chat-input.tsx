@@ -15,9 +15,10 @@ type Props = {
   conversationId: string;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
   privateKey: CryptoKey;
+  onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
 
-export function ChatInput({ conversationId, members, privateKey }: Props) {
+export function ChatInput({ conversationId, members, privateKey, onMessageSent }: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -42,12 +43,15 @@ export function ChatInput({ conversationId, members, privateKey }: Props) {
       // Encrypt
       const encrypted = await encryptForGroup(trimmed, privateKey, recipientKeys);
 
-      // Send to server — postgres_changes delivers the message to all members
-      await sendMessage(conversationId, {
+      // Send to server — postgres_changes delivers the message to other members
+      const { messageId } = await sendMessage(conversationId, {
         ciphertext: encrypted.ciphertext,
         iv: encrypted.iv,
         encryptedKeys: encrypted.encryptedKeys,
       });
+
+      // Optimistic update — show the sent message immediately
+      onMessageSent({ id: messageId, plaintext: trimmed });
 
       setText("");
       inputRef.current?.focus();

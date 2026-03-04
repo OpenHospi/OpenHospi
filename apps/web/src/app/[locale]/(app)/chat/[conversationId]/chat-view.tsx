@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Flag, MoreVertical, ShieldBan, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 import { KeyRecoveryDialog } from "@/components/app/key-recovery-dialog";
@@ -23,6 +23,7 @@ import type { MessageItem } from "@/lib/chat";
 import { blockUser, unblockUser } from "../block-actions";
 
 import { ChatInput } from "./chat-input";
+import type { DecryptedMessage } from "./message-thread";
 import { MessageThread } from "./message-thread";
 
 type Props = {
@@ -43,7 +44,9 @@ export function ChatView({
   const t = useTranslations("app.chat");
   const [isPending, startTransition] = useTransition();
   const { privateKey, status } = useEncryptionKey(currentUserId);
+  const addMessageRef = useRef<((msg: DecryptedMessage) => void) | null>(null);
 
+  const currentMember = members.find((m) => m.userId === currentUserId);
   const otherMembers = members.filter((m) => m.userId !== currentUserId);
   const title = otherMembers.map((m) => m.firstName).join(", ") || t("conversation");
 
@@ -174,6 +177,7 @@ export function ChatView({
         initialMessages={initialMessages}
         members={members}
         privateKey={privateKey!}
+        addMessageRef={addMessageRef}
       />
 
       {/* Input */}
@@ -182,7 +186,22 @@ export function ChatView({
           <p className="text-muted-foreground text-sm">{t("blocked")}</p>
         </div>
       ) : (
-        <ChatInput conversationId={conversationId} members={members} privateKey={privateKey!} />
+        <ChatInput
+          conversationId={conversationId}
+          members={members}
+          privateKey={privateKey!}
+          onMessageSent={({ id, plaintext }) => {
+            addMessageRef.current?.({
+              id,
+              senderId: currentUserId,
+              senderFirstName: currentMember?.firstName ?? "",
+              senderAvatarUrl: currentMember?.avatarUrl ?? null,
+              plaintext,
+              messageType: "text",
+              createdAt: new Date(),
+            });
+          }}
+        />
       )}
     </div>
   );

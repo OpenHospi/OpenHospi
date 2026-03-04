@@ -1,13 +1,16 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const supabaseWsUrl = supabaseUrl.replace(/^http/, "ws");
+
 const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321 https://*.tile.openstreetmap.org;
   font-src 'self';
-  connect-src 'self' https://connect.surfconext.nl https://connect.test.surfconext.nl https://api.pdok.nl https://va.vercel-scripts.com;
+  connect-src 'self' ${supabaseUrl} ${supabaseWsUrl} https://connect.surfconext.nl https://connect.test.surfconext.nl https://api.pdok.nl https://va.vercel-scripts.com;
   frame-ancestors 'none';
   form-action 'self';
   base-uri 'self';

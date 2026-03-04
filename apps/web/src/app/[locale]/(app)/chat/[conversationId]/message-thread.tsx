@@ -19,9 +19,10 @@ type Props = {
   initialMessages: MessageItem[];
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
   privateKey: CryptoKey;
+  addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
 };
 
-type DecryptedMessage = {
+export type DecryptedMessage = {
   id: string;
   senderId: string;
   senderFirstName: string;
@@ -37,6 +38,7 @@ export function MessageThread({
   initialMessages,
   members,
   privateKey,
+  addMessageRef,
 }: Props) {
   const t = useTranslations("app.chat");
   const [decryptedMessages, setDecryptedMessages] = useState<DecryptedMessage[]>([]);
@@ -113,11 +115,23 @@ export function MessageThread({
     decryptMessagesRef.current = decryptMessages;
   }, [decryptMessages]);
 
-  // Initial decryption
+  // Keep members in a ref so the subscription effect doesn't re-run on every render
+  const membersRef = useRef(members);
+  useEffect(() => {
+    membersRef.current = members;
+  }, [members]);
+
+  // Keep initialMessages in a ref — only used on mount / conversation change
+  const initialMessagesRef = useRef(initialMessages);
+  useEffect(() => {
+    initialMessagesRef.current = initialMessages;
+  }, [initialMessages]);
+
+  // Initial decryption — only re-runs when the conversation changes
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const decrypted = await decryptMessages(initialMessages);
+      const decrypted = await decryptMessagesRef.current(initialMessagesRef.current);
       if (!cancelled) {
         setDecryptedMessages(decrypted.reverse());
         // Track all initial message IDs for dedup
@@ -131,12 +145,21 @@ export function MessageThread({
     return () => {
       cancelled = true;
     };
-  }, [initialMessages, decryptMessages, conversationId]);
+  }, [conversationId]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [decryptedMessages]);
+
+  // Expose addMessage for optimistic updates from ChatInput
+  useEffect(() => {
+    addMessageRef.current = (msg: DecryptedMessage) => {
+      if (seenIdsRef.current.has(msg.id)) return;
+      seenIdsRef.current.add(msg.id);
+      setDecryptedMessages((prev) => [...prev, msg]);
+    };
+  });
 
   // Supabase Realtime subscription via postgres_changes
   useEffect(() => {
@@ -148,7 +171,7 @@ export function MessageThread({
       seenIdsRef.current.add(messageId);
 
       const senderId = row.sender_id as string;
-      const member = members.find((m) => m.userId === senderId);
+      const member = membersRef.current.find((m) => m.userId === senderId);
 
       const msgItem: MessageItem = {
         id: messageId,
@@ -194,7 +217,7 @@ export function MessageThread({
       mounted = false;
       supabase.removeAllChannels();
     };
-  }, [conversationId, members]);
+  }, [conversationId]);
 
   // Mark as read when tab becomes visible
   useEffect(() => {

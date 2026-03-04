@@ -131,7 +131,7 @@ export default function HomePage() {
             <div className="mt-8">
               <Button variant="outline" asChild>
                 <a
-                  href="https://github.com/rubentalstra/OpenHospi"
+                  href="https://github.com/OpenHospi/OpenHospi"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

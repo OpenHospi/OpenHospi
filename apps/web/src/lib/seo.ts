@@ -63,7 +63,7 @@ export function organizationJsonLd(): string {
           url: BASE_URL,
           logo: `${BASE_URL}/icon.svg`,
           sameAs: [
-            "https://github.com/rubentalstra/OpenHospi",
+            "https://github.com/OpenHospi/OpenHospi",
             "https://www.instagram.com/openhospi",
             "https://nl.trustpilot.com/review/openhospi.nl",
           ],

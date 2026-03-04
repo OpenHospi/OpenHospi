@@ -68,7 +68,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 <div className="mt-6">
                   <Button variant="outline" asChild>
                     <a
-                      href="https://github.com/rubentalstra/OpenHospi"
+                      href="https://github.com/OpenHospi/OpenHospi"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

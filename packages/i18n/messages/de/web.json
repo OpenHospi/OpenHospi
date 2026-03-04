@@ -56,13 +56,18 @@
       "title": "Vereinigung Fehlt? — Lass Es Uns Wissen",
       "description": "Ist deine Studierendenvereinigung nicht auf OpenHospi gelistet? Kontaktiere uns und wir fügen sie hinzu."
     },
+    "faqPage": {
+      "title": "FAQ — Häufig Gestellte Fragen",
+      "description": "Finde Antworten auf häufig gestellte Fragen über OpenHospi, die kostenlose Studentenwohnungsplattform für die Niederlande."
+    },
     "rooms": {
       "title": "Studentenzimmer in den Niederlanden",
       "description": "Durchsuche verfügbare Studentenzimmer in niederländischen Städten. Kostenlos, verifiziert und fair für jeden Studierenden."
     },
     "breadcrumbs": {
       "home": "Startseite",
-      "rooms": "Studentenzimmer"
+      "rooms": "Studentenzimmer",
+      "faq": "FAQ"
     },
     "faq": {
       "costs": [
@@ -139,6 +144,7 @@
       "dataProcessors": "Auftragsverarbeiter",
       "dpia": "DSFA",
       "about": "Über uns",
+      "faq": "FAQ",
       "missingAssociation": "Vereinigung fehlt?"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
@@ -567,5 +573,140 @@
       "subject": "Betreff",
       "body": "Nachricht"
     }
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "subtitle": "Alles, was du über OpenHospi wissen musst — die kostenlose, Open-Source-Studentenwohnungsplattform.",
+    "allTab": "Alle",
+    "cta": {
+      "title": "Noch Fragen?",
+      "description": "Kannst du die Antwort nicht finden? Kontaktiere uns oder schau dir unser Open-Source-Projekt auf GitHub an.",
+      "emailLabel": "E-Mail schreiben",
+      "githubLabel": "Auf GitHub ansehen"
+    },
+    "categories": [
+      {
+        "name": "Allgemein",
+        "items": [
+          {
+            "question": "Was ist OpenHospi?",
+            "answer": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Sie verbindet Studierende, die ein Zimmer suchen, mit WGs, die einen neuen Mitbewohner suchen — über den traditionellen niederländischen Hospiteren-Prozess."
+          },
+          {
+            "question": "Wer kann OpenHospi nutzen?",
+            "answer": "Nur verifizierte Studierende an niederländischen Universitäten und Hochschulen. Du meldest dich mit deinem Hochschulaccount über SURFconext an, sodass jeder Nutzer ein echter Studierender ist."
+          },
+          {
+            "question": "Ist OpenHospi außerhalb der Niederlande verfügbar?",
+            "answer": "Derzeit ist OpenHospi nur für Studierende an niederländischen Bildungseinrichtungen verfügbar, die an SURFconext angeschlossen sind. Eine Erweiterung ist für die Zukunft möglich."
+          },
+          {
+            "question": "Ist OpenHospi mit einer Universität oder einem Unternehmen verbunden?",
+            "answer": "Nein. OpenHospi ist ein unabhängiges, Community-getriebenes Open-Source-Projekt. Es wurde von einem Studierenden gestartet und wird nicht von einer Universität, einem Unternehmen oder einer Wohnungsbaugesellschaft betrieben."
+          }
+        ]
+      },
+      {
+        "name": "Konto & Verifizierung",
+        "items": [
+          {
+            "question": "Wie erstelle ich ein Konto?",
+            "answer": "Klicke auf 'Mit SURFconext anmelden' und melde dich mit deinem Hochschulaccount an. Dein Konto wird automatisch erstellt — keine separate Registrierung nötig."
+          },
+          {
+            "question": "Warum kann ich mich nur mit SURFconext anmelden?",
+            "answer": "SURFconext stellt sicher, dass jeder Nutzer ein echter, verifizierter Studierender ist. Dies verhindert Fake-Profile, Betrug und Nicht-Studierende auf der Plattform."
+          },
+          {
+            "question": "Was passiert, wenn ich meinen Abschluss mache?",
+            "answer": "Wenn deine Einrichtung dein SURFconext-Konto deaktiviert, kannst du dich nicht mehr anmelden. Aktive Zimmeranzeigen werden automatisch pausiert."
+          },
+          {
+            "question": "Kann ich mein Konto löschen?",
+            "answer": "Ja. Du kannst dein Konto und alle zugehörigen Daten jederzeit in deinen Profileinstellungen löschen. Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden."
+          }
+        ]
+      },
+      {
+        "name": "Zimmer finden",
+        "items": [
+          {
+            "question": "Wie bewerbe ich mich auf ein Zimmer?",
+            "answer": "Durchsuche verfügbare Zimmer, finde eines das dir gefällt und sende eine persönliche Nachricht an die WG, warum du gut passen würdest. Wenn sie interessiert sind, laden sie dich zum Hospiteren ein."
+          },
+          {
+            "question": "Was ist Hospiteren?",
+            "answer": "Hospiteren ist die traditionelle niederländische Art, Mitbewohner zu finden. Die WG lädt Kandidaten zum Besuch ein — du triffst die aktuellen Mitbewohner, siehst das Zimmer und beide Seiten entscheiden, ob es passt."
+          },
+          {
+            "question": "Kann ich Zimmer nach Stadt, Preis oder anderen Kriterien filtern?",
+            "answer": "Ja. Du kannst Zimmer nach Stadt, Preisbereich, Zimmergröße, Verfügbarkeitsdatum und WG-Typ filtern, um genau das zu finden, was du suchst."
+          },
+          {
+            "question": "Bekommen alle Studierenden die gleiche Sichtbarkeit?",
+            "answer": "Ja. Es gibt keine Premium-Platzierungen oder bezahlte Boosts. Jede Bewerbung wird gleich behandelt — niemand kann zahlen, um Vorrang zu bekommen."
+          }
+        ]
+      },
+      {
+        "name": "Zimmer anbieten",
+        "items": [
+          {
+            "question": "Wie biete ich ein Zimmer an?",
+            "answer": "Melde dich an, erstelle dein WG-Profil mit Fotos und Details und veröffentliche deine Zimmeranzeige. Verifizierte Studierende in den ganzen Niederlanden können sie sofort sehen."
+          },
+          {
+            "question": "Kann ich meine Anzeige in sozialen Medien teilen?",
+            "answer": "Ja. Jedes Zimmer bekommt einen einzigartigen öffentlichen Link, den du auf Instagram, WhatsApp oder anderswo teilen kannst. Jeder kann die Anzeige sehen, aber nur verifizierte Studierende können sich bewerben."
+          },
+          {
+            "question": "Wie viele Zimmer kann ich anbieten?",
+            "answer": "Du kannst ein Zimmer pro WG gleichzeitig anbieten. Wenn du mehrere Zimmer verfügbar hast, kannst du separate Anzeigen für jedes erstellen."
+          },
+          {
+            "question": "Kann ich meine Anzeige pausieren oder entfernen?",
+            "answer": "Ja. Du kannst deine Anzeige pausieren, um sie vorübergehend zu verbergen, oder sie vollständig entfernen, wenn das Zimmer besetzt ist. Du hast immer die Kontrolle."
+          }
+        ]
+      },
+      {
+        "name": "Sicherheit & Datenschutz",
+        "items": [
+          {
+            "question": "Sind meine Nachrichten verschlüsselt?",
+            "answer": "Ja. Alle Chatnachrichten auf OpenHospi sind Ende-zu-Ende verschlüsselt (E2EE). Nicht einmal OpenHospi kann deine Gespräche lesen — nur du und die Person, mit der du chattest."
+          },
+          {
+            "question": "Verwendet OpenHospi Tracker oder verkauft meine Daten?",
+            "answer": "Nein. Wir verwenden keine Drittanbieter-Tracker, Analytics-Cookies oder verkaufen deine Daten an irgendjemanden. Dein Datenschutz ist grundlegend für unsere Arbeitsweise."
+          },
+          {
+            "question": "Wie melde ich unangemessenes Verhalten?",
+            "answer": "Du kannst jeden Nutzer direkt über sein Profil oder den Chat melden oder blockieren. Meldungen werden von unserem Team überprüft und wir handeln schnell. Du kannst auch an abuse@openhospi.nl mailen."
+          },
+          {
+            "question": "Wie schützt OpenHospi vor Betrug?",
+            "answer": "Jeder Nutzer wird über SURFconext verifiziert, sodass du immer weißt, dass du es mit einem echten Studierenden zu tun hast. Kombiniert mit E2E-verschlüsseltem Chat und einfachem Melden machen wir es Betrügern sehr schwer."
+          }
+        ]
+      },
+      {
+        "name": "Kosten & Zahlungen",
+        "items": [
+          {
+            "question": "Ist OpenHospi wirklich kostenlos?",
+            "answer": "Ja, 100% kostenlos. Keine versteckten Kosten, keine Premium-Pläne, keine Werbung. OpenHospi wird niemals Freemium oder Pay-to-Win sein."
+          },
+          {
+            "question": "Wie wird die Plattform finanziert?",
+            "answer": "OpenHospi wird durch individuelle Spenden, Universitätssponsoring und freiwillige Open-Source-Beiträge finanziert. Alle Finanzen sind über Open Collective transparent einsehbar."
+          },
+          {
+            "question": "Wird es jemals kostenpflichtige Funktionen geben?",
+            "answer": "Nein. Wir glauben, dass Studentenwohnungen fair und gleich sein sollten. Kein Studierender muss jemals zahlen, um die Plattform zu nutzen, mehr Sichtbarkeit zu bekommen oder Funktionen zu nutzen, die anderen nicht zur Verfügung stehen."
+          }
+        ]
+      }
+    ]
   }
 }

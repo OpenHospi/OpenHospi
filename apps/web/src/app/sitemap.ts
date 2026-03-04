@@ -21,6 +21,7 @@ const staticPages = [
   "/privacy",
   "/terms",
   "/costs",
+  "/faq",
   "/rooms",
 ];
 

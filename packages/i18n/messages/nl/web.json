@@ -56,13 +56,18 @@
       "title": "Vereniging Mist? — Laat Het Ons Weten",
       "description": "Staat jouw studentenvereniging niet op OpenHospi? Neem contact op en we voegen hem toe."
     },
+    "faqPage": {
+      "title": "Veelgestelde Vragen — FAQ",
+      "description": "Vind antwoorden op veelgestelde vragen over OpenHospi, het gratis studentenhuisvestingsplatform voor Nederland."
+    },
     "rooms": {
       "title": "Studentenkamers in Nederland",
       "description": "Bekijk beschikbare studentenkamers in Nederlandse steden. Gratis, geverifieerd en eerlijk voor elke student."
     },
     "breadcrumbs": {
       "home": "Home",
-      "rooms": "Studentenkamers"
+      "rooms": "Studentenkamers",
+      "faq": "FAQ"
     },
     "faq": {
       "costs": [
@@ -135,6 +140,7 @@
       "cookies": "Cookiebeleid",
       "terms": "Voorwaarden",
       "about": "Over ons",
+      "faq": "FAQ",
       "missingAssociation": "Vereniging mist?",
       "processingRegister": "Verwerkingsregister",
       "legalBasis": "Rechtsgronden",
@@ -567,5 +573,140 @@
       "subject": "Onderwerp",
       "body": "Bericht"
     }
+  },
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "subtitle": "Alles wat je moet weten over OpenHospi — het gratis, open-source studentenhuisvestingsplatform.",
+    "allTab": "Alles",
+    "cta": {
+      "title": "Nog vragen?",
+      "description": "Kun je het antwoord niet vinden? Neem contact met ons op of bekijk ons open-source project op GitHub.",
+      "emailLabel": "Mail ons",
+      "githubLabel": "Bekijk op GitHub"
+    },
+    "categories": [
+      {
+        "name": "Algemeen",
+        "items": [
+          {
+            "question": "Wat is OpenHospi?",
+            "answer": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Het verbindt studenten die een kamer zoeken met huizen die een nieuwe huisgenoot zoeken — via het traditionele Nederlandse hospiteren."
+          },
+          {
+            "question": "Wie kan OpenHospi gebruiken?",
+            "answer": "Alleen geverifieerde studenten aan Nederlandse universiteiten en hogescholen. Je logt in met je instellingsaccount via SURFconext, dus elke gebruiker is een echte student."
+          },
+          {
+            "question": "Is OpenHospi beschikbaar buiten Nederland?",
+            "answer": "Op dit moment is OpenHospi alleen beschikbaar voor studenten aan Nederlandse onderwijsinstellingen die aangesloten zijn bij SURFconext. In de toekomst breiden we mogelijk uit."
+          },
+          {
+            "question": "Is OpenHospi verbonden aan een universiteit of bedrijf?",
+            "answer": "Nee. OpenHospi is een onafhankelijk, community-gedreven open-source project. Het is gestart door een student en wordt niet beheerd door een universiteit, bedrijf of woningcorporatie."
+          }
+        ]
+      },
+      {
+        "name": "Account & Verificatie",
+        "items": [
+          {
+            "question": "Hoe maak ik een account aan?",
+            "answer": "Klik op 'Inloggen met SURFconext' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt — geen aparte registratie nodig."
+          },
+          {
+            "question": "Waarom kan ik alleen inloggen met SURFconext?",
+            "answer": "SURFconext zorgt ervoor dat elke gebruiker een echte, geverifieerde student is. Dit voorkomt nepprofielen, oplichting en niet-studenten op het platform."
+          },
+          {
+            "question": "Wat gebeurt er als ik afstudeer?",
+            "answer": "Wanneer je instelling je SURFconext-account deactiveert, kun je niet meer inloggen. Eventuele actieve kameradvertenties worden automatisch gepauzeerd."
+          },
+          {
+            "question": "Kan ik mijn account verwijderen?",
+            "answer": "Ja. Je kunt je account en alle bijbehorende gegevens op elk moment verwijderen via je profielinstellingen. Deze actie is permanent en kan niet ongedaan worden gemaakt."
+          }
+        ]
+      },
+      {
+        "name": "Kamer zoeken",
+        "items": [
+          {
+            "question": "Hoe reageer ik op een kamer?",
+            "answer": "Blader door beschikbare kamers, vind er een die je leuk vindt en stuur een persoonlijk bericht naar het huis waarin je uitlegt waarom jij een goede match bent. Als ze geïnteresseerd zijn, nodigen ze je uit voor hospiteren."
+          },
+          {
+            "question": "Wat is hospiteren?",
+            "answer": "Hospiteren is de traditionele Nederlandse manier om huisgenoten te vinden. Het huis nodigt kandidaten uit voor een bezoek — je ontmoet de huidige huisgenoten, ziet de kamer en beide kanten beslissen of het een goede match is."
+          },
+          {
+            "question": "Kan ik kamers filteren op stad, prijs of andere criteria?",
+            "answer": "Ja. Je kunt kamers filteren op stad, prijsklasse, kamergrootte, beschikbaarheidsdatum en type huis om precies te vinden wat je zoekt."
+          },
+          {
+            "question": "Krijgen alle studenten dezelfde zichtbaarheid?",
+            "answer": "Ja. Er zijn geen premium plaatsingen of betaalde boosts. Elke aanvraag van een student wordt gelijk behandeld — niemand kan betalen om voorrang te krijgen."
+          }
+        ]
+      },
+      {
+        "name": "Kamer aanbieden",
+        "items": [
+          {
+            "question": "Hoe bied ik een kamer aan?",
+            "answer": "Log in, maak je huisprofiel aan met foto's en details, en publiceer je kameradvertentie. Geverifieerde studenten door heel Nederland kunnen het direct zien."
+          },
+          {
+            "question": "Kan ik mijn advertentie delen op social media?",
+            "answer": "Ja. Elke kamer krijgt een unieke openbare link die je kunt delen op Instagram, WhatsApp of waar dan ook. Iedereen kan de advertentie bekijken, maar alleen geverifieerde studenten kunnen reageren."
+          },
+          {
+            "question": "Hoeveel kamers kan ik aanbieden?",
+            "answer": "Je kunt één kamer per huis tegelijk aanbieden. Als je meerdere kamers beschikbaar hebt, kun je aparte advertenties voor elk aanmaken."
+          },
+          {
+            "question": "Kan ik mijn advertentie pauzeren of verwijderen?",
+            "answer": "Ja. Je kunt je advertentie pauzeren om hem tijdelijk te verbergen, of volledig verwijderen wanneer de kamer bezet is. Je hebt altijd de controle."
+          }
+        ]
+      },
+      {
+        "name": "Veiligheid & Privacy",
+        "items": [
+          {
+            "question": "Zijn mijn berichten versleuteld?",
+            "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld (E2EE). Zelfs OpenHospi kan je gesprekken niet lezen — alleen jij en de persoon met wie je chat."
+          },
+          {
+            "question": "Gebruikt OpenHospi trackers of verkoopt het mijn data?",
+            "answer": "Nee. We gebruiken geen third-party trackers, analytics-cookies of verkopen je data aan wie dan ook. Je privacy is fundamenteel voor hoe wij werken."
+          },
+          {
+            "question": "Hoe meld ik ongepast gedrag?",
+            "answer": "Je kunt elke gebruiker direct melden of blokkeren vanuit hun profiel of chat. Meldingen worden beoordeeld door ons team en we handelen snel. Je kunt ook mailen naar abuse@openhospi.nl."
+          },
+          {
+            "question": "Hoe beschermt OpenHospi tegen oplichting?",
+            "answer": "Elke gebruiker is geverifieerd via SURFconext, dus je weet altijd dat je met een echte student te maken hebt. In combinatie met E2E versleutelde chat en eenvoudig melden maken we het heel moeilijk voor kwaadwillenden."
+          }
+        ]
+      },
+      {
+        "name": "Kosten & Betalingen",
+        "items": [
+          {
+            "question": "Is OpenHospi echt gratis?",
+            "answer": "Ja, 100% gratis. Geen verborgen kosten, geen premium plannen, geen advertenties. OpenHospi wordt nooit freemium of pay-to-win."
+          },
+          {
+            "question": "Hoe wordt het platform gefinancierd?",
+            "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective."
+          },
+          {
+            "question": "Komen er ooit betaalde functies?",
+            "answer": "Nee. Wij geloven dat studentenhuisvesting eerlijk en gelijk moet zijn. Geen student hoeft ooit te betalen om het platform te gebruiken, meer zichtbaarheid te krijgen of functies te gebruiken die anderen niet kunnen."
+          }
+        ]
+      }
+    ]
   }
 }

@@ -44,6 +44,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
       links: [
         { href: "/about", label: t("links.about") },
         { href: "/costs", label: t("links.costs") },
+        { href: "/faq", label: t("links.faq") },
         { href: "/missing-association", label: t("links.missingAssociation") },
       ],
     },

@@ -56,13 +56,18 @@
       "title": "Association Missing? — Let Us Know",
       "description": "Is your student association not listed on OpenHospi? Contact us and we'll add it."
     },
+    "faqPage": {
+      "title": "FAQ — Frequently Asked Questions",
+      "description": "Find answers to common questions about OpenHospi, the free student housing platform for the Netherlands."
+    },
     "rooms": {
       "title": "Student Rooms in the Netherlands",
       "description": "Browse available student rooms across Dutch cities. Free, verified, and fair for every student."
     },
     "breadcrumbs": {
       "home": "Home",
-      "rooms": "Student Rooms"
+      "rooms": "Student Rooms",
+      "faq": "FAQ"
     },
     "faq": {
       "costs": [
@@ -135,6 +140,7 @@
       "cookies": "Cookie policy",
       "terms": "Terms & conditions",
       "about": "About",
+      "faq": "FAQ",
       "missingAssociation": "Association missing?",
       "processingRegister": "Processing register",
       "legalBasis": "Legal basis",
@@ -567,5 +573,140 @@
       "subject": "Subject",
       "body": "Message"
     }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about OpenHospi — the free, open-source student housing platform.",
+    "allTab": "All",
+    "cta": {
+      "title": "Still have questions?",
+      "description": "Can't find the answer you're looking for? Reach out to us or check out our open-source project on GitHub.",
+      "emailLabel": "Email us",
+      "githubLabel": "View on GitHub"
+    },
+    "categories": [
+      {
+        "name": "General",
+        "items": [
+          {
+            "question": "What is OpenHospi?",
+            "answer": "OpenHospi is a free, open-source student housing platform for the Netherlands. It connects students looking for a room with houses looking for a new housemate — through the traditional Dutch hospiteren process."
+          },
+          {
+            "question": "Who can use OpenHospi?",
+            "answer": "Only verified students at Dutch universities and hogescholen. You log in with your institutional account via SURFconext, so every user is a real student."
+          },
+          {
+            "question": "Is OpenHospi available outside the Netherlands?",
+            "answer": "Currently, OpenHospi is only available for students at Dutch educational institutions connected to SURFconext. We may expand in the future."
+          },
+          {
+            "question": "Is OpenHospi affiliated with any university or company?",
+            "answer": "No. OpenHospi is an independent, community-driven open-source project. It was started by a student and is not owned or operated by any university, company, or housing corporation."
+          }
+        ]
+      },
+      {
+        "name": "Account & Verification",
+        "items": [
+          {
+            "question": "How do I create an account?",
+            "answer": "Click 'Log in with SURFconext' and sign in with your university or hogeschool account. Your account is created automatically — no separate registration needed."
+          },
+          {
+            "question": "Why can I only log in with SURFconext?",
+            "answer": "SURFconext ensures every user is a real, verified student. This prevents fake profiles, scams, and non-students from using the platform."
+          },
+          {
+            "question": "What happens when I graduate?",
+            "answer": "When your institution deactivates your SURFconext account, you'll no longer be able to log in. Any active room listings will be automatically paused."
+          },
+          {
+            "question": "Can I delete my account?",
+            "answer": "Yes. You can delete your account and all associated data from your profile settings at any time. This action is permanent and cannot be undone."
+          }
+        ]
+      },
+      {
+        "name": "Finding a Room",
+        "items": [
+          {
+            "question": "How do I apply for a room?",
+            "answer": "Browse available rooms, find one you like, and send a personal message to the house explaining why you'd be a good fit. If they're interested, they'll invite you for hospiteren."
+          },
+          {
+            "question": "What is hospiteren?",
+            "answer": "Hospiteren is the traditional Dutch way of finding housemates. The house invites candidates for a visit — you meet the current housemates, see the room, and both sides decide if it's a good match."
+          },
+          {
+            "question": "Can I filter rooms by city, price, or other criteria?",
+            "answer": "Yes. You can filter rooms by city, price range, room size, availability date, and house type to find exactly what you're looking for."
+          },
+          {
+            "question": "Do all students get the same visibility?",
+            "answer": "Yes. There are no premium placements or paid boosts. Every student's application is treated equally — no one can pay to get ahead."
+          }
+        ]
+      },
+      {
+        "name": "Listing a Room",
+        "items": [
+          {
+            "question": "How do I list a room?",
+            "answer": "Log in, create your house profile with photos and details, then publish your room listing. Verified students across the Netherlands can see it immediately."
+          },
+          {
+            "question": "Can I share my listing on social media?",
+            "answer": "Yes. Every room gets a unique public link you can share on Instagram, WhatsApp, or anywhere else. Anyone can view the listing, but only verified students can apply."
+          },
+          {
+            "question": "How many rooms can I list?",
+            "answer": "You can list one room per house at a time. If you have multiple rooms available, you can create separate listings for each."
+          },
+          {
+            "question": "Can I pause or remove my listing?",
+            "answer": "Yes. You can pause your listing to temporarily hide it, or remove it entirely when the room is filled. You're always in control."
+          }
+        ]
+      },
+      {
+        "name": "Safety & Privacy",
+        "items": [
+          {
+            "question": "Are my messages encrypted?",
+            "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted (E2EE). Not even OpenHospi can read your conversations — only you and the person you're chatting with."
+          },
+          {
+            "question": "Does OpenHospi use trackers or sell my data?",
+            "answer": "No. We don't use third-party trackers, analytics cookies, or sell your data to anyone. Your privacy is fundamental to how we operate."
+          },
+          {
+            "question": "How do I report inappropriate behavior?",
+            "answer": "You can report or block any user directly from their profile or chat. Reports are reviewed by our team and we act quickly. You can also email abuse@openhospi.nl."
+          },
+          {
+            "question": "How does OpenHospi protect against scams?",
+            "answer": "Every user is verified through SURFconext, so you always know you're dealing with a real student. Combined with E2E encrypted chat and easy reporting, we make it very hard for bad actors."
+          }
+        ]
+      },
+      {
+        "name": "Costs & Payments",
+        "items": [
+          {
+            "question": "Is OpenHospi really free?",
+            "answer": "Yes, 100% free. No hidden fees, no premium plans, no ads. OpenHospi will never be freemium or pay-to-win."
+          },
+          {
+            "question": "How is the platform funded?",
+            "answer": "OpenHospi is funded through individual donations, university sponsorships, and volunteer open-source contributions. All finances are transparent via Open Collective."
+          },
+          {
+            "question": "Will there ever be paid features?",
+            "answer": "No. We believe student housing should be fair and equal. No student will ever have to pay to use the platform, get more visibility, or access features that others can't."
+          }
+        ]
+      }
+    ]
   }
 }

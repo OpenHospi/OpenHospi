@@ -359,22 +359,45 @@
   },
   "about": {
     "title": "Over OpenHospi",
+    "subtitle": "Het gratis, open-source studentenhuisvestingsplatform voor Nederland — gebouwd door studenten, voor studenten.",
     "mission": {
-      "title": "Onze missie",
-      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant zou moeten zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
+      "title": "Onze Missie",
+      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant moet zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
     },
-    "crisis": {
-      "title": "Het probleem",
-      "description": "Studenten zoeken kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Dat is oneerlijk — het systeem werkt voor platforms, niet voor studenten."
+    "vision": {
+      "title": "Onze Visie",
+      "description": "Een wereld waarin elke student in Nederland gelijke toegang heeft tot huisvesting. Geen betaalde platforms, geen poortwachters — gewoon een eerlijk, transparant proces waarbij je persoonlijkheid meer telt dan je portemonnee."
     },
-    "builtBy": {
-      "title": "Hoe het begon",
-      "description": "Ruben zag medestudenten worstelen met Facebook-groepen, Instagram en betaalde platforms. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. Zo is OpenHospi ontstaan."
+    "problem": {
+      "title": "Waarom OpenHospi?",
+      "description1": "Studenten zoeken vandaag kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Het systeem werkt voor platforms — niet voor studenten.",
+      "description2": "Wij geloven dat dit fundamenteel oneerlijk is. Huisvesting is een basisbehoefte en studenten zouden niet hoeven te betalen om een woonplek te vinden. Daarom hebben we OpenHospi gebouwd: een platform waar iedereen dezelfde zichtbaarheid, dezelfde tools en dezelfde kansen krijgt — volledig gratis.",
+      "description3": "OpenHospi is ontstaan toen Ruben medestudenten zag worstelen met betaalde platforms en chaotische Facebook-groepen. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. De oplossing was duidelijk: iets beters bouwen en het open source maken."
+    },
+    "team": {
+      "title": "Het Team",
+      "members": [
+        {
+          "name": "Ruben Talstra",
+          "role": "Oprichter",
+          "bio": "BITM-student aan de Hanzehogeschool en autodidact software engineer met meer dan 10 jaar ervaring. Heeft OpenHospi opgericht om elke student een eerlijke kans te geven op huisvesting — zonder kosten, zonder voortrekkerij."
+        },
+        {
+          "name": "Heino Bosma",
+          "role": "Medeoprichter",
+          "bio": "Gepassioneerd over het verbeteren van het studentenleven. Helpt de visie en strategie van OpenHospi vorm te geven om studenten door heel Nederland te bereiken."
+        }
+      ]
     },
     "openSource": {
-      "title": "Open source & community",
-      "description": "OpenHospi is een communityproject. Iedereen kan code, vertalingen of ideeën bijdragen. We zijn transparant over alles wat we doen.",
-      "cta": "Bijdragen op GitHub"
+      "title": "Open Source & Community",
+      "description": "OpenHospi is volledig open source. Iedereen kan de code inspecteren, problemen melden, functies voorstellen of direct bijdragen. Transparantie is geen feature — het is een principe. Wij geloven dat een platform voor studenten eigendom van de community moet zijn.",
+      "cta": "Bekijk op GitHub"
+    },
+    "cta": {
+      "title": "Klaar om een kamer te vinden?",
+      "subtitle": "Sluit je aan bij het eerlijkste studentenhuisvestingsplatform van Nederland — gratis, transparant en alleen voor studenten.",
+      "button": "Inloggen met SURFconext"
     }
   },
   "costs": {

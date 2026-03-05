@@ -359,22 +359,45 @@
   },
   "about": {
     "title": "About OpenHospi",
+    "subtitle": "The free, open-source student housing platform for the Netherlands — built by students, for students.",
     "mission": {
-      "title": "Our mission",
+      "title": "Our Mission",
       "description": "OpenHospi exists to make student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent. OpenHospi will never be freemium or pay-to-win: no one can pay to get more visibility. Every student gets the same chances."
     },
-    "crisis": {
-      "title": "The problem",
-      "description": "Students search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority. That's unfair — the system works for platforms, not for students."
+    "vision": {
+      "title": "Our Vision",
+      "description": "A world where every student in the Netherlands has equal access to housing. No paid platforms, no gatekeepers — just a fair, transparent process where your personality matters more than your wallet."
     },
-    "builtBy": {
-      "title": "How it started",
-      "description": "Ruben saw fellow students struggling with Facebook groups, Instagram, and paid platforms. He didn't experience it himself, but saw many around him dealing with it. That's how OpenHospi was born."
+    "problem": {
+      "title": "Why OpenHospi?",
+      "description1": "Students today search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority placement. The system works for platforms — not for students.",
+      "description2": "We believe this is fundamentally unfair. Housing is a basic need, and students shouldn't be charged to find a place to live. That's why we built OpenHospi: a platform where everyone gets the same visibility, the same tools, and the same chances — completely free.",
+      "description3": "OpenHospi was born when Ruben saw fellow students struggling with paid platforms and chaotic Facebook groups. He didn't experience it himself, but saw many around him dealing with it. The solution was clear: build something better, and make it open source."
+    },
+    "team": {
+      "title": "The Team",
+      "members": [
+        {
+          "name": "Ruben Talstra",
+          "role": "Founder",
+          "bio": "BITM student at Hanze University of Applied Sciences and self-taught software engineer with over 10 years of experience. Started OpenHospi to give every student a fair chance at finding housing — no fees, no favoritism."
+        },
+        {
+          "name": "Heino Bosma",
+          "role": "Co-founder",
+          "bio": "Passionate about making student life better. Helping shape OpenHospi's vision and strategy to reach students across the Netherlands."
+        }
+      ]
     },
     "openSource": {
-      "title": "Open source & community",
-      "description": "OpenHospi is a community project. Anyone can contribute code, translations, or ideas. We're transparent about everything we do.",
-      "cta": "Contribute on GitHub"
+      "title": "Open Source & Community",
+      "description": "OpenHospi is fully open source. Anyone can inspect the code, report issues, suggest features, or contribute directly. Transparency isn't a feature — it's a principle. We believe that a platform for students should be owned by the community.",
+      "cta": "View on GitHub"
+    },
+    "cta": {
+      "title": "Ready to find your room?",
+      "subtitle": "Join the fairest student housing platform in the Netherlands — free, transparent, and students only.",
+      "button": "Log in with SURFconext"
     }
   },
   "costs": {

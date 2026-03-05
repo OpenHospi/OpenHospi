@@ -1,14 +1,17 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { Locale } from "@openhospi/i18n";
-import { AlertTriangle, Heart, User } from "lucide-react";
+import { Eye, Target } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import type { ComponentType, SVGProps } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
+import { getLoginUrl } from "@/lib/urls";
 
 export async function generateMetadata({
   params,
@@ -25,15 +28,13 @@ export async function generateMetadata({
   };
 }
 
-const sectionConfig: {
-  key: "mission" | "crisis" | "builtBy" | "openSource";
-  icon: ComponentType<SVGProps<SVGSVGElement> & { color?: string }>;
-}[] = [
-  { key: "mission", icon: Heart },
-  { key: "crisis", icon: AlertTriangle },
-  { key: "builtBy", icon: User },
-  { key: "openSource", icon: SiGithub },
-];
+interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+}
+
+const teamPhotos = ["/team/ruben.webp", "/team/heino.webp"];
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -42,6 +43,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   const t = await getTranslations({ locale, namespace: "about" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
+  const loginUrl = getLoginUrl();
 
   // Safe: all content from our i18n translations, not user input
   const breadcrumbs = breadcrumbJsonLd(locale, [
@@ -49,39 +51,121 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     { name: t("title"), path: "/about" },
   ]);
 
+  const members = t.raw("team.members") as TeamMember[];
+
   return (
-    <section className="py-24">
+    <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h1 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
-
-        <div className="mx-auto mt-16 max-w-3xl space-y-16">
-          {sectionConfig.map(({ key, icon: Icon }) => (
-            <div key={key}>
-              <div className="flex items-center gap-3">
-                <Icon className="size-6 text-primary" />
-                <h2 className="text-2xl font-bold">{t(`${key}.title`)}</h2>
-              </div>
-              <p className="mt-4 text-muted-foreground">{t(`${key}.description`)}</p>
-              {key === "openSource" && (
-                <div className="mt-6">
-                  <Button variant="outline" asChild>
-                    <a
-                      href="https://github.com/OpenHospi/OpenHospi"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <SiGithub className="size-4" color="currentColor" />
-                      {t("openSource.cta")}
-                    </a>
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
+      {/* Hero */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">{t("subtitle")}</p>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Mission & Vision */}
+      <section className="bg-muted/30 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-4xl gap-8 sm:grid-cols-2">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
+                  <Target className="size-6 text-primary" />
+                </div>
+                <h2 className="mt-4 text-xl font-bold">{t("mission.title")}</h2>
+                <p className="mt-2 text-muted-foreground">{t("mission.description")}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
+                  <Eye className="size-6 text-primary" />
+                </div>
+                <h2 className="mt-4 text-xl font-bold">{t("vision.title")}</h2>
+                <p className="mt-2 text-muted-foreground">{t("vision.description")}</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why OpenHospi */}
+      <section className="py-24">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("problem.title")}</h2>
+          <div className="mt-6 space-y-4 text-muted-foreground">
+            <p>{t("problem.description1")}</p>
+            <p>{t("problem.description2")}</p>
+            <p>{t("problem.description3")}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* The Team */}
+      <section className="bg-muted/30 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">
+            {t("team.title")}
+          </h2>
+          <div className="mx-auto mt-12 grid max-w-2xl gap-8 sm:grid-cols-2">
+            {members.map((member, i) => (
+              <Card key={member.name} className="overflow-hidden p-0">
+                <div className="relative aspect-square">
+                  <Image
+                    src={teamPhotos[i]}
+                    alt={member.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                  />
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="text-lg font-bold">{member.name}</h3>
+                  <Badge variant="secondary" className="mt-1">
+                    {member.role}
+                  </Badge>
+                  <p className="mt-2 text-sm text-muted-foreground">{member.bio}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Open Source & Community */}
+      <section className="py-24">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("openSource.title")}</h2>
+          <p className="mt-4 text-muted-foreground">{t("openSource.description")}</p>
+          <div className="mt-8">
+            <Button variant="outline" asChild>
+              <a
+                href="https://github.com/OpenHospi/OpenHospi"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <SiGithub className="size-4" color="currentColor" />
+                {t("openSource.cta")}
+              </a>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-muted/30 py-24">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("cta.title")}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("cta.subtitle")}</p>
+          <div className="mt-8">
+            <Button size="lg" asChild>
+              <a href={loginUrl}>{t("cta.button")}</a>
+            </Button>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

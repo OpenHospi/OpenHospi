@@ -359,22 +359,45 @@
   },
   "about": {
     "title": "Über OpenHospi",
+    "subtitle": "Die kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande — von Studierenden, für Studierende.",
     "mission": {
       "title": "Unsere Mission",
       "description": "OpenHospi existiert, um Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich zu machen. Wir glauben, dass die Zimmersuche kein Geld kosten sollte und der Prozess transparent sein muss. OpenHospi wird niemals Freemium oder Pay-to-Win sein: Niemand kann zahlen, um mehr Sichtbarkeit zu bekommen. Jeder Studierende bekommt die gleichen Chancen."
     },
-    "crisis": {
-      "title": "Das Problem",
-      "description": "Studierende suchen Zimmer über Facebook-Gruppen, Instagram und kostenpflichtige Plattformen. Auf kommerziellen Seiten zahlst du, um Anzeigen zu sehen oder Vorrang zu bekommen. Das ist unfair — das System funktioniert für Plattformen, nicht für Studierende."
+    "vision": {
+      "title": "Unsere Vision",
+      "description": "Eine Welt, in der jeder Studierende in den Niederlanden gleichen Zugang zu Wohnraum hat. Keine kostenpflichtigen Plattformen, keine Gatekeeper — nur ein fairer, transparenter Prozess, bei dem deine Persönlichkeit mehr zählt als dein Geldbeutel."
     },
-    "builtBy": {
-      "title": "Wie es begann",
-      "description": "Ruben sah Mitstudierende, die mit Facebook-Gruppen, Instagram und kostenpflichtigen Plattformen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. So ist OpenHospi entstanden."
+    "problem": {
+      "title": "Warum OpenHospi?",
+      "description1": "Studierende suchen heute Zimmer über Facebook-Gruppen, Instagram und kostenpflichtige Plattformen. Auf kommerziellen Seiten zahlst du, um Anzeigen zu sehen oder Vorrang zu bekommen. Das System funktioniert für Plattformen — nicht für Studierende.",
+      "description2": "Wir glauben, dass dies grundlegend unfair ist. Wohnen ist ein Grundbedürfnis, und Studierende sollten nicht dafür bezahlen müssen, eine Bleibe zu finden. Deshalb haben wir OpenHospi gebaut: eine Plattform, auf der jeder die gleiche Sichtbarkeit, die gleichen Tools und die gleichen Chancen bekommt — komplett kostenlos.",
+      "description3": "OpenHospi entstand, als Ruben Mitstudierende sah, die mit kostenpflichtigen Plattformen und chaotischen Facebook-Gruppen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. Die Lösung war klar: etwas Besseres bauen und es Open Source machen."
+    },
+    "team": {
+      "title": "Das Team",
+      "members": [
+        {
+          "name": "Ruben Talstra",
+          "role": "Gründer",
+          "bio": "BITM-Student an der Hanze University of Applied Sciences und autodidaktischer Software-Engineer mit über 10 Jahren Erfahrung. Hat OpenHospi gegründet, um jedem Studierenden eine faire Chance auf Wohnraum zu geben — ohne Gebühren, ohne Bevorzugung."
+        },
+        {
+          "name": "Heino Bosma",
+          "role": "Mitgründer",
+          "bio": "Leidenschaftlich daran interessiert, das Studentenleben zu verbessern. Hilft dabei, OpenHospis Vision und Strategie zu gestalten, um Studierende in den ganzen Niederlanden zu erreichen."
+        }
+      ]
     },
     "openSource": {
       "title": "Open Source & Community",
-      "description": "OpenHospi ist ein Community-Projekt. Jeder kann Code, Übersetzungen oder Ideen beitragen. Wir sind transparent in allem, was wir tun.",
-      "cta": "Auf GitHub beitragen"
+      "description": "OpenHospi ist vollständig Open Source. Jeder kann den Code einsehen, Probleme melden, Features vorschlagen oder direkt beitragen. Transparenz ist kein Feature — es ist ein Prinzip. Wir glauben, dass eine Plattform für Studierende der Community gehören sollte.",
+      "cta": "Auf GitHub ansehen"
+    },
+    "cta": {
+      "title": "Bereit, dein Zimmer zu finden?",
+      "subtitle": "Werde Teil der fairsten Studentenwohnungsplattform der Niederlande — kostenlos, transparent und nur für Studierende.",
+      "button": "Mit SURFconext anmelden"
     }
   },
   "costs": {

@@ -31,7 +31,7 @@ export function SponsorStrip() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">{t("title")}</h2>
 
-        {SPONSORS.length === 0 ? (
+        {SPONSORS.length === 0 && (
           <div className="mx-auto mt-8 max-w-xl text-center">
             <p className="text-muted-foreground">{t("emptyDescription")}</p>
             <div className="mt-6">
@@ -47,7 +47,9 @@ export function SponsorStrip() {
               </Button>
             </div>
           </div>
-        ) : SPONSORS.length < MARQUEE_THRESHOLD ? (
+        )}
+
+        {SPONSORS.length > 0 && SPONSORS.length < MARQUEE_THRESHOLD && (
           <>
             <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
               {t("subtitle")}
@@ -58,7 +60,9 @@ export function SponsorStrip() {
               ))}
             </div>
           </>
-        ) : (
+        )}
+
+        {SPONSORS.length >= MARQUEE_THRESHOLD && (
           <>
             <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
               {t("subtitle")}

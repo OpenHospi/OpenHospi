@@ -6,13 +6,11 @@ import Image from "next/image";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { SponsorStrip } from "@/components/marketing/sponsor-strip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
-import { getLoginUrl } from "@/lib/urls";
 
 export async function generateMetadata({
   params,
@@ -44,7 +42,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   const t = await getTranslations({ locale, namespace: "about" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
-  const loginUrl = getLoginUrl();
 
   // Safe: all content from our i18n translations, not user input
   const breadcrumbs = breadcrumbJsonLd(locale, [
@@ -150,22 +147,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 <SiGithub className="size-4" color="currentColor" />
                 {t("openSource.cta")}
               </a>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Partners & Sponsors */}
-      <SponsorStrip />
-
-      {/* CTA */}
-      <section className="bg-muted/30 py-24">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("cta.title")}</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("cta.subtitle")}</p>
-          <div className="mt-8">
-            <Button size="lg" asChild>
-              <a href={loginUrl}>{t("cta.button")}</a>
             </Button>
           </div>
         </div>

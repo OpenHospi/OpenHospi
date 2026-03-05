@@ -206,9 +206,20 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
                 price={t(`donate.tiers.${i}.price`)}
                 badge={t(`donate.tiers.${i}.badge`)}
                 description={t(`donate.tiers.${i}.description`)}
-                ctaLabel={t("donate.cta")}
               />
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Button asChild>
+              <a
+                href="https://opencollective.com/openhospi"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Heart className="size-4" />
+                {t("donate.cta")}
+              </a>
+            </Button>
           </div>
         </div>
       </section>

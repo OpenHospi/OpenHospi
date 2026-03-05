@@ -12,13 +12,9 @@
       "title": "Costs & Transparency — How We Stay Free",
       "description": "OpenHospi is free for all students. See exactly what it costs to run the platform and where donations go."
     },
-    "findARoom": {
-      "title": "Find a Student Room — Search Free Housing",
-      "description": "Find your next student room for free on OpenHospi. Verified students, encrypted chat, and fair visibility for everyone."
-    },
-    "listARoom": {
-      "title": "List a Room — Find Your Next Housemate",
-      "description": "List your student room for free on OpenHospi. Reach verified students across the Netherlands — no listing fees."
+    "howItWorks": {
+      "title": "How It Works — Find or List a Student Room",
+      "description": "Learn how OpenHospi works for room seekers and room listers. Free, fair, and only for verified students."
     },
     "safety": {
       "title": "Safety & Trust — How We Protect You",
@@ -98,7 +94,7 @@
           "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service."
         }
       ],
-      "findARoom": [
+      "howItWorks": [
         {
           "question": "How do I find a room on OpenHospi?",
           "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like."
@@ -116,8 +112,7 @@
   },
   "header": {
     "nav": {
-      "findRoom": "Find a room",
-      "listRoom": "List a room",
+      "howItWorks": "How it works",
       "safety": "Safety",
       "costs": "Costs",
       "about": "About",
@@ -131,8 +126,7 @@
     "legal": "Legal",
     "community": "Community",
     "links": {
-      "findRoom": "Find a room",
-      "listRoom": "List a room",
+      "howItWorks": "How it works",
       "safety": "Safety",
       "browseRooms": "Browse rooms",
       "costs": "Costs",
@@ -202,128 +196,126 @@
       "cta": "View on GitHub"
     },
     "cta": {
-      "title": "Ready to find your room?",
+      "title": "Join the community",
       "subtitle": "Be among the first students on the fairest housing platform in the Netherlands — free, fair, and students only.",
       "button": "Log in with SURFconext"
     }
   },
-  "findRoom": {
-    "title": "Find a room",
-    "subtitle": "The easiest way to find your next student room — free, fair, and only for verified students.",
-    "why": {
-      "title": "Why search on OpenHospi?",
-      "items": [
-        {
-          "title": "Verified students",
-          "description": "Every user is a real student, verified by their university or hogeschool through SURFconext. No fake profiles."
-        },
-        {
-          "title": "Completely free",
-          "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility."
-        },
-        {
-          "title": "Encrypted chat",
-          "description": "Your conversations are end-to-end encrypted. We can't read them, nobody can."
-        },
-        {
-          "title": "Fair for everyone",
-          "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
-        }
-      ]
+  "howItWorks": {
+    "title": "How it works",
+    "subtitle": "Whether you're looking for a room or a new housemate — here's how OpenHospi works.",
+    "seekers": {
+      "title": "For room seekers",
+      "why": {
+        "title": "Why search on OpenHospi?",
+        "items": [
+          {
+            "title": "Verified students",
+            "description": "Every user is a real student, verified by their university or hogeschool through SURFconext. No fake profiles."
+          },
+          {
+            "title": "Completely free",
+            "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility."
+          },
+          {
+            "title": "Encrypted chat",
+            "description": "Your conversations are end-to-end encrypted. We can't read them, nobody can."
+          },
+          {
+            "title": "Fair for everyone",
+            "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
+          }
+        ]
+      },
+      "steps": {
+        "title": "How to find a room",
+        "items": [
+          {
+            "title": "Log in with SURFconext",
+            "description": "Use your university account to verify your identity."
+          },
+          {
+            "title": "Complete your profile",
+            "description": "Add your study, hobbies, and preferences so houses get to know you."
+          },
+          {
+            "title": "Browse rooms",
+            "description": "Filter by city, price, availability, and house type."
+          },
+          {
+            "title": "Respond to rooms",
+            "description": "Send a personal message to the house explaining why you'd be a good fit."
+          },
+          {
+            "title": "Get invited to hospiteren",
+            "description": "If the house likes your profile, they'll invite you for a visit."
+          },
+          {
+            "title": "Move in!",
+            "description": "After a successful hospiteren, you're in. Welcome home!"
+          }
+        ]
+      }
     },
-    "steps": {
-      "title": "How to find a room",
-      "items": [
-        {
-          "title": "Log in with SURFconext",
-          "description": "Use your university account to verify your identity."
-        },
-        {
-          "title": "Complete your profile",
-          "description": "Add your study, hobbies, and preferences so houses get to know you."
-        },
-        {
-          "title": "Browse rooms",
-          "description": "Filter by city, price, availability, and house type."
-        },
-        {
-          "title": "Respond to rooms",
-          "description": "Send a personal message to the house explaining why you'd be a good fit."
-        },
-        {
-          "title": "Get invited to hospiteren",
-          "description": "If the house likes your profile, they'll invite you for a visit."
-        },
-        {
-          "title": "Move in!",
-          "description": "After a successful hospiteren, you're in. Welcome home!"
-        }
-      ]
-    },
-    "cta": {
-      "title": "Ready to find your room?",
-      "button": "Log in with SURFconext"
-    }
-  },
-  "listRoom": {
-    "title": "List a room",
-    "subtitle": "The easiest way to find your next housemate.",
-    "why": {
-      "title": "Why list on OpenHospi?",
-      "items": [
-        {
-          "title": "Verified candidates",
-          "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
-        },
-        {
-          "title": "Completely free",
-          "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
-        },
-        {
-          "title": "Manage responses",
-          "description": "Review profiles, read messages, and invite candidates — all in one place."
-        },
-        {
-          "title": "Share your listing",
-          "description": "Generate a unique link to share on social media or in group chats."
-        }
-      ]
-    },
-    "steps": {
-      "title": "How to list a room",
-      "items": [
-        {
-          "title": "Log in with SURFconext",
-          "description": "All members verify via their university account."
-        },
-        {
-          "title": "Create your house",
-          "description": "Add your address, photos, room details, and house rules."
-        },
-        {
-          "title": "Publish your listing",
-          "description": "Make your room visible to verified students across the Netherlands."
-        },
-        {
-          "title": "Review responses",
-          "description": "Browse candidate profiles and read their personal messages."
-        },
-        {
-          "title": "Invite candidates",
-          "description": "Select your favorites and invite them for hospiteren."
-        },
-        {
-          "title": "Choose your new housemate",
-          "description": "After hospiteren, pick the person who fits best."
-        }
-      ]
-    },
-    "shareLink": {
-      "title": "Share your listing anywhere",
-      "description": "Every room gets a unique link you can share on Instagram, WhatsApp, or your house website."
+    "listers": {
+      "title": "For room listers",
+      "why": {
+        "title": "Why list on OpenHospi?",
+        "items": [
+          {
+            "title": "Verified candidates",
+            "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
+          },
+          {
+            "title": "Completely free",
+            "description": "No listing fees, no premium placements. No one pays to appear first. Fair for everyone."
+          },
+          {
+            "title": "Manage responses",
+            "description": "Review profiles, read messages, and invite candidates — all in one place."
+          },
+          {
+            "title": "Share your listing",
+            "description": "Generate a unique link to share on social media or in group chats."
+          }
+        ]
+      },
+      "steps": {
+        "title": "How to list a room",
+        "items": [
+          {
+            "title": "Log in with SURFconext",
+            "description": "All members verify via their university account."
+          },
+          {
+            "title": "Create your house",
+            "description": "Add your address, photos, room details, and house rules."
+          },
+          {
+            "title": "Publish your listing",
+            "description": "Make your room visible to verified students across the Netherlands."
+          },
+          {
+            "title": "Review responses",
+            "description": "Browse candidate profiles and read their personal messages."
+          },
+          {
+            "title": "Invite candidates",
+            "description": "Select your favorites and invite them for hospiteren."
+          },
+          {
+            "title": "Choose your new housemate",
+            "description": "After hospiteren, pick the person who fits best."
+          }
+        ]
+      },
+      "shareLink": {
+        "title": "Share your listing anywhere",
+        "description": "Every room gets a unique link you can share on Instagram, WhatsApp, or your house website."
+      }
     },
     "cta": {
-      "title": "Ready to find your next housemate?",
+      "title": "Ready to get started?",
       "button": "Log in with SURFconext"
     }
   },
@@ -355,7 +347,9 @@
         "title": "Report & block",
         "description": "Report inappropriate behavior or block users with one click. We act on reports quickly. You can also reach us at abuse@openhospi.nl."
       }
-    ]
+    ],
+    "learnMore": "Want to see how the platform works?",
+    "learnMoreLink": "See how it works"
   },
   "about": {
     "title": "About OpenHospi",
@@ -393,11 +387,6 @@
       "title": "Open Source & Community",
       "description": "OpenHospi is fully open source. Anyone can inspect the code, report issues, suggest features, or contribute directly. Transparency isn't a feature — it's a principle. We believe that a platform for students should be owned by the community.",
       "cta": "View on GitHub"
-    },
-    "cta": {
-      "title": "Ready to find your room?",
-      "subtitle": "Join the fairest student housing platform in the Netherlands — free, transparent, and students only.",
-      "button": "Log in with SURFconext"
     }
   },
   "costs": {
@@ -608,9 +597,8 @@
     "subtitle": "Everything you need to know about OpenHospi — the free, open-source student housing platform.",
     "cta": {
       "title": "Still have questions?",
-      "description": "Can't find the answer you're looking for? Reach out to us or check out our open-source project on GitHub.",
-      "emailLabel": "Email us",
-      "githubLabel": "View on GitHub"
+      "description": "Can't find the answer you're looking for? Reach out to us directly.",
+      "emailLabel": "Email us"
     },
     "categories": [
       {

@@ -65,6 +65,16 @@ const nextConfig: NextConfig = {
         destination: "/apple-icon",
         permanent: true,
       },
+      {
+        source: "/:locale/find-a-room",
+        destination: "/:locale/how-it-works",
+        permanent: true,
+      },
+      {
+        source: "/:locale/list-a-room",
+        destination: "/:locale/how-it-works",
+        permanent: true,
+      },
     ];
   },
   async headers() {

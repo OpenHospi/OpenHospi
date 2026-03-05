@@ -1,4 +1,3 @@
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { Locale } from "@openhospi/i18n";
 import { HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
@@ -101,19 +100,9 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: Lo
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("cta.title")}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("cta.description")}</p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8">
             <Button asChild>
               <a href="mailto:info@openhospi.nl">{t("cta.emailLabel")}</a>
-            </Button>
-            <Button variant="outline" asChild>
-              <a
-                href="https://github.com/OpenHospi/OpenHospi"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SiGithub className="size-4" color="currentColor" />
-                {t("cta.githubLabel")}
-              </a>
             </Button>
           </div>
         </div>

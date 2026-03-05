@@ -5,7 +5,9 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
 
@@ -71,6 +73,13 @@ export default async function SafetyPage({ params }: { params: Promise<{ locale:
               </Card>
             );
           })}
+        </div>
+
+        <div className="mt-12 text-center">
+          <p className="text-muted-foreground">{t("learnMore")}</p>
+          <Button variant="link" asChild className="mt-1">
+            <Link href="/how-it-works">{t("learnMoreLink")}</Link>
+          </Button>
         </div>
       </div>
     </section>

@@ -33,7 +33,7 @@ export default async function SettingsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "app.settings" });
 
   return (
-    <Main fixed className="flex flex-col gap-6">
+    <Main className="gap-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("description")}</p>

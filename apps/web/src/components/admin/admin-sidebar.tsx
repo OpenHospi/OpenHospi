@@ -1,6 +1,6 @@
 "use client";
 
-import { LogoIcon } from "@openhospi/shared/logo";
+import { LogoIcon } from "@openhospi/shared/icons";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";

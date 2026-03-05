@@ -7,11 +7,14 @@
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*.ts",
-    "./logo": "./src/logo.tsx",
+    "./icons": "./src/icons/index.tsx",
     "./assets/*": "./assets/*"
   },
   "peerDependencies": {
     "react": ">=19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

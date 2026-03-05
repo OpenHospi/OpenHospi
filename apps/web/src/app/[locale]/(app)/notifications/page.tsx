@@ -29,7 +29,7 @@ export default async function NotificationsPage({ params }: Props) {
   const notifications = await getUserNotifications(user.id);
 
   return (
-    <Main fixed className="overflow-auto mx-auto max-w-2xl">
+    <Main className="mx-auto max-w-2xl">
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">
           {(await getTranslations("app.notifications"))("title")}

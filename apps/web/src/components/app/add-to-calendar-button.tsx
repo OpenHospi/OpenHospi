@@ -2,11 +2,11 @@
 
 import { SiApple, SiGooglecalendar } from "@icons-pack/react-simple-icons";
 import { computeEndDateTime } from "@openhospi/shared/calendar";
+import { OutlookIcon } from "@openhospi/shared/icons";
 import { CalendarPlus, Download, Link2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { OutlookIcon } from "@/components/icons/outlook-icon";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

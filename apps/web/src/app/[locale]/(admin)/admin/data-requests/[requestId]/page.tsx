@@ -61,14 +61,14 @@ export default function DataRequestDetailPage() {
 
   if (!detail) {
     return (
-      <Main fixed className="items-center justify-center">
+      <Main className="items-center justify-center">
         <Loader2 className="size-6 animate-spin" />
       </Main>
     );
   }
 
   return (
-    <Main fixed className="overflow-auto">
+    <Main>
       <div className="space-y-6">
         <Button variant="ghost" onClick={() => router.push("/admin/data-requests")}>
           <ArrowLeft className="size-4" />

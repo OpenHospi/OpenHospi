@@ -38,7 +38,7 @@ export default async function MyRoomsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "app.rooms" });
 
   return (
-    <Main fixed className="overflow-auto">
+    <Main>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>

@@ -24,7 +24,7 @@ export default async function AuditLogPage({ params }: Props) {
   const { entries } = await getAuditLog(1, 1000);
 
   return (
-    <Main fixed className="flex flex-col gap-4 sm:gap-6">
+    <Main className="gap-4 sm:gap-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">{t("auditLog.title")}</h2>
         <p className="text-muted-foreground">{t("auditLog.description")}</p>

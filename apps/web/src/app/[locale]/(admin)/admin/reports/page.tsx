@@ -22,7 +22,7 @@ export default async function AdminReportsPage({ params }: Props) {
   const allReports = await getReports();
 
   return (
-    <Main fixed className="flex flex-col gap-4 sm:gap-6">
+    <Main className="gap-4 sm:gap-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">{t("reports.title")}</h2>
         <p className="text-muted-foreground">{t("reports.description")}</p>

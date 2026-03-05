@@ -38,7 +38,7 @@ export default async function AdminLayout({ children, params }: Props) {
             <ThemeToggle />
           </div>
         </header>
-        <main className="flex flex-1 flex-col overflow-auto">{children}</main>
+        <div className="flex flex-1 flex-col overflow-hidden">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

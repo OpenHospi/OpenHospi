@@ -32,7 +32,7 @@ export default async function AdminDashboardPage({ params }: Props) {
   ];
 
   return (
-    <Main fixed className="overflow-auto">
+    <Main>
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">{t("dashboard")}</h2>

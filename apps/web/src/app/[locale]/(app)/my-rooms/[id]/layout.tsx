@@ -41,7 +41,7 @@ export default async function RoomManagementLayout({ children, params }: Props) 
     room.status !== RoomStatus.draft ? (await getRoomApplicants(id, user.id)).length : 0;
 
   return (
-    <Main className="flex flex-col gap-0 p-0">
+    <Main className="gap-0 p-0">
       <SetBreadcrumb uuid={id} label={room.title} />
       <div className="flex shrink-0 flex-wrap items-start justify-between gap-4 border-b px-4 py-4">
         <RoomHeader room={room} />

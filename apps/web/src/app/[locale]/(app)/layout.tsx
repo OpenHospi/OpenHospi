@@ -86,7 +86,7 @@ export default async function AppLayout({ children, params }: Props) {
             </div>
           </header>
           {restricted && <RestrictionBanner />}
-          <main className="flex flex-1 flex-col overflow-auto">{children}</main>
+          <div className="flex flex-1 flex-col overflow-hidden">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </BreadcrumbStoreProvider>

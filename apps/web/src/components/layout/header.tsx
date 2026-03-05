@@ -17,8 +17,7 @@ export function Header({ children, actions }: HeaderProps) {
 
   useLayoutEffect(() => {
     const container =
-      document.querySelector("[role='main']") ||
-      document.querySelector("[data-slot='sidebar-inset']");
+      document.querySelector("main") || document.querySelector("[data-slot='sidebar-inset']");
 
     if (!container) return;
 

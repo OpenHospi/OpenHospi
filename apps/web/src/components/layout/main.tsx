@@ -1,17 +1,7 @@
 import { cn } from "@/lib/utils";
 
-type MainProps = React.ComponentProps<"div"> & {
-  scrollable?: boolean;
-};
-
-export function Main({ scrollable = false, className, children, ...props }: MainProps) {
+export function Main({ className, ...props }: React.ComponentProps<"main">) {
   return (
-    <div
-      role="main"
-      className={cn("flex flex-1 flex-col", scrollable && "overflow-auto", className)}
-      {...props}
-    >
-      {children}
-    </div>
+    <main className={cn("flex flex-1 flex-col overflow-auto p-4 md:p-6", className)} {...props} />
   );
 }

@@ -7,6 +7,27 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { SPONSORS } from "@/lib/sponsors";
 
+const MARQUEE_THRESHOLD = 5;
+
+function SponsorLogo({ name, logo, url }: { name: string; logo: string; url: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex shrink-0 items-center"
+    >
+      <Image
+        src={logo}
+        alt={name}
+        width={120}
+        height={40}
+        className="h-10 w-auto grayscale-100 transition-[filter] duration-300 hover:grayscale-0 dark:brightness-0 dark:invert dark:hover:brightness-100 dark:hover:invert-0"
+      />
+    </a>
+  );
+}
+
 export function SponsorStrip() {
   const t = useTranslations("sponsors");
 
@@ -31,6 +52,17 @@ export function SponsorStrip() {
               </Button>
             </div>
           </div>
+        ) : SPONSORS.length < MARQUEE_THRESHOLD ? (
+          <>
+            <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
+              {t("subtitle")}
+            </p>
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-12">
+              {SPONSORS.map((sponsor) => (
+                <SponsorLogo key={sponsor.name} {...sponsor} />
+              ))}
+            </div>
+          </>
         ) : (
           <>
             <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
@@ -41,21 +73,7 @@ export function SponsorStrip() {
               <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background to-transparent" />
               <div className="flex animate-marquee items-center gap-16 group-hover:[animation-play-state:paused]">
                 {[...SPONSORS, ...SPONSORS].map((sponsor, i) => (
-                  <a
-                    key={`${sponsor.name}-${i}`}
-                    href={sponsor.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex shrink-0 items-center"
-                  >
-                    <Image
-                      src={sponsor.logo}
-                      alt={sponsor.name}
-                      width={120}
-                      height={40}
-                      className="h-10 w-auto grayscale transition-[filter] duration-300 hover:grayscale-0 dark:brightness-0 dark:invert dark:hover:brightness-100 dark:hover:invert-0"
-                    />
-                  </a>
+                  <SponsorLogo key={`${sponsor.name}-${i}`} {...sponsor} />
                 ))}
               </div>
             </div>

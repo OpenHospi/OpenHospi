@@ -4,4 +4,10 @@ export interface Sponsor {
   url: string;
 }
 
-export const SPONSORS: Sponsor[] = [];
+export const SPONSORS: Sponsor[] = [
+  // {
+  //   name: "Digital Society Hub",
+  //   logo: "/sponsors/dsh.svg",
+  //   url: "https://www.digitalsocietyhub.nl",
+  // },
+];

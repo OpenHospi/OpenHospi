@@ -11,12 +11,7 @@ const MARQUEE_THRESHOLD = 5;
 
 function SponsorLogo({ name, logo, url }: { name: string; logo: string; url: string }) {
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex shrink-0 items-center"
-    >
+    <a href={url} target="_blank" rel="noopener noreferrer" className="flex shrink-0 items-center">
       <Image
         src={logo}
         alt={name}

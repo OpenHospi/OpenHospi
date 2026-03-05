@@ -57,33 +57,6 @@ export const StudyLevel = defineEnum([
 ] as const);
 export type StudyLevel = (typeof StudyLevel.values)[number];
 
-export function getStudyLevelsForInstitutionType(
-  type: string,
-): readonly StudyLevel[] {
-  switch (type) {
-    case "MBO":
-      return ["mbo"] as const;
-    case "HBO":
-      return [
-        "hbo_propedeuse",
-        "hbo_bachelor",
-        "pre_master",
-        "master",
-      ] as const;
-    case "WO":
-    case "UMC":
-      return [
-        "wo_propedeuse",
-        "wo_bachelor",
-        "pre_master",
-        "master",
-        "phd",
-      ] as const;
-    default:
-      return StudyLevel.values;
-  }
-}
-
 // ─── Lifestyle & personality ──────────────────────────────────────────────
 
 export const LifestyleTag = defineEnum([

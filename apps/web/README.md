@@ -6,7 +6,7 @@ The Next.js 16 web application for OpenHospi.
 
 - **Framework:** Next.js 16 (Turbopack) + React 19
 - **Styling:** Tailwind CSS v4 (oklch) + shadcn/ui
-- **Auth:** Better Auth + SURFconext SSO (Drizzle adapter)
+- **Auth:** Better Auth + InAcademia OIDC (Drizzle adapter)
 - **Database:** Supabase PostgreSQL via Drizzle ORM (from `@openhospi/database`)
 - **Storage:** Vercel Blob (photo uploads)
 - **i18n:** next-intl v4 — NL (default), EN, DE

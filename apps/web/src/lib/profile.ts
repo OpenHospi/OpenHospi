@@ -9,6 +9,7 @@ export type ProfileWithPhotos = Profile & { photos: ProfilePhoto[] };
 
 export function isProfileComplete(profile: ProfileWithPhotos): boolean {
   return (
+    !!profile.firstName &&
     !!profile.gender &&
     !!profile.birthDate &&
     !!profile.studyProgram &&

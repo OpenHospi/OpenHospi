@@ -1,7 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 import { applications, reviews } from "./schema/applications";
-import { account, session, ssoProvider, user, verification } from "./schema/auth";
+import { account, session, user, verification } from "./schema/auth";
 import { conversationMembers, conversations, messageReceipts, messages } from "./schema/chat";
 import { hospiEvents, hospiInvitations, votes } from "./schema/events";
 import { houseMembers, houses } from "./schema/houses";
@@ -16,7 +16,6 @@ export type NewUser = InferInsertModel<typeof user>;
 export type Session = InferSelectModel<typeof session>;
 export type Account = InferSelectModel<typeof account>;
 export type Verification = InferSelectModel<typeof verification>;
-export type SsoProvider = InferSelectModel<typeof ssoProvider>;
 
 // Profiles
 export type Profile = InferSelectModel<typeof profiles>;

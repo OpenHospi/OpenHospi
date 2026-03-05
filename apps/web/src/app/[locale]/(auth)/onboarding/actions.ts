@@ -1,13 +1,15 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { profiles } from "@openhospi/database/schema";
+import { db, withRLS } from "@openhospi/database";
+import { profiles, user as userTable } from "@openhospi/database/schema";
 import {
   aboutStepSchema,
+  identityStepSchema,
   languagesStepSchema,
   personalityStepSchema,
   preferencesStepSchema,
   type AboutStepData,
+  type IdentityStepData,
   type LanguagesStepData,
   type PersonalityStepData,
   type PreferencesStepData,
@@ -17,7 +19,33 @@ import { eq } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
+import { auth } from "@/lib/auth";
 import { requireSession } from "@/lib/auth-server";
+
+export async function saveIdentityStep(data: IdentityStepData) {
+  const session = await requireSession();
+  const parsed = identityStepSchema.safeParse(data);
+  if (!parsed.success) return { error: "invalidData" as const };
+
+  const { firstName, lastName, email } = parsed.data;
+
+  await withRLS(session.user.id, (tx) =>
+    tx.update(profiles).set({ firstName, lastName, email }).where(eq(profiles.id, session.user.id)),
+  );
+
+  // Update Better Auth user email so verification works
+  await db
+    .update(userTable)
+    .set({ email, emailVerified: false })
+    .where(eq(userTable.id, session.user.id));
+
+  // Trigger email verification
+  await auth.api.sendVerificationEmail({
+    body: { email, callbackURL: "/" },
+  });
+
+  return { success: true };
+}
 
 export async function saveAboutStep(data: AboutStepData) {
   const session = await requireSession();

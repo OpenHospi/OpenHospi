@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/profile";
 
 import { AboutStep } from "./steps/about-step";
+import { IdentityStep } from "./steps/identity-step";
 import { LanguagesStep } from "./steps/languages-step";
 import { PersonalityStep } from "./steps/personality-step";
 import { PhotosStep } from "./steps/photos-step";
@@ -22,10 +23,11 @@ type Props = {
 
 export function OnboardingForm({ initialData, userId }: Props) {
   const t = useTranslations("app.onboarding");
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
   const [photos, setPhotos] = useState<ProfilePhoto[]>(initialData.photos ?? []);
 
   const stepTitles = [
+    t("steps.identity"),
     t("steps.about"),
     t("steps.personality"),
     t("steps.languages"),
@@ -52,6 +54,18 @@ export function OnboardingForm({ initialData, userId }: Props) {
       </div>
 
       {step === 1 && (
+        <IdentityStep
+          defaultValues={{
+            firstName: initialData.firstName ?? "",
+            lastName: initialData.lastName ?? "",
+            email: initialData.email ?? "",
+          }}
+          institutionDomain={initialData.institutionDomain}
+          onNext={() => setStep(2)}
+        />
+      )}
+
+      {step === 2 && (
         <AboutStep
           defaultValues={{
             gender: (initialData.gender as AboutStepData["gender"]) ?? undefined,
@@ -60,25 +74,14 @@ export function OnboardingForm({ initialData, userId }: Props) {
             studyLevel: (initialData.studyLevel as AboutStepData["studyLevel"]) ?? undefined,
             bio: initialData.bio ?? "",
           }}
-          institutionDomain={initialData.institutionDomain}
-          onNext={() => setStep(2)}
-        />
-      )}
-
-      {step === 2 && (
-        <PersonalityStep
-          defaultValues={{
-            lifestyleTags: (initialData.lifestyleTags as string[]) ?? [],
-          }}
-          onBack={() => setStep(1)}
           onNext={() => setStep(3)}
         />
       )}
 
       {step === 3 && (
-        <LanguagesStep
+        <PersonalityStep
           defaultValues={{
-            languages: (initialData.languages as string[]) ?? [],
+            lifestyleTags: (initialData.lifestyleTags as string[]) ?? [],
           }}
           onBack={() => setStep(2)}
           onNext={() => setStep(4)}
@@ -86,15 +89,25 @@ export function OnboardingForm({ initialData, userId }: Props) {
       )}
 
       {step === 4 && (
-        <PhotosStep
-          photos={photos}
-          onPhotosChange={setPhotos}
+        <LanguagesStep
+          defaultValues={{
+            languages: (initialData.languages as string[]) ?? [],
+          }}
           onBack={() => setStep(3)}
           onNext={() => setStep(5)}
         />
       )}
 
       {step === 5 && (
+        <PhotosStep
+          photos={photos}
+          onPhotosChange={setPhotos}
+          onBack={() => setStep(4)}
+          onNext={() => setStep(6)}
+        />
+      )}
+
+      {step === 6 && (
         <PreferencesStep
           defaultValues={{
             preferredCity:
@@ -103,12 +116,12 @@ export function OnboardingForm({ initialData, userId }: Props) {
             availableFrom: initialData.availableFrom ?? "",
             vereniging: (initialData.vereniging as PreferencesStepData["vereniging"]) ?? undefined,
           }}
-          onBack={() => setStep(4)}
-          onNext={() => setStep(6)}
+          onBack={() => setStep(5)}
+          onNext={() => setStep(7)}
         />
       )}
 
-      {step === 6 && <SecurityStep userId={userId} onBack={() => setStep(5)} />}
+      {step === 7 && <SecurityStep userId={userId} onBack={() => setStep(6)} />}
     </div>
   );
 }

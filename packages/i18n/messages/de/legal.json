@@ -27,8 +27,8 @@
         ]
       },
       {
-        "title": "4. SURFconext-Daten",
-        "content": "Wenn du dich über SURFconext anmeldest, erhalten wir deinen Namen, deine E-Mail-Adresse und die Domain deiner Bildungseinrichtung. SURFconext wird von SURF betrieben, der niederländischen Kooperationsorganisation für IT im Bildungswesen. SURF ist ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Wir nutzen die empfangenen Daten zur Verifizierung deiner Studierendenidentität und zur Erstellung deines Kontos."
+        "title": "4. InAcademia-Daten",
+        "content": "Wenn du dich über InAcademia anmeldest, erhalten wir eine pseudonymisierte Kennung (sub) und deine Einrichtungsinformationen (Entity-ID). InAcademia wird von GÉANT betrieben, der europäischen Forschungs- und Bildungsnetzwerkorganisation. GÉANT ist ein eigenständig Verantwortlicher für den Authentifizierungsprozess. InAcademia gibt keine Namen oder E-Mail-Adressen an uns weiter — du gibst diese Daten selbst während des Onboardings an. Wir nutzen die empfangenen Daten zur Verifizierung deiner Studierendenidentität und zur Erstellung deines Kontos."
       },
       {
         "title": "5. Wie wir deine Daten verwenden",
@@ -56,7 +56,7 @@
           "Supabase (Dublin, Irland) — Datenbank und Dateispeicher (Auftragsverarbeiter)",
           "Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen (Auftragsverarbeiter)",
           "Upstash (Irland) — Ratenbegrenzung über Redis (Auftragsverarbeiter)",
-          "SURFconext (Niederlande) — Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)"
+          "InAcademia / GÉANT (EU) — Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)"
         ]
       },
       {
@@ -112,7 +112,7 @@
       },
       {
         "title": "16. Daten von Kindern",
-        "content": "OpenHospi ist ausschließlich über SURFconext zugänglich, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Das bedeutet, dass alle Nutzer Studierende ab 16 Jahren sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO, der den Mitgliedstaaten erlaubt, die Altersgrenze auf mindestens 16 Jahre festzulegen). Wir erheben wissentlich keine personenbezogenen Daten von Kindern unter 16 Jahren."
+        "content": "OpenHospi ist ausschließlich über InAcademia zugänglich, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Das bedeutet, dass alle Nutzer Studierende ab 16 Jahren sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO, der den Mitgliedstaaten erlaubt, die Altersgrenze auf mindestens 16 Jahre festzulegen). Wir erheben wissentlich keine personenbezogenen Daten von Kindern unter 16 Jahren."
       },
       {
         "title": "17. Automatisierte Entscheidungen im Einzelfall",
@@ -163,7 +163,7 @@
     "sections": [
       {
         "title": "Berechtigung",
-        "content": "OpenHospi steht Studierenden niederländischer Bildungseinrichtungen zur Verfügung, die an SURFconext angeschlossen sind."
+        "content": "OpenHospi steht Studierenden niederländischer Bildungseinrichtungen zur Verfügung, die über InAcademia verifiziert werden können."
       },
       {
         "title": "Kontoverantwortung",
@@ -283,13 +283,13 @@
         ]
       },
       {
-        "title": "4. SURFconext (SSO/OIDC-Anbieter)",
+        "title": "4. InAcademia / GÉANT (OIDC-Anbieter)",
         "items": [
           "Rolle — Eigenständig Verantwortlicher für den Authentifizierungsprozess (kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
-          "Standort — Niederlande (SURF-Infrastruktur)",
-          "Verarbeitete Daten — Authentifizierungstoken, Name, E-Mail-Adresse, Einrichtungsdomain (bei der Anmeldung empfangen)",
-          "Auftragsverarbeitungsvertrag — SURF ist kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO, sondern ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Die Zusammenarbeit unterliegt den SURFconext-Nutzungsbedingungen und niederländischem Recht",
-          "Sicherheit — SAML/OIDC-Protokolle, Sicherheit auf institutionellem Niveau, verwaltet von SURF"
+          "Standort — EU (GÉANT-Infrastruktur)",
+          "Verarbeitete Daten — Pseudonymisierte Kennung (sub), Einrichtungs-Entity-ID (bei der Anmeldung empfangen). Keine Namen oder E-Mail-Adressen",
+          "Auftragsverarbeitungsvertrag — GÉANT ist kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO, sondern ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Die Zusammenarbeit unterliegt den InAcademia-Nutzungsbedingungen und EU-Recht",
+          "Sicherheit — OIDC-Protokoll, Sicherheit auf institutionellem Niveau, verwaltet von GÉANT"
         ]
       }
     ]
@@ -438,7 +438,7 @@
     "sections": [
       {
         "title": "1. Beschreibung der Verarbeitung",
-        "content": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Nutzer authentifizieren sich über SURFconext (institutionelles SSO), erstellen Profile, inserieren Zimmer, durchsuchen Anzeigen, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen. Die Verarbeitung umfasst Profildaten, Wohnungsdaten, Kommunikationsdaten, Bewerbungsdaten, Sitzungsdaten, Push-Benachrichtigungstoken und Einwilligungsdatensätze."
+        "content": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Nutzer authentifizieren sich über InAcademia (datenschutzfreundliche Studierendenvalidierung), erstellen Profile, inserieren Zimmer, durchsuchen Anzeigen, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen. Die Verarbeitung umfasst Profildaten, Wohnungsdaten, Kommunikationsdaten, Bewerbungsdaten, Sitzungsdaten, Push-Benachrichtigungstoken und Einwilligungsdatensätze."
       },
       {
         "title": "2. Notwendigkeit und Verhältnismäßigkeit",
@@ -457,7 +457,7 @@
           "Risiko — Unbefugter Zugriff auf persönliche Profile",
           "Wahrscheinlichkeit — Gering",
           "Auswirkung — Mittel",
-          "Maßnahmen — Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über SURFconext erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
+          "Maßnahmen — Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über InAcademia erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
           "Restrisiko — Gering"
         ]
       },
@@ -492,12 +492,12 @@
         ]
       },
       {
-        "title": "7. Risiko: SURFconext-Daten",
+        "title": "7. Risiko: InAcademia-Daten",
         "items": [
-          "Risiko — Übermäßige Datenerhebung vom SSO-Anbieter",
+          "Risiko — Übermäßige Datenerhebung vom OIDC-Anbieter",
           "Wahrscheinlichkeit — Sehr gering",
           "Auswirkung — Gering",
-          "Maßnahmen — Es werden nur Name, E-Mail-Adresse und Einrichtungsdomain von SURFconext empfangen. Keine zusätzlichen Attribute angefordert. SURFconext wird von SURF (Niederlande) verwaltet",
+          "Maßnahmen — Es werden nur eine pseudonymisierte Kennung und Einrichtungsinformationen von InAcademia empfangen. Keine Namen oder E-Mail-Adressen. InAcademia wird von GÉANT (EU) verwaltet",
           "Restrisiko — Sehr gering"
         ]
       },
@@ -523,7 +523,7 @@
       },
       {
         "title": "10. Kinder (Art. 8 DSGVO)",
-        "content": "Alle Nutzer authentifizieren sich über SURFconext, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt wirksam sicher, dass alle Nutzer 16 Jahre oder älter sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO). Eine separate Altersverifikation ist daher nicht erforderlich."
+        "content": "Alle Nutzer authentifizieren sich über InAcademia, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt wirksam sicher, dass alle Nutzer 16 Jahre oder älter sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO). Eine separate Altersverifikation ist daher nicht erforderlich."
       },
       {
         "title": "11. Fazit",

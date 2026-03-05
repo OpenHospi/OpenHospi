@@ -39,6 +39,12 @@ const baseProfileSchema = createInsertSchema(profiles, {
   vereniging: z.enum(Vereniging.values).optional(),
 });
 
+export const identityStepSchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
+});
+
 export const aboutStepSchema = baseProfileSchema.pick({
   gender: true,
   birthDate: true,
@@ -76,6 +82,7 @@ export const editProfileSchema = baseProfileSchema.pick({
   vereniging: true,
 });
 
+export type IdentityStepData = z.infer<typeof identityStepSchema>;
 export type AboutStepData = z.infer<typeof aboutStepSchema>;
 export type PersonalityStepData = z.infer<typeof personalityStepSchema>;
 export type LanguagesStepData = z.infer<typeof languagesStepSchema>;

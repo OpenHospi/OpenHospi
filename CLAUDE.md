@@ -2,14 +2,14 @@
 
 ## What is OpenHospi?
 
-OpenHospi is a free, open-source student housing/roommate platform for the Netherlands. SURFconext is the only login method — every user is a verified student. No paywalls, no premium, E2EE chat, full privacy.
+OpenHospi is a free, open-source student housing/roommate platform for the Netherlands. InAcademia is the only login method — every user is a verified student. No paywalls, no premium, E2EE chat, full privacy.
 
 ## Tech Stack
 
 - **Monorepo:** pnpm workspaces (`apps/web`, `apps/mobile`, `packages/*`)
 - **Web:** Next.js 16 (Turbopack) + React 19 + Tailwind CSS v4 (oklch) + shadcn/ui + next-intl
 - **Mobile:** Expo SDK 55+ (planned, not yet started)
-- **Auth:** Better Auth + @better-auth/sso (SURFconext OIDC)
+- **Auth:** Better Auth + genericOAuth (InAcademia OIDC)
 - **Database:** Supabase PostgreSQL + Drizzle ORM
 - **Storage:** Supabase Storage (profile-photos, room-photos buckets)
 - **i18n:** next-intl v4 — NL (default), EN, DE

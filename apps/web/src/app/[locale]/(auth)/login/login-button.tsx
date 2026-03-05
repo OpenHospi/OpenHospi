@@ -16,8 +16,8 @@ export function LoginButton() {
 
   function handleLogin() {
     startTransition(async () => {
-      const result = await authClient.signIn.sso({
-        providerId: "surfconext",
+      const result = await authClient.signIn.oauth2({
+        providerId: "inacademia",
         callbackURL: `/${locale}/discover`,
       });
       if (result.error) {
@@ -42,7 +42,7 @@ export function LoginButton() {
     <div className="w-full space-y-4">
       <Button onClick={handleLogin} disabled={isPending} size="lg" className="w-full">
         {isPending ? <Loader2 className="animate-spin" /> : <GraduationCap />}
-        {t("surfconextButton")}
+        {t("inacademiaButton")}
       </Button>
 
       {process.env.NODE_ENV === "development" && (

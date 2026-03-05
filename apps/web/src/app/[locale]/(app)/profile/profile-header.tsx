@@ -1,5 +1,6 @@
-import { getInstitution } from "@openhospi/surfconext";
-import { getTranslations } from "next-intl/server";
+import { getInstitution } from "@openhospi/inacademia";
+import type { Locale } from "@openhospi/i18n";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import type { ProfileWithPhotos } from "@/lib/profile";
@@ -10,7 +11,9 @@ type Props = {
 
 export async function ProfileHeader({ profile }: Props) {
   const tEnums = await getTranslations("enums");
+  const locale = (await getLocale()) as Locale;
   const institution = getInstitution(profile.institutionDomain);
+  const institutionName = locale === "nl" ? institution.name.nl : institution.name.en;
 
   return (
     <div className="space-y-1">
@@ -18,7 +21,9 @@ export async function ProfileHeader({ profile }: Props) {
         {profile.firstName} {profile.lastName}
       </h1>
       <div className="flex flex-wrap items-center gap-2">
-        <Badge variant="secondary">{institution.short}</Badge>
+        <Badge variant="secondary" title={institutionName}>
+          {institution.short}
+        </Badge>
         {profile.vereniging && (
           <Badge variant="outline">{tEnums(`vereniging.${profile.vereniging}`)}</Badge>
         )}

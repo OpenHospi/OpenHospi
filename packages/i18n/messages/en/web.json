@@ -2,7 +2,7 @@
   "seo": {
     "home": {
       "title": "Free Student Housing Platform — Find & List Rooms",
-      "description": "OpenHospi is the free, open-source student housing platform for the Netherlands. Verified students only via SURFconext. No fees, no middlemen."
+      "description": "OpenHospi is the free, open-source student housing platform for the Netherlands. Verified students only via InAcademia. No fees, no middlemen."
     },
     "about": {
       "title": "About OpenHospi — Our Mission & Story",
@@ -18,7 +18,7 @@
     },
     "safety": {
       "title": "Safety & Trust — How We Protect You",
-      "description": "SURFconext verification, end-to-end encrypted chat, GDPR compliance, and open-source transparency. Your safety is our priority."
+      "description": "InAcademia verification, end-to-end encrypted chat, GDPR compliance, and open-source transparency. Your safety is our priority."
     },
     "privacy": {
       "title": "Privacy Policy",
@@ -83,7 +83,7 @@
       "safety": [
         {
           "question": "How are users verified on OpenHospi?",
-          "answer": "Every user logs in through SURFconext, which is managed by their own university or hogeschool. This means only real students of Dutch educational institutions can use the platform."
+          "answer": "Every user logs in through InAcademia, which is managed by their own university or hogeschool. This means only real students of Dutch educational institutions can use the platform."
         },
         {
           "question": "Are my messages private?",
@@ -97,7 +97,7 @@
       "howItWorks": [
         {
           "question": "How do I find a room on OpenHospi?",
-          "answer": "Log in with your SURFconext account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like."
+          "answer": "Log in with your InAcademia account, complete your profile, browse available rooms by city and price, and send a personal message to houses you like."
         },
         {
           "question": "What is hospiteren?",
@@ -108,7 +108,7 @@
   },
   "metadata": {
     "title": "OpenHospi — Free Student Housing Platform for the Netherlands",
-    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees."
+    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via InAcademia — no middlemen, no fees."
   },
   "header": {
     "nav": {
@@ -118,7 +118,7 @@
       "about": "About",
       "browseRooms": "Browse rooms"
     },
-    "login": "Log in with SURFconext",
+    "login": "Log in with InAcademia",
     "menuOpen": "Open menu"
   },
   "footer": {
@@ -148,8 +148,8 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nFree. Fair.\nStudents only.",
-      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via SURFconext — no middlemen, no fees.",
-      "cta": "Log in with SURFconext"
+      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via InAcademia — no middlemen, no fees.",
+      "cta": "Log in with InAcademia"
     },
     "features": {
       "title": "Why OpenHospi?",
@@ -159,7 +159,7 @@
       },
       "verified": {
         "title": "Verified students",
-        "description": "Every user is verified through SURFconext — only real students."
+        "description": "Every user is verified through InAcademia — only real students."
       },
       "encrypted": {
         "title": "E2E encrypted chat",
@@ -174,7 +174,7 @@
       "title": "How it works",
       "step1": {
         "title": "Log in",
-        "description": "Sign in with your university account via SURFconext."
+        "description": "Sign in with your university account via InAcademia."
       },
       "step2": {
         "title": "Search",
@@ -187,8 +187,8 @@
     },
     "students": {
       "title": "Only real students",
-      "description": "On OpenHospi, your university or hogeschool verifies you through SURFconext. Your institution stands behind your profile — so everyone knows you're a real student. No fake profiles, no scams.",
-      "badge": "SURFconext verified"
+      "description": "On OpenHospi, your university or hogeschool verifies you through InAcademia. Your institution stands behind your profile — so everyone knows you're a real student. No fake profiles, no scams.",
+      "badge": "InAcademia verified"
     },
     "openSource": {
       "title": "Open source",
@@ -198,7 +198,7 @@
     "cta": {
       "title": "Join the community",
       "subtitle": "Be among the first students on the fairest housing platform in the Netherlands — free, fair, and students only.",
-      "button": "Log in with SURFconext"
+      "button": "Log in with InAcademia"
     }
   },
   "howItWorks": {
@@ -211,7 +211,7 @@
         "items": [
           {
             "title": "Verified students",
-            "description": "Every user is a real student, verified by their university or hogeschool through SURFconext. No fake profiles."
+            "description": "Every user is a real student, verified by their university or hogeschool through InAcademia. No fake profiles."
           },
           {
             "title": "Completely free",
@@ -231,7 +231,7 @@
         "title": "How to find a room",
         "items": [
           {
-            "title": "Log in with SURFconext",
+            "title": "Log in with InAcademia",
             "description": "Use your university account to verify your identity."
           },
           {
@@ -264,7 +264,7 @@
         "items": [
           {
             "title": "Verified candidates",
-            "description": "Every candidate is a real student, verified by their university or hogeschool through SURFconext."
+            "description": "Every candidate is a real student, verified by their university or hogeschool through InAcademia."
           },
           {
             "title": "Completely free",
@@ -284,7 +284,7 @@
         "title": "How to list a room",
         "items": [
           {
-            "title": "Log in with SURFconext",
+            "title": "Log in with InAcademia",
             "description": "All members verify via their university account."
           },
           {
@@ -316,7 +316,7 @@
     },
     "cta": {
       "title": "Ready to get started?",
-      "button": "Log in with SURFconext"
+      "button": "Log in with InAcademia"
     }
   },
   "safety": {
@@ -324,8 +324,8 @@
     "subtitle": "Your safety is our top priority. Here's how we protect you.",
     "features": [
       {
-        "title": "SURFconext verification",
-        "description": "Every user is verified by their own university or hogeschool through SURFconext. Your institution stands behind your profile. No fake profiles."
+        "title": "InAcademia verification",
+        "description": "Every user is verified by their own university or hogeschool through InAcademia. Your institution stands behind your profile. No fake profiles."
       },
       {
         "title": "End-to-end encrypted chat",
@@ -416,7 +416,7 @@
               "atScale": "~€23/mo (Pro)"
             },
             {
-              "name": "SURFconext",
+              "name": "InAcademia",
               "description": "Student verification",
               "current": "Free",
               "atScale": "Free"
@@ -480,7 +480,7 @@
           "atScale": "~€276"
         },
         {
-          "name": "SURFconext",
+          "name": "InAcademia",
           "current": "€0",
           "atScale": "€0"
         },
@@ -567,7 +567,7 @@
       "browseOtherCities": "Browse other cities"
     },
     "room": {
-      "loginToApply": "Log in with SURFconext to apply",
+      "loginToApply": "Log in with InAcademia to apply",
       "goToApp": "View in app",
       "notFoundDescription": "This room may have been removed or is no longer available.",
       "roomSize": "{size} m²",
@@ -610,11 +610,11 @@
           },
           {
             "question": "Who can use OpenHospi?",
-            "answer": "Only verified students at Dutch universities and hogescholen. You log in with your institutional account via SURFconext, so every user is a real student."
+            "answer": "Only verified students at Dutch universities and hogescholen. You log in with your institutional account via InAcademia, so every user is a real student."
           },
           {
             "question": "Is OpenHospi available outside the Netherlands?",
-            "answer": "Currently, OpenHospi is only available for students at Dutch educational institutions connected to SURFconext. We may expand in the future."
+            "answer": "Currently, OpenHospi is only available for students at Dutch educational institutions connected to InAcademia. We may expand in the future."
           },
           {
             "question": "Is OpenHospi affiliated with any university or company?",
@@ -627,15 +627,15 @@
         "items": [
           {
             "question": "How do I create an account?",
-            "answer": "Click 'Log in with SURFconext' and sign in with your university or hogeschool account. Your account is created automatically — no separate registration needed."
+            "answer": "Click 'Log in with InAcademia' and sign in with your university or hogeschool account. Your account is created automatically — no separate registration needed."
           },
           {
-            "question": "Why can I only log in with SURFconext?",
-            "answer": "SURFconext ensures every user is a real, verified student. This prevents fake profiles, scams, and non-students from using the platform."
+            "question": "Why can I only log in with InAcademia?",
+            "answer": "InAcademia ensures every user is a real, verified student. This prevents fake profiles, scams, and non-students from using the platform."
           },
           {
             "question": "What happens when I graduate?",
-            "answer": "When your institution deactivates your SURFconext account, you'll no longer be able to log in. Any active room listings will be automatically paused."
+            "answer": "When your institution deactivates your InAcademia account, you'll no longer be able to log in. Any active room listings will be automatically paused."
           },
           {
             "question": "Can I delete my account?",
@@ -702,7 +702,7 @@
           },
           {
             "question": "How does OpenHospi protect against scams?",
-            "answer": "Every user is verified through SURFconext, so you always know you're dealing with a real student. Combined with E2E encrypted chat and easy reporting, we make it very hard for bad actors."
+            "answer": "Every user is verified through InAcademia, so you always know you're dealing with a real student. Combined with E2E encrypted chat and easy reporting, we make it very hard for bad actors."
           }
         ]
       },

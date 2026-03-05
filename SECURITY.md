@@ -39,7 +39,7 @@ Instead:
 
 The following areas are in scope for security reports:
 
-- Authentication and session management (Better Auth, SURFconext SSO)
+- Authentication and session management (Better Auth, InAcademia OIDC)
 - Row-Level Security (RLS) policy bypasses
 - Data exposure or unauthorized access to user data
 - Cross-site scripting (XSS), injection, or CSRF vulnerabilities
@@ -47,7 +47,7 @@ The following areas are in scope for security reports:
 
 ## Out of Scope
 
-- Issues in third-party services (Supabase, Vercel, SURFconext) — report those to the respective providers
+- Issues in third-party services (Supabase, Vercel, InAcademia) — report those to the respective providers
 - Denial of service attacks
 - Social engineering
 - Issues that require physical access to a user's device

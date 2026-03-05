@@ -94,7 +94,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
   account: {
     columns: {
-      providerId: f.valuesFromArray({ values: ["surfconext"] }),
+      providerId: f.valuesFromArray({ values: ["inacademia"] }),
       scope: f.default({ defaultValue: "openid profile email" }),
     },
   },

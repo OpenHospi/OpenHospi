@@ -125,7 +125,7 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   // Subdomain enforcement (production only)
   if (subdomain) {
     // Rewrite /login on admin subdomain to serve the admin login page (GitHub)
-    // instead of the default auth login page (SURFconext)
+    // instead of the default auth login page (InAcademia)
     if (subdomain === "admin" && getBarePath(pathname) === "/login") {
       request.nextUrl.pathname = "/admin/login";
       return appMiddleware(request);

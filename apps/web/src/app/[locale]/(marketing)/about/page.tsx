@@ -6,6 +6,7 @@ import Image from "next/image";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { SponsorStrip } from "@/components/marketing/sponsor-strip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -153,6 +154,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </div>
         </div>
       </section>
+
+      {/* Partners & Sponsors */}
+      <SponsorStrip />
 
       {/* CTA */}
       <section className="bg-muted/30 py-24">

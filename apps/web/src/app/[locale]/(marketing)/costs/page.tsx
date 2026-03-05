@@ -8,6 +8,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
 import { FeatureCard } from "@/components/marketing/feature-card";
+import { SponsorStrip } from "@/components/marketing/sponsor-strip";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -211,6 +212,9 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
           </div>
         </div>
       </section>
+
+      {/* Partners & Sponsors */}
+      <SponsorStrip />
 
       {/* Transparency */}
       <section className="py-24">

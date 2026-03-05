@@ -597,6 +597,12 @@
       "body": "Message"
     }
   },
+  "sponsors": {
+    "title": "Partners & Sponsors",
+    "subtitle": "These organizations help keep OpenHospi free for every student.",
+    "emptyDescription": "OpenHospi is looking for its first partners and sponsors. Help us keep the platform free for every student.",
+    "emptyCta": "Become our first sponsor"
+  },
   "faq": {
     "title": "Frequently Asked Questions",
     "subtitle": "Everything you need to know about OpenHospi — the free, open-source student housing platform.",

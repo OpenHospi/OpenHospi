@@ -77,7 +77,7 @@
         },
         {
           "question": "Hoe wordt OpenHospi gefinancierd?",
-          "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective."
+          "answer": "OpenHospi wordt momenteel zelf gefinancierd door de oprichter. We zijn actief op zoek naar donateurs en sponsors om de infrastructuurkosten te dekken. Alle bijdragen worden transparant beheerd via Open Collective."
         },
         {
           "question": "Wordt OpenHospi ooit betaald?",
@@ -577,7 +577,6 @@
   "faq": {
     "title": "Veelgestelde vragen",
     "subtitle": "Alles wat je moet weten over OpenHospi — het gratis, open-source studentenhuisvestingsplatform.",
-    "allTab": "Alles",
     "cta": {
       "title": "Nog vragen?",
       "description": "Kun je het antwoord niet vinden? Neem contact met ons op of bekijk ons open-source project op GitHub.",
@@ -699,7 +698,7 @@
           },
           {
             "question": "Hoe wordt het platform gefinancierd?",
-            "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective."
+            "answer": "OpenHospi wordt momenteel zelf gefinancierd door de oprichter. We zijn actief op zoek naar donateurs en sponsors om de infrastructuurkosten te dekken. Alle bijdragen worden transparant beheerd via Open Collective."
           },
           {
             "question": "Komen er ooit betaalde functies?",

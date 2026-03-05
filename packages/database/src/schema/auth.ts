@@ -86,19 +86,6 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const ssoProvider = pgTable("sso_provider", {
-  id: uuid("id")
-    .default(sql`pg_catalog.gen_random_uuid()`)
-    .primaryKey(),
-  issuer: text("issuer").notNull(),
-  oidcConfig: text("oidc_config"),
-  samlConfig: text("saml_config"),
-  userId: uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
-  providerId: text("provider_id").notNull().unique(),
-  organizationId: text("organization_id"),
-  domain: text("domain").notNull(),
-});
-
 export const jwks = pgTable("jwks", {
   id: uuid("id")
     .default(sql`pg_catalog.gen_random_uuid()`)

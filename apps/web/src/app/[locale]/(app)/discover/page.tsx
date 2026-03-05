@@ -107,7 +107,7 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   }
 
   return (
-    <Main fixed className="overflow-auto">
+    <Main>
       <div className="space-y-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>

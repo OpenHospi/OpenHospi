@@ -3,8 +3,7 @@
 import type { AboutStepData } from "@openhospi/database/validators";
 import { aboutStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
-import { Gender, getStudyLevelsForInstitutionType, StudyLevel } from "@openhospi/shared/enums";
-import { getInstitution } from "@openhospi/surfconext";
+import { Gender, StudyLevel } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -37,11 +36,10 @@ import { saveAboutStep } from "../actions";
 
 type Props = {
   defaultValues: Partial<AboutStepData>;
-  institutionDomain?: string;
   onNext: () => void;
 };
 
-export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
+export function AboutStep({ defaultValues, onNext }: Props) {
   const t = useTranslations("app.onboarding");
   const tCommon = useTranslations("common.labels");
   const tEnums = useTranslations("enums");
@@ -147,10 +145,7 @@ export function AboutStep({ defaultValues, institutionDomain, onNext }: Props) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {(institutionDomain
-                    ? getStudyLevelsForInstitutionType(getInstitution(institutionDomain).type)
-                    : StudyLevel.values
-                  ).map((level) => (
+                  {StudyLevel.values.map((level) => (
                     <SelectItem key={level} value={level}>
                       {tEnums(`study_level.${level}`)}
                     </SelectItem>

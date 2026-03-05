@@ -2,7 +2,7 @@
   "seo": {
     "home": {
       "title": "Gratis Studentenhuisvesting — Kamers Zoeken & Aanbieden",
-      "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via SURFconext. Geen kosten, geen tussenpersonen."
+      "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via InAcademia. Geen kosten, geen tussenpersonen."
     },
     "about": {
       "title": "Over OpenHospi — Onze Missie & Verhaal",
@@ -12,17 +12,13 @@
       "title": "Kosten & Transparantie — Hoe We Gratis Blijven",
       "description": "OpenHospi is gratis voor alle studenten. Bekijk precies wat het kost om het platform te draaien en waar donaties naartoe gaan."
     },
-    "findARoom": {
-      "title": "Kamer Zoeken — Gratis Studentenhuisvesting",
-      "description": "Vind je volgende studentenkamer gratis op OpenHospi. Geverifieerde studenten, versleutelde chat en eerlijke zichtbaarheid voor iedereen."
-    },
-    "listARoom": {
-      "title": "Kamer Aanbieden — Vind Je Volgende Huisgenoot",
-      "description": "Bied je studentenkamer gratis aan op OpenHospi. Bereik geverifieerde studenten door heel Nederland — geen advertentiekosten."
+    "howItWorks": {
+      "title": "Hoe Het Werkt — Kamer Zoeken of Aanbieden",
+      "description": "Ontdek hoe OpenHospi werkt voor kamerzoekers en kameraanbieders. Gratis, eerlijk en alleen voor geverifieerde studenten."
     },
     "safety": {
       "title": "Veiligheid & Vertrouwen — Hoe We Je Beschermen",
-      "description": "SURFconext-verificatie, end-to-end versleutelde chat, AVG-conform en open-source transparantie. Je veiligheid is onze prioriteit."
+      "description": "InAcademia-verificatie, end-to-end versleutelde chat, AVG-conform en open-source transparantie. Je veiligheid is onze prioriteit."
     },
     "privacy": {
       "title": "Privacybeleid",
@@ -77,7 +73,7 @@
         },
         {
           "question": "Hoe wordt OpenHospi gefinancierd?",
-          "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective."
+          "answer": "OpenHospi wordt momenteel zelf gefinancierd door de oprichter. We zijn actief op zoek naar donateurs en sponsors om de infrastructuurkosten te dekken. Alle bijdragen worden transparant beheerd via Open Collective."
         },
         {
           "question": "Wordt OpenHospi ooit betaald?",
@@ -87,7 +83,7 @@
       "safety": [
         {
           "question": "Hoe worden gebruikers geverifieerd op OpenHospi?",
-          "answer": "Elke gebruiker logt in via SURFconext, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
+          "answer": "Elke gebruiker logt in via InAcademia, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
         },
         {
           "question": "Zijn mijn berichten privé?",
@@ -98,10 +94,10 @@
           "answer": "Meldingen worden beoordeeld door ons team. We handelen snel, inclusief het blokkeren van gebruikers die onze voorwaarden schenden."
         }
       ],
-      "findARoom": [
+      "howItWorks": [
         {
           "question": "Hoe vind ik een kamer op OpenHospi?",
-          "answer": "Log in met je SURFconext-account, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt."
+          "answer": "Log in met je InAcademia-account, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt."
         },
         {
           "question": "Wat is hospiteren?",
@@ -116,14 +112,13 @@
   },
   "header": {
     "nav": {
-      "findRoom": "Kamer zoeken",
-      "listRoom": "Kamer aanbieden",
+      "howItWorks": "Hoe het werkt",
       "safety": "Veiligheid",
       "costs": "Kosten",
       "about": "Over ons",
       "browseRooms": "Kamers bekijken"
     },
-    "login": "Inloggen met SURFconext",
+    "login": "Inloggen met InAcademia",
     "menuOpen": "Menu openen"
   },
   "footer": {
@@ -131,8 +126,7 @@
     "legal": "Juridisch",
     "community": "Community",
     "links": {
-      "findRoom": "Kamer zoeken",
-      "listRoom": "Kamer aanbieden",
+      "howItWorks": "Hoe het werkt",
       "safety": "Veiligheid",
       "browseRooms": "Kamers bekijken",
       "costs": "Kosten",
@@ -154,8 +148,8 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nGratis. Eerlijk.\nAlleen studenten.",
-      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via SURFconext — geen tussenpersonen, geen kosten.",
-      "cta": "Inloggen met SURFconext"
+      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via InAcademia — geen tussenpersonen, geen kosten.",
+      "cta": "Inloggen met InAcademia"
     },
     "features": {
       "title": "Waarom OpenHospi?",
@@ -165,7 +159,7 @@
       },
       "verified": {
         "title": "Geverifieerde studenten",
-        "description": "Elke gebruiker is geverifieerd via SURFconext — alleen echte studenten."
+        "description": "Elke gebruiker is geverifieerd via InAcademia — alleen echte studenten."
       },
       "encrypted": {
         "title": "E2E versleutelde chat",
@@ -180,7 +174,7 @@
       "title": "Hoe het werkt",
       "step1": {
         "title": "Log in",
-        "description": "Log in met je universiteitsaccount via SURFconext."
+        "description": "Log in met je universiteitsaccount via InAcademia."
       },
       "step2": {
         "title": "Zoek",
@@ -193,8 +187,8 @@
     },
     "students": {
       "title": "Alleen echte studenten",
-      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool via SURFconext. Jouw instelling staat achter je profiel — zo weet iedereen dat je een echte student bent. Geen nepprofielen, geen oplichting.",
-      "badge": "SURFconext geverifieerd"
+      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool via InAcademia. Jouw instelling staat achter je profiel — zo weet iedereen dat je een echte student bent. Geen nepprofielen, geen oplichting.",
+      "badge": "InAcademia geverifieerd"
     },
     "openSource": {
       "title": "Open source",
@@ -202,129 +196,127 @@
       "cta": "Bekijk op GitHub"
     },
     "cta": {
-      "title": "Klaar om een kamer te vinden?",
+      "title": "Sluit je aan",
       "subtitle": "Wees erbij op het eerlijkste huisvestingsplatform van Nederland — gratis, eerlijk en alleen voor studenten.",
-      "button": "Inloggen met SURFconext"
+      "button": "Inloggen met InAcademia"
     }
   },
-  "findRoom": {
-    "title": "Kamer zoeken",
-    "subtitle": "De makkelijkste manier om je volgende studentenkamer te vinden — gratis, eerlijk en alleen voor geverifieerde studenten.",
-    "why": {
-      "title": "Waarom zoeken op OpenHospi?",
-      "items": [
-        {
-          "title": "Geverifieerde studenten",
-          "description": "Elke gebruiker is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via SURFconext. Geen nepprofielen."
-        },
-        {
-          "title": "Volledig gratis",
-          "description": "Geen verborgen kosten, geen premium plannen. Niemand kan betalen om voorrang te krijgen. Elke student heeft dezelfde zichtbaarheid."
-        },
-        {
-          "title": "Versleutelde chat",
-          "description": "Je gesprekken zijn end-to-end versleuteld. Wij kunnen ze niet lezen, niemand kan dat."
-        },
-        {
-          "title": "Eerlijk voor iedereen",
-          "description": "Open source en community-driven. Geen bedrijf dat eraan verdient — gestart door een student, voor alle studenten."
-        }
-      ]
+  "howItWorks": {
+    "title": "Hoe het werkt",
+    "subtitle": "Of je nu een kamer zoekt of een huisgenoot — zo werkt OpenHospi.",
+    "seekers": {
+      "title": "Voor kamerzoekers",
+      "why": {
+        "title": "Waarom zoeken op OpenHospi?",
+        "items": [
+          {
+            "title": "Geverifieerde studenten",
+            "description": "Elke gebruiker is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via InAcademia. Geen nepprofielen."
+          },
+          {
+            "title": "Volledig gratis",
+            "description": "Geen verborgen kosten, geen premium plannen. Niemand kan betalen om voorrang te krijgen. Elke student heeft dezelfde zichtbaarheid."
+          },
+          {
+            "title": "Versleutelde chat",
+            "description": "Je gesprekken zijn end-to-end versleuteld. Wij kunnen ze niet lezen, niemand kan dat."
+          },
+          {
+            "title": "Eerlijk voor iedereen",
+            "description": "Open source en community-driven. Geen bedrijf dat eraan verdient — gestart door een student, voor alle studenten."
+          }
+        ]
+      },
+      "steps": {
+        "title": "Hoe vind je een kamer?",
+        "items": [
+          {
+            "title": "Log in met InAcademia",
+            "description": "Gebruik je universiteitsaccount om je identiteit te verifiëren."
+          },
+          {
+            "title": "Maak je profiel compleet",
+            "description": "Voeg je studie, hobby's en voorkeuren toe zodat huizen je leren kennen."
+          },
+          {
+            "title": "Blader door kamers",
+            "description": "Filter op stad, prijs, beschikbaarheid en type huis."
+          },
+          {
+            "title": "Reageer op kamers",
+            "description": "Stuur een persoonlijk bericht naar het huis om uit te leggen waarom jij goed past."
+          },
+          {
+            "title": "Word uitgenodigd voor hospiteren",
+            "description": "Als het huis je profiel leuk vindt, nodigen ze je uit voor een bezoek."
+          },
+          {
+            "title": "Verhuis!",
+            "description": "Na een geslaagd hospiteren ben je erbij. Welkom thuis!"
+          }
+        ]
+      }
     },
-    "steps": {
-      "title": "Hoe vind je een kamer?",
-      "items": [
-        {
-          "title": "Log in met SURFconext",
-          "description": "Gebruik je universiteitsaccount om je identiteit te verifiëren."
-        },
-        {
-          "title": "Maak je profiel compleet",
-          "description": "Voeg je studie, hobby's en voorkeuren toe zodat huizen je leren kennen."
-        },
-        {
-          "title": "Blader door kamers",
-          "description": "Filter op stad, prijs, beschikbaarheid en type huis."
-        },
-        {
-          "title": "Reageer op kamers",
-          "description": "Stuur een persoonlijk bericht naar het huis om uit te leggen waarom jij goed past."
-        },
-        {
-          "title": "Word uitgenodigd voor hospiteren",
-          "description": "Als het huis je profiel leuk vindt, nodigen ze je uit voor een bezoek."
-        },
-        {
-          "title": "Verhuis!",
-          "description": "Na een geslaagd hospiteren ben je erbij. Welkom thuis!"
-        }
-      ]
-    },
-    "cta": {
-      "title": "Klaar om je kamer te vinden?",
-      "button": "Inloggen met SURFconext"
-    }
-  },
-  "listRoom": {
-    "title": "Kamer aanbieden",
-    "subtitle": "De makkelijkste manier om je volgende huisgenoot te vinden.",
-    "why": {
-      "title": "Waarom adverteren op OpenHospi?",
-      "items": [
-        {
-          "title": "Geverifieerde kandidaten",
-          "description": "Elke kandidaat is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via SURFconext."
-        },
-        {
-          "title": "Volledig gratis",
-          "description": "Geen advertentiekosten, geen premium plaatsingen. Niemand betaalt om bovenaan te staan. Eerlijk voor iedereen."
-        },
-        {
-          "title": "Beheer reacties",
-          "description": "Bekijk profielen, lees berichten en nodig kandidaten uit — alles op één plek."
-        },
-        {
-          "title": "Deel je advertentie",
-          "description": "Genereer een unieke link om te delen op social media of in groepschats."
-        }
-      ]
-    },
-    "steps": {
-      "title": "Hoe bied je een kamer aan?",
-      "items": [
-        {
-          "title": "Log in met SURFconext",
-          "description": "Alle bewoners verifiëren via hun universiteitsaccount."
-        },
-        {
-          "title": "Maak je huis aan",
-          "description": "Voeg je adres, foto's, kamerdetails en huisregels toe."
-        },
-        {
-          "title": "Publiceer je advertentie",
-          "description": "Maak je kamer zichtbaar voor geverifieerde studenten door heel Nederland."
-        },
-        {
-          "title": "Bekijk reacties",
-          "description": "Bekijk profielen van kandidaten en lees hun persoonlijke berichten."
-        },
-        {
-          "title": "Nodig kandidaten uit",
-          "description": "Selecteer je favorieten en nodig ze uit voor hospiteren."
-        },
-        {
-          "title": "Kies je nieuwe huisgenoot",
-          "description": "Na het hospiteren kies je de persoon die het beste past."
-        }
-      ]
-    },
-    "shareLink": {
-      "title": "Deel je advertentie overal",
-      "description": "Elke kamer krijgt een unieke link die je kunt delen op Instagram, WhatsApp of je huiswebsite."
+    "listers": {
+      "title": "Voor kameraanbieders",
+      "why": {
+        "title": "Waarom adverteren op OpenHospi?",
+        "items": [
+          {
+            "title": "Geverifieerde kandidaten",
+            "description": "Elke kandidaat is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via InAcademia."
+          },
+          {
+            "title": "Volledig gratis",
+            "description": "Geen advertentiekosten, geen premium plaatsingen. Niemand betaalt om bovenaan te staan. Eerlijk voor iedereen."
+          },
+          {
+            "title": "Beheer reacties",
+            "description": "Bekijk profielen, lees berichten en nodig kandidaten uit — alles op één plek."
+          },
+          {
+            "title": "Deel je advertentie",
+            "description": "Genereer een unieke link om te delen op social media of in groepschats."
+          }
+        ]
+      },
+      "steps": {
+        "title": "Hoe bied je een kamer aan?",
+        "items": [
+          {
+            "title": "Log in met InAcademia",
+            "description": "Alle bewoners verifiëren via hun universiteitsaccount."
+          },
+          {
+            "title": "Maak je huis aan",
+            "description": "Voeg je adres, foto's, kamerdetails en huisregels toe."
+          },
+          {
+            "title": "Publiceer je advertentie",
+            "description": "Maak je kamer zichtbaar voor geverifieerde studenten door heel Nederland."
+          },
+          {
+            "title": "Bekijk reacties",
+            "description": "Bekijk profielen van kandidaten en lees hun persoonlijke berichten."
+          },
+          {
+            "title": "Nodig kandidaten uit",
+            "description": "Selecteer je favorieten en nodig ze uit voor hospiteren."
+          },
+          {
+            "title": "Kies je nieuwe huisgenoot",
+            "description": "Na het hospiteren kies je de persoon die het beste past."
+          }
+        ]
+      },
+      "shareLink": {
+        "title": "Deel je advertentie overal",
+        "description": "Elke kamer krijgt een unieke link die je kunt delen op Instagram, WhatsApp of je huiswebsite."
+      }
     },
     "cta": {
-      "title": "Klaar om je volgende huisgenoot te vinden?",
-      "button": "Inloggen met SURFconext"
+      "title": "Klaar om te beginnen?",
+      "button": "Inloggen met InAcademia"
     }
   },
   "safety": {
@@ -332,8 +324,8 @@
     "subtitle": "Je veiligheid is onze topprioriteit. Zo beschermen we je.",
     "features": [
       {
-        "title": "SURFconext-verificatie",
-        "description": "Elke gebruiker wordt geverifieerd door zijn of haar eigen universiteit of hogeschool via SURFconext. Jouw instelling staat achter je profiel. Geen nepprofielen."
+        "title": "InAcademia-verificatie",
+        "description": "Elke gebruiker wordt geverifieerd door zijn of haar eigen universiteit of hogeschool via InAcademia. Jouw instelling staat achter je profiel. Geen nepprofielen."
       },
       {
         "title": "End-to-end versleutelde chat",
@@ -355,26 +347,46 @@
         "title": "Melden & blokkeren",
         "description": "Meld ongepast gedrag of blokkeer gebruikers met één klik. We handelen snel op meldingen. Je kunt ons ook bereiken via abuse@openhospi.nl."
       }
-    ]
+    ],
+    "learnMore": "Wil je zien hoe het platform werkt?",
+    "learnMoreLink": "Bekijk hoe het werkt"
   },
   "about": {
     "title": "Over OpenHospi",
+    "subtitle": "Het gratis, open-source studentenhuisvestingsplatform voor Nederland — gebouwd door studenten, voor studenten.",
     "mission": {
-      "title": "Onze missie",
-      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant zou moeten zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
+      "title": "Onze Missie",
+      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant moet zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
     },
-    "crisis": {
-      "title": "Het probleem",
-      "description": "Studenten zoeken kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Dat is oneerlijk — het systeem werkt voor platforms, niet voor studenten."
+    "vision": {
+      "title": "Onze Visie",
+      "description": "Een wereld waarin elke student in Nederland gelijke toegang heeft tot huisvesting. Geen betaalde platforms, geen poortwachters — gewoon een eerlijk, transparant proces waarbij je persoonlijkheid meer telt dan je portemonnee."
     },
-    "builtBy": {
-      "title": "Hoe het begon",
-      "description": "Ruben zag medestudenten worstelen met Facebook-groepen, Instagram en betaalde platforms. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. Zo is OpenHospi ontstaan."
+    "problem": {
+      "title": "Waarom OpenHospi?",
+      "description1": "Studenten zoeken vandaag kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Het systeem werkt voor platforms — niet voor studenten.",
+      "description2": "Wij geloven dat dit fundamenteel oneerlijk is. Huisvesting is een basisbehoefte en studenten zouden niet hoeven te betalen om een woonplek te vinden. Daarom hebben we OpenHospi gebouwd: een platform waar iedereen dezelfde zichtbaarheid, dezelfde tools en dezelfde kansen krijgt — volledig gratis.",
+      "description3": "OpenHospi is ontstaan toen Ruben medestudenten zag worstelen met betaalde platforms en chaotische Facebook-groepen. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. De oplossing was duidelijk: iets beters bouwen en het open source maken."
+    },
+    "team": {
+      "title": "Het Team",
+      "members": [
+        {
+          "name": "Ruben Talstra",
+          "role": "Oprichter",
+          "bio": "BITM-student aan de Hanzehogeschool en autodidact software engineer met meer dan 10 jaar ervaring. Heeft OpenHospi opgericht om elke student een eerlijke kans te geven op huisvesting — zonder kosten, zonder voortrekkerij."
+        },
+        {
+          "name": "Heino Bosma",
+          "role": "Medeoprichter",
+          "bio": "Gepassioneerd over het verbeteren van het studentenleven. Helpt de visie en strategie van OpenHospi vorm te geven om studenten door heel Nederland te bereiken."
+        }
+      ]
     },
     "openSource": {
-      "title": "Open source & community",
-      "description": "OpenHospi is een communityproject. Iedereen kan code, vertalingen of ideeën bijdragen. We zijn transparant over alles wat we doen.",
-      "cta": "Bijdragen op GitHub"
+      "title": "Open Source & Community",
+      "description": "OpenHospi is volledig open source. Iedereen kan de code inspecteren, problemen melden, functies voorstellen of direct bijdragen. Transparantie is geen feature — het is een principe. Wij geloven dat een platform voor studenten eigendom van de community moet zijn.",
+      "cta": "Bekijk op GitHub"
     }
   },
   "costs": {
@@ -404,7 +416,7 @@
               "atScale": "~€23/mnd (Pro)"
             },
             {
-              "name": "SURFconext",
+              "name": "InAcademia",
               "description": "Studentenverificatie",
               "current": "Gratis",
               "atScale": "Gratis"
@@ -468,7 +480,7 @@
           "atScale": "~€276"
         },
         {
-          "name": "SURFconext",
+          "name": "InAcademia",
           "current": "€0",
           "atScale": "€0"
         },
@@ -555,7 +567,7 @@
       "browseOtherCities": "Bekijk andere steden"
     },
     "room": {
-      "loginToApply": "Log in met SURFconext om te reageren",
+      "loginToApply": "Log in met InAcademia om te reageren",
       "goToApp": "Bekijk in app",
       "notFoundDescription": "Deze kamer is mogelijk verwijderd of niet meer beschikbaar.",
       "roomSize": "{size} m²",
@@ -574,15 +586,19 @@
       "body": "Bericht"
     }
   },
+  "sponsors": {
+    "title": "Partners & Sponsors",
+    "subtitle": "Deze organisaties helpen OpenHospi gratis te houden voor elke student.",
+    "emptyDescription": "OpenHospi zoekt haar eerste partners en sponsors. Help ons het platform gratis te houden voor elke student.",
+    "emptyCta": "Word onze eerste sponsor"
+  },
   "faq": {
     "title": "Veelgestelde vragen",
     "subtitle": "Alles wat je moet weten over OpenHospi — het gratis, open-source studentenhuisvestingsplatform.",
-    "allTab": "Alles",
     "cta": {
       "title": "Nog vragen?",
-      "description": "Kun je het antwoord niet vinden? Neem contact met ons op of bekijk ons open-source project op GitHub.",
-      "emailLabel": "Mail ons",
-      "githubLabel": "Bekijk op GitHub"
+      "description": "Kun je het antwoord niet vinden? Neem direct contact met ons op.",
+      "emailLabel": "Mail ons"
     },
     "categories": [
       {
@@ -594,11 +610,11 @@
           },
           {
             "question": "Wie kan OpenHospi gebruiken?",
-            "answer": "Alleen geverifieerde studenten aan Nederlandse universiteiten en hogescholen. Je logt in met je instellingsaccount via SURFconext, dus elke gebruiker is een echte student."
+            "answer": "Alleen geverifieerde studenten aan Nederlandse universiteiten en hogescholen. Je logt in met je instellingsaccount via InAcademia, dus elke gebruiker is een echte student."
           },
           {
             "question": "Is OpenHospi beschikbaar buiten Nederland?",
-            "answer": "Op dit moment is OpenHospi alleen beschikbaar voor studenten aan Nederlandse onderwijsinstellingen die aangesloten zijn bij SURFconext. In de toekomst breiden we mogelijk uit."
+            "answer": "Op dit moment is OpenHospi alleen beschikbaar voor studenten aan Nederlandse onderwijsinstellingen die aangesloten zijn bij InAcademia. In de toekomst breiden we mogelijk uit."
           },
           {
             "question": "Is OpenHospi verbonden aan een universiteit of bedrijf?",
@@ -611,15 +627,15 @@
         "items": [
           {
             "question": "Hoe maak ik een account aan?",
-            "answer": "Klik op 'Inloggen met SURFconext' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt — geen aparte registratie nodig."
+            "answer": "Klik op 'Inloggen met InAcademia' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt — geen aparte registratie nodig."
           },
           {
-            "question": "Waarom kan ik alleen inloggen met SURFconext?",
-            "answer": "SURFconext zorgt ervoor dat elke gebruiker een echte, geverifieerde student is. Dit voorkomt nepprofielen, oplichting en niet-studenten op het platform."
+            "question": "Waarom kan ik alleen inloggen met InAcademia?",
+            "answer": "InAcademia zorgt ervoor dat elke gebruiker een echte, geverifieerde student is. Dit voorkomt nepprofielen, oplichting en niet-studenten op het platform."
           },
           {
             "question": "Wat gebeurt er als ik afstudeer?",
-            "answer": "Wanneer je instelling je SURFconext-account deactiveert, kun je niet meer inloggen. Eventuele actieve kameradvertenties worden automatisch gepauzeerd."
+            "answer": "Wanneer je instelling je InAcademia-account deactiveert, kun je niet meer inloggen. Eventuele actieve kameradvertenties worden automatisch gepauzeerd."
           },
           {
             "question": "Kan ik mijn account verwijderen?",
@@ -686,7 +702,7 @@
           },
           {
             "question": "Hoe beschermt OpenHospi tegen oplichting?",
-            "answer": "Elke gebruiker is geverifieerd via SURFconext, dus je weet altijd dat je met een echte student te maken hebt. In combinatie met E2E versleutelde chat en eenvoudig melden maken we het heel moeilijk voor kwaadwillenden."
+            "answer": "Elke gebruiker is geverifieerd via InAcademia, dus je weet altijd dat je met een echte student te maken hebt. In combinatie met E2E versleutelde chat en eenvoudig melden maken we het heel moeilijk voor kwaadwillenden."
           }
         ]
       },
@@ -699,7 +715,7 @@
           },
           {
             "question": "Hoe wordt het platform gefinancierd?",
-            "answer": "OpenHospi wordt gefinancierd door individuele donaties, universiteitssponsoring en vrijwillige open-source bijdragen. Alle financiën zijn transparant via Open Collective."
+            "answer": "OpenHospi wordt momenteel zelf gefinancierd door de oprichter. We zijn actief op zoek naar donateurs en sponsors om de infrastructuurkosten te dekken. Alle bijdragen worden transparant beheerd via Open Collective."
           },
           {
             "question": "Komen er ooit betaalde functies?",

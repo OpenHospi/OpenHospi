@@ -1,92 +1,62 @@
 "use client";
 
-import { BarChart3, ClipboardList, FileText, ScrollText, ShieldCheck } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { LogoIcon } from "@openhospi/shared/icons";
 
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
-import { Link, usePathname } from "@/i18n/navigation-app";
+import { Link } from "@/i18n/navigation-app";
 
-import { AdminUserMenu } from "./admin-user-menu";
+import { ADMIN_NAV_ITEMS } from "./admin-nav-config";
 
-type Props = {
+type AdminSidebarProps = {
   user: {
     name: string;
     image?: string | null;
   };
-};
+} & React.ComponentProps<typeof Sidebar>;
 
-export function AdminSidebar({ user }: Props) {
-  const t = useTranslations("admin.sidebar");
-  const pathname = usePathname();
-
-  // Strip locale prefix from pathname for matching
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, "");
-
-  const navItems = [
-    { label: t("dashboard"), href: "/admin", icon: BarChart3 },
-    { label: t("reports"), href: "/admin/reports", icon: ClipboardList },
-    { label: t("dataRequests"), href: "/admin/data-requests", icon: FileText },
-    { label: t("auditLog"), href: "/admin/audit-log", icon: ScrollText },
-  ];
-
+export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/admin">
-                <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-md">
-                  <ShieldCheck className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <LogoIcon className="size-6" />
                 </div>
-                <span className="text-lg font-semibold">Admin</span>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Admin</span>
+                </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => {
-                const isActive =
-                  pathWithoutLocale === item.href ||
-                  (item.href !== "/admin" && pathWithoutLocale.startsWith(item.href + "/"));
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={isActive} tooltip={item.label}>
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavMain items={ADMIN_NAV_ITEMS} />
       </SidebarContent>
-
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <AdminUserMenu user={user} />
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <NavUser
+          user={{
+            name: user.name,
+            email: user.name,
+            avatar: user.image || "",
+          }}
+        />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

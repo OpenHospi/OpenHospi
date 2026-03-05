@@ -1,11 +1,13 @@
 export {
   aboutStepSchema,
   editProfileSchema,
+  identityStepSchema,
   languagesStepSchema,
   personalityStepSchema,
   preferencesStepSchema,
   type AboutStepData,
   type EditProfileData,
+  type IdentityStepData,
   type LanguagesStepData,
   type PersonalityStepData,
   type PreferencesStepData,

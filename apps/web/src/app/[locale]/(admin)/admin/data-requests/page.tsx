@@ -24,7 +24,7 @@ export default async function AdminDataRequestsPage({ params }: Props) {
   const [requests, stats] = await Promise.all([getDataRequests(), getDataRequestStats()]);
 
   return (
-    <Main fixed className="flex flex-col gap-4 sm:gap-6">
+    <Main className="gap-4 sm:gap-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
         <p className="text-muted-foreground">{t("description")}</p>

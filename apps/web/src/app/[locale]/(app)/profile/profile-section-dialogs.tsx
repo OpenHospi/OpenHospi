@@ -17,13 +17,11 @@ import {
 import {
   City,
   Gender,
-  getStudyLevelsForInstitutionType,
   Language,
   LifestyleTag,
   StudyLevel,
   Vereniging,
 } from "@openhospi/shared/enums";
-import { getInstitution } from "@openhospi/surfconext";
 import { Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
@@ -228,9 +226,7 @@ export function AboutCard({ profile }: CardProps) {
     },
   });
 
-  const studyLevels = profile.institutionDomain
-    ? getStudyLevelsForInstitutionType(getInstitution(profile.institutionDomain).type)
-    : StudyLevel.values;
+  const studyLevels = StudyLevel.values;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -1,6 +1,6 @@
 import type { Locale } from "@openhospi/i18n";
 import { ApplicationStatus } from "@openhospi/shared/enums";
-import { ArrowLeft, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -97,14 +97,6 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
 
   return (
     <>
-      <div className="mb-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/discover">
-            <ArrowLeft className="size-4" />
-            {t("backToDiscover")}
-          </Link>
-        </Button>
-      </div>
       <RoomDetailContent
         room={applyRoomToDetail(room)}
         context={{

@@ -10,7 +10,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321 https://*.tile.openstreetmap.org;
   font-src 'self';
-  connect-src 'self' ${supabaseUrl} ${supabaseWsUrl} https://connect.surfconext.nl https://connect.test.surfconext.nl https://api.pdok.nl https://va.vercel-scripts.com;
+  connect-src 'self' ${supabaseUrl} ${supabaseWsUrl} https://op.srv.inacademia.org https://api.pdok.nl https://va.vercel-scripts.com;
   frame-ancestors 'none';
   form-action 'self';
   base-uri 'self';
@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "@openhospi/shared",
     "@openhospi/database",
-    "@openhospi/surfconext",
+    "@openhospi/inacademia",
     "@openhospi/crypto",
     "@openhospi/i18n",
   ],
@@ -63,6 +63,16 @@ const nextConfig: NextConfig = {
       {
         source: "/apple-touch-icon-precomposed.png",
         destination: "/apple-icon",
+        permanent: true,
+      },
+      {
+        source: "/:locale/find-a-room",
+        destination: "/:locale/how-it-works",
+        permanent: true,
+      },
+      {
+        source: "/:locale/list-a-room",
+        destination: "/:locale/how-it-works",
         permanent: true,
       },
     ];

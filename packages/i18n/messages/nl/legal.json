@@ -27,8 +27,8 @@
         ]
       },
       {
-        "title": "4. SURFconext-gegevens",
-        "content": "Wanneer je inlogt via SURFconext ontvangen wij je naam, e-mailadres en onderwijsinstellingsdomein. SURFconext wordt beheerd door SURF, de samenwerkingsorganisatie voor ICT in het Nederlandse onderwijs. SURF is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. Wij gebruiken de ontvangen gegevens om je studentidentiteit te verifiëren en je account aan te maken."
+        "title": "4. InAcademia-gegevens",
+        "content": "Wanneer je inlogt via InAcademia ontvangen wij een gepseudonimiseerd identificatienummer (sub) en je onderwijsinstelling. InAcademia wordt beheerd door GÉANT, het pan-Europese netwerk voor onderwijs en onderzoek. GÉANT is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. InAcademia deelt geen namen of e-mailadressen — die vragen wij apart op tijdens de onboarding."
       },
       {
         "title": "5. Hoe we je gegevens gebruiken",
@@ -56,7 +56,7 @@
           "Supabase (Dublin, Ierland) — database en bestandsopslag (verwerker)",
           "Vercel (Dublin, Ierland) — webhosting en edge-functies (verwerker)",
           "Upstash (Ierland) — snelheidsbeperking via Redis (verwerker)",
-          "SURFconext (Nederland) — authenticatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)"
+          "InAcademia (GÉANT, Nederland) — studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)"
         ]
       },
       {
@@ -112,7 +112,7 @@
       },
       {
         "title": "16. Gegevens van kinderen",
-        "content": "OpenHospi is uitsluitend toegankelijk via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG, dat lidstaten toestaat de leeftijdsgrens op minimaal 16 jaar te stellen). Wij verzamelen niet bewust persoonsgegevens van kinderen jonger dan 16 jaar."
+        "content": "OpenHospi is uitsluitend toegankelijk via InAcademia, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG, dat lidstaten toestaat de leeftijdsgrens op minimaal 16 jaar te stellen). Wij verzamelen niet bewust persoonsgegevens van kinderen jonger dan 16 jaar."
       },
       {
         "title": "17. Geautomatiseerde besluitvorming",
@@ -163,7 +163,7 @@
     "sections": [
       {
         "title": "Geschiktheid",
-        "content": "OpenHospi is beschikbaar voor studenten van Nederlandse onderwijsinstellingen die zijn aangesloten bij SURFconext."
+        "content": "OpenHospi is beschikbaar voor studenten van Nederlandse onderwijsinstellingen die zijn aangesloten bij InAcademia."
       },
       {
         "title": "Accountverantwoordelijkheden",
@@ -283,13 +283,13 @@
         ]
       },
       {
-        "title": "4. SURFconext (SSO/OIDC-provider)",
+        "title": "4. InAcademia (OIDC-provider)",
         "items": [
           "Rol — Zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces (geen verwerker in de zin van art. 28 AVG)",
-          "Locatie — Nederland (SURF-infrastructuur)",
+          "Locatie — Nederland/EU (GÉANT-infrastructuur)",
           "Verwerkte gegevens — Authenticatietokens, naam, e-mailadres, instellingsdomein (ontvangen bij inloggen)",
-          "Verwerkersovereenkomst — SURF is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de SURFconext Gebruiksvoorwaarden en Nederlands recht",
-          "Beveiliging — SAML/OIDC-protocollen, institutionele beveiliging, beheerd door SURF"
+          "Verwerkersovereenkomst — GÉANT is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de InAcademia Gebruiksvoorwaarden en Europees recht",
+          "Beveiliging — OIDC-protocollen, institutionele beveiliging, beheerd door GÉANT"
         ]
       }
     ]
@@ -438,7 +438,7 @@
     "sections": [
       {
         "title": "1. Beschrijving van de verwerking",
-        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via SURFconext (institutionele SSO), maken profielen aan, plaatsen kamers, bekijken advertenties, solliciteren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, woninggegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistratie."
+        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via InAcademia (institutionele SSO), maken profielen aan, plaatsen kamers, bekijken advertenties, solliciteren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, woninggegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistratie."
       },
       {
         "title": "2. Noodzaak en evenredigheid",
@@ -457,7 +457,7 @@
           "Risico — Ongeautoriseerde toegang tot profielen",
           "Waarschijnlijkheid — Laag",
           "Impact — Gemiddeld",
-          "Maatregelen — Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via SURFconext. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
+          "Maatregelen — Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via InAcademia. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
           "Restrisico — Laag"
         ]
       },
@@ -492,12 +492,12 @@
         ]
       },
       {
-        "title": "7. Risico: SURFconext-gegevens",
+        "title": "7. Risico: InAcademia-gegevens",
         "items": [
           "Risico — Oververzameling van SSO-provider",
           "Waarschijnlijkheid — Zeer laag",
           "Impact — Laag",
-          "Maatregelen — Alleen naam, e-mailadres en instellingsdomein ontvangen van SURFconext. Geen extra attributen opgevraagd. SURFconext wordt beheerd door SURF (Nederland)",
+          "Maatregelen — Alleen gepseudonimiseerd ID en instellingsinformatie ontvangen van InAcademia. Geen namen of e-mailadressen. InAcademia wordt beheerd door GÉANT (EU)",
           "Restrisico — Zeer laag"
         ]
       },
@@ -523,7 +523,7 @@
       },
       {
         "title": "10. Kinderen (art. 8 AVG)",
-        "content": "Alle gebruikers authenticeren via SURFconext, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
+        "content": "Alle gebruikers authenticeren via InAcademia, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
       },
       {
         "title": "11. Conclusie",

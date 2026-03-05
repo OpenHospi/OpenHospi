@@ -24,7 +24,7 @@ export default async function ChatLayout({ children, params }: Props) {
   const t = await getTranslations("app.chat");
 
   return (
-    <Main fixed fluid className="flex flex-row gap-0 p-0">
+    <Main className="flex-row gap-0 p-0">
       {/* Left panel: conversation list — always visible on md+ */}
       <aside className="hidden w-80 shrink-0 flex-col border-r md:flex">
         <div className="flex h-14 items-center border-b px-4">

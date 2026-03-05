@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
 import { StorageImage } from "@/components/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      <SetBreadcrumb uuid={id} label={application.roomTitle} />
       {/* Room info card */}
       <Card>
         <div className="flex flex-col sm:flex-row">

@@ -21,8 +21,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
     {
       title: t("product"),
       links: [
-        { href: "/find-a-room", label: t("links.findRoom") },
-        { href: "/list-a-room", label: t("links.listRoom") },
+        { href: "/how-it-works", label: t("links.howItWorks") },
         { href: "/rooms", label: t("links.browseRooms") },
         { href: "/safety", label: t("links.safety") },
       ],

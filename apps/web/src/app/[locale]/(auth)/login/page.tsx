@@ -53,7 +53,7 @@ export default async function LoginPage({ params }: Props) {
         <CardContent>
           <LoginButton />
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            {t("surfconextDescription")}
+            {t("inacademiaDescription")}
           </p>
         </CardContent>
       </Card>

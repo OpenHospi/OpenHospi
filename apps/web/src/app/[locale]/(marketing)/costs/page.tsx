@@ -8,6 +8,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
 import { FeatureCard } from "@/components/marketing/feature-card";
+import { SponsorStrip } from "@/components/marketing/sponsor-strip";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -205,12 +206,26 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
                 price={t(`donate.tiers.${i}.price`)}
                 badge={t(`donate.tiers.${i}.badge`)}
                 description={t(`donate.tiers.${i}.description`)}
-                ctaLabel={t("donate.cta")}
               />
             ))}
           </div>
+          <div className="mt-8 text-center">
+            <Button asChild>
+              <a
+                href="https://opencollective.com/openhospi"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Heart className="size-4" />
+                {t("donate.cta")}
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
+
+      {/* Partners & Sponsors */}
+      <SponsorStrip />
 
       {/* Transparency */}
       <section className="py-24">

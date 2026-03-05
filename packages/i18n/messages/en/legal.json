@@ -27,8 +27,8 @@
         ]
       },
       {
-        "title": "4. SURFconext data",
-        "content": "When you log in via SURFconext, we receive your name, email address, and educational institution domain. SURFconext is operated by SURF, the Dutch collaborative organisation for IT in education. SURF is an independent controller for the authentication process. We use the data received to verify your student identity and create your account."
+        "title": "4. InAcademia data",
+        "content": "When you log in via InAcademia, we receive a pseudonymised identifier (sub) and your educational institution. InAcademia is operated by GÉANT, the pan-European network for education and research. GÉANT is an independent controller for the authentication process. InAcademia does not share names or email addresses — we ask for those separately during onboarding."
       },
       {
         "title": "5. How we use your data",
@@ -56,7 +56,7 @@
           "Supabase (Dublin, Ireland) — database and file storage (processor)",
           "Vercel (Dublin, Ireland) — web hosting and edge functions (processor)",
           "Upstash (Ireland) — rate limiting via Redis (processor)",
-          "SURFconext (Netherlands) — authentication (independent controller, not a processor within the meaning of Art. 28 GDPR)"
+          "InAcademia (GÉANT, Netherlands) — student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)"
         ]
       },
       {
@@ -112,7 +112,7 @@
       },
       {
         "title": "16. Children's data",
-        "content": "OpenHospi is exclusively accessible via SURFconext, which requires enrollment at an accredited Dutch educational institution. This means all users are students aged 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR, which allows member states to set the age threshold at a minimum of 16). We do not knowingly collect personal data from children under 16."
+        "content": "OpenHospi is exclusively accessible via InAcademia, which requires enrollment at an accredited Dutch educational institution. This means all users are students aged 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR, which allows member states to set the age threshold at a minimum of 16). We do not knowingly collect personal data from children under 16."
       },
       {
         "title": "17. Automated individual decision-making",
@@ -163,7 +163,7 @@
     "sections": [
       {
         "title": "Eligibility",
-        "content": "OpenHospi is available to students of Dutch educational institutions that are connected to SURFconext."
+        "content": "OpenHospi is available to students of Dutch educational institutions that are connected to InAcademia."
       },
       {
         "title": "Account responsibilities",
@@ -283,13 +283,13 @@
         ]
       },
       {
-        "title": "4. SURFconext (SSO/OIDC Provider)",
+        "title": "4. InAcademia (OIDC Provider)",
         "items": [
           "Role — Independent controller for the authentication process (not a processor within the meaning of Art. 28 GDPR)",
-          "Location — Netherlands (SURF infrastructure)",
+          "Location — Netherlands/EU (GÉANT infrastructure)",
           "Data processed — Authentication tokens, name, email address, institution domain (received during login)",
-          "Data processing agreement — SURF is not a processor within the meaning of Art. 28 GDPR, but an independent controller for the authentication process. The collaboration is governed by the SURFconext Terms of Use and Dutch law",
-          "Security — SAML/OIDC protocols, institutional-grade security, managed by SURF"
+          "Data processing agreement — GÉANT is not a processor within the meaning of Art. 28 GDPR, but an independent controller for the authentication process. The collaboration is governed by the InAcademia Terms of Use and European law",
+          "Security — OIDC protocols, institutional-grade security, managed by GÉANT"
         ]
       }
     ]
@@ -438,7 +438,7 @@
     "sections": [
       {
         "title": "1. Description of processing",
-        "content": "OpenHospi is a free, open-source student housing platform for the Netherlands. Users authenticate via SURFconext (institutional SSO), create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions. The processing comprises profile data, housing data, communication data, application data, session data, push notification tokens, and consent records."
+        "content": "OpenHospi is a free, open-source student housing platform for the Netherlands. Users authenticate via InAcademia (institutional SSO), create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions. The processing comprises profile data, housing data, communication data, application data, session data, push notification tokens, and consent records."
       },
       {
         "title": "2. Necessity and proportionality",
@@ -457,7 +457,7 @@
           "Risk — Unauthorised access to personal profiles",
           "Likelihood — Low",
           "Impact — Medium",
-          "Mitigations — Row-Level Security (RLS) on all database tables. Authentication required via SURFconext. Profile visibility limited to authenticated users",
+          "Mitigations — Row-Level Security (RLS) on all database tables. Authentication required via InAcademia. Profile visibility limited to authenticated users",
           "Residual risk — Low"
         ]
       },
@@ -492,12 +492,12 @@
         ]
       },
       {
-        "title": "7. Risk: SURFconext data",
+        "title": "7. Risk: InAcademia data",
         "items": [
           "Risk — Over-collection from SSO provider",
           "Likelihood — Very low",
           "Impact — Low",
-          "Mitigations — Only name, email address, and institution domain are received from SURFconext. No additional attributes requested. SURFconext is managed by SURF (Netherlands)",
+          "Mitigations — Only pseudonymised ID and institution information received from InAcademia. No names or email addresses. InAcademia is managed by GÉANT (EU)",
           "Residual risk — Very low"
         ]
       },
@@ -523,7 +523,7 @@
       },
       {
         "title": "10. Children (Art. 8 GDPR)",
-        "content": "All users authenticate via SURFconext, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR). No separate age verification is needed."
+        "content": "All users authenticate via InAcademia, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR). No separate age verification is needed."
       },
       {
         "title": "11. Conclusion",

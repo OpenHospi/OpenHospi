@@ -43,6 +43,9 @@ export default async function OnboardingPage({ params }: Props) {
   }
 
   const initialData: Partial<ProfileWithPhotos> = {
+    firstName: profile?.firstName,
+    lastName: profile?.lastName,
+    email: profile?.email,
     institutionDomain: profile?.institutionDomain,
     gender: profile?.gender,
     birthDate: profile?.birthDate,
@@ -57,5 +60,7 @@ export default async function OnboardingPage({ params }: Props) {
     photos: profile?.photos ?? [],
   };
 
-  return <OnboardingForm initialData={initialData} userId={user.id} />;
+  return (
+    <OnboardingForm initialData={initialData} userId={user.id} emailVerified={user.emailVerified} />
+  );
 }

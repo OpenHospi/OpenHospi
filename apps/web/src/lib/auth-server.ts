@@ -33,6 +33,15 @@ export async function requireSession() {
   return session;
 }
 
+export async function requireVerifiedEmail() {
+  const session = await requireSession();
+  if (!session.user.emailVerified) {
+    const locale = (await getLocale()) as Locale;
+    redirect({ href: "/onboarding", locale });
+  }
+  return session;
+}
+
 export async function requireAdmin() {
   const session = await requireSession();
   const userWithRole = session.user as typeof session.user & { role?: string };
@@ -92,6 +101,7 @@ export async function requireCompleteProfile(userId: string) {
   const result = await withRLS(userId, async (tx) => {
     const [profile] = await tx
       .select({
+        firstName: profiles.firstName,
         gender: profiles.gender,
         birthDate: profiles.birthDate,
         studyProgram: profiles.studyProgram,
@@ -117,6 +127,7 @@ export async function requireCompleteProfile(userId: string) {
       .limit(1);
 
     const complete =
+      !!profile.firstName &&
       profile.gender !== null &&
       profile.birthDate !== null &&
       profile.studyProgram !== null &&

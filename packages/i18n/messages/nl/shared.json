@@ -513,12 +513,30 @@
     "login": {
       "title": "Inloggen",
       "description": "Log in met je universiteitsaccount om toegang te krijgen tot OpenHospi.",
-      "surfconextButton": "Inloggen met SURFconext",
-      "surfconextDescription": "Gebruik het account van je universiteit of hogeschool.",
+      "inacademiaButton": "Inloggen met InAcademia",
+      "inacademiaDescription": "Verifieer je studentstatus via je onderwijsinstelling.",
       "error": "Inloggen mislukt. Probeer het opnieuw.",
       "devOrDivider": "of",
       "devGithubButton": "Inloggen met GitHub (Dev)",
       "devGithubDescription": "Alleen voor ontwikkeling. Gebruikt GitHub voor lokaal testen."
+    },
+    "errors": {
+      "INVALID_EMAIL": "Ongeldig e-mailadres",
+      "INVALID_PASSWORD": "Ongeldig wachtwoord",
+      "INVALID_TOKEN": "Ongeldige token",
+      "USER_NOT_FOUND": "Gebruiker niet gevonden",
+      "USER_ALREADY_EXISTS": "Er bestaat al een account met dit e-mailadres",
+      "EMAIL_NOT_VERIFIED": "Je e-mailadres is nog niet geverifieerd",
+      "SESSION_EXPIRED": "Je sessie is verlopen. Log opnieuw in.",
+      "FAILED_TO_CREATE_USER": "Account aanmaken mislukt",
+      "FAILED_TO_CREATE_SESSION": "Sessie aanmaken mislukt",
+      "FAILED_TO_GET_SESSION": "Sessie ophalen mislukt",
+      "INVALID_EMAIL_OR_PASSWORD": "Ongeldig e-mailadres of wachtwoord",
+      "SOCIAL_ACCOUNT_ALREADY_LINKED": "Dit sociale account is al gekoppeld",
+      "PROVIDER_NOT_FOUND": "Inlogmethode niet gevonden",
+      "FAILED_TO_GET_USER_INFO": "Gebruikersinformatie ophalen mislukt",
+      "ACCOUNT_NOT_FOUND": "Account niet gevonden",
+      "CREDENTIAL_ACCOUNT_NOT_FOUND": "Geen account gevonden met deze inloggegevens"
     }
   },
   "app": {
@@ -593,6 +611,7 @@
       "title": "Maak je profiel compleet",
       "stepOf": "Stap {current} van {total}",
       "steps": {
+        "identity": "Je gegevens",
         "about": "Over jou",
         "personality": "Persoonlijkheid",
         "languages": "Talen",
@@ -601,12 +620,39 @@
         "security": "Chatbeveiliging"
       },
       "stepDescriptions": {
-        "step1": "Vertel iets over jezelf.",
-        "step2": "Wat past het beste bij jou?",
-        "step3": "Welke talen spreek je?",
-        "step4": "Voeg foto's toe zodat huizen je leren kennen.",
-        "step5": "Wat zoek je?",
-        "step6": "Bescherm je chatberichten"
+        "step1": "Vul je naam en e-mailadres in.",
+        "step2": "Vertel iets over jezelf.",
+        "step3": "Wat past het beste bij jou?",
+        "step4": "Welke talen spreek je?",
+        "step5": "Voeg foto's toe zodat huizen je leren kennen.",
+        "step6": "Wat zoek je?",
+        "step7": "Bescherm je chatberichten"
+      },
+      "identity": {
+        "firstName": "Voornaam",
+        "lastName": "Achternaam",
+        "email": "E-mailadres",
+        "firstNamePlaceholder": "bijv. Emma",
+        "lastNamePlaceholder": "bijv. de Vries",
+        "emailPlaceholder": "bijv. emma@student.nl",
+        "emailHint": "We sturen een verificatiecode naar dit adres.",
+        "institution": "Onderwijsinstelling",
+        "verificationSent": "Verificatie-e-mail verstuurd. Controleer je inbox.",
+        "verificationResent": "Verificatiecode opnieuw verstuurd.",
+        "codeStepDescription": "Vul eerst de code uit je e-mail in om verder te gaan.",
+        "enterCodeTitle": "Verifieer je e-mailadres",
+        "enterCodeDescription": "We hebben een 6-cijferige code gestuurd naar {email}.",
+        "verificationCode": "Verificatiecode",
+        "verifyCode": "Code verifiëren",
+        "resendCode": "Code opnieuw sturen",
+        "resendIn": "Opnieuw sturen over {seconds}s",
+        "codeHint": "De code verloopt na 60 minuten.",
+        "verified": "E-mailadres geverifieerd. Je kunt doorgaan.",
+        "invalidData": "Vul alle velden correct in.",
+        "invalidCode": "Ongeldige code. Probeer opnieuw.",
+        "codeExpired": "Deze code is verlopen. Vraag een nieuwe aan.",
+        "emailMismatch": "Deze code hoort bij een ander e-mailadres.",
+        "emailNotVerified": "Verifieer je e-mailadres voordat je doorgaat."
       },
       "fields": {
         "gender": "Geslacht",
@@ -1032,7 +1078,7 @@
       "photoIndex": "Foto {index}",
       "showAllPhotos": "Toon alle {count} foto's",
       "availability": "Beschikbaarheid",
-      "loginToApply": "Log in met SURFconext om te reageren",
+      "loginToApply": "Log in met InAcademia om te reageren",
       "roomSize": "{size} m²",
       "errors": {
         "invalid_data": "Controleer je bericht en probeer opnieuw.",

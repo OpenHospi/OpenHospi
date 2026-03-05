@@ -513,12 +513,30 @@
     "login": {
       "title": "Anmelden",
       "description": "Melde dich mit deinem Uni-Account an, um auf OpenHospi zuzugreifen.",
-      "surfconextButton": "Anmelden mit SURFconext",
-      "surfconextDescription": "Nutze den Account deiner Universität oder Hochschule.",
+      "inacademiaButton": "Anmelden mit InAcademia",
+      "inacademiaDescription": "Verifiziere deinen Studentenstatus über deine Bildungseinrichtung.",
       "error": "Anmeldung fehlgeschlagen. Bitte versuche es erneut.",
       "devOrDivider": "oder",
       "devGithubButton": "Anmelden mit GitHub (Dev)",
       "devGithubDescription": "Nur für Entwicklung. Verwendet GitHub zum lokalen Testen."
+    },
+    "errors": {
+      "INVALID_EMAIL": "Ungültige E-Mail-Adresse",
+      "INVALID_PASSWORD": "Ungültiges Passwort",
+      "INVALID_TOKEN": "Ungültiger Token",
+      "USER_NOT_FOUND": "Benutzer nicht gefunden",
+      "USER_ALREADY_EXISTS": "Es existiert bereits ein Konto mit dieser E-Mail-Adresse",
+      "EMAIL_NOT_VERIFIED": "Deine E-Mail-Adresse wurde noch nicht verifiziert",
+      "SESSION_EXPIRED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+      "FAILED_TO_CREATE_USER": "Konto erstellen fehlgeschlagen",
+      "FAILED_TO_CREATE_SESSION": "Sitzung erstellen fehlgeschlagen",
+      "FAILED_TO_GET_SESSION": "Sitzung abrufen fehlgeschlagen",
+      "INVALID_EMAIL_OR_PASSWORD": "Ungültige E-Mail-Adresse oder Passwort",
+      "SOCIAL_ACCOUNT_ALREADY_LINKED": "Dieses soziale Konto ist bereits verknüpft",
+      "PROVIDER_NOT_FOUND": "Anmeldemethode nicht gefunden",
+      "FAILED_TO_GET_USER_INFO": "Benutzerinformationen abrufen fehlgeschlagen",
+      "ACCOUNT_NOT_FOUND": "Konto nicht gefunden",
+      "CREDENTIAL_ACCOUNT_NOT_FOUND": "Kein Konto mit diesen Anmeldedaten gefunden"
     }
   },
   "app": {
@@ -593,6 +611,7 @@
       "title": "Vervollständige dein Profil",
       "stepOf": "Schritt {current} von {total}",
       "steps": {
+        "identity": "Deine Daten",
         "about": "Über dich",
         "personality": "Persönlichkeit",
         "languages": "Sprachen",
@@ -601,12 +620,39 @@
         "security": "Chat-Sicherheit"
       },
       "stepDescriptions": {
-        "step1": "Erzähl uns etwas über dich.",
-        "step2": "Was beschreibt dich am besten?",
-        "step3": "Welche Sprachen sprichst du?",
-        "step4": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
-        "step5": "Was suchst du?",
-        "step6": "Schütze deine Chatnachrichten"
+        "step1": "Gib deinen Namen und deine E-Mail-Adresse ein.",
+        "step2": "Erzähl uns etwas über dich.",
+        "step3": "Was beschreibt dich am besten?",
+        "step4": "Welche Sprachen sprichst du?",
+        "step5": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
+        "step6": "Was suchst du?",
+        "step7": "Schütze deine Chatnachrichten"
+      },
+      "identity": {
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail-Adresse",
+        "firstNamePlaceholder": "z.B. Emma",
+        "lastNamePlaceholder": "z.B. de Vries",
+        "emailPlaceholder": "z.B. emma@student.nl",
+        "emailHint": "Wir senden einen Bestätigungscode an diese Adresse.",
+        "institution": "Bildungseinrichtung",
+        "verificationSent": "Bestätigungs-E-Mail gesendet. Prüfe deinen Posteingang.",
+        "verificationResent": "Bestätigungscode erneut gesendet.",
+        "codeStepDescription": "Gib zuerst den Code aus deiner E-Mail ein, bevor du fortfährst.",
+        "enterCodeTitle": "E-Mail bestätigen",
+        "enterCodeDescription": "Wir haben einen 6-stelligen Code an {email} gesendet.",
+        "verificationCode": "Bestätigungscode",
+        "verifyCode": "Code bestätigen",
+        "resendCode": "Code erneut senden",
+        "resendIn": "Erneut senden in {seconds}s",
+        "codeHint": "Der Code läuft nach 60 Minuten ab.",
+        "verified": "E-Mail bestätigt. Du kannst fortfahren.",
+        "invalidData": "Bitte fülle alle Felder korrekt aus.",
+        "invalidCode": "Ungültiger Code. Bitte versuche es erneut.",
+        "codeExpired": "Dieser Code ist abgelaufen. Fordere einen neuen an.",
+        "emailMismatch": "Dieser Code gehört zu einer anderen E-Mail-Adresse.",
+        "emailNotVerified": "Bestätige deine E-Mail, bevor du fortfährst."
       },
       "fields": {
         "gender": "Geschlecht",
@@ -1032,7 +1078,7 @@
       "photoIndex": "Foto {index}",
       "showAllPhotos": "Alle {count} Fotos anzeigen",
       "availability": "Verfügbarkeit",
-      "loginToApply": "Mit SURFconext anmelden um sich zu bewerben",
+      "loginToApply": "Mit InAcademia anmelden um sich zu bewerben",
       "roomSize": "{size} m²",
       "errors": {
         "invalid_data": "Bitte überprüfe deine Nachricht und versuche es erneut.",

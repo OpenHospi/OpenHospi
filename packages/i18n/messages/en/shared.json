@@ -513,12 +513,30 @@
     "login": {
       "title": "Log in",
       "description": "Log in with your university account to access OpenHospi.",
-      "surfconextButton": "Log in with SURFconext",
-      "surfconextDescription": "Use your university or hogeschool account.",
+      "inacademiaButton": "Log in with InAcademia",
+      "inacademiaDescription": "Verify your student status via your educational institution.",
       "error": "Login failed. Please try again.",
       "devOrDivider": "or",
       "devGithubButton": "Log in with GitHub (Dev)",
       "devGithubDescription": "Development only. Uses GitHub for local testing."
+    },
+    "errors": {
+      "INVALID_EMAIL": "Invalid email address",
+      "INVALID_PASSWORD": "Invalid password",
+      "INVALID_TOKEN": "Invalid token",
+      "USER_NOT_FOUND": "User not found",
+      "USER_ALREADY_EXISTS": "An account with this email already exists",
+      "EMAIL_NOT_VERIFIED": "Your email address has not been verified yet",
+      "SESSION_EXPIRED": "Your session has expired. Please log in again.",
+      "FAILED_TO_CREATE_USER": "Failed to create account",
+      "FAILED_TO_CREATE_SESSION": "Failed to create session",
+      "FAILED_TO_GET_SESSION": "Failed to get session",
+      "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password",
+      "SOCIAL_ACCOUNT_ALREADY_LINKED": "This social account is already linked",
+      "PROVIDER_NOT_FOUND": "Login method not found",
+      "FAILED_TO_GET_USER_INFO": "Failed to get user info",
+      "ACCOUNT_NOT_FOUND": "Account not found",
+      "CREDENTIAL_ACCOUNT_NOT_FOUND": "No account found with these credentials"
     }
   },
   "app": {
@@ -593,6 +611,7 @@
       "title": "Complete your profile",
       "stepOf": "Step {current} of {total}",
       "steps": {
+        "identity": "Your details",
         "about": "About you",
         "personality": "Personality",
         "languages": "Languages",
@@ -601,12 +620,39 @@
         "security": "Chat security"
       },
       "stepDescriptions": {
-        "step1": "Tell us a bit about yourself.",
-        "step2": "What describes you best?",
-        "step3": "Which languages do you speak?",
-        "step4": "Add photos so houses get to know you.",
-        "step5": "What are you looking for?",
-        "step6": "Protect your chat messages"
+        "step1": "Enter your name and email address.",
+        "step2": "Tell us a bit about yourself.",
+        "step3": "What describes you best?",
+        "step4": "Which languages do you speak?",
+        "step5": "Add photos so houses get to know you.",
+        "step6": "What are you looking for?",
+        "step7": "Protect your chat messages"
+      },
+      "identity": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email address",
+        "firstNamePlaceholder": "e.g. Emma",
+        "lastNamePlaceholder": "e.g. de Vries",
+        "emailPlaceholder": "e.g. emma@student.nl",
+        "emailHint": "We'll send a verification code to this address.",
+        "institution": "Educational institution",
+        "verificationSent": "Verification email sent. Check your inbox.",
+        "verificationResent": "Verification code sent again.",
+        "codeStepDescription": "Enter the code we sent to your email before continuing.",
+        "enterCodeTitle": "Verify your email",
+        "enterCodeDescription": "We sent a 6-digit code to {email}.",
+        "verificationCode": "Verification code",
+        "verifyCode": "Verify code",
+        "resendCode": "Resend code",
+        "resendIn": "Resend in {seconds}s",
+        "codeHint": "The code expires after 60 minutes.",
+        "verified": "Email verified. You can continue.",
+        "invalidData": "Please complete all fields correctly.",
+        "invalidCode": "Invalid code. Please try again.",
+        "codeExpired": "This code expired. Request a new one.",
+        "emailMismatch": "This code is for a different email address.",
+        "emailNotVerified": "Verify your email before continuing."
       },
       "fields": {
         "gender": "Gender",
@@ -1032,7 +1078,7 @@
       "photoIndex": "Photo {index}",
       "showAllPhotos": "Show all {count} photos",
       "availability": "Availability",
-      "loginToApply": "Log in with SURFconext to apply",
+      "loginToApply": "Log in with InAcademia to apply",
       "roomSize": "{size} m²",
       "errors": {
         "invalid_data": "Please check your message and try again.",

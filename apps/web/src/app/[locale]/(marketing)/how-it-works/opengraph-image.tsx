@@ -6,14 +6,14 @@ import { getTranslations } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
 
-export const alt = "List a Room";
+export const alt = "How It Works";
 export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 
 export default async function OGImage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return new Response("Not found", { status: 404 });
-  const t = await getTranslations({ locale, namespace: "seo.listARoom" });
+  const t = await getTranslations({ locale, namespace: "seo.howItWorks" });
 
   return new ImageResponse(
     <div

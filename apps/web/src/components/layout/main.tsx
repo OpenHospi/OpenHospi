@@ -1,23 +1,7 @@
 import { cn } from "@/lib/utils";
 
-type MainProps = React.ComponentProps<"div"> & {
-  fixed?: boolean;
-  fluid?: boolean;
-};
-
-export function Main({ fixed, fluid, className, ...props }: MainProps) {
+export function Main({ className, ...props }: React.ComponentProps<"main">) {
   return (
-    <div
-      role="main"
-      data-layout={fixed ? "fixed" : undefined}
-      className={cn(
-        "px-4 py-6",
-        fixed && "flex grow flex-col overflow-hidden",
-        !fixed && "flex-1 overflow-auto",
-        !fluid && "container",
-        className,
-      )}
-      {...props}
-    />
+    <main className={cn("flex flex-1 flex-col overflow-auto p-4 md:p-6", className)} {...props} />
   );
 }

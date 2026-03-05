@@ -17,6 +17,7 @@ import { getTranslations } from "next-intl/server";
 import { CtaSection } from "@/components/marketing/cta-section";
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { Hero } from "@/components/marketing/hero";
+import { SponsorStrip } from "@/components/marketing/sponsor-strip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { routing } from "@/i18n/routing";
@@ -143,6 +144,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Partners & Sponsors */}
+      <SponsorStrip />
 
       {/* Final CTA */}
       <CtaSection />

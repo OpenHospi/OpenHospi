@@ -96,7 +96,7 @@ export const TRUSTPILOT_URL =
 export const TRUSTPILOT_CACHE_REVALIDATE_SECONDS = 86400;
 
 // Multi-step forms
-export const ONBOARDING_TOTAL_STEPS = 6;
+export const ONBOARDING_TOTAL_STEPS = 7;
 export const ROOM_CREATE_TOTAL_STEPS = 4;
 
 // OG Image & icon dimensions

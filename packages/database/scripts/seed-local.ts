@@ -94,7 +94,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
   account: {
     columns: {
-      providerId: f.valuesFromArray({ values: ["surfconext"] }),
+      providerId: f.valuesFromArray({ values: ["inacademia"] }),
       scope: f.default({ defaultValue: "openid profile email" }),
     },
   },
@@ -1109,9 +1109,11 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       backupKey: f.string(),
     },
   },
-  // Tables with composite PKs — drizzle-seed can't guarantee unique combinations,
-  // so they stay empty: blocks, conversationMembers, messageReceipts, activeConsents
+  // Tables with composite/single-column PKs where drizzle-seed can't guarantee unique
+  // combinations, so they stay empty: blocks, conversationMembers, messageReceipts,
+  // activeConsents, calendarTokens (userId is PK — one token per user)
   activeConsents: { count: 0 },
+  calendarTokens: { count: 0 },
   reports: {
     count: 10,
     columns: {

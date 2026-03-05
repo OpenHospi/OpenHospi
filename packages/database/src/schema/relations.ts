@@ -1,7 +1,7 @@
 import { defineRelations } from "drizzle-orm";
 
 import { applications, applicationStatusHistory, reviews } from "./applications";
-import { account, jwks, session, ssoProvider, user, verification } from "./auth";
+import { account, jwks, session, user, verification } from "./auth";
 import { conversationMembers, conversations, messageReceipts, messages } from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
@@ -23,7 +23,6 @@ export const relations = defineRelations(
     session,
     account,
     verification,
-    ssoProvider,
     jwks,
     // Profiles
     profiles,

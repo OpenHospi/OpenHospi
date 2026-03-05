@@ -1,15 +1,18 @@
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { Locale } from "@openhospi/i18n";
 import { HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
-
-import { FaqTabs } from "./_components/faq-tabs";
 
 export async function generateMetadata({
   params,
@@ -71,10 +74,24 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: Lo
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* FAQ Categories */}
       <section className="bg-muted/30 py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <FaqTabs categories={categories} allTab={t("allTab")} />
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="space-y-12">
+            {categories.map((category, catIdx) => (
+              <div key={catIdx}>
+                <h2 className="text-xl font-bold tracking-tight">{category.name}</h2>
+                <Accordion type="multiple" className="mt-4">
+                  {category.items.map((item, itemIdx) => (
+                    <AccordionItem key={itemIdx} value={`cat-${catIdx}-${itemIdx}`}>
+                      <AccordionTrigger>{item.question}</AccordionTrigger>
+                      <AccordionContent>{item.answer}</AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -83,19 +100,9 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: Lo
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("cta.title")}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("cta.description")}</p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8">
             <Button asChild>
               <a href="mailto:info@openhospi.nl">{t("cta.emailLabel")}</a>
-            </Button>
-            <Button variant="outline" asChild>
-              <a
-                href="https://github.com/OpenHospi/OpenHospi"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SiGithub className="size-4" color="currentColor" />
-                {t("cta.githubLabel")}
-              </a>
             </Button>
           </div>
         </div>

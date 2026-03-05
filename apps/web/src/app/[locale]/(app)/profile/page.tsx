@@ -43,7 +43,7 @@ export default async function ProfilePage({ params }: Props) {
   if (!profile) return null;
 
   return (
-    <Main fixed className="overflow-auto">
+    <Main>
       <div className="space-y-8">
         <ProfileHeader profile={profile} />
         <PhotosGrid photos={profile.photos} editable />

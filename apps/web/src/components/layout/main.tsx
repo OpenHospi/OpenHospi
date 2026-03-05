@@ -1,23 +1,17 @@
 import { cn } from "@/lib/utils";
 
 type MainProps = React.ComponentProps<"div"> & {
-  fixed?: boolean;
-  fluid?: boolean;
+  scrollable?: boolean;
 };
 
-export function Main({ fixed, fluid, className, ...props }: MainProps) {
+export function Main({ scrollable = false, className, children, ...props }: MainProps) {
   return (
     <div
       role="main"
-      data-layout={fixed ? "fixed" : undefined}
-      className={cn(
-        "px-4 py-6",
-        fixed && "flex grow flex-col overflow-hidden",
-        !fixed && "flex-1 overflow-auto",
-        !fluid && "container",
-        className,
-      )}
+      className={cn("flex flex-1 flex-col", scrollable && "overflow-auto", className)}
       {...props}
-    />
+    >
+      {children}
+    </div>
   );
 }

@@ -1,5 +1,5 @@
-import { getInstitution } from "@openhospi/inacademia";
 import type { Locale } from "@openhospi/i18n";
+import { getInstitution } from "@openhospi/inacademia";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";

@@ -2,6 +2,7 @@ import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth-server";
 import { getConversationMembers, getMessages } from "@/lib/chat";
@@ -33,13 +34,22 @@ export default async function ConversationPage({ params }: Props) {
     getBlockedUsers(),
   ]);
 
+  const chatLabel =
+    members
+      .filter((m) => m.userId !== user.id)
+      .map((m) => `${m.firstName} ${m.lastName}`)
+      .join(", ") || "Chat";
+
   return (
-    <ChatView
-      conversationId={conversationId}
-      currentUserId={user.id}
-      initialMessages={initialMessages}
-      members={members}
-      blockedUserIds={blockedUserIds}
-    />
+    <>
+      <SetBreadcrumb uuid={conversationId} label={chatLabel} />
+      <ChatView
+        conversationId={conversationId}
+        currentUserId={user.id}
+        initialMessages={initialMessages}
+        members={members}
+        blockedUserIds={blockedUserIds}
+      />
+    </>
   );
 }

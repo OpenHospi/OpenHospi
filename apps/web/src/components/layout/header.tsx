@@ -1,39 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 type HeaderProps = {
-  fixed?: boolean;
   children?: React.ReactNode;
   actions?: React.ReactNode;
 };
 
-export function Header({ fixed = false, children, actions }: HeaderProps) {
+export function Header({ children, actions }: HeaderProps) {
   const [hasScrolled, setHasScrolled] = useState(false);
+  const scrollContainerRef = useRef<Element | null>(null);
 
-  useEffect(() => {
-    if (!fixed) return;
+  useLayoutEffect(() => {
+    const container =
+      document.querySelector("[role='main']") ||
+      document.querySelector("[data-slot='sidebar-inset']");
 
-    const container = document.querySelector("[data-layout='fixed']");
     if (!container) return;
 
+    scrollContainerRef.current = container;
+
     const handleScroll = () => {
-      setHasScrolled(container.scrollTop > 10);
+      setHasScrolled(container.scrollTop > 0);
     };
 
+    handleScroll();
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [fixed]);
+  }, []);
 
   return (
     <header
       className={cn(
-        "flex h-14 shrink-0 items-center gap-2 border-b transition-shadow",
-        fixed && "sticky top-0 z-50 bg-background/95 backdrop-blur-sm",
+        "flex h-14 shrink-0 items-center gap-2 border-b transition-shadow duration-200",
+        "sticky top-0 z-40 bg-background/95 backdrop-blur-sm",
         hasScrolled && "shadow-sm",
       )}
     >

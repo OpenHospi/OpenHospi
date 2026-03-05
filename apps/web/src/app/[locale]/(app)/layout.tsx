@@ -10,10 +10,12 @@ import { Suspense } from "react";
 
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
 import { AppSidebar } from "@/components/app/app-sidebar";
+import { BreadcrumbStoreProvider } from "@/components/app/breadcrumb-store";
+import { BreadcrumbsNav } from "@/components/app/breadcrumbs-nav";
 import { NotificationBell } from "@/components/app/notification-bell";
-import { Breadcrumbs, Header } from "@/components/layout";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth-server";
@@ -31,6 +33,7 @@ export default async function AppLayout({ children, params }: Props) {
   const session = await getSession();
   let restricted = false;
   let avatarUrl: string | null = null;
+  let email: string | null = null;
 
   if (session) {
     await requireCompleteProfile(session.user.id);
@@ -40,6 +43,7 @@ export default async function AppLayout({ children, params }: Props) {
         .select({
           privacyPolicyAcceptedVersion: profiles.privacyPolicyAcceptedVersion,
           avatarUrl: profiles.avatarUrl,
+          email: profiles.email,
         })
         .from(profiles)
         .where(eq(profiles.id, session.user.id)),
@@ -50,22 +54,28 @@ export default async function AppLayout({ children, params }: Props) {
     }
 
     avatarUrl = profile?.avatarUrl ?? null;
+    email = profile?.email ?? null;
     restricted = await isRestricted(session.user.id);
   }
 
   const user = {
     name: session?.user.name || "User",
+    email: email ?? session?.user.name ?? "",
     avatarUrl,
   };
 
   return (
-    <SidebarProvider>
-      <AppSidebar user={user} />
-      <SidebarInset className="has-data-[layout=fixed]:h-svh @container/content">
-        <Header
-          fixed
-          actions={
-            <>
+    <BreadcrumbStoreProvider>
+      <SidebarProvider>
+        <AppSidebar user={user} />
+        <SidebarInset className="@container/content">
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
+              <BreadcrumbsNav />
+            </div>
+            <div className="ml-auto flex items-center gap-2 px-4">
               <AppLanguageSwitcher />
               <ThemeToggle />
               {session && (
@@ -73,15 +83,13 @@ export default async function AppLayout({ children, params }: Props) {
                   <NotificationBell userId={session.user.id} />
                 </Suspense>
               )}
-            </>
-          }
-        >
-          <Breadcrumbs />
-        </Header>
-        {restricted && <RestrictionBanner />}
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+            </div>
+          </header>
+          {restricted && <RestrictionBanner />}
+          <main className="flex flex-1 flex-col overflow-auto">{children}</main>
+        </SidebarInset>
+      </SidebarProvider>
+    </BreadcrumbStoreProvider>
   );
 }
 

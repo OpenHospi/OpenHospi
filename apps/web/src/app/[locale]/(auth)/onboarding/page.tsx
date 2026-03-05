@@ -60,5 +60,7 @@ export default async function OnboardingPage({ params }: Props) {
     photos: profile?.photos ?? [],
   };
 
-  return <OnboardingForm initialData={initialData} userId={user.id} />;
+  return (
+    <OnboardingForm initialData={initialData} userId={user.id} emailVerified={user.emailVerified} />
+  );
 }

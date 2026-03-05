@@ -1,12 +1,37 @@
+import { createHash } from "node:crypto";
+
 import { db } from "@openhospi/database";
 import * as schema from "@openhospi/database/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, genericOAuth, jwt, multiSession } from "better-auth/plugins";
-import { eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 
 import { sendEmail } from "./email";
+
+function deriveOnboardingEmailCode(token: string): string {
+  const hash = createHash("sha256").update(token).digest("hex");
+  const numeric = Number.parseInt(hash.slice(0, 8), 16) % 1_000_000;
+  return numeric.toString().padStart(6, "0");
+}
+
+function onboardingCodeIdentifier(userId: string): string {
+  return `onboarding-email-code:${userId}`;
+}
+
+function onboardingCodeExpiresAt(): Date {
+  return new Date(Date.now() + 60 * 60 * 1000);
+}
+
+function parseVerificationToken(url: string, token?: string): string | null {
+  if (token) return token;
+  try {
+    return new URL(url).searchParams.get("token");
+  } catch {
+    return null;
+  }
+}
 
 function createAuth() {
   // baseURL is intentionally omitted — derived per-request from
@@ -26,11 +51,33 @@ function createAuth() {
     },
     trustedOrigins: ["https://*.openhospi.nl", "https://op.srv.inacademia.org"],
     emailVerification: {
-      sendVerificationEmail: async ({ user, url }) => {
+      sendVerificationEmail: async ({ user, url, token }) => {
+        const verificationToken = parseVerificationToken(url, token);
+        if (!verificationToken) return;
+
+        const code = deriveOnboardingEmailCode(verificationToken);
+        const identifier = onboardingCodeIdentifier(user.id);
+
+        await db
+          .delete(schema.verification)
+          .where(
+            and(
+              eq(schema.verification.identifier, identifier),
+              gt(schema.verification.expiresAt, new Date()),
+            ),
+          );
+
+        await db.insert(schema.verification).values({
+          identifier,
+          value: JSON.stringify({ token: verificationToken, code, email: user.email }),
+          expiresAt: onboardingCodeExpiresAt(),
+        });
+
         void sendEmail({
           to: user.email,
-          subject: "Verify your email — OpenHospi",
-          text: `Click the link to verify your email: ${url}`,
+          subject: "Your OpenHospi verification code",
+          text: `Your verification code is ${code}. This code expires in 60 minutes.\n\nYou can also verify with this link: ${url}`,
+          html: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 60 minutes.</p><p>You can also verify with this link: <a href="${url}">${url}</a></p>`,
         });
       },
       autoSignInAfterVerification: true,
@@ -57,7 +104,7 @@ function createAuth() {
               data: {
                 ...user,
                 email: keepRealEmail ? user.email : `${user.id}@id.openhospi.nl`,
-                emailVerified: keepRealEmail,
+                emailVerified: false,
               },
             };
           },

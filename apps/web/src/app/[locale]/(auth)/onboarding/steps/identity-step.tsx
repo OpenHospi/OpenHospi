@@ -21,26 +21,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@/lib/form-utils";
 
-import { saveIdentityStep } from "../actions";
+import { startEmailVerification } from "../actions";
 
 type Props = {
   defaultValues: Partial<IdentityStepData>;
   institutionDomain?: string;
-  onNext: () => void;
+  onNextAction: (email: string) => void;
 };
 
-export function IdentityStep({ defaultValues, institutionDomain, onNext }: Props) {
+export function IdentityStep({ defaultValues, institutionDomain, onNextAction }: Props) {
   const t = useTranslations("app.onboarding");
   const tCommon = useTranslations("common.labels");
   const locale = useLocale();
   const [isPending, startTransition] = useTransition();
 
   const institution = institutionDomain ? getInstitution(institutionDomain) : null;
-  const institutionName = institution
-    ? locale === "nl"
-      ? institution.name.nl
-      : institution.name.en
-    : null;
+
+  let resolvedInstitutionName: string | null = null;
+  if (institution) {
+    resolvedInstitutionName = locale === "nl" ? institution.name.nl : institution.name.en;
+  }
 
   const form = useForm<IdentityStepData>({
     resolver: zodResolver(identityStepSchema),
@@ -53,25 +53,25 @@ export function IdentityStep({ defaultValues, institutionDomain, onNext }: Props
 
   function onSubmit(data: IdentityStepData) {
     startTransition(async () => {
-      const result = await saveIdentityStep(data);
+      const result = await startEmailVerification(data);
       if (result?.error) {
-        toast.error(result.error);
+        toast.error(t(`identity.${result.error}`));
         return;
       }
       toast.success(t("identity.verificationSent"));
-      onNext();
+      onNextAction(result.email);
     });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {institutionName && (
+        {resolvedInstitutionName && (
           <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-4">
             <Building2 className="size-5 shrink-0 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">{t("identity.institution")}</p>
-              <p className="text-sm text-muted-foreground">{institutionName}</p>
+              <p className="text-sm text-muted-foreground">{resolvedInstitutionName}</p>
             </div>
           </div>
         )}

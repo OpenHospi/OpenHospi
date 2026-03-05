@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/profile";
 
 import { AboutStep } from "./steps/about-step";
+import { EmailVerificationStep } from "./steps/email-verification-step";
 import { IdentityStep } from "./steps/identity-step";
 import { LanguagesStep } from "./steps/languages-step";
 import { PersonalityStep } from "./steps/personality-step";
@@ -19,12 +20,16 @@ import { SecurityStep } from "./steps/security-step";
 type Props = {
   initialData: Partial<ProfileWithPhotos>;
   userId: string;
+  emailVerified: boolean;
 };
 
-export function OnboardingForm({ initialData, userId }: Props) {
+export function OnboardingForm({ initialData, userId, emailVerified }: Props) {
   const t = useTranslations("app.onboarding");
   const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
   const [photos, setPhotos] = useState<ProfilePhoto[]>(initialData.photos ?? []);
+  const [isIdentitySubmitted, setIsIdentitySubmitted] = useState(false);
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState(initialData.email ?? "");
+  const [isIdentityVerified, setIsIdentityVerified] = useState(emailVerified);
 
   const stepTitles = [
     t("steps.identity"),
@@ -35,6 +40,11 @@ export function OnboardingForm({ initialData, userId }: Props) {
     t("steps.preferences"),
     t("steps.security"),
   ];
+
+  const stepDescription =
+    step === 1 && isIdentitySubmitted && !isIdentityVerified
+      ? t("identity.codeStepDescription")
+      : t(`stepDescriptions.step${step}`);
 
   return (
     <div className="w-full max-w-lg space-y-8">
@@ -50,10 +60,10 @@ export function OnboardingForm({ initialData, userId }: Props) {
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight">{stepTitles[step - 1]}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t(`stepDescriptions.step${step}`)}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{stepDescription}</p>
       </div>
 
-      {step === 1 && (
+      {step === 1 && !isIdentitySubmitted && (
         <IdentityStep
           defaultValues={{
             firstName: initialData.firstName ?? "",
@@ -61,7 +71,25 @@ export function OnboardingForm({ initialData, userId }: Props) {
             email: initialData.email ?? "",
           }}
           institutionDomain={initialData.institutionDomain}
-          onNext={() => setStep(2)}
+          onNextAction={(email) => {
+            setPendingVerificationEmail(email);
+            setIsIdentitySubmitted(true);
+            setIsIdentityVerified(false);
+          }}
+        />
+      )}
+
+      {step === 1 && isIdentitySubmitted && !isIdentityVerified && (
+        <EmailVerificationStep
+          email={pendingVerificationEmail}
+          onBack={() => {
+            setIsIdentitySubmitted(false);
+            setIsIdentityVerified(false);
+          }}
+          onVerified={() => {
+            setIsIdentityVerified(true);
+            setStep(2);
+          }}
         />
       )}
 

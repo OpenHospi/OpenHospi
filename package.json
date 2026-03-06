@@ -59,7 +59,7 @@
       "minimatch@9": "9.0.7",
       "minimatch@10": "10.2.3",
       "ajv@6": "6.14.0",
-      "esbuild": ">=0.25.0",
+      "esbuild": "0.25.10",
       "lodash": ">=4.17.23"
     },
     "ignoredBuiltDependencies": [

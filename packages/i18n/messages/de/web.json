@@ -60,10 +60,15 @@
       "title": "Studentenzimmer in den Niederlanden",
       "description": "Durchsuche verfügbare Studentenzimmer in niederländischen Städten. Kostenlos, verifiziert und fair für jeden Studierenden."
     },
+    "alternatives": {
+      "title": "Alternativen — Studentenwohnungsplattformen Vergleichen",
+      "description": "Ehrlicher Vergleich niederländischer Studentenwohnungsplattformen. Sieh, wie OpenHospi im Vergleich zu Hospi.nl, myHospi, Dingdong, Kamernet und Facebook-Gruppen abschneidet."
+    },
     "breadcrumbs": {
       "home": "Startseite",
       "rooms": "Studentenzimmer",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "alternatives": "Alternativen"
     },
     "faq": {
       "costs": [
@@ -138,6 +143,7 @@
       "dataProcessors": "Auftragsverarbeiter",
       "dpia": "DSFA",
       "about": "Über uns",
+      "alternatives": "Alternativen",
       "faq": "FAQ",
       "missingAssociation": "Vereinigung fehlt?"
     },
@@ -724,5 +730,197 @@
         ]
       }
     ]
+  },
+  "alternatives": {
+    "title": "Alternativen & Vergleich",
+    "subtitle": "Ein ehrlicher Blick auf die niederländische Studentenwohnungslandschaft. Wir glauben an Transparenz — auch über unsere Mitbewerber.",
+    "disclaimer": "Plattformen ändern sich. Zuletzt aktualisiert: März 2026. Stimmt etwas nicht? Schreib uns an info@openhospi.nl.",
+    "table": {
+      "title": "Schnellvergleich",
+      "columns": ["Merkmal", "OpenHospi", "Hospi.nl", "myHospi.nl", "Dingdong", "Kamernet", "Facebook-Gruppen"],
+      "rows": [
+        {
+          "feature": "Preis",
+          "openhospi": { "label": "Kostenlos", "tone": "positive" },
+          "hospi": { "label": "Unbekannt", "tone": "neutral" },
+          "myhospi": { "label": "Freemium", "tone": "warning" },
+          "dingdong": { "label": "Freemium", "tone": "warning" },
+          "kamernet": { "label": "Bezahlt", "tone": "negative" },
+          "facebook": { "label": "Kostenlos", "tone": "positive" }
+        },
+        {
+          "feature": "Pay-to-Win?",
+          "openhospi": { "label": "Nein", "tone": "positive" },
+          "hospi": { "label": "Unbekannt", "tone": "neutral" },
+          "myhospi": { "label": "Ja", "tone": "negative" },
+          "dingdong": { "label": "Ja", "tone": "negative" },
+          "kamernet": { "label": "Ja", "tone": "negative" },
+          "facebook": { "label": "Nein", "tone": "positive" }
+        },
+        {
+          "feature": "Verifizierte Studierende",
+          "openhospi": { "label": "InAcademia", "tone": "positive" },
+          "hospi": { "label": "Nein", "tone": "negative" },
+          "myhospi": { "label": "Nein", "tone": "negative" },
+          "dingdong": { "label": "Nein", "tone": "negative" },
+          "kamernet": { "label": "Nein", "tone": "negative" },
+          "facebook": { "label": "Nein", "tone": "negative" }
+        },
+        {
+          "feature": "Hospi-Workflow",
+          "openhospi": { "label": "Ja", "tone": "positive" },
+          "hospi": { "label": "Stark", "tone": "positive" },
+          "myhospi": { "label": "Ja", "tone": "positive" },
+          "dingdong": { "label": "Teilweise", "tone": "warning" },
+          "kamernet": { "label": "Teilweise", "tone": "warning" },
+          "facebook": { "label": "Nein", "tone": "negative" }
+        },
+        {
+          "feature": "Chat",
+          "openhospi": { "label": "E2E verschlüsselt", "tone": "positive" },
+          "hospi": { "label": "In-App", "tone": "positive" },
+          "myhospi": { "label": "In-App", "tone": "positive" },
+          "dingdong": { "label": "In-App", "tone": "positive" },
+          "kamernet": { "label": "Bezahlt", "tone": "negative" },
+          "facebook": { "label": "Messenger", "tone": "neutral" }
+        },
+        {
+          "feature": "Open Source",
+          "openhospi": { "label": "Ja", "tone": "positive" },
+          "hospi": { "label": "Nein", "tone": "neutral" },
+          "myhospi": { "label": "Nein", "tone": "neutral" },
+          "dingdong": { "label": "Nein", "tone": "neutral" },
+          "kamernet": { "label": "Nein", "tone": "neutral" },
+          "facebook": { "label": "Nein", "tone": "neutral" }
+        }
+      ]
+    },
+    "platforms": {
+      "title": "Plattformdetails",
+      "strengthsLabel": "Stärken",
+      "weaknessesLabel": "Schwächen",
+      "bestForLabel": "Am besten für",
+      "items": [
+        {
+          "name": "OpenHospi",
+          "type": "Unsere Plattform",
+          "url": "#",
+          "pricing": "Kostenlos — kein Premium, keine Werbung, keine Paywalls",
+          "strengths": [
+            "100% kostenlos, keine Pay-to-Win-Mechanismen",
+            "Jeder Nutzer verifiziert über InAcademia (Universitätsverifizierung)",
+            "Ende-zu-Ende verschlüsselter Chat",
+            "Vollständig Open Source — jeder kann den Code prüfen",
+            "Keine Tracker, DSGVO-first Datenschutz",
+            "Mobile App für iOS und Android"
+          ],
+          "weaknesses": [
+            "Neue Plattform — Nutzerbasis und Städteabdeckung wachsen noch",
+            "Weniger Anzeigen als etablierte Plattformen"
+          ],
+          "bestFor": "Studierende, die eine kostenlose, faire und private Wohnungsplattform mit verifizierten Nutzern wollen."
+        },
+        {
+          "name": "Hospi.nl",
+          "type": "Direkter Mitbewerber",
+          "url": "https://hospi.nl",
+          "pricing": "Keine klaren öffentlichen Preise gefunden",
+          "strengths": [
+            "Starker WG-seitiger Workflow (Sternabstimmung, private Notizen, Rollen)",
+            "Geteilter Posteingang und WG-Chat-Funktionen",
+            "Etablierte Plattform in der niederländischen Hospi-Szene"
+          ],
+          "weaknesses": [
+            "Keine öffentliche Preistransparenz",
+            "Keine Studierendenverifizierung",
+            "Nicht Open Source"
+          ],
+          "bestFor": "WGs, die ein leistungsstarkes Hospi-Management-Tool mit Rollen und Berechtigungen suchen."
+        },
+        {
+          "name": "myHospi.nl",
+          "type": "Direkter Mitbewerber",
+          "url": "https://myhospi.nl",
+          "pricing": "Kostenloser Kern. Boost €1,99, Premium Woche €3,99, Monat €8,99, 3 Monate €19,99, Superreaktionen €0,99–€4,99",
+          "strengths": [
+            "Umfangreiche Sucherprofile mit Videosupport",
+            "Kandidatenübersicht mit Notizen und Ein-Klick-Einladungen",
+            "Anwesenheitserfassung und Push-Benachrichtigungen",
+            "Erinnerungen für Hospiteer-Events"
+          ],
+          "weaknesses": [
+            "Pay-to-Win: Boosts, Premium und Superreaktionen geben zahlenden Nutzern Vorteile",
+            "Keine Studierendenverifizierung",
+            "Nicht Open Source"
+          ],
+          "bestFor": "Sucher, die umfangreiche Profilfunktionen wollen und bereit sind, für extra Sichtbarkeit zu zahlen."
+        },
+        {
+          "name": "Dingdong",
+          "type": "Direkter Mitbewerber",
+          "url": "https://dingdong-nederland.nl",
+          "pricing": "Kostenloser Kern. Premium+ €1,99/Woche, €3,99/Monat, €9,99/3 Monate",
+          "strengths": [
+            "Swipe-Style-Matching — moderne, App-first Erfahrung",
+            "Hospi-Einladungen und Kandidaten-Ranking",
+            "In-App-Chat",
+            "Niedrig bepreiste Premium+-Stufe"
+          ],
+          "weaknesses": [
+            "Premium+ gibt zahlenden Nutzern mehr Sichtbarkeit",
+            "Weniger traditionelles Hospi-Management als Hospi.nl",
+            "Keine Studierendenverifizierung",
+            "Nicht Open Source"
+          ],
+          "bestFor": "Sucher, die eine Swipe/Match-Erfahrung zu niedrigen Kosten bevorzugen."
+        },
+        {
+          "name": "Kamernet",
+          "type": "Alternativer Kanal",
+          "url": "https://kamernet.nl",
+          "pricing": "Sucher: €38/4 Wochen, €75/12 Wochen, €98/6 Monate. Inserieren ist kostenlos.",
+          "strengths": [
+            "Enorme Reichweite — der größte niederländische Zimmermarktplatz",
+            "Geteilter Posteingang und WG-Abstimmungsfunktionen",
+            "WG-Chat für Mitbewohnerkommunikation"
+          ],
+          "weaknesses": [
+            "Sucher müssen zahlen um Nachrichten zu senden — €38+ Eintrittsbarriere",
+            "Nicht nur für Studierende — offen für alle",
+            "Marktplatz-Modell, nicht Hospi-fokussiert",
+            "Nicht Open Source"
+          ],
+          "bestFor": "Alle (nicht nur Studierende), die maximale Reichweite wollen und bereit sind, für Zugang zu zahlen."
+        },
+        {
+          "name": "Facebook-Gruppen",
+          "type": "Alternativer Kanal",
+          "url": "https://facebook.com",
+          "pricing": "Kostenlos",
+          "strengths": [
+            "Massive Reichweite — Millionen von Nutzern",
+            "Kostenlos zu posten und zu antworten",
+            "Einfach Anzeigen in mehreren Gruppen zu teilen"
+          ],
+          "weaknesses": [
+            "Kein strukturierter Hospi-Workflow",
+            "Keine Nutzerverifizierung — Betrug kommt vor",
+            "Moderation variiert je nach Gruppe",
+            "Keine speziellen Wohnungstools oder Filter",
+            "Datenschutz abhängig von Facebooks Richtlinien"
+          ],
+          "bestFor": "Schnelle, informelle Zimmersuche, bei der Reichweite wichtiger ist als Struktur."
+        }
+      ]
+    },
+    "honesty": {
+      "title": "Warum wir ehrlich darüber sind",
+      "description": "Wir haben OpenHospi gebaut, weil wir glauben, dass Studentenwohnungen kostenlos und fair sein sollten. Aber fair zu sein bedeutet auch, ehrlich über die Landschaft zu sein. Einige Plattformen haben Funktionen, die wir noch nicht haben. Einige haben mehr Nutzer. Wir sind nicht hier, um Mitbewerber schlecht zu machen — wir sind hier, um dir das vollständige Bild zu geben, damit du die beste Wahl für deine Situation treffen kannst. Wenn eine andere Plattform gerade besser für dich funktioniert, nutze sie. Wir sind da, wenn du etwas Kostenloses, Privates und für Studierende Gebautes willst."
+    },
+    "cta": {
+      "title": "OpenHospi ausprobieren?",
+      "subtitle": "Kostenlos, fair und verifiziert — ohne Bedingungen.",
+      "button": "Mit InAcademia anmelden"
+    }
   }
 }

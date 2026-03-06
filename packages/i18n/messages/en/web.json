@@ -60,10 +60,15 @@
       "title": "Student Rooms in the Netherlands",
       "description": "Browse available student rooms across Dutch cities. Free, verified, and fair for every student."
     },
+    "alternatives": {
+      "title": "Alternatives — Compare Student Housing Platforms",
+      "description": "Honest comparison of Dutch student housing platforms. See how OpenHospi stacks up against Hospi.nl, myHospi, Dingdong, Kamernet, and Facebook groups."
+    },
     "breadcrumbs": {
       "home": "Home",
       "rooms": "Student Rooms",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "alternatives": "Alternatives"
     },
     "faq": {
       "costs": [
@@ -134,6 +139,7 @@
       "cookies": "Cookie policy",
       "terms": "Terms & conditions",
       "about": "About",
+      "alternatives": "Alternatives",
       "faq": "FAQ",
       "missingAssociation": "Association missing?",
       "processingRegister": "Processing register",
@@ -724,5 +730,197 @@
         ]
       }
     ]
+  },
+  "alternatives": {
+    "title": "Alternatives & Comparison",
+    "subtitle": "An honest look at the Dutch student housing landscape. We believe in transparency — including about our competitors.",
+    "disclaimer": "Platforms change. Last updated: March 2026. See something wrong? Email us at info@openhospi.nl.",
+    "table": {
+      "title": "Quick comparison",
+      "columns": ["Feature", "OpenHospi", "Hospi.nl", "myHospi.nl", "Dingdong", "Kamernet", "Facebook Groups"],
+      "rows": [
+        {
+          "feature": "Price",
+          "openhospi": { "label": "Free", "tone": "positive" },
+          "hospi": { "label": "Unknown", "tone": "neutral" },
+          "myhospi": { "label": "Freemium", "tone": "warning" },
+          "dingdong": { "label": "Freemium", "tone": "warning" },
+          "kamernet": { "label": "Paid", "tone": "negative" },
+          "facebook": { "label": "Free", "tone": "positive" }
+        },
+        {
+          "feature": "Pay-to-win?",
+          "openhospi": { "label": "No", "tone": "positive" },
+          "hospi": { "label": "Unknown", "tone": "neutral" },
+          "myhospi": { "label": "Yes", "tone": "negative" },
+          "dingdong": { "label": "Yes", "tone": "negative" },
+          "kamernet": { "label": "Yes", "tone": "negative" },
+          "facebook": { "label": "No", "tone": "positive" }
+        },
+        {
+          "feature": "Verified students",
+          "openhospi": { "label": "InAcademia", "tone": "positive" },
+          "hospi": { "label": "No", "tone": "negative" },
+          "myhospi": { "label": "No", "tone": "negative" },
+          "dingdong": { "label": "No", "tone": "negative" },
+          "kamernet": { "label": "No", "tone": "negative" },
+          "facebook": { "label": "No", "tone": "negative" }
+        },
+        {
+          "feature": "Hospi workflow",
+          "openhospi": { "label": "Yes", "tone": "positive" },
+          "hospi": { "label": "Strong", "tone": "positive" },
+          "myhospi": { "label": "Yes", "tone": "positive" },
+          "dingdong": { "label": "Partial", "tone": "warning" },
+          "kamernet": { "label": "Partial", "tone": "warning" },
+          "facebook": { "label": "No", "tone": "negative" }
+        },
+        {
+          "feature": "Chat",
+          "openhospi": { "label": "E2E encrypted", "tone": "positive" },
+          "hospi": { "label": "In-app", "tone": "positive" },
+          "myhospi": { "label": "In-app", "tone": "positive" },
+          "dingdong": { "label": "In-app", "tone": "positive" },
+          "kamernet": { "label": "Paid", "tone": "negative" },
+          "facebook": { "label": "Messenger", "tone": "neutral" }
+        },
+        {
+          "feature": "Open source",
+          "openhospi": { "label": "Yes", "tone": "positive" },
+          "hospi": { "label": "No", "tone": "neutral" },
+          "myhospi": { "label": "No", "tone": "neutral" },
+          "dingdong": { "label": "No", "tone": "neutral" },
+          "kamernet": { "label": "No", "tone": "neutral" },
+          "facebook": { "label": "No", "tone": "neutral" }
+        }
+      ]
+    },
+    "platforms": {
+      "title": "Platform details",
+      "strengthsLabel": "Strengths",
+      "weaknessesLabel": "Weaknesses",
+      "bestForLabel": "Best for",
+      "items": [
+        {
+          "name": "OpenHospi",
+          "type": "Our platform",
+          "url": "#",
+          "pricing": "Free — no premium, no ads, no paywalls",
+          "strengths": [
+            "100% free, no pay-to-win mechanics",
+            "Every user verified via InAcademia (university-backed)",
+            "End-to-end encrypted chat",
+            "Fully open source — anyone can audit the code",
+            "No trackers, GDPR-first privacy",
+            "Mobile app for iOS and Android"
+          ],
+          "weaknesses": [
+            "New platform — still growing user base and city coverage",
+            "Fewer listings than established platforms"
+          ],
+          "bestFor": "Students who want a free, fair, and private housing platform with verified users."
+        },
+        {
+          "name": "Hospi.nl",
+          "type": "Direct competitor",
+          "url": "https://hospi.nl",
+          "pricing": "No clear public pricing found",
+          "strengths": [
+            "Strong house-side workflow (star voting, private notes, roles)",
+            "Shared inbox and house chat features",
+            "Established platform in the Dutch hospi scene"
+          ],
+          "weaknesses": [
+            "No public pricing transparency",
+            "No student verification",
+            "Not open source"
+          ],
+          "bestFor": "Houses looking for a powerful hospi management tool with roles and permissions."
+        },
+        {
+          "name": "myHospi.nl",
+          "type": "Direct competitor",
+          "url": "https://myhospi.nl",
+          "pricing": "Free core. Boost €1.99, Premium week €3.99, month €8.99, 3 months €19.99, Super reactions €0.99–€4.99",
+          "strengths": [
+            "Rich seeker profiles with video support",
+            "Candidate overview with notes and one-click invites",
+            "Attendance tracking and push notifications",
+            "Reminders for hospiteer events"
+          ],
+          "weaknesses": [
+            "Pay-to-win: boosts, premium, and super reactions give paying users advantages",
+            "No student verification",
+            "Not open source"
+          ],
+          "bestFor": "Seekers who want rich profile features and don't mind paying for extra visibility."
+        },
+        {
+          "name": "Dingdong",
+          "type": "Direct competitor",
+          "url": "https://dingdong-nederland.nl",
+          "pricing": "Free core. Premium+ €1.99/week, €3.99/month, €9.99/3 months",
+          "strengths": [
+            "Swipe-style matching — modern, app-first experience",
+            "Hospi invites and candidate ranking",
+            "In-app chat",
+            "Low-cost Premium+ tier"
+          ],
+          "weaknesses": [
+            "Premium+ gives paying users more visibility",
+            "Less traditional hospi management compared to Hospi.nl",
+            "No student verification",
+            "Not open source"
+          ],
+          "bestFor": "Seekers who prefer a swipe/match-oriented experience at a low cost."
+        },
+        {
+          "name": "Kamernet",
+          "type": "Alternative channel",
+          "url": "https://kamernet.nl",
+          "pricing": "Seekers: €38/4 weeks, €75/12 weeks, €98/6 months. Listing is free.",
+          "strengths": [
+            "Huge reach — the largest Dutch room marketplace",
+            "Shared inbox and house voting features",
+            "Housechat for housemate communication"
+          ],
+          "weaknesses": [
+            "Seekers must pay to message — €38+ barrier to entry",
+            "Not student-only — open to anyone",
+            "Room marketplace model, not hospi-focused",
+            "Not open source"
+          ],
+          "bestFor": "Anyone (not just students) who wants maximum reach and is willing to pay for access."
+        },
+        {
+          "name": "Facebook Groups",
+          "type": "Alternative channel",
+          "url": "https://facebook.com",
+          "pricing": "Free",
+          "strengths": [
+            "Massive reach — millions of users",
+            "Free to post and respond",
+            "Easy to share listings in multiple groups"
+          ],
+          "weaknesses": [
+            "No structured hospi workflow at all",
+            "No user verification — scams are common",
+            "Moderation varies per group",
+            "No dedicated housing tools or filters",
+            "Privacy depends on Facebook's policies"
+          ],
+          "bestFor": "Quick, informal room searches where reach matters more than structure."
+        }
+      ]
+    },
+    "honesty": {
+      "title": "Why we're honest about this",
+      "description": "We built OpenHospi because we believe student housing should be free and fair. But being fair also means being honest about the landscape. Some platforms have features we don't have yet. Some have more users. We're not here to trash competitors — we're here to give you the full picture so you can make the best choice for your situation. If another platform works better for you right now, use it. We'll be here when you want something free, private, and built for students."
+    },
+    "cta": {
+      "title": "Want to try OpenHospi?",
+      "subtitle": "Free, fair, and verified — no strings attached.",
+      "button": "Log in with InAcademia"
+    }
   }
 }

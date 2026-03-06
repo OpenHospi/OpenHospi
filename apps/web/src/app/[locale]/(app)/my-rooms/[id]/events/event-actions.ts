@@ -109,9 +109,19 @@ export async function cancelEvent(eventId: string, roomId: string) {
   // Notify invitees outside the RLS transaction (same pattern as rsvp-actions)
   if (result) {
     for (const invitee of result.invitees) {
-      await notifyUser(invitee.userId, "notifications.eventCancelled", {
-        eventTitle: result.eventTitle,
-      });
+      await notifyUser(
+        invitee.userId,
+        "notifications.eventCancelled",
+        {
+          eventTitle: result.eventTitle,
+        },
+        {
+          email: {
+            template: "eventCancelled",
+            props: { eventTitle: result.eventTitle },
+          },
+        },
+      );
     }
   }
 

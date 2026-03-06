@@ -92,10 +92,25 @@ export async function batchInviteApplicants(
       }
 
       // Notify invitee
-      await notifyUser(app.userId, "notifications.invited", {
-        eventTitle: event.title,
-        roomTitle: room?.title ?? "",
-      });
+      const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/applications`;
+      await notifyUser(
+        app.userId,
+        "notifications.invited",
+        {
+          eventTitle: event.title,
+          roomTitle: room?.title ?? "",
+        },
+        {
+          email: {
+            template: "eventInvitation",
+            props: {
+              eventTitle: event.title,
+              roomTitle: room?.title ?? "",
+              eventUrl,
+            },
+          },
+        },
+      );
     }
 
     // Auto-create chat conversations for each invitee

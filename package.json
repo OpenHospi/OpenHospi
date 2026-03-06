@@ -36,6 +36,7 @@
     "i18n:check": "i18n-check --source nl --locales packages/i18n/messages",
     "expo:doctor": "cd apps/mobile && npx expo-doctor@latest",
     "expo:install": "pnpm --filter @openhospi/mobile exec expo install",
+    "email:dev": "pnpm --filter @openhospi/email dev",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist **/.expo"
   },
   "pnpm": {

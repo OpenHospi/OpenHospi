@@ -20,6 +20,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^13.12.0",
     "@openhospi/crypto": "workspace:*",
+    "@openhospi/email": "workspace:*",
     "@openhospi/database": "workspace:*",
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",

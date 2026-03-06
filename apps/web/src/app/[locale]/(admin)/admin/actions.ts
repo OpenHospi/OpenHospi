@@ -11,6 +11,7 @@ import {
   session,
   user,
 } from "@openhospi/database/schema";
+import type { SupportedLocale } from "@openhospi/shared/constants";
 import type { City, ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, gte } from "drizzle-orm";
@@ -18,6 +19,7 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/lib/auth/auth";
 import { requireAdmin } from "@/lib/auth/server";
+import { sendTemplatedEmail } from "@/lib/services/email";
 
 export type AggregateStats = {
   totalUsers: number;
@@ -410,6 +412,20 @@ export async function banUser(reportId: string, userId: string, reason: string) 
     metadata: { reportId },
   });
 
+  // Send ban email (best-effort)
+  try {
+    const [profile] = await db
+      .select({ email: profiles.email, preferredLocale: profiles.preferredLocale })
+      .from(profiles)
+      .where(eq(profiles.id, userId));
+    if (profile?.email) {
+      const locale = (profile.preferredLocale ?? "nl") as SupportedLocale;
+      await sendTemplatedEmail(profile.email, "userBanned", { reason }, locale);
+    }
+  } catch {
+    // Email delivery is best-effort
+  }
+
   revalidatePath("/admin/reports");
 }
 
@@ -437,6 +453,12 @@ export async function removeListing(reportId: string, roomId: string, reason: st
   const adminSession = await requireAdmin();
   const adminUserId = adminSession.user.id;
 
+  // Get room owner before closing
+  const [room] = await db
+    .select({ ownerId: rooms.ownerId })
+    .from(rooms)
+    .where(eq(rooms.id, roomId));
+
   await db.update(rooms).set({ status: RoomStatus.closed }).where(eq(rooms.id, roomId));
 
   await db
@@ -456,6 +478,22 @@ export async function removeListing(reportId: string, roomId: string, reason: st
     reason,
     metadata: { reportId },
   });
+
+  // Send listing removed email to owner (best-effort)
+  if (room?.ownerId) {
+    try {
+      const [profile] = await db
+        .select({ email: profiles.email, preferredLocale: profiles.preferredLocale })
+        .from(profiles)
+        .where(eq(profiles.id, room.ownerId));
+      if (profile?.email) {
+        const locale = (profile.preferredLocale ?? "nl") as SupportedLocale;
+        await sendTemplatedEmail(profile.email, "listingRemoved", { reason }, locale);
+      }
+    } catch {
+      // Email delivery is best-effort
+    }
+  }
 
   revalidatePath("/admin/reports");
 }

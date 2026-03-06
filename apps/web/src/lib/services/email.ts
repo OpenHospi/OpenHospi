@@ -1,3 +1,6 @@
+import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
+import { renderEmail } from "@openhospi/email";
+import type { SupportedLocale } from "@openhospi/shared/constants";
 import { createTransport } from "nodemailer";
 
 const transporter = createTransport({
@@ -28,4 +31,14 @@ export async function sendEmail({
     text,
     html,
   });
+}
+
+export async function sendTemplatedEmail<T extends EmailTemplateName>(
+  to: string,
+  template: T,
+  props: TemplatePropsMap[T],
+  locale: SupportedLocale,
+) {
+  const { html, text, subject } = await renderEmail(template, props, locale);
+  return sendEmail({ to, subject, text, html });
 }

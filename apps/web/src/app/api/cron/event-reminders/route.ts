@@ -42,12 +42,28 @@ export async function POST(request: Request) {
     return Response.json({ sent: 0, failed: 0 });
   }
 
+  const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/applications`;
+
   const results = await Promise.allSettled(
     invitations.map(async (inv) => {
-      await notifyUser(inv.userId, "notifications.reminder", {
-        eventTitle: inv.eventTitle,
-        time: inv.timeStart,
-      });
+      await notifyUser(
+        inv.userId,
+        "notifications.reminder",
+        {
+          eventTitle: inv.eventTitle,
+          time: inv.timeStart,
+        },
+        {
+          email: {
+            template: "eventReminder",
+            props: {
+              eventTitle: inv.eventTitle,
+              time: inv.timeStart,
+              eventUrl,
+            },
+          },
+        },
+      );
       return inv.id;
     }),
   );

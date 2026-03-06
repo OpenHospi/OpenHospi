@@ -98,7 +98,9 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
 
   const updateFilter = useCallback(
     (key: string, value: string | string[] | undefined) => {
-      router.replace(buildParams({ [key]: value, page: undefined }), { scroll: false });
+      router.replace(buildParams({ [key]: value, page: undefined, filtered: "1" }), {
+        scroll: false,
+      });
     },
     [router, buildParams],
   );
@@ -111,6 +113,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
           buildParams({
             minPrice: range[0] > PRICE_MIN ? String(range[0]) : undefined,
             maxPrice: range[1] < PRICE_MAX ? String(range[1]) : undefined,
+            filtered: "1",
           }),
           { scroll: false },
         );

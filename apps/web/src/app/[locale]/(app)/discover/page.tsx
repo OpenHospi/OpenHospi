@@ -81,13 +81,13 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   const { user } = await requireSession();
   const sp = await searchParams;
 
-  const hasSearchParams = Object.keys(sp).length > 0;
+  const userHasFiltered = sp.filtered === "1";
   const parsed = parseSearchParams(sp);
   const { sort, cursor } = parsed;
   let { filters } = parsed;
 
-  // Pre-fill from profile when no search params
-  if (!hasSearchParams) {
+  // Pre-fill from profile only on first visit (no user interaction yet)
+  if (!userHasFiltered) {
     const profile = await getProfile(user.id);
     if (profile?.preferredCity) {
       filters = { ...filters, city: profile.preferredCity };

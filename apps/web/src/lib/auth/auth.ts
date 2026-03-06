@@ -87,12 +87,7 @@ function createAuth() {
           // Profile may not exist yet during onboarding — use default
         }
 
-        void sendTemplatedEmail(
-          user.email,
-          "verificationCode",
-          { code },
-          locale,
-        );
+        void sendTemplatedEmail(user.email, "verificationCode", { code }, locale);
       },
       autoSignInAfterVerification: true,
       expiresIn: 3600,

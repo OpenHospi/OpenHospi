@@ -27,7 +27,7 @@ type BaseLayoutProps = {
 
 export function BaseLayout({children, previewText, baseUrl, locale, messages}: BaseLayoutProps) {
     const t = createTranslator({locale, messages, namespace: "emails.common"});
-    const logoUrl = `${baseUrl}/logo.svg`;
+    const logoUrl = `${baseUrl}/logo.png`;
 
     return (
         <Html lang={locale}>

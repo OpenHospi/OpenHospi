@@ -1,27 +1,45 @@
 import {Text} from "@react-email/components";
+import {createTranslator} from "next-intl";
 
 import {BaseLayout} from "../components/base-layout";
+import type {BaseEmailProps} from "../types";
 
-export type UserBannedProps = {
+type UserBannedProps = BaseEmailProps & {
     reason: string;
-    t: {
-        heading: string;
-        body: string;
-        contact: string;
-        footer: string;
-        doNotReply: string;
-    };
 };
 
-export function UserBanned({t}: UserBannedProps) {
+export function UserBanned({reason, locale, baseUrl, messages}: UserBannedProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.userBanned"});
+
     return (
-        <BaseLayout previewText={t.heading} t={t}>
-            <Text style={heading}>{t.heading}</Text>
-            <Text style={text}>{t.body}</Text>
-            <Text style={muted}>{t.contact}</Text>
+        <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
+            <Text style={heading}>{t("heading")}</Text>
+            <Text style={text}>{t("body", {reason})}</Text>
+            <Text style={muted}>{t("contact")}</Text>
         </BaseLayout>
     );
 }
+
+UserBanned.PreviewProps = {
+    reason: "Repeated harassment of other users",
+    baseUrl: "http://localhost:3000",
+    locale: "en",
+    messages: {
+        emails: {
+            common: {
+                footer: "OpenHospi — Free student housing platform for the Netherlands",
+                doNotReply: "This is an automated message. Please do not reply to this email.",
+            },
+            userBanned: {
+                heading: "Account suspended",
+                body: "Your account has been suspended for the following reason: {reason}.",
+                contact: "If you believe this is a mistake, please contact us at support@openhospi.nl.",
+            },
+        },
+    },
+};
+
+export default UserBanned;
 
 const heading = {
     fontSize: "24px",
@@ -43,18 +61,3 @@ const muted = {
     lineHeight: "20px",
     margin: "16px 0 0",
 };
-
-export default function UserBannedPreview() {
-    return (
-        <UserBanned
-            reason="Repeated harassment of other users"
-            t={{
-                heading: "Account suspended",
-                body: "Your account has been suspended for the following reason: Repeated harassment of other users.",
-                contact: "If you believe this is a mistake, please contact us at support@openhospi.nl.",
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            }}
-        />
-    );
-}

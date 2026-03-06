@@ -1,27 +1,47 @@
 import {Text} from "@react-email/components";
+import {createTranslator} from "next-intl";
 
 import {BaseLayout} from "../components/base-layout";
+import type {BaseEmailProps} from "../types";
 
-export type RsvpReceivedProps = {
+type RsvpReceivedProps = BaseEmailProps & {
     name: string;
     status: string;
     eventUrl: string;
-    t: {
-        heading: string;
-        body: string;
-        footer: string;
-        doNotReply: string;
-    };
 };
 
-export function RsvpReceived({t}: RsvpReceivedProps) {
+export function RsvpReceived({name, status, locale, baseUrl, messages}: RsvpReceivedProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.rsvpReceived"});
+
     return (
-        <BaseLayout previewText={t.heading} t={t}>
-            <Text style={heading}>{t.heading}</Text>
-            <Text style={text}>{t.body}</Text>
+        <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
+            <Text style={heading}>{t("heading")}</Text>
+            <Text style={text}>{t("body", {name, status})}</Text>
         </BaseLayout>
     );
 }
+
+RsvpReceived.PreviewProps = {
+    name: "Jan de Vries",
+    status: "attending",
+    eventUrl: "http://localhost:3000/my-rooms",
+    baseUrl: "http://localhost:3000",
+    locale: "en",
+    messages: {
+        emails: {
+            common: {
+                footer: "OpenHospi — Free student housing platform for the Netherlands",
+                doNotReply: "This is an automated message. Please do not reply to this email.",
+            },
+            rsvpReceived: {
+                heading: "New RSVP",
+                body: "{name} has responded with: {status}.",
+            },
+        },
+    },
+};
+
+export default RsvpReceived;
 
 const heading = {
     fontSize: "24px",
@@ -36,19 +56,3 @@ const text = {
     lineHeight: "24px",
     margin: "0 0 8px",
 };
-
-export default function RsvpReceivedPreview() {
-    return (
-        <RsvpReceived
-            name="Jan de Vries"
-            status="attending"
-            eventUrl="https://openhospi.nl/my-rooms"
-            t={{
-                heading: "New RSVP",
-                body: "Jan de Vries has responded with: attending.",
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            }}
-        />
-    );
-}

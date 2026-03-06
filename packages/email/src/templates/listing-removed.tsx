@@ -1,27 +1,45 @@
 import {Text} from "@react-email/components";
+import {createTranslator} from "next-intl";
 
 import {BaseLayout} from "../components/base-layout";
+import type {BaseEmailProps} from "../types";
 
-export type ListingRemovedProps = {
+type ListingRemovedProps = BaseEmailProps & {
     reason: string;
-    t: {
-        heading: string;
-        body: string;
-        contact: string;
-        footer: string;
-        doNotReply: string;
-    };
 };
 
-export function ListingRemoved({t}: ListingRemovedProps) {
+export function ListingRemoved({reason, locale, baseUrl, messages}: ListingRemovedProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.listingRemoved"});
+
     return (
-        <BaseLayout previewText={t.heading} t={t}>
-            <Text style={heading}>{t.heading}</Text>
-            <Text style={text}>{t.body}</Text>
-            <Text style={muted}>{t.contact}</Text>
+        <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
+            <Text style={heading}>{t("heading")}</Text>
+            <Text style={text}>{t("body", {reason})}</Text>
+            <Text style={muted}>{t("contact")}</Text>
         </BaseLayout>
     );
 }
+
+ListingRemoved.PreviewProps = {
+    reason: "Listing contains misleading information",
+    baseUrl: "http://localhost:3000",
+    locale: "en",
+    messages: {
+        emails: {
+            common: {
+                footer: "OpenHospi — Free student housing platform for the Netherlands",
+                doNotReply: "This is an automated message. Please do not reply to this email.",
+            },
+            listingRemoved: {
+                heading: "Listing removed",
+                body: "Your listing has been removed for the following reason: {reason}.",
+                contact: "If you believe this is a mistake, please contact us at support@openhospi.nl.",
+            },
+        },
+    },
+};
+
+export default ListingRemoved;
 
 const heading = {
     fontSize: "24px",
@@ -43,18 +61,3 @@ const muted = {
     lineHeight: "20px",
     margin: "16px 0 0",
 };
-
-export default function ListingRemovedPreview() {
-    return (
-        <ListingRemoved
-            reason="Listing contains misleading information"
-            t={{
-                heading: "Listing removed",
-                body: "Your listing has been removed for the following reason: Listing contains misleading information.",
-                contact: "If you believe this is a mistake, please contact us at support@openhospi.nl.",
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            }}
-        />
-    );
-}

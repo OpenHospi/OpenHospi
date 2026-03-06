@@ -1,35 +1,47 @@
-import {Link, Text} from "@react-email/components";
+import {Text} from "@react-email/components";
 import {BRAND_COLOR} from "@openhospi/shared/constants";
+import {createTranslator} from "next-intl";
 
 import {BaseLayout} from "../components/base-layout";
+import type {BaseEmailProps} from "../types";
 
-export type VerificationCodeProps = {
+type VerificationCodeProps = BaseEmailProps & {
     code: string;
-    verificationUrl: string;
-    t: {
-        heading: string;
-        codeLabel: string;
-        orClickLink: string;
-        expiresIn: string;
-        footer: string;
-        doNotReply: string;
-    };
 };
 
-export function VerificationCode({code, verificationUrl, t}: VerificationCodeProps) {
+export function VerificationCode({code, locale, baseUrl, messages}: VerificationCodeProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.verificationCode"});
+
     return (
-        <BaseLayout previewText={`${t.codeLabel} ${code}`} t={t}>
-            <Text style={heading}>{t.heading}</Text>
-            <Text style={label}>{t.codeLabel}</Text>
+        <BaseLayout previewText={`${t("codeLabel")} ${code}`} locale={locale} baseUrl={baseUrl} messages={messages}>
+            <Text style={heading}>{t("heading")}</Text>
+            <Text style={label}>{t("codeLabel")}</Text>
             <Text style={codeStyle}>{code}</Text>
-            <Text style={text}>{t.orClickLink}</Text>
-            <Link href={verificationUrl} style={link}>
-                {verificationUrl}
-            </Link>
-            <Text style={muted}>{t.expiresIn}</Text>
+            <Text style={muted}>{t("expiresIn")}</Text>
         </BaseLayout>
     );
 }
+
+VerificationCode.PreviewProps = {
+    code: "123456",
+    baseUrl: "http://localhost:3000",
+    locale: "en",
+    messages: {
+        emails: {
+            common: {
+                footer: "OpenHospi — Free student housing platform for the Netherlands",
+                doNotReply: "This is an automated message. Please do not reply to this email.",
+            },
+            verificationCode: {
+                heading: "Verify your email",
+                codeLabel: "Your verification code:",
+                expiresIn: "This code expires in 60 minutes.",
+            },
+        },
+    },
+};
+
+export default VerificationCode;
 
 const heading = {
     fontSize: "24px",
@@ -52,20 +64,7 @@ const codeStyle = {
     textAlign: "center" as const,
     padding: "16px",
     backgroundColor: "#f0fdfa",
-    borderRadius: "8px",
     margin: "0 0 24px",
-};
-
-const text = {
-    fontSize: "14px",
-    color: "#666",
-    margin: "0 0 8px",
-};
-
-const link = {
-    color: BRAND_COLOR,
-    fontSize: "14px",
-    wordBreak: "break-all" as const,
 };
 
 const muted = {
@@ -73,20 +72,3 @@ const muted = {
     color: "#999",
     margin: "16px 0 0",
 };
-
-export default function VerificationCodePreview() {
-    return (
-        <VerificationCode
-            code="123456"
-            verificationUrl="https://openhospi.nl/verify?token=abc123"
-            t={{
-                heading: "Verify your email",
-                codeLabel: "Your verification code:",
-                orClickLink: "Or verify by clicking this link:",
-                expiresIn: "This code expires in 60 minutes.",
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            }}
-        />
-    );
-}

@@ -1,6 +1,6 @@
-import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import { db, withRLS } from "@openhospi/database";
 import { notifications, profiles } from "@openhospi/database/schema";
+import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import { getMessages } from "@openhospi/i18n/app";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import type { SupportedLocale } from "@openhospi/shared/constants";

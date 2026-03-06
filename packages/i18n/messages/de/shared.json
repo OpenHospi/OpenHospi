@@ -1420,7 +1420,6 @@
       "subject": "Dein OpenHospi-Verifizierungscode",
       "heading": "Bestätige deine E-Mail",
       "codeLabel": "Dein Verifizierungscode:",
-      "orClickLink": "Oder bestätige über diesen Link:",
       "expiresIn": "Dieser Code läuft in 60 Minuten ab."
     },
     "eventInvitation": {

@@ -1,25 +1,43 @@
 import {Text} from "@react-email/components";
+import {createTranslator} from "next-intl";
 
 import {BaseLayout} from "../components/base-layout";
+import type {BaseEmailProps} from "../types";
 
-export type ApplicationNotChosenProps = {
+type ApplicationNotChosenProps = BaseEmailProps & {
     roomTitle: string;
-    t: {
-        heading: string;
-        body: string;
-        footer: string;
-        doNotReply: string;
-    };
 };
 
-export function ApplicationNotChosen({t}: ApplicationNotChosenProps) {
+export function ApplicationNotChosen({roomTitle, locale, baseUrl, messages}: ApplicationNotChosenProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.applicationNotChosen"});
+
     return (
-        <BaseLayout previewText={t.heading} t={t}>
-            <Text style={heading}>{t.heading}</Text>
-            <Text style={text}>{t.body}</Text>
+        <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
+            <Text style={heading}>{t("heading")}</Text>
+            <Text style={text}>{t("body", {roomTitle})}</Text>
         </BaseLayout>
     );
 }
+
+ApplicationNotChosen.PreviewProps = {
+    roomTitle: "Cosy room in Amsterdam",
+    baseUrl: "http://localhost:3000",
+    locale: "en",
+    messages: {
+        emails: {
+            common: {
+                footer: "OpenHospi — Free student housing platform for the Netherlands",
+                doNotReply: "This is an automated message. Please do not reply to this email.",
+            },
+            applicationNotChosen: {
+                heading: "Application update",
+                body: 'Unfortunately, the room "{roomTitle}" has been filled. Don\'t give up — there are plenty of other rooms available!',
+            },
+        },
+    },
+};
+
+export default ApplicationNotChosen;
 
 const heading = {
     fontSize: "24px",
@@ -34,17 +52,3 @@ const text = {
     lineHeight: "24px",
     margin: "0 0 8px",
 };
-
-export default function ApplicationNotChosenPreview() {
-    return (
-        <ApplicationNotChosen
-            roomTitle="Cosy room in Amsterdam"
-            t={{
-                heading: "Application update",
-                body: 'Unfortunately, the room "Cosy room in Amsterdam" has been filled. Don\'t give up — there are plenty of other rooms available!',
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            }}
-        />
-    );
-}

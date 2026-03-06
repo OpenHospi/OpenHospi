@@ -1420,7 +1420,6 @@
       "subject": "Your OpenHospi verification code",
       "heading": "Verify your email",
       "codeLabel": "Your verification code:",
-      "orClickLink": "Or verify by clicking this link:",
       "expiresIn": "This code expires in 60 minutes."
     },
     "eventInvitation": {

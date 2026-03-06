@@ -1420,7 +1420,6 @@
       "subject": "Je OpenHospi verificatiecode",
       "heading": "Verifieer je e-mail",
       "codeLabel": "Je verificatiecode:",
-      "orClickLink": "Of verifieer via deze link:",
       "expiresIn": "Deze code verloopt na 60 minuten."
     },
     "eventInvitation": {

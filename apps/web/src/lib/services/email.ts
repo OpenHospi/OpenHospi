@@ -39,6 +39,7 @@ export async function sendTemplatedEmail<T extends EmailTemplateName>(
   props: TemplatePropsMap[T],
   locale: SupportedLocale,
 ) {
-  const { html, text, subject } = await renderEmail(template, props, locale);
+  const baseUrl = process.env.BETTER_AUTH_URL ?? "https://openhospi.nl";
+  const { html, text, subject } = await renderEmail(template, props, locale, baseUrl);
   return sendEmail({ to, subject, text, html });
 }

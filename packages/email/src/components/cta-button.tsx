@@ -16,7 +16,6 @@ export function CtaButton({ href, children }: CtaButtonProps) {
 
 const button = {
   backgroundColor: BRAND_COLOR,
-  borderRadius: "6px",
   color: "#fff",
   fontSize: "16px",
   fontWeight: "bold" as const,

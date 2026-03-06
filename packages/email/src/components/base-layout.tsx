@@ -1,6 +1,7 @@
 import {
     Body,
     Container,
+    Font,
     Head,
     Hr,
     Html,
@@ -10,36 +11,71 @@ import {
     Text,
 } from "@react-email/components";
 import {APP_NAME, BRAND_COLOR} from "@openhospi/shared/constants";
+import type {SupportedLocale} from "@openhospi/shared/constants";
+import {createTranslator} from "next-intl";
 import type {ReactNode} from "react";
 
-const LOGO_URL = `${process.env.BETTER_AUTH_URL ?? "https://openhospi.nl"}/logo.svg`;
+import type {EmailMessages} from "../types";
 
 type BaseLayoutProps = {
     children: ReactNode;
     previewText?: string;
-    t: {
-        footer: string;
-        doNotReply: string;
-    };
+    baseUrl: string;
+    locale: SupportedLocale;
+    messages: EmailMessages;
 };
 
-export function BaseLayout({children, previewText, t}: BaseLayoutProps) {
+export function BaseLayout({children, previewText, baseUrl, locale, messages}: BaseLayoutProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.common"});
+    const logoUrl = `${baseUrl}/logo.svg`;
+
     return (
-        <Html>
-            <Head/>
+        <Html lang={locale}>
+            <Head>
+                <Font
+                    fontFamily="Inter"
+                    fallbackFontFamily="Helvetica"
+                    webFont={{
+                        url: "https://fonts.gstatic.com/s/inter/v21/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2",
+                        format: "woff2",
+                    }}
+                    fontWeight={400}
+                    fontStyle="normal"
+                />
+                <Font
+                    fontFamily="Inter"
+                    fallbackFontFamily="Helvetica"
+                    webFont={{
+                        url: "https://fonts.gstatic.com/s/inter/v21/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hiA.woff2",
+                        format: "woff2",
+                    }}
+                    fontWeight={600}
+                    fontStyle="normal"
+                />
+                <Font
+                    fontFamily="Inter"
+                    fallbackFontFamily="Helvetica"
+                    webFont={{
+                        url: "https://fonts.gstatic.com/s/inter/v21/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hiA.woff2",
+                        format: "woff2",
+                    }}
+                    fontWeight={700}
+                    fontStyle="normal"
+                />
+            </Head>
             {previewText && <Preview>{previewText}</Preview>}
             <Body style={body}>
                 <Container style={container}>
                     <Section style={header}>
-                        <Img src={LOGO_URL} width="40" height="40" alt={APP_NAME} style={logo}/>
+                        <Img src={logoUrl} width="40" height="40" alt={APP_NAME} style={logo}/>
                         <Text style={headerText}>{APP_NAME}</Text>
                     </Section>
                     <Hr style={hr}/>
                     <Section style={content}>{children}</Section>
                     <Hr style={hr}/>
                     <Section style={footer}>
-                        <Text style={footerText}>{t.footer}</Text>
-                        <Text style={footerMuted}>{t.doNotReply}</Text>
+                        <Text style={footerText}>{t("footer")}</Text>
+                        <Text style={footerMuted}>{t("doNotReply")}</Text>
                     </Section>
                 </Container>
             </Body>
@@ -49,8 +85,7 @@ export function BaseLayout({children, previewText, t}: BaseLayoutProps) {
 
 const body = {
     backgroundColor: "#f6f9fc",
-    fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, sans-serif',
+    fontFamily: "Inter, Helvetica, Arial, sans-serif",
 };
 
 const container = {
@@ -58,7 +93,6 @@ const container = {
     margin: "0 auto",
     padding: "20px 0 48px",
     maxWidth: "600px",
-    borderRadius: "8px",
 };
 
 const header = {

@@ -90,7 +90,7 @@ function createAuth() {
         void sendTemplatedEmail(
           user.email,
           "verificationCode",
-          { code, verificationUrl: url },
+          { code },
           locale,
         );
       },

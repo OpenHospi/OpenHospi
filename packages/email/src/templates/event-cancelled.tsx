@@ -1,25 +1,43 @@
 import {Text} from "@react-email/components";
+import {createTranslator} from "next-intl";
 
 import {BaseLayout} from "../components/base-layout";
+import type {BaseEmailProps} from "../types";
 
-export type EventCancelledProps = {
+type EventCancelledProps = BaseEmailProps & {
     eventTitle: string;
-    t: {
-        heading: string;
-        body: string;
-        footer: string;
-        doNotReply: string;
-    };
 };
 
-export function EventCancelled({t}: EventCancelledProps) {
+export function EventCancelled({eventTitle, locale, baseUrl, messages}: EventCancelledProps) {
+    const t = createTranslator({locale, messages, namespace: "emails.eventCancelled"});
+
     return (
-        <BaseLayout previewText={t.heading} t={t}>
-            <Text style={heading}>{t.heading}</Text>
-            <Text style={text}>{t.body}</Text>
+        <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
+            <Text style={heading}>{t("heading")}</Text>
+            <Text style={text}>{t("body", {eventTitle})}</Text>
         </BaseLayout>
     );
 }
+
+EventCancelled.PreviewProps = {
+    eventTitle: "Movie Night",
+    baseUrl: "http://localhost:3000",
+    locale: "en",
+    messages: {
+        emails: {
+            common: {
+                footer: "OpenHospi — Free student housing platform for the Netherlands",
+                doNotReply: "This is an automated message. Please do not reply to this email.",
+            },
+            eventCancelled: {
+                heading: "Event cancelled",
+                body: 'The hospi event "{eventTitle}" has been cancelled by the organiser.',
+            },
+        },
+    },
+};
+
+export default EventCancelled;
 
 const heading = {
     fontSize: "24px",
@@ -34,17 +52,3 @@ const text = {
     lineHeight: "24px",
     margin: "0 0 8px",
 };
-
-export default function EventCancelledPreview() {
-    return (
-        <EventCancelled
-            eventTitle="Movie Night"
-            t={{
-                heading: "Event cancelled",
-                body: 'The hospi event "Movie Night" has been cancelled by the organiser.',
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            }}
-        />
-    );
-}

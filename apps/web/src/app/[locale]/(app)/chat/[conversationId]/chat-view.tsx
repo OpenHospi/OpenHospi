@@ -6,7 +6,7 @@ import { useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 import { KeyRecoveryDialog } from "@/components/app/key-recovery-dialog";
-import { ReportDialog } from "@/components/app/report-dialog";
+import { ReportDialog } from "@/components/shared/report-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,7 +18,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEncryptionKey } from "@/hooks/use-encryption-key";
 import { Link } from "@/i18n/navigation-app";
-import type { MessageItem } from "@/lib/chat";
+import type { MessageItem } from "@/lib/queries/chat";
 
 import { blockUser, unblockUser } from "../block-actions";
 

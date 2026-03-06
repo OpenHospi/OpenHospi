@@ -3,16 +3,16 @@ import { ArrowLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
-import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
+import { AddToCalendarButton } from "@/components/shared/add-to-calendar-button";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserAvatar } from "@/components/user-avatar";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getRoomApplicants } from "@/lib/applicants";
-import { requireHousemate, requireSession } from "@/lib/auth-server";
-import { getEventDetail } from "@/lib/events";
+import { requireHousemate, requireSession } from "@/lib/auth/server";
+import { getRoomApplicants } from "@/lib/queries/applicants";
+import { getEventDetail } from "@/lib/queries/events";
 import { INVITATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 

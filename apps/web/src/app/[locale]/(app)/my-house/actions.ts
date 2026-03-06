@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 
 export async function createHouse(formData: FormData): Promise<void> {
   const session = await requireSession();

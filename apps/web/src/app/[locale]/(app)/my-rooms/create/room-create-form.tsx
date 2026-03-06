@@ -11,7 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useRouter } from "@/i18n/navigation-app";
-import type { RoomPhoto, RoomWithPhotos } from "@/lib/rooms";
+import type { RoomPhoto, RoomWithPhotos } from "@/lib/queries/rooms";
 import { cn } from "@/lib/utils";
 
 import { BasicInfoStep } from "./steps/basic-info-step";

@@ -4,7 +4,7 @@ import { withRLS } from "@openhospi/database";
 import { votes } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 
-import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
 
 export async function submitVotes(
   roomId: string,

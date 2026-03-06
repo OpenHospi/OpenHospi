@@ -10,9 +10,9 @@ import {
 import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { logStatusTransition } from "@/lib/application-history";
-import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
-import { notifyUser } from "@/lib/notifications";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
+import { logStatusTransition } from "@/lib/queries/application-history";
+import { notifyUser } from "@/lib/queries/notifications";
 
 export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: string) {
   const { user } = await requireSession();

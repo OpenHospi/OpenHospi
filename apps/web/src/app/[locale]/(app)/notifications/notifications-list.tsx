@@ -6,7 +6,7 @@ import { useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation-app";
-import type { NotificationItem } from "@/lib/notifications";
+import type { NotificationItem } from "@/lib/queries/notifications";
 import { cn } from "@/lib/utils";
 
 import { markNotificationReadAction, markAllReadAction } from "./notification-actions";

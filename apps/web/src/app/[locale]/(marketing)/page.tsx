@@ -21,7 +21,7 @@ import { SponsorStrip } from "@/components/marketing/sponsor-strip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { routing } from "@/i18n/routing";
-import { alternatesForPath, organizationJsonLd } from "@/lib/seo";
+import { alternatesForPath, organizationJsonLd } from "@/lib/marketing/seo";
 
 export async function generateMetadata({
   params,

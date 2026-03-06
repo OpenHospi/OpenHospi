@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,

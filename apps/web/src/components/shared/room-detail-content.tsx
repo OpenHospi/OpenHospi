@@ -2,15 +2,15 @@ import { GenderPreference, UtilitiesIncluded } from "@openhospi/shared/enums";
 import { Check, Home, Info, MapPin, Ruler, UserRound, Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-import { InstitutionBadge } from "@/components/app/institution-badge";
-import { RoomGalleryHero } from "@/components/app/room-gallery-hero";
-import { RoomLocationMapLazy } from "@/components/app/room-location-map-lazy";
+import { InstitutionBadge } from "@/components/shared/institution-badge";
+import { RoomGalleryHero } from "@/components/shared/room-gallery-hero";
+import { RoomLocationMapLazy } from "@/components/shared/room-location-map-lazy";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { UserAvatar } from "@/components/user-avatar";
-import type { RoomDetail, RoomDetailContext } from "@/lib/room-detail";
+import type { RoomDetail, RoomDetailContext } from "@/lib/queries/room-detail";
 
 type Props = {
   room: RoomDetail;

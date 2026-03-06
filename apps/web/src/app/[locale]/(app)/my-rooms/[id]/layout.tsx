@@ -6,10 +6,10 @@ import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
 import { Main } from "@/components/layout";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getRoomApplicants } from "@/lib/applicants";
-import { requireSession } from "@/lib/auth-server";
-import { getRoom } from "@/lib/rooms";
-import { getCloseRoomApplicants } from "@/lib/votes";
+import { requireSession } from "@/lib/auth/server";
+import { getRoomApplicants } from "@/lib/queries/applicants";
+import { getRoom } from "@/lib/queries/rooms";
+import { getCloseRoomApplicants } from "@/lib/queries/votes";
 
 import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomHeader } from "./room-header";

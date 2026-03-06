@@ -5,7 +5,7 @@ import {
 } from "@openhospi/shared/constants";
 import type { AllowedImageType } from "@openhospi/shared/constants";
 
-import { supabaseAdmin } from "@/lib/supabase-server";
+import { supabaseAdmin } from "@/lib/supabase/server";
 
 const HEIC_TYPES = new Set<string>(["image/heic", "image/heif"]);
 

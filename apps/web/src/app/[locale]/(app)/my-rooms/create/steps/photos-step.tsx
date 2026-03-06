@@ -10,10 +10,10 @@ import { useTranslations } from "next-intl";
 import { useCallback, useTransition } from "react";
 import { toast } from "sonner";
 
-import { SortablePhotoGrid, type SortablePhoto } from "@/components/app/sortable-photo-grid";
+import { SortablePhotoGrid, type SortablePhoto } from "@/components/shared/sortable-photo-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import type { RoomPhoto } from "@/lib/rooms";
+import type { RoomPhoto } from "@/lib/queries/rooms";
 
 import { publishRoom } from "../actions";
 import {

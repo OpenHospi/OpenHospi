@@ -3,8 +3,8 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
-import { requireHousemate, requireSession } from "@/lib/auth-server";
-import { getRoomVotes } from "@/lib/votes";
+import { requireHousemate, requireSession } from "@/lib/auth/server";
+import { getRoomVotes } from "@/lib/queries/votes";
 
 import { VotingClient } from "./voting-client";
 

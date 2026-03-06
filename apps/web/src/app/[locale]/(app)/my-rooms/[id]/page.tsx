@@ -6,8 +6,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getRoom } from "@/lib/rooms";
+import { requireSession } from "@/lib/auth/server";
+import { getRoom } from "@/lib/queries/rooms";
 
 import { RoomDetails } from "./room-details";
 import { RoomPhotosGrid } from "./room-photos-grid";

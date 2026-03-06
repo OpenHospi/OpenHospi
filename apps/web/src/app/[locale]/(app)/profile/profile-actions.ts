@@ -7,8 +7,8 @@ import { editProfileSchema } from "@openhospi/database/validators";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
 type Tx = Parameters<Parameters<typeof withRLS>[1]>[0];
 

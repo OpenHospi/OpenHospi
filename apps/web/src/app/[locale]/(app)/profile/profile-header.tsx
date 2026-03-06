@@ -3,7 +3,7 @@ import { getInstitution } from "@openhospi/inacademia";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
-import type { ProfileWithPhotos } from "@/lib/profile";
+import type { ProfileWithPhotos } from "@/lib/queries/profile";
 
 type Props = {
   profile: ProfileWithPhotos;

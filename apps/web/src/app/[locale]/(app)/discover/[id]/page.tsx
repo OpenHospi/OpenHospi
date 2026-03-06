@@ -5,18 +5,18 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { ReportDialog } from "@/components/app/report-dialog";
-import { RoomDetailContent } from "@/components/app/room-detail-content";
+import { ReportDialog } from "@/components/shared/report-dialog";
+import { RoomDetailContent } from "@/components/shared/room-detail-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getApplicationForRoom, getRoomDetailForApply } from "@/lib/applications";
-import { requireSession } from "@/lib/auth-server";
-import { getRoomMetadata } from "@/lib/discover";
-import { applyRoomToDetail } from "@/lib/room-detail";
+import { requireSession } from "@/lib/auth/server";
+import { getApplicationForRoom, getRoomDetailForApply } from "@/lib/queries/applications";
+import { getRoomMetadata } from "@/lib/queries/discover";
+import { applyRoomToDetail } from "@/lib/queries/room-detail";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
-import { getStoragePublicUrl } from "@/lib/storage-url";
+import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 
 import { ApplyDialog } from "./apply-dialog";
 

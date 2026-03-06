@@ -10,8 +10,8 @@ import { useMemo, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { InstitutionBadge } from "@/components/app/institution-badge";
-import { RoomGalleryHero } from "@/components/app/room-gallery-hero";
+import { InstitutionBadge } from "@/components/shared/institution-badge";
+import { RoomGalleryHero } from "@/components/shared/room-gallery-hero";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,11 +38,11 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
-import type { RoomApplicant } from "@/lib/applicants";
 import { zodResolver } from "@/lib/form-utils";
+import type { RoomApplicant } from "@/lib/queries/applicants";
 import { cn } from "@/lib/utils";
 
-import { submitReview, updateApplicationStatus } from "./applicant-actions";
+import { submitReview, updateApplicationStatus } from "../applicant-actions";
 
 type Props = {
   applicant: RoomApplicant;

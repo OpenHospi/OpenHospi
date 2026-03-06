@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import {
   Carousel,
   type CarouselApi,

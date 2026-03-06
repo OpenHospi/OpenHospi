@@ -20,7 +20,7 @@ import { PrivacySettings } from "./privacy-settings";
 const sections = ["general", "privacy", "account"] as const;
 type Section = (typeof sections)[number];
 
-export function SettingsLayout() {
+export function SettingsTabs() {
   const t = useTranslations("app.settings");
   const [active, setActive] = useState<Section>("general");
 

@@ -4,8 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Main } from "@/components/layout";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getUserNotifications } from "@/lib/notifications";
+import { requireSession } from "@/lib/auth/server";
+import { getUserNotifications } from "@/lib/queries/notifications";
 
 import { NotificationsList } from "./notifications-list";
 

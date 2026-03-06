@@ -3,6 +3,7 @@
 import { ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { UserAvatar } from "@/components/shared/user-avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,9 +19,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/i18n/navigation-app";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/client";
 
 export function NavUser({
   user,

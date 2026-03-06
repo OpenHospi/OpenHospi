@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
-import { SortablePhotoGrid, type SortablePhoto } from "@/components/app/sortable-photo-grid";
-import type { RoomPhoto } from "@/lib/rooms";
+import { SortablePhotoGrid, type SortablePhoto } from "@/components/shared/sortable-photo-grid";
+import type { RoomPhoto } from "@/lib/queries/rooms";
 
 import {
   deleteRoomPhoto,

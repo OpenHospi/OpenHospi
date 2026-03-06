@@ -8,8 +8,8 @@ import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
-import { notifyUser } from "@/lib/notifications";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { notifyUser } from "@/lib/queries/notifications";
 
 export async function createEvent(roomId: string, data: CreateEventData) {
   const session = await requireSession();

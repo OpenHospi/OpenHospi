@@ -8,8 +8,8 @@ import { Main } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getUserApplications } from "@/lib/applications";
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
+import { getUserApplications } from "@/lib/queries/applications";
 
 import { ApplicationCard } from "./application-card";
 

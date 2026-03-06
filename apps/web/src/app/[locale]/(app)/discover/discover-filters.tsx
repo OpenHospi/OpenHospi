@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePathname, useRouter } from "@/i18n/navigation-app";
-import type { DiscoverFilters } from "@/lib/discover";
+import type { DiscoverFilters } from "@/lib/queries/discover";
 import { cn } from "@/lib/utils";
 
 type FilterValue = string | string[] | undefined;

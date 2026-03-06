@@ -7,7 +7,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getSession } from "@/lib/auth-server";
+import { getSession } from "@/lib/auth/server";
 
 import { AdminLoginButton } from "./admin-login-button";
 

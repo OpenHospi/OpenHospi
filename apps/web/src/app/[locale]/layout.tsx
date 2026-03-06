@@ -7,9 +7,9 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { ConsentGatedAnalytics } from "@/components/app/consent-gated-analytics";
-import { CookieConsentBanner } from "@/components/app/cookie-consent-banner";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ConsentGatedAnalytics } from "@/components/shared/consent-gated-analytics";
+import { CookieConsentBanner } from "@/components/shared/cookie-consent-banner";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 

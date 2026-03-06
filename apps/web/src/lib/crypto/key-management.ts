@@ -13,7 +13,7 @@ import {
 } from "@openhospi/crypto";
 import { PBKDF2_ITERATIONS } from "@openhospi/shared/constants";
 
-import { deleteStoredPrivateKey, getStoredPrivateKey, storePrivateKey } from "./crypto-store";
+import { deleteStoredPrivateKey, getStoredPrivateKey, storePrivateKey } from "./store";
 
 export type KeyStatus = "ready" | "needs-recovery" | "needs-setup";
 

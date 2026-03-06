@@ -3,7 +3,7 @@ import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import { computeEndDateTime, generateICS } from "@openhospi/shared/calendar";
 import { eq, and } from "drizzle-orm";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params;

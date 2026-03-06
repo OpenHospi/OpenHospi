@@ -4,8 +4,8 @@ import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { PhotoLightbox } from "@/components/app/photo-lightbox";
-import { StorageImage } from "@/components/storage-image";
+import { PhotoLightbox } from "@/components/shared/photo-lightbox";
+import { StorageImage } from "@/components/shared/storage-image";
 import { cn } from "@/lib/utils";
 
 type Photo = {

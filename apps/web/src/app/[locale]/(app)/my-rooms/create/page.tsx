@@ -6,9 +6,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getUserOwnerHouses } from "@/lib/houses";
-import { createDraftRoom, getExistingDraft, getRoom } from "@/lib/rooms";
+import { requireSession } from "@/lib/auth/server";
+import { getUserOwnerHouses } from "@/lib/queries/houses";
+import { createDraftRoom, getExistingDraft, getRoom } from "@/lib/queries/rooms";
 
 import { HouseGate } from "./house-gate";
 import { RoomCreateForm } from "./room-create-form";

@@ -6,8 +6,8 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MessageBubble } from "@/components/app/message-bubble";
-import type { MessageItem } from "@/lib/chat";
-import { supabase } from "@/lib/supabase-client";
+import type { MessageItem } from "@/lib/queries/chat";
+import { supabase } from "@/lib/supabase/client";
 
 import { markConversationRead } from "../chat-actions";
 import { fetchPublicKeys } from "../key-actions";

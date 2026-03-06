@@ -12,8 +12,8 @@ import type {
   UtilitiesIncluded,
 } from "@openhospi/shared/enums";
 
-import type { RoomDetailForApply } from "@/lib/applications";
-import type { PublicRoom } from "@/lib/discover";
+import type { RoomDetailForApply } from "@/lib/queries/applications";
+import type { PublicRoom } from "@/lib/queries/discover";
 
 export type RoomDetail = {
   id: string;

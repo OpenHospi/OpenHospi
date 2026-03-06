@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
-import { markAllNotificationsRead, markNotificationRead } from "@/lib/notifications";
+import { requireSession } from "@/lib/auth/server";
+import { markAllNotificationsRead, markNotificationRead } from "@/lib/queries/notifications";
 
 export async function markNotificationReadAction(notificationId: string) {
   const session = await requireSession();

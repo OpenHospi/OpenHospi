@@ -6,7 +6,7 @@ import { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 
 export async function joinHouse(inviteCode: string) {
   const session = await requireSession();

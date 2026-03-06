@@ -10,7 +10,7 @@ import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { AddressAutocomplete } from "@/components/app/address-autocomplete";
+import { AddressAutocomplete } from "@/components/shared/address-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {

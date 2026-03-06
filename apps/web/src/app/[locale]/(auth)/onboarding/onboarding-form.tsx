@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
-import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/profile";
+import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/queries/profile";
 
 import { AboutStep } from "./steps/about-step";
 import { EmailVerificationStep } from "./steps/email-verification-step";

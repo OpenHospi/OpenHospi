@@ -34,7 +34,7 @@ import {
   type SQL,
 } from "drizzle-orm";
 
-import { notBlockedBy } from "@/lib/block-filter";
+import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type DiscoverRoom = {
   id: string;

@@ -15,10 +15,10 @@ import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
+import type { HousePermission } from "@/lib/permissions";
+import { hasPermission } from "@/lib/permissions";
 
 import { auth } from "./auth";
-import type { HousePermission } from "./permissions";
-import { hasPermission } from "./permissions";
 
 export async function getSession() {
   return auth.api.getSession({ headers: await headers() });

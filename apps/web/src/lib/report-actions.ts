@@ -5,7 +5,7 @@ import { reports, rooms } from "@openhospi/database/schema";
 import type { ReportReason, ReportType } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 /**
  * Report a message

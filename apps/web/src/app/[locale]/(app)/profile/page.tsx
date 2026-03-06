@@ -5,18 +5,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Main } from "@/components/layout";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getProfile } from "@/lib/profile";
+import { requireSession } from "@/lib/auth/server";
+import { getProfile } from "@/lib/queries/profile";
 
+import { AboutCard, BioCard } from "./dialogs/edit-about-dialog";
+import { LanguagesCard } from "./dialogs/edit-languages-dialog";
+import { LifestyleCard } from "./dialogs/edit-personality-dialog";
+import { PreferencesCard } from "./dialogs/edit-preferences-dialog";
 import { PhotosGrid } from "./photos-grid";
 import { ProfileHeader } from "./profile-header";
-import {
-  AboutCard,
-  BioCard,
-  LanguagesCard,
-  LifestyleCard,
-  PreferencesCard,
-} from "./profile-section-dialogs";
 
 export async function generateMetadata({
   params,

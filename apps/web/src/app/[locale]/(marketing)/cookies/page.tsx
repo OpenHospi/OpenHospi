@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { LegalPageContent } from "@/components/marketing/legal-page-content";
 import { routing } from "@/i18n/routing";
-import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
 
 export async function generateMetadata({
   params,

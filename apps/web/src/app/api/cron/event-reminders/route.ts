@@ -3,7 +3,7 @@ import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq, isNull, gte, lte, ne, inArray } from "drizzle-orm";
 
-import { notifyUser } from "@/lib/notifications";
+import { notifyUser } from "@/lib/queries/notifications";
 
 export async function POST(request: Request) {
   const authHeader = request.headers.get("authorization");

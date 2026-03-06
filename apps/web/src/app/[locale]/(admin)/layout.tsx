@@ -4,11 +4,11 @@ import { setRequestLocale } from "next-intl/server";
 
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AppLanguageSwitcher } from "@/components/app/app-language-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { routing } from "@/i18n/routing";
-import { requireAdmin } from "@/lib/auth-server";
+import { requireAdmin } from "@/lib/auth/server";
 
 type Props = {
   children: React.ReactNode;

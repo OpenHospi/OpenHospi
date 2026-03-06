@@ -11,7 +11,7 @@ import { AdminAction, type DataRequestStatus, type DataRequestType } from "@open
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireAdmin } from "@/lib/auth-server";
+import { requireAdmin } from "@/lib/auth/server";
 
 export type DataRequestListItem = {
   id: string;

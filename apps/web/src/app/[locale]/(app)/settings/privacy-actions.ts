@@ -19,7 +19,7 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 const PURPOSE_LEGAL_BASIS: Record<ConsentPurpose, LegalBasis> = {
   essential: "contract",

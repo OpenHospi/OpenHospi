@@ -27,7 +27,7 @@ import { StepList } from "@/components/marketing/step-list";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { routing } from "@/i18n/routing";
-import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
+import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/marketing/seo";
 import { getLoginUrl } from "@/lib/urls";
 
 export async function generateMetadata({

@@ -4,7 +4,7 @@ import { computeEndDateTime, generateICSFeed } from "@openhospi/shared/calendar"
 import type { CalendarEvent } from "@openhospi/shared/calendar";
 import { eq, sql } from "drizzle-orm";
 
-import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;

@@ -6,13 +6,13 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { InstitutionBadge } from "@/components/app/institution-badge";
-import { StorageImage } from "@/components/storage-image";
+import { InstitutionBadge } from "@/components/shared/institution-badge";
+import { StorageImage } from "@/components/shared/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Link, useRouter } from "@/i18n/navigation-app";
-import type { RoomApplicant } from "@/lib/applicants";
+import type { RoomApplicant } from "@/lib/queries/applicants";
 import { cn } from "@/lib/utils";
 
 import { submitReview } from "../applicant-actions";

@@ -8,8 +8,9 @@ import { toast } from "sonner";
 import { PushNotificationManager } from "@/components/app/push-notification-manager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getCalendarToken } from "@/lib/queries/calendar-token";
 
-import { getCalendarToken, regenerateCalendarToken } from "./actions";
+import { regenerateCalendarToken } from "./actions";
 
 export function GeneralSettings() {
   const t = useTranslations("app.settings");

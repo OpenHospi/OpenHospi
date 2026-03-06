@@ -16,8 +16,8 @@ import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/sh
 import { and, count, desc, eq, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { auth } from "@/lib/auth";
-import { requireAdmin } from "@/lib/auth-server";
+import { auth } from "@/lib/auth/auth";
+import { requireAdmin } from "@/lib/auth/server";
 
 export type AggregateStats = {
   totalUsers: number;

@@ -6,19 +6,18 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getApplicationDetail, getApplicationStatusHistory } from "@/lib/applications";
-import { requireSession } from "@/lib/auth-server";
-import { getInvitationForApplication } from "@/lib/invitations";
+import { requireSession } from "@/lib/auth/server";
+import { getApplicationDetail, getApplicationStatusHistory } from "@/lib/queries/applications";
+import { getCalendarToken } from "@/lib/queries/calendar-token";
+import { getInvitationForApplication } from "@/lib/queries/invitations";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
-
-import { getCalendarToken } from "../../settings/actions";
 
 import { ApplicationTimeline } from "./application-timeline";
 import { HospiInvitationCard } from "./hospi-invitation-card";

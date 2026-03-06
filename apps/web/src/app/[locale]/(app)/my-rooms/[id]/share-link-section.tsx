@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "@/i18n/navigation-app";
-import type { Room } from "@/lib/rooms";
+import type { Room } from "@/lib/queries/rooms";
 
 import { regenerateShareLink } from "./actions";
 

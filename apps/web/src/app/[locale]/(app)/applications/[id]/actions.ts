@@ -6,8 +6,8 @@ import { ApplicationStatus, isValidApplicationTransition } from "@openhospi/shar
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { logStatusTransition } from "@/lib/application-history";
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
+import { logStatusTransition } from "@/lib/queries/application-history";
 
 export async function withdrawApplication(applicationId: string) {
   const session = await requireSession();

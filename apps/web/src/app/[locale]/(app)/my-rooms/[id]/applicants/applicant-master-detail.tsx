@@ -5,12 +5,12 @@ import { ArrowLeft, Focus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { UserAvatar } from "@/components/user-avatar";
 import { Link } from "@/i18n/navigation-app";
-import type { RoomApplicant } from "@/lib/applicants";
+import type { RoomApplicant } from "@/lib/queries/applicants";
 import { APPLICATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 

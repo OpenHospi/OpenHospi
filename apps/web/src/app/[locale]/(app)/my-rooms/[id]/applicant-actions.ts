@@ -14,13 +14,13 @@ import {
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { logStatusTransition } from "@/lib/application-history";
 import {
   requireHousemate,
   requireHousePermission,
   requireNotRestricted,
   requireSession,
-} from "@/lib/auth-server";
+} from "@/lib/auth/server";
+import { logStatusTransition } from "@/lib/queries/application-history";
 
 export async function markApplicationsSeen(roomId: string) {
   const session = await requireSession();

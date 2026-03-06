@@ -6,7 +6,7 @@ import { ApplicationStatus } from "@openhospi/shared/enums";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 const REJECTABLE_STATUSES = [
   ApplicationStatus.sent,

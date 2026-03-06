@@ -2,7 +2,7 @@
 
 import { createHmac } from "node:crypto";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 function base64url(data: Buffer): string {
   return data.toString("base64url");

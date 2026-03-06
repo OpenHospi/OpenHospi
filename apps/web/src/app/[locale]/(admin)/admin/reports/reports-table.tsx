@@ -16,7 +16,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { DataTablePagination, DataTableToolbar } from "@/components/data-table";
+import { DataTablePagination, DataTableToolbar } from "@/components/admin/data-table";
 import {
   Table,
   TableBody,

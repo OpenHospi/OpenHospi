@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { getCitiesWithRoomCount } from "@/lib/discover";
-import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
+import { getCitiesWithRoomCount } from "@/lib/queries/discover";
 import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";

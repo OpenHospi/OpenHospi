@@ -5,8 +5,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getRoomApplicants } from "@/lib/applicants";
-import { requireHousemate, requireSession } from "@/lib/auth-server";
+import { requireHousemate, requireSession } from "@/lib/auth/server";
+import { getRoomApplicants } from "@/lib/queries/applicants";
 
 import { ReviewModeClient } from "./review-mode-client";
 

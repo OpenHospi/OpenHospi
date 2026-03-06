@@ -4,7 +4,7 @@ import { db, withRLS } from "@openhospi/database";
 import { activeConsents, pushSubscriptions } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 
 export async function subscribePush(subscription: {
   endpoint: string;

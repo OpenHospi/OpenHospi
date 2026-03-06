@@ -5,7 +5,7 @@ import { profiles } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 export async function acceptPrivacyPolicy() {
   const session = await requireSession();

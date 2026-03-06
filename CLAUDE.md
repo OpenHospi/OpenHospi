@@ -1,5 +1,7 @@
 # CLAUDE.md — OpenHospi
 
+See @package.json for available scripts and @README.md for project overview.
+
 ## What is OpenHospi?
 
 OpenHospi is a free, open-source student housing/roommate platform for the Netherlands. InAcademia is the only login method — every user is a verified student. No paywalls, no premium, E2EE chat, full privacy.
@@ -17,7 +19,7 @@ OpenHospi is a free, open-source student housing/roommate platform for the Nethe
 ## Coding Philosophy
 
 ### Quality over speed
-This is a greenfield project. We do it right the first time. No quick fixes, no hacks, no "we'll clean this up later." If something isn't right, rewrite it properly.
+IMPORTANT: This is a greenfield project. We do it right the first time. No quick fixes, no hacks, no "we'll clean this up later." If something isn't right, rewrite it properly. When fixing a bug or implementing a feature, understand the full context and rewrite the affected code properly. Don't patch around the problem with minimal changes. If a file or function needs changes in multiple places, rewrite it as a whole rather than making scattered minimal edits.
 
 ### No premature optimization
 Write clear, straightforward code first. Don't create abstractions "just in case." Don't split into helper functions unless there's actual reuse. Three similar lines are better than a premature abstraction. Optimize only when there's a measured problem.
@@ -34,6 +36,7 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Prefer explicit over implicit — make intent clear
 
 ### Investigate before fixing
+IMPORTANT: Read the full file before making changes. Understand the complete flow, not just the line that errors.
 - When something fails, understand WHY it fails before attempting a fix
 - Check official documentation for the tools/libraries involved
 - Study existing codebase patterns to understand how similar problems were already solved
@@ -102,19 +105,21 @@ Write clear, straightforward code first. Don't create abstractions "just in case
 - Write clear, descriptive commit messages
 - **NEVER auto-commit or auto-push.** All code is reviewed and committed manually by the developer. AI tools must never run `git commit`, `git push`, or create PRs without explicit instruction.
 
+### Verification
+- After code changes: `pnpm lint && pnpm format:check`
+- After schema changes: `pnpm db:push`
+- After adding dependencies: `pnpm install` from repo root
+- Typecheck: `pnpm typecheck`
+- Always verify changes compile and pass linting before considering a task done
+
 ## Don'ts
 
-- Don't add features or refactor beyond what was asked
+- Don't add features, refactor, or touch working code beyond what was asked
 - Don't add docstrings/comments/type annotations to unchanged code
-- Don't create wrapper functions, utilities, or abstractions for one-time operations
-- Don't add error handling for scenarios that can't happen
-- Don't use feature flags or backwards-compatibility shims when you can just change the code
 - Don't leave TODO comments — either fix it now or create an issue
 - Don't install new dependencies without good reason — check if existing deps or built-in APIs solve the problem first
 - Don't use `db:generate` or `db:migrate` — use `db:push` for all schema changes
-- Don't replace ORM features with raw SQL workarounds — investigate the root cause instead
 - Don't use `eq()` in RLS policy expressions — use raw `sql` with string literals to avoid `$1` placeholder bugs
-- Don't create constants that alias enum values (e.g. `DEFAULT_ROOM_STATUS = "draft"`) — use enum companion objects instead (`RoomStatus.draft`)
-- Don't use hardcoded enum string literals in queries or runtime checks — use the companion objects from `@openhospi/shared/enums`
+- Don't use hardcoded enum string literals — use companion objects from `@openhospi/shared/enums`
 - Don't duplicate translation keys — reusable labels go in `common.labels` in `shared.json`, not repeated per namespace
-- Don't touch working code outside the scope of what was asked
+- Don't replace ORM features with raw SQL workarounds — investigate the root cause instead

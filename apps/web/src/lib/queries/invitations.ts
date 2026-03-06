@@ -3,7 +3,7 @@ import { hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 
-import { notBlockedBy } from "@/lib/block-filter";
+import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type UserInvitation = {
   invitationId: string;

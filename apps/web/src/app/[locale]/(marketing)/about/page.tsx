@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { routing } from "@/i18n/routing";
-import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
 
 export async function generateMetadata({
   params,

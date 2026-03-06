@@ -6,9 +6,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Main } from "@/components/layout";
 import { Separator } from "@/components/ui/separator";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
-import { SettingsLayout } from "./settings-layout";
+import { SettingsTabs } from "./settings-tabs";
 
 export async function generateMetadata({
   params,
@@ -39,7 +39,7 @@ export default async function SettingsPage({ params }: Props) {
         <p className="text-muted-foreground">{t("description")}</p>
       </div>
       <Separator />
-      <SettingsLayout />
+      <SettingsTabs />
     </Main>
   );
 }

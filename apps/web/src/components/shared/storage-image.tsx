@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { ImageProps } from "next/image";
 
-import { getStoragePublicUrl } from "@/lib/storage-url";
+import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 
 type StorageImageProps = Omit<ImageProps, "src"> & {
   src: string;

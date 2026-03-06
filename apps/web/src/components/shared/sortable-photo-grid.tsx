@@ -8,7 +8,7 @@ import type React from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";

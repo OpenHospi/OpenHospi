@@ -3,11 +3,12 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
-import { getRoomApplicants } from "@/lib/applicants";
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
+import { getRoomApplicants } from "@/lib/queries/applicants";
 
-import { ApplicantMasterDetail } from "../applicant-master-detail";
 import { MarkSeenEffect } from "../mark-seen-effect";
+
+import { ApplicantMasterDetail } from "./applicant-master-detail";
 
 type Props = {
   params: Promise<{ locale: Locale; id: string }>;

@@ -4,8 +4,8 @@ import { db, withRLS } from "@openhospi/database";
 import { blocks, conversationMembers, messageReceipts, messages } from "@openhospi/database/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
-import { getOrCreateHospiConversation } from "@/lib/chat";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 
 export async function sendMessage(
   conversationId: string,

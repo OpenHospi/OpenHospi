@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import { setupKeysWithPIN } from "@/lib/key-management";
+import { setupKeysWithPIN } from "@/lib/crypto/key-management";
 
 import { finishOnboarding } from "../actions";
 

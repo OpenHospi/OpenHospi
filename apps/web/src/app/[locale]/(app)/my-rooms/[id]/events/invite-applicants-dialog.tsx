@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from "@/i18n/navigation-app";
-import type { RoomApplicant } from "@/lib/applicants";
+import type { RoomApplicant } from "@/lib/queries/applicants";
 import { cn } from "@/lib/utils";
 
 import { batchInviteApplicants } from "./invite-actions";

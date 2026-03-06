@@ -6,7 +6,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { routing } from "@/i18n/routing";
-import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
 
 import { CopyButton } from "./_components/copy-button";
 

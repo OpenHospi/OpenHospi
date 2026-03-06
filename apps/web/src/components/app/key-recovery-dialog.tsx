@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from "@/lib/key-management";
+import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from "@/lib/crypto/key-management";
 
 type Props = {
   userId: string;

@@ -1,6 +1,6 @@
 import { MarketingFooter } from "@/components/marketing/footer";
 import { MarketingHeader } from "@/components/marketing/header";
-import { getTrustpilotData } from "@/lib/trustpilot";
+import { getTrustpilotData } from "@/lib/marketing/trustpilot";
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
   const { score } = await getTrustpilotData();

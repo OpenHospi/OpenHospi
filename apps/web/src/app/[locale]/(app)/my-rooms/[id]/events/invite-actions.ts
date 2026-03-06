@@ -17,10 +17,10 @@ import {
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { logStatusTransition } from "@/lib/application-history";
-import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth-server";
-import { getOrCreateHospiConversation } from "@/lib/chat";
-import { notifyUser } from "@/lib/notifications";
+import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { logStatusTransition } from "@/lib/queries/application-history";
+import { getOrCreateHospiConversation } from "@/lib/queries/chat";
+import { notifyUser } from "@/lib/queries/notifications";
 
 export async function batchInviteApplicants(
   eventId: string,

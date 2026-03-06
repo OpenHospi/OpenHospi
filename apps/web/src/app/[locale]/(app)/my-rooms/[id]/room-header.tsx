@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
-import type { Room } from "@/lib/rooms";
+import type { Room } from "@/lib/queries/rooms";
 import { ROOM_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 

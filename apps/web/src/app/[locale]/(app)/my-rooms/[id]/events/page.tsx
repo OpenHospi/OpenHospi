@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getRoomEvents } from "@/lib/events";
+import { requireSession } from "@/lib/auth/server";
+import { getRoomEvents } from "@/lib/queries/events";
 import { cn } from "@/lib/utils";
 
 import { CreateEventDialog } from "./create-event-dialog";

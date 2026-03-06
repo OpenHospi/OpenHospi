@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { SPONSORS } from "@/lib/sponsors";
+import { SPONSORS } from "@/lib/marketing/sponsors";
 
 const MARQUEE_THRESHOLD = 5;
 

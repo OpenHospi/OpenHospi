@@ -1,6 +1,6 @@
 "use client";
 
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import { cn } from "@/lib/utils";
 
 type UserAvatarProps = {

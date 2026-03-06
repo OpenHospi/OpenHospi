@@ -20,7 +20,7 @@ import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { AddressAutocomplete } from "@/components/app/address-autocomplete";
+import { AddressAutocomplete } from "@/components/shared/address-autocomplete";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,7 +60,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
 import { zodResolver } from "@/lib/form-utils";
-import type { Room } from "@/lib/rooms";
+import type { Room } from "@/lib/queries/rooms";
 import { cn } from "@/lib/utils";
 
 import { updateRoom } from "./actions";

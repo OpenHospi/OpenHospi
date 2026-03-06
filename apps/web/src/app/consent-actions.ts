@@ -7,7 +7,7 @@ import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
-import { getSession } from "@/lib/auth-server";
+import { getSession } from "@/lib/auth/server";
 
 type ConsentEntry = {
   purpose: ConsentPurpose;

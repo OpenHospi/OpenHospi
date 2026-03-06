@@ -1,5 +1,5 @@
 import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
-import { getRoomMetadata } from "@/lib/discover";
+import { getRoomMetadata } from "@/lib/queries/discover";
 
 type Props = {
   params: Promise<{ id: string }>;

@@ -4,8 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getConversationMembers, getMessages } from "@/lib/chat";
+import { requireSession } from "@/lib/auth/server";
+import { getConversationMembers, getMessages } from "@/lib/queries/chat";
 
 import { getBlockedUsers } from "../block-actions";
 

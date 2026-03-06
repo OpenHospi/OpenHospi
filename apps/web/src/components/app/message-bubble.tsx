@@ -3,6 +3,7 @@
 import { MoreVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { ReportDialog } from "@/components/shared/report-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
-import { ReportDialog } from "./report-dialog";
 
 type Props = {
   id: string;

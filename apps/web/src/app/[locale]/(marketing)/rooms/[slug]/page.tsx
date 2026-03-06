@@ -7,15 +7,15 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { RoomCard } from "@/components/app/room-card";
-import { RoomDetailContent } from "@/components/app/room-detail-content";
+import { RoomCard } from "@/components/shared/room-card";
+import { RoomDetailContent } from "@/components/shared/room-detail-content";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { getPublicRoom, getPublicRoomsByCity } from "@/lib/discover";
-import { publicRoomToDetail } from "@/lib/room-detail";
-import { alternatesForPath, breadcrumbJsonLd } from "@/lib/seo";
-import { getStoragePublicUrl } from "@/lib/storage-url";
+import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
+import { getPublicRoom, getPublicRoomsByCity } from "@/lib/queries/discover";
+import { publicRoomToDetail } from "@/lib/queries/room-detail";
+import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";

@@ -5,7 +5,7 @@ import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import type { SupportedLocale } from "@openhospi/shared/constants";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 
-import { sendWebPushToUser } from "./web-push";
+import { sendWebPushToUser } from "@/lib/services/web-push";
 
 export type NotificationItem = {
   id: string;

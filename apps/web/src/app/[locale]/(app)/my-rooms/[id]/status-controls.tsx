@@ -19,8 +19,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation-app";
-import type { Room } from "@/lib/rooms";
-import type { CloseRoomApplicant } from "@/lib/votes";
+import type { Room } from "@/lib/queries/rooms";
+import type { CloseRoomApplicant } from "@/lib/queries/votes";
 
 import { deleteRoom, updateRoomStatus } from "./actions";
 import { CloseRoomDialog } from "./close-room-dialog";

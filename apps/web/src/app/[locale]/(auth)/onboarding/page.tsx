@@ -5,13 +5,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 import {
   getProfile,
   hasEncryptionKeyBackup,
   isProfileComplete,
   type ProfileWithPhotos,
-} from "@/lib/profile";
+} from "@/lib/queries/profile";
 
 import { OnboardingForm } from "./onboarding-form";
 

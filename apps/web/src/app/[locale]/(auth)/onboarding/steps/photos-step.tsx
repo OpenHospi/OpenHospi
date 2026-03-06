@@ -10,10 +10,10 @@ import {
   reorderProfilePhotos,
   saveProfilePhoto,
 } from "@/app/[locale]/(app)/profile/profile-actions";
-import { SortablePhotoGrid, type SortablePhoto } from "@/components/app/sortable-photo-grid";
+import { SortablePhotoGrid, type SortablePhoto } from "@/components/shared/sortable-photo-grid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { ProfilePhoto } from "@/lib/profile";
+import type { ProfilePhoto } from "@/lib/queries/profile";
 
 type Props = {
   photos: ProfilePhoto[];

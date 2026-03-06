@@ -4,8 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getConversations } from "@/lib/chat";
+import { requireSession } from "@/lib/auth/server";
+import { getConversations } from "@/lib/queries/chat";
 
 import { ConversationList } from "./conversation-list";
 

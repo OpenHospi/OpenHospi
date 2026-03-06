@@ -22,10 +22,10 @@ import {
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
-import { getUserOwnerHouses } from "@/lib/houses";
-import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
-import { createDraftRoom, getExistingDraft } from "@/lib/rooms";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
+import { getUserOwnerHouses } from "@/lib/queries/houses";
+import { createDraftRoom, getExistingDraft } from "@/lib/queries/rooms";
+import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function createDraftRoomAction() {
   const session = await requireSession();

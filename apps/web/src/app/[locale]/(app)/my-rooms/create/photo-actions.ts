@@ -6,8 +6,8 @@ import { roomPhotoCaptionSchema } from "@openhospi/database/validators";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/photos";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
+import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
 export async function saveRoomPhoto(formData: FormData) {
   const session = await requireSession();

@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { useFormatter, useTranslations } from "next-intl";
 
-import { DataTableColumnHeader } from "@/components/data-table";
+import { DataTableColumnHeader } from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
 
 import type { DataRequestListItem } from "../data-request-actions";

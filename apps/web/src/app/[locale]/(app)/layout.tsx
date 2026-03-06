@@ -13,12 +13,12 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { BreadcrumbStoreProvider } from "@/components/app/breadcrumb-store";
 import { BreadcrumbsNav } from "@/components/app/breadcrumbs-nav";
 import { NotificationBell } from "@/components/app/notification-bell";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth-server";
+import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth/server";
 
 type Props = {
   children: React.ReactNode;

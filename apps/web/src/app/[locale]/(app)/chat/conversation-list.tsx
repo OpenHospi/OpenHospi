@@ -2,10 +2,10 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
-import { UserAvatar } from "@/components/user-avatar";
 import { Link, usePathname } from "@/i18n/navigation-app";
-import type { ConversationListItem } from "@/lib/chat";
+import type { ConversationListItem } from "@/lib/queries/chat";
 import { cn } from "@/lib/utils";
 
 type Props = {

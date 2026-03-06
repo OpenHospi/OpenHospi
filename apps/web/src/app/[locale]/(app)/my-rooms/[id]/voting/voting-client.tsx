@@ -8,6 +8,7 @@ import type React from "react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -19,9 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserAvatar } from "@/components/user-avatar";
 import { useRouter } from "@/i18n/navigation-app";
-import type { VotableApplicant, VoteBoard } from "@/lib/votes";
+import type { VotableApplicant, VoteBoard } from "@/lib/queries/votes";
 
 import { submitVotes } from "./vote-actions";
 

@@ -1,11 +1,11 @@
 import { FileText, Home } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
-import type { RoomSummary } from "@/lib/rooms";
+import type { RoomSummary } from "@/lib/queries/rooms";
 import { ROOM_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 

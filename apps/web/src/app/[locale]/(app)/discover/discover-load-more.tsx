@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation-app";
-import type { DiscoverCursor } from "@/lib/discover";
+import type { DiscoverCursor } from "@/lib/queries/discover";
 
 type Props = {
   nextCursor: DiscoverCursor;

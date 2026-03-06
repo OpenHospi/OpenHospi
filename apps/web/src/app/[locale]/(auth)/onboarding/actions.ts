@@ -19,8 +19,8 @@ import { and, desc, eq, gt } from "drizzle-orm";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
-import { auth } from "@/lib/auth";
-import { requireSession } from "@/lib/auth-server";
+import { auth } from "@/lib/auth/auth";
+import { requireSession } from "@/lib/auth/server";
 
 const EMAIL_CODE_IDENTIFIER_PREFIX = "onboarding-email-code:";
 const EMAIL_CODE_LENGTH = 6;

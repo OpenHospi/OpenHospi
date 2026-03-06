@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
-import type { Room } from "@/lib/rooms";
+import type { Room } from "@/lib/queries/rooms";
 
 type Props = {
   room: Room;

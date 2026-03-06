@@ -4,7 +4,7 @@ import { db, withRLS } from "@openhospi/database";
 import { privateKeyBackups, publicKeys } from "@openhospi/database/schema";
 import { eq, inArray } from "drizzle-orm";
 
-import { requireSession } from "@/lib/auth-server";
+import { requireSession } from "@/lib/auth/server";
 
 export async function uploadPublicKey(publicKeyJwk: JsonWebKey) {
   const session = await requireSession();

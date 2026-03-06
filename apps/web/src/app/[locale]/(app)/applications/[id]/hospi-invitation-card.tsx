@@ -7,13 +7,13 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { AddToCalendarButton } from "@/components/app/add-to-calendar-button";
+import { AddToCalendarButton } from "@/components/shared/add-to-calendar-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation-app";
-import type { UserInvitation } from "@/lib/invitations";
+import type { UserInvitation } from "@/lib/queries/invitations";
 import { INVITATION_STATUS_COLORS } from "@/lib/status-colors";
 import { cn } from "@/lib/utils";
 

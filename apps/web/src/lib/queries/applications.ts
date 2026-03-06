@@ -21,7 +21,7 @@ import type {
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
 import { and, asc, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 
-import { notBlockedBy } from "@/lib/block-filter";
+import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type UserApplication = {
   id: string;

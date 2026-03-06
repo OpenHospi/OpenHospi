@@ -5,8 +5,8 @@ import { RoomStatus } from "@openhospi/shared/enums";
 import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";
 
-import { getCitiesWithRoomCount } from "@/lib/discover";
-import { getStoragePublicUrl } from "@/lib/storage-url";
+import { getCitiesWithRoomCount } from "@/lib/queries/discover";
+import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 
 export const dynamic = "force-dynamic";
 

@@ -32,9 +32,9 @@ import {
 } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
-import { requireSession } from "@/lib/auth-server";
-import { deletePhotoFromStorage } from "@/lib/photos";
-import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { requireSession } from "@/lib/auth/server";
+import { deletePhotoFromStorage } from "@/lib/services/photos";
+import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function exportData() {
   const session = await requireSession();
@@ -223,25 +223,6 @@ export async function updatePreferredLocale(locale: SupportedLocale) {
       .where(eq(profiles.id, session.user.id));
   });
   return { success: true };
-}
-
-export async function getCalendarToken(): Promise<string | null> {
-  const session = await requireSession();
-  const [row] = await db
-    .select({ token: calendarTokens.token })
-    .from(calendarTokens)
-    .where(eq(calendarTokens.userId, session.user.id));
-
-  if (row) return row.token;
-
-  // Auto-create token on first access
-  const [created] = await db
-    .insert(calendarTokens)
-    .values({ userId: session.user.id })
-    .onConflictDoNothing()
-    .returning({ token: calendarTokens.token });
-
-  return created?.token ?? null;
 }
 
 export async function regenerateCalendarToken(): Promise<string> {

@@ -8,9 +8,9 @@ import { ApplicationStatus, RoomStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { logStatusTransition } from "@/lib/application-history";
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
-import { checkRateLimit, rateLimiters } from "@/lib/rate-limit";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { logStatusTransition } from "@/lib/queries/application-history";
+import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
   const session = await requireSession();

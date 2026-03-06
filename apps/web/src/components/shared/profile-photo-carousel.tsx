@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
-import { PhotoLightbox } from "@/components/app/photo-lightbox";
-import { StorageImage } from "@/components/storage-image";
+import { PhotoLightbox } from "@/components/shared/photo-lightbox";
+import { StorageImage } from "@/components/shared/storage-image";
 import {
   Carousel,
   type CarouselApi,

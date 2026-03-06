@@ -8,8 +8,8 @@ import { Main } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import { getUserRooms } from "@/lib/rooms";
+import { requireSession } from "@/lib/auth/server";
+import { getUserRooms } from "@/lib/queries/rooms";
 
 import { RoomCard } from "./room-card";
 

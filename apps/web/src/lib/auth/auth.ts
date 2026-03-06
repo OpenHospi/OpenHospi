@@ -8,7 +8,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, genericOAuth, jwt, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
-import { sendEmail } from "./email";
+import { sendEmail } from "@/lib/services/email";
 
 function deriveOnboardingEmailCode(token: string): string {
   const hash = createHash("sha256").update(token).digest("hex");

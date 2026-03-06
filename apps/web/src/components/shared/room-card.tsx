@@ -2,7 +2,7 @@ import { RentalType } from "@openhospi/shared/enums";
 import { Calendar, Home, Maximize2, Users } from "lucide-react";
 import { getFormatter, getTranslations } from "next-intl/server";
 
-import { StorageImage } from "@/components/storage-image";
+import { StorageImage } from "@/components/shared/storage-image";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { DiscoverRoom } from "@/lib/discover";
+import type { DiscoverRoom } from "@/lib/queries/discover";
 
 type Props = {
   room: DiscoverRoom;

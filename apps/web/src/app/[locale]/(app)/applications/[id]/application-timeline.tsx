@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
-import type { StatusHistoryEntry } from "@/lib/applications";
+import type { StatusHistoryEntry } from "@/lib/queries/applications";
 import { cn } from "@/lib/utils";
 
 type TimelineEntry =

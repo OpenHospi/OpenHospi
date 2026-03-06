@@ -17,7 +17,7 @@ import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
-import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth-server";
+import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession();

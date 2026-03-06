@@ -4,8 +4,8 @@ import { importPrivateKey } from "@openhospi/crypto";
 import { useEffect, useState } from "react";
 
 import { fetchKeyBackup } from "@/app/[locale]/(app)/chat/key-actions";
-import { getStoredPrivateKey } from "@/lib/crypto-store";
-import type { KeyStatus } from "@/lib/key-management";
+import type { KeyStatus } from "@/lib/crypto/key-management";
+import { getStoredPrivateKey } from "@/lib/crypto/store";
 
 type UseEncryptionKeyResult = {
   privateKey: CryptoKey | null;

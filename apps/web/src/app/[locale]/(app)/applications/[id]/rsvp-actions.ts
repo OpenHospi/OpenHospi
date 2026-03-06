@@ -8,8 +8,8 @@ import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared
 import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireNotRestricted, requireSession } from "@/lib/auth-server";
-import { notifyUser } from "@/lib/notifications";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { notifyUser } from "@/lib/queries/notifications";
 
 export async function respondToInvitation(invitationId: string, data: RsvpData) {
   const session = await requireSession();

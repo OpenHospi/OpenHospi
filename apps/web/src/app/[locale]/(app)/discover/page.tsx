@@ -4,14 +4,14 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { RoomCard } from "@/components/app/room-card";
 import { Main } from "@/components/layout";
+import { RoomCard } from "@/components/shared/room-card";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { requireSession } from "@/lib/auth-server";
-import type { DiscoverCursor, DiscoverFilters } from "@/lib/discover";
-import { getDiscoverRooms } from "@/lib/discover";
-import { getProfile } from "@/lib/profile";
+import { requireSession } from "@/lib/auth/server";
+import type { DiscoverCursor, DiscoverFilters } from "@/lib/queries/discover";
+import { getDiscoverRooms } from "@/lib/queries/discover";
+import { getProfile } from "@/lib/queries/profile";
 
 import { DiscoverFiltersPanel } from "./discover-filters";
 import { DiscoverLoadMore } from "./discover-load-more";

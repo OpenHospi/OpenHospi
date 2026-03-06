@@ -1,11 +1,11 @@
 "use client";
 
 import type { EditProfileData } from "@openhospi/database/validators";
-import { preferencesStepSchema } from "@openhospi/database/validators";
 import { City, Vereniging } from "@openhospi/shared/enums";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import {
   Combobox,
@@ -16,19 +16,18 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@/lib/form-utils";
 
 import type { CardProps } from "./dialog-helpers";
 import { DialogFooter, SectionCard, useSectionSubmit } from "./dialog-helpers";
+
+const preferencesFormSchema = z.object({
+  preferredCity: z.enum(City.values),
+  vereniging: z.enum(Vereniging.values).optional(),
+});
+
+type PreferencesFormData = z.infer<typeof preferencesFormSchema>;
 
 export function PreferencesCard({ profile }: CardProps) {
   const t = useTranslations("app.profile");
@@ -38,12 +37,10 @@ export function PreferencesCard({ profile }: CardProps) {
   const [open, setOpen] = useState(false);
   const { isPending, submit } = useSectionSubmit(profile, () => setOpen(false));
 
-  const form = useForm({
-    resolver: zodResolver(preferencesStepSchema),
+  const form = useForm<PreferencesFormData>({
+    resolver: zodResolver(preferencesFormSchema),
     defaultValues: {
       preferredCity: (profile.preferredCity as EditProfileData["preferredCity"]) ?? undefined,
-      maxRent: profile.maxRent ? Number(profile.maxRent) : undefined,
-      availableFrom: profile.availableFrom ?? "",
       vereniging: (profile.vereniging as EditProfileData["vereniging"]) ?? undefined,
     },
   });
@@ -56,21 +53,6 @@ export function PreferencesCard({ profile }: CardProps) {
             <div>
               <dt className="text-muted-foreground">{t("preferredCity")}</dt>
               <dd>{tEnums(`city.${profile.preferredCity}`)}</dd>
-            </div>
-          )}
-          {profile.maxRent && (
-            <div>
-              <dt className="text-muted-foreground">{t("maxRent")}</dt>
-              <dd>
-                &euro;{profile.maxRent}
-                {tCommon("perMonth")}
-              </dd>
-            </div>
-          )}
-          {profile.availableFrom && (
-            <div>
-              <dt className="text-muted-foreground">{t("availableFrom")}</dt>
-              <dd>{profile.availableFrom}</dd>
             </div>
           )}
           {profile.vereniging && (
@@ -112,34 +94,6 @@ export function PreferencesCard({ profile }: CardProps) {
                       </ComboboxList>
                     </ComboboxContent>
                   </Combobox>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="maxRent"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tOnboarding("fields.maxRent")}</FormLabel>
-                  <FormControl>
-                    <Input type="number" min={0} max={5000} {...field} value={field.value ?? ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="availableFrom"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{tOnboarding("fields.availableFrom")}</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

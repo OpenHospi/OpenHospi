@@ -2,8 +2,7 @@
 
 import type { AboutStepData } from "@openhospi/database/validators";
 import { aboutStepSchema } from "@openhospi/database/validators";
-import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
-import { Gender, StudyLevel } from "@openhospi/shared/enums";
+import { City, Gender, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -11,6 +10,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -29,7 +36,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@/lib/form-utils";
 
 import { saveAboutStep } from "../actions";
@@ -52,7 +58,8 @@ export function AboutStep({ defaultValues, onNext }: Props) {
       birthDate: defaultValues.birthDate ?? "",
       studyProgram: defaultValues.studyProgram ?? "",
       studyLevel: defaultValues.studyLevel,
-      bio: defaultValues.bio ?? "",
+      preferredCity: defaultValues.preferredCity,
+      vereniging: defaultValues.vereniging,
     },
   });
 
@@ -159,21 +166,62 @@ export function AboutStep({ defaultValues, onNext }: Props) {
 
         <FormField
           control={form.control}
-          name="bio"
+          name="preferredCity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("fields.preferredCity")}</FormLabel>
+              <Combobox
+                value={field.value ?? null}
+                onValueChange={field.onChange}
+                items={City.values}
+                itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
+              >
+                <ComboboxInput placeholder={t("placeholders.preferredCity")} />
+                <ComboboxContent>
+                  <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
+                  <ComboboxList>
+                    {(city: City) => (
+                      <ComboboxItem key={city} value={city}>
+                        {tEnums(`city.${city}`)}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="vereniging"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {t("fields.bio")}{" "}
+                {t("fields.vereniging")}{" "}
                 <span className="text-muted-foreground font-normal">({tCommon("optional")})</span>
               </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder={t("placeholders.bio")}
-                  className="min-h-24 resize-none"
-                  maxLength={MAX_BIO_LENGTH}
-                  {...field}
-                />
-              </FormControl>
+              <Combobox
+                value={field.value ?? null}
+                onValueChange={(val) =>
+                  form.setValue("vereniging", val ?? undefined, { shouldValidate: true })
+                }
+                items={Vereniging.values}
+                itemToStringLabel={(v: Vereniging) => tEnums(`vereniging.${v}`)}
+              >
+                <ComboboxInput placeholder={t("placeholders.searchVereniging")} showClear />
+                <ComboboxContent>
+                  <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
+                  <ComboboxList>
+                    {(v: Vereniging) => (
+                      <ComboboxItem key={v} value={v}>
+                        {tEnums(`vereniging.${v}`)}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               <FormMessage />
             </FormItem>
           )}

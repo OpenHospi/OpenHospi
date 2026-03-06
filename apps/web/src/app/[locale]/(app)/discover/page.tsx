@@ -90,9 +90,8 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   // Pre-fill from profile when no search params
   if (!hasSearchParams) {
     const profile = await getProfile(user.id);
-    if (profile) {
-      if (profile.preferredCity) filters = { ...filters, city: profile.preferredCity };
-      if (profile.maxRent) filters = { ...filters, maxPrice: Number(profile.maxRent) };
+    if (profile?.preferredCity) {
+      filters = { ...filters, city: profile.preferredCity };
     }
   }
 

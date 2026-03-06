@@ -51,8 +51,6 @@ export function profileToFormDefaults(profile: ProfileWithPhotos): EditProfileDa
     lifestyleTags: (profile.lifestyleTags as LifestyleTag[]) ?? [],
     languages: (profile.languages as Language[]) ?? [],
     preferredCity: (profile.preferredCity as EditProfileData["preferredCity"]) ?? undefined,
-    maxRent: profile.maxRent ? Number(profile.maxRent) : undefined,
-    availableFrom: profile.availableFrom ?? "",
     vereniging: (profile.vereniging as EditProfileData["vereniging"]) ?? undefined,
   };
 }

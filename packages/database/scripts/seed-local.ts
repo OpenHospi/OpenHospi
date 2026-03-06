@@ -254,9 +254,6 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "2003-03-04",
         ],
       }),
-      maxRent: f.valuesFromArray({
-        values: ["500", "450", "700", "550", "480", "650", "500", "460", "600", "700", "500", "470", "750", "490", "550"],
-      }),
       preferredCity: f.valuesFromArray({
         values: [
           "groningen",
@@ -293,25 +290,6 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           "male",
           "female",
           "male",
-        ],
-      }),
-      availableFrom: f.valuesFromArray({
-        values: [
-          "2026-03-01",
-          "2026-03-15",
-          "2026-04-01",
-          "2026-03-01",
-          "2026-05-01",
-          "2026-04-15",
-          "2026-06-01",
-          "2026-03-01",
-          "2026-04-01",
-          "2026-05-01",
-          "2026-03-15",
-          "2026-07-01",
-          "2026-03-01",
-          "2026-04-01",
-          "2026-06-01",
         ],
       }),
       lifestyleTags: f.valuesFromArray({

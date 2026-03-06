@@ -6,6 +6,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
+import { Main } from "@/components/layout/main";
 import { StorageImage } from "@/components/shared/storage-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,7 +63,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
   const isTerminal = isTerminalApplicationStatus(application.status);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <Main className="mx-auto max-w-3xl space-y-6">
       <SetBreadcrumb uuid={id} label={application.roomTitle} />
       {/* Room info card */}
       <Card>
@@ -160,6 +161,6 @@ export default async function ApplicationDetailPage({ params }: Props) {
           <WithdrawButton applicationId={application.id} />
         </div>
       )}
-    </div>
+    </Main>
   );
 }

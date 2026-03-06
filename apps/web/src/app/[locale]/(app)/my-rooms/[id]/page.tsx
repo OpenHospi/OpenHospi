@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout/main";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
@@ -40,10 +41,10 @@ export default async function RoomOverviewPage({ params }: Props) {
   }
 
   return (
-    <div className="space-y-8">
+    <Main className="space-y-8">
       <RoomPhotosGrid roomId={room.id} photos={room.photos} />
       <RoomDetails room={room} />
       {room.status !== RoomStatus.draft && <ShareLinkSection room={room} />}
-    </div>
+    </Main>
   );
 }

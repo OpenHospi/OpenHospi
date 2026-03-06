@@ -3,6 +3,7 @@ import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout/main";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireHousemate, requireSession } from "@/lib/auth/server";
@@ -39,5 +40,9 @@ export default async function ReviewModePage({ params }: Props) {
     return redirect({ href: `/my-rooms/${id}`, locale });
   }
 
-  return <ReviewModeClient applicants={reviewable} roomId={id} currentUserId={user.id} />;
+  return (
+    <Main>
+      <ReviewModeClient applicants={reviewable} roomId={id} currentUserId={user.id} />
+    </Main>
+  );
 }

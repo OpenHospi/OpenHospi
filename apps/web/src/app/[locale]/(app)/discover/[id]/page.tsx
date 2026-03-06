@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout/main";
 import { ReportDialog } from "@/components/shared/report-dialog";
 import { RoomDetailContent } from "@/components/shared/room-detail-content";
 import { Badge } from "@/components/ui/badge";
@@ -78,12 +79,14 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
 
   if (!room) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-        <p className="text-muted-foreground">{t("notAvailable")}</p>
-        <Button asChild variant="outline" className="mt-4">
-          <Link href="/discover">{t("backToDiscover")}</Link>
-        </Button>
-      </div>
+      <Main>
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+          <p className="text-muted-foreground">{t("notAvailable")}</p>
+          <Button asChild variant="outline" className="mt-4">
+            <Link href="/discover">{t("backToDiscover")}</Link>
+          </Button>
+        </div>
+      </Main>
     );
   }
 
@@ -96,7 +99,7 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
       ));
 
   return (
-    <>
+    <Main>
       <RoomDetailContent
         room={applyRoomToDetail(room)}
         context={{
@@ -139,6 +142,6 @@ export default async function DiscoverRoomDetailPage({ params }: Props) {
           </>
         }
       />
-    </>
+    </Main>
   );
 }

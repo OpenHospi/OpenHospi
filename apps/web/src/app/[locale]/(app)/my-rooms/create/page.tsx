@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout/main";
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
@@ -40,7 +41,11 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
     const houses = await getUserOwnerHouses(user.id);
 
     if (houses.length === 0) {
-      return <HouseGate houses={[]} />;
+      return (
+        <Main>
+          <HouseGate houses={[]} />
+        </Main>
+      );
     }
 
     if (houses.length === 1) {
@@ -53,7 +58,11 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
     }
 
     // Multiple houses — show picker
-    return <HouseGate houses={houses} />;
+    return (
+      <Main>
+        <HouseGate houses={houses} />
+      </Main>
+    );
   }
 
   const room = await getRoom(id, user.id);
@@ -61,5 +70,9 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
     return redirect({ href: "/my-rooms", locale });
   }
 
-  return <RoomCreateForm room={room} />;
+  return (
+    <Main>
+      <RoomCreateForm room={room} />
+    </Main>
+  );
 }

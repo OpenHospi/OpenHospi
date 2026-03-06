@@ -2,6 +2,7 @@ import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
+import { Main } from "@/components/layout/main";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
 import { getRoomApplicants } from "@/lib/queries/applicants";
@@ -23,9 +24,9 @@ export default async function ApplicantsPage({ params }: Props) {
   const applicants = await getRoomApplicants(roomId, user.id);
 
   return (
-    <>
+    <Main>
       <MarkSeenEffect roomId={roomId} />
       <ApplicantMasterDetail applicants={applicants} roomId={roomId} currentUserId={user.id} />
-    </>
+    </Main>
   );
 }

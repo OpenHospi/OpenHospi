@@ -6,12 +6,7 @@ import { conversationMembers, conversations, messageReceipts, messages } from ".
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
 import { notifications, pushSubscriptions, pushTokens } from "./notifications";
-import {
-  activeConsents,
-  consentRecords,
-  dataRequests,
-  processingRestrictions,
-} from "./privacy";
+import { activeConsents, consentRecords, dataRequests, processingRestrictions } from "./privacy";
 import { profilePhotos, profiles } from "./profiles";
 import { roomPhotos, rooms } from "./rooms";
 import { blocks, privateKeyBackups, publicKeys, reports } from "./security";

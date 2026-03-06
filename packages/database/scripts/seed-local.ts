@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { asc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import { reset, seed } from "drizzle-seed";
+import postgres from "postgres";
 
 import * as schema from "../src/schema/index.js";
 

@@ -85,8 +85,12 @@ describe("ECDH shared secret", () => {
     ]);
 
     const decrypted = await decryptFromGroup(
-      msg.ciphertext, msg.iv, msg.encryptedKeys,
-      "bob", bob.keyPair.privateKey, alice.publicKey,
+      msg.ciphertext,
+      msg.iv,
+      msg.encryptedKeys,
+      "bob",
+      bob.keyPair.privateKey,
+      alice.publicKey,
     );
     expect(decrypted).toBe("symmetric test");
   });
@@ -120,8 +124,12 @@ describe("encryptForGroup / decryptFromGroup", () => {
     ]);
 
     const decrypted = await decryptFromGroup(
-      msg.ciphertext, msg.iv, msg.encryptedKeys,
-      "bob", bob.keyPair.privateKey, alice.publicKey,
+      msg.ciphertext,
+      msg.iv,
+      msg.encryptedKeys,
+      "bob",
+      bob.keyPair.privateKey,
+      alice.publicKey,
     );
     expect(decrypted).toBe("hello bob");
   });
@@ -142,8 +150,12 @@ describe("encryptForGroup / decryptFromGroup", () => {
 
     for (const r of [r1, r2, r3]) {
       const decrypted = await decryptFromGroup(
-        msg.ciphertext, msg.iv, msg.encryptedKeys,
-        r.id, r.keyPair.privateKey, sender.publicKey,
+        msg.ciphertext,
+        msg.iv,
+        msg.encryptedKeys,
+        r.id,
+        r.keyPair.privateKey,
+        sender.publicKey,
       );
       expect(decrypted).toBe("group message");
     }
@@ -159,7 +171,14 @@ describe("encryptForGroup / decryptFromGroup", () => {
     ]);
 
     await expect(
-      decryptFromGroup(msg.ciphertext, msg.iv, msg.encryptedKeys, "eve", eve.keyPair.privateKey, alice.publicKey),
+      decryptFromGroup(
+        msg.ciphertext,
+        msg.iv,
+        msg.encryptedKeys,
+        "eve",
+        eve.keyPair.privateKey,
+        alice.publicKey,
+      ),
     ).rejects.toThrow("No encrypted key found for this user");
   });
 
@@ -174,7 +193,14 @@ describe("encryptForGroup / decryptFromGroup", () => {
 
     // Use eve's public key instead of alice's → wrong shared secret → GCM tag mismatch
     await expect(
-      decryptFromGroup(msg.ciphertext, msg.iv, msg.encryptedKeys, "bob", bob.keyPair.privateKey, eve.publicKey),
+      decryptFromGroup(
+        msg.ciphertext,
+        msg.iv,
+        msg.encryptedKeys,
+        "bob",
+        bob.keyPair.privateKey,
+        eve.publicKey,
+      ),
     ).rejects.toThrow();
   });
 
@@ -187,8 +213,12 @@ describe("encryptForGroup / decryptFromGroup", () => {
     ]);
 
     const decrypted = await decryptFromGroup(
-      msg.ciphertext, msg.iv, msg.encryptedKeys,
-      "bob", bob.keyPair.privateKey, alice.publicKey,
+      msg.ciphertext,
+      msg.iv,
+      msg.encryptedKeys,
+      "bob",
+      bob.keyPair.privateKey,
+      alice.publicKey,
     );
     expect(decrypted).toBe("");
   });
@@ -203,8 +233,12 @@ describe("encryptForGroup / decryptFromGroup", () => {
     ]);
 
     const decrypted = await decryptFromGroup(
-      msg.ciphertext, msg.iv, msg.encryptedKeys,
-      "bob", bob.keyPair.privateKey, alice.publicKey,
+      msg.ciphertext,
+      msg.iv,
+      msg.encryptedKeys,
+      "bob",
+      bob.keyPair.privateKey,
+      alice.publicKey,
     );
     expect(decrypted).toBe(text);
   });
@@ -219,8 +253,12 @@ describe("encryptForGroup / decryptFromGroup", () => {
     ]);
 
     const decrypted = await decryptFromGroup(
-      msg.ciphertext, msg.iv, msg.encryptedKeys,
-      "bob", bob.keyPair.privateKey, alice.publicKey,
+      msg.ciphertext,
+      msg.iv,
+      msg.encryptedKeys,
+      "bob",
+      bob.keyPair.privateKey,
+      alice.publicKey,
     );
     expect(decrypted).toBe(large);
   });
@@ -243,7 +281,14 @@ describe("tamper resistance (AES-GCM authentication)", () => {
     const tampered = toBase64(bytes);
 
     await expect(
-      decryptFromGroup(tampered, msg.iv, msg.encryptedKeys, "bob", bob.keyPair.privateKey, alice.publicKey),
+      decryptFromGroup(
+        tampered,
+        msg.iv,
+        msg.encryptedKeys,
+        "bob",
+        bob.keyPair.privateKey,
+        alice.publicKey,
+      ),
     ).rejects.toThrow();
   });
 
@@ -260,7 +305,14 @@ describe("tamper resistance (AES-GCM authentication)", () => {
     const tamperedIv = toBase64(bytes);
 
     await expect(
-      decryptFromGroup(msg.ciphertext, tamperedIv, msg.encryptedKeys, "bob", bob.keyPair.privateKey, alice.publicKey),
+      decryptFromGroup(
+        msg.ciphertext,
+        tamperedIv,
+        msg.encryptedKeys,
+        "bob",
+        bob.keyPair.privateKey,
+        alice.publicKey,
+      ),
     ).rejects.toThrow();
   });
 
@@ -277,7 +329,14 @@ describe("tamper resistance (AES-GCM authentication)", () => {
     const tamperedKeys = [{ userId: "bob", wrappedKey: toBase64(bytes) }];
 
     await expect(
-      decryptFromGroup(msg.ciphertext, msg.iv, tamperedKeys, "bob", bob.keyPair.privateKey, alice.publicKey),
+      decryptFromGroup(
+        msg.ciphertext,
+        msg.iv,
+        tamperedKeys,
+        "bob",
+        bob.keyPair.privateKey,
+        alice.publicKey,
+      ),
     ).rejects.toThrow();
   });
 
@@ -293,7 +352,14 @@ describe("tamper resistance (AES-GCM authentication)", () => {
     const truncated = toBase64(bytes.slice(0, Math.floor(bytes.length / 2)));
 
     await expect(
-      decryptFromGroup(truncated, msg.iv, msg.encryptedKeys, "bob", bob.keyPair.privateKey, alice.publicKey),
+      decryptFromGroup(
+        truncated,
+        msg.iv,
+        msg.encryptedKeys,
+        "bob",
+        bob.keyPair.privateKey,
+        alice.publicKey,
+      ),
     ).rejects.toThrow();
   });
 });
@@ -444,9 +510,7 @@ describe("private key backup encrypt / decrypt", () => {
 
     const backup = await encryptPrivateKeyBackup(privJwk, wrappingKey);
 
-    await expect(
-      decryptPrivateKeyBackup(backup.ciphertext, backup.iv, wrongKey),
-    ).rejects.toThrow();
+    await expect(decryptPrivateKeyBackup(backup.ciphertext, backup.iv, wrongKey)).rejects.toThrow();
   });
 
   it("tampered ciphertext → throws", async () => {
@@ -462,9 +526,7 @@ describe("private key backup encrypt / decrypt", () => {
     bytes[0] ^= 0xff;
     const tampered = toBase64(bytes);
 
-    await expect(
-      decryptPrivateKeyBackup(tampered, backup.iv, wrappingKey),
-    ).rejects.toThrow();
+    await expect(decryptPrivateKeyBackup(tampered, backup.iv, wrappingKey)).rejects.toThrow();
   });
 
   it("two backups of same key → different ciphertext (random IV)", async () => {
@@ -480,5 +542,4 @@ describe("private key backup encrypt / decrypt", () => {
     expect(backup1.ciphertext).not.toBe(backup2.ciphertext);
     expect(backup1.iv).not.toBe(backup2.iv);
   });
-
 });

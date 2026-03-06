@@ -17,6 +17,10 @@
     "db:studio": "drizzle-kit studio",
     "db:studio:local": "drizzle-kit studio --config=drizzle.local.config.ts",
     "db:seed:local": "tsx scripts/seed-local.ts",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"src/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,json}\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -31,6 +35,13 @@
     "dotenv": "^17.3.1",
     "drizzle-kit": "1.0.0-beta.15-859cf75",
     "drizzle-seed": "1.0.0-beta.15-859cf75",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-security": "^4.0.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8"
   }
 }

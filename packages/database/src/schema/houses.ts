@@ -1,6 +1,6 @@
 import { or, sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import { index, pgPolicy, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { houseMemberRoleEnum } from "./enums";
 import { profiles } from "./profiles";
@@ -11,8 +11,7 @@ export const houses = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     inviteCode: uuid("invite_code").unique().defaultRandom(),
-    createdBy: uuid("created_by")
-      .references(() => profiles.id, { onDelete: "set null" }),
+    createdBy: uuid("created_by").references(() => profiles.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()

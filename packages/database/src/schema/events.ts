@@ -1,5 +1,4 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   date,
   index,
@@ -12,6 +11,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { applications } from "./applications";
 import { invitationStatusEnum } from "./enums";
@@ -25,8 +25,7 @@ export const hospiEvents = pgTable(
     roomId: uuid("room_id")
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
-    createdBy: uuid("created_by")
-      .references(() => profiles.id, { onDelete: "set null" }),
+    createdBy: uuid("created_by").references(() => profiles.id, { onDelete: "set null" }),
     title: text("title").notNull(),
     description: text("description"),
     eventDate: date("event_date").notNull(),

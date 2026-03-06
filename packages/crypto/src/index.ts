@@ -13,7 +13,12 @@
 
 const ALGO_ECDH = { name: "ECDH", namedCurve: "P-256" } as const;
 const ALGO_AES = { name: "AES-GCM", length: 256 } as const;
-const ALGO_HKDF = { name: "HKDF", hash: "SHA-256", info: new Uint8Array(0), salt: new Uint8Array(0) } as const;
+const ALGO_HKDF = {
+  name: "HKDF",
+  hash: "SHA-256",
+  info: new Uint8Array(0),
+  salt: new Uint8Array(0),
+} as const;
 
 // ── Key Generation ──
 
@@ -53,13 +58,7 @@ async function deriveSharedKey(
 
   const hkdfKey = await crypto.subtle.importKey("raw", sharedBits, "HKDF", false, ["deriveKey"]);
 
-  return crypto.subtle.deriveKey(
-    ALGO_HKDF,
-    hkdfKey,
-    ALGO_AES,
-    false,
-    ["encrypt", "decrypt"],
-  );
+  return crypto.subtle.deriveKey(ALGO_HKDF, hkdfKey, ALGO_AES, false, ["encrypt", "decrypt"]);
 }
 
 // ── AES-GCM Encrypt / Decrypt ──

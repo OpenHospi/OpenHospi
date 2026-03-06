@@ -13,18 +13,10 @@ function defineEnum<const T extends readonly string[]>(values: T) {
 
 // ─── Identity enums ───────────────────────────────────────────────────────
 
-export const Gender = defineEnum([
-  "male",
-  "female",
-  "prefer_not_to_say",
-] as const);
+export const Gender = defineEnum(["male", "female", "prefer_not_to_say"] as const);
 export type Gender = (typeof Gender.values)[number];
 
-export const GenderPreference = defineEnum([
-  "male",
-  "female",
-  "no_preference",
-] as const);
+export const GenderPreference = defineEnum(["male", "female", "no_preference"] as const);
 export type GenderPreference = (typeof GenderPreference.values)[number];
 
 export const Language = defineEnum([
@@ -105,19 +97,10 @@ export const HouseType = defineEnum([
 ] as const);
 export type HouseType = (typeof HouseType.values)[number];
 
-export const RoomStatus = defineEnum([
-  "draft",
-  "active",
-  "paused",
-  "closed",
-] as const);
+export const RoomStatus = defineEnum(["draft", "active", "paused", "closed"] as const);
 export type RoomStatus = (typeof RoomStatus.values)[number];
 
-export const Furnishing = defineEnum([
-  "unfurnished",
-  "semi_furnished",
-  "furnished",
-] as const);
+export const Furnishing = defineEnum(["unfurnished", "semi_furnished", "furnished"] as const);
 export type Furnishing = (typeof Furnishing.values)[number];
 
 export const RoomFeature = defineEnum([
@@ -142,18 +125,10 @@ export const RoomFeature = defineEnum([
 ] as const);
 export type RoomFeature = (typeof RoomFeature.values)[number];
 
-export const UtilitiesIncluded = defineEnum([
-  "included",
-  "not_included",
-  "estimated",
-] as const);
+export const UtilitiesIncluded = defineEnum(["included", "not_included", "estimated"] as const);
 export type UtilitiesIncluded = (typeof UtilitiesIncluded.values)[number];
 
-export const RentalType = defineEnum([
-  "permanent",
-  "sublet",
-  "temporary",
-] as const);
+export const RentalType = defineEnum(["permanent", "sublet", "temporary"] as const);
 export type RentalType = (typeof RentalType.values)[number];
 
 export const LocationTag = defineEnum([
@@ -273,11 +248,7 @@ export type ConversationType = (typeof ConversationType.values)[number];
 export const MessageType = defineEnum(["text", "system"] as const);
 export type MessageType = (typeof MessageType.values)[number];
 
-export const DeliveryStatus = defineEnum([
-  "sent",
-  "delivered",
-  "read",
-] as const);
+export const DeliveryStatus = defineEnum(["sent", "delivered", "read"] as const);
 export type DeliveryStatus = (typeof DeliveryStatus.values)[number];
 
 // ─── Admin & reports ──────────────────────────────────────────────────────
@@ -311,21 +282,12 @@ export type ReportReason = (typeof ReportReason.values)[number];
 export const ReportType = defineEnum(["message", "user", "room"] as const);
 export type ReportType = (typeof ReportType.values)[number];
 
-export const ReportStatus = defineEnum([
-  "pending",
-  "reviewing",
-  "resolved",
-  "dismissed",
-] as const);
+export const ReportStatus = defineEnum(["pending", "reviewing", "resolved", "dismissed"] as const);
 export type ReportStatus = (typeof ReportStatus.values)[number];
 
 // ─── Discover ─────────────────────────────────────────────────────────────
 
-export const DiscoverSort = defineEnum([
-  "newest",
-  "cheapest",
-  "most_expensive",
-] as const);
+export const DiscoverSort = defineEnum(["newest", "cheapest", "most_expensive"] as const);
 export type DiscoverSort = (typeof DiscoverSort.values)[number];
 
 // ─── Verenigingen (proper nouns — stay as-is) ─────────────────────────────
@@ -553,20 +515,14 @@ export type DataRequestStatus = (typeof DataRequestStatus.values)[number];
 
 // ─── Transition maps ──────────────────────────────────────────────────────
 
-export const VALID_INVITATION_TRANSITIONS: Record<
-  InvitationStatus,
-  readonly InvitationStatus[]
-> = {
+export const VALID_INVITATION_TRANSITIONS: Record<InvitationStatus, readonly InvitationStatus[]> = {
   pending: ["attending", "not_attending", "maybe"],
   attending: ["not_attending"],
   maybe: ["attending", "not_attending"],
   not_attending: [],
 } as const;
 
-export function isValidInvitationTransition(
-  from: InvitationStatus,
-  to: InvitationStatus,
-): boolean {
+export function isValidInvitationTransition(from: InvitationStatus, to: InvitationStatus): boolean {
   return VALID_INVITATION_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
@@ -592,35 +548,25 @@ export function isValidApplicationTransition(
   return VALID_APPLICATION_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
-export const VALID_ROOM_TRANSITIONS: Record<RoomStatus, readonly RoomStatus[]> =
-  {
-    draft: ["active"],
-    active: ["paused", "closed"],
-    paused: ["active", "closed"],
-    closed: [],
-  } as const;
+export const VALID_ROOM_TRANSITIONS: Record<RoomStatus, readonly RoomStatus[]> = {
+  draft: ["active"],
+  active: ["paused", "closed"],
+  paused: ["active", "closed"],
+  closed: [],
+} as const;
 
-export function isValidRoomTransition(
-  from: RoomStatus,
-  to: RoomStatus,
-): boolean {
+export function isValidRoomTransition(from: RoomStatus, to: RoomStatus): boolean {
   return VALID_ROOM_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
-export const VALID_REPORT_STATUS_TRANSITIONS: Record<
-  ReportStatus,
-  readonly ReportStatus[]
-> = {
+export const VALID_REPORT_STATUS_TRANSITIONS: Record<ReportStatus, readonly ReportStatus[]> = {
   pending: ["reviewing", "dismissed"],
   reviewing: ["resolved", "dismissed"],
   resolved: [],
   dismissed: [],
 } as const;
 
-export function isValidReportStatusTransition(
-  from: ReportStatus,
-  to: ReportStatus,
-): boolean {
+export function isValidReportStatusTransition(from: ReportStatus, to: ReportStatus): boolean {
   return VALID_REPORT_STATUS_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
@@ -633,9 +579,7 @@ export const TERMINAL_APPLICATION_STATUSES: readonly ApplicationStatus[] = [
   ApplicationStatus.withdrawn,
 ] as const;
 
-export function isTerminalApplicationStatus(
-  status: ApplicationStatus,
-): boolean {
+export function isTerminalApplicationStatus(status: ApplicationStatus): boolean {
   return (TERMINAL_APPLICATION_STATUSES as readonly string[]).includes(status);
 }
 
@@ -655,10 +599,7 @@ export function isReviewPhaseStatus(status: ApplicationStatus): boolean {
   return (REVIEW_PHASE_STATUSES as readonly string[]).includes(status);
 }
 
-export const REVIEW_DECISION_TO_APPLICATION_STATUS: Record<
-  ReviewDecision,
-  ApplicationStatus
-> = {
+export const REVIEW_DECISION_TO_APPLICATION_STATUS: Record<ReviewDecision, ApplicationStatus> = {
   like: ApplicationStatus.liked,
   maybe: ApplicationStatus.maybe,
   reject: ApplicationStatus.rejected,

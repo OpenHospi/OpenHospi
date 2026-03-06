@@ -18,6 +18,4 @@ export const requestProcessingRestrictionSchema = z.object({
 
 export type UpdateConsentData = z.infer<typeof updateConsentSchema>;
 export type SubmitDataRequestData = z.infer<typeof submitDataRequestSchema>;
-export type RequestProcessingRestrictionData = z.infer<
-  typeof requestProcessingRestrictionSchema
->;
+export type RequestProcessingRestrictionData = z.infer<typeof requestProcessingRestrictionSchema>;

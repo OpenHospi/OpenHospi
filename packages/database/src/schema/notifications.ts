@@ -1,5 +1,4 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   index,
@@ -11,6 +10,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { adminActionEnum } from "./enums";
 import { profiles } from "./profiles";

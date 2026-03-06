@@ -9,7 +9,6 @@ import {
   GenderPreference,
   HouseType,
   Language,
-
   LocationTag,
   RentalType,
   RoomFeature,

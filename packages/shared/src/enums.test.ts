@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import {
   Gender,
   GenderPreference,
@@ -60,21 +61,15 @@ describe("@openhospi/shared — enums", () => {
     expect(Object.keys(ALL_ENUMS)).toHaveLength(25);
   });
 
-  it.each(Object.entries(ALL_ENUMS))(
-    "%s has a non-empty values array",
-    (_name, enumObj) => {
-      expect(Array.isArray(enumObj.values)).toBe(true);
-      expect(enumObj.values.length).toBeGreaterThan(0);
-    },
-  );
+  it.each(Object.entries(ALL_ENUMS))("%s has a non-empty values array", (_name, enumObj) => {
+    expect(Array.isArray(enumObj.values)).toBe(true);
+    expect(enumObj.values.length).toBeGreaterThan(0);
+  });
 
-  it.each(Object.entries(ALL_ENUMS))(
-    "%s contains only unique values",
-    (_name, enumObj) => {
-      const unique = new Set(enumObj.values);
-      expect(unique.size).toBe(enumObj.values.length);
-    },
-  );
+  it.each(Object.entries(ALL_ENUMS))("%s contains only unique values", (_name, enumObj) => {
+    const unique = new Set(enumObj.values);
+    expect(unique.size).toBe(enumObj.values.length);
+  });
 
   it.each(Object.entries(ALL_ENUMS))(
     "%s values are lowercase/snake_case strings",
@@ -118,10 +113,6 @@ describe("@openhospi/shared — enums", () => {
   });
 
   it("DiscoverSort has expected values", () => {
-    expect([...DiscoverSort.values]).toEqual([
-      "newest",
-      "cheapest",
-      "most_expensive",
-    ]);
+    expect([...DiscoverSort.values]).toEqual(["newest", "cheapest", "most_expensive"]);
   });
 });

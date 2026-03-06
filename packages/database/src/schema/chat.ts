@@ -1,5 +1,4 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   index,
@@ -12,6 +11,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { conversationTypeEnum, deliveryStatusEnum, messageTypeEnum } from "./enums";
 import { profiles } from "./profiles";
@@ -86,8 +86,7 @@ export const messages = pgTable(
     conversationId: uuid("conversation_id")
       .notNull()
       .references(() => conversations.id, { onDelete: "cascade" }),
-    senderId: uuid("sender_id")
-      .references(() => profiles.id, { onDelete: "set null" }),
+    senderId: uuid("sender_id").references(() => profiles.id, { onDelete: "set null" }),
     ciphertext: text("ciphertext").notNull(),
     iv: text("iv").notNull(),
     encryptedKeys: jsonb("encrypted_keys"),

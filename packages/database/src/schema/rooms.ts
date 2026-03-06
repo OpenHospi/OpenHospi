@@ -1,6 +1,10 @@
-import { GenderPreference, RentalType, RoomStatus, UtilitiesIncluded } from "@openhospi/shared/enums";
+import {
+  GenderPreference,
+  RentalType,
+  RoomStatus,
+  UtilitiesIncluded,
+} from "@openhospi/shared/enums";
 import { isNotNull, or, sql } from "drizzle-orm";
-import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   date,
   doublePrecision,
@@ -15,6 +19,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import {
   cityEnum,
@@ -22,7 +27,6 @@ import {
   genderPreferenceEnum,
   houseTypeEnum,
   languageEnum,
-
   locationTagEnum,
   rentalTypeEnum,
   roomFeatureEnum,
@@ -54,11 +58,14 @@ export const rooms = pgTable(
     longitude: doublePrecision("longitude"),
     rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),
     deposit: numeric("deposit", { precision: 7, scale: 2 }),
-    utilitiesIncluded: utilitiesIncludedEnum("utilities_included").default(UtilitiesIncluded.included),
+    utilitiesIncluded: utilitiesIncludedEnum("utilities_included").default(
+      UtilitiesIncluded.included,
+    ),
     serviceCosts: numeric("service_costs", { precision: 7, scale: 2 }),
     estimatedUtilitiesCosts: numeric("estimated_utilities_costs", { precision: 7, scale: 2 }),
-    totalCost: numeric("total_cost", { precision: 7, scale: 2 })
-      .generatedAlwaysAs(sql`rent_price + COALESCE(service_costs, 0) + COALESCE(estimated_utilities_costs, 0)`),
+    totalCost: numeric("total_cost", { precision: 7, scale: 2 }).generatedAlwaysAs(
+      sql`rent_price + COALESCE(service_costs, 0) + COALESCE(estimated_utilities_costs, 0)`,
+    ),
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),
@@ -69,7 +76,9 @@ export const rooms = pgTable(
     features: roomFeatureEnum("features").array().default([]),
     locationTags: locationTagEnum("location_tags").array().default([]),
     roomVereniging: verenigingEnum("room_vereniging"),
-    preferredGender: genderPreferenceEnum("preferred_gender").default(GenderPreference.no_preference),
+    preferredGender: genderPreferenceEnum("preferred_gender").default(
+      GenderPreference.no_preference,
+    ),
     preferredAgeMin: integer("preferred_age_min"),
     preferredAgeMax: integer("preferred_age_max"),
     status: roomStatusEnum("status").notNull().default("draft"),
@@ -88,9 +97,7 @@ export const rooms = pgTable(
     index("idx_rooms_city_status").on(table.city, table.status),
     index("idx_rooms_rent_price").on(table.rentPrice),
     index("idx_rooms_available_from").on(table.availableFrom),
-    index("idx_rooms_vereniging")
-      .on(table.roomVereniging)
-      .where(isNotNull(table.roomVereniging)),
+    index("idx_rooms_vereniging").on(table.roomVereniging).where(isNotNull(table.roomVereniging)),
     pgPolicy("rooms_select_anon", {
       for: "select",
       to: anonRole,

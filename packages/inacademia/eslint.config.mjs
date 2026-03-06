@@ -1,4 +1,4 @@
-import { defineConfig, globalIgnores } from "eslint/config";
+import { defineConfig } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
 import { flatConfigs as importXConfigs } from "eslint-plugin-import-x";
@@ -6,16 +6,7 @@ import security from "eslint-plugin-security";
 import tseslint from "typescript-eslint";  
 
 const eslintConfig = defineConfig([
-  // ── TypeScript + React JSX ──
   ...tseslint.configs.recommended,
-  {
-    files: ["src/**/*.{ts,tsx}"],
-    languageOptions: {
-      parserOptions: {
-        ecmaFeatures: { jsx: true },
-      },
-    },
-  },
 
   // ── Import ordering & validation ──
   importXConfigs.recommended,
@@ -55,9 +46,6 @@ const eslintConfig = defineConfig([
 
   // ── Prettier (must be LAST) ──
   prettier,
-
-  // ── Global ignores ──
-  globalIgnores([".react-email/**"]),
 ]);
 
 export default eslintConfig;

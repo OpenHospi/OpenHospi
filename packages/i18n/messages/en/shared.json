@@ -558,8 +558,7 @@
       "filters": {
         "city": "City",
         "cityPlaceholder": "All cities",
-        "minPrice": "Min price",
-        "maxPrice": "Max price",
+        "priceRange": "Price range",
         "houseType": "House type",
         "houseTypePlaceholder": "All types",
         "furnishing": "Furnishing",

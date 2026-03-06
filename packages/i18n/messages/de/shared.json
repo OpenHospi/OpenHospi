@@ -558,8 +558,7 @@
       "filters": {
         "city": "Stadt",
         "cityPlaceholder": "Alle Städte",
-        "minPrice": "Min Preis",
-        "maxPrice": "Max Preis",
+        "priceRange": "Preisspanne",
         "houseType": "Wohnungstyp",
         "houseTypePlaceholder": "Alle Typen",
         "furnishing": "Einrichtung",

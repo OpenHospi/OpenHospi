@@ -558,8 +558,7 @@
       "filters": {
         "city": "Stad",
         "cityPlaceholder": "Alle steden",
-        "minPrice": "Min prijs",
-        "maxPrice": "Max prijs",
+        "priceRange": "Prijsbereik",
         "houseType": "Woningtype",
         "houseTypePlaceholder": "Alle types",
         "furnishing": "Inrichting",

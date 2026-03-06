@@ -8,7 +8,7 @@ import {
   LocationTag,
   RoomFeature,
 } from "@openhospi/shared/enums";
-import { SlidersHorizontal, X } from "lucide-react";
+import { Euro, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { usePathname, useRouter } from "@/i18n/navigation-app";
 import type { DiscoverFilters } from "@/lib/queries/discover";
 import { cn } from "@/lib/utils";
@@ -51,9 +52,15 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const PRICE_MIN = 0;
+  const PRICE_MAX = 2000;
+  const PRICE_STEP = 25;
+
   const [showFilters, setShowFilters] = useState(false);
-  const [minPrice, setMinPrice] = useState(filters.minPrice?.toString() ?? "");
-  const [maxPrice, setMaxPrice] = useState(filters.maxPrice?.toString() ?? "");
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    filters.minPrice ?? PRICE_MIN,
+    filters.maxPrice ?? PRICE_MAX,
+  ]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const buildParams = useCallback(
@@ -97,13 +104,19 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
   );
 
   const debouncedPriceUpdate = useCallback(
-    (key: "minPrice" | "maxPrice", value: string) => {
+    (range: [number, number]) => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
-        updateFilter(key, value || undefined);
-      }, 500);
+        router.replace(
+          buildParams({
+            minPrice: range[0] > PRICE_MIN ? String(range[0]) : undefined,
+            maxPrice: range[1] < PRICE_MAX ? String(range[1]) : undefined,
+          }),
+          { scroll: false },
+        );
+      }, 300);
     },
-    [updateFilter],
+    [router, buildParams],
   );
 
   useEffect(() => {
@@ -123,8 +136,7 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
     (filters.locationTags && filters.locationTags.length > 0);
 
   const clearAll = () => {
-    setMinPrice("");
-    setMaxPrice("");
+    setPriceRange([PRICE_MIN, PRICE_MAX]);
     const params = new URLSearchParams();
     if (sort !== DiscoverSort.newest) params.set("sort", sort);
     const qs = params.toString();
@@ -194,33 +206,30 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
           </Combobox>
         </div>
 
-        {/* Min price */}
-        <div className="space-y-1.5">
-          <Label>{t("minPrice")}</Label>
-          <Input
-            type="number"
-            min={0}
-            placeholder="€0"
-            value={minPrice}
-            onChange={(e) => {
-              setMinPrice(e.target.value);
-              debouncedPriceUpdate("minPrice", e.target.value);
+        {/* Price range slider */}
+        <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
+          <Label>{t("priceRange")}</Label>
+          <p className="text-sm text-muted-foreground">
+            <Euro className="inline size-3.5" />
+            <span className="font-medium tabular-nums">{priceRange[0]}</span> –{" "}
+            <Euro className="inline size-3.5" />
+            <span className="font-medium tabular-nums">
+              {priceRange[1] >= PRICE_MAX ? `${PRICE_MAX}+` : priceRange[1]}
+            </span>
+          </p>
+          <Slider
+            value={priceRange}
+            onValueChange={(value) => {
+              const range = value as [number, number];
+              setPriceRange(range);
+              debouncedPriceUpdate(range);
             }}
-          />
-        </div>
-
-        {/* Max price */}
-        <div className="space-y-1.5">
-          <Label>{t("maxPrice")}</Label>
-          <Input
-            type="number"
-            min={0}
-            placeholder="€∞"
-            value={maxPrice}
-            onChange={(e) => {
-              setMaxPrice(e.target.value);
-              debouncedPriceUpdate("maxPrice", e.target.value);
-            }}
+            min={PRICE_MIN}
+            max={PRICE_MAX}
+            step={PRICE_STEP}
+            orientation="horizontal"
+            className="mt-2 w-full"
+            aria-label={t("priceRange")}
           />
         </div>
 

@@ -1,5 +1,6 @@
-import dotenv from "dotenv";
 import {existsSync} from "node:fs";
+
+import dotenv from "dotenv";
 import {defineConfig} from "drizzle-kit";
 
 // Load .env.local from monorepo root for local dev; on Vercel env vars are injected automatically

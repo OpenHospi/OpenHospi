@@ -95,11 +95,33 @@ export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: 
       );
   });
 
+  const roomUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/rooms/${roomId}`;
+
   for (const app of allApps) {
     if (chosenApplicationId && app.id === chosenApplicationId) {
-      await notifyUser(app.userId, "notifications.accepted", { roomTitle });
+      await notifyUser(
+        app.userId,
+        "notifications.accepted",
+        { roomTitle },
+        {
+          email: {
+            template: "applicationAccepted",
+            props: { roomTitle, roomUrl },
+          },
+        },
+      );
     } else {
-      await notifyUser(app.userId, "notifications.notChosen", { roomTitle });
+      await notifyUser(
+        app.userId,
+        "notifications.notChosen",
+        { roomTitle },
+        {
+          email: {
+            template: "applicationNotChosen",
+            props: { roomTitle },
+          },
+        },
+      );
     }
   }
 

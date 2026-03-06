@@ -8,6 +8,19 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"src/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,json}\"",
     "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-security": "^4.0.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8"
   }
 }

@@ -1,6 +1,3 @@
-import { and, eq, sql } from "drizzle-orm";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
-
 import {
   AdminAction,
   ApplicationStatus,
@@ -20,6 +17,8 @@ import {
   VALID_INVITATION_TRANSITIONS,
   VALID_ROOM_TRANSITIONS,
 } from "@openhospi/shared/enums";
+import { and, eq, sql } from "drizzle-orm";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { db } from "./db";
 import { withRLS } from "./rls";
@@ -93,18 +92,34 @@ const NOW = new Date();
 
 async function cleanup() {
   // Reverse FK order
-  await db.delete(adminAuditLog).where(sql`${adminAuditLog.adminUserId} IN (${sql.join(ALL_USERS.map((u) => sql`${u}`), sql`, `)})`);
-  await db.delete(reports).where(sql`${reports.reporterId} IN (${sql.join(ALL_USERS.map((u) => sql`${u}`), sql`, `)})`);
+  await db.delete(adminAuditLog).where(
+    sql`${adminAuditLog.adminUserId} IN (${sql.join(
+      ALL_USERS.map((u) => sql`${u}`),
+      sql`, `,
+    )})`,
+  );
+  await db.delete(reports).where(
+    sql`${reports.reporterId} IN (${sql.join(
+      ALL_USERS.map((u) => sql`${u}`),
+      sql`, `,
+    )})`,
+  );
   for (const id of ALL_USERS) {
     await db.delete(blocks).where(eq(blocks.blockerId, id));
     await db.delete(publicKeys).where(eq(publicKeys.userId, id));
   }
-  await db.delete(reviews).where(sql`${reviews.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
+  await db
+    .delete(reviews)
+    .where(sql`${reviews.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
   await db.delete(votes).where(sql`${votes.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
-  await db.delete(applications).where(sql`${applications.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
+  await db
+    .delete(applications)
+    .where(sql`${applications.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
   await db.delete(conversations).where(eq(conversations.id, CONV_1));
   await db.delete(hospiEvents).where(eq(hospiEvents.id, EVENT_1));
-  await db.delete(roomPhotos).where(sql`${roomPhotos.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
+  await db
+    .delete(roomPhotos)
+    .where(sql`${roomPhotos.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
   await db.delete(rooms).where(eq(rooms.id, ROOM_1));
   await db.delete(rooms).where(eq(rooms.id, ROOM_DRAFT));
   await db.delete(houses).where(eq(houses.id, HOUSE_1));
@@ -121,22 +136,106 @@ describe("E2E workflow tests (integration)", () => {
 
     // Users
     await db.insert(user).values([
-      { id: HOSPI_OWNER, name: "Hospi Owner", email: "e2e-owner@test.openhospi.nl", emailVerified: true, role: "user", createdAt: NOW, updatedAt: NOW },
-      { id: HOSPI_MATE, name: "Hospi Mate", email: "e2e-mate@test.openhospi.nl", emailVerified: true, role: "user", createdAt: NOW, updatedAt: NOW },
-      { id: SEEKER_1, name: "Seeker One", email: "e2e-seeker1@test.openhospi.nl", emailVerified: true, role: "user", createdAt: NOW, updatedAt: NOW },
-      { id: SEEKER_2, name: "Seeker Two", email: "e2e-seeker2@test.openhospi.nl", emailVerified: true, role: "user", createdAt: NOW, updatedAt: NOW },
-      { id: ADMIN_USER, name: "Admin User", email: "e2e-admin@test.openhospi.nl", emailVerified: true, role: "admin", createdAt: NOW, updatedAt: NOW },
-      { id: OUTSIDER, name: "Outsider", email: "e2e-outsider@test.openhospi.nl", emailVerified: true, role: "user", createdAt: NOW, updatedAt: NOW },
+      {
+        id: HOSPI_OWNER,
+        name: "Hospi Owner",
+        email: "e2e-owner@test.openhospi.nl",
+        emailVerified: true,
+        role: "user",
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: HOSPI_MATE,
+        name: "Hospi Mate",
+        email: "e2e-mate@test.openhospi.nl",
+        emailVerified: true,
+        role: "user",
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: SEEKER_1,
+        name: "Seeker One",
+        email: "e2e-seeker1@test.openhospi.nl",
+        emailVerified: true,
+        role: "user",
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: SEEKER_2,
+        name: "Seeker Two",
+        email: "e2e-seeker2@test.openhospi.nl",
+        emailVerified: true,
+        role: "user",
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: ADMIN_USER,
+        name: "Admin User",
+        email: "e2e-admin@test.openhospi.nl",
+        emailVerified: true,
+        role: "admin",
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: OUTSIDER,
+        name: "Outsider",
+        email: "e2e-outsider@test.openhospi.nl",
+        emailVerified: true,
+        role: "user",
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
     ]);
 
     // Profiles
     await db.insert(profiles).values([
-      { id: HOSPI_OWNER, firstName: "Hospi", lastName: "Owner", email: "e2e-owner@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: HOSPI_MATE, firstName: "Hospi", lastName: "Mate", email: "e2e-mate@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: SEEKER_1, firstName: "Seeker", lastName: "One", email: "e2e-seeker1@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: SEEKER_2, firstName: "Seeker", lastName: "Two", email: "e2e-seeker2@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: ADMIN_USER, firstName: "Admin", lastName: "User", email: "e2e-admin@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: OUTSIDER, firstName: "Out", lastName: "Sider", email: "e2e-outsider@test.openhospi.nl", institutionDomain: "test.nl" },
+      {
+        id: HOSPI_OWNER,
+        firstName: "Hospi",
+        lastName: "Owner",
+        email: "e2e-owner@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: HOSPI_MATE,
+        firstName: "Hospi",
+        lastName: "Mate",
+        email: "e2e-mate@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: SEEKER_1,
+        firstName: "Seeker",
+        lastName: "One",
+        email: "e2e-seeker1@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: SEEKER_2,
+        firstName: "Seeker",
+        lastName: "Two",
+        email: "e2e-seeker2@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: ADMIN_USER,
+        firstName: "Admin",
+        lastName: "User",
+        email: "e2e-admin@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: OUTSIDER,
+        firstName: "Out",
+        lastName: "Sider",
+        email: "e2e-outsider@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
     ]);
 
     // House + members
@@ -148,8 +247,26 @@ describe("E2E workflow tests (integration)", () => {
 
     // Rooms
     await db.insert(rooms).values([
-      { id: ROOM_1, ownerId: HOSPI_OWNER, houseId: HOUSE_1, title: "E2E Active Room", city: "amsterdam", status: "active", rentPrice: "600", serviceCosts: "50", deposit: "1200" },
-      { id: ROOM_DRAFT, ownerId: HOSPI_OWNER, houseId: HOUSE_1, title: "E2E Draft Room", city: "utrecht", status: "draft", rentPrice: "500" },
+      {
+        id: ROOM_1,
+        ownerId: HOSPI_OWNER,
+        houseId: HOUSE_1,
+        title: "E2E Active Room",
+        city: "amsterdam",
+        status: "active",
+        rentPrice: "600",
+        serviceCosts: "50",
+        deposit: "1200",
+      },
+      {
+        id: ROOM_DRAFT,
+        ownerId: HOSPI_OWNER,
+        houseId: HOUSE_1,
+        title: "E2E Draft Room",
+        city: "utrecht",
+        status: "draft",
+        rentPrice: "500",
+      },
     ]);
 
     // Application: SEEKER_1 → ROOM_1
@@ -157,12 +274,18 @@ describe("E2E workflow tests (integration)", () => {
 
     // Event on ROOM_1
     await db.insert(hospiEvents).values({
-      id: EVENT_1, roomId: ROOM_1, createdBy: HOSPI_OWNER,
-      title: "E2E Meet & Greet", eventDate: "2026-04-01", timeStart: "14:00",
+      id: EVENT_1,
+      roomId: ROOM_1,
+      createdBy: HOSPI_OWNER,
+      title: "E2E Meet & Greet",
+      eventDate: "2026-04-01",
+      timeStart: "14:00",
     });
 
     // Conversation: HOSPI_OWNER + SEEKER_1
-    await db.insert(conversations).values({ id: CONV_1, roomId: ROOM_1, seekerUserId: SEEKER_1, type: "direct" });
+    await db
+      .insert(conversations)
+      .values({ id: CONV_1, roomId: ROOM_1, seekerUserId: SEEKER_1, type: "direct" });
     await db.insert(conversationMembers).values([
       { conversationId: CONV_1, userId: HOSPI_OWNER },
       { conversationId: CONV_1, userId: SEEKER_1 },
@@ -180,13 +303,17 @@ describe("E2E workflow tests (integration)", () => {
   describe("user lifecycle & onboarding", () => {
     it("onboarding step 1: update about fields", async () => {
       const [updated] = await withRLS(SEEKER_1, (tx) =>
-        tx.update(profiles).set({
-          gender: Gender.male,
-          birthDate: "2000-01-15",
-          studyProgram: "Computer Science",
-          studyLevel: "wo_bachelor",
-          bio: "Ik zoek een kamer in Amsterdam",
-        }).where(eq(profiles.id, SEEKER_1)).returning(),
+        tx
+          .update(profiles)
+          .set({
+            gender: Gender.male,
+            birthDate: "2000-01-15",
+            studyProgram: "Computer Science",
+            studyLevel: "wo_bachelor",
+            bio: "Ik zoek een kamer in Amsterdam",
+          })
+          .where(eq(profiles.id, SEEKER_1))
+          .returning(),
       );
       expect(updated.gender).toBe(Gender.male);
       expect(updated.birthDate).toBe("2000-01-15");
@@ -194,38 +321,65 @@ describe("E2E workflow tests (integration)", () => {
       expect(updated.studyLevel).toBe("wo_bachelor");
       expect(updated.bio).toBe("Ik zoek een kamer in Amsterdam");
       // Reset
-      await db.update(profiles).set({ gender: null, birthDate: null, studyProgram: null, studyLevel: null, bio: null }).where(eq(profiles.id, SEEKER_1));
+      await db
+        .update(profiles)
+        .set({ gender: null, birthDate: null, studyProgram: null, studyLevel: null, bio: null })
+        .where(eq(profiles.id, SEEKER_1));
     });
 
     it("onboarding step 2: set lifestyleTags array", async () => {
       const tags = [LifestyleTag.sociable, LifestyleTag.sports, LifestyleTag.cooking] as const;
       const [updated] = await withRLS(SEEKER_1, (tx) =>
-        tx.update(profiles).set({ lifestyleTags: [...tags] }).where(eq(profiles.id, SEEKER_1)).returning(),
+        tx
+          .update(profiles)
+          .set({ lifestyleTags: [...tags] })
+          .where(eq(profiles.id, SEEKER_1))
+          .returning(),
       );
-      expect(updated.lifestyleTags).toEqual([LifestyleTag.sociable, LifestyleTag.sports, LifestyleTag.cooking]);
+      expect(updated.lifestyleTags).toEqual([
+        LifestyleTag.sociable,
+        LifestyleTag.sports,
+        LifestyleTag.cooking,
+      ]);
       await db.update(profiles).set({ lifestyleTags: [] }).where(eq(profiles.id, SEEKER_1));
     });
 
     it("onboarding step 3: set preferences", async () => {
       const [updated] = await withRLS(SEEKER_1, (tx) =>
-        tx.update(profiles).set({
-          preferredCity: "amsterdam",
-          maxRent: "750.00",
-          availableFrom: "2026-06-01",
-        }).where(eq(profiles.id, SEEKER_1)).returning(),
+        tx
+          .update(profiles)
+          .set({
+            preferredCity: "amsterdam",
+            maxRent: "750.00",
+            availableFrom: "2026-06-01",
+          })
+          .where(eq(profiles.id, SEEKER_1))
+          .returning(),
       );
       expect(updated.preferredCity).toBe("amsterdam");
       expect(updated.maxRent).toBe("750.00");
       expect(updated.availableFrom).toBe("2026-06-01");
-      await db.update(profiles).set({ preferredCity: null, maxRent: null, availableFrom: null }).where(eq(profiles.id, SEEKER_1));
+      await db
+        .update(profiles)
+        .set({ preferredCity: null, maxRent: null, availableFrom: null })
+        .where(eq(profiles.id, SEEKER_1));
     });
 
     it("profile completion check: all required fields set", async () => {
-      await db.update(profiles).set({
-        gender: Gender.male, birthDate: "2000-01-15", studyProgram: "CS", studyLevel: "wo_bachelor",
-        bio: "Test", preferredCity: "amsterdam", maxRent: "750.00", availableFrom: "2026-06-01",
-        lifestyleTags: [LifestyleTag.sociable],
-      }).where(eq(profiles.id, SEEKER_1));
+      await db
+        .update(profiles)
+        .set({
+          gender: Gender.male,
+          birthDate: "2000-01-15",
+          studyProgram: "CS",
+          studyLevel: "wo_bachelor",
+          bio: "Test",
+          preferredCity: "amsterdam",
+          maxRent: "750.00",
+          availableFrom: "2026-06-01",
+          lifestyleTags: [LifestyleTag.sociable],
+        })
+        .where(eq(profiles.id, SEEKER_1));
 
       const [p] = await withRLS(SEEKER_1, (tx) =>
         tx.select().from(profiles).where(eq(profiles.id, SEEKER_1)),
@@ -239,10 +393,20 @@ describe("E2E workflow tests (integration)", () => {
       expect(p.maxRent).not.toBeNull();
       expect(p.availableFrom).not.toBeNull();
 
-      await db.update(profiles).set({
-        gender: null, birthDate: null, studyProgram: null, studyLevel: null,
-        bio: null, preferredCity: null, maxRent: null, availableFrom: null, lifestyleTags: [],
-      }).where(eq(profiles.id, SEEKER_1));
+      await db
+        .update(profiles)
+        .set({
+          gender: null,
+          birthDate: null,
+          studyProgram: null,
+          studyLevel: null,
+          bio: null,
+          preferredCity: null,
+          maxRent: null,
+          availableFrom: null,
+          lifestyleTags: [],
+        })
+        .where(eq(profiles.id, SEEKER_1));
     });
 
     it("maxRent returns as string (numeric column behavior)", async () => {
@@ -257,9 +421,14 @@ describe("E2E workflow tests (integration)", () => {
 
     it("profile photo via RLS: own insert + any auth read", async () => {
       const [photo] = await withRLS(SEEKER_1, (tx) =>
-        tx.insert(profilePhotos).values({
-          userId: SEEKER_1, slot: 0, url: "https://example.com/photo.jpg",
-        }).returning(),
+        tx
+          .insert(profilePhotos)
+          .values({
+            userId: SEEKER_1,
+            slot: 0,
+            url: "https://example.com/photo.jpg",
+          })
+          .returning(),
       );
       expect(photo.userId).toBe(SEEKER_1);
 
@@ -276,7 +445,9 @@ describe("E2E workflow tests (integration)", () => {
       await expect(
         withRLS(OUTSIDER, (tx) =>
           tx.insert(profilePhotos).values({
-            userId: SEEKER_1, slot: 1, url: "https://example.com/hacked.jpg",
+            userId: SEEKER_1,
+            slot: 1,
+            url: "https://example.com/hacked.jpg",
           }),
         ),
       ).rejects.toThrow();
@@ -298,7 +469,11 @@ describe("E2E workflow tests (integration)", () => {
       expect(isValidRoomTransition(RoomStatus.draft, RoomStatus.active)).toBe(true);
 
       const [updated] = await withRLS(HOSPI_OWNER, (tx) =>
-        tx.update(rooms).set({ status: RoomStatus.active }).where(eq(rooms.id, ROOM_DRAFT)).returning(),
+        tx
+          .update(rooms)
+          .set({ status: RoomStatus.active })
+          .where(eq(rooms.id, ROOM_DRAFT))
+          .returning(),
       );
       expect(updated.status).toBe(RoomStatus.active);
 
@@ -396,33 +571,57 @@ describe("E2E workflow tests (integration)", () => {
 
     it("full application state machine walk-through", async () => {
       // Create temp application: SEEKER_2 → ROOM_1
-      const [tempApp] = await db.insert(applications).values({
-        roomId: ROOM_1, userId: SEEKER_2,
-      }).returning();
+      const [tempApp] = await db
+        .insert(applications)
+        .values({
+          roomId: ROOM_1,
+          userId: SEEKER_2,
+        })
+        .returning();
 
       try {
         // sent → seen (hospi-side)
-        expect(isValidApplicationTransition(ApplicationStatus.sent, ApplicationStatus.seen)).toBe(true);
+        expect(isValidApplicationTransition(ApplicationStatus.sent, ApplicationStatus.seen)).toBe(
+          true,
+        );
         await withRLS(HOSPI_OWNER, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.seen }).where(eq(applications.id, tempApp.id)),
+          tx
+            .update(applications)
+            .set({ status: ApplicationStatus.seen })
+            .where(eq(applications.id, tempApp.id)),
         );
 
         // seen → liked (hospi-side)
-        expect(isValidApplicationTransition(ApplicationStatus.seen, ApplicationStatus.liked)).toBe(true);
+        expect(isValidApplicationTransition(ApplicationStatus.seen, ApplicationStatus.liked)).toBe(
+          true,
+        );
         await withRLS(HOSPI_OWNER, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.liked }).where(eq(applications.id, tempApp.id)),
+          tx
+            .update(applications)
+            .set({ status: ApplicationStatus.liked })
+            .where(eq(applications.id, tempApp.id)),
         );
 
         // liked → hospi (hospi-side)
-        expect(isValidApplicationTransition(ApplicationStatus.liked, ApplicationStatus.hospi)).toBe(true);
+        expect(isValidApplicationTransition(ApplicationStatus.liked, ApplicationStatus.hospi)).toBe(
+          true,
+        );
         await withRLS(HOSPI_OWNER, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.hospi }).where(eq(applications.id, tempApp.id)),
+          tx
+            .update(applications)
+            .set({ status: ApplicationStatus.hospi })
+            .where(eq(applications.id, tempApp.id)),
         );
 
         // hospi → accepted (hospi-side)
-        expect(isValidApplicationTransition(ApplicationStatus.hospi, ApplicationStatus.accepted)).toBe(true);
+        expect(
+          isValidApplicationTransition(ApplicationStatus.hospi, ApplicationStatus.accepted),
+        ).toBe(true);
         await withRLS(HOSPI_OWNER, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.accepted }).where(eq(applications.id, tempApp.id)),
+          tx
+            .update(applications)
+            .set({ status: ApplicationStatus.accepted })
+            .where(eq(applications.id, tempApp.id)),
         );
 
         // Verify final state
@@ -445,17 +644,29 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("seeker withdraws application", async () => {
-      const [tempApp] = await db.insert(applications).values({
-        roomId: ROOM_1, userId: SEEKER_2,
-      }).returning();
+      const [tempApp] = await db
+        .insert(applications)
+        .values({
+          roomId: ROOM_1,
+          userId: SEEKER_2,
+        })
+        .returning();
 
       try {
-        expect(isValidApplicationTransition(ApplicationStatus.sent, ApplicationStatus.withdrawn)).toBe(true);
+        expect(
+          isValidApplicationTransition(ApplicationStatus.sent, ApplicationStatus.withdrawn),
+        ).toBe(true);
         await withRLS(SEEKER_2, (tx) =>
-          tx.update(applications).set({ status: ApplicationStatus.withdrawn }).where(eq(applications.id, tempApp.id)),
+          tx
+            .update(applications)
+            .set({ status: ApplicationStatus.withdrawn })
+            .where(eq(applications.id, tempApp.id)),
         );
 
-        const [withdrawn] = await db.select().from(applications).where(eq(applications.id, tempApp.id));
+        const [withdrawn] = await db
+          .select()
+          .from(applications)
+          .where(eq(applications.id, tempApp.id));
         expect(withdrawn.status).toBe(ApplicationStatus.withdrawn);
         expect(isTerminalApplicationStatus(ApplicationStatus.withdrawn)).toBe(true);
       } finally {
@@ -465,10 +676,16 @@ describe("E2E workflow tests (integration)", () => {
 
     it("review: house member inserts, room members can read, outsider cannot", async () => {
       const [review] = await withRLS(HOSPI_MATE, (tx) =>
-        tx.insert(reviews).values({
-          roomId: ROOM_1, reviewerId: HOSPI_MATE, applicantId: SEEKER_1,
-          decision: ReviewDecision.like, notes: "Great fit!",
-        }).returning(),
+        tx
+          .insert(reviews)
+          .values({
+            roomId: ROOM_1,
+            reviewerId: HOSPI_MATE,
+            applicantId: SEEKER_1,
+            decision: ReviewDecision.like,
+            notes: "Great fit!",
+          })
+          .returning(),
       );
 
       try {
@@ -489,15 +706,22 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("review unique constraint: same reviewer + applicant + room throws", async () => {
-      const [review] = await db.insert(reviews).values({
-        roomId: ROOM_1, reviewerId: HOSPI_MATE, applicantId: SEEKER_1,
-        decision: ReviewDecision.like,
-      }).returning();
+      const [review] = await db
+        .insert(reviews)
+        .values({
+          roomId: ROOM_1,
+          reviewerId: HOSPI_MATE,
+          applicantId: SEEKER_1,
+          decision: ReviewDecision.like,
+        })
+        .returning();
 
       try {
         await expect(
           db.insert(reviews).values({
-            roomId: ROOM_1, reviewerId: HOSPI_MATE, applicantId: SEEKER_1,
+            roomId: ROOM_1,
+            reviewerId: HOSPI_MATE,
+            applicantId: SEEKER_1,
             decision: ReviewDecision.reject,
           }),
         ).rejects.toThrow();
@@ -526,9 +750,13 @@ describe("E2E workflow tests (integration)", () => {
 
     it("creator invites seeker → invitee sees invitation", async () => {
       const [inv] = await withRLS(HOSPI_OWNER, (tx) =>
-        tx.insert(hospiInvitations).values({
-          eventId: EVENT_1, userId: SEEKER_1,
-        }).returning(),
+        tx
+          .insert(hospiInvitations)
+          .values({
+            eventId: EVENT_1,
+            userId: SEEKER_1,
+          })
+          .returning(),
       );
 
       try {
@@ -545,21 +773,35 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("RSVP walk-through: pending → attending → not_attending (terminal)", async () => {
-      const [inv] = await db.insert(hospiInvitations).values({
-        eventId: EVENT_1, userId: SEEKER_1,
-      }).returning();
+      const [inv] = await db
+        .insert(hospiInvitations)
+        .values({
+          eventId: EVENT_1,
+          userId: SEEKER_1,
+        })
+        .returning();
 
       try {
         // pending → attending
-        expect(isValidInvitationTransition(InvitationStatus.pending, InvitationStatus.attending)).toBe(true);
+        expect(
+          isValidInvitationTransition(InvitationStatus.pending, InvitationStatus.attending),
+        ).toBe(true);
         await withRLS(SEEKER_1, (tx) =>
-          tx.update(hospiInvitations).set({ status: InvitationStatus.attending }).where(eq(hospiInvitations.id, inv.id)),
+          tx
+            .update(hospiInvitations)
+            .set({ status: InvitationStatus.attending })
+            .where(eq(hospiInvitations.id, inv.id)),
         );
 
         // attending → not_attending
-        expect(isValidInvitationTransition(InvitationStatus.attending, InvitationStatus.not_attending)).toBe(true);
+        expect(
+          isValidInvitationTransition(InvitationStatus.attending, InvitationStatus.not_attending),
+        ).toBe(true);
         await withRLS(SEEKER_1, (tx) =>
-          tx.update(hospiInvitations).set({ status: InvitationStatus.not_attending }).where(eq(hospiInvitations.id, inv.id)),
+          tx
+            .update(hospiInvitations)
+            .set({ status: InvitationStatus.not_attending })
+            .where(eq(hospiInvitations.id, inv.id)),
         );
 
         // not_attending is terminal
@@ -570,9 +812,13 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("duplicate invitation throws (unique constraint)", async () => {
-      const [inv] = await db.insert(hospiInvitations).values({
-        eventId: EVENT_1, userId: SEEKER_2,
-      }).returning();
+      const [inv] = await db
+        .insert(hospiInvitations)
+        .values({
+          eventId: EVENT_1,
+          userId: SEEKER_2,
+        })
+        .returning();
 
       try {
         await expect(
@@ -585,9 +831,16 @@ describe("E2E workflow tests (integration)", () => {
 
     it("vote insert + room member access + outsider denied", async () => {
       const [vote] = await withRLS(HOSPI_MATE, (tx) =>
-        tx.insert(votes).values({
-          roomId: ROOM_1, voterId: HOSPI_MATE, applicantId: SEEKER_1, rank: 1, round: 1,
-        }).returning(),
+        tx
+          .insert(votes)
+          .values({
+            roomId: ROOM_1,
+            voterId: HOSPI_MATE,
+            applicantId: SEEKER_1,
+            rank: 1,
+            round: 1,
+          })
+          .returning(),
       );
 
       try {
@@ -608,14 +861,25 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("vote unique constraint: same voter + applicant + room + round throws", async () => {
-      const [vote] = await db.insert(votes).values({
-        roomId: ROOM_1, voterId: HOSPI_MATE, applicantId: SEEKER_1, rank: 1, round: 1,
-      }).returning();
+      const [vote] = await db
+        .insert(votes)
+        .values({
+          roomId: ROOM_1,
+          voterId: HOSPI_MATE,
+          applicantId: SEEKER_1,
+          rank: 1,
+          round: 1,
+        })
+        .returning();
 
       try {
         await expect(
           db.insert(votes).values({
-            roomId: ROOM_1, voterId: HOSPI_MATE, applicantId: SEEKER_1, rank: 2, round: 1,
+            roomId: ROOM_1,
+            voterId: HOSPI_MATE,
+            applicantId: SEEKER_1,
+            rank: 2,
+            round: 1,
           }),
         ).rejects.toThrow();
       } finally {
@@ -631,11 +895,16 @@ describe("E2E workflow tests (integration)", () => {
   describe("chat workflow", () => {
     it("member sends encrypted message", async () => {
       const [msg] = await withRLS(HOSPI_OWNER, (tx) =>
-        tx.insert(messages).values({
-          conversationId: CONV_1, senderId: HOSPI_OWNER,
-          ciphertext: "e2e-encrypted-payload", iv: "e2e-iv-001",
-          encryptedKeys: [{ recipientId: SEEKER_1, key: "wrapped-key-001" }],
-        }).returning(),
+        tx
+          .insert(messages)
+          .values({
+            conversationId: CONV_1,
+            senderId: HOSPI_OWNER,
+            ciphertext: "e2e-encrypted-payload",
+            iv: "e2e-iv-001",
+            encryptedKeys: [{ recipientId: SEEKER_1, key: "wrapped-key-001" }],
+          })
+          .returning(),
       );
 
       try {
@@ -647,10 +916,15 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("co-member reads messages in conversation", async () => {
-      const [msg] = await db.insert(messages).values({
-        conversationId: CONV_1, senderId: HOSPI_OWNER,
-        ciphertext: "read-test", iv: "read-iv",
-      }).returning();
+      const [msg] = await db
+        .insert(messages)
+        .values({
+          conversationId: CONV_1,
+          senderId: HOSPI_OWNER,
+          ciphertext: "read-test",
+          iv: "read-iv",
+        })
+        .returning();
 
       try {
         const rows = await withRLS(SEEKER_1, (tx) =>
@@ -674,30 +948,40 @@ describe("E2E workflow tests (integration)", () => {
       await expect(
         withRLS(SEEKER_1, (tx) =>
           tx.insert(messages).values({
-            conversationId: CONV_1, senderId: HOSPI_OWNER,
-            ciphertext: "spoofed", iv: "spoofed-iv",
+            conversationId: CONV_1,
+            senderId: HOSPI_OWNER,
+            ciphertext: "spoofed",
+            iv: "spoofed-iv",
           }),
         ),
       ).rejects.toThrow();
     });
 
     it("receipt tracking: insert, update to read, own-only visibility", async () => {
-      const [msg] = await db.insert(messages).values({
-        conversationId: CONV_1, senderId: HOSPI_OWNER,
-        ciphertext: "receipt-test", iv: "receipt-iv",
-      }).returning();
+      const [msg] = await db
+        .insert(messages)
+        .values({
+          conversationId: CONV_1,
+          senderId: HOSPI_OWNER,
+          ciphertext: "receipt-test",
+          iv: "receipt-iv",
+        })
+        .returning();
 
       try {
         // SEEKER_1 inserts receipt
         await withRLS(SEEKER_1, (tx) =>
           tx.insert(messageReceipts).values({
-            messageId: msg.id, userId: SEEKER_1, status: "delivered",
+            messageId: msg.id,
+            userId: SEEKER_1,
+            status: "delivered",
           }),
         );
 
         // Update to read
         const [receipt] = await withRLS(SEEKER_1, (tx) =>
-          tx.update(messageReceipts)
+          tx
+            .update(messageReceipts)
             .set({ status: "read", readAt: new Date() })
             .where(and(eq(messageReceipts.messageId, msg.id), eq(messageReceipts.userId, SEEKER_1)))
             .returning(),
@@ -717,19 +1001,38 @@ describe("E2E workflow tests (integration)", () => {
 
     it("mute toggle on conversation membership", async () => {
       await withRLS(SEEKER_1, (tx) =>
-        tx.update(conversationMembers)
+        tx
+          .update(conversationMembers)
           .set({ muted: true })
-          .where(and(eq(conversationMembers.conversationId, CONV_1), eq(conversationMembers.userId, SEEKER_1))),
+          .where(
+            and(
+              eq(conversationMembers.conversationId, CONV_1),
+              eq(conversationMembers.userId, SEEKER_1),
+            ),
+          ),
       );
 
-      const [member] = await db.select().from(conversationMembers)
-        .where(and(eq(conversationMembers.conversationId, CONV_1), eq(conversationMembers.userId, SEEKER_1)));
+      const [member] = await db
+        .select()
+        .from(conversationMembers)
+        .where(
+          and(
+            eq(conversationMembers.conversationId, CONV_1),
+            eq(conversationMembers.userId, SEEKER_1),
+          ),
+        );
       expect(member.muted).toBe(true);
 
       // Reset
-      await db.update(conversationMembers)
+      await db
+        .update(conversationMembers)
         .set({ muted: false })
-        .where(and(eq(conversationMembers.conversationId, CONV_1), eq(conversationMembers.userId, SEEKER_1)));
+        .where(
+          and(
+            eq(conversationMembers.conversationId, CONV_1),
+            eq(conversationMembers.userId, SEEKER_1),
+          ),
+        );
     });
 
     it("conversation cascade: delete removes members, messages, receipts", async () => {
@@ -738,24 +1041,38 @@ describe("E2E workflow tests (integration)", () => {
         { conversationId: conv.id, userId: HOSPI_OWNER },
         { conversationId: conv.id, userId: SEEKER_2 },
       ]);
-      const [msg] = await db.insert(messages).values({
-        conversationId: conv.id, senderId: HOSPI_OWNER, ciphertext: "cascade", iv: "cascade-iv",
-      }).returning();
+      const [msg] = await db
+        .insert(messages)
+        .values({
+          conversationId: conv.id,
+          senderId: HOSPI_OWNER,
+          ciphertext: "cascade",
+          iv: "cascade-iv",
+        })
+        .returning();
       await db.insert(messageReceipts).values({
-        messageId: msg.id, userId: SEEKER_2, status: "delivered",
+        messageId: msg.id,
+        userId: SEEKER_2,
+        status: "delivered",
       });
 
       // Delete conversation
       await db.delete(conversations).where(eq(conversations.id, conv.id));
 
       // Verify cascaded deletes
-      const members = await db.select().from(conversationMembers).where(eq(conversationMembers.conversationId, conv.id));
+      const members = await db
+        .select()
+        .from(conversationMembers)
+        .where(eq(conversationMembers.conversationId, conv.id));
       expect(members).toHaveLength(0);
 
       const msgs = await db.select().from(messages).where(eq(messages.conversationId, conv.id));
       expect(msgs).toHaveLength(0);
 
-      const receipts = await db.select().from(messageReceipts).where(eq(messageReceipts.messageId, msg.id));
+      const receipts = await db
+        .select()
+        .from(messageReceipts)
+        .where(eq(messageReceipts.messageId, msg.id));
       expect(receipts).toHaveLength(0);
     });
   });
@@ -783,7 +1100,9 @@ describe("E2E workflow tests (integration)", () => {
 
       // Unblock
       await withRLS(SEEKER_1, (tx) =>
-        tx.delete(blocks).where(and(eq(blocks.blockerId, SEEKER_1), eq(blocks.blockedId, SEEKER_2))),
+        tx
+          .delete(blocks)
+          .where(and(eq(blocks.blockerId, SEEKER_1), eq(blocks.blockedId, SEEKER_2))),
       );
     });
 
@@ -797,10 +1116,16 @@ describe("E2E workflow tests (integration)", () => {
 
     it("report flow: reporter sees, reported user cannot", async () => {
       const [report] = await withRLS(SEEKER_1, (tx) =>
-        tx.insert(reports).values({
-          reportType: ReportType.user, reporterId: SEEKER_1, reportedUserId: SEEKER_2,
-          reason: ReportReason.harassment, description: "E2E test report",
-        }).returning(),
+        tx
+          .insert(reports)
+          .values({
+            reportType: ReportType.user,
+            reporterId: SEEKER_1,
+            reportedUserId: SEEKER_2,
+            reason: ReportReason.harassment,
+            description: "E2E test report",
+          })
+          .returning(),
       );
 
       try {
@@ -821,10 +1146,16 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("admin sees all reports", async () => {
-      const [report] = await db.insert(reports).values({
-        reportType: ReportType.user, reporterId: SEEKER_1, reportedUserId: SEEKER_2,
-        reason: ReportReason.spam, description: "Admin visibility test",
-      }).returning();
+      const [report] = await db
+        .insert(reports)
+        .values({
+          reportType: ReportType.user,
+          reporterId: SEEKER_1,
+          reportedUserId: SEEKER_2,
+          reason: ReportReason.spam,
+          description: "Admin visibility test",
+        })
+        .returning();
 
       try {
         const adminRows = await withRLS(ADMIN_USER, (tx) =>
@@ -837,15 +1168,22 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("admin resolves report, non-admin cannot", async () => {
-      const [report] = await db.insert(reports).values({
-        reportType: ReportType.user, reporterId: SEEKER_1, reportedUserId: SEEKER_2,
-        reason: ReportReason.fake_profile, description: "Resolve test",
-      }).returning();
+      const [report] = await db
+        .insert(reports)
+        .values({
+          reportType: ReportType.user,
+          reporterId: SEEKER_1,
+          reportedUserId: SEEKER_2,
+          reason: ReportReason.fake_profile,
+          description: "Resolve test",
+        })
+        .returning();
 
       try {
         // Admin resolves
         const [resolved] = await withRLS(ADMIN_USER, (tx) =>
-          tx.update(reports)
+          tx
+            .update(reports)
             .set({ status: ReportStatus.resolved })
             .where(eq(reports.id, report.id))
             .returning(),
@@ -853,11 +1191,15 @@ describe("E2E workflow tests (integration)", () => {
         expect(resolved.status).toBe(ReportStatus.resolved);
 
         // Reset to pending for the non-admin test
-        await db.update(reports).set({ status: ReportStatus.pending }).where(eq(reports.id, report.id));
+        await db
+          .update(reports)
+          .set({ status: ReportStatus.pending })
+          .where(eq(reports.id, report.id));
 
         // Non-admin cannot update
         const result = await withRLS(SEEKER_1, (tx) =>
-          tx.update(reports)
+          tx
+            .update(reports)
             .set({ status: ReportStatus.resolved })
             .where(eq(reports.id, report.id))
             .returning(),
@@ -869,11 +1211,14 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("public key: insert own, read all, cannot insert for another", async () => {
-      const [key] = await withRLS(SEEKER_2, (tx) =>
-        tx.insert(publicKeys).values({
-          userId: SEEKER_2,
-          publicKeyJwk: { kty: "EC", crv: "P-256", x: "e2e-x", y: "e2e-y" },
-        }).returning(),
+      await withRLS(SEEKER_2, (tx) =>
+        tx
+          .insert(publicKeys)
+          .values({
+            userId: SEEKER_2,
+            publicKeyJwk: { kty: "EC", crv: "P-256", x: "e2e-x", y: "e2e-y" },
+          })
+          .returning(),
       );
 
       try {
@@ -897,12 +1242,15 @@ describe("E2E workflow tests (integration)", () => {
 
     it("admin audit log: admin inserts + reads, non-admin blocked", async () => {
       const [entry] = await withRLS(ADMIN_USER, (tx) =>
-        tx.insert(adminAuditLog).values({
-          adminUserId: ADMIN_USER,
-          action: AdminAction.view_report,
-          targetType: "report",
-          reason: "E2E test audit entry",
-        }).returning(),
+        tx
+          .insert(adminAuditLog)
+          .values({
+            adminUserId: ADMIN_USER,
+            action: AdminAction.view_report,
+            targetType: "report",
+            reason: "E2E test audit entry",
+          })
+          .returning(),
       );
 
       try {
@@ -949,9 +1297,14 @@ describe("E2E workflow tests (integration)", () => {
 
     it("room photo RLS: owner inserts, any auth reads, non-owner cannot insert", async () => {
       const [photo] = await withRLS(HOSPI_OWNER, (tx) =>
-        tx.insert(roomPhotos).values({
-          roomId: ROOM_1, slot: 0, url: "https://example.com/room.jpg",
-        }).returning(),
+        tx
+          .insert(roomPhotos)
+          .values({
+            roomId: ROOM_1,
+            slot: 0,
+            url: "https://example.com/room.jpg",
+          })
+          .returning(),
       );
 
       try {
@@ -965,7 +1318,9 @@ describe("E2E workflow tests (integration)", () => {
         await expect(
           withRLS(OUTSIDER, (tx) =>
             tx.insert(roomPhotos).values({
-              roomId: ROOM_1, slot: 1, url: "https://example.com/hacked.jpg",
+              roomId: ROOM_1,
+              slot: 1,
+              url: "https://example.com/hacked.jpg",
             }),
           ),
         ).rejects.toThrow();

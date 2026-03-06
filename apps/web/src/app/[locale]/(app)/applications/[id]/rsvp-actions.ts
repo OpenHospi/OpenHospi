@@ -87,10 +87,25 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
   if ("error" in result) return result;
 
   if (result.eventCreatorId) {
-    await notifyUser(result.eventCreatorId, "notifications.rsvpReceived", {
-      name: session.user.name ?? "",
-      status: parsed.data.status,
-    });
+    const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/my-rooms`;
+    await notifyUser(
+      result.eventCreatorId,
+      "notifications.rsvpReceived",
+      {
+        name: session.user.name ?? "",
+        status: parsed.data.status,
+      },
+      {
+        email: {
+          template: "rsvpReceived",
+          props: {
+            name: session.user.name ?? "",
+            status: parsed.data.status,
+            eventUrl,
+          },
+        },
+      },
+    );
   }
 
   revalidatePath("/applications");

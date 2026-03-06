@@ -4,10 +4,7 @@ import { db } from "./db";
 
 type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-export async function withRLS<T>(
-  userId: string,
-  fn: (tx: Transaction) => Promise<T>,
-): Promise<T> {
+export async function withRLS<T>(userId: string, fn: (tx: Transaction) => Promise<T>): Promise<T> {
   return db.transaction(async (tx) => {
     // Set JWT claims so auth.uid() returns this user's ID
     await tx.execute(

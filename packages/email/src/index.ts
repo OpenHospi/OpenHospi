@@ -1,0 +1,73 @@
+import { getMessages } from "@openhospi/i18n/app";
+import type { SupportedLocale } from "@openhospi/shared/constants";
+import { render } from "@react-email/render";
+import { createElement } from "react";
+
+import { ApplicationAccepted } from "./templates/application-accepted";
+import { ApplicationNotChosen } from "./templates/application-not-chosen";
+import { EventCancelled } from "./templates/event-cancelled";
+import { EventInvitation } from "./templates/event-invitation";
+import { EventReminder } from "./templates/event-reminder";
+import { ListingRemoved } from "./templates/listing-removed";
+import { RsvpReceived } from "./templates/rsvp-received";
+import { UserBanned } from "./templates/user-banned";
+import { VerificationCode } from "./templates/verification-code";
+
+export type EmailTemplateName =
+  | "verificationCode"
+  | "eventInvitation"
+  | "eventReminder"
+  | "eventCancelled"
+  | "rsvpReceived"
+  | "applicationAccepted"
+  | "applicationNotChosen"
+  | "userBanned"
+  | "listingRemoved";
+
+export type TemplatePropsMap = {
+  verificationCode: { code: string };
+  eventInvitation: { eventTitle: string; roomTitle: string; eventUrl: string };
+  eventReminder: { eventTitle: string; time: string; eventUrl: string };
+  eventCancelled: { eventTitle: string };
+  rsvpReceived: { name: string; status: string; eventUrl: string };
+  applicationAccepted: { roomTitle: string; roomUrl: string };
+  applicationNotChosen: { roomTitle: string };
+  userBanned: { reason: string };
+  listingRemoved: { reason: string };
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TEMPLATE_COMPONENTS: Record<EmailTemplateName, React.ComponentType<any>> = {
+  verificationCode: VerificationCode,
+  eventInvitation: EventInvitation,
+  eventReminder: EventReminder,
+  eventCancelled: EventCancelled,
+  rsvpReceived: RsvpReceived,
+  applicationAccepted: ApplicationAccepted,
+  applicationNotChosen: ApplicationNotChosen,
+  userBanned: UserBanned,
+  listingRemoved: ListingRemoved,
+};
+
+export async function renderEmail<T extends EmailTemplateName>(
+  template: T,
+  props: TemplatePropsMap[T],
+  locale: SupportedLocale,
+  baseUrl: string,
+): Promise<{ html: string; text: string; subject: string }> {
+  const messages = await getMessages(locale);
+
+  // Resolve subject line with parameter interpolation
+  const emailMessages = messages.emails[template] as Record<string, string>;
+  let subject = emailMessages.subject ?? template;
+  for (const [k, v] of Object.entries(props as Record<string, string>)) {
+    subject = subject.replaceAll(`{${k}}`, v);
+  }
+
+  const Component = TEMPLATE_COMPONENTS[template];
+  const element = createElement(Component, { ...props, locale, baseUrl, messages });
+
+  const [html, text] = await Promise.all([render(element), render(element, { plainText: true })]);
+
+  return { html, text, subject };
+}

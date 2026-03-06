@@ -29,10 +29,7 @@ const baseProfileSchema = createInsertSchema(profiles, {
     .array(z.enum(LifestyleTag.values))
     .min(MIN_LIFESTYLE_TAGS)
     .max(MAX_LIFESTYLE_TAGS),
-  languages: z
-    .array(z.enum(Language.values))
-    .min(MIN_LANGUAGES)
-    .max(MAX_LANGUAGES),
+  languages: z.array(z.enum(Language.values)).min(MIN_LANGUAGES).max(MAX_LANGUAGES),
   preferredCity: z.enum(City.values),
   maxRent: z.coerce.number().int().min(0).max(5000).optional(),
   availableFrom: z.string().min(1),

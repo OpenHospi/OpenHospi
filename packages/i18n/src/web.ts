@@ -1,5 +1,6 @@
-import type { Locale } from "./index.js";
 import type { WebMessages } from "./types.js";
+
+import type { Locale } from "./index.js";
 
 export async function getMessages(locale: Locale): Promise<WebMessages> {
   switch (locale) {

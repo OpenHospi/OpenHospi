@@ -75,7 +75,10 @@ function formatICSDateTime(date: string, time: string): string {
 }
 
 function formatICSTimestamp(d: Date): string {
-  return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}/, "");
 }
 
 /**

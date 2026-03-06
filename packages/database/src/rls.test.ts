@@ -96,15 +96,54 @@ describe("RLS policies (integration)", () => {
 
     // Seed using owner role (bypasses RLS)
     await db.insert(user).values([
-      { id: USER_A, name: "User A", email: "rls-a@test.openhospi.nl", emailVerified: true, createdAt: NOW, updatedAt: NOW },
-      { id: USER_B, name: "User B", email: "rls-b@test.openhospi.nl", emailVerified: true, createdAt: NOW, updatedAt: NOW },
-      { id: USER_C, name: "User C", email: "rls-c@test.openhospi.nl", emailVerified: true, createdAt: NOW, updatedAt: NOW },
+      {
+        id: USER_A,
+        name: "User A",
+        email: "rls-a@test.openhospi.nl",
+        emailVerified: true,
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: USER_B,
+        name: "User B",
+        email: "rls-b@test.openhospi.nl",
+        emailVerified: true,
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
+      {
+        id: USER_C,
+        name: "User C",
+        email: "rls-c@test.openhospi.nl",
+        emailVerified: true,
+        createdAt: NOW,
+        updatedAt: NOW,
+      },
     ]);
 
     await db.insert(profiles).values([
-      { id: USER_A, firstName: "User", lastName: "A", email: "rls-a@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: USER_B, firstName: "User", lastName: "B", email: "rls-b@test.openhospi.nl", institutionDomain: "test.nl" },
-      { id: USER_C, firstName: "User", lastName: "C", email: "rls-c@test.openhospi.nl", institutionDomain: "test.nl" },
+      {
+        id: USER_A,
+        firstName: "User",
+        lastName: "A",
+        email: "rls-a@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: USER_B,
+        firstName: "User",
+        lastName: "B",
+        email: "rls-b@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
+      {
+        id: USER_C,
+        firstName: "User",
+        lastName: "C",
+        email: "rls-c@test.openhospi.nl",
+        institutionDomain: "test.nl",
+      },
     ]);
 
     await db.insert(houses).values({
@@ -119,17 +158,37 @@ describe("RLS policies (integration)", () => {
     ]);
 
     await db.insert(rooms).values([
-      { id: ACTIVE_ROOM, ownerId: USER_A, houseId: HOUSE_ID, title: "RLS Active Room", city: "amsterdam", status: "active" },
-      { id: DRAFT_ROOM, ownerId: USER_A, houseId: HOUSE_ID, title: "RLS Draft Room", city: "amsterdam", status: "draft" },
+      {
+        id: ACTIVE_ROOM,
+        ownerId: USER_A,
+        houseId: HOUSE_ID,
+        title: "RLS Active Room",
+        city: "amsterdam",
+        status: "active",
+      },
+      {
+        id: DRAFT_ROOM,
+        ownerId: USER_A,
+        houseId: HOUSE_ID,
+        title: "RLS Draft Room",
+        city: "amsterdam",
+        status: "draft",
+      },
     ]);
 
     await db.insert(hospiEvents).values({
-      id: EVENT_ID, roomId: ACTIVE_ROOM, createdBy: USER_A,
-      title: "RLS Test Event", eventDate: "2026-03-01", timeStart: "10:00",
+      id: EVENT_ID,
+      roomId: ACTIVE_ROOM,
+      createdBy: USER_A,
+      title: "RLS Test Event",
+      eventDate: "2026-03-01",
+      timeStart: "10:00",
     });
 
     await db.insert(hospiInvitations).values({
-      id: INVITATION_ID, eventId: EVENT_ID, userId: USER_B,
+      id: INVITATION_ID,
+      eventId: EVENT_ID,
+      userId: USER_B,
     });
 
     await db.insert(conversations).values({ id: CONVERSATION_ID, type: "direct" });
@@ -139,16 +198,27 @@ describe("RLS policies (integration)", () => {
     ]);
 
     await db.insert(messages).values({
-      id: MESSAGE_ID, conversationId: CONVERSATION_ID, senderId: USER_A,
-      ciphertext: "encrypted-test", iv: "iv-test", messageType: "text",
+      id: MESSAGE_ID,
+      conversationId: CONVERSATION_ID,
+      senderId: USER_A,
+      ciphertext: "encrypted-test",
+      iv: "iv-test",
+      messageType: "text",
     });
 
     await db.insert(messageReceipts).values({
-      messageId: MESSAGE_ID, userId: USER_A, status: "delivered",
+      messageId: MESSAGE_ID,
+      userId: USER_A,
+      status: "delivered",
     });
 
     await db.insert(votes).values({
-      id: VOTE_ID, roomId: ACTIVE_ROOM, voterId: USER_A, applicantId: USER_B, rank: 1, round: 1,
+      id: VOTE_ID,
+      roomId: ACTIVE_ROOM,
+      voterId: USER_A,
+      applicantId: USER_B,
+      rank: 1,
+      round: 1,
     });
 
     // Security tables seed
@@ -158,13 +228,21 @@ describe("RLS policies (integration)", () => {
     ]);
 
     await db.insert(privateKeyBackups).values({
-      userId: USER_A, encryptedPrivateKey: "enc-key-a", backupIv: "iv-a", salt: "salt-a",
+      userId: USER_A,
+      encryptedPrivateKey: "enc-key-a",
+      backupIv: "iv-a",
+      salt: "salt-a",
     });
 
     await db.insert(blocks).values({ blockerId: USER_A, blockedId: USER_B });
 
     await db.insert(reports).values({
-      id: REPORT_ID, reportType: "user", reporterId: USER_A, reportedUserId: USER_B, reason: "spam", description: "test report",
+      id: REPORT_ID,
+      reportType: "user",
+      reporterId: USER_A,
+      reportedUserId: USER_B,
+      reason: "spam",
+      description: "test report",
     });
   });
 
@@ -235,7 +313,11 @@ describe("RLS policies (integration)", () => {
 
     it("owner can update own room", async () => {
       const [updated] = await withRLS(USER_A, (tx) =>
-        tx.update(rooms).set({ description: "rls-update" }).where(eq(rooms.id, ACTIVE_ROOM)).returning(),
+        tx
+          .update(rooms)
+          .set({ description: "rls-update" })
+          .where(eq(rooms.id, ACTIVE_ROOM))
+          .returning(),
       );
       expect(updated.description).toBe("rls-update");
       await db.update(rooms).set({ description: null }).where(eq(rooms.id, ACTIVE_ROOM));
@@ -243,7 +325,11 @@ describe("RLS policies (integration)", () => {
 
     it("non-owner cannot update room", async () => {
       const result = await withRLS(USER_B, (tx) =>
-        tx.update(rooms).set({ description: "hacked" }).where(eq(rooms.id, ACTIVE_ROOM)).returning(),
+        tx
+          .update(rooms)
+          .set({ description: "hacked" })
+          .where(eq(rooms.id, ACTIVE_ROOM))
+          .returning(),
       );
       expect(result).toHaveLength(0);
     });
@@ -299,7 +385,11 @@ describe("RLS policies (integration)", () => {
 
     it("creator can update event", async () => {
       const [updated] = await withRLS(USER_A, (tx) =>
-        tx.update(hospiEvents).set({ notes: "rls-note" }).where(eq(hospiEvents.id, EVENT_ID)).returning(),
+        tx
+          .update(hospiEvents)
+          .set({ notes: "rls-note" })
+          .where(eq(hospiEvents.id, EVENT_ID))
+          .returning(),
       );
       expect(updated.notes).toBe("rls-note");
       await db.update(hospiEvents).set({ notes: null }).where(eq(hospiEvents.id, EVENT_ID));
@@ -307,7 +397,11 @@ describe("RLS policies (integration)", () => {
 
     it("non-creator house member cannot update event", async () => {
       const result = await withRLS(USER_B, (tx) =>
-        tx.update(hospiEvents).set({ notes: "hacked" }).where(eq(hospiEvents.id, EVENT_ID)).returning(),
+        tx
+          .update(hospiEvents)
+          .set({ notes: "hacked" })
+          .where(eq(hospiEvents.id, EVENT_ID))
+          .returning(),
       );
       expect(result).toHaveLength(0);
     });
@@ -383,10 +477,15 @@ describe("RLS policies (integration)", () => {
     it("sender can delete own message", async () => {
       // Insert a temporary message then delete it
       const [msg] = await withRLS(USER_A, (tx) =>
-        tx.insert(messages).values({
-          conversationId: CONVERSATION_ID, senderId: USER_A,
-          ciphertext: "temp", iv: "temp-iv",
-        }).returning(),
+        tx
+          .insert(messages)
+          .values({
+            conversationId: CONVERSATION_ID,
+            senderId: USER_A,
+            ciphertext: "temp",
+            iv: "temp-iv",
+          })
+          .returning(),
       );
       const deleted = await withRLS(USER_A, (tx) =>
         tx.delete(messages).where(eq(messages.id, msg.id)).returning(),
@@ -456,10 +555,13 @@ describe("RLS policies (integration)", () => {
 
     it("user can insert own public key", async () => {
       const [row] = await withRLS(USER_C, (tx) =>
-        tx.insert(publicKeys).values({
-          userId: USER_C,
-          publicKeyJwk: { kty: "EC", crv: "P-256", x: "test-x-c", y: "test-y-c" },
-        }).returning(),
+        tx
+          .insert(publicKeys)
+          .values({
+            userId: USER_C,
+            publicKeyJwk: { kty: "EC", crv: "P-256", x: "test-x-c", y: "test-y-c" },
+          })
+          .returning(),
       );
       expect(row.userId).toBe(USER_C);
       // Cleanup
@@ -479,7 +581,8 @@ describe("RLS policies (integration)", () => {
 
     it("user cannot update another user's public key", async () => {
       const result = await withRLS(USER_B, (tx) =>
-        tx.update(publicKeys)
+        tx
+          .update(publicKeys)
           .set({ publicKeyJwk: { kty: "EC", crv: "P-256", x: "hacked", y: "hacked" } })
           .where(eq(publicKeys.userId, USER_A))
           .returning(),
@@ -510,9 +613,15 @@ describe("RLS policies (integration)", () => {
 
     it("user can insert own backup", async () => {
       const [row] = await withRLS(USER_B, (tx) =>
-        tx.insert(privateKeyBackups).values({
-          userId: USER_B, encryptedPrivateKey: "enc-key-b", backupIv: "iv-b", salt: "salt-b",
-        }).returning(),
+        tx
+          .insert(privateKeyBackups)
+          .values({
+            userId: USER_B,
+            encryptedPrivateKey: "enc-key-b",
+            backupIv: "iv-b",
+            salt: "salt-b",
+          })
+          .returning(),
       );
       expect(row.userId).toBe(USER_B);
       // Cleanup
@@ -523,7 +632,10 @@ describe("RLS policies (integration)", () => {
       await expect(
         withRLS(USER_B, (tx) =>
           tx.insert(privateKeyBackups).values({
-            userId: USER_C, encryptedPrivateKey: "fake", backupIv: "fake", salt: "fake",
+            userId: USER_C,
+            encryptedPrivateKey: "fake",
+            backupIv: "fake",
+            salt: "fake",
           }),
         ),
       ).rejects.toThrow();
@@ -559,9 +671,7 @@ describe("RLS policies (integration)", () => {
 
     it("user cannot insert a block on behalf of another user", async () => {
       await expect(
-        withRLS(USER_C, (tx) =>
-          tx.insert(blocks).values({ blockerId: USER_A, blockedId: USER_C }),
-        ),
+        withRLS(USER_C, (tx) => tx.insert(blocks).values({ blockerId: USER_A, blockedId: USER_C })),
       ).rejects.toThrow();
     });
   });
@@ -602,7 +712,11 @@ describe("RLS policies (integration)", () => {
       await db.update(user).set({ role: "admin" }).where(eq(user.id, USER_C));
       try {
         const [updated] = await withRLS(USER_C, (tx) =>
-          tx.update(reports).set({ status: "resolved" }).where(eq(reports.id, REPORT_ID)).returning(),
+          tx
+            .update(reports)
+            .set({ status: "resolved" })
+            .where(eq(reports.id, REPORT_ID))
+            .returning(),
         );
         expect(updated.status).toBe("resolved");
         // Reset
@@ -640,12 +754,15 @@ describe("RLS policies (integration)", () => {
 
     it("conversation member can insert messages", async () => {
       const [msg] = await withRLS(USER_A, (tx) =>
-        tx.insert(messages).values({
-          conversationId: CONVERSATION_ID,
-          senderId: USER_A,
-          ciphertext: "valid-msg",
-          iv: "valid-iv",
-        }).returning(),
+        tx
+          .insert(messages)
+          .values({
+            conversationId: CONVERSATION_ID,
+            senderId: USER_A,
+            ciphertext: "valid-msg",
+            iv: "valid-iv",
+          })
+          .returning(),
       );
       expect(msg.senderId).toBe(USER_A);
       // Cleanup
@@ -686,12 +803,17 @@ describe("RLS policies (integration)", () => {
     it("conversation unique constraint: duplicate (room_id, seeker_user_id) throws", async () => {
       // Seed a conversation with room + seeker
       await db.insert(conversations).values({
-        id: CONVERSATION_ID2, roomId: ACTIVE_ROOM, seekerUserId: USER_C, type: "direct",
+        id: CONVERSATION_ID2,
+        roomId: ACTIVE_ROOM,
+        seekerUserId: USER_C,
+        type: "direct",
       });
       try {
         await expect(
           db.insert(conversations).values({
-            roomId: ACTIVE_ROOM, seekerUserId: USER_C, type: "direct",
+            roomId: ACTIVE_ROOM,
+            seekerUserId: USER_C,
+            type: "direct",
           }),
         ).rejects.toThrow();
       } finally {
@@ -701,18 +823,22 @@ describe("RLS policies (integration)", () => {
 
     it("application unique constraint: duplicate (room_id, user_id) throws", async () => {
       await db.insert(applications).values({
-        roomId: ACTIVE_ROOM, userId: USER_C,
+        roomId: ACTIVE_ROOM,
+        userId: USER_C,
       });
       try {
         await expect(
           db.insert(applications).values({
-            roomId: ACTIVE_ROOM, userId: USER_C,
+            roomId: ACTIVE_ROOM,
+            userId: USER_C,
           }),
         ).rejects.toThrow();
       } finally {
-        await db.delete(applications).where(
-          sql`${applications.roomId} = ${ACTIVE_ROOM} and ${applications.userId} = ${USER_C}`,
-        );
+        await db
+          .delete(applications)
+          .where(
+            sql`${applications.roomId} = ${ACTIVE_ROOM} and ${applications.userId} = ${USER_C}`,
+          );
       }
     });
 
@@ -729,26 +855,40 @@ describe("RLS policies (integration)", () => {
         { conversationId: conv.id, userId: USER_A },
         { conversationId: conv.id, userId: USER_B },
       ]);
-      const [msg] = await db.insert(messages).values({
-        conversationId: conv.id, senderId: USER_A, ciphertext: "cascade-test", iv: "cascade-iv",
-      }).returning();
+      const [msg] = await db
+        .insert(messages)
+        .values({
+          conversationId: conv.id,
+          senderId: USER_A,
+          ciphertext: "cascade-test",
+          iv: "cascade-iv",
+        })
+        .returning();
       await db.insert(messageReceipts).values({
-        messageId: msg.id, userId: USER_B, status: "delivered",
+        messageId: msg.id,
+        userId: USER_B,
+        status: "delivered",
       });
 
       // Delete the conversation
       await db.delete(conversations).where(eq(conversations.id, conv.id));
 
       // Verify cascaded deletes
-      const remainingMembers = await db.select().from(conversationMembers)
+      const remainingMembers = await db
+        .select()
+        .from(conversationMembers)
         .where(eq(conversationMembers.conversationId, conv.id));
       expect(remainingMembers).toHaveLength(0);
 
-      const remainingMessages = await db.select().from(messages)
+      const remainingMessages = await db
+        .select()
+        .from(messages)
         .where(eq(messages.conversationId, conv.id));
       expect(remainingMessages).toHaveLength(0);
 
-      const remainingReceipts = await db.select().from(messageReceipts)
+      const remainingReceipts = await db
+        .select()
+        .from(messageReceipts)
         .where(eq(messageReceipts.messageId, msg.id));
       expect(remainingReceipts).toHaveLength(0);
     });

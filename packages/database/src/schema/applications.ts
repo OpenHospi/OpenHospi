@@ -1,7 +1,7 @@
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import { index, pgPolicy, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { applicationStatusEnum, reviewDecisionEnum } from "./enums";
 import { profiles } from "./profiles";

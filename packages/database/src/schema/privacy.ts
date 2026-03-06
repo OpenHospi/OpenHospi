@@ -1,5 +1,4 @@
 import { sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   boolean,
   index,
@@ -10,6 +9,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import {
   consentPurposeEnum,
@@ -33,9 +33,7 @@ export const consentRecords = pgTable(
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     version: text("version").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     index("idx_consent_records_user").on(table.userId),
@@ -63,9 +61,7 @@ export const activeConsents = pgTable(
       .references(() => profiles.id, { onDelete: "cascade" }),
     purpose: consentPurposeEnum("purpose").notNull(),
     granted: boolean("granted").notNull(),
-    lastUpdatedAt: timestamp("last_updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    lastUpdatedAt: timestamp("last_updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     primaryKey({ columns: [table.userId, table.purpose] }),
@@ -102,9 +98,7 @@ export const dataRequests = pgTable(
     adminNotes: text("admin_notes"),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     completedBy: uuid("completed_by"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .defaultNow()
@@ -147,9 +141,7 @@ export const processingRestrictions = pgTable(
       .notNull()
       .unique()
       .references(() => profiles.id, { onDelete: "cascade" }),
-    restrictedAt: timestamp("restricted_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    restrictedAt: timestamp("restricted_at", { withTimezone: true }).notNull().defaultNow(),
     reason: text("reason"),
     liftedAt: timestamp("lifted_at", { withTimezone: true }),
     liftedBy: uuid("lifted_by"),

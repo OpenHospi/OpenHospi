@@ -8,7 +8,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, genericOAuth, jwt, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
-import { sendEmail } from "@/lib/services/email";
+import { sendTemplatedEmail } from "@/lib/services/email";
 
 function deriveOnboardingEmailCode(token: string): string {
   const hash = createHash("sha256").update(token).digest("hex");
@@ -73,12 +73,21 @@ function createAuth() {
           expiresAt: onboardingCodeExpiresAt(),
         });
 
-        void sendEmail({
-          to: user.email,
-          subject: "Your OpenHospi verification code",
-          text: `Your verification code is ${code}. This code expires in 60 minutes.\n\nYou can also verify with this link: ${url}`,
-          html: `<p>Your verification code is <strong>${code}</strong>.</p><p>This code expires in 60 minutes.</p><p>You can also verify with this link: <a href="${url}">${url}</a></p>`,
-        });
+        // Determine user locale from profile (fall back to nl)
+        let locale: "nl" | "en" | "de" = "nl";
+        try {
+          const [profile] = await db
+            .select({ preferredLocale: schema.profiles.preferredLocale })
+            .from(schema.profiles)
+            .where(eq(schema.profiles.id, user.id));
+          if (profile?.preferredLocale === "en" || profile?.preferredLocale === "de") {
+            locale = profile.preferredLocale;
+          }
+        } catch {
+          // Profile may not exist yet during onboarding — use default
+        }
+
+        void sendTemplatedEmail(user.email, "verificationCode", { code }, locale);
       },
       autoSignInAfterVerification: true,
       expiresIn: 3600,

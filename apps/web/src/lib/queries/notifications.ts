@@ -1,10 +1,12 @@
 import { db, withRLS } from "@openhospi/database";
 import { notifications, profiles } from "@openhospi/database/schema";
+import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import { getMessages } from "@openhospi/i18n/app";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import type { SupportedLocale } from "@openhospi/shared/constants";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 
+import { sendTemplatedEmail } from "@/lib/services/email";
 import { sendWebPushToUser } from "@/lib/services/web-push";
 
 export type NotificationItem = {
@@ -16,17 +18,28 @@ export type NotificationItem = {
   createdAt: Date;
 };
 
+type NotifyOptions = {
+  email?: {
+    template: EmailTemplateName;
+    props: TemplatePropsMap[EmailTemplateName];
+  };
+};
+
 /**
  * Main notification function. Resolves i18n text, inserts in-app notification,
- * and sends Web Push (best-effort).
+ * sends Web Push (best-effort), and optionally sends email.
  */
 export async function notifyUser(
   userId: string,
   messageKey: string,
   params?: Record<string, string>,
+  options?: NotifyOptions,
 ) {
   const [profile] = await db
-    .select({ preferredLocale: profiles.preferredLocale })
+    .select({
+      preferredLocale: profiles.preferredLocale,
+      email: profiles.email,
+    })
     .from(profiles)
     .where(eq(profiles.id, userId));
 
@@ -49,6 +62,15 @@ export async function notifyUser(
     await sendWebPushToUser(userId, { title, body });
   } catch {
     // Push delivery is best-effort — don't fail the operation
+  }
+
+  // 3. Send email (best-effort)
+  if (options?.email && profile?.email) {
+    try {
+      await sendTemplatedEmail(profile.email, options.email.template, options.email.props, locale);
+    } catch {
+      // Email delivery is best-effort — don't fail the operation
+    }
   }
 }
 

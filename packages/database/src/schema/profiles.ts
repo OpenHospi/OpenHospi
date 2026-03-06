@@ -1,5 +1,4 @@
 import { isNotNull, sql } from "drizzle-orm";
-import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import {
   date,
   index,
@@ -13,6 +12,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
+import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { user } from "./auth";
 import {
@@ -51,9 +51,7 @@ export const profiles = pgTable(
     notificationPreferences: jsonb("notification_preferences"),
     privacyPolicyAcceptedVersion: text("privacy_policy_accepted_version"),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .defaultNow()
@@ -128,9 +126,7 @@ export const calendarTokens = pgTable(
       .primaryKey()
       .references(() => profiles.id, { onDelete: "cascade" }),
     token: uuid("token").notNull().defaultRandom().unique(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     index("idx_calendar_tokens_token").on(table.token),

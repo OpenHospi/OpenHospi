@@ -60,10 +60,15 @@
       "title": "Studentenkamers in Nederland",
       "description": "Bekijk beschikbare studentenkamers in Nederlandse steden. Gratis, geverifieerd en eerlijk voor elke student."
     },
+    "alternatives": {
+      "title": "Alternatieven — Vergelijk Studentenhuisvestingsplatforms",
+      "description": "Eerlijke vergelijking van Nederlandse studentenhuisvestingsplatforms. Bekijk hoe OpenHospi zich verhoudt tot Hospi.nl, myHospi, Dingdong, Kamernet en Facebook-groepen."
+    },
     "breadcrumbs": {
       "home": "Home",
       "rooms": "Studentenkamers",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "alternatives": "Alternatieven"
     },
     "faq": {
       "costs": [
@@ -134,6 +139,7 @@
       "cookies": "Cookiebeleid",
       "terms": "Voorwaarden",
       "about": "Over ons",
+      "alternatives": "Alternatieven",
       "faq": "FAQ",
       "missingAssociation": "Vereniging mist?",
       "processingRegister": "Verwerkingsregister",
@@ -724,5 +730,197 @@
         ]
       }
     ]
+  },
+  "alternatives": {
+    "title": "Alternatieven & Vergelijking",
+    "subtitle": "Een eerlijke blik op het Nederlandse studentenhuisvestingslandschap. Wij geloven in transparantie — ook over onze concurrenten.",
+    "disclaimer": "Platforms veranderen. Laatst bijgewerkt: maart 2026. Klopt er iets niet? Mail ons via info@openhospi.nl.",
+    "table": {
+      "title": "Snelle vergelijking",
+      "columns": ["Kenmerk", "OpenHospi", "Hospi.nl", "myHospi.nl", "Dingdong", "Kamernet", "Facebook-groepen"],
+      "rows": [
+        {
+          "feature": "Prijs",
+          "openhospi": { "label": "Gratis", "tone": "positive" },
+          "hospi": { "label": "Onbekend", "tone": "neutral" },
+          "myhospi": { "label": "Freemium", "tone": "warning" },
+          "dingdong": { "label": "Freemium", "tone": "warning" },
+          "kamernet": { "label": "Betaald", "tone": "negative" },
+          "facebook": { "label": "Gratis", "tone": "positive" }
+        },
+        {
+          "feature": "Pay-to-win?",
+          "openhospi": { "label": "Nee", "tone": "positive" },
+          "hospi": { "label": "Onbekend", "tone": "neutral" },
+          "myhospi": { "label": "Ja", "tone": "negative" },
+          "dingdong": { "label": "Ja", "tone": "negative" },
+          "kamernet": { "label": "Ja", "tone": "negative" },
+          "facebook": { "label": "Nee", "tone": "positive" }
+        },
+        {
+          "feature": "Geverifieerde studenten",
+          "openhospi": { "label": "InAcademia", "tone": "positive" },
+          "hospi": { "label": "Nee", "tone": "negative" },
+          "myhospi": { "label": "Nee", "tone": "negative" },
+          "dingdong": { "label": "Nee", "tone": "negative" },
+          "kamernet": { "label": "Nee", "tone": "negative" },
+          "facebook": { "label": "Nee", "tone": "negative" }
+        },
+        {
+          "feature": "Hospi-workflow",
+          "openhospi": { "label": "Ja", "tone": "positive" },
+          "hospi": { "label": "Sterk", "tone": "positive" },
+          "myhospi": { "label": "Ja", "tone": "positive" },
+          "dingdong": { "label": "Deels", "tone": "warning" },
+          "kamernet": { "label": "Deels", "tone": "warning" },
+          "facebook": { "label": "Nee", "tone": "negative" }
+        },
+        {
+          "feature": "Chat",
+          "openhospi": { "label": "E2E versleuteld", "tone": "positive" },
+          "hospi": { "label": "In-app", "tone": "positive" },
+          "myhospi": { "label": "In-app", "tone": "positive" },
+          "dingdong": { "label": "In-app", "tone": "positive" },
+          "kamernet": { "label": "Betaald", "tone": "negative" },
+          "facebook": { "label": "Messenger", "tone": "neutral" }
+        },
+        {
+          "feature": "Open source",
+          "openhospi": { "label": "Ja", "tone": "positive" },
+          "hospi": { "label": "Nee", "tone": "neutral" },
+          "myhospi": { "label": "Nee", "tone": "neutral" },
+          "dingdong": { "label": "Nee", "tone": "neutral" },
+          "kamernet": { "label": "Nee", "tone": "neutral" },
+          "facebook": { "label": "Nee", "tone": "neutral" }
+        }
+      ]
+    },
+    "platforms": {
+      "title": "Platformdetails",
+      "strengthsLabel": "Sterke punten",
+      "weaknessesLabel": "Zwakke punten",
+      "bestForLabel": "Best voor",
+      "items": [
+        {
+          "name": "OpenHospi",
+          "type": "Ons platform",
+          "url": "#",
+          "pricing": "Gratis — geen premium, geen advertenties, geen betaalmuren",
+          "strengths": [
+            "100% gratis, geen pay-to-win mechanismen",
+            "Elke gebruiker geverifieerd via InAcademia (universiteitsverificatie)",
+            "End-to-end versleutelde chat",
+            "Volledig open source — iedereen kan de code controleren",
+            "Geen trackers, privacy-first (AVG)",
+            "Mobiele app voor iOS en Android"
+          ],
+          "weaknesses": [
+            "Nieuw platform — gebruikersbestand en stadsdekking groeien nog",
+            "Minder advertenties dan gevestigde platforms"
+          ],
+          "bestFor": "Studenten die een gratis, eerlijk en privé huisvestingsplatform willen met geverifieerde gebruikers."
+        },
+        {
+          "name": "Hospi.nl",
+          "type": "Directe concurrent",
+          "url": "https://hospi.nl",
+          "pricing": "Geen duidelijke openbare prijzen gevonden",
+          "strengths": [
+            "Sterke huiskant-workflow (sterrenstemmen, privénotities, rollen)",
+            "Gedeelde inbox en huischatfuncties",
+            "Gevestigd platform in de Nederlandse hospi-scene"
+          ],
+          "weaknesses": [
+            "Geen openbare prijstransparantie",
+            "Geen studentenverificatie",
+            "Niet open source"
+          ],
+          "bestFor": "Huizen die een krachtige hospi-managementtool willen met rollen en rechten."
+        },
+        {
+          "name": "myHospi.nl",
+          "type": "Directe concurrent",
+          "url": "https://myhospi.nl",
+          "pricing": "Gratis kern. Boost €1,99, Premium week €3,99, maand €8,99, 3 maanden €19,99, Superreacties €0,99–€4,99",
+          "strengths": [
+            "Uitgebreide zoekersprofielen met videosupport",
+            "Kandidatenoverzicht met notities en uitnodigen met één klik",
+            "Opkomstregistratie en pushnotificaties",
+            "Herinneringen voor hospiteerevenementen"
+          ],
+          "weaknesses": [
+            "Pay-to-win: boosts, premium en superreacties geven betalende gebruikers voordeel",
+            "Geen studentenverificatie",
+            "Niet open source"
+          ],
+          "bestFor": "Zoekers die uitgebreide profielfuncties willen en bereid zijn te betalen voor extra zichtbaarheid."
+        },
+        {
+          "name": "Dingdong",
+          "type": "Directe concurrent",
+          "url": "https://dingdong-nederland.nl",
+          "pricing": "Gratis kern. Premium+ €1,99/week, €3,99/maand, €9,99/3 maanden",
+          "strengths": [
+            "Swipe-style matching — modern, app-first ervaring",
+            "Hospi-uitnodigingen en kandidatenranking",
+            "In-app chat",
+            "Laag geprijsde Premium+ tier"
+          ],
+          "weaknesses": [
+            "Premium+ geeft betalende gebruikers meer zichtbaarheid",
+            "Minder traditioneel hospi-management dan Hospi.nl",
+            "Geen studentenverificatie",
+            "Niet open source"
+          ],
+          "bestFor": "Zoekers die de voorkeur geven aan een swipe/match-ervaring voor een lage prijs."
+        },
+        {
+          "name": "Kamernet",
+          "type": "Alternatief kanaal",
+          "url": "https://kamernet.nl",
+          "pricing": "Zoekers: €38/4 weken, €75/12 weken, €98/6 maanden. Adverteren is gratis.",
+          "strengths": [
+            "Enorm bereik — de grootste Nederlandse kamermarktplaats",
+            "Gedeelde inbox en huisstemfuncties",
+            "Huischat voor huisgenotencommunicatie"
+          ],
+          "weaknesses": [
+            "Zoekers moeten betalen om te berichten — €38+ drempel",
+            "Niet alleen voor studenten — open voor iedereen",
+            "Marktplaatsmodel, niet hospi-gericht",
+            "Niet open source"
+          ],
+          "bestFor": "Iedereen (niet alleen studenten) die maximaal bereik wil en bereid is te betalen voor toegang."
+        },
+        {
+          "name": "Facebook-groepen",
+          "type": "Alternatief kanaal",
+          "url": "https://facebook.com",
+          "pricing": "Gratis",
+          "strengths": [
+            "Enorm bereik — miljoenen gebruikers",
+            "Gratis om te posten en te reageren",
+            "Makkelijk advertenties te delen in meerdere groepen"
+          ],
+          "weaknesses": [
+            "Geen gestructureerde hospi-workflow",
+            "Geen gebruikersverificatie — oplichting komt voor",
+            "Moderatie verschilt per groep",
+            "Geen speciale huisvestingstools of filters",
+            "Privacy afhankelijk van Facebook's beleid"
+          ],
+          "bestFor": "Snelle, informele kamerzoekopdrachten waar bereik belangrijker is dan structuur."
+        }
+      ]
+    },
+    "honesty": {
+      "title": "Waarom we hier eerlijk over zijn",
+      "description": "We hebben OpenHospi gebouwd omdat we geloven dat studentenhuisvesting gratis en eerlijk moet zijn. Maar eerlijk zijn betekent ook eerlijk zijn over het landschap. Sommige platforms hebben functies die wij nog niet hebben. Sommige hebben meer gebruikers. We zijn hier niet om concurrenten af te kraken — we zijn hier om je het volledige beeld te geven zodat je de beste keuze kunt maken voor jouw situatie. Als een ander platform nu beter voor je werkt, gebruik het. Wij zijn er wanneer je iets gratis, privé en gebouwd voor studenten wilt."
+    },
+    "cta": {
+      "title": "OpenHospi uitproberen?",
+      "subtitle": "Gratis, eerlijk en geverifieerd — zonder verplichtingen.",
+      "button": "Inloggen met InAcademia"
+    }
   }
 }

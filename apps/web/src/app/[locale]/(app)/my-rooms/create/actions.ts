@@ -23,39 +23,8 @@ import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
-import { getUserOwnerHouses } from "@/lib/queries/houses";
 import { createDraftRoom, getExistingDraft } from "@/lib/queries/rooms";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
-
-export async function createDraftRoomAction() {
-  const session = await requireSession();
-  const restricted = await requireNotRestricted(session.user.id);
-  if (restricted) return restricted;
-
-  if (!(await checkRateLimit(rateLimiters.createRoom, session.user.id))) {
-    return { error: "RATE_LIMITED" as const };
-  }
-
-  const userHouses = await getUserOwnerHouses(session.user.id);
-
-  if (userHouses.length === 0) {
-    return { error: "NO_HOUSE" as const };
-  }
-
-  if (userHouses.length === 1) {
-    try {
-      const existingId = await getExistingDraft(session.user.id, userHouses[0].id);
-      const id = existingId ?? (await createDraftRoom(session.user.id, userHouses[0].id));
-      return { id };
-    } catch (e) {
-      console.error(e);
-      return { error: "createFailed" as const };
-    }
-  }
-
-  // Multiple houses — the page should show house picker
-  return { error: "PICK_HOUSE" as const };
-}
 
 export async function createHouseAndContinue(formData: FormData) {
   const session = await requireSession();

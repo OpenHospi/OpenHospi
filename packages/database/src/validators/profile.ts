@@ -31,8 +31,6 @@ const baseProfileSchema = createInsertSchema(profiles, {
     .max(MAX_LIFESTYLE_TAGS),
   languages: z.array(z.enum(Language.values)).min(MIN_LANGUAGES).max(MAX_LANGUAGES),
   preferredCity: z.enum(City.values),
-  maxRent: z.coerce.number().int().min(0).max(5000).optional(),
-  availableFrom: z.string().min(1),
   vereniging: z.enum(Vereniging.values).optional(),
 });
 
@@ -47,7 +45,12 @@ export const aboutStepSchema = baseProfileSchema.pick({
   birthDate: true,
   studyProgram: true,
   studyLevel: true,
-  bio: true,
+  preferredCity: true,
+  vereniging: true,
+});
+
+export const bioStepSchema = z.object({
+  bio: z.string().min(1).max(MAX_BIO_LENGTH),
 });
 
 export const personalityStepSchema = baseProfileSchema.pick({
@@ -56,13 +59,6 @@ export const personalityStepSchema = baseProfileSchema.pick({
 
 export const languagesStepSchema = baseProfileSchema.pick({
   languages: true,
-});
-
-export const preferencesStepSchema = baseProfileSchema.pick({
-  preferredCity: true,
-  maxRent: true,
-  availableFrom: true,
-  vereniging: true,
 });
 
 export const editProfileSchema = baseProfileSchema.pick({
@@ -74,14 +70,12 @@ export const editProfileSchema = baseProfileSchema.pick({
   lifestyleTags: true,
   languages: true,
   preferredCity: true,
-  maxRent: true,
-  availableFrom: true,
   vereniging: true,
 });
 
 export type IdentityStepData = z.infer<typeof identityStepSchema>;
 export type AboutStepData = z.infer<typeof aboutStepSchema>;
+export type BioStepData = z.infer<typeof bioStepSchema>;
 export type PersonalityStepData = z.infer<typeof personalityStepSchema>;
 export type LanguagesStepData = z.infer<typeof languagesStepSchema>;
-export type PreferencesStepData = z.infer<typeof preferencesStepSchema>;
 export type EditProfileData = z.infer<typeof editProfileSchema>;

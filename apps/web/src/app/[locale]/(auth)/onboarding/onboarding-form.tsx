@@ -1,6 +1,6 @@
 "use client";
 
-import type { AboutStepData, PreferencesStepData } from "@openhospi/database/validators";
+import type { AboutStepData } from "@openhospi/database/validators";
 import { ONBOARDING_TOTAL_STEPS } from "@openhospi/shared/constants";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -9,12 +9,12 @@ import { Progress } from "@/components/ui/progress";
 import type { ProfilePhoto, ProfileWithPhotos } from "@/lib/queries/profile";
 
 import { AboutStep } from "./steps/about-step";
+import { BioStep } from "./steps/bio-step";
 import { EmailVerificationStep } from "./steps/email-verification-step";
 import { IdentityStep } from "./steps/identity-step";
 import { LanguagesStep } from "./steps/languages-step";
 import { PersonalityStep } from "./steps/personality-step";
 import { PhotosStep } from "./steps/photos-step";
-import { PreferencesStep } from "./steps/preferences-step";
 import { SecurityStep } from "./steps/security-step";
 
 type Props = {
@@ -34,10 +34,10 @@ export function OnboardingForm({ initialData, userId, emailVerified }: Props) {
   const stepTitles = [
     t("steps.identity"),
     t("steps.about"),
+    t("steps.bio"),
     t("steps.personality"),
     t("steps.languages"),
     t("steps.photos"),
-    t("steps.preferences"),
     t("steps.security"),
   ];
 
@@ -100,26 +100,26 @@ export function OnboardingForm({ initialData, userId, emailVerified }: Props) {
             birthDate: initialData.birthDate ?? "",
             studyProgram: initialData.studyProgram ?? "",
             studyLevel: (initialData.studyLevel as AboutStepData["studyLevel"]) ?? undefined,
-            bio: initialData.bio ?? "",
+            preferredCity:
+              (initialData.preferredCity as AboutStepData["preferredCity"]) ?? undefined,
+            vereniging: (initialData.vereniging as AboutStepData["vereniging"]) ?? undefined,
           }}
           onNext={() => setStep(3)}
         />
       )}
 
       {step === 3 && (
-        <PersonalityStep
-          defaultValues={{
-            lifestyleTags: (initialData.lifestyleTags as string[]) ?? [],
-          }}
+        <BioStep
+          defaultValue={initialData.bio ?? ""}
           onBack={() => setStep(2)}
           onNext={() => setStep(4)}
         />
       )}
 
       {step === 4 && (
-        <LanguagesStep
+        <PersonalityStep
           defaultValues={{
-            languages: (initialData.languages as string[]) ?? [],
+            lifestyleTags: (initialData.lifestyleTags as string[]) ?? [],
           }}
           onBack={() => setStep(3)}
           onNext={() => setStep(5)}
@@ -127,23 +127,19 @@ export function OnboardingForm({ initialData, userId, emailVerified }: Props) {
       )}
 
       {step === 5 && (
-        <PhotosStep
-          photos={photos}
-          onPhotosChange={setPhotos}
+        <LanguagesStep
+          defaultValues={{
+            languages: (initialData.languages as string[]) ?? [],
+          }}
           onBack={() => setStep(4)}
           onNext={() => setStep(6)}
         />
       )}
 
       {step === 6 && (
-        <PreferencesStep
-          defaultValues={{
-            preferredCity:
-              (initialData.preferredCity as PreferencesStepData["preferredCity"]) ?? undefined,
-            maxRent: initialData.maxRent ? Number(initialData.maxRent) : undefined,
-            availableFrom: initialData.availableFrom ?? "",
-            vereniging: (initialData.vereniging as PreferencesStepData["vereniging"]) ?? undefined,
-          }}
+        <PhotosStep
+          photos={photos}
+          onPhotosChange={setPhotos}
           onBack={() => setStep(5)}
           onNext={() => setStep(7)}
         />

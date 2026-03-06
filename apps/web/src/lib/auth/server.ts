@@ -106,7 +106,6 @@ export async function requireCompleteProfile(userId: string) {
         birthDate: profiles.birthDate,
         studyProgram: profiles.studyProgram,
         preferredCity: profiles.preferredCity,
-        availableFrom: profiles.availableFrom,
         lifestyleTags: profiles.lifestyleTags,
       })
       .from(profiles)
@@ -132,7 +131,6 @@ export async function requireCompleteProfile(userId: string) {
       profile.birthDate !== null &&
       profile.studyProgram !== null &&
       profile.preferredCity !== null &&
-      profile.availableFrom !== null &&
       (profile.lifestyleTags?.length ?? 0) >= 2 &&
       hasPhoto.length > 0 &&
       hasBackup.length > 0;

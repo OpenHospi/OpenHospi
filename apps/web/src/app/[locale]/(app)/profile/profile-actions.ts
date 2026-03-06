@@ -44,8 +44,6 @@ export async function updateProfile(data: EditProfileData) {
         lifestyleTags: d.lifestyleTags,
         languages: d.languages,
         preferredCity: d.preferredCity,
-        maxRent: d.maxRent != null ? String(d.maxRent) : null,
-        availableFrom: d.availableFrom,
         vereniging: d.vereniging || null,
       })
       .where(eq(profiles.id, session.user.id)),

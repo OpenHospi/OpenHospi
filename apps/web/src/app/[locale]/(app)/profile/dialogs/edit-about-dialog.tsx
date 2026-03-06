@@ -1,7 +1,7 @@
 "use client";
 
 import type { EditProfileData } from "@openhospi/database/validators";
-import { aboutStepSchema } from "@openhospi/database/validators";
+import { aboutStepSchema, bioStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
 import { Gender, StudyLevel } from "@openhospi/shared/enums";
 import { useTranslations } from "next-intl";
@@ -39,7 +39,7 @@ export function BioCard({ profile }: CardProps) {
   const { isPending, submit } = useSectionSubmit(profile, () => setOpen(false));
 
   const form = useForm({
-    resolver: zodResolver(aboutStepSchema.pick({ bio: true })),
+    resolver: zodResolver(bioStepSchema),
     defaultValues: { bio: profile.bio ?? "" },
   });
 
@@ -94,7 +94,9 @@ export function AboutCard({ profile }: CardProps) {
   const { isPending, submit } = useSectionSubmit(profile, () => setOpen(false));
 
   const form = useForm({
-    resolver: zodResolver(aboutStepSchema.omit({ bio: true })),
+    resolver: zodResolver(
+      aboutStepSchema.pick({ gender: true, birthDate: true, studyProgram: true, studyLevel: true }),
+    ),
     defaultValues: {
       gender: (profile.gender as EditProfileData["gender"]) ?? undefined,
       birthDate: profile.birthDate ?? "",

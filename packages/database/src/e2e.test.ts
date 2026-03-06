@@ -350,19 +350,12 @@ describe("E2E workflow tests (integration)", () => {
           .update(profiles)
           .set({
             preferredCity: "amsterdam",
-            maxRent: "750.00",
-            availableFrom: "2026-06-01",
           })
           .where(eq(profiles.id, SEEKER_1))
           .returning(),
       );
       expect(updated.preferredCity).toBe("amsterdam");
-      expect(updated.maxRent).toBe("750.00");
-      expect(updated.availableFrom).toBe("2026-06-01");
-      await db
-        .update(profiles)
-        .set({ preferredCity: null, maxRent: null, availableFrom: null })
-        .where(eq(profiles.id, SEEKER_1));
+      await db.update(profiles).set({ preferredCity: null }).where(eq(profiles.id, SEEKER_1));
     });
 
     it("profile completion check: all required fields set", async () => {
@@ -375,8 +368,6 @@ describe("E2E workflow tests (integration)", () => {
           studyLevel: "wo_bachelor",
           bio: "Test",
           preferredCity: "amsterdam",
-          maxRent: "750.00",
-          availableFrom: "2026-06-01",
           lifestyleTags: [LifestyleTag.sociable],
         })
         .where(eq(profiles.id, SEEKER_1));
@@ -390,8 +381,6 @@ describe("E2E workflow tests (integration)", () => {
       expect(p.studyLevel).not.toBeNull();
       expect(p.bio).not.toBeNull();
       expect(p.preferredCity).not.toBeNull();
-      expect(p.maxRent).not.toBeNull();
-      expect(p.availableFrom).not.toBeNull();
 
       await db
         .update(profiles)
@@ -402,21 +391,9 @@ describe("E2E workflow tests (integration)", () => {
           studyLevel: null,
           bio: null,
           preferredCity: null,
-          maxRent: null,
-          availableFrom: null,
           lifestyleTags: [],
         })
         .where(eq(profiles.id, SEEKER_1));
-    });
-
-    it("maxRent returns as string (numeric column behavior)", async () => {
-      await db.update(profiles).set({ maxRent: "750.00" }).where(eq(profiles.id, SEEKER_1));
-      const [p] = await withRLS(SEEKER_1, (tx) =>
-        tx.select().from(profiles).where(eq(profiles.id, SEEKER_1)),
-      );
-      expect(typeof p.maxRent).toBe("string");
-      expect(Number(p.maxRent)).toBe(750);
-      await db.update(profiles).set({ maxRent: null }).where(eq(profiles.id, SEEKER_1));
     });
 
     it("profile photo via RLS: own insert + any auth read", async () => {

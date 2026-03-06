@@ -1,7 +1,7 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { applications, houseMembers, houses, rooms } from "@openhospi/database/schema";
+import { applications, houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
 import type { ApplyToRoomData } from "@openhospi/database/validators";
 import { applyToRoomSchema } from "@openhospi/database/validators";
 import { ApplicationStatus, RoomStatus } from "@openhospi/shared/enums";
@@ -25,6 +25,14 @@ export async function applyToRoom(roomId: string, data: ApplyToRoomData) {
   }
 
   return withRLS(session.user.id, async (tx) => {
+    const [profile] = await tx
+      .select({ bio: profiles.bio })
+      .from(profiles)
+      .where(eq(profiles.id, session.user.id));
+    if (!profile?.bio) {
+      return { error: "bio_required" as const };
+    }
+
     const [room] = await tx
       .select({ status: rooms.status, houseId: rooms.houseId })
       .from(rooms)

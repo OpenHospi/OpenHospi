@@ -1,16 +1,16 @@
 export {
   aboutStepSchema,
+  bioStepSchema,
   editProfileSchema,
   identityStepSchema,
   languagesStepSchema,
   personalityStepSchema,
-  preferencesStepSchema,
   type AboutStepData,
+  type BioStepData,
   type EditProfileData,
   type IdentityStepData,
   type LanguagesStepData,
   type PersonalityStepData,
-  type PreferencesStepData,
 } from "./profile";
 
 export {

@@ -14,7 +14,6 @@ export function isProfileComplete(profile: ProfileWithPhotos): boolean {
     !!profile.birthDate &&
     !!profile.studyProgram &&
     !!profile.preferredCity &&
-    !!profile.availableFrom &&
     (profile.lifestyleTags?.length ?? 0) >= 2 &&
     profile.photos.length > 0
   );

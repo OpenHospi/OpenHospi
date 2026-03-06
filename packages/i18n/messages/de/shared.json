@@ -55,7 +55,8 @@
       "first": "Erste",
       "last": "Letzte",
       "previous": "Vorherige",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "skip": "Überspringen"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -557,8 +558,7 @@
       "filters": {
         "city": "Stadt",
         "cityPlaceholder": "Alle Städte",
-        "minPrice": "Min Preis",
-        "maxPrice": "Max Preis",
+        "priceRange": "Preisspanne",
         "houseType": "Wohnungstyp",
         "houseTypePlaceholder": "Alle Typen",
         "furnishing": "Einrichtung",
@@ -601,8 +601,6 @@
       "birthDate": "Geburtsdatum",
       "preferences": "Präferenzen",
       "preferredCity": "Bevorzugte Stadt",
-      "maxRent": "Max Miete",
-      "availableFrom": "Verfügbar ab",
       "lifestyleTags": "Lebensstil",
       "languages": "Gesprochene Sprachen",
       "vereniging": "Verein"
@@ -613,19 +611,19 @@
       "steps": {
         "identity": "Deine Daten",
         "about": "Über dich",
+        "bio": "Über mich",
         "personality": "Persönlichkeit",
         "languages": "Sprachen",
         "photos": "Fotos",
-        "preferences": "Präferenzen",
         "security": "Chat-Sicherheit"
       },
       "stepDescriptions": {
         "step1": "Gib deinen Namen und deine E-Mail-Adresse ein.",
         "step2": "Erzähl uns etwas über dich.",
-        "step3": "Was beschreibt dich am besten?",
-        "step4": "Welche Sprachen sprichst du?",
-        "step5": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
-        "step6": "Was suchst du?",
+        "step3": "Schreibe eine kurze Vorstellung, damit WGs dich kennenlernen. Du kannst diesen Schritt überspringen und später ausfüllen.",
+        "step4": "Was beschreibt dich am besten?",
+        "step5": "Welche Sprachen sprichst du?",
+        "step6": "Füge Fotos hinzu, damit WGs dich kennenlernen.",
         "step7": "Schütze deine Chatnachrichten"
       },
       "identity": {
@@ -661,8 +659,6 @@
         "studyLevel": "Studienniveau",
         "bio": "Über mich",
         "preferredCity": "Bevorzugte Stadt",
-        "maxRent": "Max Miete",
-        "availableFrom": "Verfügbar ab",
         "vereniging": "Studentenverein"
       },
       "placeholders": {
@@ -670,7 +666,6 @@
         "studyLevel": "Wähle dein Niveau",
         "bio": "Erzähl etwas über dich...",
         "preferredCity": "Stadt auswählen",
-        "maxRent": "z.B. 600",
         "vereniging": "z.B. Vindicat",
         "searchVereniging": "Verein suchen..."
       },
@@ -1085,8 +1080,10 @@
         "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
         "is_housemate": "Du bist bereits Mitbewohner dieses Zimmers.",
         "already_applied": "Du hast dich bereits für dieses Zimmer beworben.",
-        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
-      }
+        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut.",
+        "bio_required": "Bitte füge zuerst eine Bio zu deinem Profil hinzu, bevor du dich bewirbst. Das hilft Mitbewohnern, dich kennenzulernen."
+      },
+      "goToProfile": "Zum Profil"
     },
     "privacyAccept": {
       "title": "Datenschutzerklärung aktualisiert",

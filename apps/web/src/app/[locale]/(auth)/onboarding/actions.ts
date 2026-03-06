@@ -4,15 +4,15 @@ import { db, withRLS } from "@openhospi/database";
 import { profiles, user as userTable, verification } from "@openhospi/database/schema";
 import {
   aboutStepSchema,
+  bioStepSchema,
   identityStepSchema,
   languagesStepSchema,
   personalityStepSchema,
-  preferencesStepSchema,
   type AboutStepData,
+  type BioStepData,
   type IdentityStepData,
   type LanguagesStepData,
   type PersonalityStepData,
-  type PreferencesStepData,
 } from "@openhospi/database/validators";
 import type { Locale } from "@openhospi/i18n";
 import { and, desc, eq, gt } from "drizzle-orm";
@@ -139,7 +139,7 @@ export async function saveAboutStep(data: AboutStepData) {
   const parsed = aboutStepSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  const { gender, birthDate, studyProgram, studyLevel, bio } = parsed.data;
+  const { gender, birthDate, studyProgram, studyLevel, preferredCity, vereniging } = parsed.data;
 
   await withRLS(session.user.id, (tx) =>
     tx
@@ -149,9 +149,24 @@ export async function saveAboutStep(data: AboutStepData) {
         birthDate,
         studyProgram,
         studyLevel: studyLevel || null,
-        bio: bio || null,
+        preferredCity,
+        vereniging: vereniging || null,
       })
       .where(eq(profiles.id, session.user.id)),
+  );
+
+  return { success: true };
+}
+
+export async function saveBioStep(data: BioStepData) {
+  const session = await requireSession();
+  if (!(await isEmailVerified(session.user.id))) return { error: "emailNotVerified" as const };
+
+  const parsed = bioStepSchema.safeParse(data);
+  if (!parsed.success) return { error: "invalidData" as const };
+
+  await withRLS(session.user.id, (tx) =>
+    tx.update(profiles).set({ bio: parsed.data.bio }).where(eq(profiles.id, session.user.id)),
   );
 
   return { success: true };
@@ -185,30 +200,6 @@ export async function saveLanguagesStep(data: LanguagesStepData) {
     tx
       .update(profiles)
       .set({ languages: parsed.data.languages })
-      .where(eq(profiles.id, session.user.id)),
-  );
-
-  return { success: true };
-}
-
-export async function savePreferencesStep(data: PreferencesStepData) {
-  const session = await requireSession();
-  if (!(await isEmailVerified(session.user.id))) return { error: "emailNotVerified" as const };
-
-  const parsed = preferencesStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
-
-  const { preferredCity, maxRent, availableFrom, vereniging } = parsed.data;
-
-  await withRLS(session.user.id, (tx) =>
-    tx
-      .update(profiles)
-      .set({
-        preferredCity,
-        maxRent: maxRent != null ? String(maxRent) : null,
-        availableFrom,
-        vereniging: vereniging || null,
-      })
       .where(eq(profiles.id, session.user.id)),
   );
 

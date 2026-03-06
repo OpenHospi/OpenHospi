@@ -54,8 +54,6 @@ export default async function OnboardingPage({ params }: Props) {
     bio: profile?.bio,
     lifestyleTags: profile?.lifestyleTags,
     preferredCity: profile?.preferredCity,
-    maxRent: profile?.maxRent,
-    availableFrom: profile?.availableFrom,
     vereniging: profile?.vereniging,
     photos: profile?.photos ?? [],
   };

@@ -29,7 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { useRouter } from "@/i18n/navigation-app";
+import { Link, useRouter } from "@/i18n/navigation-app";
 import { zodResolver } from "@/lib/form-utils";
 
 import { applyToRoom } from "./actions";
@@ -43,6 +43,7 @@ export function ApplyDialog({ roomId }: Props) {
   const tCommon = useTranslations("common.labels");
   const tCommonErrors = useTranslations("common.errors");
   const [open, setOpen] = useState(false);
+  const [bioRequired, setBioRequired] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -57,6 +58,10 @@ export function ApplyDialog({ roomId }: Props) {
     startTransition(async () => {
       const result = await applyToRoom(roomId, data);
       if (result?.error) {
+        if (result.error === "bio_required") {
+          setBioRequired(true);
+          return;
+        }
         if (result.error === "PROCESSING_RESTRICTED") {
           toast.error(tCommonErrors("processingRestricted"));
         } else {
@@ -80,47 +85,61 @@ export function ApplyDialog({ roomId }: Props) {
           <DialogTitle>{t("applyTitle")}</DialogTitle>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="personalMessage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("personalMessage")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      className="min-h-32 resize-none"
-                      placeholder={t("personalMessagePlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <FormMessage />
-                    <span className="ml-auto">
-                      {messageLength}/{MAX_PERSONAL_MESSAGE_LENGTH}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {t("personalMessageHint", {
-                      min: String(MIN_PERSONAL_MESSAGE_LENGTH),
-                    })}
-                  </p>
-                </FormItem>
-              )}
-            />
-
+        {bioRequired ? (
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">{t("errors.bio_required")}</p>
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 {tCommon("cancel")}
               </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="animate-spin" />}
-                {t("submitApplication")}
+              <Button asChild>
+                <Link href="/profile">{t("goToProfile")}</Link>
               </Button>
             </div>
-          </form>
-        </Form>
+          </div>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="personalMessage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("personalMessage")}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        className="min-h-32 resize-none"
+                        placeholder={t("personalMessagePlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <FormMessage />
+                      <span className="ml-auto">
+                        {messageLength}/{MAX_PERSONAL_MESSAGE_LENGTH}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("personalMessageHint", {
+                        min: String(MIN_PERSONAL_MESSAGE_LENGTH),
+                      })}
+                    </p>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                  {tCommon("cancel")}
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending && <Loader2 className="animate-spin" />}
+                  {t("submitApplication")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
       </DialogContent>
     </Dialog>
   );

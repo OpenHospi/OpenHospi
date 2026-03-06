@@ -55,7 +55,8 @@
       "first": "First",
       "last": "Last",
       "previous": "Previous",
-      "delete": "Delete"
+      "delete": "Delete",
+      "skip": "Skip"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -557,8 +558,7 @@
       "filters": {
         "city": "City",
         "cityPlaceholder": "All cities",
-        "minPrice": "Min price",
-        "maxPrice": "Max price",
+        "priceRange": "Price range",
         "houseType": "House type",
         "houseTypePlaceholder": "All types",
         "furnishing": "Furnishing",
@@ -601,8 +601,6 @@
       "birthDate": "Date of birth",
       "preferences": "Preferences",
       "preferredCity": "Preferred city",
-      "maxRent": "Max rent",
-      "availableFrom": "Available from",
       "lifestyleTags": "Lifestyle",
       "languages": "Spoken languages",
       "vereniging": "Association"
@@ -613,19 +611,19 @@
       "steps": {
         "identity": "Your details",
         "about": "About you",
+        "bio": "About me",
         "personality": "Personality",
         "languages": "Languages",
         "photos": "Photos",
-        "preferences": "Preferences",
         "security": "Chat security"
       },
       "stepDescriptions": {
         "step1": "Enter your name and email address.",
         "step2": "Tell us a bit about yourself.",
-        "step3": "What describes you best?",
-        "step4": "Which languages do you speak?",
-        "step5": "Add photos so houses get to know you.",
-        "step6": "What are you looking for?",
+        "step3": "Write a short introduction so houses get to know you. You can skip this and fill it in later.",
+        "step4": "What describes you best?",
+        "step5": "Which languages do you speak?",
+        "step6": "Add photos so houses get to know you.",
         "step7": "Protect your chat messages"
       },
       "identity": {
@@ -661,8 +659,6 @@
         "studyLevel": "Study level",
         "bio": "About me",
         "preferredCity": "Preferred city",
-        "maxRent": "Max rent",
-        "availableFrom": "Available from",
         "vereniging": "Student association"
       },
       "placeholders": {
@@ -670,7 +666,6 @@
         "studyLevel": "Select your level",
         "bio": "Tell something about yourself...",
         "preferredCity": "Select a city",
-        "maxRent": "e.g. 600",
         "vereniging": "e.g. Vindicat",
         "searchVereniging": "Search association..."
       },
@@ -1085,8 +1080,10 @@
         "room_not_active": "This room is no longer accepting applications.",
         "is_housemate": "You are already a housemate of this room.",
         "already_applied": "You have already applied to this room.",
-        "RATE_LIMITED": "Too many attempts. Please try again later."
-      }
+        "RATE_LIMITED": "Too many attempts. Please try again later.",
+        "bio_required": "Please add a bio to your profile before applying. This helps housemates get to know you."
+      },
+      "goToProfile": "Go to profile"
     },
     "privacyAccept": {
       "title": "Privacy policy updated",

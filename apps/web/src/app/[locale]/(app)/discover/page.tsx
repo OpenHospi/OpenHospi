@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Main } from "@/components/layout";
 import { RoomCard } from "@/components/shared/room-card";
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
@@ -82,17 +81,16 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   const { user } = await requireSession();
   const sp = await searchParams;
 
-  const hasSearchParams = Object.keys(sp).length > 0;
+  const userHasFiltered = sp.filtered === "1";
   const parsed = parseSearchParams(sp);
   const { sort, cursor } = parsed;
   let { filters } = parsed;
 
-  // Pre-fill from profile when no search params
-  if (!hasSearchParams) {
+  // Pre-fill from profile only on first visit (no user interaction yet)
+  if (!userHasFiltered) {
     const profile = await getProfile(user.id);
-    if (profile) {
-      if (profile.preferredCity) filters = { ...filters, city: profile.preferredCity };
-      if (profile.maxRent) filters = { ...filters, maxPrice: Number(profile.maxRent) };
+    if (profile?.preferredCity) {
+      filters = { ...filters, city: profile.preferredCity };
     }
   }
 
@@ -107,31 +105,29 @@ export default async function DiscoverPage({ params, searchParams }: Props) {
   }
 
   return (
-    <Main>
-      <div className="space-y-6">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
-        </div>
-
-        <DiscoverFiltersPanel filters={filters} sort={sort} />
-
-        {rooms.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-            <p className="text-muted-foreground">{t("empty")}</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {rooms.map((room) => (
-                <Link key={room.id} href={`/discover/${room.id}`}>
-                  <RoomCard room={room} />
-                </Link>
-              ))}
-            </div>
-            {nextCursor && <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />}
-          </>
-        )}
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
       </div>
-    </Main>
+
+      <DiscoverFiltersPanel filters={filters} sort={sort} />
+
+      {rooms.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+          <p className="text-muted-foreground">{t("empty")}</p>
+        </div>
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {rooms.map((room) => (
+              <Link key={room.id} href={`/discover/${room.id}`}>
+                <RoomCard room={room} />
+              </Link>
+            ))}
+          </div>
+          {nextCursor && <DiscoverLoadMore nextCursor={nextCursor} searchParams={plainParams} />}
+        </>
+      )}
+    </div>
   );
 }

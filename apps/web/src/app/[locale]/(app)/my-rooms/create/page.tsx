@@ -8,7 +8,7 @@ import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
 import { getUserOwnerHouses } from "@/lib/queries/houses";
-import { createDraftRoom, getExistingDraft, getRoom } from "@/lib/queries/rooms";
+import { getRoom } from "@/lib/queries/rooms";
 
 import { HouseGate } from "./house-gate";
 import { RoomCreateForm } from "./room-create-form";
@@ -38,21 +38,6 @@ export default async function RoomCreatePage({ params, searchParams }: Props) {
 
   if (!id) {
     const houses = await getUserOwnerHouses(user.id);
-
-    if (houses.length === 0) {
-      return <HouseGate houses={[]} />;
-    }
-
-    if (houses.length === 1) {
-      const existingDraftId = await getExistingDraft(user.id, houses[0].id);
-      const roomId = existingDraftId ?? (await createDraftRoom(user.id, houses[0].id));
-      return redirect({
-        href: `/my-rooms/create?id=${roomId}` as Parameters<typeof redirect>[0]["href"],
-        locale,
-      });
-    }
-
-    // Multiple houses — show picker
     return <HouseGate houses={houses} />;
   }
 

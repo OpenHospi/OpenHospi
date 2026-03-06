@@ -55,7 +55,8 @@
       "first": "Eerste",
       "last": "Laatste",
       "previous": "Vorige",
-      "delete": "Verwijderen"
+      "delete": "Verwijderen",
+      "skip": "Overslaan"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",
@@ -557,8 +558,7 @@
       "filters": {
         "city": "Stad",
         "cityPlaceholder": "Alle steden",
-        "minPrice": "Min prijs",
-        "maxPrice": "Max prijs",
+        "priceRange": "Prijsbereik",
         "houseType": "Woningtype",
         "houseTypePlaceholder": "Alle types",
         "furnishing": "Inrichting",
@@ -601,8 +601,6 @@
       "birthDate": "Geboortedatum",
       "preferences": "Voorkeuren",
       "preferredCity": "Voorkeursstad",
-      "maxRent": "Max huur",
-      "availableFrom": "Beschikbaar vanaf",
       "lifestyleTags": "Levensstijl",
       "languages": "Gesproken talen",
       "vereniging": "Vereniging"
@@ -613,19 +611,19 @@
       "steps": {
         "identity": "Je gegevens",
         "about": "Over jou",
+        "bio": "Over mij",
         "personality": "Persoonlijkheid",
         "languages": "Talen",
         "photos": "Foto's",
-        "preferences": "Voorkeuren",
         "security": "Chatbeveiliging"
       },
       "stepDescriptions": {
         "step1": "Vul je naam en e-mailadres in.",
         "step2": "Vertel iets over jezelf.",
-        "step3": "Wat past het beste bij jou?",
-        "step4": "Welke talen spreek je?",
-        "step5": "Voeg foto's toe zodat huizen je leren kennen.",
-        "step6": "Wat zoek je?",
+        "step3": "Schrijf een korte introductie zodat huizen je leren kennen. Je kunt dit overslaan en later invullen.",
+        "step4": "Wat past het beste bij jou?",
+        "step5": "Welke talen spreek je?",
+        "step6": "Voeg foto's toe zodat huizen je leren kennen.",
         "step7": "Bescherm je chatberichten"
       },
       "identity": {
@@ -661,8 +659,6 @@
         "studyLevel": "Studieniveau",
         "bio": "Over mij",
         "preferredCity": "Voorkeursstad",
-        "maxRent": "Max huur",
-        "availableFrom": "Beschikbaar vanaf",
         "vereniging": "Vereniging"
       },
       "placeholders": {
@@ -670,7 +666,6 @@
         "studyLevel": "Selecteer je niveau",
         "bio": "Vertel iets over jezelf...",
         "preferredCity": "Selecteer een stad",
-        "maxRent": "bijv. 600",
         "vereniging": "bijv. Vindicat",
         "searchVereniging": "Zoek vereniging..."
       },
@@ -1085,8 +1080,10 @@
         "room_not_active": "Deze kamer accepteert geen aanmeldingen meer.",
         "is_housemate": "Je bent al huisgenoot van deze kamer.",
         "already_applied": "Je hebt je al aangemeld voor deze kamer.",
-        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
-      }
+        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw.",
+        "bio_required": "Voeg eerst een bio toe aan je profiel voordat je je aanmeldt. Dit helpt huisgenoten om je te leren kennen."
+      },
+      "goToProfile": "Ga naar profiel"
     },
     "privacyAccept": {
       "title": "Privacybeleid bijgewerkt",

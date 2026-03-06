@@ -13,6 +13,7 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { BreadcrumbStoreProvider } from "@/components/app/breadcrumb-store";
 import { BreadcrumbsNav } from "@/components/app/breadcrumbs-nav";
 import { NotificationBell } from "@/components/app/notification-bell";
+import { Main } from "@/components/layout";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -86,7 +87,7 @@ export default async function AppLayout({ children, params }: Props) {
             </div>
           </header>
           {restricted && <RestrictionBanner />}
-          <div className="flex flex-1 flex-col overflow-hidden">{children}</div>
+          <Main>{children}</Main>
         </SidebarInset>
       </SidebarProvider>
     </BreadcrumbStoreProvider>

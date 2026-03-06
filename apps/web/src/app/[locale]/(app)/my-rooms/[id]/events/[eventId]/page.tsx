@@ -3,7 +3,6 @@ import { ArrowLeft, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Main } from "@/components/layout/main";
 import { AddToCalendarButton } from "@/components/shared/add-to-calendar-button";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +64,7 @@ export default async function EventDetailPage({ params }: Props) {
   const isPast = event.eventDate < new Date().toISOString().split("T")[0];
 
   return (
-    <Main className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6">
       <Button variant="ghost" size="sm" asChild>
         <Link href={`/my-rooms/${roomId}/events`}>
           <ArrowLeft className="size-4" />
@@ -204,6 +203,6 @@ export default async function EventDetailPage({ params }: Props) {
           {isCreator && <CancelEventButton eventId={eventId} roomId={roomId} />}
         </div>
       )}
-    </Main>
+    </div>
   );
 }

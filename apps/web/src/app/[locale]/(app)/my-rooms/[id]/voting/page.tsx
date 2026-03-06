@@ -2,7 +2,6 @@ import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Main } from "@/components/layout/main";
 import { routing } from "@/i18n/routing";
 import { requireHousemate, requireSession } from "@/lib/auth/server";
 import { getRoomVotes } from "@/lib/queries/votes";
@@ -33,9 +32,5 @@ export default async function VotingPage({ params }: Props) {
 
   const voteBoard = await getRoomVotes(roomId, user.id);
 
-  return (
-    <Main>
-      <VotingClient roomId={roomId} currentUserId={user.id} voteBoard={voteBoard} />
-    </Main>
-  );
+  return <VotingClient roomId={roomId} currentUserId={user.id} voteBoard={voteBoard} />;
 }

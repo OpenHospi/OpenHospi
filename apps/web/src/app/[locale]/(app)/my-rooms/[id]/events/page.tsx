@@ -3,7 +3,6 @@ import { Calendar, MapPin, Users } from "lucide-react";
 import { hasLocale } from "next-intl";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Main } from "@/components/layout/main";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation-app";
@@ -33,7 +32,7 @@ export default async function EventsPage({ params }: Props) {
   const past = events.filter((e) => e.eventDate < today || !!e.cancelledAt);
 
   return (
-    <Main className="space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">{t("title")}</h2>
         <CreateEventDialog roomId={roomId} />
@@ -72,7 +71,7 @@ export default async function EventsPage({ params }: Props) {
           )}
         </>
       )}
-    </Main>
+    </div>
   );
 }
 

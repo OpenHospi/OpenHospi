@@ -1,59 +1,65 @@
-import {Text} from "@react-email/components";
-import {createTranslator} from "next-intl";
+import { Text } from "@react-email/components";
+import { createTranslator } from "next-intl";
 
-import {BaseLayout} from "../components/base-layout";
-import {CtaButton} from "../components/cta-button";
-import type {BaseEmailProps} from "../types";
+import { BaseLayout } from "../components/base-layout";
+import { CtaButton } from "../components/cta-button";
+import type { BaseEmailProps } from "../types";
 
 type ApplicationAcceptedProps = BaseEmailProps & {
-    roomTitle: string;
-    roomUrl: string;
+  roomTitle: string;
+  roomUrl: string;
 };
 
-export function ApplicationAccepted({roomTitle, roomUrl, locale, baseUrl, messages}: ApplicationAcceptedProps) {
-    const t = createTranslator({locale, messages, namespace: "emails.applicationAccepted"});
+export function ApplicationAccepted({
+  roomTitle,
+  roomUrl,
+  locale,
+  baseUrl,
+  messages,
+}: ApplicationAcceptedProps) {
+  const t = createTranslator({ locale, messages, namespace: "emails.applicationAccepted" });
 
-    return (
-        <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
-            <Text style={heading}>{t("heading")}</Text>
-            <Text style={text}>{t("body", {roomTitle})}</Text>
-            <CtaButton href={roomUrl}>{t("cta")}</CtaButton>
-        </BaseLayout>
-    );
+  return (
+    <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
+      <Text style={heading}>{t("heading")}</Text>
+      <Text style={text}>{t("body", { roomTitle })}</Text>
+      <CtaButton href={roomUrl}>{t("cta")}</CtaButton>
+    </BaseLayout>
+  );
 }
 
 ApplicationAccepted.PreviewProps = {
-    roomTitle: "Cosy room in Amsterdam",
-    roomUrl: "http://localhost:3000/rooms/123",
-    baseUrl: "http://localhost:3000",
-    locale: "en",
-    messages: {
-        emails: {
-            common: {
-                footer: "OpenHospi — Free student housing platform for the Netherlands",
-                doNotReply: "This is an automated message. Please do not reply to this email.",
-            },
-            applicationAccepted: {
-                heading: "Application accepted!",
-                body: 'Great news — you\'ve been chosen for the room "{roomTitle}". The room owner will be in touch with next steps.',
-                cta: "View room",
-            },
-        },
+  roomTitle: "Cosy room in Amsterdam",
+  roomUrl: "http://localhost:3000/rooms/123",
+  baseUrl: "http://localhost:3000",
+  locale: "en",
+  messages: {
+    emails: {
+      common: {
+        footer: "OpenHospi — Free student housing platform for the Netherlands",
+        doNotReply: "This is an automated message. Please do not reply to this email.",
+      },
+      applicationAccepted: {
+        heading: "Application accepted!",
+        body: 'Great news — you\'ve been chosen for the room "{roomTitle}". The room owner will be in touch with next steps.',
+        cta: "View room",
+      },
     },
+  },
 };
 
 export default ApplicationAccepted;
 
 const heading = {
-    fontSize: "24px",
-    fontWeight: "bold" as const,
-    color: "#1a1a1a",
-    margin: "0 0 16px",
+  fontSize: "24px",
+  fontWeight: "bold" as const,
+  color: "#1a1a1a",
+  margin: "0 0 16px",
 };
 
 const text = {
-    fontSize: "16px",
-    color: "#333",
-    lineHeight: "24px",
-    margin: "0 0 8px",
+  fontSize: "16px",
+  color: "#333",
+  lineHeight: "24px",
+  margin: "0 0 8px",
 };

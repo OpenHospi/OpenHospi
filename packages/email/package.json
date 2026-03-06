@@ -9,6 +9,10 @@
   },
   "scripts": {
     "dev": "email dev -p 3001 --dir src/templates",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,6 +28,13 @@
     "@react-email/preview-server": "5.2.9",
     "@types/node": "^24",
     "@types/react": "^19",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-security": "^4.0.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8",
     "react-email": "^5.2.9",
     "typescript": "^5"
   }

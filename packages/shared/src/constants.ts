@@ -5,6 +5,16 @@ export const DEFAULT_LOCALE = "nl" as const;
 export const SUPPORTED_LOCALES = ["nl", "en", "de"] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
+// Locale → flag country code overrides (only needed when locale ≠ flag code)
+const LOCALE_FLAG_OVERRIDES: Partial<Record<SupportedLocale, string>> = {
+  en: "gb",
+};
+
+/** Get the flag country code for a given locale (e.g. "en" → "gb", "nl" → "nl") */
+export function getLocaleFlagCode(locale: SupportedLocale): string {
+  return LOCALE_FLAG_OVERRIDES[locale] ?? locale;
+}
+
 // Length limits (match SQL CHECK constraints)
 export const MAX_BIO_LENGTH = 1000;
 export const MAX_PERSONAL_MESSAGE_LENGTH = 2000;

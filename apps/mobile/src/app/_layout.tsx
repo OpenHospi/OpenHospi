@@ -5,8 +5,8 @@ import '@/global.css';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
-import React from 'react';
+import { useRouter, useSegments, Stack } from 'expo-router';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, Text, View, useColorScheme } from 'react-native';
 
 import { useRunMigrations } from '@/db/migrations';
@@ -15,6 +15,7 @@ import { useSession } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { initSentry, Sentry } from '@/lib/sentry';
 import { NAV_THEME } from '@/lib/theme';
+import { useOnboardingStatus } from '@/services/onboarding';
 
 // Initialize Sentry before rendering
 initSentry();
@@ -41,6 +42,52 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function OnboardingGuard() {
+  const { data: session, isPending: sessionPending } = useSession();
+  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
+  const router = useRouter();
+  const segments = useSegments();
+
+  useEffect(() => {
+    if (sessionPending) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inOnboarding = segments[0] === '(auth)' && (segments[1] as string) === 'onboarding';
+
+    if (!session) {
+      if (!inAuthGroup) {
+        router.replace('/(auth)/login');
+      }
+      return;
+    }
+
+    // Session exists — check onboarding
+    if (onboardingPending) return;
+
+    if (onboardingStatus && !onboardingStatus.isComplete) {
+      if (!inOnboarding) {
+        router.replace('/(auth)/onboarding' as never);
+      }
+      return;
+    }
+
+    // Complete — go to app
+    if (inAuthGroup) {
+      router.replace('/(app)/(tabs)/discover');
+    }
+  }, [session, sessionPending, onboardingStatus, onboardingPending, segments, router]);
+
+  if (sessionPending || (session && onboardingPending)) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return null;
+}
+
 function RootNavigator() {
   const { data: session, isPending } = useSession();
 
@@ -53,15 +100,18 @@ function RootNavigator() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!!session}>
-        <Stack.Screen name="(app)" />
-      </Stack.Protected>
-      <Stack.Protected guard={!session}>
-        <Stack.Screen name="(auth)" />
-      </Stack.Protected>
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <>
+      <OnboardingGuard />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={!!session}>
+          <Stack.Screen name="(app)" />
+        </Stack.Protected>
+        <Stack.Protected guard={!session}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </>
   );
 }
 

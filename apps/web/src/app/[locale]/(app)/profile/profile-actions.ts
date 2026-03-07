@@ -1,18 +1,22 @@
 "use server";
 
 import { withRLS } from "@openhospi/database";
-import { profilePhotos, profiles } from "@openhospi/database/schema";
+import { profilePhotos } from "@openhospi/database/schema";
 import type { EditProfileData } from "@openhospi/database/validators";
-import { editProfileSchema } from "@openhospi/database/validators";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
+import {
+  deleteProfilePhotoForUser,
+  saveProfilePhotoForUser,
+  updateProfileForUser,
+} from "@/lib/services/profile-mutations";
 
 type Tx = Parameters<Parameters<typeof withRLS>[1]>[0];
 
 async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
+  const { profiles } = await import("@openhospi/database/schema");
   const [slot1] = await tx
     .select({ url: profilePhotos.url })
     .from(profilePhotos)
@@ -28,29 +32,9 @@ export async function updateProfile(data: EditProfileData) {
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
-  const parsed = editProfileSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
-
-  const d = parsed.data;
-  await withRLS(session.user.id, (tx) =>
-    tx
-      .update(profiles)
-      .set({
-        gender: d.gender,
-        birthDate: d.birthDate,
-        studyProgram: d.studyProgram,
-        studyLevel: d.studyLevel || null,
-        bio: d.bio || null,
-        lifestyleTags: d.lifestyleTags,
-        languages: d.languages,
-        preferredCity: d.preferredCity,
-        vereniging: d.vereniging || null,
-      })
-      .where(eq(profiles.id, session.user.id)),
-  );
-
-  revalidatePath("/profile");
-  return { success: true };
+  const result = await updateProfileForUser(session.user.id, data);
+  if ("success" in result) revalidatePath("/profile");
+  return result;
 }
 
 export async function saveProfilePhoto(formData: FormData) {
@@ -62,36 +46,10 @@ export async function saveProfilePhoto(formData: FormData) {
   const slot = Number(formData.get("slot"));
 
   if (!file) return { error: "uploadFailed" as const };
-  if (slot < 1 || slot > 5) return { error: "uploadFailed" as const };
 
-  let url: string | undefined;
-
-  try {
-    const ext = file.name.split(".").pop() || "jpg";
-    const path = `${session.user.id}/slot-${slot}.${ext}`;
-    url = await uploadPhotoToStorage(file, "profile-photos", path);
-
-    const photoUrl = url;
-    const [photo] = await withRLS(session.user.id, async (tx) => {
-      const [inserted] = await tx
-        .insert(profilePhotos)
-        .values({ userId: session.user.id, slot, url: photoUrl })
-        .onConflictDoUpdate({
-          target: [profilePhotos.userId, profilePhotos.slot],
-          set: { url: photoUrl, uploadedAt: new Date() },
-        })
-        .returning();
-      await syncAvatarUrl(tx, session.user.id);
-      return [inserted];
-    });
-
-    revalidatePath("/profile");
-    return { photo };
-  } catch (e: unknown) {
-    if (url) await deletePhotoFromStorage(url).catch(() => {});
-    console.error(e);
-    return { error: "uploadFailed" as const };
-  }
+  const result = await saveProfilePhotoForUser(session.user.id, file, slot);
+  if ("photo" in result) revalidatePath("/profile");
+  return result;
 }
 
 export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: number }[]) {
@@ -106,7 +64,6 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
     const ids = swaps.map((s) => s.photoId);
 
     await withRLS(session.user.id, async (tx) => {
-      // Verify all photos belong to the user
       const existing = await tx
         .select({ id: profilePhotos.id })
         .from(profilePhotos)
@@ -114,7 +71,6 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
 
       if (existing.length !== swaps.length) throw new Error("Photo not found");
 
-      // Phase 1: set to negative temp values to avoid unique constraint
       for (const swap of swaps) {
         await tx
           .update(profilePhotos)
@@ -122,7 +78,6 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
           .where(eq(profilePhotos.id, swap.photoId));
       }
 
-      // Phase 2: set to final positive values
       for (const swap of swaps) {
         await tx
           .update(profilePhotos)
@@ -146,31 +101,7 @@ export async function deleteProfilePhoto(slot: number) {
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
-  if (slot < 1 || slot > 5) return { error: "deleteFailed" as const };
-
-  try {
-    const [photo] = await withRLS(session.user.id, (tx) =>
-      tx
-        .select({ url: profilePhotos.url })
-        .from(profilePhotos)
-        .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot))),
-    );
-
-    if (!photo) return { error: "deleteFailed" as const };
-
-    await deletePhotoFromStorage(photo.url);
-
-    await withRLS(session.user.id, async (tx) => {
-      await tx
-        .delete(profilePhotos)
-        .where(and(eq(profilePhotos.userId, session.user.id), eq(profilePhotos.slot, slot)));
-      await syncAvatarUrl(tx, session.user.id);
-    });
-
-    revalidatePath("/profile");
-    return {};
-  } catch (e: unknown) {
-    console.error(e);
-    return { error: "deleteFailed" as const };
-  }
+  const result = await deleteProfilePhotoForUser(session.user.id, slot);
+  if ("success" in result) revalidatePath("/profile");
+  return result;
 }

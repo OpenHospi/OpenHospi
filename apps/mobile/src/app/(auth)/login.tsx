@@ -1,8 +1,10 @@
 import { Image } from 'expo-image';
 import { StatusBar } from 'expo-status-bar';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { Alert, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { LanguagePicker } from '@/components/language-picker';
 import { useTranslations } from '@/i18n';
 import { authClient } from '@/lib/auth-client';
 
@@ -34,10 +36,18 @@ export default function LoginScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <StatusBar style="auto" />
-      <View className="flex-1 items-center justify-center px-8">
+
+      <View className="items-end px-4 pt-2">
+        <LanguagePicker />
+      </View>
+
+      <Animated.View
+        entering={FadeIn.duration(600)}
+        className="flex-1 items-center justify-center px-8"
+      >
         <Image
           source={require('@/assets/images/icon.png')}
-          style={{ width: 96, height: 96, marginBottom: 32 }}
+          style={{ width: 128, height: 128, marginBottom: 32 }}
           contentFit="contain"
         />
 
@@ -46,7 +56,7 @@ export default function LoginScreen() {
 
         <View className="mt-12 w-full gap-4">
           <Pressable
-            className="w-full items-center rounded-xl bg-primary px-6 py-4"
+            className="w-full items-center rounded-xl bg-primary px-6 py-4 active:opacity-80"
             onPress={handleInAcademiaLogin}
           >
             <Text className="text-base font-semibold text-primary-foreground">
@@ -66,7 +76,7 @@ export default function LoginScreen() {
               <View className="h-px flex-1 bg-border" />
             </View>
             <Pressable
-              className="w-full items-center rounded-xl border border-border bg-secondary px-6 py-4"
+              className="w-full items-center rounded-xl border border-border bg-secondary px-6 py-4 active:opacity-80"
               onPress={handleGitHubLogin}
             >
               <Text className="text-base font-semibold text-secondary-foreground">
@@ -78,7 +88,7 @@ export default function LoginScreen() {
             </Text>
           </View>
         )}
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

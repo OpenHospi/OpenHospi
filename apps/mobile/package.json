@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.5.4",
+    "@expo/vector-icons": "^15.1.1",
     "@hookform/resolvers": "^5.2.2",
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",

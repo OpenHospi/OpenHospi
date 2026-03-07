@@ -52,7 +52,7 @@ function OnboardingGuard() {
     if (sessionPending) return;
 
     const inAuthGroup = segments[0] === '(auth)';
-    const inOnboarding = segments[0] === '(auth)' && (segments[1] as string) === 'onboarding';
+    const inOnboarding = inAuthGroup && (segments as string[])[1] === 'onboarding';
 
     if (!session) {
       if (!inAuthGroup) {

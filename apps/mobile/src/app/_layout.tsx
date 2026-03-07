@@ -40,7 +40,7 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function RootLayout() {
+let RootLayout = function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? 'dark' : 'light';
 
@@ -55,7 +55,7 @@ function RootLayout() {
       </ThemeProvider>
     </QueryClientProvider>
   );
-}
+};
 
 // Drizzle Studio dev plugin
 if (__DEV__) {

@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "037ce131-ab1f-4736-a25b-c5dc65f30b70",
+  "id": "48401fbc-18ed-4a89-85ca-347a2db8e2e8",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -16,6 +16,10 @@
     },
     {
       "name": "preferences",
+      "entityType": "tables"
+    },
+    {
+      "name": "sync_metadata",
       "entityType": "tables"
     },
     {
@@ -44,7 +48,7 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
-      "name": "updated_at",
+      "name": "fetched_at",
       "entityType": "columns",
       "table": "cached_profiles"
     },
@@ -99,6 +103,36 @@
       "table": "preferences"
     },
     {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "entity_type",
+      "entityType": "columns",
+      "table": "sync_metadata"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_synced_at",
+      "entityType": "columns",
+      "table": "sync_metadata"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cursor",
+      "entityType": "columns",
+      "table": "sync_metadata"
+    },
+    {
       "columns": [
         "id"
       ],
@@ -123,6 +157,15 @@
       "nameExplicit": false,
       "name": "preferences_pk",
       "table": "preferences",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "entity_type"
+      ],
+      "nameExplicit": false,
+      "name": "sync_metadata_pk",
+      "table": "sync_metadata",
       "entityType": "pks"
     }
   ],

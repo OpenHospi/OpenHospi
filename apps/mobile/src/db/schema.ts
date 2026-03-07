@@ -8,7 +8,7 @@ export const preferences = sqliteTable('preferences', {
 export const cachedProfiles = sqliteTable('cached_profiles', {
   id: text('id').primaryKey(),
   data: text('data').notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
+  fetchedAt: integer('fetched_at', { mode: 'timestamp' })
     .notNull()
     .$defaultFn(() => new Date()),
 });
@@ -19,4 +19,10 @@ export const messageDrafts = sqliteTable('message_drafts', {
   updatedAt: integer('updated_at', { mode: 'timestamp' })
     .notNull()
     .$defaultFn(() => new Date()),
+});
+
+export const syncMetadata = sqliteTable('sync_metadata', {
+  entityType: text('entity_type').primaryKey(),
+  lastSyncedAt: integer('last_synced_at', { mode: 'timestamp' }).notNull(),
+  cursor: text('cursor'),
 });

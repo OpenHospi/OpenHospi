@@ -5,15 +5,16 @@ import '@/global.css';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { Stack } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, Text, View, useColorScheme } from 'react-native';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
 import { useRunMigrations } from '@/db/migrations';
-import { NAV_THEME } from '@/lib/theme';
-import { initSentry, Sentry } from '@/lib/sentry';
+import { I18nProvider } from '@/i18n';
+import { useSession } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
+import { initSentry, Sentry } from '@/lib/sentry';
+import { NAV_THEME } from '@/lib/theme';
 
 // Initialize Sentry before rendering
 initSentry();
@@ -40,19 +41,44 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function RootNavigator() {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={!!session}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!session}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+      <Stack.Screen name="+not-found" />
+    </Stack>
+  );
+}
+
 let RootLayout = function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? 'dark' : 'light';
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={NAV_THEME[theme]}>
-        <MigrationGate>
-          <AnimatedSplashOverlay />
-          <AppTabs />
-        </MigrationGate>
-        <PortalHost />
-      </ThemeProvider>
+      <I18nProvider>
+        <ThemeProvider value={NAV_THEME[theme]}>
+          <MigrationGate>
+            <RootNavigator />
+          </MigrationGate>
+          <PortalHost />
+        </ThemeProvider>
+      </I18nProvider>
     </QueryClientProvider>
   );
 };

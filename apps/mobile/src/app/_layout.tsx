@@ -1,8 +1,9 @@
 // Crypto polyfill must be imported before anything that uses crypto.subtle
 import '@/lib/crypto-polyfill';
-import '@/styles/unistyles';
+import '@/global.css';
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ThemeProvider } from '@react-navigation/native';
+import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { ActivityIndicator, Text, View, useColorScheme } from 'react-native';
@@ -10,6 +11,7 @@ import { ActivityIndicator, Text, View, useColorScheme } from 'react-native';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
 import { useRunMigrations } from '@/db/migrations';
+import { NAV_THEME } from '@/lib/theme';
 import { initSentry, Sentry } from '@/lib/sentry';
 import { queryClient } from '@/lib/query-client';
 
@@ -40,14 +42,16 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
 
 function RootLayout() {
   const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? 'dark' : 'light';
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={NAV_THEME[theme]}>
         <MigrationGate>
           <AnimatedSplashOverlay />
           <AppTabs />
         </MigrationGate>
+        <PortalHost />
       </ThemeProvider>
     </QueryClientProvider>
   );

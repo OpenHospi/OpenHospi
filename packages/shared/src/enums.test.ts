@@ -26,6 +26,11 @@ import {
   ReportType,
   DiscoverSort,
   Vereniging,
+  ConsentPurpose,
+  LegalBasis,
+  DataRequestType,
+  DataRequestStatus,
+  UtilitiesIncluded,
 } from "./enums.js";
 
 const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
@@ -54,11 +59,16 @@ const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
   ReportType,
   DiscoverSort,
   Vereniging,
+  ConsentPurpose,
+  LegalBasis,
+  DataRequestType,
+  DataRequestStatus,
+  UtilitiesIncluded,
 };
 
 describe("@openhospi/shared — enums", () => {
-  it("exports 25 enum companion objects", () => {
-    expect(Object.keys(ALL_ENUMS)).toHaveLength(25);
+  it("exports 30 enum companion objects", () => {
+    expect(Object.keys(ALL_ENUMS)).toHaveLength(30);
   });
 
   it.each(Object.entries(ALL_ENUMS))("%s has a non-empty values array", (_name, enumObj) => {

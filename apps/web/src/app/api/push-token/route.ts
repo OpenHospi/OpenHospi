@@ -1,6 +1,6 @@
 import { db } from "@openhospi/database";
 import { pushTokens } from "@openhospi/database/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -50,7 +50,9 @@ export async function DELETE(request: Request) {
   await db
     .update(pushTokens)
     .set({ active: false })
-    .where(eq(pushTokens.expoPushToken, expoPushToken));
+    .where(
+      and(eq(pushTokens.expoPushToken, expoPushToken), eq(pushTokens.userId, session.user.id)),
+    );
 
   return NextResponse.json({ success: true });
 }

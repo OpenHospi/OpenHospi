@@ -60,7 +60,7 @@ export async function createHouseAndContinue(formData: FormData) {
     const roomId = await createDraftRoom(session.user.id, houseId);
     revalidatePath("/my-house");
     return { id: roomId };
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "createFailed" as const };
   }
@@ -98,7 +98,7 @@ export async function createDraftRoomForHouse(houseId: string) {
     const existingId = await getExistingDraft(session.user.id, houseId);
     const roomId = existingId ?? (await createDraftRoom(session.user.id, houseId));
     return { id: roomId };
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "createFailed" as const };
   }

@@ -1,6 +1,5 @@
 import { db, withRLS } from "@openhospi/database";
 import {
-  blocks,
   conversationMembers,
   conversations,
   messageReceipts,
@@ -9,7 +8,7 @@ import {
   rooms,
 } from "@openhospi/database/schema";
 import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
-import { and, count, desc, eq, isNull, lt, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm";
 
 export async function getOrCreateHospiConversation(
   roomId: string,
@@ -55,136 +54,85 @@ export type ConversationListItem = {
 
 export async function getConversations(userId: string): Promise<ConversationListItem[]> {
   return withRLS(userId, async (tx) => {
-    // Get all conversations the user is a member of
+    // Single query: get conversations with room title, last message, and unread count
+    // Excludes conversations where a block exists with any other member
     const convos = await tx
       .select({
         id: conversations.id,
         type: conversations.type,
-        roomId: conversations.roomId,
+        roomTitle: rooms.title,
+        lastMessage: sql<
+          string | null
+        >`(select m.ciphertext from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1)`,
+        lastMessageAt: sql<Date | null>`(select m.created_at from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1)`,
+        unreadCount: sql<number>`(
+          select count(*)::int from messages m
+          left join message_receipts mr on mr.message_id = m.id and mr.user_id = ${userId}
+          where m.conversation_id = ${conversations.id} and mr.read_at is null
+        )`,
       })
       .from(conversations)
       .innerJoin(conversationMembers, eq(conversationMembers.conversationId, conversations.id))
-      .where(eq(conversationMembers.userId, userId))
-      .orderBy(desc(conversations.createdAt));
+      .leftJoin(rooms, eq(rooms.id, conversations.roomId))
+      .where(
+        and(
+          eq(conversationMembers.userId, userId),
+          // Exclude conversations where a block exists between the user and any other member
+          sql`not exists(
+            select 1 from conversation_members cm2
+            inner join blocks b on
+              (b.blocker_id = ${userId} and b.blocked_id = cm2.user_id)
+              or (b.blocker_id = cm2.user_id and b.blocked_id = ${userId})
+            where cm2.conversation_id = ${conversations.id}
+              and cm2.user_id != ${userId}
+          )`,
+        ),
+      )
+      .orderBy(
+        sql`(select m.created_at from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1) desc nulls last`,
+      );
 
-    // Filter out conversations where any other member has a block relationship with current user
-    const filteredConvos = [];
-    for (const conv of convos) {
-      const otherMembers = await tx
-        .select({ userId: conversationMembers.userId })
-        .from(conversationMembers)
-        .where(
-          and(
-            eq(conversationMembers.conversationId, conv.id),
-            sql`${conversationMembers.userId}
-                        !=
-                        ${userId}`,
-          ),
-        );
+    // Batch-fetch members for all conversations
+    const convIds = convos.map((c) => c.id);
+    const allMembers =
+      convIds.length > 0
+        ? await tx
+            .select({
+              conversationId: conversationMembers.conversationId,
+              userId: conversationMembers.userId,
+              firstName: profiles.firstName,
+              lastName: profiles.lastName,
+              avatarUrl: profiles.avatarUrl,
+            })
+            .from(conversationMembers)
+            .innerJoin(profiles, eq(profiles.id, conversationMembers.userId))
+            .where(inArray(conversationMembers.conversationId, convIds))
+        : [];
 
-      const hasBlock =
-        otherMembers.length > 0
-          ? await tx
-              .select({ blockerId: blocks.blockerId })
-              .from(blocks)
-              .where(
-                or(
-                  and(
-                    eq(blocks.blockerId, userId),
-                    sql`${blocks.blockedId}
-                                    IN (
-                                    ${sql.join(
-                                      otherMembers.map((m) => sql`${m.userId}`),
-                                      sql`, `,
-                                    )}
-                                    )`,
-                  ),
-                  and(
-                    eq(blocks.blockedId, userId),
-                    sql`${blocks.blockerId}
-                                    IN (
-                                    ${sql.join(
-                                      otherMembers.map((m) => sql`${m.userId}`),
-                                      sql`, `,
-                                    )}
-                                    )`,
-                  ),
-                ),
-              )
-              .limit(1)
-          : [];
-
-      if (hasBlock.length === 0) {
-        filteredConvos.push(conv);
-      }
-    }
-
-    const result: ConversationListItem[] = [];
-
-    for (const conv of filteredConvos) {
-      // Get room title if applicable
-      let roomTitle: string | null = null;
-      if (conv.roomId) {
-        const [room] = await tx
-          .select({ title: rooms.title })
-          .from(rooms)
-          .where(eq(rooms.id, conv.roomId));
-        roomTitle = room?.title ?? null;
-      }
-
-      // Get last message
-      const [lastMsg] = await tx
-        .select({
-          ciphertext: messages.ciphertext,
-          createdAt: messages.createdAt,
-        })
-        .from(messages)
-        .where(eq(messages.conversationId, conv.id))
-        .orderBy(desc(messages.createdAt))
-        .limit(1);
-
-      // Get unread count
-      const [unread] = await tx
-        .select({ count: count() })
-        .from(messages)
-        .leftJoin(
-          messageReceipts,
-          and(eq(messageReceipts.messageId, messages.id), eq(messageReceipts.userId, userId)),
-        )
-        .where(and(eq(messages.conversationId, conv.id), isNull(messageReceipts.readAt)));
-
-      // Get members
-      const members = await tx
-        .select({
-          userId: conversationMembers.userId,
-          firstName: profiles.firstName,
-          lastName: profiles.lastName,
-          avatarUrl: profiles.avatarUrl,
-        })
-        .from(conversationMembers)
-        .innerJoin(profiles, eq(profiles.id, conversationMembers.userId))
-        .where(eq(conversationMembers.conversationId, conv.id));
-
-      result.push({
-        id: conv.id,
-        type: conv.type,
-        roomTitle,
-        lastMessage: lastMsg?.ciphertext ?? null,
-        lastMessageAt: lastMsg?.createdAt ?? null,
-        unreadCount: unread?.count ?? 0,
-        members,
+    const membersByConv = new Map<
+      string,
+      { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[]
+    >();
+    for (const m of allMembers) {
+      const list = membersByConv.get(m.conversationId) ?? [];
+      list.push({
+        userId: m.userId,
+        firstName: m.firstName,
+        lastName: m.lastName,
+        avatarUrl: m.avatarUrl,
       });
+      membersByConv.set(m.conversationId, list);
     }
 
-    // Sort by last message time (most recent first)
-    result.sort((a, b) => {
-      if (!a.lastMessageAt && !b.lastMessageAt) return 0;
-      if (!a.lastMessageAt) return 1;
-      if (!b.lastMessageAt) return -1;
-      return b.lastMessageAt.getTime() - a.lastMessageAt.getTime();
-    });
-
-    return result;
+    return convos.map((c) => ({
+      id: c.id,
+      type: c.type,
+      roomTitle: c.roomTitle,
+      lastMessage: c.lastMessage,
+      lastMessageAt: c.lastMessageAt,
+      unreadCount: c.unreadCount ?? 0,
+      members: membersByConv.get(c.id) ?? [],
+    }));
   });
 }
 

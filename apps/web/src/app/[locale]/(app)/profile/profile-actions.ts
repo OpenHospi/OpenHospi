@@ -87,7 +87,7 @@ export async function saveProfilePhoto(formData: FormData) {
 
     revalidatePath("/profile");
     return { photo };
-  } catch (e) {
+  } catch (e: unknown) {
     if (url) await deletePhotoFromStorage(url).catch(() => {});
     console.error(e);
     return { error: "uploadFailed" as const };
@@ -135,7 +135,7 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
 
     revalidatePath("/profile");
     return {};
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "uploadFailed" as const };
   }
@@ -169,7 +169,7 @@ export async function deleteProfilePhoto(slot: number) {
 
     revalidatePath("/profile");
     return {};
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "deleteFailed" as const };
   }

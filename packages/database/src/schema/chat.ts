@@ -36,7 +36,7 @@ export const conversations = pgTable(
     pgPolicy("conversations_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`true`,
+      withCheck: sql`${table.seekerUserId} = (select auth.uid()) or exists(select 1 from house_members_rls hm inner join rooms r on r.house_id = hm.house_id where r.id = ${table.roomId} and hm.user_id = (select auth.uid()))`,
     }),
   ],
 );

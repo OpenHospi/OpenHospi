@@ -4,8 +4,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 function RoomCardSkeleton() {
   return (
     <Card className="overflow-hidden pt-0">
-      {/* Image */}
-      <Skeleton className="aspect-4/3 w-full rounded-none" />
+      {/* Image area with 5 photo indicator dots */}
+      <div className="relative aspect-4/3">
+        <Skeleton className="size-full rounded-none" />
+        <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} className="bg-foreground/20 size-1.5 rounded-full" />
+          ))}
+        </div>
+      </div>
       {/* Title + City + Badges */}
       <CardHeader>
         <Skeleton className="h-5 w-3/4" />

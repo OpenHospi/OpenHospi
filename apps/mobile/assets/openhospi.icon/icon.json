@@ -6,6 +6,7 @@
     {
       "layers" : [
         {
+          "glass" : true,
           "image-name" : "logo-white.svg",
           "name" : "logo-white",
           "position" : {

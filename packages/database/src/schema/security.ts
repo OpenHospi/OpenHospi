@@ -121,6 +121,7 @@ export const reports = pgTable(
     }),
     reason: reportReasonEnum("reason").notNull(),
     description: text("description"),
+    // Voluntarily submitted by the reporter — admins never decrypt messages themselves
     decryptedMessageText: text("decrypted_message_text"),
     status: reportStatusEnum("status").notNull().default("pending"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

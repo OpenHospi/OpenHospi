@@ -152,7 +152,7 @@ export const roomPhotos = pgTable(
     pgPolicy("room_photos_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`true`,
+      using: sql`exists(select 1 from rooms where rooms.id = ${table.roomId} and (rooms.status = '${sql.raw(RoomStatus.active)}' or rooms.created_by = (select auth.uid())))`,
     }),
     pgPolicy("room_photos_insert", {
       for: "insert",

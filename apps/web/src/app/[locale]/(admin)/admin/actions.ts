@@ -17,6 +17,7 @@ import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/sh
 import { and, count, desc, eq, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { parseUUID } from "@/lib/action-result";
 import { auth } from "@/lib/auth/auth";
 import { requireAdmin } from "@/lib/auth/server";
 import { sendTemplatedEmail } from "@/lib/services/email";
@@ -153,6 +154,7 @@ export type ReportDetail = ReportListItem & {
 
 export async function getReportDetail(reportId: string): Promise<ReportDetail | null> {
   await requireAdmin();
+  parseUUID(reportId);
 
   const [row] = await db
     .select({
@@ -212,6 +214,7 @@ export type RoomDetail = {
 
 export async function getRoomDetail(roomId: string): Promise<RoomDetail | null> {
   await requireAdmin();
+  parseUUID(roomId);
 
   const [row] = await db
     .select({
@@ -265,6 +268,7 @@ export type UserDetail = {
 
 export async function getUserDetail(userId: string): Promise<UserDetail | null> {
   await requireAdmin();
+  parseUUID(userId);
 
   const [row] = await db
     .select({
@@ -301,6 +305,7 @@ export async function getUserDetail(userId: string): Promise<UserDetail | null> 
 
 export async function resolveReport(reportId: string, action: AdminAction, reason: string) {
   const adminSession = await requireAdmin();
+  parseUUID(reportId);
   const adminUserId = adminSession.user.id;
 
   await db
@@ -330,6 +335,7 @@ export async function updateReportStatus(
   notes?: string,
 ) {
   const adminSession = await requireAdmin();
+  parseUUID(reportId);
   const adminUserId = adminSession.user.id;
 
   const updateData: {
@@ -361,6 +367,7 @@ export async function updateReportStatus(
 
 export async function dismissReport(reportId: string, reason: string) {
   const adminSession = await requireAdmin();
+  parseUUID(reportId);
   const adminUserId = adminSession.user.id;
 
   await db
@@ -386,7 +393,18 @@ export async function dismissReport(reportId: string, reason: string) {
 
 export async function banUser(reportId: string, userId: string, reason: string) {
   const adminSession = await requireAdmin();
+  parseUUID(reportId);
+  parseUUID(userId);
   const adminUserId = adminSession.user.id;
+
+  // Verify the report actually targets this user
+  const [report] = await db
+    .select({ reportedUserId: reports.reportedUserId })
+    .from(reports)
+    .where(eq(reports.id, reportId));
+  if (!report || report.reportedUserId !== userId) {
+    throw new Error("Report does not target the specified user");
+  }
 
   // Ban via Better Auth admin API
   await auth.api.banUser({
@@ -431,6 +449,7 @@ export async function banUser(reportId: string, userId: string, reason: string) 
 
 export async function unbanUser(userId: string, reason: string) {
   const adminSession = await requireAdmin();
+  parseUUID(userId);
   const adminUserId = adminSession.user.id;
 
   await auth.api.unbanUser({
@@ -451,6 +470,8 @@ export async function unbanUser(userId: string, reason: string) {
 
 export async function removeListing(reportId: string, roomId: string, reason: string) {
   const adminSession = await requireAdmin();
+  parseUUID(reportId);
+  parseUUID(roomId);
   const adminUserId = adminSession.user.id;
 
   // Get room owner before closing

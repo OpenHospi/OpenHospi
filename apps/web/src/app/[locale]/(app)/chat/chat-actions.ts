@@ -107,7 +107,13 @@ export async function markConversationRead(conversationId: string) {
 }
 
 export async function openChat(roomId: string, seekerUserId: string, memberUserIds: string[]) {
-  await requireSession();
+  const session = await requireSession();
+  const userId = session.user.id;
+
+  // Verify the caller is either the seeker or a member of the room's house
+  if (userId !== seekerUserId && !memberUserIds.includes(userId)) {
+    throw new Error("Not authorized to open this chat");
+  }
 
   // Ensure the current user is in the member list
   const allMembers = [...new Set([...memberUserIds, seekerUserId])];

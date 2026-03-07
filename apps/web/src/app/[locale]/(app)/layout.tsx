@@ -17,6 +17,7 @@ import { Main } from "@/components/layout";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth/server";
@@ -80,7 +81,7 @@ export default async function AppLayout({ children, params }: Props) {
               <AppLanguageSwitcher />
               <ThemeToggle />
               {session && (
-                <Suspense>
+                <Suspense fallback={<Skeleton className="size-9 rounded-md" />}>
                   <NotificationBell userId={session.user.id} />
                 </Suspense>
               )}

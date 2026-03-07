@@ -46,7 +46,7 @@ export async function saveRoomPhoto(formData: FormData) {
 
     revalidatePath(`/my-rooms/${roomId}`);
     return { photo };
-  } catch (e) {
+  } catch (e: unknown) {
     if (url) await deletePhotoFromStorage(url).catch(() => {});
     console.error(e);
     return { error: "uploadFailed" as const };
@@ -81,7 +81,7 @@ export async function deleteRoomPhoto(roomId: string, slot: number) {
 
     revalidatePath(`/my-rooms/${roomId}`);
     return {};
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "deleteFailed" as const };
   }
@@ -112,7 +112,7 @@ export async function updatePhotoCaption(roomId: string, slot: number, caption: 
 
     revalidatePath(`/my-rooms/${roomId}`);
     return {};
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "uploadFailed" as const };
   }
@@ -162,7 +162,7 @@ export async function reorderRoomPhotos(
 
     revalidatePath(`/my-rooms/${roomId}`);
     return {};
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     return { error: "uploadFailed" as const };
   }

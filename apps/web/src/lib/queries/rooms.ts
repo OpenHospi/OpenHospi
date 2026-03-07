@@ -1,8 +1,7 @@
 import { withRLS } from "@openhospi/database";
 import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
-import type { City } from "@openhospi/shared/enums";
-import { RoomStatus } from "@openhospi/shared/enums";
+import { City, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { cache } from "react";
 
@@ -49,7 +48,7 @@ export async function createDraftRoom(userId: string, houseId: string): Promise<
       ownerId: userId,
       houseId,
       title: "",
-      city: "amsterdam",
+      city: City.amsterdam,
       rentPrice: "0",
       status: RoomStatus.draft,
     });

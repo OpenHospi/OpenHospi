@@ -1,6 +1,6 @@
 "use client";
 
-import { SiGithub, SiInstagram } from "@icons-pack/react-simple-icons";
+import { SiGithub, SiInstagram, SiOpencollective } from "@icons-pack/react-simple-icons";
 import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
 import { Linkedin } from "lucide-react";
@@ -91,6 +91,15 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 aria-label="LinkedIn"
               >
                 <Linkedin className="size-5" color="currentColor" />
+              </a>
+              <a
+                href="https://opencollective.com/openhospi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Open Collective"
+              >
+                <SiOpencollective className="size-5" color="currentColor" />
               </a>
             </div>
           </div>

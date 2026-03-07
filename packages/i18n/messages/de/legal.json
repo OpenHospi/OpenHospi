@@ -57,7 +57,8 @@
           "Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen (Auftragsverarbeiter)",
           "Upstash (Irland) — Ratenbegrenzung über Redis (Auftragsverarbeiter)",
           "InAcademia / GÉANT (EU) — Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
-          "Sentry (Frankfurt, Deutschland) — Crash-Reporting und Fehlerüberwachung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben"
+          "Sentry (Frankfurt, Deutschland) — Crash-Reporting und Fehlerüberwachung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben",
+          "Expo/EAS (USA) — Mobile App-Builds, Over-the-Air-Updates und Verteilung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben — nur App-Code und Bundles werden verarbeitet"
         ]
       },
       {
@@ -303,6 +304,17 @@
           "Auftragsverarbeitungsvertrag — Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen, mit Standardvertragsklauseln (SCCs)",
           "Aufbewahrung — 90 Tage",
           "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung. Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen — keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden"
+        ]
+      },
+      {
+        "title": "6. Expo/EAS (Mobile App-Verteilung)",
+        "items": [
+          "Rolle — Auftragsverarbeiter: Mobile App-Builds, Over-the-Air (OTA) Updates und App-Verteilung",
+          "Standort — Vereinigte Staaten (Google Cloud Platform). Build-Server verarbeiten ausschließlich App-Quellcode und erzeugen Binaries — keine personenbezogenen Endnutzerdaten sind betroffen",
+          "Verarbeitete Daten — App-Quellcode, JavaScript-Bundles, Build-Metadaten. Keine personenbezogenen Daten von Endnutzern erhoben",
+          "Auftragsverarbeitungsvertrag — Expo Nutzungsbedingungen und Datenschutzrichtlinie gelten. Expo erfüllt das EU-US Data Privacy Framework und verwendet Standardvertragsklauseln (SCCs) für internationale Übermittlungen",
+          "DSGVO-Relevanz — Es werden keine personenbezogenen Endnutzerdaten an EAS-Build-Server übermittelt oder dort verarbeitet. Nur App-Quellcode und Bundles werden verarbeitet. Die internationalen Übermittlungsgarantien von Expo (EU-US DPF, SCCs) bieten zusätzlichen Schutz gemäß Art. 45-46 DSGVO",
+          "Sicherheit — Signierte Updates, ausschließlich HTTPS-Auslieferung, Code-Signierung für OTA-Updates"
         ]
       }
     ]

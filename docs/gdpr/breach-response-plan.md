@@ -25,6 +25,7 @@ Examples:
 ### Internal Detection
 - Monitor Supabase audit logs for unusual access patterns
 - Monitor Vercel deployment logs for unauthorized changes
+- Monitor Expo EAS build and update logs for unauthorized submissions
 - Review admin audit log (`adminAuditLog` table) for suspicious actions
 - Automated alerts from Supabase for failed auth attempts
 

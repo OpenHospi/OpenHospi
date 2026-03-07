@@ -57,7 +57,8 @@
           "Vercel (Dublin, Ireland) — web hosting and edge functions (processor)",
           "Upstash (Ireland) — rate limiting via Redis (processor)",
           "InAcademia (GÉANT, Netherlands) — student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)",
-          "Sentry (Frankfurt, Germany) — crash reporting and error monitoring (processor). No personal data collected"
+          "Sentry (Frankfurt, Germany) — crash reporting and error monitoring (processor). No personal data collected",
+          "Expo/EAS (US) — mobile app builds, over-the-air updates, and distribution (processor). No personal data collected — only app code and bundles are processed"
         ]
       },
       {
@@ -303,6 +304,17 @@
           "Data processing agreement — Data processing agreement pursuant to Art. 28 GDPR in place, with Standard Contractual Clauses (SCCs)",
           "Retention — 90 days",
           "Security — Encryption at rest and in transit. Sentry's internal organisational metadata (developer accounts, project configs — no end-user data) may be replicated to the US per Sentry's infrastructure"
+        ]
+      },
+      {
+        "title": "6. Expo/EAS (Mobile App Distribution)",
+        "items": [
+          "Role — Processor: mobile app builds, over-the-air (OTA) updates, and app distribution",
+          "Location — United States (Google Cloud Platform). Build servers process only app source code and produce binaries — no personal end-user data is involved",
+          "Data processed — App source code, JavaScript bundles, build metadata. No personal data collected from end users",
+          "Data processing agreement — Expo Terms of Service and Privacy Policy apply. Expo complies with the EU-US Data Privacy Framework and uses Standard Contractual Clauses (SCCs) for international transfers",
+          "GDPR relevance — No personal end-user data is transferred to or processed on EAS build servers. Only app source code and bundles are processed. Expo's international transfer safeguards (EU-US DPF, SCCs) provide additional protection per Art. 45-46 GDPR",
+          "Security — Signed updates, HTTPS-only delivery, code signing for OTA updates"
         ]
       }
     ]

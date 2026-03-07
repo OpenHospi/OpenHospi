@@ -57,7 +57,8 @@
           "Vercel (Dublin, Ierland) — webhosting en edge-functies (verwerker)",
           "Upstash (Ierland) — snelheidsbeperking via Redis (verwerker)",
           "InAcademia (GÉANT, Nederland) — studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)",
-          "Sentry (Frankfurt, Duitsland) — crashrapportage en foutmonitoring (verwerker). Geen persoonsgegevens verzameld"
+          "Sentry (Frankfurt, Duitsland) — crashrapportage en foutmonitoring (verwerker). Geen persoonsgegevens verzameld",
+          "Expo/EAS (VS) — mobiele app-builds, over-the-air updates en distributie (verwerker). Geen persoonsgegevens verzameld — alleen app-code en bundels worden verwerkt"
         ]
       },
       {
@@ -303,6 +304,17 @@
           "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten, met modelcontractbepalingen (SCCs)",
           "Bewaartermijn — 90 dagen",
           "Beveiliging — Versleuteling at rest en in transit. De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties — geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry"
+        ]
+      },
+      {
+        "title": "6. Expo/EAS (Mobiele app-distributie)",
+        "items": [
+          "Rol — Verwerker: mobiele app-builds, over-the-air (OTA) updates en app-distributie",
+          "Locatie — Verenigde Staten (Google Cloud Platform). Buildservers verwerken uitsluitend app-broncode en produceren binaries — er zijn geen persoonsgegevens van eindgebruikers bij betrokken",
+          "Verwerkte gegevens — App-broncode, JavaScript-bundels, build-metadata. Geen persoonsgegevens van eindgebruikers verzameld",
+          "Verwerkersovereenkomst — Expo Servicevoorwaarden en Privacybeleid zijn van toepassing. Expo voldoet aan het EU-VS Data Privacy Framework en maakt gebruik van modelcontractbepalingen (SCCs) voor internationale doorgifte",
+          "AVG-relevantie — Er worden geen persoonsgegevens van eindgebruikers overgedragen aan of verwerkt op EAS-buildservers. Alleen app-broncode en bundels worden verwerkt. De internationale doorgifte-waarborgen van Expo (EU-VS DPF, SCCs) bieden aanvullende bescherming conform art. 45-46 AVG",
+          "Beveiliging — Ondertekende updates, alleen HTTPS-levering, code-ondertekening voor OTA-updates"
         ]
       }
     ]

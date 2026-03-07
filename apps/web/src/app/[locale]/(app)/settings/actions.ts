@@ -25,11 +25,8 @@ import {
   user,
   votes,
 } from "@openhospi/database/schema";
-import {
-  PRIVACY_POLICY_VERSION,
-  SUPPORTED_LOCALES,
-  type SupportedLocale,
-} from "@openhospi/shared/constants";
+import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
@@ -211,7 +208,7 @@ export async function exportDataCSV() {
   return { csvFiles };
 }
 
-export async function updatePreferredLocale(locale: SupportedLocale) {
+export async function updatePreferredLocale(locale: Locale) {
   if (!SUPPORTED_LOCALES.includes(locale)) {
     return { error: "INVALID_LOCALE" as const };
   }

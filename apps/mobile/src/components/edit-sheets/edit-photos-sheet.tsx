@@ -1,4 +1,3 @@
-import { MAX_PROFILE_PHOTOS } from '@openhospi/shared/constants';
 import * as ImagePicker from 'expo-image-picker';
 import { Alert, Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 

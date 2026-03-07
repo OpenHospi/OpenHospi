@@ -47,7 +47,8 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 
 ### Next.js 16
 - `proxy.ts` (not `middleware.ts`) — Next.js 16 renamed middleware to proxy, export named `proxy`
-- Shared constants from `@openhospi/shared/constants`: `SUPPORTED_LOCALES`, `DEFAULT_LOCALE`, `APP_NAME`
+- Locale constants from `@openhospi/i18n`: `SUPPORTED_LOCALES`, `DEFAULT_LOCALE`, `LOCALE_CONFIG`, `localePathPattern`, type `Locale`
+- App constants from `@openhospi/shared/constants`: `APP_NAME`, `BRAND_COLOR`, etc.
 - Auth client at `src/lib/auth-client.ts`
 - Tailwind v4 with `@theme inline` block, oklch color space
 

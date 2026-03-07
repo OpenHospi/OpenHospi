@@ -1,6 +1,7 @@
 "use client";
 
-import type { SupportedLocale } from "@openhospi/shared/constants";
+import type { Locale } from "@openhospi/i18n";
+import { LOCALE_CONFIG } from "@openhospi/i18n";
 import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
 
@@ -15,26 +16,14 @@ import {
 import { usePathname, useRouter } from "@/i18n/navigation-app";
 import { appRouting } from "@/i18n/routing";
 
-const localeLabels: Record<string, string> = {
-  nl: "NL",
-  en: "EN",
-  de: "DE",
-};
-
-const localeNames: Record<string, string> = {
-  nl: "Nederlands",
-  en: "English",
-  de: "Deutsch",
-};
-
 export function AppLanguageSwitcher() {
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
 
-  function switchLocale(newLocale: string) {
-    router.replace(pathname, { locale: newLocale as "nl" | "en" | "de" });
-    updatePreferredLocale(newLocale as SupportedLocale);
+  function switchLocale(newLocale: Locale) {
+    router.replace(pathname, { locale: newLocale });
+    updatePreferredLocale(newLocale);
   }
 
   return (
@@ -42,7 +31,7 @@ export function AppLanguageSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" aria-label="Switch language">
           <Globe className="size-4" />
-          {localeLabels[locale]}
+          {LOCALE_CONFIG[locale].label}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -52,7 +41,7 @@ export function AppLanguageSwitcher() {
             onClick={() => switchLocale(loc)}
             className={loc === locale ? "bg-accent" : ""}
           >
-            {localeNames[loc]}
+            {LOCALE_CONFIG[loc].name}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

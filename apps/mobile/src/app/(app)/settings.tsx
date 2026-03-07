@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { FlagImage } from '@/components/flag-image';
+import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
+
 import { useLocale, useTranslations } from '@/i18n';
 import { authClient } from '@/lib/auth-client';
 import { registerForPushNotifications } from '@/lib/notifications';
@@ -26,14 +27,6 @@ import {
   useSubmitDataRequest,
   useUpdateConsent,
 } from '@/services/settings';
-import { SUPPORTED_LOCALES } from '@openhospi/shared/constants';
-import type { SupportedLocale } from '@openhospi/shared/constants';
-
-function getLanguageLabel(locale: SupportedLocale): string {
-  const label = new Intl.DisplayNames([locale], { type: 'language' }).of(locale);
-  if (!label) return locale;
-  return label.charAt(0).toUpperCase() + label.slice(1);
-}
 
 const DATA_REQUEST_TYPES = [
   'access',
@@ -96,8 +89,8 @@ function LanguageSetting({
   setLocale,
   t,
 }: {
-  locale: SupportedLocale;
-  setLocale: (l: SupportedLocale) => void;
+  locale: Locale;
+  setLocale: (l: Locale) => void;
   t: ReturnType<typeof useTranslations>;
 }) {
   const [showPicker, setShowPicker] = useState(false);
@@ -109,10 +102,7 @@ function LanguageSetting({
         onPress={() => setShowPicker(true)}
       >
         <Text className="text-base text-foreground">{t('tabs.general')}</Text>
-        <View className="flex-row items-center gap-2">
-          <FlagImage locale={locale} size={16} />
-          <Text className="text-base text-muted-foreground">{getLanguageLabel(locale)}</Text>
-        </View>
+        <Text className="text-base text-muted-foreground">{LOCALE_CONFIG[locale].name}</Text>
       </Pressable>
 
       <Modal visible={showPicker} transparent animationType="fade">
@@ -130,11 +120,10 @@ function LanguageSetting({
                   setShowPicker(false);
                 }}
               >
-                <FlagImage locale={loc} size={20} />
                 <Text
                   className={`text-base ${locale === loc ? 'font-semibold text-primary' : 'text-foreground'}`}
                 >
-                  {getLanguageLabel(loc)}
+                  {LOCALE_CONFIG[loc].name}
                 </Text>
               </Pressable>
             ))}

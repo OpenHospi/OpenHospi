@@ -1,5 +1,6 @@
 import type { Locale } from "@openhospi/i18n";
-import { APP_NAME, SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import { SUPPORTED_LOCALES } from "@openhospi/i18n";
+import { APP_NAME } from "@openhospi/shared/constants";
 
 const BASE_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
 

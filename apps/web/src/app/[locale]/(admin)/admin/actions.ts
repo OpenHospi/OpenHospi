@@ -11,7 +11,7 @@ import {
   session,
   user,
 } from "@openhospi/database/schema";
-import type { SupportedLocale } from "@openhospi/shared/constants";
+import type { Locale } from "@openhospi/i18n";
 import type { City, ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, gte } from "drizzle-orm";
@@ -437,7 +437,7 @@ export async function banUser(reportId: string, userId: string, reason: string) 
       .from(profiles)
       .where(eq(profiles.id, userId));
     if (profile?.email) {
-      const locale = (profile.preferredLocale ?? "nl") as SupportedLocale;
+      const locale = (profile.preferredLocale ?? "nl") as Locale;
       await sendTemplatedEmail(profile.email, "userBanned", { reason }, locale);
     }
   } catch {
@@ -508,7 +508,7 @@ export async function removeListing(reportId: string, roomId: string, reason: st
         .from(profiles)
         .where(eq(profiles.id, room.ownerId));
       if (profile?.email) {
-        const locale = (profile.preferredLocale ?? "nl") as SupportedLocale;
+        const locale = (profile.preferredLocale ?? "nl") as Locale;
         await sendTemplatedEmail(profile.email, "listingRemoved", { reason }, locale);
       }
     } catch {

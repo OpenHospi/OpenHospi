@@ -6,12 +6,10 @@
   "license": "AGPL-3.0-only",
   "exports": {
     ".": "./src/index.ts",
+    "./config": "./src/config.ts",
     "./web": "./src/web.ts",
     "./app": "./src/app.ts",
     "./messages/*": "./messages/*"
-  },
-  "dependencies": {
-    "@openhospi/shared": "workspace:*"
   },
   "scripts": {
     "lint": "eslint",

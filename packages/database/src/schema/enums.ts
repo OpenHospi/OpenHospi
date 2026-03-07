@@ -1,4 +1,4 @@
-import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import { SUPPORTED_LOCALES } from "@openhospi/i18n";
 import {
   AdminAction,
   ApplicationStatus,

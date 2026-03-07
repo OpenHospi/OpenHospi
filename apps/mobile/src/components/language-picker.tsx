@@ -1,15 +1,8 @@
-import { SUPPORTED_LOCALES, type SupportedLocale } from '@openhospi/shared/constants';
+import { LOCALE_CONFIG, SUPPORTED_LOCALES } from '@openhospi/i18n';
 import { useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 
-import { FlagImage } from '@/components/flag-image';
 import { useLocale } from '@/i18n';
-
-function getLanguageLabel(locale: SupportedLocale): string {
-  const label = new Intl.DisplayNames([locale], { type: 'language' }).of(locale);
-  if (!label) return locale;
-  return label.charAt(0).toUpperCase() + label.slice(1);
-}
 
 export function LanguagePicker() {
   const { locale, setLocale } = useLocale();
@@ -21,7 +14,6 @@ export function LanguagePicker() {
         className="flex-row items-center gap-1.5 rounded-lg bg-secondary/50 px-3 py-1.5"
         onPress={() => setVisible(true)}
       >
-        <FlagImage locale={locale} size={18} />
         <Text className="text-sm font-medium uppercase text-foreground">{locale}</Text>
       </Pressable>
 
@@ -50,11 +42,10 @@ export function LanguagePicker() {
                     setVisible(false);
                   }}
                 >
-                  <FlagImage locale={loc} size={24} />
                   <Text
                     className={`flex-1 text-base ${isSelected ? 'font-semibold text-primary' : 'text-foreground'}`}
                   >
-                    {getLanguageLabel(loc)}
+                    {LOCALE_CONFIG[loc].name}
                   </Text>
                   {isSelected && <Text className="text-primary">&#10003;</Text>}
                 </Pressable>

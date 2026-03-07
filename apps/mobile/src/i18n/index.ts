@@ -1,6 +1,5 @@
+import type { AppMessages, Locale } from '@openhospi/i18n';
 import { getMessages } from '@openhospi/i18n/app';
-import type { AppMessages } from '@openhospi/i18n';
-import type { SupportedLocale } from '@openhospi/shared/constants';
 import MessageFormat from 'intl-messageformat';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
@@ -8,8 +7,8 @@ import { ActivityIndicator, View } from 'react-native';
 import { getDeviceLocale } from './locale';
 
 interface I18nContextValue {
-  locale: SupportedLocale;
-  setLocale: (locale: SupportedLocale) => void;
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
   messages: AppMessages;
 }
 
@@ -31,7 +30,7 @@ function getNestedValue(obj: Record<string, unknown>, keyPath: string): string |
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<SupportedLocale>(getDeviceLocale());
+  const [locale, setLocale] = useState<Locale>(getDeviceLocale());
   const [messages, setMessages] = useState<AppMessages | null>(null);
 
   useEffect(() => {
@@ -54,7 +53,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useLocale(): { locale: SupportedLocale; setLocale: (l: SupportedLocale) => void } {
+export function useLocale(): { locale: Locale; setLocale: (l: Locale) => void } {
   const ctx = useContext(I18nContext);
   if (!ctx) throw new Error('useLocale must be used within I18nProvider');
   return { locale: ctx.locale, setLocale: ctx.setLocale };

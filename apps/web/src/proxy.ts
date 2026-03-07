@@ -1,3 +1,4 @@
+import { localePathPattern } from "@openhospi/i18n";
 import { SESSION_COOKIE_NAME } from "@openhospi/shared/constants";
 import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
@@ -27,8 +28,6 @@ const appPaths = [
 const authPaths = ["/login", "/onboarding", "/privacy-accept"];
 const adminPaths = ["/admin"];
 
-const localePattern = /^\/(?:nl|en|de)(\/|$)/;
-
 function getSubdomain(host: string): Subdomain | null {
   if (!ROOT_DOMAIN) return null;
   const lower = host.split(":")[0].toLowerCase();
@@ -39,14 +38,14 @@ function getSubdomain(host: string): Subdomain | null {
 }
 
 function getBarePath(pathname: string): string {
-  if (localePattern.test(pathname)) {
+  if (localePathPattern.test(pathname)) {
     return "/" + pathname.split("/").slice(2).join("/");
   }
   return pathname;
 }
 
 function getLocaleFromPath(pathname: string): string | null {
-  const match = pathname.match(/^\/(nl|en|de)(\/|$)/);
+  const match = pathname.match(localePathPattern);
   return match ? match[1] : null;
 }
 

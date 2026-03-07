@@ -13,11 +13,8 @@ import {
   type RequestProcessingRestrictionData,
   type SubmitDataRequestData,
 } from "@openhospi/database/validators";
-import {
-  PRIVACY_POLICY_VERSION,
-  SUPPORTED_LOCALES,
-  type SupportedLocale,
-} from "@openhospi/shared/constants";
+import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import { and, desc, eq, isNull } from "drizzle-orm";
 
@@ -104,7 +101,7 @@ export async function requestProcessingRestrictionForUser(
   return { success: true };
 }
 
-export async function updatePreferredLocaleForUser(userId: string, locale: SupportedLocale) {
+export async function updatePreferredLocaleForUser(userId: string, locale: Locale) {
   if (!SUPPORTED_LOCALES.includes(locale)) {
     return { error: "INVALID_LOCALE" as const };
   }

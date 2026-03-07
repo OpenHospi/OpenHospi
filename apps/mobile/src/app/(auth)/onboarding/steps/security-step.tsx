@@ -1,68 +1,9 @@
-import { PBKDF2_ITERATIONS, PIN_LENGTH } from '@openhospi/shared/constants';
+import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useRouter } from 'expo-router';
-import QuickCrypto from 'react-native-quick-crypto';
-import * as SecureStore from 'expo-secure-store';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, TextInput } from 'react-native';
 
 import { useTranslations } from '@/i18n';
-import { api } from '@/lib/api-client';
-
-const PRIVATE_KEY_STORE_KEY = 'openhospi_e2ee_private_key';
-
-async function generateAndBackupKeys(pin: string, userId: string) {
-  const keyPair = await QuickCrypto.subtle.generateKey(
-    { name: 'ECDH', namedCurve: 'P-256' },
-    true,
-    ['deriveBits'],
-  );
-
-  const { publicKey, privateKey } = keyPair as unknown as {
-    publicKey: Parameters<typeof QuickCrypto.subtle.exportKey>[1];
-    privateKey: Parameters<typeof QuickCrypto.subtle.exportKey>[1];
-  };
-  const publicKeyRaw = await QuickCrypto.subtle.exportKey('jwk', publicKey);
-  const privateKeyRaw = await QuickCrypto.subtle.exportKey('jwk', privateKey);
-
-  // Store private key locally
-  await SecureStore.setItemAsync(PRIVATE_KEY_STORE_KEY, JSON.stringify(privateKeyRaw));
-
-  // Derive encryption key from PIN using PBKDF2
-  const salt = QuickCrypto.randomBytes(16);
-  const pinKey = await QuickCrypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(pin),
-    'PBKDF2',
-    false,
-    ['deriveBits', 'deriveKey'],
-  );
-  const aesKey = await QuickCrypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
-    pinKey,
-    { name: 'AES-GCM', length: 256 },
-    false,
-    ['encrypt'],
-  );
-
-  // Encrypt private key with AES
-  const iv = QuickCrypto.randomBytes(12);
-  const privateKeyBytes = new TextEncoder().encode(JSON.stringify(privateKeyRaw));
-  const encryptedPrivateKey = await QuickCrypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    aesKey,
-    privateKeyBytes,
-  );
-
-  // Upload public key + encrypted backup
-  await api.post('/api/mobile/onboarding/identity', {
-    _type: 'security_setup',
-    publicKey: JSON.stringify(publicKeyRaw),
-    encryptedPrivateKey: Buffer.from(encryptedPrivateKey).toString('base64'),
-    salt: Buffer.from(salt).toString('base64'),
-    iv: Buffer.from(iv).toString('base64'),
-    userId,
-  });
-}
 
 export default function SecurityStep() {
   const t = useTranslations('app.onboarding.security');

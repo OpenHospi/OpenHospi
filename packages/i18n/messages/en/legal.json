@@ -56,12 +56,13 @@
           "Supabase (Dublin, Ireland) — database and file storage (processor)",
           "Vercel (Dublin, Ireland) — web hosting and edge functions (processor)",
           "Upstash (Ireland) — rate limiting via Redis (processor)",
-          "InAcademia (GÉANT, Netherlands) — student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)"
+          "InAcademia (GÉANT, Netherlands) — student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)",
+          "Sentry (Frankfurt, Germany) — crash reporting and error monitoring (processor). No personal data collected"
         ]
       },
       {
         "title": "9. International transfers",
-        "content": "All your data is stored and processed within the European Economic Area (EEA). We do not transfer personal data to third countries or international organisations. The provisions on transfers (Art. 44 to 49 GDPR) therefore do not apply. All our infrastructure providers are based in Ireland or the Netherlands."
+        "content": "All your data is stored and processed within the European Economic Area (EEA). We do not transfer personal data to third countries or international organisations. The provisions on transfers (Art. 44 to 49 GDPR) therefore do not apply. All our infrastructure providers are based in Ireland, the Netherlands, or Germany. Note: Sentry's internal organisational metadata (developer accounts, project configurations — no end-user data) may be replicated to the US per Sentry's infrastructure. This does not affect end-user privacy as no user data is involved."
       },
       {
         "title": "10. Data retention",
@@ -225,7 +226,8 @@
         "items": [
           "Session data (IP address, user agent) — for security monitoring",
           "Moderation data (reports, blocks) — for platform safety",
-          "Temporarily decrypted message text — for investigating reported messages"
+          "Temporarily decrypted message text — for investigating reported messages",
+          "Error and crash reporting data — for app stability monitoring and error resolution"
         ]
       },
       {
@@ -290,6 +292,17 @@
           "Data processed — Authentication tokens, name, email address, institution domain (received during login)",
           "Data processing agreement — GÉANT is not a processor within the meaning of Art. 28 GDPR, but an independent controller for the authentication process. The collaboration is governed by the InAcademia Terms of Use and European law",
           "Security — OIDC protocols, institutional-grade security, managed by GÉANT"
+        ]
+      },
+      {
+        "title": "5. Sentry (Crash Reporting)",
+        "items": [
+          "Role — Processor: crash reporting and error monitoring",
+          "Location — Frankfurt, Germany (eu-central-1)",
+          "Data processed — Error events, stack traces, device model, OS version, app version. No personal data: sendDefaultPii disabled, IP stripping enabled, no session replay, no user tracking",
+          "Data processing agreement — Data processing agreement pursuant to Art. 28 GDPR in place, with Standard Contractual Clauses (SCCs)",
+          "Retention — 90 days",
+          "Security — Encryption at rest and in transit. Sentry's internal organisational metadata (developer accounts, project configs — no end-user data) may be replicated to the US per Sentry's infrastructure"
         ]
       }
     ]
@@ -428,6 +441,19 @@
           "Retention — Token exists while account is active; deleted on account deletion",
           "Security — Unguessable UUID token, HTTPS only, revocable by user"
         ]
+      },
+      {
+        "title": "11. Error reporting & crash monitoring",
+        "items": [
+          "Purpose — Ensuring app stability, identifying and resolving technical errors",
+          "Categories of data subjects — All app users (anonymised — no user identification possible)",
+          "Data categories — Stack traces, device model, OS version, app version, error context",
+          "Legal basis — Legitimate interest (Art. 6(1)(f) GDPR)",
+          "Recipients — Sentry (Functional Software Inc.) — DPA with SCCs in place",
+          "Transfers outside EEA — No end-user data transferred. Sentry's internal organisational metadata may be replicated to the US",
+          "Retention — 90 days",
+          "Security — No PII collected, data anonymised by design, EU storage (Frankfurt)"
+        ]
       }
     ]
   },
@@ -522,11 +548,21 @@
         ]
       },
       {
-        "title": "10. Children (Art. 8 GDPR)",
+        "title": "10. Risk: Crash reporting data",
+        "items": [
+          "Risk — Collection of personal data through error reports",
+          "Likelihood — Very low",
+          "Impact — Low",
+          "Mitigations — sendDefaultPii disabled, IP addresses stripped before storage, no user identifiers in error context, no session replay. EU data storage (Frankfurt). 90-day retention",
+          "Residual risk — Very low"
+        ]
+      },
+      {
+        "title": "11. Children (Art. 8 GDPR)",
         "content": "All users authenticate via InAcademia, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR). No separate age verification is needed."
       },
       {
-        "title": "11. Conclusion",
+        "title": "12. Conclusion",
         "content": "The processing activities of OpenHospi present acceptable residual risks after implementation of mitigations. The platform implements data protection by design and by default (Art. 25 GDPR) through end-to-end encryption, Row-Level Security, data minimisation, automated retention rules, and transparent processing. No high residual risks remain that would require prior consultation with the Autoriteit Persoonsgegevens under Art. 36 GDPR."
       }
     ]

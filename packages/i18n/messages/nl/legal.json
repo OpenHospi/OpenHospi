@@ -56,12 +56,14 @@
           "Supabase (Dublin, Ierland) — database en bestandsopslag (verwerker)",
           "Vercel (Dublin, Ierland) — webhosting en edge-functies (verwerker)",
           "Upstash (Ierland) — snelheidsbeperking via Redis (verwerker)",
-          "InAcademia (GÉANT, Nederland) — studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)"
+          "InAcademia (GÉANT, Nederland) — studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)",
+          "Sentry (Frankfurt, Duitsland) — crashrapportage en foutmonitoring (verwerker). Geen persoonsgegevens verzameld",
+          "Expo/EAS (VS) — mobiele app-builds, over-the-air updates en distributie (verwerker). Geen persoonsgegevens verzameld — alleen app-code en bundels worden verwerkt"
         ]
       },
       {
         "title": "9. Internationale doorgifte",
-        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). Wij geven geen persoonsgegevens door aan derde landen of internationale organisaties. De bepalingen inzake doorgifte (art. 44 tot en met 49 AVG) zijn daarom niet van toepassing. Al onze infrastructuurproviders zijn gevestigd in Ierland of Nederland."
+        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). Wij geven geen persoonsgegevens door aan derde landen of internationale organisaties. De bepalingen inzake doorgifte (art. 44 tot en met 49 AVG) zijn daarom niet van toepassing. Al onze infrastructuurproviders zijn gevestigd in Ierland, Nederland of Duitsland. Opmerking: De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties — geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry. Dit heeft geen invloed op de privacy van eindgebruikers aangezien er geen gebruikersgegevens bij betrokken zijn."
       },
       {
         "title": "10. Bewaartermijnen",
@@ -225,7 +227,8 @@
         "items": [
           "Sessiegegevens (IP-adres, user agent) — voor beveiligingsmonitoring",
           "Moderatiegegevens (meldingen, blokkades) — voor platformveiligheid",
-          "Tijdelijk ontsleutelde berichttekst — voor onderzoek van gemelde berichten"
+          "Tijdelijk ontsleutelde berichttekst — voor onderzoek van gemelde berichten",
+          "Fout- en crashrapportagegegevens — voor monitoring van app-stabiliteit en foutoplossing"
         ]
       },
       {
@@ -290,6 +293,28 @@
           "Verwerkte gegevens — Authenticatietokens, naam, e-mailadres, instellingsdomein (ontvangen bij inloggen)",
           "Verwerkersovereenkomst — GÉANT is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de InAcademia Gebruiksvoorwaarden en Europees recht",
           "Beveiliging — OIDC-protocollen, institutionele beveiliging, beheerd door GÉANT"
+        ]
+      },
+      {
+        "title": "5. Sentry (Crashrapportage)",
+        "items": [
+          "Rol — Verwerker: crashrapportage en foutmonitoring",
+          "Locatie — Frankfurt, Duitsland (eu-central-1)",
+          "Verwerkte gegevens — Foutgebeurtenissen, stacktraces, apparaatmodel, OS-versie, app-versie. Geen persoonsgegevens: sendDefaultPii uitgeschakeld, IP-stripping ingeschakeld, geen sessiereplay, geen gebruikersvolging",
+          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten, met modelcontractbepalingen (SCCs)",
+          "Bewaartermijn — 90 dagen",
+          "Beveiliging — Versleuteling at rest en in transit. De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties — geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry"
+        ]
+      },
+      {
+        "title": "6. Expo/EAS (Mobiele app-distributie)",
+        "items": [
+          "Rol — Verwerker: mobiele app-builds, over-the-air (OTA) updates en app-distributie",
+          "Locatie — Verenigde Staten (Google Cloud Platform). Buildservers verwerken uitsluitend app-broncode en produceren binaries — er zijn geen persoonsgegevens van eindgebruikers bij betrokken",
+          "Verwerkte gegevens — App-broncode, JavaScript-bundels, build-metadata. Geen persoonsgegevens van eindgebruikers verzameld",
+          "Verwerkersovereenkomst — Expo Servicevoorwaarden en Privacybeleid zijn van toepassing. Expo voldoet aan het EU-VS Data Privacy Framework en maakt gebruik van modelcontractbepalingen (SCCs) voor internationale doorgifte",
+          "AVG-relevantie — Er worden geen persoonsgegevens van eindgebruikers overgedragen aan of verwerkt op EAS-buildservers. Alleen app-broncode en bundels worden verwerkt. De internationale doorgifte-waarborgen van Expo (EU-VS DPF, SCCs) bieden aanvullende bescherming conform art. 45-46 AVG",
+          "Beveiliging — Ondertekende updates, alleen HTTPS-levering, code-ondertekening voor OTA-updates"
         ]
       }
     ]
@@ -428,6 +453,19 @@
           "Bewaartermijn — Token bestaat zolang het account actief is; verwijderd bij accountverwijdering",
           "Beveiliging — Onraadbaar UUID-token, alleen HTTPS, intrekbaar door gebruiker"
         ]
+      },
+      {
+        "title": "11. Foutrapportage & crashmonitoring",
+        "items": [
+          "Doel — Waarborgen van app-stabiliteit, identificeren en oplossen van technische fouten",
+          "Categorieën betrokkenen — Alle app-gebruikers (geanonimiseerd — geen gebruikersidentificatie mogelijk)",
+          "Gegevenscategorieën — Stacktraces, apparaatmodel, OS-versie, app-versie, foutcontext",
+          "Rechtsgrond — Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
+          "Ontvangers — Sentry (Functional Software Inc.) — verwerkersovereenkomst met SCCs afgesloten",
+          "Doorgifte buiten EER — Geen eindgebruikersgegevens doorgegeven. Interne organisatorische metadata van Sentry kan naar de VS worden gerepliceerd",
+          "Bewaartermijn — 90 dagen",
+          "Beveiliging — Geen persoonsgegevens verzameld, gegevens geanonimiseerd door ontwerp, EU-opslag (Frankfurt)"
+        ]
       }
     ]
   },
@@ -522,11 +560,21 @@
         ]
       },
       {
-        "title": "10. Kinderen (art. 8 AVG)",
+        "title": "10. Risico: Crashrapportagegegevens",
+        "items": [
+          "Risico — Verzameling van persoonsgegevens via foutrapporten",
+          "Waarschijnlijkheid — Zeer laag",
+          "Impact — Laag",
+          "Maatregelen — sendDefaultPii uitgeschakeld, IP-adressen gestript voor opslag, geen gebruikersidentificatoren in foutcontext, geen sessiereplay. EU-opslag (Frankfurt). 90 dagen bewaartermijn",
+          "Restrisico — Zeer laag"
+        ]
+      },
+      {
+        "title": "11. Kinderen (art. 8 AVG)",
         "content": "Alle gebruikers authenticeren via InAcademia, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
       },
       {
-        "title": "11. Conclusie",
+        "title": "12. Conclusie",
         "content": "De verwerkingsactiviteiten van OpenHospi presenteren aanvaardbare restrisico's na implementatie van maatregelen. Het platform implementeert gegevensbescherming door ontwerp en door standaardinstellingen (art. 25 AVG) door middel van end-to-end encryptie, Row-Level Security, dataminimalisatie, geautomatiseerde retentieregels en transparante verwerking. Er blijven geen hoge restrisico's over die voorafgaande raadpleging van de Autoriteit Persoonsgegevens vereisen op grond van art. 36 AVG."
       }
     ]

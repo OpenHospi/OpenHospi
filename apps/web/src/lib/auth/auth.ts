@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 
+import { expo } from "@better-auth/expo";
 import { db } from "@openhospi/database";
 import * as schema from "@openhospi/database/schema";
 import { betterAuth } from "better-auth";
@@ -49,7 +50,14 @@ function createAuth() {
         generateId: "uuid",
       },
     },
-    trustedOrigins: ["https://*.openhospi.nl", "https://op.srv.inacademia.org"],
+    trustedOrigins: [
+      "https://*.openhospi.nl",
+      "https://op.srv.inacademia.org",
+      "openhospi://",
+      ...(process.env.NODE_ENV === "development"
+        ? ["exp://", "exp://**", "exp://192.168.*.*:*/**"]
+        : []),
+    ],
     emailVerification: {
       sendVerificationEmail: async ({ user, url, token }) => {
         const verificationToken = parseVerificationToken(url, token);
@@ -205,6 +213,7 @@ function createAuth() {
       multiSession(),
       admin(),
       jwt(),
+      expo(),
       nextCookies(),
     ],
   });

@@ -426,6 +426,18 @@
               "description": "Studierendenverifizierung",
               "current": "Kostenlos",
               "atScale": "Kostenlos"
+            },
+            {
+              "name": "Expo (EAS)",
+              "description": "Mobile App-Builds, Updates & Verteilung",
+              "current": "€0/Mo. (Kostenlos)",
+              "atScale": "~€19/Mo. (Starter)"
+            },
+            {
+              "name": "Sentry",
+              "description": "Crash-Reporting & Fehlerüberwachung (EU)",
+              "current": "€0/Mo. (Developer)",
+              "atScale": "~€26/Mo. (Team)"
             }
           ]
         },
@@ -491,6 +503,16 @@
           "atScale": "€0"
         },
         {
+          "name": "Expo (EAS)",
+          "current": "€0",
+          "atScale": "~€228"
+        },
+        {
+          "name": "Sentry",
+          "current": "€0",
+          "atScale": "~€312"
+        },
+        {
           "name": "Domains (3x)",
           "current": "~€50",
           "atScale": "~€50"
@@ -508,7 +530,7 @@
       ],
       "totalLabel": "Gesamt pro Jahr",
       "currentTotal": "~€174/Jahr",
-      "atScaleTotal": "~€647/Jahr (~€54/Mo)"
+      "atScaleTotal": "~€1.187/Jahr (~€99/Mo)"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",

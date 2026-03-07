@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./packages/shared/assets/logo.svg" height="128" alt="OpenHospi logo">     
+    <img src="./packages/shared/assets/logo.svg" height="128" alt="OpenHospi logo">
 </p>
 
 <h1 align="center">OpenHospi</h1>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License: AGPL-3.0"></a>
   <a href="https://github.com/OpenHospi/OpenHospi/stargazers"><img src="https://img.shields.io/github/stars/OpenHospi/OpenHospi" alt="GitHub stars"></a>
   <a href="https://github.com/OpenHospi/OpenHospi/issues"><img src="https://img.shields.io/github/issues/OpenHospi/OpenHospi" alt="GitHub issues"></a>
   <a href="https://github.com/OpenHospi/OpenHospi/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs Welcome"></a>
@@ -27,14 +27,18 @@ middlemen — just a clean platform with end-to-end encrypted chat and full tran
 
 ## Tech Stack
 
-| Layer    | Technology                            |
-|----------|---------------------------------------|
-| Web      | Next.js 16, Tailwind CSS 4, shadcn/ui |
-| Mobile   | Expo (React Native)                   |
-| Database | Supabase PostgreSQL + Drizzle ORM     |
-| Storage  | Vercel Blob                           |
-| Auth     | Better Auth + InAcademia OIDC         |
-| Monorepo | pnpm workspaces                       |
+| Layer      | Web                               | Mobile                              |
+|------------|-----------------------------------|-------------------------------------|
+| Framework  | Next.js 16, React 19              | Expo SDK 55, React Native 0.83      |
+| Styling    | Tailwind CSS 4, shadcn/ui         | Unistyles v3                        |
+| Database   | Supabase PostgreSQL + Drizzle ORM | Local SQLite + Drizzle ORM (cache)  |
+| Auth       | Better Auth + InAcademia OIDC     | Better Auth Expo + InAcademia OIDC  |
+| Realtime   | Supabase Realtime (WebSocket)     | Supabase Realtime (WebSocket)       |
+| Storage    | Supabase Storage                  | expo-secure-store, expo-file-system |
+| Data       | Server Actions                    | REST API + React Query              |
+| Hosting    | Vercel                            | EAS Build + EAS Update              |
+| Monitoring | Sentry (EU, no PII)               | Sentry (EU, no PII)                 |
+| Monorepo   | pnpm workspaces                   | pnpm workspaces                     |
 
 ## Getting Started
 

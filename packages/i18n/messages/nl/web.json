@@ -426,6 +426,18 @@
               "description": "Studentenverificatie",
               "current": "Gratis",
               "atScale": "Gratis"
+            },
+            {
+              "name": "Expo (EAS)",
+              "description": "Mobiele app-builds, updates & distributie",
+              "current": "€0/mnd (Gratis)",
+              "atScale": "~€19/mnd (Starter)"
+            },
+            {
+              "name": "Sentry",
+              "description": "Crashrapportage & foutmonitoring (EU)",
+              "current": "€0/mnd (Developer)",
+              "atScale": "~€26/mnd (Team)"
             }
           ]
         },
@@ -491,6 +503,16 @@
           "atScale": "€0"
         },
         {
+          "name": "Expo (EAS)",
+          "current": "€0",
+          "atScale": "~€228"
+        },
+        {
+          "name": "Sentry",
+          "current": "€0",
+          "atScale": "~€312"
+        },
+        {
           "name": "Domeinen (3x)",
           "current": "~€50",
           "atScale": "~€50"
@@ -508,7 +530,7 @@
       ],
       "totalLabel": "Totaal per jaar",
       "currentTotal": "~€174/jr",
-      "atScaleTotal": "~€647/jr (~€54/mnd)"
+      "atScaleTotal": "~€1.187/jr (~€99/mnd)"
     },
     "keepFree": {
       "title": "Hoe houden we het gratis?",

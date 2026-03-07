@@ -56,12 +56,14 @@
           "Supabase (Dublin, Irland) — Datenbank und Dateispeicher (Auftragsverarbeiter)",
           "Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen (Auftragsverarbeiter)",
           "Upstash (Irland) — Ratenbegrenzung über Redis (Auftragsverarbeiter)",
-          "InAcademia / GÉANT (EU) — Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)"
+          "InAcademia / GÉANT (EU) — Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
+          "Sentry (Frankfurt, Deutschland) — Crash-Reporting und Fehlerüberwachung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben",
+          "Expo/EAS (USA) — Mobile App-Builds, Over-the-Air-Updates und Verteilung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben — nur App-Code und Bundles werden verarbeitet"
         ]
       },
       {
         "title": "9. Internationale Übermittlungen",
-        "content": "Alle deine Daten werden innerhalb des Europäischen Wirtschaftsraums (EWR) gespeichert und verarbeitet. Wir übermitteln keine personenbezogenen Daten an Drittländer oder internationale Organisationen. Die Bestimmungen über Übermittlungen (Art. 44 bis 49 DSGVO) finden daher keine Anwendung. Alle unsere Infrastrukturanbieter sind in Irland oder den Niederlanden ansässig."
+        "content": "Alle deine Daten werden innerhalb des Europäischen Wirtschaftsraums (EWR) gespeichert und verarbeitet. Wir übermitteln keine personenbezogenen Daten an Drittländer oder internationale Organisationen. Die Bestimmungen über Übermittlungen (Art. 44 bis 49 DSGVO) finden daher keine Anwendung. Alle unsere Infrastrukturanbieter sind in Irland, den Niederlanden oder Deutschland ansässig. Hinweis: Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen — keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden. Dies hat keine Auswirkungen auf die Privatsphäre der Endnutzer, da keine Nutzerdaten betroffen sind."
       },
       {
         "title": "10. Aufbewahrungsfristen",
@@ -225,7 +227,8 @@
         "items": [
           "Sitzungsdaten (IP-Adresse, User Agent) — zur Sicherheitsüberwachung",
           "Moderationsdaten (Meldungen, Sperrungen) — für die Plattformsicherheit",
-          "Temporär entschlüsselter Nachrichtentext — zur Untersuchung gemeldeter Nachrichten"
+          "Temporär entschlüsselter Nachrichtentext — zur Untersuchung gemeldeter Nachrichten",
+          "Fehler- und Crash-Reporting-Daten — zur Überwachung der App-Stabilität und Fehlerbehebung"
         ]
       },
       {
@@ -290,6 +293,28 @@
           "Verarbeitete Daten — Pseudonymisierte Kennung (sub), Einrichtungs-Entity-ID (bei der Anmeldung empfangen). Keine Namen oder E-Mail-Adressen",
           "Auftragsverarbeitungsvertrag — GÉANT ist kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO, sondern ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Die Zusammenarbeit unterliegt den InAcademia-Nutzungsbedingungen und EU-Recht",
           "Sicherheit — OIDC-Protokoll, Sicherheit auf institutionellem Niveau, verwaltet von GÉANT"
+        ]
+      },
+      {
+        "title": "5. Sentry (Crash-Reporting)",
+        "items": [
+          "Rolle — Auftragsverarbeiter: Crash-Reporting und Fehlerüberwachung",
+          "Standort — Frankfurt, Deutschland (eu-central-1)",
+          "Verarbeitete Daten — Fehlerereignisse, Stack-Traces, Gerätemodell, Betriebssystemversion, App-Version. Keine personenbezogenen Daten: sendDefaultPii deaktiviert, IP-Stripping aktiviert, kein Session-Replay, kein Nutzer-Tracking",
+          "Auftragsverarbeitungsvertrag — Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen, mit Standardvertragsklauseln (SCCs)",
+          "Aufbewahrung — 90 Tage",
+          "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung. Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen — keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden"
+        ]
+      },
+      {
+        "title": "6. Expo/EAS (Mobile App-Verteilung)",
+        "items": [
+          "Rolle — Auftragsverarbeiter: Mobile App-Builds, Over-the-Air (OTA) Updates und App-Verteilung",
+          "Standort — Vereinigte Staaten (Google Cloud Platform). Build-Server verarbeiten ausschließlich App-Quellcode und erzeugen Binaries — keine personenbezogenen Endnutzerdaten sind betroffen",
+          "Verarbeitete Daten — App-Quellcode, JavaScript-Bundles, Build-Metadaten. Keine personenbezogenen Daten von Endnutzern erhoben",
+          "Auftragsverarbeitungsvertrag — Expo Nutzungsbedingungen und Datenschutzrichtlinie gelten. Expo erfüllt das EU-US Data Privacy Framework und verwendet Standardvertragsklauseln (SCCs) für internationale Übermittlungen",
+          "DSGVO-Relevanz — Es werden keine personenbezogenen Endnutzerdaten an EAS-Build-Server übermittelt oder dort verarbeitet. Nur App-Quellcode und Bundles werden verarbeitet. Die internationalen Übermittlungsgarantien von Expo (EU-US DPF, SCCs) bieten zusätzlichen Schutz gemäß Art. 45-46 DSGVO",
+          "Sicherheit — Signierte Updates, ausschließlich HTTPS-Auslieferung, Code-Signierung für OTA-Updates"
         ]
       }
     ]
@@ -428,6 +453,19 @@
           "Aufbewahrung — Token besteht, solange das Konto aktiv ist; wird bei Kontolöschung gelöscht",
           "Sicherheit — Nicht erratbares UUID-Token, nur HTTPS, durch Nutzer widerrufbar"
         ]
+      },
+      {
+        "title": "11. Fehlerberichterstattung & Crash-Monitoring",
+        "items": [
+          "Zweck — Sicherstellung der App-Stabilität, Identifizierung und Behebung technischer Fehler",
+          "Kategorien betroffener Personen — Alle App-Nutzer (anonymisiert — keine Nutzeridentifizierung möglich)",
+          "Datenkategorien — Stack-Traces, Gerätemodell, Betriebssystemversion, App-Version, Fehlerkontext",
+          "Rechtsgrundlage — Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
+          "Empfänger — Sentry (Functional Software Inc.) — Auftragsverarbeitungsvertrag mit SCCs abgeschlossen",
+          "Übermittlungen außerhalb des EWR — Keine Endnutzerdaten übermittelt. Interne organisatorische Metadaten von Sentry können in die USA repliziert werden",
+          "Aufbewahrung — 90 Tage",
+          "Sicherheit — Keine personenbezogenen Daten erhoben, Daten durch Design anonymisiert, EU-Speicherung (Frankfurt)"
+        ]
       }
     ]
   },
@@ -522,11 +560,21 @@
         ]
       },
       {
-        "title": "10. Kinder (Art. 8 DSGVO)",
+        "title": "10. Risiko: Crash-Reporting-Daten",
+        "items": [
+          "Risiko — Erhebung personenbezogener Daten durch Fehlerberichte",
+          "Wahrscheinlichkeit — Sehr gering",
+          "Auswirkung — Gering",
+          "Maßnahmen — sendDefaultPii deaktiviert, IP-Adressen vor der Speicherung entfernt, keine Nutzerkennungen im Fehlerkontext, kein Session-Replay. EU-Datenspeicherung (Frankfurt). 90 Tage Aufbewahrung",
+          "Restrisiko — Sehr gering"
+        ]
+      },
+      {
+        "title": "11. Kinder (Art. 8 DSGVO)",
         "content": "Alle Nutzer authentifizieren sich über InAcademia, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt wirksam sicher, dass alle Nutzer 16 Jahre oder älter sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO). Eine separate Altersverifikation ist daher nicht erforderlich."
       },
       {
-        "title": "11. Fazit",
+        "title": "12. Fazit",
         "content": "Die Verarbeitungstätigkeiten von OpenHospi weisen nach Umsetzung der Maßnahmen akzeptable Restrisiken auf. Die Plattform setzt Datenschutz durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen (Art. 25 DSGVO) um, durch Ende-zu-Ende-Verschlüsselung, Row-Level Security, Datenminimierung, automatisierte Aufbewahrungsregeln und transparente Verarbeitung. Es verbleiben keine hohen Restrisiken, die eine vorherige Konsultation der Autoriteit Persoonsgegevens gemäß Art. 36 DSGVO erfordern würden."
       }
     ]

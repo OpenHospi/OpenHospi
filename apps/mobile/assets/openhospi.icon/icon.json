@@ -1,6 +1,6 @@
 {
   "fill" : {
-    "automatic-gradient" : "extended-srgb:0.00000,0.47843,1.00000,1.00000"
+    "automatic-gradient" : "display-p3:0.27447,0.62970,0.60175,1.00000"
   },
   "groups" : [
     {
@@ -17,8 +17,15 @@
           }
         },
         {
-          "image-name" : "grid.png",
-          "name" : "grid"
+          "image-name" : "logo-white.svg",
+          "name" : "logo-white",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "shadow" : {

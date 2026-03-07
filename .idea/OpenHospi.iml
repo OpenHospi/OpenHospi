@@ -6,6 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/supabase/.branches" />
       <excludeFolder url="file://$MODULE_DIR$/supabase/.temp" />
       <excludeFolder url="file://$MODULE_DIR$/apps/mobile/.expo" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/ios" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

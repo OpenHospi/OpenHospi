@@ -8,6 +8,7 @@
     "scheme": "openhospi",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "icon": "./assets/openhospi.icon",
       "supportsTablet": true,
       "bundleIdentifier": "nl.openhospi.app",
       "privacyManifests": {

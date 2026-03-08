@@ -1,10 +1,8 @@
 import '../global.css';
 
-import * as Sentry from '@sentry/react-native';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { isRunningInExpoGo } from 'expo';
 import { useRouter, useSegments, Stack } from 'expo-router';
 import React, { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -14,21 +12,9 @@ import { useUniwind } from 'uniwind';
 import { useRunMigrations } from '@/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
 import { useSession } from '@/lib/auth-client';
-import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient } from '@/lib/query-client';
 import { NAV_THEME } from '@/lib/theme';
 import { useOnboardingStatus } from '@/services/onboarding';
-
-Sentry.init({
-  dsn: SENTRY_DSN,
-  sendDefaultPii: false,
-  enableAutoSessionTracking: true,
-  tracesSampleRate: 0.2,
-  attachScreenshot: false,
-  attachViewHierarchy: false,
-  enabled: !__DEV__,
-  enableNativeFramesTracking: !isRunningInExpoGo(),
-});
 
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
   return (
@@ -191,4 +177,4 @@ if (__DEV__) {
   }
 }
 
-export default Sentry.wrap(RootLayout);
+export default RootLayout;

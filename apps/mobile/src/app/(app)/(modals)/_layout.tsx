@@ -1,81 +1,73 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
+import { X } from 'lucide-react-native';
+import { Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 export default function ModalsLayout() {
+  const router = useRouter();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
+  const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tProfile } = useTranslation('translation', { keyPrefix: 'app.profile' });
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        presentation: 'formSheet',
+        sheetGrabberVisible: true,
+        sheetCornerRadius: 16,
+        headerRight: () => (
+          <Pressable onPress={() => router.back()} hitSlop={8}>
+            <X size={22} className="text-muted-foreground" />
+          </Pressable>
+        ),
+      }}>
       <Stack.Screen
         name="apply-sheet"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.6],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
           title: tCommon('apply'),
         }}
       />
       <Stack.Screen
         name="filter-sheet"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.85, 1],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
-          title: tDiscover('title'),
+          title: tDiscover('filters.title'),
         }}
       />
       <Stack.Screen
         name="edit-about"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.85, 1],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
           title: tProfile('studyInfo'),
         }}
       />
       <Stack.Screen
         name="edit-bio"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.5],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
           title: tOnboarding('fields.bio'),
         }}
       />
       <Stack.Screen
         name="edit-languages"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.7, 1],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
           title: tOnboarding('steps.languages'),
         }}
       />
       <Stack.Screen
         name="edit-lifestyle"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.7, 1],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
           title: tOnboarding('steps.personality'),
         }}
       />
       <Stack.Screen
         name="edit-photos"
         options={{
-          presentation: 'formSheet',
           sheetAllowedDetents: [0.7, 1],
-          sheetGrabberVisible: true,
-          sheetCornerRadius: 16,
           title: tProfile('title'),
         }}
       />

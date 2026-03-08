@@ -556,6 +556,7 @@
       "roomCount": "{showing} von {total} Zimmern",
       "empty": "Keine Zimmer gefunden. Passe deine Filter an.",
       "filters": {
+        "title": "Filter",
         "city": "Stadt",
         "cityPlaceholder": "Alle Städte",
         "priceRange": "Preisspanne",

@@ -1,4 +1,12 @@
-import { City, Furnishing, HouseType, RoomFeature, LocationTag } from '@openhospi/shared/enums';
+import {
+  City,
+  DiscoverSort,
+  Furnishing,
+  HouseType,
+  LocationTag,
+  RoomFeature,
+} from '@openhospi/shared/enums';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
@@ -51,12 +59,19 @@ function MultiChipSelect({
   );
 }
 
+const SORT_LABEL_KEYS: Record<DiscoverSort, string> = {
+  [DiscoverSort.newest]: 'sortNewest',
+  [DiscoverSort.cheapest]: 'sortCheapest',
+  [DiscoverSort.most_expensive]: 'sortMostExpensive',
+};
+
 export default function FilterSheetScreen() {
   const router = useRouter();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
+  const { t: tFilters } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
 
+  const headerHeight = useHeaderHeight();
   const { filters: contextFilters, setFilters: setContextFilters } = useDiscoverFilters();
   const [filters, setFilters] = useState<DiscoverFilters>(contextFilters);
 
@@ -103,20 +118,49 @@ export default function FilterSheetScreen() {
     [filters.furnishing, tEnums]
   );
 
+  const sortOption: Option | undefined = useMemo(
+    () =>
+      filters.sort && SORT_LABEL_KEYS[filters.sort as DiscoverSort]
+        ? {
+            value: filters.sort,
+            label: tFilters(SORT_LABEL_KEYS[filters.sort as DiscoverSort] as never),
+          }
+        : undefined,
+    [filters.sort, tFilters]
+  );
+
   return (
     <View style={{ flex: 1 }} className="bg-background">
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 32 }}
         keyboardShouldPersistTaps="handled">
-        <View style={{ gap: 16, paddingHorizontal: 16, paddingTop: 16 }}>
+        <View style={{ gap: 20, paddingHorizontal: 16, paddingTop: 16 }}>
+          {/* Sort */}
           <View style={{ gap: 8 }}>
-            <Label>{tCommon('city')}</Label>
+            <Label>{tFilters('sort')}</Label>
+            <Select value={sortOption} onValueChange={(option) => update({ sort: option?.value })}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder={tFilters('sort')} />
+              </SelectTrigger>
+              <SelectContent>
+                {DiscoverSort.values.map((v) => (
+                  <SelectItem key={v} value={v} label={tFilters(SORT_LABEL_KEYS[v] as never)}>
+                    {tFilters(SORT_LABEL_KEYS[v] as never)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </View>
+
+          {/* City */}
+          <View style={{ gap: 8 }}>
+            <Label>{tFilters('city')}</Label>
             <Select
               value={cityOption}
               onValueChange={(option) => update({ city: option?.value as typeof filters.city })}>
               <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tCommon('city')} />
+                <SelectValue placeholder={tFilters('cityPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {City.values.map((v) => (
@@ -128,35 +172,39 @@ export default function FilterSheetScreen() {
             </Select>
           </View>
 
+          {/* Price range */}
           <View style={{ gap: 8 }}>
-            <Label>{tDiscover('priceRange')}</Label>
+            <Label>{tFilters('priceRange')}</Label>
             <View style={{ flexDirection: 'row', gap: 12 }}>
               <Input
-                className="flex-1 rounded-xl"
+                style={{ flex: 1 }}
+                className="rounded-xl"
                 value={filters.minPrice != null ? String(filters.minPrice) : ''}
                 onChangeText={(v) => update({ minPrice: v ? Number(v) : undefined })}
-                placeholder="Min"
+                placeholder="Min €"
                 keyboardType="numeric"
               />
               <Input
-                className="flex-1 rounded-xl"
+                style={{ flex: 1 }}
+                className="rounded-xl"
                 value={filters.maxPrice != null ? String(filters.maxPrice) : ''}
                 onChangeText={(v) => update({ maxPrice: v ? Number(v) : undefined })}
-                placeholder="Max"
+                placeholder="Max €"
                 keyboardType="numeric"
               />
             </View>
           </View>
 
+          {/* House type */}
           <View style={{ gap: 8 }}>
-            <Label>{tDiscover('houseType')}</Label>
+            <Label>{tFilters('houseType')}</Label>
             <Select
               value={houseTypeOption}
               onValueChange={(option) =>
                 update({ houseType: option?.value as typeof filters.houseType })
               }>
               <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tDiscover('houseType')} />
+                <SelectValue placeholder={tFilters('houseTypePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {HouseType.values.map((v) => (
@@ -168,15 +216,16 @@ export default function FilterSheetScreen() {
             </Select>
           </View>
 
+          {/* Furnishing */}
           <View style={{ gap: 8 }}>
-            <Label>{tDiscover('furnishing')}</Label>
+            <Label>{tFilters('furnishing')}</Label>
             <Select
               value={furnishingOption}
               onValueChange={(option) =>
                 update({ furnishing: option?.value as typeof filters.furnishing })
               }>
               <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tDiscover('furnishing')} />
+                <SelectValue placeholder={tFilters('furnishingPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {Furnishing.values.map((v) => (
@@ -188,8 +237,20 @@ export default function FilterSheetScreen() {
             </Select>
           </View>
 
+          {/* Available from */}
           <View style={{ gap: 8 }}>
-            <Label>{tDiscover('features')}</Label>
+            <Label>{tFilters('availableFrom')}</Label>
+            <Input
+              className="rounded-xl"
+              value={filters.availableFrom ?? ''}
+              onChangeText={(v) => update({ availableFrom: v || undefined })}
+              placeholder="YYYY-MM-DD"
+            />
+          </View>
+
+          {/* Features */}
+          <View style={{ gap: 8 }}>
+            <Label>{tFilters('features')}</Label>
             <MultiChipSelect
               values={RoomFeature.values}
               selected={filters.features}
@@ -199,8 +260,9 @@ export default function FilterSheetScreen() {
             />
           </View>
 
-          <View style={{ gap: 8, marginBottom: 32 }}>
-            <Label>{tDiscover('locationTags')}</Label>
+          {/* Location tags */}
+          <View style={{ gap: 8, marginBottom: 16 }}>
+            <Label>{tFilters('locationTags')}</Label>
             <MultiChipSelect
               values={LocationTag.values}
               selected={filters.locationTags}
@@ -220,7 +282,7 @@ export default function FilterSheetScreen() {
             <Text>{tCommon('apply')}</Text>
           </Button>
           <Button variant="ghost" onPress={handleClear}>
-            <Text className="text-primary">{tCommon('reset')}</Text>
+            <Text className="text-muted-foreground">{tFilters('clearFilters')}</Text>
           </Button>
         </View>
       </View>

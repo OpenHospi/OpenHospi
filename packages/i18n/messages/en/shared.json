@@ -556,6 +556,7 @@
       "roomCount": "Showing {showing} of {total} rooms",
       "empty": "No rooms match your filters. Try adjusting your search.",
       "filters": {
+        "title": "Filters",
         "city": "City",
         "cityPlaceholder": "All cities",
         "priceRange": "Price range",

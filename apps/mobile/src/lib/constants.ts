@@ -13,7 +13,6 @@ export const APP_VERSION = expoConfig?.version ?? '1.0.0';
 
 // ── Storage Keys ─────────────────────────────────────────────
 export const STORAGE_PREFIX = 'openhospi';
-export const TOKEN_KEY = 'openhospi_bearer_token';
 export const LOCALE_STORAGE_KEY = 'user-locale';
 
 // ── Local Database ───────────────────────────────────────────

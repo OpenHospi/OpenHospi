@@ -42,7 +42,7 @@ export function LanguagePicker() {
             return (
               <DropdownMenuItem key={loc} onPress={() => i18n.changeLanguage(loc)}>
                 <Text className={isSelected ? 'font-semibold' : ''}>{LOCALE_CONFIG[loc].name}</Text>
-                {isSelected && <Icon as={Check} className="ml-auto size-4 text-primary" />}
+                {isSelected && <Icon as={Check} className="text-primary ml-auto size-4" />}
               </DropdownMenuItem>
             );
           })}

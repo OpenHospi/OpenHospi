@@ -33,7 +33,7 @@ export function RoomCard({ room, supabaseUrl }: Props) {
             className="rounded-t-xl"
           />
         ) : (
-          <View className="h-48 w-full items-center justify-center rounded-t-xl bg-muted">
+          <View className="bg-muted h-48 w-full items-center justify-center rounded-t-xl">
             <Home size={32} className="text-muted-foreground" />
           </View>
         )}
@@ -50,7 +50,7 @@ export function RoomCard({ room, supabaseUrl }: Props) {
           </Text>
 
           <View className="mt-3 flex-row items-center justify-between">
-            <Text className="text-lg font-bold text-primary">
+            <Text className="text-primary text-lg font-bold">
               \u20AC{room.totalCost}
               {tCommon('perMonth')}
             </Text>

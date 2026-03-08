@@ -1,6 +1,6 @@
 // Crypto polyfill must be imported before anything that uses crypto.subtle
 import '@/lib/crypto-polyfill';
-import '@/global.css';
+import '../../global.css';
 
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
@@ -8,7 +8,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useRouter, useSegments, Stack } from 'expo-router';
 import React, { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { ActivityIndicator, Pressable, Text, View, useColorScheme } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { useUniwind } from 'uniwind';
 
 import { useRunMigrations } from '@/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
@@ -150,14 +151,13 @@ function RootNavigator() {
 }
 
 let RootLayout = function RootLayout() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? 'dark' : 'light';
+  const { theme } = useUniwind();
 
   return (
     <QueryClientProvider client={queryClient}>
       <I18nGate>
         <I18nextProvider i18n={i18n}>
-          <ThemeProvider value={NAV_THEME[theme]}>
+          <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
             <MigrationGate>
               <RootNavigator />
             </MigrationGate>

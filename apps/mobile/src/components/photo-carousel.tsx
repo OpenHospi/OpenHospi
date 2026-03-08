@@ -47,7 +47,7 @@ export function PhotoCarousel({ photos, supabaseUrl, bucket }: Props) {
 
       {photos.length > 1 && (
         <>
-          <View className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2">
+          <View className="absolute right-0 bottom-4 left-0 flex-row justify-center gap-2">
             {photos.map((_, i) => (
               <View
                 key={i}
@@ -56,7 +56,7 @@ export function PhotoCarousel({ photos, supabaseUrl, bucket }: Props) {
             ))}
           </View>
 
-          <View className="absolute right-4 top-4 rounded-full bg-black/40 px-2.5 py-1">
+          <View className="absolute top-4 right-4 rounded-full bg-black/40 px-2.5 py-1">
             <Text className="text-xs font-medium text-white">
               {activeIndex + 1}/{photos.length}
             </Text>

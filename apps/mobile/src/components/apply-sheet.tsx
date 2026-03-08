@@ -42,7 +42,7 @@ export function ApplySheet({ visible, onClose, roomId }: Props) {
         onError: (err) => {
           Alert.alert(err.message);
         },
-      },
+      }
     );
   }
 
@@ -51,12 +51,11 @@ export function ApplySheet({ visible, onClose, roomId }: Props) {
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1">
         {/* Drag indicator */}
         <View className="items-center pt-3">
-          <View className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+          <View className="bg-muted-foreground/30 h-1 w-10 rounded-full" />
         </View>
 
         <View className="flex-row items-center justify-between px-4 py-3">
@@ -85,12 +84,11 @@ export function ApplySheet({ visible, onClose, roomId }: Props) {
           </View>
         </View>
 
-        <View className="border-t border-border px-4 pb-6 pt-3">
+        <View className="border-border border-t px-4 pt-3 pb-6">
           <Button
             className="h-14 rounded-xl"
             onPress={handleSubmit}
-            disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}
-          >
+            disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}>
             <Text>{tCommon('submit')}</Text>
           </Button>
         </View>

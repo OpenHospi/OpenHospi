@@ -25,6 +25,11 @@
       "source": "shadcn/ui",
       "sourceType": "github",
       "computedHash": "91c02eb706f046fb9d6a061efbb96496e4be751b5b14c283cf82baaa50f3a985"
+    },
+    "uniwind": {
+      "source": "uni-stack/uniwind",
+      "sourceType": "github",
+      "computedHash": "69723f989a9fb09528f8fbdfbb2b4d3917223bc4538fcb5de1b07e0b72cb0873"
     }
   }
 }

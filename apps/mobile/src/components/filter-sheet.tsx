@@ -47,8 +47,7 @@ function MultiChipSelect({
           <Pressable key={v} onPress={() => onToggle(v)}>
             <Badge
               variant={isSelected ? 'default' : 'outline'}
-              className="rounded-full px-3.5 py-2"
-            >
+              className="rounded-full px-3.5 py-2">
               <Text>{t(`${translateKey}.${v}`)}</Text>
             </Badge>
           </Pressable>
@@ -84,7 +83,7 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
   const cityOption: Option | undefined = useMemo(
     () =>
       filters.city ? { value: filters.city, label: tEnums(`city.${filters.city}`) } : undefined,
-    [filters.city, tEnums],
+    [filters.city, tEnums]
   );
 
   const houseTypeOption: Option | undefined = useMemo(
@@ -92,7 +91,7 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
       filters.houseType
         ? { value: filters.houseType, label: tEnums(`house_type.${filters.houseType}`) }
         : undefined,
-    [filters.houseType, tEnums],
+    [filters.houseType, tEnums]
   );
 
   const furnishingOption: Option | undefined = useMemo(
@@ -100,7 +99,7 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
       filters.furnishing
         ? { value: filters.furnishing, label: tEnums(`furnishing.${filters.furnishing}`) }
         : undefined,
-    [filters.furnishing, tEnums],
+    [filters.furnishing, tEnums]
   );
 
   return (
@@ -108,12 +107,11 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1">
         {/* Drag indicator */}
         <View className="items-center pt-3">
-          <View className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+          <View className="bg-muted-foreground/30 h-1 w-10 rounded-full" />
         </View>
 
         <View className="flex-row items-center justify-between px-4 py-3">
@@ -133,8 +131,7 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
               <Label>{tCommon('city')}</Label>
               <Select
                 value={cityOption}
-                onValueChange={(option) => update({ city: option?.value as typeof filters.city })}
-              >
+                onValueChange={(option) => update({ city: option?.value as typeof filters.city })}>
                 <SelectTrigger className="rounded-xl">
                   <SelectValue placeholder={tCommon('city')} />
                 </SelectTrigger>
@@ -174,8 +171,7 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
                 value={houseTypeOption}
                 onValueChange={(option) =>
                   update({ houseType: option?.value as typeof filters.houseType })
-                }
-              >
+                }>
                 <SelectTrigger className="rounded-xl">
                   <SelectValue placeholder={tDiscover('houseType')} />
                 </SelectTrigger>
@@ -195,8 +191,7 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
                 value={furnishingOption}
                 onValueChange={(option) =>
                   update({ furnishing: option?.value as typeof filters.furnishing })
-                }
-              >
+                }>
                 <SelectTrigger className="rounded-xl">
                   <SelectValue placeholder={tDiscover('furnishing')} />
                 </SelectTrigger>
@@ -234,14 +229,13 @@ export function FilterSheet({ visible, onClose, filters: initialFilters, onApply
           </View>
         </ScrollView>
 
-        <View className="border-t border-border px-4 pb-6 pt-3">
+        <View className="border-border border-t px-4 pt-3 pb-6">
           <Button
             className="h-14 rounded-xl"
             onPress={() => {
               onApply(filters);
               onClose();
-            }}
-          >
+            }}>
             <Text>{tCommon('apply')}</Text>
           </Button>
         </View>

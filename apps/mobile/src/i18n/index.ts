@@ -1,3 +1,8 @@
+import '@formatjs/intl-pluralrules/polyfill-force.js';
+import '@formatjs/intl-pluralrules/locale-data/nl.js';
+import '@formatjs/intl-pluralrules/locale-data/en.js';
+import '@formatjs/intl-pluralrules/locale-data/de.js';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLocales } from 'expo-localization';
 import i18n from 'i18next';
@@ -30,7 +35,7 @@ async function initI18n() {
       : getDeviceLocale();
 
   await i18n
-    .use(ICU)
+    .use(new ICU())
     .use(initReactI18next)
     .init({
       lng: initialLocale,

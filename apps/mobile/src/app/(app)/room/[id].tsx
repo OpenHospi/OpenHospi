@@ -181,8 +181,8 @@ export default function RoomDetailScreen() {
               )}
               {room.totalHousemates != null && (
                 <DetailRow
-                  label={tCommon('housemates', { count: room.totalHousemates })}
-                  value={String(room.totalHousemates)}
+                  label={tRoomFields('totalHousemates')}
+                  value={tCommon('housemates', { count: Number(room.totalHousemates) })}
                 />
               )}
             </CardContent>

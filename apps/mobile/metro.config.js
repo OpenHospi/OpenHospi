@@ -1,29 +1,24 @@
 const { getDefaultConfig } = require('expo/metro-config');
-// const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withUniwindConfig } = require('uniwind/metro');
+// const { withSentryConfig } = require('@sentry/react-native/metro');
+// const { withUniwindConfig } = require('uniwind/metro');
 
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
-// const config = getSentryExpoConfig(__dirname);
-
-config.resolver.sourceExts.push('sql');
-
-// config.resolver.resolveRequest = (context, moduleName, platform) => {
-//   if (moduleName === 'crypto') {
-//     // when importing crypto, resolve to react-native-quick-crypto
-//     return context.resolveRequest(context, 'react-native-quick-crypto', platform);
-//   }
 //
-//   // otherwise chain to the standard Metro resolver.
-//   return context.resolveRequest(context, moduleName, platform);
-// };
+// // config.resolver.sourceExts.push('sql');
+//
+// const uniwindConfig = withUniwindConfig(config, {
+//   cssEntryFile: './global.css',
+//   dtsFile: './uniwind-types.d.ts',
+// });
+//
+// module.exports = withSentryConfig(uniwindConfig);
 
-const uniwindConfig = withUniwindConfig(config, {
+module.exports = withUniwindConfig(config, {
   // relative path to your global.css file (from previous step)
-  cssEntryFile: './global.css',
+  cssEntryFile: './src/global.css',
   // (optional) path where we gonna auto-generate typings
   // defaults to project's root
-  dtsFile: './uniwind-types.d.ts',
+  dtsFile: './src/uniwind-types.d.ts',
 });
-
-module.exports = uniwindConfig;

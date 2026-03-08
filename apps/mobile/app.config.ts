@@ -91,7 +91,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           'Allow OpenHospi to access your photos to upload profile and room images.',
       },
     ],
-    // 'react-native-quick-crypto',
     [
       '@sentry/react-native/expo',
       {

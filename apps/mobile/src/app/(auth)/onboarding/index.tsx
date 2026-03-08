@@ -1,8 +1,11 @@
 import { ONBOARDING_TOTAL_STEPS } from '@openhospi/shared/constants';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useOnboardingStatus } from '@/services/onboarding';
 
@@ -54,27 +57,20 @@ export default function OnboardingScreen() {
   }
 
   const stepKey = STEP_KEYS[clampedStep - 1];
-  const progress = clampedStep / ONBOARDING_TOTAL_STEPS;
+  const progress = (clampedStep / ONBOARDING_TOTAL_STEPS) * 100;
 
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="px-4 pt-4">
-        <Text className="text-lg font-bold text-foreground">{t('title')}</Text>
-        <Text className="mt-1 text-sm text-muted-foreground">
+        <Text variant="large">{t('title')}</Text>
+        <Text variant="muted" className="mt-1">
           {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
         </Text>
 
-        <View className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
-          <View
-            className="h-full rounded-full bg-primary"
-            style={{ width: `${progress * 100}%` }}
-          />
-        </View>
+        <Progress value={progress} className="mt-3" />
 
-        <Text className="mt-3 text-base font-semibold text-foreground">
-          {t(`steps.${stepKey}`)}
-        </Text>
-        <Text className="mt-1 text-sm text-muted-foreground">
+        <Text className="mt-3 font-semibold">{t(`steps.${stepKey}`)}</Text>
+        <Text variant="muted" className="mt-1">
           {t(`stepDescriptions.step${clampedStep}`)}
         </Text>
       </View>
@@ -91,9 +87,9 @@ export default function OnboardingScreen() {
 
       {clampedStep > 1 && (
         <View className="px-4 pb-4">
-          <Pressable onPress={handleBack} className="items-center py-3">
-            <Text className="text-sm font-medium text-muted-foreground">{tCommon('back')}</Text>
-          </Pressable>
+          <Button variant="ghost" onPress={handleBack}>
+            <Text>{tCommon('back')}</Text>
+          </Button>
         </View>
       )}
     </SafeAreaView>

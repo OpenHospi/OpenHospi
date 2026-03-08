@@ -1,9 +1,13 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
 import { useInvitations } from '@/services/invitations';
@@ -21,40 +25,39 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
     : null;
 
   return (
-    <Pressable
-      className="flex-row gap-3 rounded-xl border border-border bg-card p-3"
-      onPress={onPress}
-    >
-      {coverUrl ? (
-        <Image
-          source={{ uri: coverUrl }}
-          style={{ width: 80, height: 80, borderRadius: 8 }}
-          contentFit="cover"
-        />
-      ) : (
-        <View className="h-20 w-20 items-center justify-center rounded-lg bg-muted">
-          <Text className="text-2xl text-muted-foreground">&#x1F3E0;</Text>
-        </View>
-      )}
-      <View className="flex-1 justify-center">
-        <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
-          {item.roomTitle}
-        </Text>
-        <Text className="text-sm text-muted-foreground">
-          {tEnums(`city.${item.roomCity}`)} · \u20AC{item.roomRentPrice}
-          {tCommon('perMonth')}
-        </Text>
-        <View className="mt-1 flex-row items-center gap-2">
-          <View className="rounded-full bg-primary/10 px-2 py-0.5">
-            <Text className="text-xs font-medium text-primary">
-              {tEnums(`application_status.${item.status}`)}
+    <Pressable onPress={onPress}>
+      <Card className="flex-row gap-3 p-3">
+        {coverUrl ? (
+          <Image
+            source={{ uri: coverUrl }}
+            style={{ width: 80, height: 80, borderRadius: 8 }}
+            contentFit="cover"
+          />
+        ) : (
+          <View className="h-20 w-20 items-center justify-center rounded-lg bg-muted">
+            <Text variant="muted" className="text-2xl">
+              &#x1F3E0;
             </Text>
           </View>
-          <Text className="text-xs text-muted-foreground">
-            {t('appliedOn', { date: new Date(item.appliedAt).toLocaleDateString() })}
+        )}
+        <View className="flex-1 justify-center">
+          <Text className="font-semibold" numberOfLines={1}>
+            {item.roomTitle}
           </Text>
+          <Text variant="muted" className="text-sm">
+            {tEnums(`city.${item.roomCity}`)} · \u20AC{item.roomRentPrice}
+            {tCommon('perMonth')}
+          </Text>
+          <View className="mt-1 flex-row items-center gap-2">
+            <Badge variant="secondary" className="rounded-full">
+              <Text>{tEnums(`application_status.${item.status}`)}</Text>
+            </Badge>
+            <Text variant="muted" className="text-xs">
+              {t('appliedOn', { date: new Date(item.appliedAt).toLocaleDateString() })}
+            </Text>
+          </View>
         </View>
-      </View>
+      </Card>
     </Pressable>
   );
 }
@@ -64,23 +67,23 @@ function InvitationCard({ item }: { item: UserInvitation }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
 
   return (
-    <View className="rounded-xl border border-border bg-card p-3">
-      <Text className="text-base font-semibold text-foreground">{item.eventTitle}</Text>
-      <Text className="text-sm text-muted-foreground">
+    <Card className="p-3">
+      <Text className="font-semibold">{item.eventTitle}</Text>
+      <Text variant="muted" className="text-sm">
         {item.eventDate} · {item.timeStart}
         {item.timeEnd ? ` - ${item.timeEnd}` : ''}
       </Text>
-      <Text className="mt-1 text-sm text-muted-foreground">{item.roomTitle}</Text>
+      <Text variant="muted" className="mt-1 text-sm">
+        {item.roomTitle}
+      </Text>
       {item.cancelledAt ? (
         <Text className="mt-1 text-sm text-destructive">{t('cancelled')}</Text>
       ) : (
-        <View className="mt-1 rounded-full bg-primary/10 px-2 py-0.5 self-start">
-          <Text className="text-xs font-medium text-primary">
-            {tEnums(`invitation_status.${item.status}`)}
-          </Text>
-        </View>
+        <Badge variant="secondary" className="mt-1 self-start rounded-full">
+          <Text>{tEnums(`invitation_status.${item.status}`)}</Text>
+        </Badge>
       )}
-    </View>
+    </Card>
   );
 }
 
@@ -89,8 +92,7 @@ export default function ApplicationsScreen() {
   const { t: tInvitations } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const router = useRouter();
 
-  const [tab, setTab] = useState<'applications' | 'invitations'>('applications');
-
+  const [tab, setTab] = useState('applications');
   const { data: applications, isPending: appsPending } = useApplications();
   const { data: invitations, isPending: invPending } = useInvitations();
 
@@ -118,65 +120,63 @@ export default function ApplicationsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="px-4 pb-2 pt-2">
-        <Text className="text-xl font-bold text-foreground">{t('title')}</Text>
-
-        <View className="mt-3 flex-row rounded-lg bg-muted p-1">
-          <Pressable
-            className={`flex-1 rounded-md py-2 ${tab === 'applications' ? 'bg-background shadow-sm' : ''}`}
-            onPress={() => setTab('applications')}
-          >
-            <Text
-              className={`text-center text-sm font-medium ${tab === 'applications' ? 'text-foreground' : 'text-muted-foreground'}`}
-            >
-              {t('title')}
-            </Text>
-          </Pressable>
-          <Pressable
-            className={`flex-1 rounded-md py-2 ${tab === 'invitations' ? 'bg-background shadow-sm' : ''}`}
-            onPress={() => setTab('invitations')}
-          >
-            <Text
-              className={`text-center text-sm font-medium ${tab === 'invitations' ? 'text-foreground' : 'text-muted-foreground'}`}
-            >
-              {tInvitations('title')}
-            </Text>
-          </Pressable>
-        </View>
+        <Text variant="large" className="text-xl">
+          {t('title')}
+        </Text>
       </View>
 
-      {tab === 'applications' ? (
-        appsPending ? (
-          <View className="flex-1 items-center justify-center">
-            <ActivityIndicator size="large" />
-          </View>
-        ) : !applications?.length ? (
-          <View className="flex-1 items-center justify-center px-8">
-            <Text className="text-center text-base text-muted-foreground">{t('empty')}</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={applications}
-            renderItem={renderApplication}
-            keyExtractor={(item) => item.id}
-          />
-        )
-      ) : invPending ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" />
+      <Tabs value={tab} onValueChange={setTab} className="flex-1">
+        <View className="px-4">
+          <TabsList className="w-full">
+            <TabsTrigger value="applications" className="flex-1">
+              <Text>{t('title')}</Text>
+            </TabsTrigger>
+            <TabsTrigger value="invitations" className="flex-1">
+              <Text>{tInvitations('title')}</Text>
+            </TabsTrigger>
+          </TabsList>
         </View>
-      ) : !invitations?.length ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <Text className="text-center text-base text-muted-foreground">
-            {tInvitations('empty')}
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={invitations}
-          renderItem={renderInvitation}
-          keyExtractor={(item) => item.invitationId}
-        />
-      )}
+
+        <TabsContent value="applications" className="flex-1 pt-2">
+          {appsPending ? (
+            <View className="flex-1 items-center justify-center">
+              <ActivityIndicator size="large" />
+            </View>
+          ) : !applications?.length ? (
+            <View className="flex-1 items-center justify-center px-8">
+              <Text variant="muted" className="text-center">
+                {t('empty')}
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={applications}
+              renderItem={renderApplication}
+              keyExtractor={(item) => item.id}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="invitations" className="flex-1 pt-2">
+          {invPending ? (
+            <View className="flex-1 items-center justify-center">
+              <ActivityIndicator size="large" />
+            </View>
+          ) : !invitations?.length ? (
+            <View className="flex-1 items-center justify-center px-8">
+              <Text variant="muted" className="text-center">
+                {tInvitations('empty')}
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={invitations}
+              renderItem={renderInvitation}
+              keyExtractor={(item) => item.invitationId}
+            />
+          )}
+        </TabsContent>
+      </Tabs>
     </SafeAreaView>
   );
 }

@@ -1,6 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pencil } from 'lucide-react-native';
 
-import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type Props = {
   title: string;
@@ -9,19 +10,17 @@ type Props = {
 };
 
 export function ProfileSectionCard({ title, onEdit, children }: Props) {
-  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-
   return (
-    <View className="rounded-xl border border-border bg-card p-4">
-      <View className="flex-row items-center justify-between pb-2">
-        <Text className="text-base font-semibold text-foreground">{title}</Text>
+    <Card>
+      <CardHeader className="flex-row items-center justify-between pb-2">
+        <CardTitle>{title}</CardTitle>
         {onEdit && (
-          <Pressable onPress={onEdit}>
-            <Text className="text-sm text-primary">{tCommon('edit')}</Text>
-          </Pressable>
+          <Button variant="ghost" size="icon" onPress={onEdit}>
+            <Pencil size={16} className="text-muted-foreground" />
+          </Button>
         )}
-      </View>
-      {children}
-    </View>
+      </CardHeader>
+      <CardContent className="pt-0">{children}</CardContent>
+    </Card>
   );
 }

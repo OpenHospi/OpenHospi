@@ -1,6 +1,11 @@
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Alert, Modal, ScrollView, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useDeleteProfilePhoto, useUploadProfilePhoto } from '@/services/profile';
 import type { ProfilePhoto } from '@/services/types';
@@ -61,13 +66,14 @@ export function EditPhotosSheet({ visible, onClose, photos }: Props) {
       onRequestClose={onClose}
     >
       <View className="flex-1 bg-background">
-        <View className="flex-row items-center justify-between border-b border-border px-4 py-3">
-          <Pressable onPress={onClose}>
-            <Text className="text-base text-muted-foreground">{tCommon('close')}</Text>
-          </Pressable>
-          <Text className="text-base font-semibold text-foreground">Photos</Text>
+        <View className="flex-row items-center justify-between px-4 py-3">
+          <Button variant="ghost" onPress={onClose}>
+            <Text>{tCommon('close')}</Text>
+          </Button>
+          <Text className="font-semibold">Photos</Text>
           <View style={{ width: 50 }} />
         </View>
+        <Separator />
 
         <ScrollView className="flex-1 px-4 pt-4">
           {SLOT_KEYS.map((key, index) => {
@@ -78,43 +84,36 @@ export function EditPhotosSheet({ visible, onClose, photos }: Props) {
               : null;
 
             return (
-              <View
-                key={key}
-                className="mb-3 flex-row items-center gap-3 rounded-xl border border-border p-3"
-              >
-                {photoUrl ? (
-                  <Image
-                    source={{ uri: photoUrl }}
-                    className="h-16 w-16 rounded-lg"
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View className="h-16 w-16 items-center justify-center rounded-lg bg-muted">
-                    <Text className="text-2xl text-muted-foreground">+</Text>
-                  </View>
-                )}
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-foreground">{t(key)}</Text>
-                </View>
-                <View className="flex-row gap-2">
-                  <Pressable
-                    className="rounded-lg bg-primary/10 px-3 py-1.5"
-                    onPress={() => handlePick(slot)}
-                  >
-                    <Text className="text-sm text-primary">
-                      {photoUrl ? tCommon('edit') : 'Add'}
-                    </Text>
-                  </Pressable>
-                  {photoUrl && (
-                    <Pressable
-                      className="rounded-lg bg-destructive/10 px-3 py-1.5"
-                      onPress={() => handleDelete(slot)}
-                    >
-                      <Text className="text-sm text-destructive">{tCommon('delete')}</Text>
-                    </Pressable>
+              <Card key={key} className="mb-3">
+                <CardContent className="flex-row items-center gap-3">
+                  {photoUrl ? (
+                    <Image
+                      source={{ uri: photoUrl }}
+                      style={{ width: 64, height: 64, borderRadius: 8 }}
+                      contentFit="cover"
+                    />
+                  ) : (
+                    <View className="h-16 w-16 items-center justify-center rounded-lg bg-muted">
+                      <Text variant="muted" className="text-2xl">
+                        +
+                      </Text>
+                    </View>
                   )}
-                </View>
-              </View>
+                  <View className="flex-1">
+                    <Text className="text-sm font-medium">{t(key)}</Text>
+                  </View>
+                  <View className="flex-row gap-2">
+                    <Button variant="outline" size="sm" onPress={() => handlePick(slot)}>
+                      <Text>{photoUrl ? tCommon('edit') : 'Add'}</Text>
+                    </Button>
+                    {photoUrl && (
+                      <Button variant="destructive" size="sm" onPress={() => handleDelete(slot)}>
+                        <Text>{tCommon('delete')}</Text>
+                      </Button>
+                    )}
+                  </View>
+                </CardContent>
+              </Card>
             );
           })}
         </ScrollView>

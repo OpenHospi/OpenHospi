@@ -1,8 +1,12 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplicationDetail, useWithdrawApplication } from '@/services/applications';
 import type { ApplicationStatus } from '@openhospi/shared/enums';
@@ -40,7 +44,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
               )}
             </View>
             <Text
-              className={`ml-2 pb-4 text-sm ${isReached ? 'font-medium text-foreground' : 'text-muted-foreground'}`}
+              className={`ml-2 pb-4 text-sm ${isReached ? 'font-medium' : 'text-muted-foreground'}`}
             >
               {t(step)}
             </Text>
@@ -99,7 +103,9 @@ export default function ApplicationDetailScreen() {
   if (!app) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background px-8">
-        <Text className="text-center text-base text-muted-foreground">{t('errors.not_found')}</Text>
+        <Text variant="muted" className="text-center">
+          {t('errors.not_found')}
+        </Text>
       </SafeAreaView>
     );
   }
@@ -114,7 +120,6 @@ export default function ApplicationDetailScreen() {
         className="flex-1"
         contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}
       >
-        {/* Room header */}
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
@@ -123,14 +128,17 @@ export default function ApplicationDetailScreen() {
           />
         ) : (
           <View className="h-[200px] w-full items-center justify-center bg-muted">
-            <Text className="text-4xl text-muted-foreground">&#x1F3E0;</Text>
+            <Text variant="muted" className="text-4xl">
+              &#x1F3E0;
+            </Text>
           </View>
         )}
 
         <View className="px-4 pt-4">
-          {/* Room info */}
-          <Text className="text-xl font-bold text-foreground">{app.roomTitle}</Text>
-          <Text className="mt-1 text-sm text-muted-foreground">
+          <Text variant="large" className="text-xl">
+            {app.roomTitle}
+          </Text>
+          <Text variant="muted" className="mt-1">
             {tEnums(`city.${app.roomCity}`)}
             {app.roomHouseType ? ` · ${tEnums(`house_type.${app.roomHouseType}`)}` : ''}
             {app.roomSizeM2 ? ` · ${app.roomSizeM2}m\u00B2` : ''}
@@ -141,59 +149,49 @@ export default function ApplicationDetailScreen() {
             {tCommon('perMonth')}
           </Text>
 
-          {/* Status badge */}
-          <View className="mt-3 self-start rounded-full bg-primary/10 px-3 py-1">
-            <Text className="text-sm font-medium text-primary">
-              {tEnums(`application_status.${app.status}`)}
-            </Text>
-          </View>
+          <Badge variant="secondary" className="mt-3 self-start rounded-full">
+            <Text>{tEnums(`application_status.${app.status}`)}</Text>
+          </Badge>
 
-          <Text className="mt-1 text-xs text-muted-foreground">
+          <Text variant="muted" className="mt-1 text-xs">
             {t('appliedOn', { date: new Date(app.appliedAt).toLocaleDateString() })}
           </Text>
 
-          {/* Timeline */}
           <View className="mt-6">
-            <Text className="mb-3 text-base font-semibold text-foreground">
-              {t('timeline.title')}
-            </Text>
+            <Text className="mb-3 font-semibold">{t('timeline.title')}</Text>
             <StatusTimeline currentStatus={app.status} />
           </View>
 
-          {/* Personal message */}
           {app.personalMessage && (
             <View className="mt-6">
-              <Text className="mb-2 text-base font-semibold text-foreground">
-                {t('yourMessage')}
-              </Text>
-              <View className="rounded-lg bg-muted p-3">
-                <Text className="text-sm text-foreground">{app.personalMessage}</Text>
-              </View>
+              <Text className="mb-2 font-semibold">{t('yourMessage')}</Text>
+              <Card>
+                <CardContent>
+                  <Text className="text-sm">{app.personalMessage}</Text>
+                </CardContent>
+              </Card>
             </View>
           )}
 
-          {/* View room button */}
-          <Pressable
-            className="mt-6 rounded-lg border border-border py-3"
+          <Button
+            variant="outline"
+            className="mt-6"
             onPress={() => router.push(`/(app)/room/${app.roomId}`)}
           >
-            <Text className="text-center text-sm font-medium text-foreground">{t('viewRoom')}</Text>
-          </Pressable>
+            <Text>{t('viewRoom')}</Text>
+          </Button>
         </View>
       </ScrollView>
 
-      {/* Sticky withdraw button */}
       {canWithdraw && (
         <View className="absolute inset-x-0 bottom-0 border-t border-border bg-background px-4 pb-8 pt-3">
-          <Pressable
-            className="rounded-lg bg-destructive py-3"
+          <Button
+            variant="destructive"
             onPress={handleWithdraw}
             disabled={withdrawMutation.isPending}
           >
-            <Text className="text-center text-sm font-semibold text-destructive-foreground">
-              {withdrawMutation.isPending ? '...' : t('withdraw')}
-            </Text>
-          </Pressable>
+            <Text>{withdrawMutation.isPending ? '...' : t('withdraw')}</Text>
+          </Button>
         </View>
       )}
     </SafeAreaView>

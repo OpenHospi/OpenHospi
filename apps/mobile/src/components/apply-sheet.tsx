@@ -3,9 +3,14 @@ import {
   MIN_PERSONAL_MESSAGE_LENGTH,
 } from '@openhospi/shared/constants';
 import { useState } from 'react';
-import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
-
+import { Alert, Modal, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Text } from '@/components/ui/text';
+import { Textarea } from '@/components/ui/textarea';
 import { useApplyToRoom } from '@/services/rooms';
 
 type Props = {
@@ -48,39 +53,47 @@ export function ApplySheet({ visible, onClose, roomId }: Props) {
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View className="flex-1 bg-background p-4">
-        <View className="flex-row items-center justify-between pb-4">
-          <Pressable onPress={onClose}>
-            <Text className="text-base text-muted-foreground">{tCommon('close')}</Text>
-          </Pressable>
-          <Text className="text-base font-semibold text-foreground">{tCommon('apply')}</Text>
-          <View style={{ width: 50 }} />
+      <View className="flex-1 bg-background">
+        {/* Drag indicator */}
+        <View className="items-center pt-3">
+          <View className="h-1 w-10 rounded-full bg-muted-foreground/30" />
         </View>
 
-        <Text className="text-sm font-medium text-foreground">{t('personalMessage')}</Text>
-        <TextInput
-          className="mt-1 min-h-[150px] rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-          value={message}
-          onChangeText={setMessage}
-          placeholder={t('personalMessagePlaceholder')}
-          placeholderTextColor="#999"
-          multiline
-          textAlignVertical="top"
-          maxLength={MAX_PERSONAL_MESSAGE_LENGTH}
-        />
-        <Text className="mt-1 text-right text-xs text-muted-foreground">
-          {message.length}/{MAX_PERSONAL_MESSAGE_LENGTH} (min {MIN_PERSONAL_MESSAGE_LENGTH})
-        </Text>
+        <View className="flex-row items-center justify-between px-4 py-3">
+          <Button variant="ghost" onPress={onClose}>
+            <Text>{tCommon('close')}</Text>
+          </Button>
+          <Text className="text-base font-semibold">{tCommon('apply')}</Text>
+          <View style={{ width: 50 }} />
+        </View>
+        <Separator />
 
-        <Pressable
-          className="mt-4 items-center rounded-xl bg-primary py-3.5 active:opacity-80"
-          onPress={handleSubmit}
-          disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}
-        >
-          <Text className="text-base font-semibold text-primary-foreground">
-            {tCommon('submit')}
-          </Text>
-        </Pressable>
+        <View className="flex-1 px-4 pt-6">
+          <View className="gap-2">
+            <Label>{t('personalMessage')}</Label>
+            <Textarea
+              value={message}
+              onChangeText={setMessage}
+              placeholder={t('personalMessagePlaceholder')}
+              maxLength={MAX_PERSONAL_MESSAGE_LENGTH}
+              numberOfLines={8}
+              className="min-h-[160px] rounded-xl"
+            />
+            <Text variant="muted" className="text-right text-xs">
+              {message.length}/{MAX_PERSONAL_MESSAGE_LENGTH} (min {MIN_PERSONAL_MESSAGE_LENGTH})
+            </Text>
+          </View>
+        </View>
+
+        <View className="border-t border-border px-4 pb-6 pt-3">
+          <Button
+            className="h-14 rounded-xl"
+            onPress={handleSubmit}
+            disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}
+          >
+            <Text>{tCommon('submit')}</Text>
+          </Button>
+        </View>
       </View>
     </Modal>
   );

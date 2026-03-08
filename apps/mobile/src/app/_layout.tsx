@@ -11,7 +11,7 @@ import { I18nextProvider } from 'react-i18next';
 import { ActivityIndicator, Pressable, Text, View, useColorScheme } from 'react-native';
 
 import { useRunMigrations } from '@/db/migrations';
-import i18n from '@/i18n';
+import i18n, { i18nReady } from '@/i18n';
 import { useSession } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { initSentry, Sentry } from '@/lib/sentry';
@@ -37,6 +37,24 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
   );
 }
 
+function I18nGate({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = React.useState(false);
+
+  React.useEffect(() => {
+    i18nReady.then(() => setReady(true));
+  }, []);
+
+  if (!ready) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return <>{children}</>;
+}
+
 function MigrationGate({ children }: { children: React.ReactNode }) {
   const { success, error } = useRunMigrations();
 
@@ -55,7 +73,6 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
       </View>
     );
   }
-
   return <>{children}</>;
 }
 
@@ -138,14 +155,16 @@ let RootLayout = function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nextProvider i18n={i18n}>
-        <ThemeProvider value={NAV_THEME[theme]}>
-          <MigrationGate>
-            <RootNavigator />
-          </MigrationGate>
-          <PortalHost />
-        </ThemeProvider>
-      </I18nextProvider>
+      <I18nGate>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProvider value={NAV_THEME[theme]}>
+            <MigrationGate>
+              <RootNavigator />
+            </MigrationGate>
+            <PortalHost />
+          </ThemeProvider>
+        </I18nextProvider>
+      </I18nGate>
     </QueryClientProvider>
   );
 };

@@ -1,8 +1,12 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 
 export default function SecurityStep() {
@@ -22,8 +26,6 @@ export default function SecurityStep() {
 
     setLoading(true);
     try {
-      // For now, just navigate to app — full E2EE setup will be integrated later
-      // when the crypto package is fully available on mobile
       router.replace('/(app)/(tabs)/discover');
     } catch {
       Alert.alert(t('setup_error'));
@@ -34,24 +36,30 @@ export default function SecurityStep() {
 
   return (
     <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <Text className="text-base font-semibold text-foreground">{t('e2ee_title')}</Text>
-      <Text className="mt-2 text-sm text-muted-foreground">{t('e2ee_description')}</Text>
+      <Text className="font-semibold">{t('e2ee_title')}</Text>
+      <Text variant="muted" className="mt-2">
+        {t('e2ee_description')}
+      </Text>
 
       {step === 'enter' ? (
         <>
-          <Text className="mt-6 text-sm font-medium text-foreground">{t('enter_pin')}</Text>
-          <TextInput
-            className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-center text-2xl tracking-[8px] text-foreground"
-            value={pin}
-            onChangeText={setPin}
-            keyboardType="number-pad"
-            maxLength={PIN_LENGTH}
-            secureTextEntry
-          />
-          <Text className="mt-1 text-xs text-muted-foreground">{t('pin_hint')}</Text>
+          <View className="mt-6 gap-1.5">
+            <Label>{t('enter_pin')}</Label>
+            <Input
+              className="text-center text-2xl tracking-[8px]"
+              value={pin}
+              onChangeText={setPin}
+              keyboardType="number-pad"
+              maxLength={PIN_LENGTH}
+              secureTextEntry
+            />
+            <Text variant="muted" className="text-xs">
+              {t('pin_hint')}
+            </Text>
+          </View>
 
-          <Pressable
-            className="mt-6 items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
+          <Button
+            className="mt-6"
             onPress={() => {
               if (pin.length !== PIN_LENGTH) {
                 Alert.alert(t('pin_length_error'));
@@ -60,30 +68,26 @@ export default function SecurityStep() {
               setStep('confirm');
             }}
           >
-            <Text className="text-base font-semibold text-primary-foreground">{t('use_pin')}</Text>
-          </Pressable>
+            <Text>{t('use_pin')}</Text>
+          </Button>
         </>
       ) : (
         <>
-          <Text className="mt-6 text-sm font-medium text-foreground">{t('confirm_pin')}</Text>
-          <TextInput
-            className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-center text-2xl tracking-[8px] text-foreground"
-            value={confirmPin}
-            onChangeText={setConfirmPin}
-            keyboardType="number-pad"
-            maxLength={PIN_LENGTH}
-            secureTextEntry
-          />
+          <View className="mt-6 gap-1.5">
+            <Label>{t('confirm_pin')}</Label>
+            <Input
+              className="text-center text-2xl tracking-[8px]"
+              value={confirmPin}
+              onChangeText={setConfirmPin}
+              keyboardType="number-pad"
+              maxLength={PIN_LENGTH}
+              secureTextEntry
+            />
+          </View>
 
-          <Pressable
-            className="mt-6 items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
-            onPress={handleSetup}
-            disabled={loading}
-          >
-            <Text className="text-base font-semibold text-primary-foreground">
-              {t('setup_pin')}
-            </Text>
-          </Pressable>
+          <Button className="mt-6" onPress={handleSetup} disabled={loading}>
+            <Text>{t('setup_pin')}</Text>
+          </Button>
         </>
       )}
     </ScrollView>

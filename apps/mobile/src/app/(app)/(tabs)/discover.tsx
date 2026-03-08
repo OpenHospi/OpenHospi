@@ -1,7 +1,11 @@
+import { SlidersHorizontal } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Text } from '@/components/ui/text';
 import { FilterSheet } from '@/components/filter-sheet';
 import { RoomCard } from '@/components/room-card';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +17,6 @@ const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 export default function DiscoverScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { t: tFilters } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
 
   const [filters, setFilters] = useState<DiscoverFilters>({});
   const [filterVisible, setFilterVisible] = useState(false);
@@ -47,22 +50,18 @@ export default function DiscoverScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="gap-2 px-4 pb-2 pt-2">
         <View className="flex-row gap-2">
-          <TextInput
-            className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-base text-foreground"
+          <Input
+            className="flex-1"
             value={searchText}
             onChangeText={setSearchText}
             placeholder={tCommon('search')}
-            placeholderTextColor="#999"
           />
-          <Pressable
-            className="items-center justify-center rounded-xl border border-border px-4"
-            onPress={() => setFilterVisible(true)}
-          >
-            <Text className="text-sm font-medium text-foreground">{tFilters('showFilters')}</Text>
-          </Pressable>
+          <Button variant="outline" size="icon" onPress={() => setFilterVisible(true)}>
+            <SlidersHorizontal size={18} className="text-foreground" />
+          </Button>
         </View>
         {totalCount > 0 && (
-          <Text className="text-xs text-muted-foreground">
+          <Text variant="muted" className="text-xs">
             {t('roomCount', { count: totalCount })}
           </Text>
         )}
@@ -74,7 +73,9 @@ export default function DiscoverScreen() {
         </View>
       ) : filteredRooms.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8">
-          <Text className="text-center text-base text-muted-foreground">{t('empty')}</Text>
+          <Text variant="muted" className="text-center">
+            {t('empty')}
+          </Text>
         </View>
       ) : (
         <FlatList

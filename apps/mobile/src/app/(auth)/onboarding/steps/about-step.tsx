@@ -1,7 +1,12 @@
 import { City, Gender, StudyLevel } from '@openhospi/shared/enums';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useSubmitAbout } from '@/services/onboarding';
 
@@ -23,16 +28,10 @@ function EnumPicker({
   return (
     <View className="flex-row flex-wrap gap-2">
       {values.map((v) => (
-        <Pressable
-          key={v}
-          className={`rounded-lg border px-3 py-2 ${selected === v ? 'border-primary bg-primary/10' : 'border-border bg-background'}`}
-          onPress={() => onSelect(v)}
-        >
-          <Text
-            className={`text-sm ${selected === v ? 'font-semibold text-primary' : 'text-foreground'}`}
-          >
-            {t(`${translateKey}.${v}`)}
-          </Text>
+        <Pressable key={v} onPress={() => onSelect(v)}>
+          <Badge variant={selected === v ? 'default' : 'outline'} className="rounded-lg px-3 py-2">
+            <Text>{t(`${translateKey}.${v}`)}</Text>
+          </Badge>
         </Pressable>
       ))}
     </View>
@@ -76,8 +75,8 @@ export default function AboutStep({ onNext }: Props) {
 
   return (
     <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <Text className="text-sm font-medium text-foreground">{t('gender')}</Text>
-      <View className="mt-1">
+      <View className="gap-1.5">
+        <Label>{t('gender')}</Label>
         <EnumPicker
           values={Gender.values}
           selected={gender}
@@ -87,27 +86,27 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">{t('birthDate')}</Text>
-      <TextInput
-        className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={birthDate}
-        onChangeText={setBirthDate}
-        placeholder="YYYY-MM-DD"
-        placeholderTextColor="#999"
-        keyboardType="numbers-and-punctuation"
-      />
+      <View className="mt-4 gap-1.5">
+        <Label>{t('birthDate')}</Label>
+        <Input
+          value={birthDate}
+          onChangeText={setBirthDate}
+          placeholder="YYYY-MM-DD"
+          keyboardType="numbers-and-punctuation"
+        />
+      </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">{t('studyProgram')}</Text>
-      <TextInput
-        className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={studyProgram}
-        onChangeText={setStudyProgram}
-        placeholder={tPlaceholders('studyProgram')}
-        placeholderTextColor="#999"
-      />
+      <View className="mt-4 gap-1.5">
+        <Label>{t('studyProgram')}</Label>
+        <Input
+          value={studyProgram}
+          onChangeText={setStudyProgram}
+          placeholder={tPlaceholders('studyProgram')}
+        />
+      </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">{t('studyLevel')}</Text>
-      <View className="mt-1">
+      <View className="mt-4 gap-1.5">
+        <Label>{t('studyLevel')}</Label>
         <EnumPicker
           values={StudyLevel.values}
           selected={studyLevel}
@@ -117,8 +116,8 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">{t('preferredCity')}</Text>
-      <View className="mt-1">
+      <View className="mt-4 gap-1.5">
+        <Label>{t('preferredCity')}</Label>
         <EnumPicker
           values={City.values}
           selected={preferredCity}
@@ -128,24 +127,20 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">
-        {t('vereniging')} <Text className="text-muted-foreground">({tCommon('optional')})</Text>
-      </Text>
-      <TextInput
-        className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={vereniging}
-        onChangeText={setVereniging}
-        placeholder={tPlaceholders('vereniging')}
-        placeholderTextColor="#999"
-      />
+      <View className="mt-4 gap-1.5">
+        <Label>
+          {t('vereniging')} <Text variant="muted">({tCommon('optional')})</Text>
+        </Label>
+        <Input
+          value={vereniging}
+          onChangeText={setVereniging}
+          placeholder={tPlaceholders('vereniging')}
+        />
+      </View>
 
-      <Pressable
-        className="mb-8 mt-6 items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
-        onPress={handleSubmit}
-        disabled={submitAbout.isPending}
-      >
-        <Text className="text-base font-semibold text-primary-foreground">{tCommon('next')}</Text>
-      </Pressable>
+      <Button className="mb-8 mt-6" onPress={handleSubmit} disabled={submitAbout.isPending}>
+        <Text>{tCommon('next')}</Text>
+      </Button>
     </ScrollView>
   );
 }

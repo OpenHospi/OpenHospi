@@ -1,8 +1,11 @@
 import { MAX_PROFILE_PHOTOS } from '@openhospi/shared/constants';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useUploadProfilePhoto } from '@/services/profile';
 
@@ -73,42 +76,39 @@ export default function PhotosStep({ onNext }: Props) {
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];
           return (
-            <Pressable
-              key={key}
-              className="flex-row items-center gap-3 rounded-xl border border-border bg-background p-3"
-              onPress={() => pickPhoto(index)}
-              disabled={photo?.uploading}
-            >
-              {photo?.uri ? (
-                <Image
-                  source={{ uri: photo.uri }}
-                  className="h-16 w-16 rounded-lg"
-                  resizeMode="cover"
-                />
-              ) : (
-                <View className="h-16 w-16 items-center justify-center rounded-lg bg-muted">
-                  <Text className="text-2xl text-muted-foreground">+</Text>
-                </View>
-              )}
-              <View className="flex-1">
-                <Text className="text-sm font-medium text-foreground">{t(key)}</Text>
-                {photo?.uploading && (
-                  <Text className="text-xs text-muted-foreground">Uploading...</Text>
+            <Pressable key={key} onPress={() => pickPhoto(index)} disabled={photo?.uploading}>
+              <Card className="flex-row items-center gap-3 p-3">
+                {photo?.uri ? (
+                  <Image
+                    source={{ uri: photo.uri }}
+                    className="h-16 w-16 rounded-lg"
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View className="h-16 w-16 items-center justify-center rounded-lg bg-muted">
+                    <Text variant="muted" className="text-2xl">
+                      +
+                    </Text>
+                  </View>
                 )}
-                {photo?.uploaded && <Text className="text-xs text-primary">Uploaded</Text>}
-              </View>
+                <View className="flex-1">
+                  <Text variant="small">{t(key)}</Text>
+                  {photo?.uploading && (
+                    <Text variant="muted" className="text-xs">
+                      Uploading...
+                    </Text>
+                  )}
+                  {photo?.uploaded && <Text className="text-xs text-primary">Uploaded</Text>}
+                </View>
+              </Card>
             </Pressable>
           );
         })}
       </View>
 
-      <Pressable
-        className="mb-8 mt-6 items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
-        onPress={onNext}
-        disabled={!hasAtLeastOnePhoto}
-      >
-        <Text className="text-base font-semibold text-primary-foreground">{tCommon('next')}</Text>
-      </Pressable>
+      <Button className="mb-8 mt-6" onPress={onNext} disabled={!hasAtLeastOnePhoto}>
+        <Text>{tCommon('next')}</Text>
+      </Button>
     </ScrollView>
   );
 }

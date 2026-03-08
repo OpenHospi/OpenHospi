@@ -3,10 +3,14 @@ import { APP_NAME } from '@openhospi/shared/constants';
 import { StatusBar } from 'expo-status-bar';
 import { GraduationCap, Loader2 } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, Pressable, Text, useColorScheme, View } from 'react-native';
+import { Alert, useColorScheme, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Text } from '@/components/ui/text';
 import { LanguagePicker } from '@/components/language-picker';
 import { Logo } from '@/components/logo';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +18,9 @@ import { authClient } from '@/lib/auth-client';
 import { THEME } from '@/lib/theme';
 
 export default function LoginScreen() {
-  const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
+  const { t } = useTranslation('translation', {
+    keyPrefix: 'auth.login',
+  });
   const colorScheme = useColorScheme();
   const [isPending, setIsPending] = useState(false);
 
@@ -65,61 +71,58 @@ export default function LoginScreen() {
           <Text className="text-xl font-semibold tracking-tight text-primary">{APP_NAME}</Text>
         </View>
 
-        <View className="mt-6 w-full rounded-2xl border border-border bg-card p-6">
-          <Text className="text-center text-2xl font-bold text-card-foreground">{t('title')}</Text>
-          <Text className="mt-1.5 text-center text-sm text-muted-foreground">
-            {t('description')}
-          </Text>
+        <Card className="mt-6 w-full">
+          <CardHeader className="items-center">
+            <CardTitle className="text-2xl">{t('title')}</CardTitle>
+            <CardDescription>{t('description')}</CardDescription>
+          </CardHeader>
 
-          <View className="mt-6 gap-3">
-            <Pressable
-              className="flex-row items-center justify-center gap-2 rounded-xl bg-primary py-3.5 active:opacity-80"
+          <CardContent className="gap-3">
+            <Button
+              className="rounded-xl py-3.5"
               onPress={handleInAcademiaLogin}
               disabled={isPending}
-              style={isPending ? { opacity: 0.6 } : undefined}
             >
               {isPending ? (
                 <Loader2 size={20} color={colors.primaryForeground} />
               ) : (
                 <GraduationCap size={20} color={colors.primaryForeground} />
               )}
-              <Text className="text-base font-semibold text-primary-foreground">
-                {t('inacademiaButton')}
-              </Text>
-            </Pressable>
-            <Text className="text-center text-xs text-muted-foreground">
+              <Text>{t('inacademiaButton')}</Text>
+            </Button>
+            <Text variant="muted" className="text-center">
               {t('inacademiaDescription')}
             </Text>
-          </View>
+          </CardContent>
 
           {__DEV__ && (
-            <View className="mt-5 gap-3">
+            <CardContent className="gap-3">
               <View className="flex-row items-center gap-3">
-                <View className="h-px flex-1 bg-border" />
-                <Text className="text-xs text-muted-foreground">{t('devOrDivider')}</Text>
-                <View className="h-px flex-1 bg-border" />
+                <Separator className="flex-1" />
+                <Text variant="muted" className="text-xs">
+                  {t('devOrDivider')}
+                </Text>
+                <Separator className="flex-1" />
               </View>
-              <Pressable
-                className="flex-row items-center justify-center gap-2 rounded-xl border border-border bg-card py-3.5 active:opacity-80"
+              <Button
+                variant="outline"
+                className="rounded-xl py-3.5"
                 onPress={handleGitHubLogin}
                 disabled={isPending}
-                style={isPending ? { opacity: 0.6 } : undefined}
               >
                 {isPending ? (
                   <Loader2 size={20} color={colors.foreground} />
                 ) : (
                   <Ionicons name="logo-github" size={20} color={colors.foreground} />
                 )}
-                <Text className="text-base font-semibold text-card-foreground">
-                  {t('devGithubButton')}
-                </Text>
-              </Pressable>
-              <Text className="text-center text-xs text-muted-foreground">
+                <Text>{t('devGithubButton')}</Text>
+              </Button>
+              <Text variant="muted" className="text-center">
                 {t('devGithubDescription')}
               </Text>
-            </View>
+            </CardContent>
           )}
-        </View>
+        </Card>
       </Animated.View>
     </SafeAreaView>
   );

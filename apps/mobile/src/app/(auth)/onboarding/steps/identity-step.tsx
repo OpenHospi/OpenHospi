@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';
 
@@ -55,7 +59,7 @@ export default function IdentityStep({ onNext }: Props) {
   if (verified) {
     return (
       <View className="items-center justify-center py-8">
-        <Text className="text-base text-foreground">{t('verified')}</Text>
+        <Text>{t('verified')}</Text>
       </View>
     );
   }
@@ -63,83 +67,80 @@ export default function IdentityStep({ onNext }: Props) {
   if (showCodeInput) {
     return (
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-        <Text className="text-base font-semibold text-foreground">{t('enterCodeTitle')}</Text>
-        <Text className="mt-1 text-sm text-muted-foreground">
+        <Text className="font-semibold">{t('enterCodeTitle')}</Text>
+        <Text variant="muted" className="mt-1">
           {t('enterCodeDescription', { email })}
         </Text>
 
-        <Text className="mt-4 text-sm font-medium text-foreground">{t('verificationCode')}</Text>
-        <TextInput
-          className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-          value={code}
-          onChangeText={setCode}
-          keyboardType="number-pad"
-          maxLength={6}
-          placeholder="000000"
-          placeholderTextColor="#999"
-        />
-        <Text className="mt-1 text-xs text-muted-foreground">{t('codeHint')}</Text>
+        <View className="mt-4 gap-1.5">
+          <Label>{t('verificationCode')}</Label>
+          <Input
+            value={code}
+            onChangeText={setCode}
+            keyboardType="number-pad"
+            maxLength={6}
+            placeholder="000000"
+          />
+          <Text variant="muted" className="text-xs">
+            {t('codeHint')}
+          </Text>
+        </View>
 
-        <Pressable
-          className="mt-4 items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
-          onPress={handleVerifyCode}
-          disabled={verifyEmail.isPending}
-        >
-          <Text className="text-base font-semibold text-primary-foreground">{t('verifyCode')}</Text>
-        </Pressable>
+        <Button className="mt-4" onPress={handleVerifyCode} disabled={verifyEmail.isPending}>
+          <Text>{t('verifyCode')}</Text>
+        </Button>
 
-        <Pressable
-          className="mt-3 items-center py-2"
+        <Button
+          variant="link"
+          className="mt-3"
           onPress={handleResend}
           disabled={resendCode.isPending}
         >
-          <Text className="text-sm text-primary">{t('resendCode')}</Text>
-        </Pressable>
+          <Text>{t('resendCode')}</Text>
+        </Button>
       </ScrollView>
     );
   }
 
   return (
     <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <Text className="text-sm font-medium text-foreground">{t('firstName')}</Text>
-      <TextInput
-        className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={firstName}
-        onChangeText={setFirstName}
-        placeholder={t('firstNamePlaceholder')}
-        placeholderTextColor="#999"
-        autoCapitalize="words"
-      />
+      <View className="gap-1.5">
+        <Label>{t('firstName')}</Label>
+        <Input
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholder={t('firstNamePlaceholder')}
+          autoCapitalize="words"
+        />
+      </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">{t('lastName')}</Text>
-      <TextInput
-        className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={lastName}
-        onChangeText={setLastName}
-        placeholder={t('lastNamePlaceholder')}
-        placeholderTextColor="#999"
-        autoCapitalize="words"
-      />
+      <View className="mt-4 gap-1.5">
+        <Label>{t('lastName')}</Label>
+        <Input
+          value={lastName}
+          onChangeText={setLastName}
+          placeholder={t('lastNamePlaceholder')}
+          autoCapitalize="words"
+        />
+      </View>
 
-      <Text className="mt-4 text-sm font-medium text-foreground">{t('email')}</Text>
-      <TextInput
-        className="mt-1 rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={email}
-        onChangeText={setEmail}
-        placeholder={t('emailPlaceholder')}
-        placeholderTextColor="#999"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <Text className="mt-1 text-xs text-muted-foreground">{t('emailHint')}</Text>
+      <View className="mt-4 gap-1.5">
+        <Label>{t('email')}</Label>
+        <Input
+          value={email}
+          onChangeText={setEmail}
+          placeholder={t('emailPlaceholder')}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Text variant="muted" className="text-xs">
+          {t('emailHint')}
+        </Text>
+      </View>
 
-      <Pressable
-        className="mt-6 items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
-        onPress={handleSubmitIdentity}
-        disabled={submitIdentity.isPending}
-      >
-        <Text className="text-base font-semibold text-primary-foreground">{tCommon('next')}</Text>
-      </Pressable>
+      <Button className="mt-6" onPress={handleSubmitIdentity} disabled={submitIdentity.isPending}>
+        <Text>{tCommon('next')}</Text>
+      </Button>
     </ScrollView>
   );
 }

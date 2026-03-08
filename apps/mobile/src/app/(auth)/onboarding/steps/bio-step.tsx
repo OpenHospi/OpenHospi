@@ -1,7 +1,11 @@
 import { MAX_BIO_LENGTH } from '@openhospi/shared/constants';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Text } from '@/components/ui/text';
+import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBio } from '@/services/onboarding';
 
@@ -27,32 +31,26 @@ export default function BioStep({ onNext }: Props) {
 
   return (
     <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <Text className="text-sm font-medium text-foreground">{t('fields.bio')}</Text>
-      <TextInput
-        className="mt-1 min-h-[120px] rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground"
-        value={bio}
-        onChangeText={setBio}
-        placeholder={t('placeholders.bio')}
-        placeholderTextColor="#999"
-        multiline
-        textAlignVertical="top"
-        maxLength={MAX_BIO_LENGTH}
-      />
-      <Text className="mt-1 text-right text-xs text-muted-foreground">
-        {bio.length}/{MAX_BIO_LENGTH}
-      </Text>
+      <View className="gap-1.5">
+        <Label>{t('fields.bio')}</Label>
+        <Textarea
+          value={bio}
+          onChangeText={setBio}
+          placeholder={t('placeholders.bio')}
+          maxLength={MAX_BIO_LENGTH}
+        />
+        <Text variant="muted" className="text-right text-xs">
+          {bio.length}/{MAX_BIO_LENGTH}
+        </Text>
+      </View>
 
       <View className="mt-6 gap-3">
-        <Pressable
-          className="items-center rounded-xl bg-primary px-6 py-3.5 active:opacity-80"
-          onPress={handleSubmit}
-          disabled={submitBio.isPending}
-        >
-          <Text className="text-base font-semibold text-primary-foreground">{tCommon('next')}</Text>
-        </Pressable>
-        <Pressable className="items-center py-2" onPress={handleSkip}>
-          <Text className="text-sm text-muted-foreground">{tCommon('skip')}</Text>
-        </Pressable>
+        <Button onPress={handleSubmit} disabled={submitBio.isPending}>
+          <Text>{tCommon('next')}</Text>
+        </Button>
+        <Button variant="ghost" onPress={handleSkip}>
+          <Text>{tCommon('skip')}</Text>
+        </Button>
       </View>
     </ScrollView>
   );

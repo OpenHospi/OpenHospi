@@ -6,7 +6,7 @@ export default defineConfig([
   expoConfig,
   eslintPluginPrettierRecommended,
   {
-    ignores: ['dist/*', '.expo/*'],
+    ignores: ['dist/*', '.expo/*', 'src/components/ui/*'],
   },
   {
     files: ['src/i18n/index.ts'],

@@ -1,8 +1,12 @@
 import { MAX_LANGUAGES, MIN_LANGUAGES } from '@openhospi/shared/constants';
 import { Language } from '@openhospi/shared/enums';
 import { useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, View } from 'react-native';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useUpdateProfile } from '@/services/profile';
 
@@ -44,21 +48,23 @@ export function EditLanguagesSheet({ visible, onClose, initialLanguages }: Props
       onRequestClose={onClose}
     >
       <View className="flex-1 bg-background">
-        <View className="flex-row items-center justify-between border-b border-border px-4 py-3">
-          <Pressable onPress={onClose}>
-            <Text className="text-base text-muted-foreground">{tCommon('cancel')}</Text>
-          </Pressable>
-          <Text className="text-base font-semibold text-foreground">{t('steps.languages')}</Text>
-          <Pressable
+        <View className="flex-row items-center justify-between px-4 py-3">
+          <Button variant="ghost" onPress={onClose}>
+            <Text>{tCommon('cancel')}</Text>
+          </Button>
+          <Text className="font-semibold">{t('steps.languages')}</Text>
+          <Button
+            variant="ghost"
             onPress={handleSave}
             disabled={updateProfile.isPending || selected.length < MIN_LANGUAGES}
           >
-            <Text className="text-base font-semibold text-primary">{tCommon('save')}</Text>
-          </Pressable>
+            <Text className="text-primary">{tCommon('save')}</Text>
+          </Button>
         </View>
+        <Separator />
 
         <ScrollView className="flex-1 px-4 pt-4">
-          <Text className="text-sm text-muted-foreground">
+          <Text variant="muted" className="text-sm">
             {t('languageCounter', {
               count: selected.length,
               min: MIN_LANGUAGES,
@@ -69,16 +75,13 @@ export function EditLanguagesSheet({ visible, onClose, initialLanguages }: Props
             {Language.values.map((lang) => {
               const isSelected = selected.includes(lang);
               return (
-                <Pressable
-                  key={lang}
-                  className={`rounded-lg border px-3 py-2 ${isSelected ? 'border-primary bg-primary/10' : 'border-border'}`}
-                  onPress={() => toggle(lang)}
-                >
-                  <Text
-                    className={`text-sm ${isSelected ? 'font-semibold text-primary' : 'text-foreground'}`}
+                <Pressable key={lang} onPress={() => toggle(lang)}>
+                  <Badge
+                    variant={isSelected ? 'default' : 'outline'}
+                    className="rounded-lg px-3 py-1.5"
                   >
-                    {tEnums(lang)}
-                  </Text>
+                    <Text>{tEnums(lang)}</Text>
+                  </Badge>
                 </Pressable>
               );
             })}

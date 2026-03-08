@@ -8,4 +8,10 @@ export default defineConfig([
   {
     ignores: ['dist/*', '.expo/*'],
   },
+  {
+    files: ['src/i18n/index.ts'],
+    rules: {
+      'import/no-named-as-default-member': 'off',
+    },
+  },
 ]);

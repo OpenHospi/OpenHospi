@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLocales } from 'expo-localization';
-import i18n from 'i18next';
+import i18n, { changeLanguage } from 'i18next';
 import ICU from 'i18next-icu';
 import { initReactI18next } from 'react-i18next';
 
@@ -37,7 +37,7 @@ i18n
 // Restore persisted locale (overrides device locale if set)
 AsyncStorage.getItem(LOCALE_STORAGE_KEY).then((stored) => {
   if (stored && (SUPPORTED_LOCALES as readonly string[]).includes(stored)) {
-    i18n.changeLanguage(stored);
+    changeLanguage(stored);
   }
 });
 

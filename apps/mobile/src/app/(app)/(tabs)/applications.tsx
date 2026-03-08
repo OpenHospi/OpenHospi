@@ -34,7 +34,7 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
             contentFit="cover"
           />
         ) : (
-          <View className="h-20 w-20 items-center justify-center rounded-lg bg-muted">
+          <View className="bg-muted h-20 w-20 items-center justify-center rounded-lg">
             <Text variant="muted" className="text-2xl">
               &#x1F3E0;
             </Text>
@@ -77,7 +77,7 @@ function InvitationCard({ item }: { item: UserInvitation }) {
         {item.roomTitle}
       </Text>
       {item.cancelledAt ? (
-        <Text className="mt-1 text-sm text-destructive">{t('cancelled')}</Text>
+        <Text className="text-destructive mt-1 text-sm">{t('cancelled')}</Text>
       ) : (
         <Badge variant="secondary" className="mt-1 self-start rounded-full">
           <Text>{tEnums(`invitation_status.${item.status}`)}</Text>
@@ -105,7 +105,7 @@ export default function ApplicationsScreen() {
         />
       </View>
     ),
-    [router],
+    [router]
   );
 
   const renderInvitation = useCallback(
@@ -114,12 +114,12 @@ export default function ApplicationsScreen() {
         <InvitationCard item={item} />
       </View>
     ),
-    [],
+    []
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <View className="px-4 pb-2 pt-2">
+    <SafeAreaView className="bg-background flex-1" edges={['top']}>
+      <View className="px-4 pt-2 pb-2">
         <Text variant="large" className="text-xl">
           {t('title')}
         </Text>

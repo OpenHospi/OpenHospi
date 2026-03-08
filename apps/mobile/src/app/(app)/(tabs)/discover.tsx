@@ -43,12 +43,12 @@ export default function DiscoverScreen() {
         <RoomCard room={item} supabaseUrl={SUPABASE_URL} />
       </View>
     ),
-    [],
+    []
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <View className="gap-2 px-4 pb-2 pt-2">
+    <SafeAreaView className="bg-background flex-1" edges={['top']}>
+      <View className="gap-2 px-4 pt-2 pb-2">
         <View className="flex-row gap-2">
           <Input
             className="flex-1"

@@ -39,7 +39,7 @@ export default function RoomDetailScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -47,7 +47,7 @@ export default function RoomDetailScreen() {
 
   if (!data) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center">
         <Text variant="muted">{t('notFound')}</Text>
         <Button variant="link" className="mt-4" onPress={() => router.back()}>
           <Text>{t('backToDiscover')}</Text>
@@ -59,7 +59,7 @@ export default function RoomDetailScreen() {
   const { room, application } = data;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
+    <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
       <ScrollView className="flex-1">
         <PhotoCarousel photos={room.photos} supabaseUrl={SUPABASE_URL} bucket="room-photos" />
 
@@ -94,7 +94,7 @@ export default function RoomDetailScreen() {
               <Separator className="my-2" />
               <View className="flex-row items-center justify-between">
                 <Text className="font-semibold">{t('totalCost')}</Text>
-                <Text className="text-lg font-bold text-primary">
+                <Text className="text-primary text-lg font-bold">
                   \u20AC{room.totalCost}
                   {tCommon('perMonth')}
                 </Text>
@@ -219,13 +219,12 @@ export default function RoomDetailScreen() {
         </View>
       </ScrollView>
 
-      <View className="absolute bottom-0 left-0 right-0 border-t border-border bg-background px-4 pb-4 pt-3">
+      <View className="border-border bg-background absolute right-0 bottom-0 left-0 border-t px-4 pt-3 pb-4">
         {application ? (
           <Button
             variant="outline"
             className="rounded-xl py-3.5"
-            onPress={() => router.push(`/(app)/application/${application.id}` as never)}
-          >
+            onPress={() => router.push(`/(app)/application/${application.id}` as never)}>
             <Text>{t('viewApplication')}</Text>
           </Button>
         ) : (

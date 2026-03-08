@@ -37,7 +37,7 @@ export default function ProfileScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -45,7 +45,7 @@ export default function ProfileScreen() {
 
   if (!profile) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center">
         <Text variant="muted">Profile not found</Text>
       </SafeAreaView>
     );
@@ -56,8 +56,8 @@ export default function ProfileScreen() {
     : null;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <View className="flex-row items-center justify-between px-4 pb-2 pt-2">
+    <SafeAreaView className="bg-background flex-1" edges={['top']}>
+      <View className="flex-row items-center justify-between px-4 pt-2 pb-2">
         <Text variant="large" className="text-xl">
           {t('title')}
         </Text>
@@ -158,8 +158,7 @@ export default function ProfileScreen() {
         <View className="mt-3">
           <ProfileSectionCard
             title={t('lifestyleTags')}
-            onEdit={() => setEditLifestyleVisible(true)}
-          >
+            onEdit={() => setEditLifestyleVisible(true)}>
             <View className="flex-row flex-wrap gap-2">
               {(profile.lifestyleTags ?? []).map((tag) => (
                 <Badge key={tag} variant="secondary" className="rounded-lg">
@@ -170,7 +169,7 @@ export default function ProfileScreen() {
           </ProfileSectionCard>
         </View>
 
-        <Button variant="destructive" className="mb-8 mt-6" onPress={() => authClient.signOut()}>
+        <Button variant="destructive" className="mt-6 mb-8" onPress={() => authClient.signOut()}>
           <Text>{tCommon('logout')}</Text>
         </Button>
       </ScrollView>

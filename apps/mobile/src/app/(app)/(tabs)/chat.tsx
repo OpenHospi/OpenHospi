@@ -9,7 +9,7 @@ export default function ChatScreen() {
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="bg-background flex-1">
       <View className="flex-1 items-center justify-center gap-2">
         <Text variant="h3">{tBreadcrumbs('chat')}</Text>
         <Text variant="muted">{tCommon('comingSoon')}</Text>

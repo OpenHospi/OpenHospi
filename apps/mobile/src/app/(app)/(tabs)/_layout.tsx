@@ -33,8 +33,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.mutedForeground,
         headerShown: false,
-      }}
-    >
+      }}>
       <Tabs.Screen
         name="discover"
         options={{

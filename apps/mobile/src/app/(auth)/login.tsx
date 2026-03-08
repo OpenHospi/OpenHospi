@@ -55,7 +55,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="bg-background flex-1">
       <StatusBar style="auto" />
 
       <View className="items-end px-4 pt-2">
@@ -64,11 +64,10 @@ export default function LoginScreen() {
 
       <Animated.View
         entering={FadeInDown.duration(500).springify()}
-        className="flex-1 items-center justify-center px-6"
-      >
+        className="flex-1 items-center justify-center px-6">
         <View className="flex-row items-center gap-2">
           <Logo size={28} color={colors.primary} />
-          <Text className="text-xl font-semibold tracking-tight text-primary">{APP_NAME}</Text>
+          <Text className="text-primary text-xl font-semibold tracking-tight">{APP_NAME}</Text>
         </View>
 
         <Card className="mt-6 w-full">
@@ -81,8 +80,7 @@ export default function LoginScreen() {
             <Button
               className="rounded-xl py-3.5"
               onPress={handleInAcademiaLogin}
-              disabled={isPending}
-            >
+              disabled={isPending}>
               {isPending ? (
                 <Loader2 size={20} color={colors.primaryForeground} />
               ) : (
@@ -108,8 +106,7 @@ export default function LoginScreen() {
                 variant="outline"
                 className="rounded-xl py-3.5"
                 onPress={handleGitHubLogin}
-                disabled={isPending}
-              >
+                disabled={isPending}>
                 {isPending ? (
                   <Loader2 size={20} color={colors.foreground} />
                 ) : (

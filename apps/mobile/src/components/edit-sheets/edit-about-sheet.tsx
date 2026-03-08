@@ -43,8 +43,7 @@ function ChipPicker({
         <Pressable key={v} onPress={() => onSelect(selected === v ? null : v)}>
           <Badge
             variant={selected === v ? 'default' : 'outline'}
-            className="rounded-lg px-3 py-1.5"
-          >
+            className="rounded-lg px-3 py-1.5">
             <Text>{t(`${translateKey}.${v}`)}</Text>
           </Badge>
         </Pressable>
@@ -80,7 +79,7 @@ export function EditAboutSheet({ visible, onClose, initialData }: Props) {
       {
         onSuccess: () => onClose(),
         onError: () => Alert.alert('Error'),
-      },
+      }
     );
   }
 
@@ -89,9 +88,8 @@ export function EditAboutSheet({ visible, onClose, initialData }: Props) {
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1">
         <View className="flex-row items-center justify-between px-4 py-3">
           <Button variant="ghost" onPress={onClose}>
             <Text>{tCommon('cancel')}</Text>
@@ -149,7 +147,7 @@ export function EditAboutSheet({ visible, onClose, initialData }: Props) {
           </View>
 
           <Label className="mt-4">{tFields('vereniging')}</Label>
-          <Input className="mb-8 mt-1" value={vereniging} onChangeText={setVereniging} />
+          <Input className="mt-1 mb-8" value={vereniging} onChangeText={setVereniging} />
         </ScrollView>
       </View>
     </Modal>

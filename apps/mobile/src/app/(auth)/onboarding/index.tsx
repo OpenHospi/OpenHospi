@@ -38,7 +38,7 @@ export default function OnboardingScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -60,7 +60,7 @@ export default function OnboardingScreen() {
   const progress = (clampedStep / ONBOARDING_TOTAL_STEPS) * 100;
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="bg-background flex-1">
       <View className="px-4 pt-4">
         <Text variant="large">{t('title')}</Text>
         <Text variant="muted" className="mt-1">

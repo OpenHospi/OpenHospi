@@ -34,7 +34,7 @@ export default function LanguagesStep({ onNext }: Props) {
     }
     submitLanguages.mutate(
       { languages: selected },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving languages') },
+      { onSuccess: onNext, onError: () => Alert.alert('Error saving languages') }
     );
   }
 
@@ -58,10 +58,9 @@ export default function LanguagesStep({ onNext }: Props) {
       </View>
 
       <Button
-        className="mb-8 mt-6"
+        className="mt-6 mb-8"
         onPress={handleSubmit}
-        disabled={submitLanguages.isPending || selected.length < MIN_LANGUAGES}
-      >
+        disabled={submitLanguages.isPending || selected.length < MIN_LANGUAGES}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

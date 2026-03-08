@@ -66,7 +66,7 @@ export default function PhotosStep({ onNext }: Props) {
           });
           Alert.alert('Upload failed. Please try again.');
         },
-      },
+      }
     );
   }
 
@@ -85,7 +85,7 @@ export default function PhotosStep({ onNext }: Props) {
                     resizeMode="cover"
                   />
                 ) : (
-                  <View className="h-16 w-16 items-center justify-center rounded-lg bg-muted">
+                  <View className="bg-muted h-16 w-16 items-center justify-center rounded-lg">
                     <Text variant="muted" className="text-2xl">
                       +
                     </Text>
@@ -98,7 +98,7 @@ export default function PhotosStep({ onNext }: Props) {
                       Uploading...
                     </Text>
                   )}
-                  {photo?.uploaded && <Text className="text-xs text-primary">Uploaded</Text>}
+                  {photo?.uploaded && <Text className="text-primary text-xs">Uploaded</Text>}
                 </View>
               </Card>
             </Pressable>
@@ -106,7 +106,7 @@ export default function PhotosStep({ onNext }: Props) {
         })}
       </View>
 
-      <Button className="mb-8 mt-6" onPress={onNext} disabled={!hasAtLeastOnePhoto}>
+      <Button className="mt-6 mb-8" onPress={onNext} disabled={!hasAtLeastOnePhoto}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

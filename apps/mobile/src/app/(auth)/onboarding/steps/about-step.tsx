@@ -69,7 +69,7 @@ export default function AboutStep({ onNext }: Props) {
         preferredCity,
         vereniging: vereniging.trim() || undefined,
       },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving data') },
+      { onSuccess: onNext, onError: () => Alert.alert('Error saving data') }
     );
   }
 
@@ -138,7 +138,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <Button className="mb-8 mt-6" onPress={handleSubmit} disabled={submitAbout.isPending}>
+      <Button className="mt-6 mb-8" onPress={handleSubmit} disabled={submitAbout.isPending}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

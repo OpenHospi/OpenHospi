@@ -44,8 +44,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
               )}
             </View>
             <Text
-              className={`ml-2 pb-4 text-sm ${isReached ? 'font-medium' : 'text-muted-foreground'}`}
-            >
+              className={`ml-2 pb-4 text-sm ${isReached ? 'font-medium' : 'text-muted-foreground'}`}>
               {t(step)}
             </Text>
           </View>
@@ -55,9 +54,9 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
       {isTerminal && (
         <View className="flex-row">
           <View className="items-center" style={{ width: 24 }}>
-            <View className="h-3 w-3 rounded-full bg-destructive" style={{ marginTop: 4 }} />
+            <View className="bg-destructive h-3 w-3 rounded-full" style={{ marginTop: 4 }} />
           </View>
-          <Text className="ml-2 text-sm font-medium text-destructive">{t(currentStatus)}</Text>
+          <Text className="text-destructive ml-2 text-sm font-medium">{t(currentStatus)}</Text>
         </View>
       )}
     </View>
@@ -94,7 +93,7 @@ export default function ApplicationDetailScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -102,7 +101,7 @@ export default function ApplicationDetailScreen() {
 
   if (!app) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background px-8">
+      <SafeAreaView className="bg-background flex-1 items-center justify-center px-8">
         <Text variant="muted" className="text-center">
           {t('errors.not_found')}
         </Text>
@@ -115,11 +114,10 @@ export default function ApplicationDetailScreen() {
     : null;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
+    <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}
-      >
+        contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}>
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
@@ -127,7 +125,7 @@ export default function ApplicationDetailScreen() {
             contentFit="cover"
           />
         ) : (
-          <View className="h-[200px] w-full items-center justify-center bg-muted">
+          <View className="bg-muted h-[200px] w-full items-center justify-center">
             <Text variant="muted" className="text-4xl">
               &#x1F3E0;
             </Text>
@@ -143,7 +141,7 @@ export default function ApplicationDetailScreen() {
             {app.roomHouseType ? ` · ${tEnums(`house_type.${app.roomHouseType}`)}` : ''}
             {app.roomSizeM2 ? ` · ${app.roomSizeM2}m\u00B2` : ''}
           </Text>
-          <Text className="mt-1 text-lg font-bold text-primary">
+          <Text className="text-primary mt-1 text-lg font-bold">
             {'\u20AC'}
             {app.roomRentPrice}
             {tCommon('perMonth')}
@@ -176,20 +174,18 @@ export default function ApplicationDetailScreen() {
           <Button
             variant="outline"
             className="mt-6"
-            onPress={() => router.push(`/(app)/room/${app.roomId}`)}
-          >
+            onPress={() => router.push(`/(app)/room/${app.roomId}`)}>
             <Text>{t('viewRoom')}</Text>
           </Button>
         </View>
       </ScrollView>
 
       {canWithdraw && (
-        <View className="absolute inset-x-0 bottom-0 border-t border-border bg-background px-4 pb-8 pt-3">
+        <View className="border-border bg-background absolute inset-x-0 bottom-0 border-t px-4 pt-3 pb-8">
           <Button
             variant="destructive"
             onPress={handleWithdraw}
-            disabled={withdrawMutation.isPending}
-          >
+            disabled={withdrawMutation.isPending}>
             <Text>{withdrawMutation.isPending ? '...' : t('withdraw')}</Text>
           </Button>
         </View>

@@ -26,7 +26,7 @@ export function EditBioSheet({ visible, onClose, initialBio }: Props) {
       {
         onSuccess: () => onClose(),
         onError: () => Alert.alert('Error'),
-      },
+      }
     );
   }
 
@@ -35,9 +35,8 @@ export function EditBioSheet({ visible, onClose, initialBio }: Props) {
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background p-4">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1 p-4">
         <View className="flex-row items-center justify-between pb-4">
           <Button variant="ghost" onPress={onClose}>
             <Text>{tCommon('cancel')}</Text>

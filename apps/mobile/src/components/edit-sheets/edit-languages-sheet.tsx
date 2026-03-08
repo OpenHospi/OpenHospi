@@ -36,7 +36,7 @@ export function EditLanguagesSheet({ visible, onClose, initialLanguages }: Props
     if (selected.length < MIN_LANGUAGES) return;
     updateProfile.mutate(
       { languages: selected },
-      { onSuccess: () => onClose(), onError: () => Alert.alert('Error') },
+      { onSuccess: () => onClose(), onError: () => Alert.alert('Error') }
     );
   }
 
@@ -45,9 +45,8 @@ export function EditLanguagesSheet({ visible, onClose, initialLanguages }: Props
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1">
         <View className="flex-row items-center justify-between px-4 py-3">
           <Button variant="ghost" onPress={onClose}>
             <Text>{tCommon('cancel')}</Text>
@@ -56,8 +55,7 @@ export function EditLanguagesSheet({ visible, onClose, initialLanguages }: Props
           <Button
             variant="ghost"
             onPress={handleSave}
-            disabled={updateProfile.isPending || selected.length < MIN_LANGUAGES}
-          >
+            disabled={updateProfile.isPending || selected.length < MIN_LANGUAGES}>
             <Text className="text-primary">{tCommon('save')}</Text>
           </Button>
         </View>
@@ -78,8 +76,7 @@ export function EditLanguagesSheet({ visible, onClose, initialLanguages }: Props
                 <Pressable key={lang} onPress={() => toggle(lang)}>
                   <Badge
                     variant={isSelected ? 'default' : 'outline'}
-                    className="rounded-lg px-3 py-1.5"
-                  >
+                    className="rounded-lg px-3 py-1.5">
                     <Text>{tEnums(lang)}</Text>
                   </Badge>
                 </Pressable>

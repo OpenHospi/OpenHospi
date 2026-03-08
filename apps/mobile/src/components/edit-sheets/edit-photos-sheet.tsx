@@ -47,7 +47,7 @@ export function EditPhotosSheet({ visible, onClose, photos }: Props) {
         },
         slot,
       },
-      { onError: () => Alert.alert('Upload failed') },
+      { onError: () => Alert.alert('Upload failed') }
     );
   }
 
@@ -63,9 +63,8 @@ export function EditPhotosSheet({ visible, onClose, photos }: Props) {
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1">
         <View className="flex-row items-center justify-between px-4 py-3">
           <Button variant="ghost" onPress={onClose}>
             <Text>{tCommon('close')}</Text>
@@ -93,7 +92,7 @@ export function EditPhotosSheet({ visible, onClose, photos }: Props) {
                       contentFit="cover"
                     />
                   ) : (
-                    <View className="h-16 w-16 items-center justify-center rounded-lg bg-muted">
+                    <View className="bg-muted h-16 w-16 items-center justify-center rounded-lg">
                       <Text variant="muted" className="text-2xl">
                         +
                       </Text>

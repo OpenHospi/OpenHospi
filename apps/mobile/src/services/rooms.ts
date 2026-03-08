@@ -7,7 +7,7 @@ import type { DiscoverFilters, DiscoverResult, RoomDetailResponse } from './type
 
 function buildRoomQueryString(
   filters: DiscoverFilters,
-  cursor?: { createdAt: string; id: string },
+  cursor?: { createdAt: string; id: string }
 ): string {
   const params = new URLSearchParams();
   if (filters.city) params.set('city', filters.city);
@@ -32,7 +32,7 @@ export function useRooms(filters: DiscoverFilters) {
     queryKey: queryKeys.rooms.list(filters),
     queryFn: ({ pageParam }) =>
       api.get<DiscoverResult>(
-        `/api/mobile/rooms${buildRoomQueryString(filters, pageParam as { createdAt: string; id: string } | undefined)}`,
+        `/api/mobile/rooms${buildRoomQueryString(filters, pageParam as { createdAt: string; id: string } | undefined)}`
       ),
     initialPageParam: undefined as { createdAt: string; id: string } | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

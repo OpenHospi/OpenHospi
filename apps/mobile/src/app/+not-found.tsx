@@ -7,7 +7,7 @@ export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Not Found' }} />
-      <View className="flex-1 items-center justify-center bg-background p-5">
+      <View className="bg-background flex-1 items-center justify-center p-5">
         <Text variant="large">Page not found</Text>
         <Link href={'/' as never} className="mt-4">
           <Text className="text-primary underline">Go back</Text>

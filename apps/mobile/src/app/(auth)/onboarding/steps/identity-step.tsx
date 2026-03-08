@@ -35,7 +35,7 @@ export default function IdentityStep({ onNext }: Props) {
       {
         onSuccess: () => setShowCodeInput(true),
         onError: () => Alert.alert(t('invalidData')),
-      },
+      }
     );
   }
 
@@ -48,7 +48,7 @@ export default function IdentityStep({ onNext }: Props) {
           onNext();
         },
         onError: () => Alert.alert(t('invalidCode')),
-      },
+      }
     );
   }
 
@@ -94,8 +94,7 @@ export default function IdentityStep({ onNext }: Props) {
           variant="link"
           className="mt-3"
           onPress={handleResend}
-          disabled={resendCode.isPending}
-        >
+          disabled={resendCode.isPending}>
           <Text>{t('resendCode')}</Text>
         </Button>
       </ScrollView>

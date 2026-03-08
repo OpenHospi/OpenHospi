@@ -34,7 +34,7 @@ export default function PersonalityStep({ onNext }: Props) {
     }
     submitPersonality.mutate(
       { lifestyleTags: selected },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving tags') },
+      { onSuccess: onNext, onError: () => Alert.alert('Error saving tags') }
     );
   }
 
@@ -62,10 +62,9 @@ export default function PersonalityStep({ onNext }: Props) {
       </View>
 
       <Button
-        className="mb-8 mt-6"
+        className="mt-6 mb-8"
         onPress={handleSubmit}
-        disabled={submitPersonality.isPending || selected.length < MIN_LIFESTYLE_TAGS}
-      >
+        disabled={submitPersonality.isPending || selected.length < MIN_LIFESTYLE_TAGS}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

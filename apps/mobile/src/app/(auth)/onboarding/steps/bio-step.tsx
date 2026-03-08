@@ -21,7 +21,7 @@ export default function BioStep({ onNext }: Props) {
   function handleSubmit() {
     submitBio.mutate(
       { bio: bio.trim() },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving bio') },
+      { onSuccess: onNext, onError: () => Alert.alert('Error saving bio') }
     );
   }
 

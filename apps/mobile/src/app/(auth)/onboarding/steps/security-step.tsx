@@ -66,8 +66,7 @@ export default function SecurityStep() {
                 return;
               }
               setStep('confirm');
-            }}
-          >
+            }}>
             <Text>{t('use_pin')}</Text>
           </Button>
         </>

@@ -46,7 +46,7 @@ export default function SettingsScreen() {
   const locale = i18n.language as Locale;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
+    <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
       <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 32 }}>
         <View className="px-4 pt-4">
           <Text variant="muted">{t('description')}</Text>
@@ -73,8 +73,8 @@ export default function SettingsScreen() {
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <View className="px-4 pb-2 pt-6">
-      <Text variant="muted" className="text-sm font-semibold uppercase tracking-wide">
+    <View className="px-4 pt-6 pb-2">
+      <Text variant="muted" className="text-sm font-semibold tracking-wide uppercase">
         {title}
       </Text>
     </View>
@@ -97,8 +97,7 @@ function LanguageSetting({
       <CardContent>
         <Pressable
           className="flex-row items-center justify-between"
-          onPress={() => setShowPicker(true)}
-        >
+          onPress={() => setShowPicker(true)}>
           <Text>{t('tabs.general')}</Text>
           <Text variant="muted">{LOCALE_CONFIG[locale].name}</Text>
         </Pressable>
@@ -107,8 +106,7 @@ function LanguageSetting({
       <Modal visible={showPicker} transparent animationType="fade">
         <Pressable
           className="flex-1 items-center justify-center bg-black/50"
-          onPress={() => setShowPicker(false)}
-        >
+          onPress={() => setShowPicker(false)}>
           <Card className="mx-8 w-full max-w-xs">
             <CardContent>
               {SUPPORTED_LOCALES.map((loc) => (
@@ -118,9 +116,8 @@ function LanguageSetting({
                   onPress={() => {
                     changeLanguage(loc);
                     setShowPicker(false);
-                  }}
-                >
-                  <Text className={locale === loc ? 'font-semibold text-primary' : ''}>
+                  }}>
+                  <Text className={locale === loc ? 'text-primary font-semibold' : ''}>
                     {LOCALE_CONFIG[loc].name}
                   </Text>
                 </Pressable>
@@ -221,8 +218,7 @@ function DataExportSetting({ t }: { t: TFunction }) {
           size="sm"
           className="self-start"
           onPress={() => exportData.mutate()}
-          disabled={exportData.isPending}
-        >
+          disabled={exportData.isPending}>
           <Text>{exportData.isPending ? '...' : t('dataExport.button')}</Text>
         </Button>
       </CardContent>
@@ -247,7 +243,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
           setDescription('');
           Alert.alert(t('privacy.dataRequest.success'));
         },
-      },
+      }
     );
   };
 
@@ -264,15 +260,14 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
           variant="outline"
           size="sm"
           className="self-start"
-          onPress={() => setShowModal(true)}
-        >
+          onPress={() => setShowModal(true)}>
           <Text>{t('privacy.dataRequest.submitButton')}</Text>
         </Button>
       </CardContent>
 
       <Modal visible={showModal} transparent animationType="slide">
         <View className="flex-1 justify-end bg-black/50">
-          <View className="rounded-t-2xl bg-card px-4 pb-8 pt-6">
+          <View className="bg-card rounded-t-2xl px-4 pt-6 pb-8">
             <Text variant="large" className="mb-4">
               {t('privacy.dataRequest.title')}
             </Text>
@@ -282,15 +277,14 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
               <Pressable
                 key={type}
                 className={`mb-1 rounded-lg px-3 py-2.5 ${selectedType === type ? 'bg-primary/10' : ''}`}
-                onPress={() => setSelectedType(type)}
-              >
-                <Text className={selectedType === type ? 'font-medium text-primary' : ''}>
+                onPress={() => setSelectedType(type)}>
+                <Text className={selectedType === type ? 'text-primary font-medium' : ''}>
                   {t(`privacy.dataRequest.types.${type}`)}
                 </Text>
               </Pressable>
             ))}
 
-            <Label className="mb-2 mt-3">{t('privacy.dataRequest.descriptionLabel')}</Label>
+            <Label className="mt-3 mb-2">{t('privacy.dataRequest.descriptionLabel')}</Label>
             <Textarea
               placeholder={t('privacy.dataRequest.descriptionPlaceholder')}
               value={description}
@@ -305,8 +299,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
               <Button
                 className="flex-1"
                 onPress={handleSubmit}
-                disabled={!selectedType || submitRequest.isPending}
-              >
+                disabled={!selectedType || submitRequest.isPending}>
                 <Text>{submitRequest.isPending ? '...' : tCommon('submit')}</Text>
               </Button>
             </View>
@@ -366,8 +359,7 @@ function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
                   size="sm"
                   className="border-destructive"
                   onPress={() => revokeSession.mutate(session.id)}
-                  disabled={revokeSession.isPending}
-                >
+                  disabled={revokeSession.isPending}>
                   <Text className="text-destructive">{t('account.sessions.revokeButton')}</Text>
                 </Button>
               )}
@@ -418,7 +410,7 @@ function DeleteAccountSetting({
   };
 
   return (
-    <Card className="mx-4 border-destructive/30">
+    <Card className="border-destructive/30 mx-4">
       <CardContent>
         <Text variant="muted" className="text-sm">
           {t('dangerZone.description')}
@@ -428,8 +420,7 @@ function DeleteAccountSetting({
           size="sm"
           className="mt-3 self-start"
           onPress={handleDelete}
-          disabled={deleteAccount.isPending}
-        >
+          disabled={deleteAccount.isPending}>
           <Text>{deleteAccount.isPending ? '...' : t('dangerZone.deleteButton')}</Text>
         </Button>
       </CardContent>

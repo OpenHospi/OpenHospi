@@ -36,7 +36,7 @@ export function EditLifestyleSheet({ visible, onClose, initialTags }: Props) {
     if (selected.length < MIN_LIFESTYLE_TAGS) return;
     updateProfile.mutate(
       { lifestyleTags: selected },
-      { onSuccess: () => onClose(), onError: () => Alert.alert('Error') },
+      { onSuccess: () => onClose(), onError: () => Alert.alert('Error') }
     );
   }
 
@@ -45,9 +45,8 @@ export function EditLifestyleSheet({ visible, onClose, initialTags }: Props) {
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 bg-background">
+      onRequestClose={onClose}>
+      <View className="bg-background flex-1">
         <View className="flex-row items-center justify-between px-4 py-3">
           <Button variant="ghost" onPress={onClose}>
             <Text>{tCommon('cancel')}</Text>
@@ -56,8 +55,7 @@ export function EditLifestyleSheet({ visible, onClose, initialTags }: Props) {
           <Button
             variant="ghost"
             onPress={handleSave}
-            disabled={updateProfile.isPending || selected.length < MIN_LIFESTYLE_TAGS}
-          >
+            disabled={updateProfile.isPending || selected.length < MIN_LIFESTYLE_TAGS}>
             <Text className="text-primary">{tCommon('save')}</Text>
           </Button>
         </View>
@@ -78,8 +76,7 @@ export function EditLifestyleSheet({ visible, onClose, initialTags }: Props) {
                 <Pressable key={tag} onPress={() => toggle(tag)}>
                   <Badge
                     variant={isSelected ? 'default' : 'outline'}
-                    className="rounded-lg px-3 py-1.5"
-                  >
+                    className="rounded-lg px-3 py-1.5">
                     <Text>{tEnums(tag)}</Text>
                   </Badge>
                 </Pressable>

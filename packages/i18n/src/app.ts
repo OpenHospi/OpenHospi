@@ -1,23 +1,20 @@
-import type { Locale } from "./config";
+/**
+ * Static, pre-merged i18next resources for the mobile app.
+ *
+ * Import from `@openhospi/i18n/app` — single source of truth for which JSON
+ * files are bundled on mobile (shared + app per locale).
+ */
+import deApp from "../messages/de/app.json";
+import deShared from "../messages/de/shared.json";
+import enApp from "../messages/en/app.json";
+import enShared from "../messages/en/shared.json";
+import nlApp from "../messages/nl/app.json";
+import nlShared from "../messages/nl/shared.json";
 
-type Loader = () => Promise<Record<string, unknown>>;
+export const defaultNS = "translation" as const;
 
-const loaders: Record<Locale, Loader[]> = {
-  nl: [
-    () => import("../messages/nl/shared.json").then((m) => m.default),
-    () => import("../messages/nl/app.json").then((m) => m.default),
-  ],
-  en: [
-    () => import("../messages/en/shared.json").then((m) => m.default),
-    () => import("../messages/en/app.json").then((m) => m.default),
-  ],
-  de: [
-    () => import("../messages/de/shared.json").then((m) => m.default),
-    () => import("../messages/de/app.json").then((m) => m.default),
-  ],
-};
-
-export async function getMessages(locale: Locale) {
-  const parts = await Promise.all(loaders[locale].map((load) => load()));
-  return Object.assign({}, ...parts);
-}
+export const resources = {
+  nl: { translation: { ...nlShared, ...nlApp } },
+  en: { translation: { ...enShared, ...enApp } },
+  de: { translation: { ...deShared, ...deApp } },
+} as const;

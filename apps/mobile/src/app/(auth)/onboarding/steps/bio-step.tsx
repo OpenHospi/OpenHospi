@@ -2,14 +2,14 @@ import { MAX_BIO_LENGTH } from '@openhospi/shared/constants';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useSubmitBio } from '@/services/onboarding';
 
 type Props = { onNext: () => void };
 
 export default function BioStep({ onNext }: Props) {
-  const t = useTranslations('app.onboarding');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [bio, setBio] = useState('');
   const submitBio = useSubmitBio();

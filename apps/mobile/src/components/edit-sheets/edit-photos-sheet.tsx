@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { Alert, Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useDeleteProfilePhoto, useUploadProfilePhoto } from '@/services/profile';
 import type { ProfilePhoto } from '@/services/types';
 
@@ -14,8 +14,8 @@ type Props = {
 };
 
 export function EditPhotosSheet({ visible, onClose, photos }: Props) {
-  const tCommon = useTranslations('common.labels');
-  const t = useTranslations('app.onboarding.photoSlots');
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
 
   const uploadPhoto = useUploadProfilePhoto();
   const deletePhoto = useDeleteProfilePhoto();

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';
 
 type Props = { onNext: () => void };
 
 export default function IdentityStep({ onNext }: Props) {
-  const t = useTranslations('app.onboarding.identity');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.identity' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');

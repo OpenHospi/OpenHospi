@@ -3,15 +3,15 @@ import { LifestyleTag } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useSubmitPersonality } from '@/services/onboarding';
 
 type Props = { onNext: () => void };
 
 export default function PersonalityStep({ onNext }: Props) {
-  const t = useTranslations('app.onboarding');
-  const tEnums = useTranslations('enums.lifestyle_tag');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.lifestyle_tag' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [selected, setSelected] = useState<string[]>([]);
   const submitPersonality = useSubmitPersonality();

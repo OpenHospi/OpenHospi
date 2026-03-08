@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useApplicationDetail, useWithdrawApplication } from '@/services/applications';
 import type { ApplicationStatus } from '@openhospi/shared/enums';
 
@@ -12,7 +12,7 @@ const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const TIMELINE_STEPS: ApplicationStatus[] = ['sent', 'seen', 'liked', 'hospi', 'accepted'];
 
 function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus }) {
-  const t = useTranslations('app.applications.timeline');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.applications.timeline' });
 
   const terminalStatuses = ['rejected', 'not_chosen', 'withdrawn'] as const;
   const isTerminal = (terminalStatuses as readonly string[]).includes(currentStatus);
@@ -63,9 +63,9 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
 export default function ApplicationDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const t = useTranslations('app.applications');
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data: app, isPending } = useApplicationDetail(id);
   const withdrawMutation = useWithdrawApplication();

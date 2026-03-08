@@ -2,7 +2,7 @@ import { MAX_BIO_LENGTH } from '@openhospi/shared/constants';
 import { useState } from 'react';
 import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useUpdateProfile } from '@/services/profile';
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
 };
 
 export function EditBioSheet({ visible, onClose, initialBio }: Props) {
-  const t = useTranslations('app.onboarding');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const [bio, setBio] = useState(initialBio);
   const updateProfile = useUpdateProfile();
 

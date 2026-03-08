@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useOnboardingStatus } from '@/services/onboarding';
 
 import AboutStep from './steps/about-step';
@@ -25,8 +25,8 @@ const STEP_KEYS = [
 ] as const;
 
 export default function OnboardingScreen() {
-  const t = useTranslations('app.onboarding');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { data: status, isPending } = useOnboardingStatus();
   const [currentStep, setCurrentStep] = useState<number | null>(null);
 

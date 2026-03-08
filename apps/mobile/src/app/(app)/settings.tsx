@@ -15,7 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
-import { useLocale, useTranslations } from '@/i18n';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { authClient } from '@/lib/auth-client';
 import { registerForPushNotifications } from '@/lib/notifications';
 import {
@@ -38,11 +39,12 @@ const DATA_REQUEST_TYPES = [
 ] as const;
 
 export default function SettingsScreen() {
-  const t = useTranslations('app.settings');
-  const tCommon = useTranslations('common.labels');
-  const tConsent = useTranslations('app.consent');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.settings' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tConsent } = useTranslation('translation', { keyPrefix: 'app.consent' });
   const router = useRouter();
-  const { locale, setLocale } = useLocale();
+  const { i18n } = useTranslation();
+  const locale = i18n.language as Locale;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['bottom']}>
@@ -53,7 +55,7 @@ export default function SettingsScreen() {
 
         {/* General */}
         <SectionHeader title={t('tabs.general')} />
-        <LanguageSetting locale={locale} setLocale={setLocale} t={t} />
+        <LanguageSetting locale={locale} changeLanguage={i18n.changeLanguage} t={t} />
         <PushNotificationSetting t={t} />
 
         {/* Privacy & Data */}
@@ -86,12 +88,12 @@ function SectionHeader({ title }: { title: string }) {
 
 function LanguageSetting({
   locale,
-  setLocale,
+  changeLanguage,
   t,
 }: {
   locale: Locale;
-  setLocale: (l: Locale) => void;
-  t: ReturnType<typeof useTranslations>;
+  changeLanguage: (lng: string) => Promise<TFunction>;
+  t: TFunction;
 }) {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -116,7 +118,7 @@ function LanguageSetting({
                 key={loc}
                 className={`flex-row items-center gap-3 rounded-lg px-4 py-3 ${locale === loc ? 'bg-primary/10' : ''}`}
                 onPress={() => {
-                  setLocale(loc);
+                  changeLanguage(loc);
                   setShowPicker(false);
                 }}
               >
@@ -134,7 +136,7 @@ function LanguageSetting({
   );
 }
 
-function PushNotificationSetting({ t }: { t: ReturnType<typeof useTranslations> }) {
+function PushNotificationSetting({ t }: { t: TFunction }) {
   const [enabled, setEnabled] = useState(false);
 
   const handleToggle = useCallback(async (value: boolean) => {
@@ -153,13 +155,7 @@ function PushNotificationSetting({ t }: { t: ReturnType<typeof useTranslations> 
   );
 }
 
-function ConsentSection({
-  t,
-  tConsent,
-}: {
-  t: ReturnType<typeof useTranslations>;
-  tConsent: ReturnType<typeof useTranslations>;
-}) {
+function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) {
   const { data: consents, isPending } = useConsent();
   const updateConsent = useUpdateConsent();
 
@@ -212,7 +208,7 @@ function ConsentSection({
   );
 }
 
-function DataExportSetting({ t }: { t: ReturnType<typeof useTranslations> }) {
+function DataExportSetting({ t }: { t: TFunction }) {
   const exportData = useExportData();
 
   return (
@@ -232,13 +228,7 @@ function DataExportSetting({ t }: { t: ReturnType<typeof useTranslations> }) {
   );
 }
 
-function DataRequestSetting({
-  t,
-  tCommon,
-}: {
-  t: ReturnType<typeof useTranslations>;
-  tCommon: ReturnType<typeof useTranslations>;
-}) {
+function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [description, setDescription] = useState('');
@@ -340,13 +330,7 @@ function DataRequestSetting({
   );
 }
 
-function SessionsSection({
-  t,
-  tCommon,
-}: {
-  t: ReturnType<typeof useTranslations>;
-  tCommon: ReturnType<typeof useTranslations>;
-}) {
+function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
   const { data: sessions, isPending } = useSessions();
   const revokeSession = useRevokeSession();
 
@@ -417,8 +401,8 @@ function DeleteAccountSetting({
   tCommon,
   router,
 }: {
-  t: ReturnType<typeof useTranslations>;
-  tCommon: ReturnType<typeof useTranslations>;
+  t: TFunction;
+  tCommon: TFunction;
   router: ReturnType<typeof useRouter>;
 }) {
   const deleteAccount = useDeleteAccount();

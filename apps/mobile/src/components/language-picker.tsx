@@ -1,11 +1,11 @@
-import { LOCALE_CONFIG, SUPPORTED_LOCALES } from '@openhospi/i18n';
+import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, Text, View } from 'react-native';
 
-import { useLocale } from '@/i18n';
-
 export function LanguagePicker() {
-  const { locale, setLocale } = useLocale();
+  const { i18n } = useTranslation();
+  const locale = i18n.language as Locale;
   const [visible, setVisible] = useState(false);
 
   return (
@@ -38,7 +38,7 @@ export function LanguagePicker() {
                   key={loc}
                   className={`flex-row items-center gap-3 rounded-xl px-4 py-3 ${isSelected ? 'bg-primary/10' : ''}`}
                   onPress={() => {
-                    setLocale(loc);
+                    i18n.changeLanguage(loc);
                     setVisible(false);
                   }}
                 >

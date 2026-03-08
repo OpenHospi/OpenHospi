@@ -3,7 +3,7 @@ import { LifestyleTag } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useUpdateProfile } from '@/services/profile';
 
 type Props = {
@@ -13,9 +13,9 @@ type Props = {
 };
 
 export function EditLifestyleSheet({ visible, onClose, initialTags }: Props) {
-  const tEnums = useTranslations('enums.lifestyle_tag');
-  const tCommon = useTranslations('common.labels');
-  const t = useTranslations('app.onboarding');
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.lifestyle_tag' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
 
   const [selected, setSelected] = useState<string[]>(initialTags);
   const updateProfile = useUpdateProfile();

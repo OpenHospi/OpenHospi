@@ -2,7 +2,7 @@ import { db, withRLS } from "@openhospi/database";
 import { notifications, profiles } from "@openhospi/database/schema";
 import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import type { Locale } from "@openhospi/i18n";
-import { getMessages } from "@openhospi/i18n/app";
+import { getMessages } from "@openhospi/i18n/web";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 

@@ -2,7 +2,7 @@ import { City, Gender, StudyLevel } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useSubmitAbout } from '@/services/onboarding';
 
 type Props = { onNext: () => void };
@@ -40,10 +40,12 @@ function EnumPicker({
 }
 
 export default function AboutStep({ onNext }: Props) {
-  const t = useTranslations('app.onboarding.fields');
-  const tPlaceholders = useTranslations('app.onboarding.placeholders');
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.fields' });
+  const { t: tPlaceholders } = useTranslation('translation', {
+    keyPrefix: 'app.onboarding.placeholders',
+  });
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [gender, setGender] = useState<string | null>(null);
   const [birthDate, setBirthDate] = useState('');

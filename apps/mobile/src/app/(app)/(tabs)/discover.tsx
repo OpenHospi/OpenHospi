@@ -4,16 +4,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { FilterSheet } from '@/components/filter-sheet';
 import { RoomCard } from '@/components/room-card';
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useRooms } from '@/services/rooms';
 import type { DiscoverFilters, DiscoverRoom } from '@/services/types';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 
 export default function DiscoverScreen() {
-  const t = useTranslations('app.discover');
-  const tCommon = useTranslations('common.labels');
-  const tFilters = useTranslations('app.discover.filters');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.discover' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tFilters } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
 
   const [filters, setFilters] = useState<DiscoverFilters>({});
   const [filterVisible, setFilterVisible] = useState(false);

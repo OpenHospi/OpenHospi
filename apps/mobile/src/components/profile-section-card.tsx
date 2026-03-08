@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   title: string;
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export function ProfileSectionCard({ title, onEdit, children }: Props) {
-  const tCommon = useTranslations('common.labels');
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   return (
     <View className="rounded-xl border border-border bg-card p-4">

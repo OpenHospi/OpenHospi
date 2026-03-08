@@ -3,10 +3,10 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 export default function SecurityStep() {
-  const t = useTranslations('app.onboarding.security');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
   const router = useRouter();
 
   const [pin, setPin] = useState('');

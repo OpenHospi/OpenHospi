@@ -2,7 +2,7 @@ import { City, Furnishing, HouseType, RoomFeature, LocationTag } from '@openhosp
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import type { DiscoverFilters } from '@/services/types';
 
 type Props = {
@@ -50,9 +50,9 @@ function ChipSelect({
 }
 
 export function FilterSheet({ visible, onClose, filters: initialFilters, onApply }: Props) {
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
-  const tDiscover = useTranslations('app.discover.filters');
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
 
   const [filters, setFilters] = useState<DiscoverFilters>(initialFilters);
 

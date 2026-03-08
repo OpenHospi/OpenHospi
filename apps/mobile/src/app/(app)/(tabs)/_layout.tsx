@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Platform, useColorScheme } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { THEME } from '@/lib/theme';
 
 function TabIcon({
@@ -22,8 +22,8 @@ function TabIcon({
 }
 
 export default function TabLayout() {
-  const t = useTranslations('common.labels');
-  const tBreadcrumbs = useTranslations('breadcrumbs');
+  const { t } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tBreadcrumbs } = useTranslation('translation', { keyPrefix: 'breadcrumbs' });
   const colorScheme = useColorScheme();
   const colors = colorScheme === 'dark' ? THEME.dark : THEME.light;
 

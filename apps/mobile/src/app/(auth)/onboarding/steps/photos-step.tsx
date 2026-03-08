@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useUploadProfilePhoto } from '@/services/profile';
 
 type Props = { onNext: () => void };
@@ -13,8 +13,8 @@ type PhotoSlot = { uri: string; uploading: boolean; uploaded: boolean } | null;
 const SLOT_KEYS = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'] as const;
 
 export default function PhotosStep({ onNext }: Props) {
-  const t = useTranslations('app.onboarding.photoSlots');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [slots, setSlots] = useState<PhotoSlot[]>(Array(MAX_PROFILE_PHOTOS).fill(null));
   const uploadPhoto = useUploadProfilePhoto();

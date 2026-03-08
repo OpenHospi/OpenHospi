@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import type { DiscoverRoom } from '@/services/types';
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
 
 export function RoomCard({ room, supabaseUrl }: Props) {
   const router = useRouter();
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const coverUrl = room.coverPhotoUrl
     ? `${supabaseUrl}/storage/v1/object/public/room-photos/${room.coverPhotoUrl}`

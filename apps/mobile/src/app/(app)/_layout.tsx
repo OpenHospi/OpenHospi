@@ -1,10 +1,10 @@
 import { Stack } from 'expo-router';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 export default function AppLayout() {
-  const t = useTranslations('app.applications');
-  const tSettings = useTranslations('app.settings');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
+  const { t: tSettings } = useTranslation('translation', { keyPrefix: 'app.settings' });
 
   return (
     <Stack>

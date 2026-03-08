@@ -1,11 +1,11 @@
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 export default function MyRoomsScreen() {
-  const tBreadcrumbs = useTranslations('breadcrumbs');
-  const tCommon = useTranslations('common.labels');
+  const { t: tBreadcrumbs } = useTranslation('translation', { keyPrefix: 'breadcrumbs' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   return (
     <SafeAreaView className="flex-1 bg-background">

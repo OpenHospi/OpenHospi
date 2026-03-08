@@ -2,7 +2,7 @@ import { City, Gender, StudyLevel } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useUpdateProfile } from '@/services/profile';
 
 type Props = {
@@ -51,9 +51,9 @@ function ChipPicker({
 }
 
 export function EditAboutSheet({ visible, onClose, initialData }: Props) {
-  const tFields = useTranslations('app.onboarding.fields');
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
+  const { t: tFields } = useTranslation('translation', { keyPrefix: 'app.onboarding.fields' });
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [gender, setGender] = useState(initialData.gender);
   const [birthDate, setBirthDate] = useState(initialData.birthDate ?? '');

@@ -1,91 +1,49 @@
-import type { AppMessages, Locale } from '@openhospi/i18n';
-import { getMessages } from '@openhospi/i18n/app';
-import MessageFormat from 'intl-messageformat';
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getLocales } from 'expo-localization';
+import i18n from 'i18next';
+import ICU from 'i18next-icu';
+import { initReactI18next } from 'react-i18next';
 
-import { getDeviceLocale } from './locale';
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from '@openhospi/i18n';
+import { defaultNS, resources } from '@openhospi/i18n/app';
 
-interface I18nContextValue {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  messages: AppMessages;
-}
+const LOCALE_STORAGE_KEY = 'user-locale';
 
-const I18nContext = createContext<I18nContextValue | null>(null);
+function getDeviceLocale(): Locale {
+  const deviceLocales = getLocales();
+  if (!deviceLocales.length) return DEFAULT_LOCALE;
 
-// Cache for compiled MessageFormat instances
-const formatCache = new Map<string, MessageFormat>();
-
-function getNestedValue(obj: Record<string, unknown>, keyPath: string): string | undefined {
-  const keys = keyPath.split('.');
-  let current: unknown = obj;
-
-  for (const key of keys) {
-    if (current == null || typeof current !== 'object') return undefined;
-    current = (current as Record<string, unknown>)[key];
+  const languageCode = deviceLocales[0]?.languageCode;
+  if (languageCode && (SUPPORTED_LOCALES as readonly string[]).includes(languageCode)) {
+    return languageCode as Locale;
   }
 
-  return typeof current === 'string' ? current : undefined;
+  return DEFAULT_LOCALE;
 }
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(getDeviceLocale());
-  const [messages, setMessages] = useState<AppMessages | null>(null);
+i18n
+  .use(ICU)
+  .use(initReactI18next)
+  .init({
+    lng: getDeviceLocale(),
+    fallbackLng: DEFAULT_LOCALE,
+    supportedLngs: SUPPORTED_LOCALES,
+    defaultNS,
+    resources,
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
+  });
 
-  useEffect(() => {
-    formatCache.clear();
-    getMessages(locale).then((msgs) => setMessages(msgs as AppMessages));
-  }, [locale]);
-
-  if (!messages) {
-    return React.createElement(
-      View,
-      { style: { flex: 1, justifyContent: 'center', alignItems: 'center' } },
-      React.createElement(ActivityIndicator, { size: 'large' }),
-    );
+// Restore persisted locale (overrides device locale if set)
+AsyncStorage.getItem(LOCALE_STORAGE_KEY).then((stored) => {
+  if (stored && (SUPPORTED_LOCALES as readonly string[]).includes(stored)) {
+    i18n.changeLanguage(stored);
   }
+});
 
-  return React.createElement(
-    I18nContext.Provider,
-    { value: { locale, setLocale, messages } },
-    children,
-  );
-}
+// Persist locale changes
+i18n.on('languageChanged', (lng) => {
+  AsyncStorage.setItem(LOCALE_STORAGE_KEY, lng);
+});
 
-export function useLocale(): { locale: Locale; setLocale: (l: Locale) => void } {
-  const ctx = useContext(I18nContext);
-  if (!ctx) throw new Error('useLocale must be used within I18nProvider');
-  return { locale: ctx.locale, setLocale: ctx.setLocale };
-}
-
-export function useTranslations(namespace?: string) {
-  const ctx = useContext(I18nContext);
-  if (!ctx) throw new Error('useTranslations must be used within I18nProvider');
-
-  const { messages, locale } = ctx;
-
-  return useCallback(
-    (key: string, values?: Record<string, string | number | boolean>) => {
-      const fullKey = namespace ? `${namespace}.${key}` : key;
-      const template = getNestedValue(messages as unknown as Record<string, unknown>, fullKey);
-
-      if (template == null) {
-        if (__DEV__) console.warn(`[i18n] Missing translation: "${fullKey}"`);
-        return fullKey;
-      }
-
-      if (!values) return template;
-
-      const cacheKey = `${locale}:${fullKey}`;
-      let formatter = formatCache.get(cacheKey);
-      if (!formatter) {
-        formatter = new MessageFormat(template, locale);
-        formatCache.set(cacheKey, formatter);
-      }
-
-      return formatter.format(values) as string;
-    },
-    [messages, locale, namespace],
-  );
-}
+export default i18n;

@@ -1,5 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
-import { getMessages } from "@openhospi/i18n/app";
+import { getMessages } from "@openhospi/i18n/web";
 import { render } from "@react-email/render";
 import { createElement } from "react";
 

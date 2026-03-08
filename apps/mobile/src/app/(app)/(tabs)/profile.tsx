@@ -11,16 +11,16 @@ import { EditLanguagesSheet } from '@/components/edit-sheets/edit-languages-shee
 import { EditLifestyleSheet } from '@/components/edit-sheets/edit-lifestyle-sheet';
 import { EditPhotosSheet } from '@/components/edit-sheets/edit-photos-sheet';
 import { ProfileSectionCard } from '@/components/profile-section-card';
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { authClient } from '@/lib/auth-client';
 import { useProfile } from '@/services/profile';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 
 export default function ProfileScreen() {
-  const t = useTranslations('app.profile');
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
 
   const { data: profile, isPending } = useProfile();

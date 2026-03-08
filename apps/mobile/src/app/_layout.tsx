@@ -7,10 +7,11 @@ import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useRouter, useSegments, Stack } from 'expo-router';
 import React, { useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import { ActivityIndicator, Pressable, Text, View, useColorScheme } from 'react-native';
 
 import { useRunMigrations } from '@/db/migrations';
-import { I18nProvider } from '@/i18n';
+import i18n from '@/i18n';
 import { useSession } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { initSentry, Sentry } from '@/lib/sentry';
@@ -137,14 +138,14 @@ let RootLayout = function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>
+      <I18nextProvider i18n={i18n}>
         <ThemeProvider value={NAV_THEME[theme]}>
           <MigrationGate>
             <RootNavigator />
           </MigrationGate>
           <PortalHost />
         </ThemeProvider>
-      </I18nProvider>
+      </I18nextProvider>
     </QueryClientProvider>
   );
 };

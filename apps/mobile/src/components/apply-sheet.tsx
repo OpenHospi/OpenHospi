@@ -5,7 +5,7 @@ import {
 import { useState } from 'react';
 import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useApplyToRoom } from '@/services/rooms';
 
 type Props = {
@@ -15,8 +15,8 @@ type Props = {
 };
 
 export function ApplySheet({ visible, onClose, roomId }: Props) {
-  const t = useTranslations('app.roomDetail');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.roomDetail' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [message, setMessage] = useState('');
   const applyToRoom = useApplyToRoom();

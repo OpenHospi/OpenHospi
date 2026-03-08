@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
 import { useInvitations } from '@/services/invitations';
 import type { UserApplication, UserInvitation } from '@/services/types';
@@ -12,9 +12,9 @@ import type { UserApplication, UserInvitation } from '@/services/types';
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
-  const t = useTranslations('app.applications');
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
 
   const coverUrl = item.roomCoverPhotoUrl
     ? `${SUPABASE_URL}/storage/v1/object/public/room-photos/${item.roomCoverPhotoUrl}`
@@ -60,8 +60,8 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
 }
 
 function InvitationCard({ item }: { item: UserInvitation }) {
-  const tEnums = useTranslations('enums');
-  const t = useTranslations('app.invitations');
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
 
   return (
     <View className="rounded-xl border border-border bg-card p-3">
@@ -85,8 +85,8 @@ function InvitationCard({ item }: { item: UserInvitation }) {
 }
 
 export default function ApplicationsScreen() {
-  const t = useTranslations('app.applications');
-  const tInvitations = useTranslations('app.invitations');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
+  const { t: tInvitations } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const router = useRouter();
 
   const [tab, setTab] = useState<'applications' | 'invitations'>('applications');

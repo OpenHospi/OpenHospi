@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ApplySheet } from '@/components/apply-sheet';
 import { PhotoCarousel } from '@/components/photo-carousel';
-import { useTranslations } from '@/i18n';
+import { useTranslation } from 'react-i18next';
 import { useRoom } from '@/services/rooms';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
@@ -23,9 +23,9 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
 export default function RoomDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const t = useTranslations('app.roomDetail');
-  const tEnums = useTranslations('enums');
-  const tCommon = useTranslations('common.labels');
+  const { t } = useTranslation('translation', { keyPrefix: 'app.roomDetail' });
+  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data, isPending } = useRoom(id);
   const [applyVisible, setApplyVisible] = useState(false);

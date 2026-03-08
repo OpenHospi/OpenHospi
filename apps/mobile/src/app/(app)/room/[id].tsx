@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { Dot, Euro } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,21 +8,41 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
-import { ApplySheet } from '@/components/apply-sheet';
 import { PhotoCarousel } from '@/components/photo-carousel';
 import { useTranslation } from 'react-i18next';
 import { useRoom } from '@/services/rooms';
-
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 
 function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
   if (!value) return null;
   return (
     <View className="flex-row items-start justify-between py-1.5">
-      <Text variant="muted" className="text-sm">
-        {label}
-      </Text>
-      <Text variant="small">{value}</Text>
+      <Text className="text-muted-foreground text-sm">{label}</Text>
+      <Text className="text-sm">{value}</Text>
+    </View>
+  );
+}
+
+function PriceValue({ amount }: { amount: string | number }) {
+  return (
+    <View className="flex-row items-center">
+      <Euro size={12} className="text-foreground" />
+      <Text className="text-sm">{amount}</Text>
+    </View>
+  );
+}
+
+function PriceDetailRow({
+  label,
+  amount,
+}: {
+  label: string;
+  amount: string | number | null | undefined;
+}) {
+  if (!amount) return null;
+  return (
+    <View className="flex-row items-start justify-between py-1.5">
+      <Text className="text-muted-foreground text-sm">{label}</Text>
+      <PriceValue amount={amount} />
     </View>
   );
 }
@@ -35,7 +55,6 @@ export default function RoomDetailScreen() {
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data, isPending } = useRoom(id);
-  const [applyVisible, setApplyVisible] = useState(false);
 
   if (isPending) {
     return (
@@ -61,24 +80,26 @@ export default function RoomDetailScreen() {
   return (
     <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
       <ScrollView className="flex-1">
-        <PhotoCarousel photos={room.photos} supabaseUrl={SUPABASE_URL} bucket="room-photos" />
+        <PhotoCarousel photos={room.photos} bucket="room-photos" />
 
-        <View className="px-4 pt-4">
-          <Text variant="h3" className="text-left">
-            {room.title}
-          </Text>
-          <Text variant="muted" className="mt-1">
-            {tEnums(`city.${room.city}`)}
-            {room.neighborhood ? ` \u00B7 ${room.neighborhood}` : ''}
-          </Text>
+        <View className="space-y-6 px-4 pt-4">
+          <View>
+            <Text className="text-2xl font-bold tracking-tight">{room.title}</Text>
+            <View className="mt-1 flex-row items-center">
+              <Text variant="muted">{tEnums(`city.${room.city}`)}</Text>
+              {room.neighborhood && (
+                <>
+                  <Dot size={16} className="text-muted-foreground" />
+                  <Text variant="muted">{room.neighborhood}</Text>
+                </>
+              )}
+            </View>
+          </View>
 
-          <Card className="mt-4">
+          <Card>
             <CardContent>
-              <DetailRow label={t('rent')} value={`\u20AC${room.rentPrice}`} />
-              <DetailRow
-                label={t('serviceCosts')}
-                value={room.serviceCosts ? `\u20AC${room.serviceCosts}` : null}
-              />
+              <PriceDetailRow label={t('rent')} amount={room.rentPrice} />
+              <PriceDetailRow label={t('serviceCosts')} amount={room.serviceCosts} />
               <DetailRow
                 label={t('utilitiesIncluded')}
                 value={
@@ -87,29 +108,29 @@ export default function RoomDetailScreen() {
                     : null
                 }
               />
-              <DetailRow
-                label={t('deposit')}
-                value={room.deposit ? `\u20AC${room.deposit}` : null}
-              />
+              <PriceDetailRow label={t('deposit')} amount={room.deposit} />
               <Separator className="my-2" />
               <View className="flex-row items-center justify-between">
                 <Text className="font-semibold">{t('totalCost')}</Text>
-                <Text className="text-primary text-lg font-bold">
-                  \u20AC{room.totalCost}
-                  {tCommon('perMonth')}
-                </Text>
+                <View className="flex-row items-center">
+                  <Euro size={18} className="text-primary" />
+                  <Text className="text-primary text-lg font-bold">
+                    {room.totalCost}
+                    {tCommon('perMonth')}
+                  </Text>
+                </View>
               </View>
             </CardContent>
           </Card>
 
-          <Card className="mt-4">
+          <Card>
             <CardHeader>
               <CardTitle>{t('details')}</CardTitle>
             </CardHeader>
             <CardContent>
               <DetailRow
                 label={t('roomSize')}
-                value={room.roomSizeM2 ? `${room.roomSizeM2}m\u00B2` : null}
+                value={room.roomSizeM2 ? `${room.roomSizeM2}m²` : null}
               />
               <DetailRow
                 label={tEnums('house_type._label')}
@@ -135,7 +156,7 @@ export default function RoomDetailScreen() {
           </Card>
 
           {room.features.length > 0 && (
-            <View className="mt-4">
+            <View>
               <Text className="font-semibold">{t('features')}</Text>
               <View className="mt-2 flex-row flex-wrap gap-2">
                 {room.features.map((f) => (
@@ -148,7 +169,7 @@ export default function RoomDetailScreen() {
           )}
 
           {room.locationTags.length > 0 && (
-            <View className="mt-4">
+            <View>
               <Text className="font-semibold">{t('locationTags')}</Text>
               <View className="mt-2 flex-row flex-wrap gap-2">
                 {room.locationTags.map((tag) => (
@@ -160,7 +181,7 @@ export default function RoomDetailScreen() {
             </View>
           )}
 
-          <Card className="mt-4">
+          <Card>
             <CardHeader>
               <CardTitle>{t('whoWereLookingFor')}</CardTitle>
             </CardHeader>
@@ -191,25 +212,21 @@ export default function RoomDetailScreen() {
           </Card>
 
           {room.description && (
-            <View className="mt-4">
+            <View>
               <Text className="font-semibold">{t('description')}</Text>
               <Text className="mt-2 text-sm leading-5">{room.description}</Text>
             </View>
           )}
 
           {room.owner && (
-            <Card className="mt-4">
+            <Card>
               <CardContent>
-                <Text variant="muted" className="text-sm">
-                  {t('postedBy')}
-                </Text>
+                <Text className="text-muted-foreground text-sm">{t('postedBy')}</Text>
                 <Text className="mt-1 font-medium">
                   {room.owner.firstName} {room.owner.lastName}
                 </Text>
                 {room.owner.studyProgram && (
-                  <Text variant="muted" className="text-sm">
-                    {room.owner.studyProgram}
-                  </Text>
+                  <Text className="text-muted-foreground text-sm">{room.owner.studyProgram}</Text>
                 )}
               </CardContent>
             </Card>
@@ -228,13 +245,15 @@ export default function RoomDetailScreen() {
             <Text>{t('viewApplication')}</Text>
           </Button>
         ) : (
-          <Button className="rounded-xl py-3.5" onPress={() => setApplyVisible(true)}>
+          <Button
+            className="rounded-xl py-3.5"
+            onPress={() =>
+              router.push({ pathname: '/(app)/apply-sheet' as never, params: { roomId: id } })
+            }>
             <Text>{t('apply')}</Text>
           </Button>
         )}
       </View>
-
-      <ApplySheet visible={applyVisible} onClose={() => setApplyVisible(false)} roomId={id} />
     </SafeAreaView>
   );
 }

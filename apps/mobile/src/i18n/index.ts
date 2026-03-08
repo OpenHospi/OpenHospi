@@ -6,8 +6,7 @@ import { initReactI18next } from 'react-i18next';
 
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from '@openhospi/i18n';
 import { defaultNS, resources } from '@openhospi/i18n/app';
-
-const LOCALE_STORAGE_KEY = 'user-locale';
+import { LOCALE_STORAGE_KEY } from '@/lib/constants';
 
 function getDeviceLocale(): Locale {
   const deviceLocales = getLocales();

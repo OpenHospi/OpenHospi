@@ -1,9 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://openhospi.nl';
-
-// Better Auth Expo stores the session token with the storagePrefix from auth-client config
-const TOKEN_KEY = 'openhospi_bearer_token';
+import { API_BASE_URL, TOKEN_KEY } from '@/lib/constants';
 
 export class ApiError extends Error {
   constructor(

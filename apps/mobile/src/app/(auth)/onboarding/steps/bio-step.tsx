@@ -25,13 +25,12 @@ export default function BioStep({ onNext }: Props) {
     );
   }
 
-  function handleSkip() {
-    onNext();
-  }
-
   return (
-    <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <View className="gap-1.5">
+    <ScrollView
+      className="flex-1"
+      keyboardShouldPersistTaps="handled"
+      contentContainerClassName="space-y-4">
+      <View className="gap-2">
         <Label>{t('fields.bio')}</Label>
         <Textarea
           value={bio}
@@ -44,11 +43,11 @@ export default function BioStep({ onNext }: Props) {
         </Text>
       </View>
 
-      <View className="mt-6 gap-3">
+      <View className="gap-3">
         <Button onPress={handleSubmit} disabled={submitBio.isPending}>
           <Text>{tCommon('next')}</Text>
         </Button>
-        <Button variant="ghost" onPress={handleSkip}>
+        <Button variant="ghost" onPress={onNext}>
           <Text>{tCommon('skip')}</Text>
         </Button>
       </View>

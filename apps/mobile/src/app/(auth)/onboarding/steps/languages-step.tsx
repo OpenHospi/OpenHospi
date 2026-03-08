@@ -39,12 +39,12 @@ export default function LanguagesStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1">
-      <Text variant="muted">
+    <ScrollView className="flex-1" contentContainerClassName="space-y-4 pb-8">
+      <Text variant="muted" className="text-sm">
         {t('languageCounter', { count: selected.length, min: MIN_LANGUAGES, max: MAX_LANGUAGES })}
       </Text>
 
-      <View className="mt-3 flex-row flex-wrap gap-2">
+      <View className="flex-row flex-wrap gap-2">
         {Language.values.map((lang) => {
           const isSelected = selected.includes(lang);
           return (
@@ -58,7 +58,6 @@ export default function LanguagesStep({ onNext }: Props) {
       </View>
 
       <Button
-        className="mt-6 mb-8"
         onPress={handleSubmit}
         disabled={submitLanguages.isPending || selected.length < MIN_LANGUAGES}>
         <Text>{tCommon('next')}</Text>

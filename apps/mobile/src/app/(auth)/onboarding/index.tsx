@@ -61,18 +61,22 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaView className="bg-background flex-1">
-      <View className="px-4 pt-4">
-        <Text variant="large">{t('title')}</Text>
-        <Text variant="muted" className="mt-1">
-          {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
-        </Text>
+      <View className="space-y-6 px-4 pt-4">
+        <View>
+          <Text className="text-2xl font-bold tracking-tight">{t('title')}</Text>
+          <Text variant="muted" className="mt-1">
+            {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
+          </Text>
+        </View>
 
-        <Progress value={progress} className="mt-3" />
+        <Progress value={progress} />
 
-        <Text className="mt-3 font-semibold">{t(`steps.${stepKey}`)}</Text>
-        <Text variant="muted" className="mt-1">
-          {t(`stepDescriptions.step${clampedStep}`)}
-        </Text>
+        <View>
+          <Text className="font-semibold">{t(`steps.${stepKey}`)}</Text>
+          <Text variant="muted" className="mt-1 text-sm">
+            {t(`stepDescriptions.step${clampedStep}`)}
+          </Text>
+        </View>
       </View>
 
       <View className="flex-1 px-4 pt-4">

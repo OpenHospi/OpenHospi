@@ -1,16 +1,16 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { BottomSheet, type BottomSheetModal } from '@/components/bottom-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
@@ -49,7 +49,9 @@ export default function SettingsScreen() {
     <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
       <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 32 }}>
         <View className="px-4 pt-4">
-          <Text variant="muted">{t('description')}</Text>
+          <Text variant="muted" className="text-sm">
+            {t('description')}
+          </Text>
         </View>
 
         <SectionHeader title={t('tabs.general')} />
@@ -74,7 +76,7 @@ export default function SettingsScreen() {
 function SectionHeader({ title }: { title: string }) {
   return (
     <View className="px-4 pt-6 pb-2">
-      <Text variant="muted" className="text-sm font-semibold tracking-wide uppercase">
+      <Text className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
         {title}
       </Text>
     </View>
@@ -90,42 +92,36 @@ function LanguageSetting({
   changeLanguage: (lng: string) => Promise<TFunction>;
   t: TFunction;
 }) {
-  const [showPicker, setShowPicker] = useState(false);
+  const sheetRef = useRef<BottomSheetModal>(null);
 
   return (
     <Card className="mx-4">
       <CardContent>
         <Pressable
           className="flex-row items-center justify-between"
-          onPress={() => setShowPicker(true)}>
+          onPress={() => sheetRef.current?.present()}>
           <Text>{t('tabs.general')}</Text>
           <Text variant="muted">{LOCALE_CONFIG[locale].name}</Text>
         </Pressable>
       </CardContent>
 
-      <Modal visible={showPicker} transparent animationType="fade">
-        <Pressable
-          className="flex-1 items-center justify-center bg-black/50"
-          onPress={() => setShowPicker(false)}>
-          <Card className="mx-8 w-full max-w-xs">
-            <CardContent>
-              {SUPPORTED_LOCALES.map((loc) => (
-                <Pressable
-                  key={loc}
-                  className={`flex-row items-center gap-3 rounded-lg px-4 py-3 ${locale === loc ? 'bg-primary/10' : ''}`}
-                  onPress={() => {
-                    changeLanguage(loc);
-                    setShowPicker(false);
-                  }}>
-                  <Text className={locale === loc ? 'text-primary font-semibold' : ''}>
-                    {LOCALE_CONFIG[loc].name}
-                  </Text>
-                </Pressable>
-              ))}
-            </CardContent>
-          </Card>
-        </Pressable>
-      </Modal>
+      <BottomSheet ref={sheetRef} title={t('tabs.general')} enableDynamicSizing scrollable={false}>
+        <View className="px-4 py-2">
+          {SUPPORTED_LOCALES.map((loc) => (
+            <Pressable
+              key={loc}
+              className={`flex-row items-center gap-3 rounded-lg px-4 py-3 ${locale === loc ? 'bg-primary/10' : ''}`}
+              onPress={() => {
+                changeLanguage(loc);
+                sheetRef.current?.dismiss();
+              }}>
+              <Text className={locale === loc ? 'text-primary font-semibold' : ''}>
+                {LOCALE_CONFIG[loc].name}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </BottomSheet>
     </Card>
   );
 }
@@ -184,7 +180,7 @@ function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) 
             <Separator />
             <View className="flex-row items-center justify-between px-6 py-3">
               <View className="flex-1 pr-4">
-                <Text variant="small">{tConsent(`purposes.${purpose}.name`)}</Text>
+                <Text className="text-sm">{tConsent(`purposes.${purpose}.name`)}</Text>
                 <Text variant="muted" className="text-xs">
                   {tConsent(`purposes.${purpose}.description`)}
                 </Text>
@@ -227,7 +223,7 @@ function DataExportSetting({ t }: { t: TFunction }) {
 }
 
 function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
-  const [showModal, setShowModal] = useState(false);
+  const sheetRef = useRef<BottomSheetModal>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const submitRequest = useSubmitDataRequest();
@@ -238,7 +234,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
       { type: selectedType, description: description || undefined },
       {
         onSuccess: () => {
-          setShowModal(false);
+          sheetRef.current?.dismiss();
           setSelectedType(null);
           setDescription('');
           Alert.alert(t('privacy.dataRequest.success'));
@@ -260,18 +256,33 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
           variant="outline"
           size="sm"
           className="self-start"
-          onPress={() => setShowModal(true)}>
+          onPress={() => sheetRef.current?.present()}>
           <Text>{t('privacy.dataRequest.submitButton')}</Text>
         </Button>
       </CardContent>
 
-      <Modal visible={showModal} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-card rounded-t-2xl px-4 pt-6 pb-8">
-            <Text variant="large" className="mb-4">
-              {t('privacy.dataRequest.title')}
-            </Text>
-
+      <BottomSheet
+        ref={sheetRef}
+        title={t('privacy.dataRequest.title')}
+        snapPoints={['75%']}
+        footer={
+          <View className="flex-row gap-3">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onPress={() => sheetRef.current?.dismiss()}>
+              <Text>{tCommon('cancel')}</Text>
+            </Button>
+            <Button
+              className="flex-1"
+              onPress={handleSubmit}
+              disabled={!selectedType || submitRequest.isPending}>
+              <Text>{submitRequest.isPending ? '...' : tCommon('submit')}</Text>
+            </Button>
+          </View>
+        }>
+        <View className="space-y-4 px-4 pt-4">
+          <View>
             <Label className="mb-2">{t('privacy.dataRequest.typeLabel')}</Label>
             {DATA_REQUEST_TYPES.map((type) => (
               <Pressable
@@ -283,29 +294,19 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
                 </Text>
               </Pressable>
             ))}
+          </View>
 
-            <Label className="mt-3 mb-2">{t('privacy.dataRequest.descriptionLabel')}</Label>
+          <View>
+            <Label className="mb-2">{t('privacy.dataRequest.descriptionLabel')}</Label>
             <Textarea
               placeholder={t('privacy.dataRequest.descriptionPlaceholder')}
               value={description}
               onChangeText={setDescription}
               numberOfLines={3}
             />
-
-            <View className="mt-4 flex-row gap-3">
-              <Button variant="outline" className="flex-1" onPress={() => setShowModal(false)}>
-                <Text>{tCommon('cancel')}</Text>
-              </Button>
-              <Button
-                className="flex-1"
-                onPress={handleSubmit}
-                disabled={!selectedType || submitRequest.isPending}>
-                <Text>{submitRequest.isPending ? '...' : tCommon('submit')}</Text>
-              </Button>
-            </View>
           </View>
         </View>
-      </Modal>
+      </BottomSheet>
     </Card>
   );
 }
@@ -338,7 +339,7 @@ function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
             <View className="flex-row items-center justify-between px-6 py-3">
               <View className="flex-1 pr-3">
                 <View className="flex-row items-center gap-2">
-                  <Text variant="small" numberOfLines={1}>
+                  <Text className="text-sm" numberOfLines={1}>
                     {session.userAgent ?? 'Unknown device'}
                   </Text>
                   {session.isCurrent && (

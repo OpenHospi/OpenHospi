@@ -39,8 +39,8 @@ export default function PersonalityStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1">
-      <Text variant="muted">
+    <ScrollView className="flex-1" contentContainerClassName="space-y-4 pb-8">
+      <Text variant="muted" className="text-sm">
         {t('tagCounter', {
           count: selected.length,
           max: MAX_LIFESTYLE_TAGS,
@@ -48,7 +48,7 @@ export default function PersonalityStep({ onNext }: Props) {
         })}
       </Text>
 
-      <View className="mt-3 flex-row flex-wrap gap-2">
+      <View className="flex-row flex-wrap gap-2">
         {LifestyleTag.values.map((tag) => {
           const isSelected = selected.includes(tag);
           return (
@@ -62,7 +62,6 @@ export default function PersonalityStep({ onNext }: Props) {
       </View>
 
       <Button
-        className="mt-6 mb-8"
         onPress={handleSubmit}
         disabled={submitPersonality.isPending || selected.length < MIN_LIFESTYLE_TAGS}>
         <Text>{tCommon('next')}</Text>

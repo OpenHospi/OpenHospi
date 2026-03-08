@@ -1,5 +1,3 @@
-// Crypto polyfill must be imported before anything that uses crypto.subtle
-import '@/lib/crypto-polyfill';
 import '../../global.css';
 
 import { ThemeProvider } from '@react-navigation/native';
@@ -15,24 +13,34 @@ import { useRunMigrations } from '@/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
 import { useSession } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
-import { initSentry, Sentry } from '@/lib/sentry';
+// import * as Sentry from '@sentry/react-native';
 import { NAV_THEME } from '@/lib/theme';
 import { useOnboardingStatus } from '@/services/onboarding';
+// import { SENTRY_DSN } from '@/lib/constants';
+// import { isRunningInExpoGo } from 'expo';
 
-// Initialize Sentry before rendering
-initSentry();
+// const navigationIntegration = Sentry.reactNavigationIntegration({
+//   enableTimeToInitialDisplay: !isRunningInExpoGo(),
+// });
+//
+// Sentry.init({
+//   dsn: SENTRY_DSN,
+//   sendDefaultPii: false,
+//   enableAutoSessionTracking: true,
+//   tracesSampleRate: 0.2,
+//   attachScreenshot: false,
+//   attachViewHierarchy: false,
+//   enabled: !__DEV__,
+//   enableNativeFramesTracking: !isRunningInExpoGo(),
+// });
 
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
-        Something went wrong
-      </Text>
-      <Text style={{ fontSize: 14, color: '#666', marginBottom: 20, textAlign: 'center' }}>
-        {error.message}
-      </Text>
+    <View className="bg-background flex-1 items-center justify-center p-5">
+      <Text className="text-foreground mb-2.5 text-lg font-bold">Something went wrong</Text>
+      <Text className="text-muted-foreground mb-5 text-center text-sm">{error.message}</Text>
       <Pressable onPress={retry}>
-        <Text style={{ fontSize: 16, color: '#208AEF' }}>Try Again</Text>
+        <Text className="text-primary text-base">Try Again</Text>
       </Pressable>
     </View>
   );
@@ -47,7 +55,7 @@ function I18nGate({ children }: { children: React.ReactNode }) {
 
   if (!ready) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -61,7 +69,7 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View className="flex-1 items-center justify-center">
         <Text>Database migration failed: {error.message}</Text>
       </View>
     );
@@ -69,7 +77,7 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
 
   if (!success) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -114,7 +122,7 @@ function OnboardingGuard() {
 
   if (sessionPending || (session && onboardingPending)) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -128,7 +136,7 @@ function RootNavigator() {
 
   if (isPending) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -151,6 +159,12 @@ function RootNavigator() {
 }
 
 let RootLayout = function RootLayout() {
+  // const ref = useNavigationContainerRef();
+  // React.useEffect(() => {
+  //   if (ref) {
+  //     navigationIntegration.registerNavigationContainer(ref);
+  //   }
+  // }, [ref]);
   const { theme } = useUniwind();
 
   return (
@@ -187,4 +201,5 @@ if (__DEV__) {
   }
 }
 
-export default Sentry.wrap(RootLayout);
+export default RootLayout;
+// export default Sentry.wrap(RootLayout);

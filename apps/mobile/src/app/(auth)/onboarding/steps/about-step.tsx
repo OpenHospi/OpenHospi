@@ -74,8 +74,11 @@ export default function AboutStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <View className="gap-1.5">
+    <ScrollView
+      className="flex-1"
+      keyboardShouldPersistTaps="handled"
+      contentContainerClassName="space-y-4 pb-8">
+      <View className="gap-2">
         <Label>{t('gender')}</Label>
         <EnumPicker
           values={Gender.values}
@@ -86,7 +89,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>{t('birthDate')}</Label>
         <Input
           value={birthDate}
@@ -96,7 +99,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>{t('studyProgram')}</Label>
         <Input
           value={studyProgram}
@@ -105,7 +108,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>{t('studyLevel')}</Label>
         <EnumPicker
           values={StudyLevel.values}
@@ -116,7 +119,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>{t('preferredCity')}</Label>
         <EnumPicker
           values={City.values}
@@ -127,7 +130,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>
           {t('vereniging')} <Text variant="muted">({tCommon('optional')})</Text>
         </Label>
@@ -138,7 +141,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <Button className="mt-6 mb-8" onPress={handleSubmit} disabled={submitAbout.isPending}>
+      <Button onPress={handleSubmit} disabled={submitAbout.isPending}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

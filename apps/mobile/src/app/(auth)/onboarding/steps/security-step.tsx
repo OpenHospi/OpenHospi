@@ -35,15 +35,20 @@ export default function SecurityStep() {
   }
 
   return (
-    <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <Text className="font-semibold">{t('e2ee_title')}</Text>
-      <Text variant="muted" className="mt-2">
-        {t('e2ee_description')}
-      </Text>
+    <ScrollView
+      className="flex-1"
+      keyboardShouldPersistTaps="handled"
+      contentContainerClassName="space-y-6">
+      <View>
+        <Text className="font-semibold">{t('e2ee_title')}</Text>
+        <Text variant="muted" className="mt-2 text-sm">
+          {t('e2ee_description')}
+        </Text>
+      </View>
 
       {step === 'enter' ? (
         <>
-          <View className="mt-6 gap-1.5">
+          <View className="gap-2">
             <Label>{t('enter_pin')}</Label>
             <Input
               className="text-center text-2xl tracking-[8px]"
@@ -59,7 +64,6 @@ export default function SecurityStep() {
           </View>
 
           <Button
-            className="mt-6"
             onPress={() => {
               if (pin.length !== PIN_LENGTH) {
                 Alert.alert(t('pin_length_error'));
@@ -72,7 +76,7 @@ export default function SecurityStep() {
         </>
       ) : (
         <>
-          <View className="mt-6 gap-1.5">
+          <View className="gap-2">
             <Label>{t('confirm_pin')}</Label>
             <Input
               className="text-center text-2xl tracking-[8px]"
@@ -84,7 +88,7 @@ export default function SecurityStep() {
             />
           </View>
 
-          <Button className="mt-6" onPress={handleSetup} disabled={loading}>
+          <Button onPress={handleSetup} disabled={loading}>
             <Text>{t('setup_pin')}</Text>
           </Button>
         </>

@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { Platform, useColorScheme } from 'react-native';
+import { Platform } from 'react-native';
 
 import { useTranslation } from 'react-i18next';
-import { THEME } from '@/lib/theme';
+import { NAV_THEME } from '@/lib/theme';
+import { useUniwind } from 'uniwind';
 
 function TabIcon({
   iosName,
@@ -24,14 +25,14 @@ function TabIcon({
 export default function TabLayout() {
   const { t } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tBreadcrumbs } = useTranslation('translation', { keyPrefix: 'breadcrumbs' });
-  const colorScheme = useColorScheme();
-  const colors = colorScheme === 'dark' ? THEME.dark : THEME.light;
+  const { theme } = useUniwind();
+  const colors = NAV_THEME[(theme ?? 'light') as 'light' | 'dark'].colors;
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.mutedForeground,
+        tabBarInactiveTintColor: '#9ca3af',
         headerShown: false,
       }}>
       <Tabs.Screen

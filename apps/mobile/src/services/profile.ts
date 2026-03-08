@@ -2,12 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as SecureStore from 'expo-secure-store';
 
 import { api } from '@/lib/api-client';
+import { API_BASE_URL, TOKEN_KEY } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 import type { ProfileWithPhotos } from './types';
-
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://openhospi.nl';
-const TOKEN_KEY = 'openhospi_bearer_token';
 
 export function useProfile() {
   return useQuery({

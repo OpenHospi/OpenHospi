@@ -71,7 +71,7 @@ export default function PhotosStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView className="flex-1" contentContainerClassName="space-y-4 pb-8">
       <View className="gap-3">
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];
@@ -92,7 +92,7 @@ export default function PhotosStep({ onNext }: Props) {
                   </View>
                 )}
                 <View className="flex-1">
-                  <Text variant="small">{t(key)}</Text>
+                  <Text className="text-sm font-medium">{t(key)}</Text>
                   {photo?.uploading && (
                     <Text variant="muted" className="text-xs">
                       Uploading...
@@ -106,7 +106,7 @@ export default function PhotosStep({ onNext }: Props) {
         })}
       </View>
 
-      <Button className="mt-6 mb-8" onPress={onNext} disabled={!hasAtLeastOnePhoto}>
+      <Button onPress={onNext} disabled={!hasAtLeastOnePhoto}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

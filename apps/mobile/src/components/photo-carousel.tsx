@@ -3,8 +3,10 @@ import { useRef, useState } from 'react';
 import { Dimensions, FlatList, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
+import { getStoragePublicUrl } from '@/lib/storage-url';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const CAROUSEL_HEIGHT = (SCREEN_WIDTH * 3) / 4; // 4:3 aspect ratio
 
 type Photo = {
   id: string;
@@ -13,11 +15,10 @@ type Photo = {
 
 type Props = {
   photos: Photo[];
-  supabaseUrl: string;
-  bucket: string;
+  bucket: 'profile-photos' | 'room-photos';
 };
 
-export function PhotoCarousel({ photos, supabaseUrl, bucket }: Props) {
+export function PhotoCarousel({ photos, bucket }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
@@ -38,8 +39,8 @@ export function PhotoCarousel({ photos, supabaseUrl, bucket }: Props) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Image
-            source={{ uri: `${supabaseUrl}/storage/v1/object/public/${bucket}/${item.url}` }}
-            style={{ width: SCREEN_WIDTH, height: 320 }}
+            source={{ uri: getStoragePublicUrl(item.url, bucket) }}
+            style={{ width: SCREEN_WIDTH, height: CAROUSEL_HEIGHT }}
             contentFit="cover"
           />
         )}
@@ -51,7 +52,7 @@ export function PhotoCarousel({ photos, supabaseUrl, bucket }: Props) {
             {photos.map((_, i) => (
               <View
                 key={i}
-                className={`h-2.5 w-2.5 rounded-full ${i === activeIndex ? 'bg-white' : 'bg-white/50'}`}
+                className={`h-2 w-2 rounded-full ${i === activeIndex ? 'bg-white' : 'bg-white/50'}`}
               />
             ))}
           </View>

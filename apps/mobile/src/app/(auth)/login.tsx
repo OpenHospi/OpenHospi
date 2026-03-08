@@ -3,7 +3,7 @@ import { APP_NAME } from '@openhospi/shared/constants';
 import { StatusBar } from 'expo-status-bar';
 import { GraduationCap, Loader2 } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, useColorScheme, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,16 +15,12 @@ import { LanguagePicker } from '@/components/language-picker';
 import { Logo } from '@/components/logo';
 import { useTranslation } from 'react-i18next';
 import { authClient } from '@/lib/auth-client';
-import { THEME } from '@/lib/theme';
 
 export default function LoginScreen() {
   const { t } = useTranslation('translation', {
     keyPrefix: 'auth.login',
   });
-  const colorScheme = useColorScheme();
   const [isPending, setIsPending] = useState(false);
-
-  const colors = colorScheme === 'dark' ? THEME.dark : THEME.light;
 
   async function handleInAcademiaLogin() {
     setIsPending(true);
@@ -66,7 +62,7 @@ export default function LoginScreen() {
         entering={FadeInDown.duration(500).springify()}
         className="flex-1 items-center justify-center px-6">
         <View className="flex-row items-center gap-2">
-          <Logo size={28} color={colors.primary} />
+          <Logo size={28} />
           <Text className="text-primary text-xl font-semibold tracking-tight">{APP_NAME}</Text>
         </View>
 
@@ -82,9 +78,9 @@ export default function LoginScreen() {
               onPress={handleInAcademiaLogin}
               disabled={isPending}>
               {isPending ? (
-                <Loader2 size={20} color={colors.primaryForeground} />
+                <Loader2 size={20} className="text-primary-foreground" />
               ) : (
-                <GraduationCap size={20} color={colors.primaryForeground} />
+                <GraduationCap size={20} className="text-primary-foreground" />
               )}
               <Text>{t('inacademiaButton')}</Text>
             </Button>
@@ -108,9 +104,9 @@ export default function LoginScreen() {
                 onPress={handleGitHubLogin}
                 disabled={isPending}>
                 {isPending ? (
-                  <Loader2 size={20} color={colors.foreground} />
+                  <Loader2 size={20} className="text-foreground" />
                 ) : (
-                  <Ionicons name="logo-github" size={20} color={colors.foreground} />
+                  <Ionicons name="logo-github" size={20} className="text-foreground" />
                 )}
                 <Text>{t('devGithubButton')}</Text>
               </Button>

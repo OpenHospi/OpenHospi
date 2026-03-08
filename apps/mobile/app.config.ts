@@ -91,12 +91,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           'Allow OpenHospi to access your photos to upload profile and room images.',
       },
     ],
-    'react-native-quick-crypto',
+    // 'react-native-quick-crypto',
     [
       '@sentry/react-native/expo',
       {
-        organization: 'openhospi',
+        url: 'https://sentry.io/',
         project: 'mobile',
+        organization: 'stichting-openhospi',
       },
     ],
   ],
@@ -111,7 +112,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   experiments: {
     typedRoutes: true,
-    reactCompiler: true,
     autolinkingModuleResolution: true,
   },
   owner: 'openhospi',

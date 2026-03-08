@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { Dot, Euro, Home } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,9 +12,8 @@ import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
 import { useInvitations } from '@/services/invitations';
+import { getStoragePublicUrl } from '@/lib/storage-url';
 import type { UserApplication, UserInvitation } from '@/services/types';
-
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
@@ -21,7 +21,7 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
 
   const coverUrl = item.roomCoverPhotoUrl
-    ? `${SUPABASE_URL}/storage/v1/object/public/room-photos/${item.roomCoverPhotoUrl}`
+    ? getStoragePublicUrl(item.roomCoverPhotoUrl, 'room-photos')
     : null;
 
   return (
@@ -35,20 +35,25 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
           />
         ) : (
           <View className="bg-muted h-20 w-20 items-center justify-center rounded-lg">
-            <Text variant="muted" className="text-2xl">
-              &#x1F3E0;
-            </Text>
+            <Home size={24} className="text-muted-foreground" />
           </View>
         )}
-        <View className="flex-1 justify-center">
+        <View className="flex-1 justify-center gap-1">
           <Text className="font-semibold" numberOfLines={1}>
             {item.roomTitle}
           </Text>
-          <Text variant="muted" className="text-sm">
-            {tEnums(`city.${item.roomCity}`)} · \u20AC{item.roomRentPrice}
-            {tCommon('perMonth')}
-          </Text>
-          <View className="mt-1 flex-row items-center gap-2">
+          <View className="flex-row items-center">
+            <Text variant="muted" className="text-sm">
+              {tEnums(`city.${item.roomCity}`)}
+            </Text>
+            <Dot size={14} className="text-muted-foreground" />
+            <Euro size={12} className="text-muted-foreground" />
+            <Text variant="muted" className="text-sm">
+              {item.roomRentPrice}
+              {tCommon('perMonth')}
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-2">
             <Badge variant="secondary" className="rounded-full">
               <Text>{tEnums(`application_status.${item.status}`)}</Text>
             </Badge>
@@ -67,19 +72,25 @@ function InvitationCard({ item }: { item: UserInvitation }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
 
   return (
-    <Card className="p-3">
+    <Card className="space-y-1 p-3">
       <Text className="font-semibold">{item.eventTitle}</Text>
+      <View className="flex-row items-center">
+        <Text variant="muted" className="text-sm">
+          {item.eventDate}
+        </Text>
+        <Dot size={14} className="text-muted-foreground" />
+        <Text variant="muted" className="text-sm">
+          {item.timeStart}
+          {item.timeEnd ? ` - ${item.timeEnd}` : ''}
+        </Text>
+      </View>
       <Text variant="muted" className="text-sm">
-        {item.eventDate} · {item.timeStart}
-        {item.timeEnd ? ` - ${item.timeEnd}` : ''}
-      </Text>
-      <Text variant="muted" className="mt-1 text-sm">
         {item.roomTitle}
       </Text>
       {item.cancelledAt ? (
-        <Text className="text-destructive mt-1 text-sm">{t('cancelled')}</Text>
+        <Text className="text-destructive text-sm">{t('cancelled')}</Text>
       ) : (
-        <Badge variant="secondary" className="mt-1 self-start rounded-full">
+        <Badge variant="secondary" className="self-start rounded-full">
           <Text>{tEnums(`invitation_status.${item.status}`)}</Text>
         </Badge>
       )}
@@ -120,9 +131,7 @@ export default function ApplicationsScreen() {
   return (
     <SafeAreaView className="bg-background flex-1" edges={['top']}>
       <View className="px-4 pt-2 pb-2">
-        <Text variant="large" className="text-xl">
-          {t('title')}
-        </Text>
+        <Text className="text-2xl font-bold tracking-tight">{t('title')}</Text>
       </View>
 
       <Tabs value={tab} onValueChange={setTab} className="flex-1">
@@ -144,9 +153,11 @@ export default function ApplicationsScreen() {
             </View>
           ) : !applications?.length ? (
             <View className="flex-1 items-center justify-center px-8">
-              <Text variant="muted" className="text-center">
-                {t('empty')}
-              </Text>
+              <View className="items-center justify-center rounded-lg border border-dashed p-12">
+                <Text variant="muted" className="text-center">
+                  {t('empty')}
+                </Text>
+              </View>
             </View>
           ) : (
             <FlatList
@@ -164,9 +175,11 @@ export default function ApplicationsScreen() {
             </View>
           ) : !invitations?.length ? (
             <View className="flex-1 items-center justify-center px-8">
-              <Text variant="muted" className="text-center">
-                {tInvitations('empty')}
-              </Text>
+              <View className="items-center justify-center rounded-lg border border-dashed p-12">
+                <Text variant="muted" className="text-center">
+                  {tInvitations('empty')}
+                </Text>
+              </View>
             </View>
           ) : (
             <FlatList

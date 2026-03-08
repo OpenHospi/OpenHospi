@@ -59,20 +59,25 @@ export default function IdentityStep({ onNext }: Props) {
   if (verified) {
     return (
       <View className="items-center justify-center py-8">
-        <Text>{t('verified')}</Text>
+        <Text className="text-primary font-semibold">{t('verified')}</Text>
       </View>
     );
   }
 
   if (showCodeInput) {
     return (
-      <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-        <Text className="font-semibold">{t('enterCodeTitle')}</Text>
-        <Text variant="muted" className="mt-1">
-          {t('enterCodeDescription', { email })}
-        </Text>
+      <ScrollView
+        className="flex-1"
+        keyboardShouldPersistTaps="handled"
+        contentContainerClassName="space-y-4">
+        <View>
+          <Text className="font-semibold">{t('enterCodeTitle')}</Text>
+          <Text variant="muted" className="mt-1 text-sm">
+            {t('enterCodeDescription', { email })}
+          </Text>
+        </View>
 
-        <View className="mt-4 gap-1.5">
+        <View className="gap-2">
           <Label>{t('verificationCode')}</Label>
           <Input
             value={code}
@@ -86,15 +91,11 @@ export default function IdentityStep({ onNext }: Props) {
           </Text>
         </View>
 
-        <Button className="mt-4" onPress={handleVerifyCode} disabled={verifyEmail.isPending}>
+        <Button onPress={handleVerifyCode} disabled={verifyEmail.isPending}>
           <Text>{t('verifyCode')}</Text>
         </Button>
 
-        <Button
-          variant="link"
-          className="mt-3"
-          onPress={handleResend}
-          disabled={resendCode.isPending}>
+        <Button variant="link" onPress={handleResend} disabled={resendCode.isPending}>
           <Text>{t('resendCode')}</Text>
         </Button>
       </ScrollView>
@@ -102,8 +103,11 @@ export default function IdentityStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-      <View className="gap-1.5">
+    <ScrollView
+      className="flex-1"
+      keyboardShouldPersistTaps="handled"
+      contentContainerClassName="space-y-4">
+      <View className="gap-2">
         <Label>{t('firstName')}</Label>
         <Input
           value={firstName}
@@ -113,7 +117,7 @@ export default function IdentityStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>{t('lastName')}</Label>
         <Input
           value={lastName}
@@ -123,7 +127,7 @@ export default function IdentityStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="mt-4 gap-1.5">
+      <View className="gap-2">
         <Label>{t('email')}</Label>
         <Input
           value={email}
@@ -137,7 +141,7 @@ export default function IdentityStep({ onNext }: Props) {
         </Text>
       </View>
 
-      <Button className="mt-6" onPress={handleSubmitIdentity} disabled={submitIdentity.isPending}>
+      <Button onPress={handleSubmitIdentity} disabled={submitIdentity.isPending}>
         <Text>{tCommon('next')}</Text>
       </Button>
     </ScrollView>

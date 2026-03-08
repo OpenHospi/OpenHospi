@@ -3,15 +3,17 @@ import { genericOAuthClient, multiSessionClient, jwtClient } from 'better-auth/c
 import { expoClient } from '@better-auth/expo/client';
 import * as SecureStore from 'expo-secure-store';
 
+import { API_BASE_URL, APP_SCHEME, STORAGE_PREFIX } from '@/lib/constants';
+
 export const authClient = createAuthClient({
-  baseURL: process.env.EXPO_PUBLIC_API_URL ?? 'https://openhospi.nl',
+  baseURL: API_BASE_URL,
   plugins: [
     genericOAuthClient(),
     multiSessionClient(),
     jwtClient(),
     expoClient({
-      scheme: 'openhospi',
-      storagePrefix: 'openhospi',
+      scheme: APP_SCHEME,
+      storagePrefix: STORAGE_PREFIX,
       storage: SecureStore,
     }),
   ],

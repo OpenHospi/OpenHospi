@@ -2,24 +2,23 @@ import { SlidersHorizontal } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
-import { FilterSheet } from '@/components/filter-sheet';
 import { RoomCard } from '@/components/room-card';
 import { useTranslation } from 'react-i18next';
+import { useDiscoverFilters } from '@/context/discover-filters';
 import { useRooms } from '@/services/rooms';
-import type { DiscoverFilters, DiscoverRoom } from '@/services/types';
-
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
+import type { DiscoverRoom } from '@/services/types';
 
 export default function DiscoverScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const router = useRouter();
 
-  const [filters, setFilters] = useState<DiscoverFilters>({});
-  const [filterVisible, setFilterVisible] = useState(false);
+  const { filters } = useDiscoverFilters();
   const [searchText, setSearchText] = useState('');
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } = useRooms(filters);
@@ -39,8 +38,8 @@ export default function DiscoverScreen() {
 
   const renderItem = useCallback(
     ({ item }: { item: DiscoverRoom }) => (
-      <View className="px-4 pb-3">
-        <RoomCard room={item} supabaseUrl={SUPABASE_URL} />
+      <View className="px-4 pb-4">
+        <RoomCard room={item} />
       </View>
     ),
     []
@@ -48,7 +47,7 @@ export default function DiscoverScreen() {
 
   return (
     <SafeAreaView className="bg-background flex-1" edges={['top']}>
-      <View className="gap-2 px-4 pt-2 pb-2">
+      <View className="space-y-2 px-4 pt-2 pb-2">
         <View className="flex-row gap-2">
           <Input
             className="flex-1"
@@ -56,7 +55,10 @@ export default function DiscoverScreen() {
             onChangeText={setSearchText}
             placeholder={tCommon('search')}
           />
-          <Button variant="outline" size="icon" onPress={() => setFilterVisible(true)}>
+          <Button
+            variant="outline"
+            size="icon"
+            onPress={() => router.push('/(app)/filter-sheet' as never)}>
             <SlidersHorizontal size={18} className="text-foreground" />
           </Button>
         </View>
@@ -73,9 +75,11 @@ export default function DiscoverScreen() {
         </View>
       ) : filteredRooms.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8">
-          <Text variant="muted" className="text-center">
-            {t('empty')}
-          </Text>
+          <View className="items-center justify-center rounded-lg border border-dashed p-12">
+            <Text variant="muted" className="text-center">
+              {t('empty')}
+            </Text>
+          </View>
         </View>
       ) : (
         <FlatList
@@ -93,13 +97,6 @@ export default function DiscoverScreen() {
           }
         />
       )}
-
-      <FilterSheet
-        visible={filterVisible}
-        onClose={() => setFilterVisible(false)}
-        filters={filters}
-        onApply={setFilters}
-      />
     </SafeAreaView>
   );
 }

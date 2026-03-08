@@ -1,3 +1,4 @@
+import { Home } from 'lucide-react-native';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,9 +11,14 @@ export default function MyRoomsScreen() {
 
   return (
     <SafeAreaView className="bg-background flex-1">
-      <View className="flex-1 items-center justify-center gap-2">
-        <Text variant="h3">{tBreadcrumbs('my-rooms')}</Text>
-        <Text variant="muted">{tCommon('comingSoon')}</Text>
+      <View className="flex-1 items-center justify-center px-8">
+        <View className="items-center justify-center rounded-lg border border-dashed p-12">
+          <Home size={32} className="text-muted-foreground" />
+          <Text className="mt-4 text-lg font-semibold">{tBreadcrumbs('my-rooms')}</Text>
+          <Text variant="muted" className="mt-1 text-center text-sm">
+            {tCommon('comingSoon')}
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   );

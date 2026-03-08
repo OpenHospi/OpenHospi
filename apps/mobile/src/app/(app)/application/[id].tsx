@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Dot, Euro, Home } from 'lucide-react-native';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,10 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
+import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useApplicationDetail, useWithdrawApplication } from '@/services/applications';
 import type { ApplicationStatus } from '@openhospi/shared/enums';
-
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 
 const TIMELINE_STEPS: ApplicationStatus[] = ['sent', 'seen', 'liked', 'hospi', 'accepted'];
 
@@ -110,7 +110,7 @@ export default function ApplicationDetailScreen() {
   }
 
   const coverUrl = app.roomCoverPhotoUrl
-    ? `${SUPABASE_URL}/storage/v1/object/public/room-photos/${app.roomCoverPhotoUrl}`
+    ? getStoragePublicUrl(app.roomCoverPhotoUrl, 'room-photos')
     : null;
 
   return (
@@ -126,42 +126,53 @@ export default function ApplicationDetailScreen() {
           />
         ) : (
           <View className="bg-muted h-[200px] w-full items-center justify-center">
-            <Text variant="muted" className="text-4xl">
-              &#x1F3E0;
-            </Text>
+            <Home size={48} className="text-muted-foreground" />
           </View>
         )}
 
-        <View className="px-4 pt-4">
-          <Text variant="large" className="text-xl">
-            {app.roomTitle}
-          </Text>
-          <Text variant="muted" className="mt-1">
-            {tEnums(`city.${app.roomCity}`)}
-            {app.roomHouseType ? ` · ${tEnums(`house_type.${app.roomHouseType}`)}` : ''}
-            {app.roomSizeM2 ? ` · ${app.roomSizeM2}m\u00B2` : ''}
-          </Text>
-          <Text className="text-primary mt-1 text-lg font-bold">
-            {'\u20AC'}
-            {app.roomRentPrice}
-            {tCommon('perMonth')}
-          </Text>
+        <View className="space-y-6 px-4 pt-4">
+          <View>
+            <Text className="text-2xl font-bold tracking-tight">{app.roomTitle}</Text>
+            <View className="mt-1 flex-row items-center">
+              <Text variant="muted">{tEnums(`city.${app.roomCity}`)}</Text>
+              {app.roomHouseType && (
+                <>
+                  <Dot size={16} className="text-muted-foreground" />
+                  <Text variant="muted">{tEnums(`house_type.${app.roomHouseType}`)}</Text>
+                </>
+              )}
+              {app.roomSizeM2 && (
+                <>
+                  <Dot size={16} className="text-muted-foreground" />
+                  <Text variant="muted">{app.roomSizeM2}m²</Text>
+                </>
+              )}
+            </View>
+            <View className="mt-1 flex-row items-center">
+              <Euro size={18} className="text-primary" />
+              <Text className="text-primary text-lg font-bold">
+                {app.roomRentPrice}
+                {tCommon('perMonth')}
+              </Text>
+            </View>
+          </View>
 
-          <Badge variant="secondary" className="mt-3 self-start rounded-full">
-            <Text>{tEnums(`application_status.${app.status}`)}</Text>
-          </Badge>
+          <View>
+            <Badge variant="secondary" className="self-start rounded-full">
+              <Text>{tEnums(`application_status.${app.status}`)}</Text>
+            </Badge>
+            <Text variant="muted" className="mt-1 text-xs">
+              {t('appliedOn', { date: new Date(app.appliedAt).toLocaleDateString() })}
+            </Text>
+          </View>
 
-          <Text variant="muted" className="mt-1 text-xs">
-            {t('appliedOn', { date: new Date(app.appliedAt).toLocaleDateString() })}
-          </Text>
-
-          <View className="mt-6">
+          <View>
             <Text className="mb-3 font-semibold">{t('timeline.title')}</Text>
             <StatusTimeline currentStatus={app.status} />
           </View>
 
           {app.personalMessage && (
-            <View className="mt-6">
+            <View>
               <Text className="mb-2 font-semibold">{t('yourMessage')}</Text>
               <Card>
                 <CardContent>
@@ -171,10 +182,7 @@ export default function ApplicationDetailScreen() {
             </View>
           )}
 
-          <Button
-            variant="outline"
-            className="mt-6"
-            onPress={() => router.push(`/(app)/room/${app.roomId}`)}>
+          <Button variant="outline" onPress={() => router.push(`/(app)/room/${app.roomId}`)}>
             <Text>{t('viewRoom')}</Text>
           </Button>
         </View>

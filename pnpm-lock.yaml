@@ -56,6 +56,9 @@ importers:
       '@openhospi/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@openhospi/inacademia':
+        specifier: workspace:*
+        version: link:../../packages/inacademia
       '@openhospi/shared':
         specifier: workspace:*
         version: link:../../packages/shared

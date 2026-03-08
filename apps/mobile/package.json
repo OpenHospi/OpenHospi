@@ -19,6 +19,7 @@
     "@expo/vector-icons": "^15.1.1",
     "@hookform/resolvers": "^5.2.2",
     "@openhospi/i18n": "workspace:*",
+    "@openhospi/inacademia": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^7.10.1",

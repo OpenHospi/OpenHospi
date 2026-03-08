@@ -16,7 +16,7 @@ function CardHeader({ className, style, ...props }: ViewProps & React.RefAttribu
   return (
     <View
       style={[{ flexDirection: 'column', gap: 6, paddingHorizontal: 24 }, style]}
-      className={cn(className)}
+      className={className}
       {...props}
     />
   );
@@ -30,7 +30,7 @@ function CardTitle({
     <Text
       role="heading"
       aria-level={3}
-      className={cn('text-card-foreground leading-7 font-semibold', className)}
+      className={cn('text-card-foreground font-semibold leading-7', className)}
       {...props}
     />
   );
@@ -44,14 +44,14 @@ function CardDescription({
 }
 
 function CardContent({ className, style, ...props }: ViewProps & React.RefAttributes<View>) {
-  return <View style={[{ paddingHorizontal: 24 }, style]} className={cn(className)} {...props} />;
+  return <View style={[{ paddingHorizontal: 24 }, style]} className={className} {...props} />;
 }
 
 function CardFooter({ className, style, ...props }: ViewProps & React.RefAttributes<View>) {
   return (
     <View
       style={[{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24 }, style]}
-      className={cn(className)}
+      className={className}
       {...props}
     />
   );

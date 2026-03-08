@@ -1,6 +1,8 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { getInstitution } from '@openhospi/inacademia';
 import { Settings } from 'lucide-react-native';
+import { useMemo } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProfileSectionCard } from '@/components/profile-section-card';
 import { useTranslation } from 'react-i18next';
 import { authClient } from '@/lib/auth-client';
@@ -21,6 +24,14 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   const { data: profile, isPending } = useProfile();
+  const { i18n } = useTranslation();
+  const institution = useMemo(
+    () => (profile ? getInstitution(profile.institutionDomain) : null),
+    [profile]
+  );
+  const institutionName = institution
+    ? institution.name[i18n.language === 'nl' ? 'nl' : 'en']
+    : null;
 
   if (isPending) {
     return (
@@ -79,9 +90,32 @@ export default function ProfileScreen() {
           <Text style={{ marginTop: 12 }} className="text-foreground text-2xl font-bold">
             {profile.firstName} {profile.lastName}
           </Text>
-          <Text variant="muted" style={{ marginTop: 2 }} className="text-sm">
-            {profile.institutionDomain}
-          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 8,
+              marginTop: 8,
+            }}>
+            {institution && institutionName && (
+              <Tooltip delayDuration={150}>
+                <TooltipTrigger>
+                  <Badge variant="secondary" className="rounded-lg">
+                    <Text className="text-xs">{institution.short}</Text>
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <Text>{institutionName}</Text>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {profile.vereniging && (
+              <Badge variant="outline" className="rounded-lg">
+                <Text className="text-xs">{tEnums(`vereniging.${profile.vereniging}`)}</Text>
+              </Badge>
+            )}
+          </View>
         </View>
 
         <View style={{ gap: 16 }}>

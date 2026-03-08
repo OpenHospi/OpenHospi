@@ -1,37 +1,43 @@
-// Crypto polyfill must be imported before anything that uses crypto.subtle
-import '@/lib/crypto-polyfill';
-import '@/global.css';
+import '../global.css';
 
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
-import { ActivityIndicator, Text, View, useColorScheme } from 'react-native';
+import { useRouter, useSegments, Stack } from 'expo-router';
+import React, { useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { useUniwind } from 'uniwind';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
 import { useRunMigrations } from '@/db/migrations';
-import { NAV_THEME } from '@/lib/theme';
-import { initSentry, Sentry } from '@/lib/sentry';
+import i18n, { i18nReady } from '@/i18n';
+import { useSession } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
+import { NAV_THEME } from '@/lib/theme';
+import { useOnboardingStatus } from '@/services/onboarding';
 
-// Initialize Sentry before rendering
-initSentry();
+export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
+  return (
+    <View className="bg-background flex-1 items-center justify-center p-5">
+      <Text className="text-foreground mb-2.5 text-lg font-bold">Something went wrong</Text>
+      <Text className="text-muted-foreground mb-5 text-center text-sm">{error.message}</Text>
+      <Pressable onPress={retry}>
+        <Text className="text-primary text-base">Try Again</Text>
+      </Pressable>
+    </View>
+  );
+}
 
-function MigrationGate({ children }: { children: React.ReactNode }) {
-  const { success, error } = useRunMigrations();
+function I18nGate({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = React.useState(false);
 
-  if (error) {
+  React.useEffect(() => {
+    i18nReady.then(() => setReady(true));
+  }, []);
+
+  if (!ready) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Database migration failed: {error.message}</Text>
-      </View>
-    );
-  }
-
-  if (!success) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -40,19 +46,115 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function MigrationGate({ children }: { children: React.ReactNode }) {
+  const { success, error } = useRunMigrations();
+
+  if (error) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Database migration failed: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!success) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+  return <>{children}</>;
+}
+
+function OnboardingGuard() {
+  const { data: session, isPending: sessionPending } = useSession();
+  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
+  const router = useRouter();
+  const segments = useSegments();
+
+  useEffect(() => {
+    if (sessionPending) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    const inOnboarding = inAuthGroup && (segments as string[])[1] === 'onboarding';
+
+    if (!session) {
+      if (!inAuthGroup) {
+        router.replace('/(auth)/login');
+      }
+      return;
+    }
+
+    // Session exists — check onboarding
+    if (onboardingPending) return;
+
+    if (onboardingStatus && !onboardingStatus.isComplete) {
+      if (!inOnboarding) {
+        router.replace('/(auth)/onboarding' as never);
+      }
+      return;
+    }
+
+    // Complete — go to app
+    if (inAuthGroup) {
+      router.replace('/(app)/(tabs)/discover');
+    }
+  }, [session, sessionPending, onboardingStatus, onboardingPending, segments, router]);
+
+  if (sessionPending || (session && onboardingPending)) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return null;
+}
+
+function RootNavigator() {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <OnboardingGuard />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={!!session}>
+          <Stack.Screen name="(app)" />
+        </Stack.Protected>
+        <Stack.Protected guard={!session}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </>
+  );
+}
+
 let RootLayout = function RootLayout() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? 'dark' : 'light';
+  const { theme } = useUniwind();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={NAV_THEME[theme]}>
-        <MigrationGate>
-          <AnimatedSplashOverlay />
-          <AppTabs />
-        </MigrationGate>
-        <PortalHost />
-      </ThemeProvider>
+      <I18nGate>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
+            <MigrationGate>
+              <RootNavigator />
+            </MigrationGate>
+            <PortalHost />
+          </ThemeProvider>
+        </I18nextProvider>
+      </I18nGate>
     </QueryClientProvider>
   );
 };
@@ -75,4 +177,4 @@ if (__DEV__) {
   }
 }
 
-export default Sentry.wrap(RootLayout);
+export default RootLayout;

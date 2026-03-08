@@ -1,65 +1,30 @@
 import { DarkTheme, DefaultTheme, type Theme } from '@react-navigation/native';
 
-export const THEME = {
-  light: {
-    background: 'hsl(0 0% 100%)',
-    foreground: 'hsl(0 0% 3.9%)',
-    card: 'hsl(0 0% 100%)',
-    cardForeground: 'hsl(0 0% 3.9%)',
-    primary: 'hsl(0 0% 9%)',
-    primaryForeground: 'hsl(0 0% 98%)',
-    secondary: 'hsl(0 0% 96.1%)',
-    secondaryForeground: 'hsl(0 0% 9%)',
-    muted: 'hsl(0 0% 96.1%)',
-    mutedForeground: 'hsl(0 0% 45.1%)',
-    accent: 'hsl(0 0% 96.1%)',
-    accentForeground: 'hsl(0 0% 9%)',
-    destructive: 'hsl(0 84.2% 60.2%)',
-    border: 'hsl(0 0% 89.8%)',
-    input: 'hsl(0 0% 89.8%)',
-    ring: 'hsl(0 0% 63%)',
-  },
-  dark: {
-    background: 'hsl(0 0% 3.9%)',
-    foreground: 'hsl(0 0% 98%)',
-    card: 'hsl(0 0% 3.9%)',
-    cardForeground: 'hsl(0 0% 98%)',
-    primary: 'hsl(0 0% 98%)',
-    primaryForeground: 'hsl(0 0% 9%)',
-    secondary: 'hsl(0 0% 14.9%)',
-    secondaryForeground: 'hsl(0 0% 98%)',
-    muted: 'hsl(0 0% 14.9%)',
-    mutedForeground: 'hsl(0 0% 63.9%)',
-    accent: 'hsl(0 0% 14.9%)',
-    accentForeground: 'hsl(0 0% 98%)',
-    destructive: 'hsl(0 70.9% 59.4%)',
-    border: 'hsl(0 0% 14.9%)',
-    input: 'hsl(0 0% 14.9%)',
-    ring: 'hsl(300 0% 45%)',
-  },
-};
-
+/**
+ * Hex equivalents of the Soft Teal oklch palette from global.css.
+ * React Navigation requires hex/rgb strings for its theme colors.
+ */
 export const NAV_THEME: Record<'light' | 'dark', Theme> = {
   light: {
     ...DefaultTheme,
     colors: {
-      background: THEME.light.background,
-      border: THEME.light.border,
-      card: THEME.light.card,
-      notification: THEME.light.destructive,
-      primary: THEME.light.primary,
-      text: THEME.light.foreground,
+      background: '#f5fafa', // oklch(0.985 0.002 180)
+      border: '#d9ecec', // oklch(0.9 0.01 180)
+      card: '#ffffff', // oklch(1 0 0)
+      notification: '#dc2626', // oklch(0.577 0.245 27.325)
+      primary: '#0d9488', // oklch(0.55 0.12 180)
+      text: '#134e4a', // oklch(0.205 0.015 180)
     },
   },
   dark: {
     ...DarkTheme,
     colors: {
-      background: THEME.dark.background,
-      border: THEME.dark.border,
-      card: THEME.dark.card,
-      notification: THEME.dark.destructive,
-      primary: THEME.dark.primary,
-      text: THEME.dark.foreground,
+      background: '#0f2b2b', // oklch(0.145 0.015 180)
+      border: 'rgba(255,255,255,0.1)', // oklch(1 0 0 / 10%)
+      card: '#1a3d3d', // oklch(0.195 0.015 180)
+      notification: '#ef4444', // oklch(0.704 0.191 22.216)
+      primary: '#2dd4bf', // oklch(0.65 0.13 180)
+      text: '#e2f0f0', // oklch(0.94 0.01 180)
     },
   },
 };

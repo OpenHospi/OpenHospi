@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@react-email/preview-server": "5.2.9",
-    "@types/node": "^24",
     "@types/react": "^19",
     "eslint": "^9",
     "eslint-config-prettier": "^10.1.8",

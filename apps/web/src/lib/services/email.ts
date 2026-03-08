@@ -1,6 +1,6 @@
 import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import { renderEmail } from "@openhospi/email";
-import type { SupportedLocale } from "@openhospi/shared/constants";
+import type { Locale } from "@openhospi/i18n";
 import { createTransport } from "nodemailer";
 
 const transporter = createTransport({
@@ -37,7 +37,7 @@ export async function sendTemplatedEmail<T extends EmailTemplateName>(
   to: string,
   template: T,
   props: TemplatePropsMap[T],
-  locale: SupportedLocale,
+  locale: Locale,
 ) {
   const baseUrl = process.env.BETTER_AUTH_URL ?? "https://openhospi.nl";
   const { html, text, subject } = await renderEmail(template, props, locale, baseUrl);

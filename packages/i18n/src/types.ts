@@ -5,6 +5,3 @@ import type web from "../messages/nl/web.json";
 
 // Web app gets all 4 merged message files
 export type WebMessages = typeof shared & typeof web & typeof admin & typeof legal;
-
-// Mobile app gets shared + app messages (for future use)
-export type AppMessages = typeof shared & typeof web;

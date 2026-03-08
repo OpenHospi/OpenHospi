@@ -1,6 +1,6 @@
 import { db } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
-import { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
+import { SUPPORTED_LOCALES } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";

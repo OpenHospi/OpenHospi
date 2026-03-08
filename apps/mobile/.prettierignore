@@ -1,0 +1,4 @@
+dist
+.expo
+src/components/ui
+src/uniwind-types.d.ts

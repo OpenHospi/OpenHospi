@@ -1,5 +1,5 @@
+import type { Locale } from "@openhospi/i18n";
 import { APP_NAME, BRAND_COLOR } from "@openhospi/shared/constants";
-import type { SupportedLocale } from "@openhospi/shared/constants";
 import {
   Body,
   Container,
@@ -21,7 +21,7 @@ type BaseLayoutProps = {
   children: ReactNode;
   previewText?: string;
   baseUrl: string;
-  locale: SupportedLocale;
+  locale: Locale;
   messages: EmailMessages;
 };
 

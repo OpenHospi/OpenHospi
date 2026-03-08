@@ -1,6 +1,6 @@
 import type { Locale } from "@openhospi/i18n";
+import { DEFAULT_LOCALE } from "@openhospi/i18n";
 import { getInstitution } from "@openhospi/inacademia";
-import { DEFAULT_LOCALE } from "@openhospi/shared/constants";
 
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";

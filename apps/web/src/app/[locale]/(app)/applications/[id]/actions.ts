@@ -1,45 +1,19 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { applications } from "@openhospi/database/schema";
-import { ApplicationStatus, isValidApplicationTransition } from "@openhospi/shared/enums";
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth/server";
-import { logStatusTransition } from "@/lib/queries/application-history";
+import { withdrawApplicationForUser } from "@/lib/services/application-mutations";
 
 export async function withdrawApplication(applicationId: string) {
   const session = await requireSession();
 
-  return withRLS(session.user.id, async (tx) => {
-    const [app] = await tx
-      .select({ roomId: applications.roomId, status: applications.status })
-      .from(applications)
-      .where(and(eq(applications.id, applicationId), eq(applications.userId, session.user.id)));
-    if (!app) return { error: "not_found" as const };
+  const result = await withdrawApplicationForUser(session.user.id, applicationId);
 
-    if (
-      !isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.withdrawn)
-    ) {
-      return { error: "cannot_withdraw" as const };
-    }
-
-    await tx
-      .update(applications)
-      .set({ status: ApplicationStatus.withdrawn })
-      .where(eq(applications.id, applicationId));
-
-    await logStatusTransition(
-      tx,
-      applicationId,
-      app.status as ApplicationStatus,
-      ApplicationStatus.withdrawn,
-      session.user.id,
-    );
-
+  if ("success" in result) {
     revalidatePath(`/applications/${applicationId}`);
     revalidatePath("/applications");
-    return { success: true };
-  });
+  }
+
+  return result;
 }

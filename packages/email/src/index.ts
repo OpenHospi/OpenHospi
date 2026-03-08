@@ -1,5 +1,5 @@
-import { getMessages } from "@openhospi/i18n/app";
-import type { SupportedLocale } from "@openhospi/shared/constants";
+import type { Locale } from "@openhospi/i18n";
+import { getMessages } from "@openhospi/i18n/web";
 import { render } from "@react-email/render";
 import { createElement } from "react";
 
@@ -52,7 +52,7 @@ const TEMPLATE_COMPONENTS: Record<EmailTemplateName, React.ComponentType<any>> =
 export async function renderEmail<T extends EmailTemplateName>(
   template: T,
   props: TemplatePropsMap[T],
-  locale: SupportedLocale,
+  locale: Locale,
   baseUrl: string,
 ): Promise<{ html: string; text: string; subject: string }> {
   const messages = await getMessages(locale);

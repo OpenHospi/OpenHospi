@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { expo } from "@better-auth/expo";
 import { db } from "@openhospi/database";
 import * as schema from "@openhospi/database/schema";
+import { DEFAULT_LOCALE, type Locale } from "@openhospi/i18n";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -82,7 +83,7 @@ function createAuth() {
         });
 
         // Determine user locale from profile (fall back to nl)
-        let locale: "nl" | "en" | "de" = "nl";
+        let locale: Locale = DEFAULT_LOCALE;
         try {
           const [profile] = await db
             .select({ preferredLocale: schema.profiles.preferredLocale })

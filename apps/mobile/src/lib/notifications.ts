@@ -3,7 +3,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-import { apiClient } from './api-client';
+import { api } from './api-client';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -52,10 +52,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
     projectId: getProjectId(),
   });
 
-  await apiClient('/api/push-tokens', {
-    method: 'POST',
-    body: JSON.stringify({ expoPushToken: token }),
-  }).catch(console.error);
+  await api.post('/api/push-tokens', { expoPushToken: token }).catch(console.error);
 
   return token;
 }

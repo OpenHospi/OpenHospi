@@ -1,4 +1,4 @@
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from "@openhospi/shared/constants";
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "@openhospi/i18n";
 import { defineRouting } from "next-intl/routing";
 
 export const marketingRouting = defineRouting({

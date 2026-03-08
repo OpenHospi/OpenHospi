@@ -1,9 +1,9 @@
 import { db, withRLS } from "@openhospi/database";
 import { notifications, profiles } from "@openhospi/database/schema";
 import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
-import { getMessages } from "@openhospi/i18n/app";
+import type { Locale } from "@openhospi/i18n";
+import { getMessages } from "@openhospi/i18n/web";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
-import type { SupportedLocale } from "@openhospi/shared/constants";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 
 import { sendTemplatedEmail } from "@/lib/services/email";
@@ -43,7 +43,7 @@ export async function notifyUser(
     .from(profiles)
     .where(eq(profiles.id, userId));
 
-  const locale = (profile?.preferredLocale ?? "nl") as SupportedLocale;
+  const locale = (profile?.preferredLocale ?? "nl") as Locale;
   const messages = await getMessages(locale);
 
   const title = resolveMessageKey(messages, `${messageKey}.title`, params);

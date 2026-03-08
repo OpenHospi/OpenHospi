@@ -1,4 +1,3 @@
-import type { SUPPORTED_LOCALES } from "@openhospi/shared/constants";
-
-export type Locale = (typeof SUPPORTED_LOCALES)[number];
-export type { WebMessages, AppMessages } from "./types.js";
+export { DEFAULT_LOCALE, SUPPORTED_LOCALES, LOCALE_CONFIG, localePathPattern } from "./config";
+export type { Locale } from "./config";
+export type { WebMessages } from "./types";

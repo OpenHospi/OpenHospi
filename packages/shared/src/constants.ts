@@ -1,10 +1,6 @@
 export const APP_NAME = "OpenHospi";
 export const BRAND_COLOR = "#0D9488";
 
-export const DEFAULT_LOCALE = "nl" as const;
-export const SUPPORTED_LOCALES = ["nl", "en", "de"] as const;
-export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
-
 // Length limits (match SQL CHECK constraints)
 export const MAX_BIO_LENGTH = 1000;
 export const MAX_PERSONAL_MESSAGE_LENGTH = 2000;

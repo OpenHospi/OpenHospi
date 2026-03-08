@@ -1,10 +1,10 @@
+import type { Locale } from "@openhospi/i18n";
 import type shared from "@openhospi/i18n/messages/nl/shared.json";
-import type { SupportedLocale } from "@openhospi/shared/constants";
 
 export type EmailMessages = typeof shared;
 
 export type BaseEmailProps = {
-  locale: SupportedLocale;
+  locale: Locale;
   baseUrl: string;
   messages: EmailMessages;
 };

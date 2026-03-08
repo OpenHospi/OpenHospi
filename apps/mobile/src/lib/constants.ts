@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://openhospi.nl';
 export const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 export const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? '';
+export const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
 
 // ── App Config (from expo-constants) ─────────────────────────
 const expoConfig = Constants.expoConfig;

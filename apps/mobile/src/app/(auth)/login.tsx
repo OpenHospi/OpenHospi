@@ -8,7 +8,6 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
 import { LanguagePicker } from '@/components/language-picker';
@@ -51,72 +50,82 @@ export default function LoginScreen() {
   }
 
   return (
-    <SafeAreaView className="bg-background flex-1">
+    <SafeAreaView style={{ flex: 1 }} className="bg-background">
       <StatusBar style="auto" />
 
-      <View className="items-end px-4 pt-2">
+      <View className="items-end px-6 pt-4">
         <LanguagePicker />
       </View>
 
-      <Animated.View
-        entering={FadeInDown.duration(500).springify()}
-        className="flex-1 items-center justify-center px-6">
-        <View className="flex-row items-center gap-2">
-          <Logo size={28} />
-          <Text className="text-primary text-xl font-semibold tracking-tight">{APP_NAME}</Text>
-        </View>
+      <View
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
+        <Animated.View
+          entering={FadeInDown.duration(500).springify()}
+          style={{ width: '100%', maxWidth: 448, alignItems: 'center' }}>
+          {/* Logo */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 32 }}>
+            <Logo size={40} />
+            <Text className="text-primary text-2xl font-semibold tracking-tight">{APP_NAME}</Text>
+          </View>
 
-        <Card className="mt-6 w-full">
-          <CardHeader className="items-center">
-            <CardTitle className="text-2xl">{t('title')}</CardTitle>
-            <CardDescription>{t('description')}</CardDescription>
-          </CardHeader>
+          {/* Card */}
+          <View
+            style={{ width: '100%' }}
+            className="bg-card border-border rounded-xl border py-6 shadow-sm shadow-black/5">
+            {/* Header */}
+            <View style={{ alignItems: 'center', gap: 6, paddingHorizontal: 24, marginBottom: 24 }}>
+              <Text className="text-foreground text-2xl font-semibold">{t('title')}</Text>
+              <Text className="text-muted-foreground text-center text-sm">{t('description')}</Text>
+            </View>
 
-          <CardContent className="gap-3">
-            <Button
-              className="rounded-xl py-3.5"
-              onPress={handleInAcademiaLogin}
-              disabled={isPending}>
-              {isPending ? (
-                <Loader2 size={20} className="text-primary-foreground" />
-              ) : (
-                <GraduationCap size={20} className="text-primary-foreground" />
-              )}
-              <Text>{t('inacademiaButton')}</Text>
-            </Button>
-            <Text variant="muted" className="text-center">
-              {t('inacademiaDescription')}
-            </Text>
-          </CardContent>
-
-          {__DEV__ && (
-            <CardContent className="gap-3">
-              <View className="flex-row items-center gap-3">
-                <Separator className="flex-1" />
-                <Text variant="muted" className="text-xs">
-                  {t('devOrDivider')}
-                </Text>
-                <Separator className="flex-1" />
-              </View>
+            {/* InAcademia button section */}
+            <View style={{ gap: 16, paddingHorizontal: 24 }}>
               <Button
-                variant="outline"
-                className="rounded-xl py-3.5"
-                onPress={handleGitHubLogin}
+                size="lg"
+                className="w-full rounded-xl"
+                onPress={handleInAcademiaLogin}
                 disabled={isPending}>
                 {isPending ? (
-                  <Loader2 size={20} className="text-foreground" />
+                  <Loader2 size={20} className="text-primary-foreground" />
                 ) : (
-                  <Ionicons name="logo-github" size={20} className="text-foreground" />
+                  <GraduationCap size={20} className="text-primary-foreground" />
                 )}
-                <Text>{t('devGithubButton')}</Text>
+                <Text>{t('inacademiaButton')}</Text>
               </Button>
-              <Text variant="muted" className="text-center">
-                {t('devGithubDescription')}
+              <Text className="text-muted-foreground text-center text-xs">
+                {t('inacademiaDescription')}
               </Text>
-            </CardContent>
-          )}
-        </Card>
-      </Animated.View>
+            </View>
+
+            {/* GitHub button section (dev only) */}
+            {__DEV__ && (
+              <View style={{ gap: 16, paddingHorizontal: 24, marginTop: 24 }}>
+                <View className="flex-row items-center gap-3">
+                  <Separator className="flex-1" />
+                  <Text className="text-muted-foreground text-xs">{t('devOrDivider')}</Text>
+                  <Separator className="flex-1" />
+                </View>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full rounded-xl"
+                  onPress={handleGitHubLogin}
+                  disabled={isPending}>
+                  {isPending ? (
+                    <Loader2 size={20} className="text-foreground" />
+                  ) : (
+                    <Ionicons name="logo-github" size={20} className="text-foreground" />
+                  )}
+                  <Text>{t('devGithubButton')}</Text>
+                </Button>
+                <Text className="text-muted-foreground text-center text-xs">
+                  {t('devGithubDescription')}
+                </Text>
+              </View>
+            )}
+          </View>
+        </Animated.View>
+      </View>
     </SafeAreaView>
   );
 }

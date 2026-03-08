@@ -7,7 +7,7 @@ import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useRouter, useSegments, Stack } from 'expo-router';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, Text, View, useColorScheme } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View, useColorScheme } from 'react-native';
 
 import { useRunMigrations } from '@/db/migrations';
 import { I18nProvider } from '@/i18n';
@@ -19,6 +19,22 @@ import { useOnboardingStatus } from '@/services/onboarding';
 
 // Initialize Sentry before rendering
 initSentry();
+
+export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+        Something went wrong
+      </Text>
+      <Text style={{ fontSize: 14, color: '#666', marginBottom: 20, textAlign: 'center' }}>
+        {error.message}
+      </Text>
+      <Pressable onPress={retry}>
+        <Text style={{ fontSize: 16, color: '#208AEF' }}>Try Again</Text>
+      </Pressable>
+    </View>
+  );
+}
 
 function MigrationGate({ children }: { children: React.ReactNode }) {
   const { success, error } = useRunMigrations();

@@ -6,9 +6,11 @@ const config = getSentryExpoConfig(__dirname);
 
 config.resolver.sourceExts.push('sql');
 
+const nativewindConfig = withNativewind(config);
+
 // Redirect `import crypto` to react-native-quick-crypto at the bundler level
-const originalResolveRequest = config.resolver.resolveRequest;
-config.resolver.resolveRequest = (context, moduleName, platform) => {
+const originalResolveRequest = nativewindConfig.resolver.resolveRequest;
+nativewindConfig.resolver.resolveRequest = (context, moduleName, platform) => {
   if (moduleName === 'crypto') {
     return context.resolveRequest(context, 'react-native-quick-crypto', platform);
   }
@@ -18,4 +20,4 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   return context.resolveRequest(context, moduleName, platform);
 };
 
-module.exports = withNativewind(config);
+module.exports = nativewindConfig;

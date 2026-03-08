@@ -40,9 +40,9 @@ export default function ApplySheetScreen() {
   }
 
   return (
-    <View className="bg-background flex-1">
-      <View className="flex-1 px-4 pt-6">
-        <View className="gap-2">
+    <View style={{ flex: 1 }} className="bg-background">
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}>
+        <View style={{ gap: 8 }}>
           <Label>{t('personalMessage')}</Label>
           <Textarea
             value={message}
@@ -58,7 +58,9 @@ export default function ApplySheetScreen() {
         </View>
       </View>
 
-      <View className="border-border border-t px-4 pt-3 pb-6">
+      <View
+        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
+        className="border-border border-t">
         <Button
           className="h-14 rounded-xl"
           onPress={handleSubmit}

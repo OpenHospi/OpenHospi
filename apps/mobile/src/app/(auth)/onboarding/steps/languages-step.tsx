@@ -39,12 +39,12 @@ export default function LanguagesStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1" contentContainerClassName="space-y-4 pb-8">
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
       <Text variant="muted" className="text-sm">
         {t('languageCounter', { count: selected.length, min: MIN_LANGUAGES, max: MAX_LANGUAGES })}
       </Text>
 
-      <View className="flex-row flex-wrap gap-2">
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {Language.values.map((lang) => {
           const isSelected = selected.includes(lang);
           return (

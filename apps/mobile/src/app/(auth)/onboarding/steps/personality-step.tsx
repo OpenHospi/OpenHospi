@@ -39,7 +39,7 @@ export default function PersonalityStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1" contentContainerClassName="space-y-4 pb-8">
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
       <Text variant="muted" className="text-sm">
         {t('tagCounter', {
           count: selected.length,
@@ -48,7 +48,7 @@ export default function PersonalityStep({ onNext }: Props) {
         })}
       </Text>
 
-      <View className="flex-row flex-wrap gap-2">
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {LifestyleTag.values.map((tag) => {
           const isSelected = selected.includes(tag);
           return (

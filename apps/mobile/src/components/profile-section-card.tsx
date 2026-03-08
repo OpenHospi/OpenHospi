@@ -12,7 +12,13 @@ type Props = {
 export function ProfileSectionCard({ title, onEdit, children }: Props) {
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between pb-2">
+      <CardHeader
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingBottom: 8,
+        }}>
         <CardTitle>{title}</CardTitle>
         {onEdit && (
           <Button variant="ghost" size="icon" onPress={onEdit}>
@@ -20,7 +26,7 @@ export function ProfileSectionCard({ title, onEdit, children }: Props) {
           </Button>
         )}
       </CardHeader>
-      <CardContent className="pt-0">{children}</CardContent>
+      <CardContent style={{ paddingTop: 0 }}>{children}</CardContent>
     </Card>
   );
 }

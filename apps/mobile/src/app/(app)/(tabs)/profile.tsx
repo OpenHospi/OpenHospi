@@ -24,7 +24,9 @@ export default function ProfileScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -32,7 +34,9 @@ export default function ProfileScreen() {
 
   if (!profile) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <Text variant="muted">Profile not found</Text>
       </SafeAreaView>
     );
@@ -43,16 +47,26 @@ export default function ProfileScreen() {
     : null;
 
   return (
-    <SafeAreaView className="bg-background flex-1" edges={['top']}>
-      <View className="flex-row items-center justify-between px-4 pt-2 pb-2">
-        <Text className="text-2xl font-bold tracking-tight">{t('title')}</Text>
+    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 16,
+          paddingTop: 8,
+          paddingBottom: 8,
+        }}>
+        <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
         <Pressable onPress={() => router.push('/(app)/settings' as never)}>
           <Settings size={24} className="text-muted-foreground" />
         </Pressable>
       </View>
 
-      <ScrollView className="flex-1 px-4" contentContainerStyle={{ paddingBottom: 32 }}>
-        <View className="items-center py-6">
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingBottom: 32 }}>
+        <View style={{ alignItems: 'center', paddingVertical: 24 }}>
           <Avatar alt={profile.firstName ?? 'Avatar'} className="size-24">
             {avatarUrl ? (
               <AvatarImage source={{ uri: avatarUrl }} />
@@ -62,20 +76,20 @@ export default function ProfileScreen() {
               </AvatarFallback>
             )}
           </Avatar>
-          <Text className="mt-3 text-2xl font-bold">
+          <Text style={{ marginTop: 12 }} className="text-foreground text-2xl font-bold">
             {profile.firstName} {profile.lastName}
           </Text>
-          <Text variant="muted" className="mt-0.5 text-sm">
+          <Text variant="muted" style={{ marginTop: 2 }} className="text-sm">
             {profile.institutionDomain}
           </Text>
         </View>
 
-        <View className="space-y-4">
+        <View style={{ gap: 16 }}>
           <ProfileSectionCard
             title={t('title')}
             onEdit={() => router.push('/(app)/edit-photos' as never)}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View className="flex-row gap-3">
+              <View style={{ flexDirection: 'row', gap: 12 }}>
                 {profile.photos.map((photo) => (
                   <Image
                     key={photo.id}
@@ -93,34 +107,34 @@ export default function ProfileScreen() {
           <ProfileSectionCard
             title={t('studyInfo')}
             onEdit={() => router.push('/(app)/edit-about' as never)}>
-            <View className="gap-1">
+            <View style={{ gap: 4 }}>
               {profile.gender && (
-                <Text className="text-sm">
+                <Text className="text-card-foreground text-sm">
                   {t('gender')}: {tEnums(`gender.${profile.gender}`)}
                 </Text>
               )}
               {profile.birthDate && (
-                <Text className="text-sm">
+                <Text className="text-card-foreground text-sm">
                   {t('birthDate')}: {profile.birthDate}
                 </Text>
               )}
               {profile.studyProgram && (
-                <Text className="text-sm">
+                <Text className="text-card-foreground text-sm">
                   {t('studyProgram')}: {profile.studyProgram}
                 </Text>
               )}
               {profile.studyLevel && (
-                <Text className="text-sm">
+                <Text className="text-card-foreground text-sm">
                   {t('studyLevel')}: {tEnums(`study_level.${profile.studyLevel}`)}
                 </Text>
               )}
               {profile.preferredCity && (
-                <Text className="text-sm">
+                <Text className="text-card-foreground text-sm">
                   {t('preferredCity')}: {tEnums(`city.${profile.preferredCity}`)}
                 </Text>
               )}
               {profile.vereniging && (
-                <Text className="text-sm">
+                <Text className="text-card-foreground text-sm">
                   {t('vereniging')}: {profile.vereniging}
                 </Text>
               )}
@@ -130,13 +144,13 @@ export default function ProfileScreen() {
           <ProfileSectionCard
             title={t('bio')}
             onEdit={() => router.push('/(app)/edit-bio' as never)}>
-            <Text className="text-sm">{profile.bio || '-'}</Text>
+            <Text className="text-card-foreground text-sm">{profile.bio || '-'}</Text>
           </ProfileSectionCard>
 
           <ProfileSectionCard
             title={t('languages')}
             onEdit={() => router.push('/(app)/edit-languages' as never)}>
-            <View className="flex-row flex-wrap gap-2">
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {(profile.languages ?? []).map((lang) => (
                 <Badge key={lang} variant="secondary" className="rounded-lg">
                   <Text>{tEnums(`language_enum.${lang}`)}</Text>
@@ -148,7 +162,7 @@ export default function ProfileScreen() {
           <ProfileSectionCard
             title={t('lifestyleTags')}
             onEdit={() => router.push('/(app)/edit-lifestyle' as never)}>
-            <View className="flex-row flex-wrap gap-2">
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {(profile.lifestyleTags ?? []).map((tag) => (
                 <Badge key={tag} variant="secondary" className="rounded-lg">
                   <Text>{tEnums(`lifestyle_tag.${tag}`)}</Text>

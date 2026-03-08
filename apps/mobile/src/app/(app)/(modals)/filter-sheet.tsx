@@ -34,7 +34,7 @@ function MultiChipSelect({
   t: (key: string) => string;
 }) {
   return (
-    <View className="flex-row flex-wrap gap-2">
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
       {values.map((v) => {
         const isSelected = selected?.includes(v);
         return (
@@ -104,13 +104,13 @@ export default function FilterSheetScreen() {
   );
 
   return (
-    <View className="bg-background flex-1">
+    <View style={{ flex: 1 }} className="bg-background">
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 32 }}
         keyboardShouldPersistTaps="handled">
-        <View className="space-y-4 px-4 pt-4">
-          <View className="gap-2">
+        <View style={{ gap: 16, paddingHorizontal: 16, paddingTop: 16 }}>
+          <View style={{ gap: 8 }}>
             <Label>{tCommon('city')}</Label>
             <Select
               value={cityOption}
@@ -128,9 +128,9 @@ export default function FilterSheetScreen() {
             </Select>
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tDiscover('priceRange')}</Label>
-            <View className="flex-row gap-3">
+            <View style={{ flexDirection: 'row', gap: 12 }}>
               <Input
                 className="flex-1 rounded-xl"
                 value={filters.minPrice != null ? String(filters.minPrice) : ''}
@@ -148,7 +148,7 @@ export default function FilterSheetScreen() {
             </View>
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tDiscover('houseType')}</Label>
             <Select
               value={houseTypeOption}
@@ -168,7 +168,7 @@ export default function FilterSheetScreen() {
             </Select>
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tDiscover('furnishing')}</Label>
             <Select
               value={furnishingOption}
@@ -188,7 +188,7 @@ export default function FilterSheetScreen() {
             </Select>
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tDiscover('features')}</Label>
             <MultiChipSelect
               values={RoomFeature.values}
@@ -199,7 +199,7 @@ export default function FilterSheetScreen() {
             />
           </View>
 
-          <View className="mb-8 gap-2">
+          <View style={{ gap: 8, marginBottom: 32 }}>
             <Label>{tDiscover('locationTags')}</Label>
             <MultiChipSelect
               values={LocationTag.values}
@@ -212,8 +212,10 @@ export default function FilterSheetScreen() {
         </View>
       </ScrollView>
 
-      <View className="border-border border-t px-4 pt-3 pb-6">
-        <View className="gap-2">
+      <View
+        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
+        className="border-border border-t">
+        <View style={{ gap: 8 }}>
           <Button className="h-14 rounded-xl" onPress={handleApply}>
             <Text>{tCommon('apply')}</Text>
           </Button>

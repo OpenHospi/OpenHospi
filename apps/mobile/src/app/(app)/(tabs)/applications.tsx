@@ -26,7 +26,13 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
 
   return (
     <Pressable onPress={onPress}>
-      <Card className="flex-row gap-3 p-3">
+      <Card
+        style={{
+          flexDirection: 'row',
+          gap: 12,
+          padding: 12,
+          paddingVertical: 12,
+        }}>
         {coverUrl ? (
           <Image
             source={{ uri: coverUrl }}
@@ -34,15 +40,23 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
             contentFit="cover"
           />
         ) : (
-          <View className="bg-muted h-20 w-20 items-center justify-center rounded-lg">
+          <View
+            style={{
+              height: 80,
+              width: 80,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 8,
+            }}
+            className="bg-muted">
             <Home size={24} className="text-muted-foreground" />
           </View>
         )}
-        <View className="flex-1 justify-center gap-1">
-          <Text className="font-semibold" numberOfLines={1}>
+        <View style={{ flex: 1, justifyContent: 'center', gap: 4 }}>
+          <Text className="text-card-foreground font-semibold" numberOfLines={1}>
             {item.roomTitle}
           </Text>
-          <View className="flex-row items-center">
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text variant="muted" className="text-sm">
               {tEnums(`city.${item.roomCity}`)}
             </Text>
@@ -53,7 +67,7 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
               {tCommon('perMonth')}
             </Text>
           </View>
-          <View className="flex-row items-center gap-2">
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Badge variant="secondary" className="rounded-full">
               <Text>{tEnums(`application_status.${item.status}`)}</Text>
             </Badge>
@@ -72,9 +86,9 @@ function InvitationCard({ item }: { item: UserInvitation }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
 
   return (
-    <Card className="space-y-1 p-3">
-      <Text className="font-semibold">{item.eventTitle}</Text>
-      <View className="flex-row items-center">
+    <Card style={{ gap: 4, padding: 12, paddingVertical: 12 }}>
+      <Text className="text-card-foreground font-semibold">{item.eventTitle}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text variant="muted" className="text-sm">
           {item.eventDate}
         </Text>
@@ -90,7 +104,7 @@ function InvitationCard({ item }: { item: UserInvitation }) {
       {item.cancelledAt ? (
         <Text className="text-destructive text-sm">{t('cancelled')}</Text>
       ) : (
-        <Badge variant="secondary" className="self-start rounded-full">
+        <Badge variant="secondary" style={{ alignSelf: 'flex-start' }} className="rounded-full">
           <Text>{tEnums(`invitation_status.${item.status}`)}</Text>
         </Badge>
       )}
@@ -109,7 +123,7 @@ export default function ApplicationsScreen() {
 
   const renderApplication = useCallback(
     ({ item }: { item: UserApplication }) => (
-      <View className="px-4 pb-3">
+      <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
         <ApplicationCard
           item={item}
           onPress={() => router.push(`/(app)/application/${item.id}` as never)}
@@ -121,7 +135,7 @@ export default function ApplicationsScreen() {
 
   const renderInvitation = useCallback(
     ({ item }: { item: UserInvitation }) => (
-      <View className="px-4 pb-3">
+      <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
         <InvitationCard item={item} />
       </View>
     ),
@@ -129,31 +143,39 @@ export default function ApplicationsScreen() {
   );
 
   return (
-    <SafeAreaView className="bg-background flex-1" edges={['top']}>
-      <View className="px-4 pt-2 pb-2">
-        <Text className="text-2xl font-bold tracking-tight">{t('title')}</Text>
+    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+        <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
       </View>
 
-      <Tabs value={tab} onValueChange={setTab} className="flex-1">
-        <View className="px-4">
-          <TabsList className="w-full">
-            <TabsTrigger value="applications" className="flex-1">
+      <Tabs value={tab} onValueChange={setTab} style={{ flex: 1 }}>
+        <View style={{ paddingHorizontal: 16 }}>
+          <TabsList style={{ width: '100%' }}>
+            <TabsTrigger value="applications" style={{ flex: 1 }}>
               <Text>{t('title')}</Text>
             </TabsTrigger>
-            <TabsTrigger value="invitations" className="flex-1">
+            <TabsTrigger value="invitations" style={{ flex: 1 }}>
               <Text>{tInvitations('title')}</Text>
             </TabsTrigger>
           </TabsList>
         </View>
 
-        <TabsContent value="applications" className="flex-1 pt-2">
+        <TabsContent value="applications" style={{ flex: 1, paddingTop: 8 }}>
           {appsPending ? (
-            <View className="flex-1 items-center justify-center">
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <ActivityIndicator size="large" />
             </View>
           ) : !applications?.length ? (
-            <View className="flex-1 items-center justify-center px-8">
-              <View className="items-center justify-center rounded-lg border border-dashed p-12">
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 32,
+              }}>
+              <View
+                style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
+                className="rounded-lg border border-dashed">
                 <Text variant="muted" className="text-center">
                   {t('empty')}
                 </Text>
@@ -168,14 +190,22 @@ export default function ApplicationsScreen() {
           )}
         </TabsContent>
 
-        <TabsContent value="invitations" className="flex-1 pt-2">
+        <TabsContent value="invitations" style={{ flex: 1, paddingTop: 8 }}>
           {invPending ? (
-            <View className="flex-1 items-center justify-center">
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <ActivityIndicator size="large" />
             </View>
           ) : !invitations?.length ? (
-            <View className="flex-1 items-center justify-center px-8">
-              <View className="items-center justify-center rounded-lg border border-dashed p-12">
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 32,
+              }}>
+              <View
+                style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
+                className="rounded-lg border border-dashed">
                 <Text variant="muted" className="text-center">
                   {tInvitations('empty')}
                 </Text>

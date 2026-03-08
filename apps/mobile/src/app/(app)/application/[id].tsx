@@ -24,27 +24,28 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
   const currentIndex = TIMELINE_STEPS.indexOf(currentStatus);
 
   return (
-    <View className="gap-0">
+    <View style={{ gap: 0 }}>
       {TIMELINE_STEPS.map((step, index) => {
         const isReached = currentIndex >= index;
         const isLast = index === TIMELINE_STEPS.length - 1;
 
         return (
-          <View key={step} className="flex-row">
-            <View className="items-center" style={{ width: 24 }}>
+          <View key={step} style={{ flexDirection: 'row' }}>
+            <View style={{ alignItems: 'center', width: 24 }}>
               <View
                 className={`h-3 w-3 rounded-full ${isReached ? 'bg-primary' : 'bg-muted'}`}
                 style={{ marginTop: 4 }}
               />
               {!isLast && (
                 <View
-                  className={`w-0.5 flex-1 ${isReached ? 'bg-primary' : 'bg-muted'}`}
-                  style={{ minHeight: 24 }}
+                  className={`w-0.5 ${isReached ? 'bg-primary' : 'bg-muted'}`}
+                  style={{ flex: 1, minHeight: 24 }}
                 />
               )}
             </View>
             <Text
-              className={`ml-2 pb-4 text-sm ${isReached ? 'font-medium' : 'text-muted-foreground'}`}>
+              style={{ marginLeft: 8, paddingBottom: 16 }}
+              className={`text-sm ${isReached ? 'font-medium' : 'text-muted-foreground'}`}>
               {t(step)}
             </Text>
           </View>
@@ -52,11 +53,13 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
       })}
 
       {isTerminal && (
-        <View className="flex-row">
-          <View className="items-center" style={{ width: 24 }}>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ alignItems: 'center', width: 24 }}>
             <View className="bg-destructive h-3 w-3 rounded-full" style={{ marginTop: 4 }} />
           </View>
-          <Text className="text-destructive ml-2 text-sm font-medium">{t(currentStatus)}</Text>
+          <Text style={{ marginLeft: 8 }} className="text-destructive text-sm font-medium">
+            {t(currentStatus)}
+          </Text>
         </View>
       )}
     </View>
@@ -93,7 +96,9 @@ export default function ApplicationDetailScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -101,7 +106,9 @@ export default function ApplicationDetailScreen() {
 
   if (!app) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center px-8">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}
+        className="bg-background">
         <Text variant="muted" className="text-center">
           {t('errors.not_found')}
         </Text>
@@ -114,9 +121,9 @@ export default function ApplicationDetailScreen() {
     : null;
 
   return (
-    <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}>
         {coverUrl ? (
           <Image
@@ -125,15 +132,24 @@ export default function ApplicationDetailScreen() {
             contentFit="cover"
           />
         ) : (
-          <View className="bg-muted h-[200px] w-full items-center justify-center">
+          <View
+            style={{
+              height: 200,
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            className="bg-muted">
             <Home size={48} className="text-muted-foreground" />
           </View>
         )}
 
-        <View className="space-y-6 px-4 pt-4">
+        <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
           <View>
-            <Text className="text-2xl font-bold tracking-tight">{app.roomTitle}</Text>
-            <View className="mt-1 flex-row items-center">
+            <Text className="text-foreground text-2xl font-bold tracking-tight">
+              {app.roomTitle}
+            </Text>
+            <View style={{ marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
               <Text variant="muted">{tEnums(`city.${app.roomCity}`)}</Text>
               {app.roomHouseType && (
                 <>
@@ -148,7 +164,7 @@ export default function ApplicationDetailScreen() {
                 </>
               )}
             </View>
-            <View className="mt-1 flex-row items-center">
+            <View style={{ marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
               <Euro size={18} className="text-primary" />
               <Text className="text-primary text-lg font-bold">
                 {app.roomRentPrice}
@@ -158,25 +174,29 @@ export default function ApplicationDetailScreen() {
           </View>
 
           <View>
-            <Badge variant="secondary" className="self-start rounded-full">
+            <Badge variant="secondary" style={{ alignSelf: 'flex-start' }} className="rounded-full">
               <Text>{tEnums(`application_status.${app.status}`)}</Text>
             </Badge>
-            <Text variant="muted" className="mt-1 text-xs">
+            <Text variant="muted" style={{ marginTop: 4 }} className="text-xs">
               {t('appliedOn', { date: new Date(app.appliedAt).toLocaleDateString() })}
             </Text>
           </View>
 
           <View>
-            <Text className="mb-3 font-semibold">{t('timeline.title')}</Text>
+            <Text style={{ marginBottom: 12 }} className="text-foreground font-semibold">
+              {t('timeline.title')}
+            </Text>
             <StatusTimeline currentStatus={app.status} />
           </View>
 
           {app.personalMessage && (
             <View>
-              <Text className="mb-2 font-semibold">{t('yourMessage')}</Text>
+              <Text style={{ marginBottom: 8 }} className="text-foreground font-semibold">
+                {t('yourMessage')}
+              </Text>
               <Card>
                 <CardContent>
-                  <Text className="text-sm">{app.personalMessage}</Text>
+                  <Text className="text-card-foreground text-sm">{app.personalMessage}</Text>
                 </CardContent>
               </Card>
             </View>
@@ -189,7 +209,17 @@ export default function ApplicationDetailScreen() {
       </ScrollView>
 
       {canWithdraw && (
-        <View className="border-border bg-background absolute inset-x-0 bottom-0 border-t px-4 pt-3 pb-8">
+        <View
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            paddingHorizontal: 16,
+            paddingTop: 12,
+            paddingBottom: 32,
+          }}
+          className="border-border bg-background border-t">
           <Button
             variant="destructive"
             onPress={handleWithdraw}

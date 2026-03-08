@@ -20,7 +20,9 @@ export default function EditPhotosScreen() {
 
   if (isPending || !profile) {
     return (
-      <View className="bg-background flex-1 items-center justify-center">
+      <View
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -60,8 +62,8 @@ export default function EditPhotosScreen() {
   }
 
   return (
-    <View className="bg-background flex-1 px-4 pt-4">
-      <View className="space-y-3">
+    <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }} className="bg-background">
+      <View style={{ gap: 12 }}>
         {SLOT_KEYS.map((key, index) => {
           const slot = index + 1;
           const photo = photos.find((p) => p.slot === slot);
@@ -69,7 +71,7 @@ export default function EditPhotosScreen() {
 
           return (
             <Card key={key}>
-              <CardContent className="flex-row items-center gap-3">
+              <CardContent style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                 {photoUrl ? (
                   <Image
                     source={{ uri: photoUrl }}
@@ -77,16 +79,24 @@ export default function EditPhotosScreen() {
                     contentFit="cover"
                   />
                 ) : (
-                  <View className="bg-muted h-16 w-16 items-center justify-center rounded-lg">
+                  <View
+                    style={{
+                      height: 64,
+                      width: 64,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 8,
+                    }}
+                    className="bg-muted">
                     <Text variant="muted" className="text-2xl">
                       +
                     </Text>
                   </View>
                 )}
-                <View className="flex-1">
-                  <Text className="text-sm font-medium">{t(key)}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text className="text-card-foreground text-sm font-medium">{t(key)}</Text>
                 </View>
-                <View className="flex-row gap-2">
+                <View style={{ flexDirection: 'row', gap: 8 }}>
                   <Button variant="outline" size="sm" onPress={() => handlePick(slot)}>
                     <Text>{photoUrl ? tCommon('edit') : 'Add'}</Text>
                   </Button>

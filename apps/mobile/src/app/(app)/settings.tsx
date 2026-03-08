@@ -46,9 +46,9 @@ export default function SettingsScreen() {
   const locale = i18n.language as Locale;
 
   return (
-    <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
-      <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 32 }}>
-        <View className="px-4 pt-4">
+    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }}>
+        <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
           <Text variant="muted" className="text-sm">
             {t('description')}
           </Text>
@@ -75,7 +75,7 @@ export default function SettingsScreen() {
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <View className="px-4 pt-6 pb-2">
+    <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 }}>
       <Text className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
         {title}
       </Text>
@@ -98,24 +98,32 @@ function LanguageSetting({
     <Card className="mx-4">
       <CardContent>
         <Pressable
-          className="flex-row items-center justify-between"
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
           onPress={() => sheetRef.current?.present()}>
-          <Text>{t('tabs.general')}</Text>
+          <Text className="text-card-foreground">{t('tabs.general')}</Text>
           <Text variant="muted">{LOCALE_CONFIG[locale].name}</Text>
         </Pressable>
       </CardContent>
 
       <BottomSheet ref={sheetRef} title={t('tabs.general')} enableDynamicSizing scrollable={false}>
-        <View className="px-4 py-2">
+        <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
           {SUPPORTED_LOCALES.map((loc) => (
             <Pressable
               key={loc}
-              className={`flex-row items-center gap-3 rounded-lg px-4 py-3 ${locale === loc ? 'bg-primary/10' : ''}`}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                borderRadius: 8,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+              }}
+              className={locale === loc ? 'bg-primary/10' : ''}
               onPress={() => {
                 changeLanguage(loc);
                 sheetRef.current?.dismiss();
               }}>
-              <Text className={locale === loc ? 'text-primary font-semibold' : ''}>
+              <Text className={locale === loc ? 'text-primary font-semibold' : 'text-foreground'}>
                 {LOCALE_CONFIG[loc].name}
               </Text>
             </Pressable>
@@ -138,9 +146,10 @@ function PushNotificationSetting({ t }: { t: TFunction }) {
   }, []);
 
   return (
-    <Card className="mx-4 mt-3">
-      <CardContent className="flex-row items-center justify-between">
-        <Text>{t('pushNotifications.title')}</Text>
+    <Card style={{ marginTop: 12 }} className="mx-4">
+      <CardContent
+        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text className="text-card-foreground">{t('pushNotifications.title')}</Text>
         <Switch checked={enabled} onCheckedChange={handleToggle} />
       </CardContent>
     </Card>
@@ -154,7 +163,7 @@ function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) 
   if (isPending) {
     return (
       <Card className="mx-4">
-        <CardContent className="items-center">
+        <CardContent style={{ alignItems: 'center' }}>
           <ActivityIndicator />
         </CardContent>
       </Card>
@@ -178,9 +187,18 @@ function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) 
         return (
           <View key={purpose}>
             <Separator />
-            <View className="flex-row items-center justify-between px-6 py-3">
-              <View className="flex-1 pr-4">
-                <Text className="text-sm">{tConsent(`purposes.${purpose}.name`)}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 24,
+                paddingVertical: 12,
+              }}>
+              <View style={{ flex: 1, paddingRight: 16 }}>
+                <Text className="text-card-foreground text-sm">
+                  {tConsent(`purposes.${purpose}.name`)}
+                </Text>
                 <Text variant="muted" className="text-xs">
                   {tConsent(`purposes.${purpose}.description`)}
                 </Text>
@@ -202,7 +220,7 @@ function DataExportSetting({ t }: { t: TFunction }) {
   const exportData = useExportData();
 
   return (
-    <Card className="mx-4 mt-3">
+    <Card style={{ marginTop: 12 }} className="mx-4">
       <CardHeader>
         <CardTitle>{t('dataExport.title')}</CardTitle>
         <Text variant="muted" className="text-sm">
@@ -212,7 +230,7 @@ function DataExportSetting({ t }: { t: TFunction }) {
       <CardContent>
         <Button
           size="sm"
-          className="self-start"
+          style={{ alignSelf: 'flex-start' }}
           onPress={() => exportData.mutate()}
           disabled={exportData.isPending}>
           <Text>{exportData.isPending ? '...' : t('dataExport.button')}</Text>
@@ -244,7 +262,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
   };
 
   return (
-    <Card className="mx-4 mt-3">
+    <Card style={{ marginTop: 12 }} className="mx-4">
       <CardHeader>
         <CardTitle>{t('privacy.dataRequest.title')}</CardTitle>
         <Text variant="muted" className="text-sm">
@@ -255,7 +273,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
         <Button
           variant="outline"
           size="sm"
-          className="self-start"
+          style={{ alignSelf: 'flex-start' }}
           onPress={() => sheetRef.current?.present()}>
           <Text>{t('privacy.dataRequest.submitButton')}</Text>
         </Button>
@@ -266,30 +284,39 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
         title={t('privacy.dataRequest.title')}
         snapPoints={['75%']}
         footer={
-          <View className="flex-row gap-3">
+          <View style={{ flexDirection: 'row', gap: 12 }}>
             <Button
               variant="outline"
-              className="flex-1"
+              style={{ flex: 1 }}
               onPress={() => sheetRef.current?.dismiss()}>
               <Text>{tCommon('cancel')}</Text>
             </Button>
             <Button
-              className="flex-1"
+              style={{ flex: 1 }}
               onPress={handleSubmit}
               disabled={!selectedType || submitRequest.isPending}>
               <Text>{submitRequest.isPending ? '...' : tCommon('submit')}</Text>
             </Button>
           </View>
         }>
-        <View className="space-y-4 px-4 pt-4">
+        <View style={{ gap: 16, paddingHorizontal: 16, paddingTop: 16 }}>
           <View>
-            <Label className="mb-2">{t('privacy.dataRequest.typeLabel')}</Label>
+            <Label style={{ marginBottom: 8 }}>{t('privacy.dataRequest.typeLabel')}</Label>
             {DATA_REQUEST_TYPES.map((type) => (
               <Pressable
                 key={type}
-                className={`mb-1 rounded-lg px-3 py-2.5 ${selectedType === type ? 'bg-primary/10' : ''}`}
+                style={{
+                  marginBottom: 4,
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  paddingVertical: 10,
+                }}
+                className={selectedType === type ? 'bg-primary/10' : ''}
                 onPress={() => setSelectedType(type)}>
-                <Text className={selectedType === type ? 'text-primary font-medium' : ''}>
+                <Text
+                  className={
+                    selectedType === type ? 'text-primary font-medium' : 'text-foreground'
+                  }>
                   {t(`privacy.dataRequest.types.${type}`)}
                 </Text>
               </Pressable>
@@ -297,7 +324,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
           </View>
 
           <View>
-            <Label className="mb-2">{t('privacy.dataRequest.descriptionLabel')}</Label>
+            <Label style={{ marginBottom: 8 }}>{t('privacy.dataRequest.descriptionLabel')}</Label>
             <Textarea
               placeholder={t('privacy.dataRequest.descriptionPlaceholder')}
               value={description}
@@ -325,7 +352,7 @@ function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
       </CardHeader>
 
       {isPending ? (
-        <CardContent className="items-center">
+        <CardContent style={{ alignItems: 'center' }}>
           <ActivityIndicator />
         </CardContent>
       ) : !sessions?.length ? (
@@ -336,10 +363,17 @@ function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
         sessions.map((session) => (
           <View key={session.id}>
             <Separator />
-            <View className="flex-row items-center justify-between px-6 py-3">
-              <View className="flex-1 pr-3">
-                <View className="flex-row items-center gap-2">
-                  <Text className="text-sm" numberOfLines={1}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 24,
+                paddingVertical: 12,
+              }}>
+              <View style={{ flex: 1, paddingRight: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Text className="text-card-foreground text-sm" numberOfLines={1}>
                     {session.userAgent ?? 'Unknown device'}
                   </Text>
                   {session.isCurrent && (
@@ -419,7 +453,7 @@ function DeleteAccountSetting({
         <Button
           variant="destructive"
           size="sm"
-          className="mt-3 self-start"
+          style={{ marginTop: 12, alignSelf: 'flex-start' }}
           onPress={handleDelete}
           disabled={deleteAccount.isPending}>
           <Text>{deleteAccount.isPending ? '...' : t('dangerZone.deleteButton')}</Text>

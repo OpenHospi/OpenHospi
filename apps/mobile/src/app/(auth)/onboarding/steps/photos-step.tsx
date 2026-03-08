@@ -71,28 +71,43 @@ export default function PhotosStep({ onNext }: Props) {
   }
 
   return (
-    <ScrollView className="flex-1" contentContainerClassName="space-y-4 pb-8">
-      <View className="gap-3">
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
+      <View style={{ gap: 12 }}>
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];
           return (
             <Pressable key={key} onPress={() => pickPhoto(index)} disabled={photo?.uploading}>
-              <Card className="flex-row items-center gap-3 p-3">
+              <Card
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: 12,
+                  paddingVertical: 12,
+                }}>
                 {photo?.uri ? (
                   <Image
                     source={{ uri: photo.uri }}
-                    className="h-16 w-16 rounded-lg"
+                    style={{ height: 64, width: 64, borderRadius: 8 }}
                     resizeMode="cover"
                   />
                 ) : (
-                  <View className="bg-muted h-16 w-16 items-center justify-center rounded-lg">
+                  <View
+                    style={{
+                      height: 64,
+                      width: 64,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 8,
+                    }}
+                    className="bg-muted">
                     <Text variant="muted" className="text-2xl">
                       +
                     </Text>
                   </View>
                 )}
-                <View className="flex-1">
-                  <Text className="text-sm font-medium">{t(key)}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text className="text-card-foreground text-sm font-medium">{t(key)}</Text>
                   {photo?.uploading && (
                     <Text variant="muted" className="text-xs">
                       Uploading...

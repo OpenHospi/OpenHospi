@@ -10,12 +10,17 @@ export default function ChatScreen() {
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   return (
-    <SafeAreaView className="bg-background flex-1">
-      <View className="flex-1 items-center justify-center px-8">
-        <View className="items-center justify-center rounded-lg border border-dashed p-12">
+    <SafeAreaView style={{ flex: 1 }} className="bg-background">
+      <View
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
+        <View
+          style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
+          className="rounded-lg border border-dashed">
           <MessageSquare size={32} className="text-muted-foreground" />
-          <Text className="mt-4 text-lg font-semibold">{tBreadcrumbs('chat')}</Text>
-          <Text variant="muted" className="mt-1 text-center text-sm">
+          <Text style={{ marginTop: 16 }} className="text-foreground text-lg font-semibold">
+            {tBreadcrumbs('chat')}
+          </Text>
+          <Text variant="muted" style={{ marginTop: 4 }} className="text-center text-sm">
             {tCommon('comingSoon')}
           </Text>
         </View>

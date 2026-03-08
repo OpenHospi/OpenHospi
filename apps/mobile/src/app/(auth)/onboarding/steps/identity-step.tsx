@@ -58,7 +58,7 @@ export default function IdentityStep({ onNext }: Props) {
 
   if (verified) {
     return (
-      <View className="items-center justify-center py-8">
+      <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 32 }}>
         <Text className="text-primary font-semibold">{t('verified')}</Text>
       </View>
     );
@@ -67,17 +67,17 @@ export default function IdentityStep({ onNext }: Props) {
   if (showCodeInput) {
     return (
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         keyboardShouldPersistTaps="handled"
-        contentContainerClassName="space-y-4">
+        contentContainerStyle={{ gap: 16 }}>
         <View>
-          <Text className="font-semibold">{t('enterCodeTitle')}</Text>
-          <Text variant="muted" className="mt-1 text-sm">
+          <Text className="text-foreground font-semibold">{t('enterCodeTitle')}</Text>
+          <Text variant="muted" style={{ marginTop: 4 }} className="text-sm">
             {t('enterCodeDescription', { email })}
           </Text>
         </View>
 
-        <View className="gap-2">
+        <View style={{ gap: 8 }}>
           <Label>{t('verificationCode')}</Label>
           <Input
             value={code}
@@ -104,10 +104,10 @@ export default function IdentityStep({ onNext }: Props) {
 
   return (
     <ScrollView
-      className="flex-1"
+      style={{ flex: 1 }}
       keyboardShouldPersistTaps="handled"
-      contentContainerClassName="space-y-4">
-      <View className="gap-2">
+      contentContainerStyle={{ gap: 16 }}>
+      <View style={{ gap: 8 }}>
         <Label>{t('firstName')}</Label>
         <Input
           value={firstName}
@@ -117,7 +117,7 @@ export default function IdentityStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>{t('lastName')}</Label>
         <Input
           value={lastName}
@@ -127,7 +127,7 @@ export default function IdentityStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>{t('email')}</Label>
         <Input
           value={email}

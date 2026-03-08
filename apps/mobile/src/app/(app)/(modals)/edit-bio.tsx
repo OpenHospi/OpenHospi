@@ -29,8 +29,8 @@ export default function EditBioScreen() {
   }
 
   return (
-    <View className="bg-background flex-1">
-      <View className="flex-1 space-y-2 px-4 pt-4">
+    <View style={{ flex: 1 }} className="bg-background">
+      <View style={{ flex: 1, gap: 8, paddingHorizontal: 16, paddingTop: 16 }}>
         <Textarea
           value={bio}
           onChangeText={setBio}
@@ -43,7 +43,9 @@ export default function EditBioScreen() {
         </Text>
       </View>
 
-      <View className="border-border border-t px-4 pt-3 pb-6">
+      <View
+        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
+        className="border-border border-t">
         <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
           <Text>{tCommon('save')}</Text>
         </Button>

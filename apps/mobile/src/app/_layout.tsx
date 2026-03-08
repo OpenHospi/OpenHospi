@@ -32,7 +32,9 @@ Sentry.init({
 
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
   return (
-    <View className="bg-background flex-1 items-center justify-center p-5">
+    <View
+      style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 }}
+      className="bg-background">
       <Text className="text-foreground mb-2.5 text-lg font-bold">Something went wrong</Text>
       <Text className="text-muted-foreground mb-5 text-center text-sm">{error.message}</Text>
       <Pressable onPress={retry}>
@@ -51,7 +53,7 @@ function I18nGate({ children }: { children: React.ReactNode }) {
 
   if (!ready) {
     return (
-      <View className="flex-1 items-center justify-center">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -65,7 +67,7 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Database migration failed: {error.message}</Text>
       </View>
     );
@@ -73,7 +75,7 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
 
   if (!success) {
     return (
-      <View className="flex-1 items-center justify-center">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -118,7 +120,7 @@ function OnboardingGuard() {
 
   if (sessionPending || (session && onboardingPending)) {
     return (
-      <View className="flex-1 items-center justify-center">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -132,7 +134,7 @@ function RootNavigator() {
 
   if (isPending) {
     return (
-      <View className="flex-1 items-center justify-center">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" />
       </View>
     );

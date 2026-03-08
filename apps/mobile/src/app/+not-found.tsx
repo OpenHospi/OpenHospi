@@ -10,10 +10,14 @@ export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Not Found' }} />
-      <View className="bg-background flex-1 items-center justify-center p-5">
-        <View className="items-center justify-center rounded-lg border border-dashed p-12">
-          <Text className="text-lg font-semibold">Page not found</Text>
-          <Link href={'/' as never} className="mt-4">
+      <View
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 }}
+        className="bg-background">
+        <View
+          style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
+          className="rounded-lg border border-dashed">
+          <Text className="text-foreground text-lg font-semibold">Page not found</Text>
+          <Link href={'/' as never} style={{ marginTop: 16 }}>
             <Text className="text-primary underline">{tCommon('back')}</Text>
           </Link>
         </View>

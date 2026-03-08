@@ -1,25 +1,25 @@
-name: CI
+name: CI Mobile
 
 on:
   pull_request:
     branches: [dev, main]
     paths:
-      - "apps/web/**"
-      - "packages/**"
+      - "apps/mobile/**"
+      - "packages/shared/**"
+      - "packages/i18n/**"
       - "pnpm-lock.yaml"
-      - ".github/workflows/ci.yml"
-      - "vitest*"
-      - "tsconfig*"
+      - ".github/workflows/ci-mobile.yml"
   push:
     branches: [main]
     paths:
-      - "apps/web/**"
-      - "packages/**"
+      - "apps/mobile/**"
+      - "packages/shared/**"
+      - "packages/i18n/**"
       - "pnpm-lock.yaml"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/ci-mobile.yml"
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-mobile-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
+      - run: pnpm --filter @openhospi/mobile lint
 
   typecheck:
     name: Type Check
@@ -49,7 +49,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
+      - run: pnpm --filter @openhospi/mobile typecheck
 
   format:
     name: Format Check
@@ -63,24 +63,10 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm -r format:check
+      - run: pnpm --filter @openhospi/mobile format:check
 
-  i18n:
-    name: i18n Completeness
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm i18n:check
-
-  test:
-    name: Unit Tests
+  expo-doctor:
+    name: Expo Doctor
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -91,19 +77,4 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm vitest run --exclude 'packages/database/src/**'
-
-  audit:
-    name: Dependency Audit
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm audit --audit-level=moderate
+      - run: cd apps/mobile && npx expo-doctor@latest

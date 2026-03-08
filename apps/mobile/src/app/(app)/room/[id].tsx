@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Dot, Euro } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
 import { PhotoCarousel } from '@/components/photo-carousel';
+import RoomLocationMap from '@/components/room-location-map';
 import { useTranslation } from 'react-i18next';
 import { useRoom } from '@/services/rooms';
 
@@ -65,7 +66,9 @@ export default function RoomDetailScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.roomDetail' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tRoomFields } = useTranslation('translation', { keyPrefix: 'app.rooms.fields' });
 
+  const insets = useSafeAreaInsets();
   const { data, isPending } = useRoom(id);
 
   if (isPending) {
@@ -150,26 +153,35 @@ export default function RoomDetailScreen() {
             </CardHeader>
             <CardContent>
               <DetailRow
-                label={t('roomSize')}
-                value={room.roomSizeM2 ? `${room.roomSizeM2}m²` : null}
+                label={tRoomFields('roomSize')}
+                value={room.roomSizeM2 ? t('roomSize', { size: String(room.roomSizeM2) }) : null}
               />
               <DetailRow
                 label={tEnums('house_type._label')}
                 value={room.houseType ? tEnums(`house_type.${room.houseType}`) : null}
               />
               <DetailRow
-                label={tEnums('furnishing._label')}
+                label={tEnums('furnishing_label')}
                 value={room.furnishing ? tEnums(`furnishing.${room.furnishing}`) : null}
               />
               <DetailRow
-                label={tEnums('rental_type._label')}
+                label={t('rentalType')}
                 value={room.rentalType ? tEnums(`rental_type.${room.rentalType}`) : null}
               />
-              <DetailRow label={t('availableFrom')} value={room.availableFrom} />
-              <DetailRow label={t('availableUntil')} value={room.availableUntil} />
+              {room.availableFrom && (
+                <DetailRow
+                  label={t('availability')}
+                  value={
+                    t('availableFrom', { date: room.availableFrom }) +
+                    (room.availableUntil
+                      ? ` · ${t('availableUntil', { date: room.availableUntil })}`
+                      : '')
+                  }
+                />
+              )}
               {room.totalHousemates != null && (
                 <DetailRow
-                  label={tCommon('housemates', { count: 0 }).replace('0 ', '')}
+                  label={tCommon('housemates', { count: room.totalHousemates })}
                   value={String(room.totalHousemates)}
                 />
               )}
@@ -199,6 +211,18 @@ export default function RoomDetailScreen() {
                   </Badge>
                 ))}
               </View>
+            </View>
+          )}
+
+          {room.latitude != null && room.longitude != null && (
+            <View>
+              <Text className="text-foreground font-semibold">{t('location')}</Text>
+              <View style={{ marginTop: 8 }}>
+                <RoomLocationMap latitude={room.latitude} longitude={room.longitude} />
+              </View>
+              <Text style={{ marginTop: 8 }} className="text-muted-foreground text-xs">
+                {t('approximateLocation')}
+              </Text>
             </View>
           )}
 
@@ -267,23 +291,27 @@ export default function RoomDetailScreen() {
           left: 0,
           paddingHorizontal: 16,
           paddingTop: 12,
-          paddingBottom: 16,
+          paddingBottom: Math.max(insets.bottom, 16),
         }}
         className="border-border bg-background border-t">
         {application ? (
           <Button
             variant="outline"
-            className="rounded-xl py-3.5"
+            size="lg"
+            style={{ height: 48 }}
+            className="rounded-xl"
             onPress={() => router.push(`/(app)/application/${application.id}` as never)}>
-            <Text>{t('viewApplication')}</Text>
+            <Text className="text-base font-semibold">{t('viewApplication')}</Text>
           </Button>
         ) : (
           <Button
-            className="rounded-xl py-3.5"
+            size="lg"
+            style={{ height: 48 }}
+            className="rounded-xl"
             onPress={() =>
               router.push({ pathname: '/(app)/apply-sheet' as never, params: { roomId: id } })
             }>
-            <Text>{t('apply')}</Text>
+            <Text className="text-base font-semibold">{t('apply')}</Text>
           </Button>
         )}
       </View>

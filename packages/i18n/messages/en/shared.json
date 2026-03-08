@@ -204,6 +204,7 @@
       "terschelling": "Terschelling"
     },
     "house_type": {
+      "_label": "House type",
       "student_house": "Student house",
       "apartment": "Apartment",
       "studio": "Studio",

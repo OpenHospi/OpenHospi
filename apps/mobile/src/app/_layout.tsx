@@ -5,8 +5,8 @@ import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
-import { useRouter, useSegments, Stack } from 'expo-router';
-import React, { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useUniwind } from 'uniwind';
@@ -83,40 +83,9 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function OnboardingGuard() {
+function RootNavigator() {
   const { data: session, isPending: sessionPending } = useSession();
   const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
-  const router = useRouter();
-  const segments = useSegments();
-
-  useEffect(() => {
-    if (sessionPending) return;
-
-    const inAuthGroup = segments[0] === '(auth)';
-    const inOnboarding = inAuthGroup && (segments as string[])[1] === 'onboarding';
-
-    if (!session) {
-      if (!inAuthGroup) {
-        router.replace('/(auth)/login');
-      }
-      return;
-    }
-
-    // Session exists — check onboarding
-    if (onboardingPending) return;
-
-    if (onboardingStatus && !onboardingStatus.isComplete) {
-      if (!inOnboarding) {
-        router.replace('/(auth)/onboarding' as never);
-      }
-      return;
-    }
-
-    // Complete — go to app
-    if (inAuthGroup) {
-      router.replace('/(app)/(tabs)/discover');
-    }
-  }, [session, sessionPending, onboardingStatus, onboardingPending, segments, router]);
 
   if (sessionPending || (session && onboardingPending)) {
     return (
@@ -126,34 +95,19 @@ function OnboardingGuard() {
     );
   }
 
-  return null;
-}
-
-function RootNavigator() {
-  const { data: session, isPending } = useSession();
-
-  if (isPending) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  const isReady = !!session && (onboardingStatus?.isComplete ?? false);
 
   return (
-    <>
-      <OnboardingGuard />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Protected guard={!!session}>
-          <Stack.Screen name="(app)" />
-        </Stack.Protected>
-        <Stack.Protected guard={!session}>
-          <Stack.Screen name="(auth)" />
-        </Stack.Protected>
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Protected guard={isReady}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isReady}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 }
 

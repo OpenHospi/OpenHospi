@@ -112,6 +112,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
     autolinkingModuleResolution: true,
+    reactCompiler: true,
   },
   owner: 'openhospi',
   extra: {

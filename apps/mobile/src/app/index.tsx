@@ -1,22 +1,24 @@
 import { Redirect } from 'expo-router';
-import { ActivityIndicator, View } from 'react-native';
 
 import { useSession } from '@/lib/auth-client';
+import { useOnboardingStatus } from '@/services/onboarding';
 
 export default function Index() {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending: sessionPending } = useSession();
+  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
 
-  if (isPending) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  // RootNavigator shows loading while pending — this is a safety fallback
+  if (sessionPending || (session && onboardingPending)) {
+    return null;
   }
 
-  if (session) {
-    return <Redirect href="/(app)/(tabs)/discover" />;
+  if (!session) {
+    return <Redirect href="/(auth)/login" />;
   }
 
-  return <Redirect href="/(auth)/login" />;
+  if (!onboardingStatus?.isComplete) {
+    return <Redirect href="/(auth)/onboarding" />;
+  }
+
+  return <Redirect href="/(app)/(tabs)/discover" />;
 }

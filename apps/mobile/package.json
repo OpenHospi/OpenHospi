@@ -50,7 +50,7 @@
     "@rn-primitives/toggle": "^1.2.0",
     "@rn-primitives/toggle-group": "^1.2.0",
     "@rn-primitives/tooltip": "^1.2.0",
-    "@sentry/react-native": "^8.3.0",
+    "@sentry/react-native": "^7.11.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tanstack/react-query": "^5.90.21",
     "better-auth": "^1.5.4",
@@ -62,7 +62,7 @@
     "expo-clipboard": "~55.0.8",
     "expo-constants": "~55.0.7",
     "expo-crypto": "~55.0.9",
-    "expo-dev-client": "~55.0.11",
+    "expo-dev-client": "~55.0.13",
     "expo-device": "~55.0.9",
     "expo-file-system": "~55.0.10",
     "expo-font": "~55.0.4",
@@ -114,10 +114,20 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "expo-drizzle-studio-plugin": "^0.2.1",
+    "expo-mcp": "~0.2.4",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.3"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-leaflet-view"
+        ]
+      }
+    }
   },
   "private": true
 }

@@ -556,6 +556,7 @@
       "roomCount": "{showing} van {total} kamers",
       "empty": "Geen kamers gevonden met deze filters. Pas je zoekopdracht aan.",
       "filters": {
+        "title": "Filters",
         "city": "Stad",
         "cityPlaceholder": "Alle steden",
         "priceRange": "Prijsbereik",

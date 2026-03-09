@@ -25,7 +25,7 @@ function ChipPicker({
   t: (key: string) => string;
 }) {
   return (
-    <View className="flex-row flex-wrap gap-2">
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
       {values.map((v) => (
         <Pressable key={v} onPress={() => onSelect(selected === v ? null : v)}>
           <Badge
@@ -57,7 +57,9 @@ export default function EditAboutScreen() {
 
   if (isPending) {
     return (
-      <View className="bg-background flex-1 items-center justify-center">
+      <View
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -81,13 +83,13 @@ export default function EditAboutScreen() {
   }
 
   return (
-    <View className="bg-background flex-1">
+    <View style={{ flex: 1 }} className="bg-background">
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 32 }}
         keyboardShouldPersistTaps="handled">
-        <View className="space-y-4 px-4 pt-4">
-          <View className="gap-2">
+        <View style={{ gap: 16, paddingHorizontal: 16, paddingTop: 16 }}>
+          <View style={{ gap: 8 }}>
             <Label>{tFields('gender')}</Label>
             <ChipPicker
               values={Gender.values}
@@ -98,17 +100,17 @@ export default function EditAboutScreen() {
             />
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tFields('birthDate')}</Label>
             <Input value={birthDate} onChangeText={setBirthDate} placeholder="YYYY-MM-DD" />
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tFields('studyProgram')}</Label>
             <Input value={studyProgram} onChangeText={setStudyProgram} />
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tFields('studyLevel')}</Label>
             <ChipPicker
               values={StudyLevel.values}
@@ -119,7 +121,7 @@ export default function EditAboutScreen() {
             />
           </View>
 
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{tFields('preferredCity')}</Label>
             <ChipPicker
               values={City.values}
@@ -130,14 +132,16 @@ export default function EditAboutScreen() {
             />
           </View>
 
-          <View className="mb-8 gap-2">
+          <View style={{ gap: 8, marginBottom: 32 }}>
             <Label>{tFields('vereniging')}</Label>
             <Input value={vereniging} onChangeText={setVereniging} />
           </View>
         </View>
       </ScrollView>
 
-      <View className="border-border border-t px-4 pt-3 pb-6">
+      <View
+        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
+        className="border-border border-t">
         <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
           <Text>{tCommon('save')}</Text>
         </Button>

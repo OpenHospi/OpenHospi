@@ -38,7 +38,7 @@ export default function DiscoverScreen() {
 
   const renderItem = useCallback(
     ({ item }: { item: DiscoverRoom }) => (
-      <View className="px-4 pb-4">
+      <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
         <RoomCard room={item} />
       </View>
     ),
@@ -46,9 +46,9 @@ export default function DiscoverScreen() {
   );
 
   return (
-    <SafeAreaView className="bg-background flex-1" edges={['top']}>
-      <View className="space-y-2 px-4 pt-2 pb-2">
-        <View className="flex-row gap-2">
+    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
+      <View style={{ gap: 8, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
           <Input
             className="flex-1"
             value={searchText}
@@ -70,12 +70,20 @@ export default function DiscoverScreen() {
       </View>
 
       {isPending ? (
-        <View className="flex-1 items-center justify-center">
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator size="large" />
         </View>
       ) : filteredRooms.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <View className="items-center justify-center rounded-lg border border-dashed p-12">
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 32,
+          }}>
+          <View
+            style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
+            className="rounded-lg border border-dashed">
             <Text variant="muted" className="text-center">
               {t('empty')}
             </Text>
@@ -90,7 +98,7 @@ export default function DiscoverScreen() {
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <View className="py-4">
+              <View style={{ paddingVertical: 16 }}>
                 <ActivityIndicator />
               </View>
             ) : null

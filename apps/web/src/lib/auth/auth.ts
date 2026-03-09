@@ -56,7 +56,7 @@ function createAuth() {
       "https://op.srv.inacademia.org",
       "openhospi://",
       ...(process.env.NODE_ENV === "development"
-        ? ["exp://", "exp://**", "exp://192.168.*.*:*/**"]
+        ? ["http://localhost:3000", "exp+openhospi://", "exp://", "exp://**"]
         : []),
     ],
     emailVerification: {

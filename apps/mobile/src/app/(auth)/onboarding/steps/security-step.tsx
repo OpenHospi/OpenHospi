@@ -36,19 +36,19 @@ export default function SecurityStep() {
 
   return (
     <ScrollView
-      className="flex-1"
+      style={{ flex: 1 }}
       keyboardShouldPersistTaps="handled"
-      contentContainerClassName="space-y-6">
+      contentContainerStyle={{ gap: 24 }}>
       <View>
-        <Text className="font-semibold">{t('e2ee_title')}</Text>
-        <Text variant="muted" className="mt-2 text-sm">
+        <Text className="text-foreground font-semibold">{t('e2ee_title')}</Text>
+        <Text variant="muted" style={{ marginTop: 8 }} className="text-sm">
           {t('e2ee_description')}
         </Text>
       </View>
 
       {step === 'enter' ? (
         <>
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{t('enter_pin')}</Label>
             <Input
               className="text-center text-2xl tracking-[8px]"
@@ -76,7 +76,7 @@ export default function SecurityStep() {
         </>
       ) : (
         <>
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             <Label>{t('confirm_pin')}</Label>
             <Input
               className="text-center text-2xl tracking-[8px]"

@@ -1,11 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as SecureStore from 'expo-secure-store';
+import { getCookie } from '@better-auth/expo/client';
 
-import { api } from '@/lib/api-client';
-import { API_BASE_URL, TOKEN_KEY } from '@/lib/constants';
+import { api, ApiError } from '@/lib/api-client';
+import { API_BASE_URL, STORAGE_PREFIX } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 import type { ProfileWithPhotos } from './types';
+
+const COOKIE_STORE_KEY = `${STORAGE_PREFIX}_cookie`;
 
 export function useProfile() {
   return useQuery({
@@ -32,7 +35,13 @@ export function useUploadProfilePhoto() {
       file: { uri: string; name: string; type: string };
       slot: number;
     }) => {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      const raw = await SecureStore.getItemAsync(COOKIE_STORE_KEY);
+      const headers: Record<string, string> = {};
+      if (raw) {
+        const cookie = getCookie(raw);
+        if (cookie) headers['Cookie'] = cookie;
+      }
+
       const formData = new FormData();
       formData.append('file', {
         uri: file.uri,
@@ -43,13 +52,13 @@ export function useUploadProfilePhoto() {
 
       const response = await fetch(`${API_BASE_URL}/api/mobile/profile/photos`, {
         method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers,
         body: formData,
       });
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
-        throw new Error((error as { error?: string }).error ?? 'Upload failed');
+        throw new ApiError(response.status, (error as { error?: string }).error ?? 'Upload failed');
       }
 
       return response.json();

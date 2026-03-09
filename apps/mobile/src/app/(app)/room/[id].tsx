@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Dot, Euro } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,24 +9,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
 import { PhotoCarousel } from '@/components/photo-carousel';
+import RoomLocationMap from '@/components/room-location-map';
 import { useTranslation } from 'react-i18next';
 import { useRoom } from '@/services/rooms';
 
 function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
   if (!value) return null;
   return (
-    <View className="flex-row items-start justify-between py-1.5">
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        paddingVertical: 6,
+      }}>
       <Text className="text-muted-foreground text-sm">{label}</Text>
-      <Text className="text-sm">{value}</Text>
+      <Text className="text-card-foreground text-sm">{value}</Text>
     </View>
   );
 }
 
 function PriceValue({ amount }: { amount: string | number }) {
   return (
-    <View className="flex-row items-center">
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Euro size={12} className="text-foreground" />
-      <Text className="text-sm">{amount}</Text>
+      <Text className="text-card-foreground text-sm">{amount}</Text>
     </View>
   );
 }
@@ -40,7 +47,13 @@ function PriceDetailRow({
 }) {
   if (!amount) return null;
   return (
-    <View className="flex-row items-start justify-between py-1.5">
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        paddingVertical: 6,
+      }}>
       <Text className="text-muted-foreground text-sm">{label}</Text>
       <PriceValue amount={amount} />
     </View>
@@ -53,12 +66,16 @@ export default function RoomDetailScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.roomDetail' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tRoomFields } = useTranslation('translation', { keyPrefix: 'app.rooms.fields' });
 
+  const insets = useSafeAreaInsets();
   const { data, isPending } = useRoom(id);
 
   if (isPending) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -66,9 +83,11 @@ export default function RoomDetailScreen() {
 
   if (!data) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <Text variant="muted">{t('notFound')}</Text>
-        <Button variant="link" className="mt-4" onPress={() => router.back()}>
+        <Button variant="link" style={{ marginTop: 16 }} onPress={() => router.back()}>
           <Text>{t('backToDiscover')}</Text>
         </Button>
       </SafeAreaView>
@@ -78,14 +97,14 @@ export default function RoomDetailScreen() {
   const { room, application } = data;
 
   return (
-    <SafeAreaView className="bg-background flex-1" edges={['bottom']}>
-      <ScrollView className="flex-1">
+    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
+      <ScrollView style={{ flex: 1 }}>
         <PhotoCarousel photos={room.photos} bucket="room-photos" />
 
-        <View className="space-y-6 px-4 pt-4">
+        <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
           <View>
-            <Text className="text-2xl font-bold tracking-tight">{room.title}</Text>
-            <View className="mt-1 flex-row items-center">
+            <Text className="text-foreground text-2xl font-bold tracking-tight">{room.title}</Text>
+            <View style={{ marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
               <Text variant="muted">{tEnums(`city.${room.city}`)}</Text>
               {room.neighborhood && (
                 <>
@@ -110,9 +129,14 @@ export default function RoomDetailScreen() {
               />
               <PriceDetailRow label={t('deposit')} amount={room.deposit} />
               <Separator className="my-2" />
-              <View className="flex-row items-center justify-between">
-                <Text className="font-semibold">{t('totalCost')}</Text>
-                <View className="flex-row items-center">
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <Text className="text-card-foreground font-semibold">{t('totalCost')}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Euro size={18} className="text-primary" />
                   <Text className="text-primary text-lg font-bold">
                     {room.totalCost}
@@ -129,27 +153,36 @@ export default function RoomDetailScreen() {
             </CardHeader>
             <CardContent>
               <DetailRow
-                label={t('roomSize')}
-                value={room.roomSizeM2 ? `${room.roomSizeM2}m²` : null}
+                label={tRoomFields('roomSize')}
+                value={room.roomSizeM2 ? t('roomSize', { size: String(room.roomSizeM2) }) : null}
               />
               <DetailRow
                 label={tEnums('house_type._label')}
                 value={room.houseType ? tEnums(`house_type.${room.houseType}`) : null}
               />
               <DetailRow
-                label={tEnums('furnishing._label')}
+                label={tEnums('furnishing_label')}
                 value={room.furnishing ? tEnums(`furnishing.${room.furnishing}`) : null}
               />
               <DetailRow
-                label={tEnums('rental_type._label')}
+                label={t('rentalType')}
                 value={room.rentalType ? tEnums(`rental_type.${room.rentalType}`) : null}
               />
-              <DetailRow label={t('availableFrom')} value={room.availableFrom} />
-              <DetailRow label={t('availableUntil')} value={room.availableUntil} />
+              {room.availableFrom && (
+                <DetailRow
+                  label={t('availability')}
+                  value={
+                    t('availableFrom', { date: room.availableFrom }) +
+                    (room.availableUntil
+                      ? ` · ${t('availableUntil', { date: room.availableUntil })}`
+                      : '')
+                  }
+                />
+              )}
               {room.totalHousemates != null && (
                 <DetailRow
-                  label={tCommon('housemates', { count: 0 }).replace('0 ', '')}
-                  value={String(room.totalHousemates)}
+                  label={tRoomFields('totalHousemates')}
+                  value={tCommon('housemates', { count: Number(room.totalHousemates) })}
                 />
               )}
             </CardContent>
@@ -157,8 +190,8 @@ export default function RoomDetailScreen() {
 
           {room.features.length > 0 && (
             <View>
-              <Text className="font-semibold">{t('features')}</Text>
-              <View className="mt-2 flex-row flex-wrap gap-2">
+              <Text className="text-foreground font-semibold">{t('features')}</Text>
+              <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                 {room.features.map((f) => (
                   <Badge key={f} variant="secondary" className="rounded-lg">
                     <Text>{tEnums(`room_feature.${f}`)}</Text>
@@ -170,14 +203,26 @@ export default function RoomDetailScreen() {
 
           {room.locationTags.length > 0 && (
             <View>
-              <Text className="font-semibold">{t('locationTags')}</Text>
-              <View className="mt-2 flex-row flex-wrap gap-2">
+              <Text className="text-foreground font-semibold">{t('locationTags')}</Text>
+              <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                 {room.locationTags.map((tag) => (
                   <Badge key={tag} variant="outline" className="rounded-lg">
                     <Text>{tEnums(`location_tag.${tag}`)}</Text>
                   </Badge>
                 ))}
               </View>
+            </View>
+          )}
+
+          {room.latitude != null && room.longitude != null && (
+            <View>
+              <Text className="text-foreground font-semibold">{t('location')}</Text>
+              <View style={{ marginTop: 8 }}>
+                <RoomLocationMap latitude={room.latitude} longitude={room.longitude} />
+              </View>
+              <Text style={{ marginTop: 8 }} className="text-muted-foreground text-xs">
+                {t('approximateLocation')}
+              </Text>
             </View>
           )}
 
@@ -213,8 +258,10 @@ export default function RoomDetailScreen() {
 
           {room.description && (
             <View>
-              <Text className="font-semibold">{t('description')}</Text>
-              <Text className="mt-2 text-sm leading-5">{room.description}</Text>
+              <Text className="text-foreground font-semibold">{t('description')}</Text>
+              <Text style={{ marginTop: 8 }} className="text-foreground text-sm leading-5">
+                {room.description}
+              </Text>
             </View>
           )}
 
@@ -222,7 +269,7 @@ export default function RoomDetailScreen() {
             <Card>
               <CardContent>
                 <Text className="text-muted-foreground text-sm">{t('postedBy')}</Text>
-                <Text className="mt-1 font-medium">
+                <Text style={{ marginTop: 4 }} className="text-card-foreground font-medium">
                   {room.owner.firstName} {room.owner.lastName}
                 </Text>
                 {room.owner.studyProgram && (
@@ -232,25 +279,39 @@ export default function RoomDetailScreen() {
             </Card>
           )}
 
-          <View className="h-24" />
+          <View style={{ height: 96 }} />
         </View>
       </ScrollView>
 
-      <View className="border-border bg-background absolute right-0 bottom-0 left-0 border-t px-4 pt-3 pb-4">
+      <View
+        style={{
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+          left: 0,
+          paddingHorizontal: 16,
+          paddingTop: 12,
+          paddingBottom: Math.max(insets.bottom, 16),
+        }}
+        className="border-border bg-background border-t">
         {application ? (
           <Button
             variant="outline"
-            className="rounded-xl py-3.5"
+            size="lg"
+            style={{ height: 48 }}
+            className="rounded-xl"
             onPress={() => router.push(`/(app)/application/${application.id}` as never)}>
-            <Text>{t('viewApplication')}</Text>
+            <Text className="text-base font-semibold">{t('viewApplication')}</Text>
           </Button>
         ) : (
           <Button
-            className="rounded-xl py-3.5"
+            size="lg"
+            style={{ height: 48 }}
+            className="rounded-xl"
             onPress={() =>
               router.push({ pathname: '/(app)/apply-sheet' as never, params: { roomId: id } })
             }>
-            <Text>{t('apply')}</Text>
+            <Text className="text-base font-semibold">{t('apply')}</Text>
           </Button>
         )}
       </View>

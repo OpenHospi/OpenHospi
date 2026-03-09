@@ -1,6 +1,9 @@
 import * as SecureStore from 'expo-secure-store';
+import { getCookie } from '@better-auth/expo/client';
 
-import { API_BASE_URL, TOKEN_KEY } from '@/lib/constants';
+import { API_BASE_URL, STORAGE_PREFIX } from '@/lib/constants';
+
+const COOKIE_STORE_KEY = `${STORAGE_PREFIX}_cookie`;
 
 export class ApiError extends Error {
   constructor(
@@ -14,9 +17,11 @@ export class ApiError extends Error {
 }
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  const token = await SecureStore.getItemAsync(TOKEN_KEY);
-  if (!token) return {};
-  return { Authorization: `Bearer ${token}` };
+  const raw = await SecureStore.getItemAsync(COOKIE_STORE_KEY);
+  if (!raw) return {};
+  const cookie = getCookie(raw);
+  if (!cookie) return {};
+  return { Cookie: cookie };
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {

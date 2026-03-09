@@ -91,6 +91,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           'Allow OpenHospi to access your photos to upload profile and room images.',
       },
     ],
+    [
+      '@sentry/react-native',
+      {
+        url: 'https://sentry.io/',
+        project: 'mobile',
+        organization: 'stichting-openhospi',
+      },
+    ],
   ],
   updates: {
     url: 'https://u.expo.dev/6e5a9f1e-1994-424a-a0a6-5f010b59f1b3',

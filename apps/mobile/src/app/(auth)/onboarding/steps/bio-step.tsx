@@ -27,10 +27,10 @@ export default function BioStep({ onNext }: Props) {
 
   return (
     <ScrollView
-      className="flex-1"
+      style={{ flex: 1 }}
       keyboardShouldPersistTaps="handled"
-      contentContainerClassName="space-y-4">
-      <View className="gap-2">
+      contentContainerStyle={{ gap: 16 }}>
+      <View style={{ gap: 8 }}>
         <Label>{t('fields.bio')}</Label>
         <Textarea
           value={bio}
@@ -43,7 +43,7 @@ export default function BioStep({ onNext }: Props) {
         </Text>
       </View>
 
-      <View className="gap-3">
+      <View style={{ gap: 12 }}>
         <Button onPress={handleSubmit} disabled={submitBio.isPending}>
           <Text>{tCommon('next')}</Text>
         </Button>

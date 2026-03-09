@@ -26,7 +26,7 @@ function EnumPicker({
   t: (key: string) => string;
 }) {
   return (
-    <View className="flex-row flex-wrap gap-2">
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
       {values.map((v) => (
         <Pressable key={v} onPress={() => onSelect(v)}>
           <Badge variant={selected === v ? 'default' : 'outline'} className="rounded-lg px-3 py-2">
@@ -75,10 +75,10 @@ export default function AboutStep({ onNext }: Props) {
 
   return (
     <ScrollView
-      className="flex-1"
+      style={{ flex: 1 }}
       keyboardShouldPersistTaps="handled"
-      contentContainerClassName="space-y-4 pb-8">
-      <View className="gap-2">
+      contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
+      <View style={{ gap: 8 }}>
         <Label>{t('gender')}</Label>
         <EnumPicker
           values={Gender.values}
@@ -89,7 +89,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>{t('birthDate')}</Label>
         <Input
           value={birthDate}
@@ -99,7 +99,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>{t('studyProgram')}</Label>
         <Input
           value={studyProgram}
@@ -108,7 +108,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>{t('studyLevel')}</Label>
         <EnumPicker
           values={StudyLevel.values}
@@ -119,7 +119,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>{t('preferredCity')}</Label>
         <EnumPicker
           values={City.values}
@@ -130,7 +130,7 @@ export default function AboutStep({ onNext }: Props) {
         />
       </View>
 
-      <View className="gap-2">
+      <View style={{ gap: 8 }}>
         <Label>
           {t('vereniging')} <Text variant="muted">({tCommon('optional')})</Text>
         </Label>

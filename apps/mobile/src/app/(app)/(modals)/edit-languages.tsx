@@ -40,8 +40,8 @@ export default function EditLanguagesScreen() {
   }
 
   return (
-    <View className="bg-background flex-1">
-      <View className="flex-1 px-4 pt-4">
+    <View style={{ flex: 1 }} className="bg-background">
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
         <Text variant="muted" className="text-sm">
           {t('languageCounter', {
             count: selected.length,
@@ -49,7 +49,7 @@ export default function EditLanguagesScreen() {
             max: MAX_LANGUAGES,
           })}
         </Text>
-        <View className="mt-3 flex-row flex-wrap gap-2">
+        <View style={{ marginTop: 12, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {Language.values.map((lang) => {
             const isSelected = selected.includes(lang);
             return (
@@ -65,7 +65,9 @@ export default function EditLanguagesScreen() {
         </View>
       </View>
 
-      <View className="border-border border-t px-4 pt-3 pb-6">
+      <View
+        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
+        className="border-border border-t">
         <Button
           className="h-14 rounded-xl"
           onPress={handleSave}

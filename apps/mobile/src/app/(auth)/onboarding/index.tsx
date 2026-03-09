@@ -38,7 +38,9 @@ export default function OnboardingScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView className="bg-background flex-1 items-center justify-center">
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -60,11 +62,11 @@ export default function OnboardingScreen() {
   const progress = (clampedStep / ONBOARDING_TOTAL_STEPS) * 100;
 
   return (
-    <SafeAreaView className="bg-background flex-1">
-      <View className="space-y-6 px-4 pt-4">
+    <SafeAreaView style={{ flex: 1 }} className="bg-background">
+      <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
         <View>
-          <Text className="text-2xl font-bold tracking-tight">{t('title')}</Text>
-          <Text variant="muted" className="mt-1">
+          <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
+          <Text variant="muted" style={{ marginTop: 4 }}>
             {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
           </Text>
         </View>
@@ -72,14 +74,14 @@ export default function OnboardingScreen() {
         <Progress value={progress} />
 
         <View>
-          <Text className="font-semibold">{t(`steps.${stepKey}`)}</Text>
-          <Text variant="muted" className="mt-1 text-sm">
+          <Text className="text-foreground font-semibold">{t(`steps.${stepKey}`)}</Text>
+          <Text variant="muted" style={{ marginTop: 4 }} className="text-sm">
             {t(`stepDescriptions.step${clampedStep}`)}
           </Text>
         </View>
       </View>
 
-      <View className="flex-1 px-4 pt-4">
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
         {clampedStep === 1 && <IdentityStep onNext={handleNext} />}
         {clampedStep === 2 && <AboutStep onNext={handleNext} />}
         {clampedStep === 3 && <BioStep onNext={handleNext} />}
@@ -90,7 +92,7 @@ export default function OnboardingScreen() {
       </View>
 
       {clampedStep > 1 && (
-        <View className="px-4 pb-4">
+        <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
           <Button variant="ghost" onPress={handleBack}>
             <Text>{tCommon('back')}</Text>
           </Button>

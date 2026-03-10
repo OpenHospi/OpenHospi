@@ -56,7 +56,8 @@
       "last": "Last",
       "previous": "Previous",
       "delete": "Delete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "notSet": "Not set"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",

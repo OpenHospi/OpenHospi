@@ -56,7 +56,8 @@
       "last": "Laatste",
       "previous": "Vorige",
       "delete": "Verwijderen",
-      "skip": "Overslaan"
+      "skip": "Overslaan",
+      "notSet": "Niet ingesteld"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",

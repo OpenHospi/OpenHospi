@@ -37,10 +37,45 @@ export default function ModalsLayout() {
         }}
       />
       <Stack.Screen
-        name="edit-about"
+        name="edit-gender"
         options={{
-          sheetAllowedDetents: [0.85, 1],
-          title: tProfile('studyInfo'),
+          sheetAllowedDetents: [0.35],
+          title: tProfile('gender'),
+        }}
+      />
+      <Stack.Screen
+        name="edit-birth-date"
+        options={{
+          sheetAllowedDetents: [0.45],
+          title: tProfile('birthDate'),
+        }}
+      />
+      <Stack.Screen
+        name="edit-study-program"
+        options={{
+          sheetAllowedDetents: [0.35],
+          title: tProfile('studyProgram'),
+        }}
+      />
+      <Stack.Screen
+        name="edit-study-level"
+        options={{
+          sheetAllowedDetents: [0.45],
+          title: tProfile('studyLevel'),
+        }}
+      />
+      <Stack.Screen
+        name="edit-preferred-city"
+        options={{
+          sheetAllowedDetents: [0.7, 1],
+          title: tProfile('preferredCity'),
+        }}
+      />
+      <Stack.Screen
+        name="edit-vereniging"
+        options={{
+          sheetAllowedDetents: [0.35],
+          title: tProfile('vereniging'),
         }}
       />
       <Stack.Screen

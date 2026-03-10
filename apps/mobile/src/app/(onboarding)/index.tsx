@@ -1,5 +1,4 @@
 import { ONBOARDING_TOTAL_STEPS } from '@openhospi/shared/constants';
-import { Redirect } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -47,10 +46,6 @@ export default function OnboardingScreen() {
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
-  }
-
-  if (status?.isComplete) {
-    return <Redirect href="/" />;
   }
 
   function handleNext() {

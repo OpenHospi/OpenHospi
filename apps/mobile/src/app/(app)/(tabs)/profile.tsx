@@ -16,6 +16,7 @@ import { ProfileFieldRow } from '@/components/profile-field-row';
 import { ProfileSectionCard } from '@/components/profile-section-card';
 import { useTranslation } from 'react-i18next';
 import { authClient } from '@/lib/auth-client';
+import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useProfile } from '@/services/profile';
 
@@ -217,7 +218,12 @@ export default function ProfileScreen() {
             </View>
           </ProfileSectionCard>
 
-          <Button variant="destructive" onPress={() => authClient.signOut()}>
+          <Button
+            variant="destructive"
+            onPress={() => {
+              queryClient.clear();
+              authClient.signOut();
+            }}>
             <Text>{tCommon('logout')}</Text>
           </Button>
         </View>

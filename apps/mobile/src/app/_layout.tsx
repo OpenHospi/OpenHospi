@@ -3,6 +3,7 @@ import { install } from 'react-native-quick-crypto';
 install();
 
 import '../global.css';
+import { hideSplash } from '@/lib/splash';
 
 import * as Sentry from '@sentry/react-native';
 import { ThemeProvider } from '@react-navigation/native';
@@ -12,16 +13,15 @@ import { isRunningInExpoGo } from 'expo';
 import { Stack } from 'expo-router';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useUniwind } from 'uniwind';
 
+import { SessionProvider, useAppSession } from '@/context/session';
 import { useRunMigrations } from '@/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
-import { useSession } from '@/lib/auth-client';
 import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient } from '@/lib/query-client';
 import { NAV_THEME } from '@/lib/theme';
-import { useOnboardingStatus } from '@/services/onboarding';
 
 Sentry.init({
   dsn: SENTRY_DSN,
@@ -48,68 +48,45 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
   );
 }
 
-function I18nGate({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = React.useState(false);
+function RootNavigator() {
+  const [i18nLoaded, setI18nLoaded] = React.useState(false);
+  const { success: migrationsSuccess, error: migrationsError } = useRunMigrations();
+  const { isLoading, isAuthenticated, needsOnboarding } = useAppSession();
 
   React.useEffect(() => {
-    i18nReady.then(() => setReady(true));
+    i18nReady.then(() => setI18nLoaded(true));
   }, []);
 
-  if (!ready) {
+  const allReady = i18nLoaded && migrationsSuccess && !isLoading;
+
+  React.useEffect(() => {
+    if (allReady) {
+      hideSplash();
+    }
+  }, [allReady]);
+
+  if (migrationsError) {
+    hideSplash();
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
+        <Text>Database migration failed: {migrationsError.message}</Text>
       </View>
     );
   }
 
-  return <>{children}</>;
-}
-
-function MigrationGate({ children }: { children: React.ReactNode }) {
-  const { success, error } = useRunMigrations();
-
-  if (error) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Database migration failed: {error.message}</Text>
-      </View>
-    );
+  if (!allReady) {
+    return null;
   }
-
-  if (!success) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-  return <>{children}</>;
-}
-
-function RootNavigator() {
-  const { data: session, isPending: sessionPending } = useSession();
-  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus({
-    enabled: !!session,
-  });
-
-  if (sessionPending || (session && onboardingPending)) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  const isReady = !!session && (onboardingStatus?.isComplete ?? false);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Protected guard={isReady}>
+      <Stack.Protected guard={isAuthenticated}>
         <Stack.Screen name="(app)" />
       </Stack.Protected>
-      <Stack.Protected guard={!isReady}>
+      <Stack.Protected guard={needsOnboarding}>
+        <Stack.Screen name="(onboarding)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isAuthenticated && !needsOnboarding}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
       <Stack.Screen name="+not-found" />
@@ -122,16 +99,14 @@ let RootLayout = function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nGate>
-        <I18nextProvider i18n={i18n}>
-          <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
-            <MigrationGate>
-              <RootNavigator />
-            </MigrationGate>
-            <PortalHost />
-          </ThemeProvider>
-        </I18nextProvider>
-      </I18nGate>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
+          <SessionProvider>
+            <RootNavigator />
+          </SessionProvider>
+          <PortalHost />
+        </ThemeProvider>
+      </I18nextProvider>
     </QueryClientProvider>
   );
 };

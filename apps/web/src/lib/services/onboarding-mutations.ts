@@ -104,16 +104,15 @@ export async function getOnboardingStatus(userId: string): Promise<OnboardingSta
   const hasSecurity = keyBackup.length > 0;
 
   const isComplete =
-    hasIdentity && hasAbout && hasBio && hasPersonality && hasLanguages && hasPhotos && hasSecurity;
+    hasIdentity && hasAbout && hasPersonality && hasLanguages && hasPhotos && hasSecurity;
 
   let currentStep = 1;
   if (hasIdentity) currentStep = 2;
   if (hasIdentity && hasAbout) currentStep = 3;
-  if (hasIdentity && hasAbout && hasBio) currentStep = 4;
-  if (hasIdentity && hasAbout && hasBio && hasPersonality) currentStep = 5;
-  if (hasIdentity && hasAbout && hasBio && hasPersonality && hasLanguages) currentStep = 6;
-  if (hasIdentity && hasAbout && hasBio && hasPersonality && hasLanguages && hasPhotos)
-    currentStep = 7;
+  if (hasIdentity && hasAbout) currentStep = 4;
+  if (hasIdentity && hasAbout && hasPersonality) currentStep = 5;
+  if (hasIdentity && hasAbout && hasPersonality && hasLanguages) currentStep = 6;
+  if (hasIdentity && hasAbout && hasPersonality && hasLanguages && hasPhotos) currentStep = 7;
   if (isComplete) currentStep = 8; // complete
 
   return {

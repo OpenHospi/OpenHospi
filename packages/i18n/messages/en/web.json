@@ -375,17 +375,22 @@
       "description3": "OpenHospi was born when Ruben saw fellow students struggling with paid platforms and chaotic Facebook groups. He didn't experience it himself, but saw many around him dealing with it. The solution was clear: build something better, and make it open source."
     },
     "team": {
-      "title": "The Team",
+      "title": "The Board",
       "members": [
         {
           "name": "Ruben Talstra",
-          "role": "Founder",
+          "role": "Chairman",
           "bio": "BITM student at Hanze University of Applied Sciences and self-taught software engineer with over 10 years of experience. Started OpenHospi to give every student a fair chance at finding housing — no fees, no favoritism."
         },
         {
+          "name": "Sophie de Klerk",
+          "role": "Secretary",
+          "bio": "-"
+        },
+        {
           "name": "Heino Bosma",
-          "role": "Co-founder",
-          "bio": "Passionate about making student life better. Helping shape OpenHospi's vision and strategy to reach students across the Netherlands."
+          "role": "Treasurer",
+          "bio": "-"
         }
       ]
     },
@@ -759,7 +764,15 @@
     "disclaimer": "Platforms change. Last updated: March 2026. See something wrong? Email us at info@openhospi.nl.",
     "table": {
       "title": "Quick comparison",
-      "columns": ["Feature", "OpenHospi", "Hospi.nl", "myHospi.nl", "Dingdong", "Kamernet", "Facebook Groups"],
+      "columns": [
+        "Feature",
+        "OpenHospi",
+        "Hospi.nl",
+        "myHospi.nl",
+        "Dingdong",
+        "Kamernet",
+        "Facebook Groups"
+      ],
       "rows": [
         {
           "feature": "Price",

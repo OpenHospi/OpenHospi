@@ -1,23 +1,27 @@
+/* eslint-disable import/first -- react-native-quick-crypto polyfill must run before all other imports */
+import { install } from 'react-native-quick-crypto';
+install();
+
 import '../global.css';
+import { hideSplash } from '@/lib/splash';
 
 import * as Sentry from '@sentry/react-native';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
-import { useRouter, useSegments, Stack } from 'expo-router';
-import React, { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import React from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useUniwind } from 'uniwind';
 
+import { SessionProvider, useAppSession } from '@/context/session';
 import { useRunMigrations } from '@/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
-import { useSession } from '@/lib/auth-client';
 import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient } from '@/lib/query-client';
 import { NAV_THEME } from '@/lib/theme';
-import { useOnboardingStatus } from '@/services/onboarding';
 
 Sentry.init({
   dsn: SENTRY_DSN,
@@ -44,115 +48,49 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
   );
 }
 
-function I18nGate({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = React.useState(false);
+function RootNavigator() {
+  const [i18nLoaded, setI18nLoaded] = React.useState(false);
+  const { success: migrationsSuccess, error: migrationsError } = useRunMigrations();
+  const { isLoading, isAuthenticated, needsOnboarding } = useAppSession();
 
   React.useEffect(() => {
-    i18nReady.then(() => setReady(true));
+    i18nReady.then(() => setI18nLoaded(true));
   }, []);
 
-  if (!ready) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  const allReady = i18nLoaded && migrationsSuccess && !isLoading;
 
-  return <>{children}</>;
-}
-
-function MigrationGate({ children }: { children: React.ReactNode }) {
-  const { success, error } = useRunMigrations();
-
-  if (error) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Database migration failed: {error.message}</Text>
-      </View>
-    );
-  }
-
-  if (!success) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-  return <>{children}</>;
-}
-
-function OnboardingGuard() {
-  const { data: session, isPending: sessionPending } = useSession();
-  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
-  const router = useRouter();
-  const segments = useSegments();
-
-  useEffect(() => {
-    if (sessionPending) return;
-
-    const inAuthGroup = segments[0] === '(auth)';
-    const inOnboarding = inAuthGroup && (segments as string[])[1] === 'onboarding';
-
-    if (!session) {
-      if (!inAuthGroup) {
-        router.replace('/(auth)/login');
-      }
-      return;
+  React.useEffect(() => {
+    if (allReady) {
+      hideSplash();
     }
+  }, [allReady]);
 
-    // Session exists — check onboarding
-    if (onboardingPending) return;
-
-    if (onboardingStatus && !onboardingStatus.isComplete) {
-      if (!inOnboarding) {
-        router.replace('/(auth)/onboarding' as never);
-      }
-      return;
-    }
-
-    // Complete — go to app
-    if (inAuthGroup) {
-      router.replace('/(app)/(tabs)/discover');
-    }
-  }, [session, sessionPending, onboardingStatus, onboardingPending, segments, router]);
-
-  if (sessionPending || (session && onboardingPending)) {
+  if (migrationsError) {
+    hideSplash();
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
+        <Text>Database migration failed: {migrationsError.message}</Text>
       </View>
     );
   }
 
-  return null;
-}
-
-function RootNavigator() {
-  const { data: session, isPending } = useSession();
-
-  if (isPending) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  if (!allReady) {
+    return null;
   }
 
   return (
-    <>
-      <OnboardingGuard />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={!!session}>
-          <Stack.Screen name="(app)" />
-        </Stack.Protected>
-        <Stack.Protected guard={!session}>
-          <Stack.Screen name="(auth)" />
-        </Stack.Protected>
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={isAuthenticated}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={needsOnboarding}>
+        <Stack.Screen name="(onboarding)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isAuthenticated && !needsOnboarding}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 }
 
@@ -161,16 +99,14 @@ let RootLayout = function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nGate>
-        <I18nextProvider i18n={i18n}>
-          <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
-            <MigrationGate>
-              <RootNavigator />
-            </MigrationGate>
-            <PortalHost />
-          </ThemeProvider>
-        </I18nextProvider>
-      </I18nGate>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
+          <SessionProvider>
+            <RootNavigator />
+          </SessionProvider>
+          <PortalHost />
+        </ThemeProvider>
+      </I18nextProvider>
     </QueryClientProvider>
   );
 };

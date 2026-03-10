@@ -56,7 +56,8 @@
       "last": "Last",
       "previous": "Previous",
       "delete": "Delete",
-      "skip": "Skip"
+      "skip": "Skip",
+      "notSet": "Not set"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -554,7 +555,8 @@
     },
     "discover": {
       "title": "Discover rooms",
-      "roomCount": "Showing {showing} of {total} rooms",
+      "roomCount": "{count, plural, =0 {No rooms found} =1 {1 room} other {# rooms}}",
+      "roomCountFiltered": "Showing {showing} of {total} rooms",
       "empty": "No rooms match your filters. Try adjusting your search.",
       "filters": {
         "title": "Filters",
@@ -669,7 +671,8 @@
         "bio": "Tell something about yourself...",
         "preferredCity": "Select a city",
         "vereniging": "e.g. Vindicat",
-        "searchVereniging": "Search association..."
+        "searchVereniging": "Search association...",
+        "searchCity": "Search city..."
       },
       "photoSlots": {
         "slot1": "Your best photo",
@@ -700,7 +703,17 @@
         "pin_mismatch": "PINs do not match",
         "pin_hint": "This PIN protects your encryption key. You'll need it to recover your chats on a new device.",
         "setup_success": "Chat encryption set up successfully",
-        "setup_error": "Could not set up encryption. Please try again."
+        "setup_error": "Could not set up encryption. Please try again.",
+        "generating_keys": "Generating encryption keys\u2026",
+        "change_pin": "Change PIN",
+        "recovery_title": "Recover your encryption keys",
+        "recovery_description": "Enter the PIN you chose during onboarding to restore your encryption keys.",
+        "recovery_success": "Encryption keys recovered successfully",
+        "recovery_error": "Could not recover keys. Is your PIN correct?",
+        "start_fresh": "Start fresh",
+        "start_fresh_warning": "Starting fresh will generate new encryption keys. You will lose access to old chat messages.",
+        "start_fresh_confirm": "Are you sure?",
+        "no_backup": "No backup found. Set up new encryption keys."
       }
     },
     "rooms": {

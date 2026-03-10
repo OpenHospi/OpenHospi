@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["APPLE_TEAM_ID.nl.openhospi.app"],
+        "components": [
+          { "/": "/room/*", "comment": "Room detail (default locale)" },
+          { "/": "/nl/room/*", "comment": "Room detail (NL)" },
+          { "/": "/en/room/*", "comment": "Room detail (EN)" },
+          { "/": "/de/room/*", "comment": "Room detail (DE)" },
+          { "/": "/chat/*", "comment": "Chat (default locale)" },
+          { "/": "/nl/chat/*", "comment": "Chat (NL)" },
+          { "/": "/en/chat/*", "comment": "Chat (EN)" },
+          { "/": "/de/chat/*", "comment": "Chat (DE)" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["APPLE_TEAM_ID.nl.openhospi.app"]
+  }
+}

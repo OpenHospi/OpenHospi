@@ -1,0 +1,12 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "OpenHospi",
+    "NSCameraUsageDescription": "OpenHospi needs access to your camera to take profile and room photos.",
+    "NSPhotoLibraryUsageDescription": "OpenHospi needs access to your photo library to upload profile and room photos.",
+    "NSPhotoLibraryAddUsageDescription": "OpenHospi would like to save photos to your photo library.",
+    "NSUserTrackingUsageDescription": "OpenHospi does not track you. We only use crash reports to improve the app."
+  },
+  "android": {
+    "app_name": "OpenHospi"
+  }
+}

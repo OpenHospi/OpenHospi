@@ -2,21 +2,22 @@ import { MAX_LANGUAGES, MIN_LANGUAGES } from '@openhospi/shared/constants';
 import { Language } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
 import { useSubmitLanguages } from '@/services/onboarding';
+import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void };
+type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
 
-export default function LanguagesStep({ onNext }: Props) {
+export default function LanguagesStep({ onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.language_enum' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(profile?.languages ?? []);
   const submitLanguages = useSubmitLanguages();
 
   function toggleLanguage(lang: string) {

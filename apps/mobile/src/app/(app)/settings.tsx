@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
 import { authClient } from '@/lib/auth-client';
+import { queryClient } from '@/lib/query-client';
 import { registerForPushNotifications } from '@/lib/notifications';
 import {
   useConsent,
@@ -41,7 +41,6 @@ export default function SettingsScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.settings' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tConsent } = useTranslation('translation', { keyPrefix: 'app.consent' });
-  const router = useRouter();
   const { i18n } = useTranslation();
   const locale = i18n.language as Locale;
 
@@ -67,7 +66,7 @@ export default function SettingsScreen() {
         <SessionsSection t={t} tCommon={tCommon} />
 
         <SectionHeader title={t('dangerZone.title')} />
-        <DeleteAccountSetting t={t} tCommon={tCommon} router={router} />
+        <DeleteAccountSetting t={t} tCommon={tCommon} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -406,15 +405,7 @@ function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
   );
 }
 
-function DeleteAccountSetting({
-  t,
-  tCommon,
-  router,
-}: {
-  t: TFunction;
-  tCommon: TFunction;
-  router: ReturnType<typeof useRouter>;
-}) {
+function DeleteAccountSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
   const deleteAccount = useDeleteAccount();
 
   const handleDelete = () => {
@@ -432,8 +423,8 @@ function DeleteAccountSetting({
               onPress: () => {
                 deleteAccount.mutate(undefined, {
                   onSuccess: () => {
+                    queryClient.clear();
                     authClient.signOut();
-                    router.replace('/(auth)/login');
                   },
                 });
               },

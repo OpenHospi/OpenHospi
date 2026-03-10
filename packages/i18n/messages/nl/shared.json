@@ -56,7 +56,8 @@
       "last": "Laatste",
       "previous": "Vorige",
       "delete": "Verwijderen",
-      "skip": "Overslaan"
+      "skip": "Overslaan",
+      "notSet": "Niet ingesteld"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",
@@ -553,7 +554,8 @@
     },
     "discover": {
       "title": "Kamers ontdekken",
-      "roomCount": "{showing} van {total} kamers",
+      "roomCount": "{count, plural, =0 {Geen kamers gevonden} =1 {1 kamer} other {# kamers}}",
+      "roomCountFiltered": "{showing} van {total} kamers",
       "empty": "Geen kamers gevonden met deze filters. Pas je zoekopdracht aan.",
       "filters": {
         "title": "Filters",
@@ -668,7 +670,8 @@
         "bio": "Vertel iets over jezelf...",
         "preferredCity": "Selecteer een stad",
         "vereniging": "bijv. Vindicat",
-        "searchVereniging": "Zoek vereniging..."
+        "searchVereniging": "Zoek vereniging...",
+        "searchCity": "Zoek stad..."
       },
       "photoSlots": {
         "slot1": "Je beste foto",
@@ -699,7 +702,17 @@
         "pin_mismatch": "Pincodes komen niet overeen",
         "pin_hint": "Deze PIN beschermt je versleutelingssleutel. Je hebt hem nodig om je chats op een nieuw apparaat te herstellen.",
         "setup_success": "Chatversleuteling succesvol ingesteld",
-        "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw."
+        "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw.",
+        "generating_keys": "Versleutelingssleutels genereren\u2026",
+        "change_pin": "PIN wijzigen",
+        "recovery_title": "Herstel je versleutelingssleutels",
+        "recovery_description": "Voer de PIN in die je tijdens het onboarden hebt gekozen om je versleutelingssleutels te herstellen.",
+        "recovery_success": "Versleutelingssleutels succesvol hersteld",
+        "recovery_error": "Kan sleutels niet herstellen. Klopt je PIN?",
+        "start_fresh": "Opnieuw beginnen",
+        "start_fresh_warning": "Opnieuw beginnen genereert nieuwe versleutelingssleutels. Je verliest toegang tot oude chatberichten.",
+        "start_fresh_confirm": "Weet je het zeker?",
+        "no_backup": "Geen back-up gevonden. Stel nieuwe versleutelingssleutels in."
       }
     },
     "rooms": {

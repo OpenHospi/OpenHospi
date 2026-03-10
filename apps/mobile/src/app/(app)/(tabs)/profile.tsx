@@ -4,16 +4,19 @@ import { getInstitution } from '@openhospi/inacademia';
 import { Settings } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { ProfileFieldRow } from '@/components/profile-field-row';
 import { ProfileSectionCard } from '@/components/profile-section-card';
 import { useTranslation } from 'react-i18next';
 import { authClient } from '@/lib/auth-client';
+import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useProfile } from '@/services/profile';
 
@@ -22,6 +25,7 @@ export default function ProfileScreen() {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
+  const { bottom } = useSafeAreaInsets();
 
   const { data: profile, isPending } = useProfile();
   const { i18n } = useTranslation();
@@ -76,7 +80,7 @@ export default function ProfileScreen() {
 
       <ScrollView
         style={{ flex: 1, paddingHorizontal: 16 }}
-        contentContainerStyle={{ paddingBottom: 32 }}>
+        contentContainerStyle={{ paddingBottom: bottom + 16 }}>
         <View style={{ alignItems: 'center', paddingVertical: 24 }}>
           <Avatar alt={profile.firstName ?? 'Avatar'} className="size-24">
             {avatarUrl ? (
@@ -138,40 +142,49 @@ export default function ProfileScreen() {
             </ScrollView>
           </ProfileSectionCard>
 
-          <ProfileSectionCard
-            title={t('studyInfo')}
-            onEdit={() => router.push('/(app)/edit-about' as never)}>
-            <View style={{ gap: 4 }}>
-              {profile.gender && (
-                <Text className="text-card-foreground text-sm">
-                  {t('gender')}: {tEnums(`gender.${profile.gender}`)}
-                </Text>
-              )}
-              {profile.birthDate && (
-                <Text className="text-card-foreground text-sm">
-                  {t('birthDate')}: {profile.birthDate}
-                </Text>
-              )}
-              {profile.studyProgram && (
-                <Text className="text-card-foreground text-sm">
-                  {t('studyProgram')}: {profile.studyProgram}
-                </Text>
-              )}
-              {profile.studyLevel && (
-                <Text className="text-card-foreground text-sm">
-                  {t('studyLevel')}: {tEnums(`study_level.${profile.studyLevel}`)}
-                </Text>
-              )}
-              {profile.preferredCity && (
-                <Text className="text-card-foreground text-sm">
-                  {t('preferredCity')}: {tEnums(`city.${profile.preferredCity}`)}
-                </Text>
-              )}
-              {profile.vereniging && (
-                <Text className="text-card-foreground text-sm">
-                  {t('vereniging')}: {profile.vereniging}
-                </Text>
-              )}
+          <ProfileSectionCard title={t('studyInfo')}>
+            <View>
+              <ProfileFieldRow
+                label={t('gender')}
+                value={profile.gender ? tEnums(`gender.${profile.gender}`) : null}
+                placeholder={tCommon('notSet')}
+                onPress={() => router.push('/(app)/edit-gender' as never)}
+              />
+              <Separator />
+              <ProfileFieldRow
+                label={t('birthDate')}
+                value={profile.birthDate ? new Date(profile.birthDate).toLocaleDateString() : null}
+                placeholder={tCommon('notSet')}
+                onPress={() => router.push('/(app)/edit-birth-date' as never)}
+              />
+              <Separator />
+              <ProfileFieldRow
+                label={t('studyProgram')}
+                value={profile.studyProgram || null}
+                placeholder={tCommon('notSet')}
+                onPress={() => router.push('/(app)/edit-study-program' as never)}
+              />
+              <Separator />
+              <ProfileFieldRow
+                label={t('studyLevel')}
+                value={profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : null}
+                placeholder={tCommon('notSet')}
+                onPress={() => router.push('/(app)/edit-study-level' as never)}
+              />
+              <Separator />
+              <ProfileFieldRow
+                label={t('preferredCity')}
+                value={profile.preferredCity ? tEnums(`city.${profile.preferredCity}`) : null}
+                placeholder={tCommon('notSet')}
+                onPress={() => router.push('/(app)/edit-preferred-city' as never)}
+              />
+              <Separator />
+              <ProfileFieldRow
+                label={t('vereniging')}
+                value={profile.vereniging || null}
+                placeholder={tCommon('notSet')}
+                onPress={() => router.push('/(app)/edit-vereniging' as never)}
+              />
             </View>
           </ProfileSectionCard>
 
@@ -205,7 +218,12 @@ export default function ProfileScreen() {
             </View>
           </ProfileSectionCard>
 
-          <Button variant="destructive" onPress={() => authClient.signOut()}>
+          <Button
+            variant="destructive"
+            onPress={() => {
+              queryClient.clear();
+              authClient.signOut();
+            }}>
             <Text>{tCommon('logout')}</Text>
           </Button>
         </View>

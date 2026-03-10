@@ -30,7 +30,7 @@ middlemen — just a clean platform with end-to-end encrypted chat and full tran
 | Layer      | Web                               | Mobile                              |
 |------------|-----------------------------------|-------------------------------------|
 | Framework  | Next.js 16, React 19              | Expo SDK 55, React Native 0.83      |
-| Styling    | Tailwind CSS 4, shadcn/ui         | Unistyles v3                        |
+| Styling    | Tailwind CSS 4, shadcn/ui         | Uniwind v1.5 (Tailwind v4 for RN)   |
 | Database   | Supabase PostgreSQL + Drizzle ORM | Local SQLite + Drizzle ORM (cache)  |
 | Auth       | Better Auth + InAcademia OIDC     | Better Auth Expo + InAcademia OIDC  |
 | Realtime   | Supabase Realtime (WebSocket)     | Supabase Realtime (WebSocket)       |

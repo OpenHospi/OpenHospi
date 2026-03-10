@@ -5,10 +5,11 @@ import { api } from '@/lib/api-client';
 import { queryKeys } from './keys';
 import type { OnboardingStatus } from './types';
 
-export function useOnboardingStatus() {
+export function useOnboardingStatus(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: queryKeys.onboarding.status(),
     queryFn: () => api.get<OnboardingStatus>('/api/mobile/onboarding/status'),
+    enabled: options?.enabled,
   });
 }
 

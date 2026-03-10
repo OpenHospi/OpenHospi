@@ -699,6 +699,7 @@
         "pin_mismatch": "PINs stimmen nicht überein",
         "pin_hint": "Diese PIN schützt deinen Verschlüsselungsschlüssel. Du brauchst sie, um deine Chats auf einem neuen Gerät wiederherzustellen.",
         "setup_success": "Chat-Verschlüsselung erfolgreich eingerichtet",
+        "setup_complete_description": "Deine Verschlüsselungsschlüssel sind bereit. Du wirst zur App weitergeleitet...",
         "setup_error": "Verschlüsselung konnte nicht eingerichtet werden. Bitte versuche es erneut.",
         "generating_keys": "Verschlüsselungsschlüssel werden generiert\u2026",
         "change_pin": "PIN ändern",

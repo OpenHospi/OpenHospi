@@ -699,6 +699,7 @@
         "pin_mismatch": "Pincodes komen niet overeen",
         "pin_hint": "Deze PIN beschermt je versleutelingssleutel. Je hebt hem nodig om je chats op een nieuw apparaat te herstellen.",
         "setup_success": "Chatversleuteling succesvol ingesteld",
+        "setup_complete_description": "Je versleutelingssleutels zijn klaar. We brengen je naar de app...",
         "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw.",
         "generating_keys": "Versleutelingssleutels genereren\u2026",
         "change_pin": "PIN wijzigen",

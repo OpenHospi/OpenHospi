@@ -89,7 +89,9 @@ function MigrationGate({ children }: { children: React.ReactNode }) {
 
 function RootNavigator() {
   const { data: session, isPending: sessionPending } = useSession();
-  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
+  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus({
+    enabled: !!session,
+  });
 
   if (sessionPending || (session && onboardingPending)) {
     return (

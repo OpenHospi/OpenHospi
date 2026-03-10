@@ -5,7 +5,9 @@ import { useOnboardingStatus } from '@/services/onboarding';
 
 export default function Index() {
   const { data: session, isPending: sessionPending } = useSession();
-  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus();
+  const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus({
+    enabled: !!session,
+  });
 
   // RootNavigator shows loading while pending — this is a safety fallback
   if (sessionPending || (session && onboardingPending)) {

@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Text } from '@/components/ui/text';
 import { useOnboardingStatus } from '@/services/onboarding';
+import { queryKeys } from '@/services/keys';
 import { useProfile } from '@/services/profile';
 
 import AboutStep from './steps/about-step';
@@ -33,12 +35,24 @@ export default function OnboardingScreen() {
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { data: status, isPending: statusPending } = useOnboardingStatus();
   const { data: profile, isPending: profilePending } = useProfile();
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState<number | null>(null);
 
   const step = currentStep ?? status?.currentStep ?? 1;
   const clampedStep = Math.min(step, ONBOARDING_TOTAL_STEPS);
 
   if (statusPending || profilePending) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background">
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
+
+  // RootNavigator handles the transition — just show a loading state
+  if (status?.isComplete) {
     return (
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
@@ -58,6 +72,10 @@ export default function OnboardingScreen() {
     if (clampedStep > 1) {
       setCurrentStep(clampedStep - 1);
     }
+  }
+
+  async function handleComplete() {
+    await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
   }
 
   const stepKey = STEP_KEYS[clampedStep - 1];
@@ -92,7 +110,7 @@ export default function OnboardingScreen() {
         {clampedStep === 4 && <PersonalityStep onNext={handleNext} profile={profile} />}
         {clampedStep === 5 && <LanguagesStep onNext={handleNext} profile={profile} />}
         {clampedStep === 6 && <PhotosStep onNext={handleNext} profile={profile} />}
-        {clampedStep === 7 && <SecurityStep />}
+        {clampedStep === 7 && <SecurityStep onComplete={handleComplete} />}
       </View>
 
       {clampedStep > 1 && (

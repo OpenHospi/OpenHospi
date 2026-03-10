@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { use, Suspense, useState } from "react";
 
 import {
   Dialog,
@@ -18,28 +18,39 @@ type Props = {
   getFingerprint: () => Promise<string | null>;
 };
 
-export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getFingerprint }: Props) {
+function FingerprintDisplay({ promise }: { promise: Promise<string | null> }) {
   const t = useTranslations("app.chat.safety_number");
-  const [fingerprint, setFingerprint] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const fingerprint = use(promise);
 
-  useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-    setLoading(true);
-    getFingerprint().then((fp) => {
-      if (!cancelled) {
-        setFingerprint(fp);
-        setLoading(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [open, getFingerprint]);
+  if (!fingerprint) {
+    return <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>;
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <div className="bg-muted rounded-lg p-4 font-mono text-center text-lg tracking-wider select-all">
+        {fingerprint}
+      </div>
+      <p className="text-muted-foreground text-sm">{t("instructions")}</p>
+    </>
+  );
+}
+
+export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getFingerprint }: Props) {
+  const t = useTranslations("app.chat.safety_number");
+  const [promise, setPromise] = useState<Promise<string | null> | null>(null);
+
+  function handleOpenChange(isOpen: boolean) {
+    if (isOpen) {
+      setPromise(getFingerprint());
+    } else {
+      setPromise(null);
+    }
+    onOpenChange(isOpen);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
@@ -47,20 +58,17 @@ export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getFinge
         </DialogHeader>
 
         <div className="space-y-4">
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <span className="text-muted-foreground text-sm">{t("loading")}</span>
-            </div>
-          ) : fingerprint ? (
-            <>
-              <div className="bg-muted rounded-lg p-4 font-mono text-center text-lg tracking-wider select-all">
-                {fingerprint}
-              </div>
-              <p className="text-muted-foreground text-sm">{t("instructions")}</p>
-            </>
-          ) : (
-            <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>
-          )}
+          {promise ? (
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-8">
+                  <span className="text-muted-foreground text-sm">{t("loading")}</span>
+                </div>
+              }
+            >
+              <FingerprintDisplay promise={promise} />
+            </Suspense>
+          ) : null}
         </div>
       </DialogContent>
     </Dialog>

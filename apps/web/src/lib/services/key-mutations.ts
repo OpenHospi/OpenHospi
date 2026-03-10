@@ -5,7 +5,7 @@ import {
   privateKeyBackups,
   signedPreKeys,
 } from "@openhospi/database/schema";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 
 // ── Identity Keys ──
 

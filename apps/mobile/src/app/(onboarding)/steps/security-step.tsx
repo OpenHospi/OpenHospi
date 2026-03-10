@@ -10,7 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { useSession } from '@/lib/auth-client';
 import { setupKeysWithPIN } from '@/lib/crypto/key-management';
-import { uploadPublicKeyApi, uploadBackupApi } from '@/services/encryption';
+import {
+  uploadIdentityKeyApi,
+  uploadSignedPreKeyApi,
+  uploadOneTimePreKeysApi,
+  uploadBackupApi,
+} from '@/services/encryption';
 import { queryKeys } from '@/services/keys';
 
 export default function SecurityStep() {
@@ -43,7 +48,12 @@ export default function SecurityStep() {
 
     setLoading(true);
     try {
-      await setupKeysWithPIN(session.user.id, value, uploadPublicKeyApi, uploadBackupApi);
+      await setupKeysWithPIN(session.user.id, value, {
+        uploadIdentityKey: uploadIdentityKeyApi,
+        uploadSignedPreKey: uploadSignedPreKeyApi,
+        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
+        uploadBackup: uploadBackupApi,
+      });
       await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
     } catch {
       Alert.alert(t('setup_error'));

@@ -9,7 +9,7 @@ import {
   generateSafetyNumber,
   fromBase64,
 } from "@openhospi/crypto";
-import type { EncryptedMessage, RatchetState } from "@openhospi/crypto";
+import type { EncryptedMessage } from "@openhospi/crypto";
 import { useCallback, useEffect, useState } from "react";
 
 import {

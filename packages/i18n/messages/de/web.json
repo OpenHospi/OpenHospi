@@ -64,11 +64,16 @@
       "title": "Alternativen — Studentenwohnungsplattformen Vergleichen",
       "description": "Ehrlicher Vergleich niederländischer Studentenwohnungsplattformen. Sieh, wie OpenHospi im Vergleich zu Hospi.nl, myHospi, Dingdong, Kamernet und Facebook-Gruppen abschneidet."
     },
+    "e2eEncryption": {
+      "title": "E2E-Verschlüsselung — Wie Wir Deine Nachrichten Schützen",
+      "description": "Erfahre, wie OpenHospi Ende-zu-Ende-Verschlüsselung einsetzt, um deine Nachrichten privat zu halten. Inspiriert vom Signal Protocol, Open Source und vollständig transparent."
+    },
     "breadcrumbs": {
       "home": "Startseite",
       "rooms": "Studentenzimmer",
       "faq": "FAQ",
-      "alternatives": "Alternativen"
+      "alternatives": "Alternativen",
+      "e2eEncryption": "E2E-Verschlüsselung"
     },
     "faq": {
       "costs": [
@@ -97,6 +102,24 @@
         {
           "question": "Was passiert, wenn ich einen Nutzer melde?",
           "answer": "Meldungen werden von unserem Team überprüft. Wir handeln schnell, einschließlich der Sperrung von Nutzern, die gegen unsere Nutzungsbedingungen verstoßen."
+        }
+      ],
+      "e2eEncryption": [
+        {
+          "question": "Kann OpenHospi meine Nachrichten lesen?",
+          "answer": "Nein. Nachrichten werden auf deinem Gerät verschlüsselt, bevor sie gesendet werden. Wir haben niemals Zugriff auf deine Entschlüsselungsschlüssel und können deine Nachrichten daher nicht lesen."
+        },
+        {
+          "question": "Was passiert, wenn ich mein Gerät verliere?",
+          "answer": "Du kannst deine Identitätsschlüssel mit deinem PIN-Backup wiederherstellen. Ohne die PIN können alte Nachrichten nicht entschlüsselt werden — das ist ein Sicherheitsmerkmal, kein Fehler."
+        },
+        {
+          "question": "Welches Protokoll verwendet OpenHospi?",
+          "answer": "Wir verwenden eine vom Signal Protocol inspirierte Architektur mit X3DH-Schlüsselaustausch und Double Ratchet für Forward Secrecy pro Nachricht."
+        },
+        {
+          "question": "Kann ich die Identität einer Person überprüfen?",
+          "answer": "Ja. Du kannst Sicherheitsnummern in den Chat-Einstellungen vergleichen. Wenn sie übereinstimmen, hat niemand das Gespräch abgefangen."
         }
       ],
       "howItWorks": [
@@ -145,7 +168,8 @@
       "about": "Über uns",
       "alternatives": "Alternativen",
       "faq": "FAQ",
-      "missingAssociation": "Vereinigung fehlt?"
+      "missingAssociation": "Vereinigung fehlt?",
+      "e2eEncryption": "E2E-Verschlüsselung"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
     "openSource": "Open Source",
@@ -757,6 +781,47 @@
         ]
       }
     ]
+  },
+  "e2eEncryption": {
+    "title": "Wie Ende-zu-Ende-Verschlüsselung funktioniert",
+    "subtitle": "Vollständige Transparenz darüber, wie OpenHospi deine Nachrichten schützt",
+    "overview": {
+      "title": "Was ist Ende-zu-Ende-Verschlüsselung?",
+      "description": "Ende-zu-Ende-Verschlüsselung (E2EE) bedeutet, dass nur du und die Person, mit der du chattest, deine Nachrichten lesen können. Nicht einmal OpenHospi hat Zugriff darauf. Deine Nachrichten werden auf deinem Gerät verschlüsselt, bevor sie gesendet werden, und erst auf dem Gerät des Empfängers entschlüsselt."
+    },
+    "identityKeys": {
+      "title": "Identitätsschlüssel",
+      "description": "Jeder Nutzer erhält eine einzigartige kryptografische Identität basierend auf Ed25519- und X25519-Schlüsseln. Diese Schlüssel werden auf deinem Gerät generiert und verlassen es niemals. Dein öffentlicher Identitätsschlüssel wird mit anderen geteilt, damit sie überprüfen können, mit wem sie sprechen."
+    },
+    "keyExchange": {
+      "title": "Schlüsselaustausch (X3DH)",
+      "description": "Wenn du ein Gespräch startest, stellt das Extended Triple Diffie-Hellman (X3DH) Protokoll ein gemeinsames Geheimnis her — selbst wenn die andere Person offline ist. Vorab hochgeladene Schlüssel auf dem Server machen dies möglich, ohne jemals private Schlüssel preiszugeben."
+    },
+    "doubleRatchet": {
+      "title": "Double Ratchet",
+      "description": "Jede Nachricht verwendet einen einzigartigen Verschlüsselungsschlüssel, der vom Double-Ratchet-Algorithmus abgeleitet wird. Schlüssel rotieren mit jeder Nachricht und bieten Forward Secrecy: Selbst wenn ein Schlüssel kompromittiert wird, bleiben vergangene Nachrichten sicher. Alte Schlüssel werden dauerhaft gelöscht."
+    },
+    "messageEncryption": {
+      "title": "Nachrichtenverschlüsselung",
+      "description": "Jede Nachricht wird mit AES-256-GCM verschlüsselt, einem Industriestandard für authentifizierte Verschlüsselung. Pro Nachricht werden ein einzigartiger Schlüssel und Initialisierungsvektor (IV) generiert. Der Nachrichtenheader wird als zusätzliche authentifizierte Daten (AAD) einbezogen, um Manipulation zu verhindern."
+    },
+    "safetyNumbers": {
+      "title": "Sicherheitsnummern",
+      "description": "Du kannst überprüfen, ob dein Gespräch nicht abgefangen wurde, indem du Sicherheitsnummern mit der anderen Person vergleichst. Diese 60-stelligen Codes werden aus den Identitätsschlüsseln beider Nutzer abgeleitet und sind für jedes Gespräch einzigartig."
+    },
+    "serverComparison": {
+      "title": "Was der Server sieht",
+      "encrypted": "Was der Server speichert: verschlüsselte Blobs, Nachrichtenmetadaten (Zeitstempel, Gesprächs-IDs) und öffentliche Schlüssel. Nichts davon gibt Nachrichteninhalte preis.",
+      "plaintext": "Was der Server nicht sehen kann: deine tatsächlichen Nachrichten, Dateien oder Klartextinhalte. Entschlüsselungsschlüssel berühren niemals unsere Server."
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen"
+    },
+    "openSource": {
+      "title": "Open Source & Überprüfbar",
+      "description": "Der gesamte Verschlüsselungscode ist Open Source. Du kannst unsere kryptografischen Implementierungen auf GitHub überprüfen, auditieren oder dazu beitragen.",
+      "cta": "Auf GitHub ansehen"
+    }
   },
   "alternatives": {
     "title": "Alternativen & Vergleich",

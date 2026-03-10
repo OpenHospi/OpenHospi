@@ -1,17 +1,17 @@
 import {
-  deriveKeyFromPIN,
-  encryptPrivateKeyBackup,
-  decryptPrivateKeyBackup,
-  exportPrivateKey,
-  exportPublicKey,
-  generateKeyPair,
-  importPrivateKey,
+  generateIdentityKeyPair,
+  generateSignedPreKey,
+  generateOneTimePreKeys,
   toBase64,
   fromBase64,
+  encryptIdentityBackup,
+  decryptIdentityBackup,
+  getBackend,
 } from '@openhospi/crypto';
-import { PBKDF2_ITERATIONS } from '@openhospi/shared/constants';
+import { ONE_TIME_PRE_KEY_BATCH_SIZE } from '@openhospi/shared/constants';
 
-import { deleteStoredPrivateKey, getStoredPrivateKey, storePrivateKey } from './store';
+import { deleteStoredIdentity, getStoredIdentity, storeIdentity } from './store';
+import type { StoredIdentity } from './store';
 
 export type KeyStatus = 'ready' | 'needs-recovery' | 'needs-setup';
 
@@ -19,8 +19,8 @@ export async function getKeyStatus(
   userId: string,
   fetchBackup: () => Promise<{ salt: string } | null>
 ): Promise<KeyStatus> {
-  const storedJwk = await getStoredPrivateKey(userId);
-  if (storedJwk) return 'ready';
+  const stored = await getStoredIdentity(userId);
+  if (stored) return 'ready';
 
   const backup = await fetchBackup();
   if (backup) return 'needs-recovery';
@@ -31,67 +31,116 @@ export async function getKeyStatus(
 export async function setupKeysWithPIN(
   userId: string,
   pin: string,
-  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
-  uploadBackup: (data: {
-    encryptedPrivateKey: string;
-    backupIv: string;
-    salt: string;
-  }) => Promise<void>
+  actions: {
+    uploadIdentityKey: (identityPub: string, signingPub: string) => Promise<void>;
+    uploadSignedPreKey: (data: {
+      keyId: number;
+      publicKey: string;
+      signature: string;
+    }) => Promise<void>;
+    uploadOneTimePreKeys: (keys: { keyId: number; publicKey: string }[]) => Promise<void>;
+    uploadBackup: (data: {
+      encryptedPrivateKey: string;
+      backupIv: string;
+      salt: string;
+    }) => Promise<void>;
+  }
 ): Promise<void> {
-  const keyPair = await generateKeyPair();
-  const publicKeyJwk = await exportPublicKey(keyPair.publicKey);
-  const privateKeyJwk = await exportPrivateKey(keyPair.privateKey);
+  const backend = getBackend();
 
-  const salt = crypto.getRandomValues(new Uint8Array(32));
-  const wrappingKey = await deriveKeyFromPIN(pin, salt, PBKDF2_ITERATIONS);
+  const identity = generateIdentityKeyPair(backend);
+  const spk = generateSignedPreKey(backend, identity.signing.privateKey, 1);
+  const opks = generateOneTimePreKeys(backend, 1, ONE_TIME_PRE_KEY_BATCH_SIZE);
 
-  const backup = await encryptPrivateKeyBackup(privateKeyJwk, wrappingKey);
+  await actions.uploadIdentityKey(
+    toBase64(identity.dh.publicKey),
+    toBase64(identity.signing.publicKey)
+  );
 
-  await uploadPublicKey(publicKeyJwk);
-  await uploadBackup({
-    encryptedPrivateKey: backup.ciphertext,
-    backupIv: backup.iv,
-    salt: toBase64(salt),
+  await actions.uploadSignedPreKey({
+    keyId: spk.keyId,
+    publicKey: toBase64(spk.keyPair.publicKey),
+    signature: toBase64(spk.signature),
   });
 
-  await storePrivateKey(userId, privateKeyJwk);
+  await actions.uploadOneTimePreKeys(
+    opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) }))
+  );
+
+  const backupData = {
+    signingPrivateKey: toBase64(identity.signing.privateKey),
+    signingPublicKey: toBase64(identity.signing.publicKey),
+    dhPrivateKey: toBase64(identity.dh.privateKey),
+    dhPublicKey: toBase64(identity.dh.publicKey),
+  };
+  const backup = await encryptIdentityBackup(backend, backupData, pin);
+  await actions.uploadBackup({
+    encryptedPrivateKey: backup.ciphertext,
+    backupIv: backup.iv,
+    salt: backup.salt,
+  });
+
+  const storedIdentity: StoredIdentity = {
+    signingPublicKey: toBase64(identity.signing.publicKey),
+    signingPrivateKey: toBase64(identity.signing.privateKey),
+    dhPublicKey: toBase64(identity.dh.publicKey),
+    dhPrivateKey: toBase64(identity.dh.privateKey),
+  };
+  await storeIdentity(userId, storedIdentity);
 }
 
 export async function recoverKeysWithPIN(
   userId: string,
   pin: string,
-  backup: { encryptedPrivateKey: string; backupIv: string; salt: string }
+  backup: { encryptedPrivateKey: string; backupIv: string; salt: string },
+  actions: {
+    uploadIdentityKey: (identityPub: string, signingPub: string) => Promise<void>;
+    uploadSignedPreKey: (data: {
+      keyId: number;
+      publicKey: string;
+      signature: string;
+    }) => Promise<void>;
+    uploadOneTimePreKeys: (keys: { keyId: number; publicKey: string }[]) => Promise<void>;
+  }
 ): Promise<void> {
-  const salt = fromBase64(backup.salt);
-  const wrappingKey = await deriveKeyFromPIN(pin, salt, PBKDF2_ITERATIONS);
+  const backend = getBackend();
 
-  const privateKeyJwk = await decryptPrivateKeyBackup(
-    backup.encryptedPrivateKey,
-    backup.backupIv,
-    wrappingKey
+  const decrypted = await decryptIdentityBackup(
+    backend,
+    { ciphertext: backup.encryptedPrivateKey, iv: backup.backupIv, salt: backup.salt },
+    pin
   );
 
-  await storePrivateKey(userId, privateKeyJwk);
+  const storedIdentity: StoredIdentity = {
+    signingPublicKey: decrypted.signingPublicKey,
+    signingPrivateKey: decrypted.signingPrivateKey,
+    dhPublicKey: decrypted.dhPublicKey,
+    dhPrivateKey: decrypted.dhPrivateKey,
+  };
+  await storeIdentity(userId, storedIdentity);
+
+  await actions.uploadIdentityKey(decrypted.dhPublicKey, decrypted.signingPublicKey);
+
+  const signingPrivateKey = fromBase64(decrypted.signingPrivateKey);
+  const spk = generateSignedPreKey(backend, signingPrivateKey, 1);
+  const opks = generateOneTimePreKeys(backend, 1, ONE_TIME_PRE_KEY_BATCH_SIZE);
+
+  await actions.uploadSignedPreKey({
+    keyId: spk.keyId,
+    publicKey: toBase64(spk.keyPair.publicKey),
+    signature: toBase64(spk.signature),
+  });
+  await actions.uploadOneTimePreKeys(
+    opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) }))
+  );
 }
 
 export async function resetKeys(
   userId: string,
-  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
-  deleteBackup: () => Promise<void>
+  actions: {
+    deleteBackup: () => Promise<void>;
+  }
 ): Promise<void> {
-  await deleteStoredPrivateKey(userId);
-  await deleteBackup();
-
-  const keyPair = await generateKeyPair();
-  const publicKeyJwk = await exportPublicKey(keyPair.publicKey);
-  const privateKeyJwk = await exportPrivateKey(keyPair.privateKey);
-
-  await uploadPublicKey(publicKeyJwk);
-  await storePrivateKey(userId, privateKeyJwk);
-}
-
-export async function importAndStoreKey(userId: string): Promise<CryptoKey | null> {
-  const storedJwk = await getStoredPrivateKey(userId);
-  if (!storedJwk) return null;
-  return importPrivateKey(storedJwk);
+  await deleteStoredIdentity(userId);
+  await actions.deleteBackup();
 }

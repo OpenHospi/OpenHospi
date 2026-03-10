@@ -10,8 +10,10 @@ import { toast } from "sonner";
 import {
   deleteKeyBackup,
   fetchKeyBackup,
+  uploadIdentityKey,
   uploadKeyBackup,
-  uploadPublicKey,
+  uploadOneTimePreKeys,
+  uploadSignedPreKey,
 } from "@/app/[locale]/(app)/chat/key-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -71,7 +73,11 @@ export function KeyRecoveryDialog({ userId }: Props) {
 
     startTransition(async () => {
       try {
-        await recoverKeysWithPIN(userId, pin, backup);
+        await recoverKeysWithPIN(userId, pin, backup, {
+          uploadIdentityKey,
+          uploadSignedPreKey,
+          uploadOneTimePreKeys,
+        });
         toast.success(t("recovery_success"));
         window.location.reload();
       } catch {
@@ -83,7 +89,10 @@ export function KeyRecoveryDialog({ userId }: Props) {
   function handleStartFresh() {
     startTransition(async () => {
       try {
-        await resetKeys(userId, uploadPublicKey, deleteKeyBackup);
+        await resetKeys(userId, {
+          deleteBackup: deleteKeyBackup,
+          uploadIdentityKey,
+        });
         setShowSetup(true);
         setBackup(null);
       } catch {
@@ -106,7 +115,12 @@ export function KeyRecoveryDialog({ userId }: Props) {
 
     startTransition(async () => {
       try {
-        await setupKeysWithPIN(userId, setupPin, uploadPublicKey, uploadKeyBackup);
+        await setupKeysWithPIN(userId, setupPin, {
+          uploadIdentityKey,
+          uploadSignedPreKey,
+          uploadOneTimePreKeys,
+          uploadBackup: uploadKeyBackup,
+        });
         toast.success(t("setup_success"));
         window.location.reload();
       } catch {

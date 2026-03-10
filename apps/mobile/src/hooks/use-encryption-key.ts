@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useSession } from '@/lib/auth-client';
-import { getKeyStatus, importAndStoreKey, type KeyStatus } from '@/lib/crypto/key-management';
+import { getKeyStatus, type KeyStatus } from '@/lib/crypto/key-management';
+import { getStoredIdentity, type StoredIdentity } from '@/lib/crypto/store';
 import { fetchBackupApi } from '@/services/encryption';
 import { queryKeys } from '@/services/keys';
 
@@ -15,15 +16,17 @@ export function useEncryptionKey() {
     enabled: !!userId,
   });
 
-  const keyQuery = useQuery({
-    queryKey: ['encryption', 'privateKey', userId],
-    queryFn: () => importAndStoreKey(userId!),
+  const identityQuery = useQuery({
+    queryKey: ['encryption', 'identity', userId],
+    queryFn: () => getStoredIdentity(userId!),
     enabled: !!userId && statusQuery.data === 'ready',
   });
 
   return {
     status: (statusQuery.data ?? 'needs-setup') as KeyStatus,
-    privateKey: keyQuery.data ?? null,
+    identity: identityQuery.data ?? null,
     isLoading: statusQuery.isLoading,
   };
 }
+
+export type { KeyStatus, StoredIdentity };

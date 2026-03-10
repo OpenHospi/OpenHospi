@@ -64,11 +64,16 @@
       "title": "Alternatives — Compare Student Housing Platforms",
       "description": "Honest comparison of Dutch student housing platforms. See how OpenHospi stacks up against Hospi.nl, myHospi, Dingdong, Kamernet, and Facebook groups."
     },
+    "e2eEncryption": {
+      "title": "E2E Encryption — How We Protect Your Messages",
+      "description": "Learn how OpenHospi uses end-to-end encryption to keep your messages private. Signal Protocol-inspired, open source, and fully transparent."
+    },
     "breadcrumbs": {
       "home": "Home",
       "rooms": "Student Rooms",
       "faq": "FAQ",
-      "alternatives": "Alternatives"
+      "alternatives": "Alternatives",
+      "e2eEncryption": "E2E Encryption"
     },
     "faq": {
       "costs": [
@@ -97,6 +102,24 @@
         {
           "question": "What happens when I report a user?",
           "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service."
+        }
+      ],
+      "e2eEncryption": [
+        {
+          "question": "Can OpenHospi read my messages?",
+          "answer": "No. Messages are encrypted on your device before being sent. We never have access to your decryption keys, so we cannot read your messages."
+        },
+        {
+          "question": "What happens if I lose my device?",
+          "answer": "You can recover your identity keys using your PIN backup. Without the PIN, old messages cannot be decrypted — this is a security feature, not a bug."
+        },
+        {
+          "question": "What protocol does OpenHospi use?",
+          "answer": "We use a Signal Protocol-inspired architecture with X3DH key exchange and Double Ratchet for per-message forward secrecy."
+        },
+        {
+          "question": "Can I verify someone's identity?",
+          "answer": "Yes. You can compare safety numbers in the chat settings. If they match, no one has intercepted the conversation."
         }
       ],
       "howItWorks": [
@@ -145,7 +168,8 @@
       "processingRegister": "Processing register",
       "legalBasis": "Legal basis",
       "dataProcessors": "Data processors",
-      "dpia": "DPIA"
+      "dpia": "DPIA",
+      "e2eEncryption": "E2E Encryption"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -757,6 +781,47 @@
         ]
       }
     ]
+  },
+  "e2eEncryption": {
+    "title": "How End-to-End Encryption Works",
+    "subtitle": "Complete transparency about how OpenHospi protects your messages",
+    "overview": {
+      "title": "What is End-to-End Encryption?",
+      "description": "End-to-end encryption (E2EE) means only you and the person you're chatting with can read your messages. Not even OpenHospi can access them. Your messages are encrypted on your device before being sent, and only decrypted on the recipient's device."
+    },
+    "identityKeys": {
+      "title": "Identity Keys",
+      "description": "Every user gets a unique cryptographic identity based on Ed25519 and X25519 keys. These keys are generated on your device and never leave it. Your public identity key is shared with others so they can verify who they're talking to."
+    },
+    "keyExchange": {
+      "title": "Key Exchange (X3DH)",
+      "description": "When you start a conversation, the Extended Triple Diffie-Hellman (X3DH) protocol establishes a shared secret — even if the other person is offline. Pre-uploaded keys on the server make this possible without ever revealing private keys."
+    },
+    "doubleRatchet": {
+      "title": "Double Ratchet",
+      "description": "Every message uses a unique encryption key derived from the Double Ratchet algorithm. Keys rotate with every message, providing forward secrecy: even if a key is compromised, past messages remain safe. Old keys are permanently deleted."
+    },
+    "messageEncryption": {
+      "title": "Message Encryption",
+      "description": "Each message is encrypted with AES-256-GCM, an industry-standard authenticated encryption algorithm. A unique key and initialization vector (IV) are generated per message. The message header is included as additional authenticated data (AAD) to prevent tampering."
+    },
+    "safetyNumbers": {
+      "title": "Safety Numbers",
+      "description": "You can verify that your conversation hasn't been intercepted by comparing safety numbers with the other person. These 60-digit codes are derived from both users' identity keys and are unique to each conversation pair."
+    },
+    "serverComparison": {
+      "title": "What the Server Sees",
+      "encrypted": "What the server stores: encrypted blobs, message metadata (timestamps, conversation IDs), and public keys. None of this reveals message content.",
+      "plaintext": "What the server cannot see: your actual messages, files, or any plaintext content. Decryption keys never touch our servers."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions"
+    },
+    "openSource": {
+      "title": "Open Source & Auditable",
+      "description": "All encryption code is open source. You can review, audit, or contribute to our cryptographic implementations on GitHub.",
+      "cta": "View on GitHub"
+    }
   },
   "alternatives": {
     "title": "Alternatives & Comparison",

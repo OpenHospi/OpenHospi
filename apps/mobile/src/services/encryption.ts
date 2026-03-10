@@ -8,8 +8,42 @@ type BackupData = {
 
 type BackupResponse = BackupData & { createdAt: string };
 
-export async function uploadPublicKeyApi(jwk: JsonWebKey): Promise<void> {
-  await api.post('/api/mobile/keys/public', { publicKeyJwk: jwk });
+export async function uploadIdentityKeyApi(
+  identityPublicKey: string,
+  signingPublicKey: string
+): Promise<void> {
+  await api.post('/api/mobile/keys/identity', { identityPublicKey, signingPublicKey });
+}
+
+export async function uploadSignedPreKeyApi(data: {
+  keyId: number;
+  publicKey: string;
+  signature: string;
+}): Promise<void> {
+  await api.post('/api/mobile/keys/signed-prekey', data);
+}
+
+export async function uploadOneTimePreKeysApi(
+  keys: { keyId: number; publicKey: string }[]
+): Promise<void> {
+  await api.post('/api/mobile/keys/one-time-prekeys', { keys });
+}
+
+export async function getPreKeyCountApi(): Promise<number> {
+  const result = await api.get<{ count: number }>('/api/mobile/keys/one-time-prekeys');
+  return result.count;
+}
+
+export async function fetchPreKeyBundleApi(userId: string) {
+  return api.get<{
+    identityPublicKey: string;
+    signingPublicKey: string;
+    signedPreKeyId: number;
+    signedPreKeyPublic: string;
+    signedPreKeySignature: string;
+    oneTimePreKeyId?: number;
+    oneTimePreKeyPublic?: string;
+  } | null>(`/api/mobile/keys/bundle/${userId}`);
 }
 
 export async function uploadBackupApi(data: BackupData): Promise<void> {

@@ -700,7 +700,6 @@
         "pin_mismatch": "PINs do not match",
         "pin_hint": "This PIN protects your encryption key. You'll need it to recover your chats on a new device.",
         "setup_success": "Chat encryption set up successfully",
-        "setup_complete_description": "Your encryption keys are ready. Taking you to the app...",
         "setup_error": "Could not set up encryption. Please try again.",
         "generating_keys": "Generating encryption keys\u2026",
         "change_pin": "Change PIN",

@@ -7,6 +7,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: 'OpenHospi',
   slug: 'openhospi',
   version: '1.0.0',
+  platforms: ['ios', 'android'],
+  githubUrl: 'https://github.com/OpenHospi/OpenHospi',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'openhospi',

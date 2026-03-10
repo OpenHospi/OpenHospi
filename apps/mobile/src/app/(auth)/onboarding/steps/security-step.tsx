@@ -2,6 +2,7 @@ import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
@@ -10,18 +11,16 @@ import { Text } from '@/components/ui/text';
 import { useSession } from '@/lib/auth-client';
 import { setupKeysWithPIN } from '@/lib/crypto/key-management';
 import { uploadPublicKeyApi, uploadBackupApi } from '@/services/encryption';
+import { queryKeys } from '@/services/keys';
 
-interface SecurityStepProps {
-  onComplete: () => Promise<void>;
-}
-
-export default function SecurityStep({ onComplete }: SecurityStepProps) {
+export default function SecurityStep() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
 
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
-  const [step, setStep] = useState<'enter' | 'confirm' | 'done'>('enter');
+  const [step, setStep] = useState<'enter' | 'confirm'>('enter');
   const [loading, setLoading] = useState(false);
 
   function handlePinFilled(value: string) {
@@ -45,12 +44,10 @@ export default function SecurityStep({ onComplete }: SecurityStepProps) {
     setLoading(true);
     try {
       await setupKeysWithPIN(session.user.id, value, uploadPublicKeyApi, uploadBackupApi);
-      setStep('done');
-      await onComplete();
+      await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
     } catch {
       Alert.alert(t('setup_error'));
       setConfirmPin('');
-    } finally {
       setLoading(false);
     }
   }
@@ -62,18 +59,6 @@ export default function SecurityStep({ onComplete }: SecurityStepProps) {
         <Text variant="muted" className="text-sm">
           {t('generating_keys')}
         </Text>
-      </View>
-    );
-  }
-
-  if (step === 'done') {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-        <Text className="text-foreground text-lg font-semibold">{t('setup_success')}</Text>
-        <Text variant="muted" className="text-center text-sm">
-          {t('setup_complete_description')}
-        </Text>
-        <ActivityIndicator size="small" />
       </View>
     );
   }

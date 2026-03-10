@@ -2,12 +2,13 @@ import { ONBOARDING_TOTAL_STEPS } from '@openhospi/shared/constants';
 import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
 import { useOnboardingStatus } from '@/services/onboarding';
+import { useProfile } from '@/services/profile';
 
 import AboutStep from './steps/about-step';
 import BioStep from './steps/bio-step';
@@ -30,13 +31,14 @@ const STEP_KEYS = [
 export default function OnboardingScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { data: status, isPending } = useOnboardingStatus();
+  const { data: status, isPending: statusPending } = useOnboardingStatus();
+  const { data: profile, isPending: profilePending } = useProfile();
   const [currentStep, setCurrentStep] = useState<number | null>(null);
 
   const step = currentStep ?? status?.currentStep ?? 1;
   const clampedStep = Math.min(step, ONBOARDING_TOTAL_STEPS);
 
-  if (isPending) {
+  if (statusPending || profilePending) {
     return (
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
@@ -82,12 +84,14 @@ export default function OnboardingScreen() {
       </View>
 
       <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
-        {clampedStep === 1 && <IdentityStep onNext={handleNext} />}
-        {clampedStep === 2 && <AboutStep onNext={handleNext} />}
-        {clampedStep === 3 && <BioStep onNext={handleNext} />}
-        {clampedStep === 4 && <PersonalityStep onNext={handleNext} />}
-        {clampedStep === 5 && <LanguagesStep onNext={handleNext} />}
-        {clampedStep === 6 && <PhotosStep onNext={handleNext} />}
+        {clampedStep === 1 && (
+          <IdentityStep onNext={handleNext} profile={profile} status={status} />
+        )}
+        {clampedStep === 2 && <AboutStep onNext={handleNext} profile={profile} />}
+        {clampedStep === 3 && <BioStep onNext={handleNext} profile={profile} />}
+        {clampedStep === 4 && <PersonalityStep onNext={handleNext} profile={profile} />}
+        {clampedStep === 5 && <LanguagesStep onNext={handleNext} profile={profile} />}
+        {clampedStep === 6 && <PhotosStep onNext={handleNext} profile={profile} />}
         {clampedStep === 7 && <SecurityStep />}
       </View>
 

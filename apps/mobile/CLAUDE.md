@@ -117,8 +117,10 @@ still use `style` for layout.
 
 ## Components
 
-- **UI primitives:** `src/components/ui/` — built on `@rn-primitives/*` (button, card, text, separator, etc.)
-- **Custom components:** `src/components/` — room-card, logo, language-picker, etc.
+- **UI primitives:** `src/components/ui/` — exclusively for downloaded/third-party primitives (`@rn-primitives/*`). Do
+  not place custom components here.
+- **Custom components:** `src/components/` — room-card, logo, language-picker, input-otp, etc. All custom project
+  components go here, not in `ui/`.
 - Use `class-variance-authority` (`cva`) for component variants
 - Use `tailwind-merge` (`cn` utility) for class merging
 

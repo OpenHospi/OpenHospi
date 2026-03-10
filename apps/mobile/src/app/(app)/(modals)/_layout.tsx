@@ -71,6 +71,13 @@ export default function ModalsLayout() {
           title: tProfile('title'),
         }}
       />
+      <Stack.Screen
+        name="key-recovery"
+        options={{
+          sheetAllowedDetents: [0.7, 1],
+          title: tOnboarding('steps.security'),
+        }}
+      />
     </Stack>
   );
 }

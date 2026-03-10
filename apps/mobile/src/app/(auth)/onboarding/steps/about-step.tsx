@@ -1,16 +1,17 @@
 import { City, Gender, StudyLevel } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
 import { useSubmitAbout } from '@/services/onboarding';
+import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void };
+type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
 
 function EnumPicker({
   values,
@@ -38,7 +39,7 @@ function EnumPicker({
   );
 }
 
-export default function AboutStep({ onNext }: Props) {
+export default function AboutStep({ onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.fields' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
@@ -46,12 +47,12 @@ export default function AboutStep({ onNext }: Props) {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
-  const [gender, setGender] = useState<string | null>(null);
-  const [birthDate, setBirthDate] = useState('');
-  const [studyProgram, setStudyProgram] = useState('');
-  const [studyLevel, setStudyLevel] = useState<string | null>(null);
-  const [preferredCity, setPreferredCity] = useState<string | null>(null);
-  const [vereniging, setVereniging] = useState('');
+  const [gender, setGender] = useState<string | null>(profile?.gender ?? null);
+  const [birthDate, setBirthDate] = useState(profile?.birthDate ?? '');
+  const [studyProgram, setStudyProgram] = useState(profile?.studyProgram ?? '');
+  const [studyLevel, setStudyLevel] = useState<string | null>(profile?.studyLevel ?? null);
+  const [preferredCity, setPreferredCity] = useState<string | null>(profile?.preferredCity ?? null);
+  const [vereniging, setVereniging] = useState(profile?.vereniging ?? '');
 
   const submitAbout = useSubmitAbout();
 

@@ -16,6 +16,10 @@ export const queryKeys = {
   onboarding: {
     status: () => ['onboarding', 'status'] as const,
   },
+  encryption: {
+    backup: () => ['encryption', 'backup'] as const,
+    status: () => ['encryption', 'status'] as const,
+  },
   settings: {
     consent: () => ['settings', 'consent'] as const,
     sessions: () => ['settings', 'sessions'] as const,

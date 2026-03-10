@@ -1,16 +1,23 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
+import { useSession } from '@/lib/auth-client';
+import { setupKeysWithPIN } from '@/lib/crypto/key-management';
+import { uploadPublicKeyApi, uploadBackupApi } from '@/services/encryption';
+import { queryKeys } from '@/services/keys';
 
 export default function SecurityStep() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
+  const { data: session } = useSession();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const [pin, setPin] = useState('');
@@ -18,20 +25,45 @@ export default function SecurityStep() {
   const [step, setStep] = useState<'enter' | 'confirm'>('enter');
   const [loading, setLoading] = useState(false);
 
-  async function handleSetup() {
-    if (pin !== confirmPin) {
+  function handlePinFilled(value: string) {
+    if (value.length === PIN_LENGTH) {
+      setStep('confirm');
+    }
+  }
+
+  async function handleConfirmFilled(value: string) {
+    if (value !== pin) {
       Alert.alert(t('pin_mismatch'));
+      setConfirmPin('');
+      return;
+    }
+
+    if (!session?.user?.id) {
+      Alert.alert(t('setup_error'));
       return;
     }
 
     setLoading(true);
     try {
+      await setupKeysWithPIN(session.user.id, value, uploadPublicKeyApi, uploadBackupApi);
+      await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
       router.replace('/(app)/(tabs)/discover');
     } catch {
       Alert.alert(t('setup_error'));
-    } finally {
+      setConfirmPin('');
       setLoading(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <ActivityIndicator size="large" />
+        <Text variant="muted" className="text-sm">
+          {t('generating_keys')}
+        </Text>
+      </View>
+    );
   }
 
   return (
@@ -47,22 +79,18 @@ export default function SecurityStep() {
       </View>
 
       {step === 'enter' ? (
-        <>
-          <View style={{ gap: 8 }}>
-            <Label>{t('enter_pin')}</Label>
-            <Input
-              className="text-center text-2xl tracking-[8px]"
-              value={pin}
-              onChangeText={setPin}
-              keyboardType="number-pad"
-              maxLength={PIN_LENGTH}
-              secureTextEntry
-            />
-            <Text variant="muted" className="text-xs">
-              {t('pin_hint')}
-            </Text>
-          </View>
-
+        <View style={{ gap: 16 }}>
+          <Label>{t('enter_pin')}</Label>
+          <InputOTP
+            value={pin}
+            onChangeText={setPin}
+            onFilled={handlePinFilled}
+            secureTextEntry
+            autoFocus
+          />
+          <Text variant="muted" className="text-xs">
+            {t('pin_hint')}
+          </Text>
           <Button
             onPress={() => {
               if (pin.length !== PIN_LENGTH) {
@@ -73,25 +101,27 @@ export default function SecurityStep() {
             }}>
             <Text>{t('use_pin')}</Text>
           </Button>
-        </>
+        </View>
       ) : (
-        <>
-          <View style={{ gap: 8 }}>
-            <Label>{t('confirm_pin')}</Label>
-            <Input
-              className="text-center text-2xl tracking-[8px]"
-              value={confirmPin}
-              onChangeText={setConfirmPin}
-              keyboardType="number-pad"
-              maxLength={PIN_LENGTH}
-              secureTextEntry
-            />
-          </View>
-
-          <Button onPress={handleSetup} disabled={loading}>
-            <Text>{t('setup_pin')}</Text>
+        <View style={{ gap: 16 }}>
+          <Label>{t('confirm_pin')}</Label>
+          <InputOTP
+            value={confirmPin}
+            onChangeText={setConfirmPin}
+            onFilled={handleConfirmFilled}
+            secureTextEntry
+            autoFocus
+          />
+          <Button
+            variant="ghost"
+            onPress={() => {
+              setStep('enter');
+              setPin('');
+              setConfirmPin('');
+            }}>
+            <Text>{t('change_pin')}</Text>
           </Button>
-        </>
+        </View>
       )}
     </ScrollView>
   );

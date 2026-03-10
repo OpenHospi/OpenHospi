@@ -1,3 +1,7 @@
+/* eslint-disable import/first -- react-native-quick-crypto polyfill must run before all other imports */
+import { install } from 'react-native-quick-crypto';
+install();
+
 import '../global.css';
 
 import * as Sentry from '@sentry/react-native';

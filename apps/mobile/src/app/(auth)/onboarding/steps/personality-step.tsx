@@ -2,21 +2,22 @@ import { MAX_LIFESTYLE_TAGS, MIN_LIFESTYLE_TAGS } from '@openhospi/shared/consta
 import { LifestyleTag } from '@openhospi/shared/enums';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
 import { useSubmitPersonality } from '@/services/onboarding';
+import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void };
+type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
 
-export default function PersonalityStep({ onNext }: Props) {
+export default function PersonalityStep({ onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.lifestyle_tag' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(profile?.lifestyleTags ?? []);
   const submitPersonality = useSubmitPersonality();
 
   function toggleTag(tag: string) {

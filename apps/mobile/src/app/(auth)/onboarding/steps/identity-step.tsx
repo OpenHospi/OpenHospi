@@ -1,31 +1,40 @@
 import { useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
+import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';
+import type { OnboardingStatus, ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void };
+type Props = {
+  onNext: () => void;
+  profile: ProfileWithPhotos | undefined;
+  status: OnboardingStatus | undefined;
+};
 
-export default function IdentityStep({ onNext }: Props) {
+export default function IdentityStep({ onNext, profile, status }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.identity' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  // If identity is already submitted and email verified, skip to next
+  const alreadyComplete = !!status?.hasIdentity;
+
+  const [firstName, setFirstName] = useState(profile?.firstName ?? '');
+  const [lastName, setLastName] = useState(profile?.lastName ?? '');
+  const [email, setEmail] = useState(profile?.email ?? '');
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [code, setCode] = useState('');
-  const [verified, setVerified] = useState(false);
+  const [verified, setVerified] = useState(alreadyComplete);
 
   const submitIdentity = useSubmitIdentity();
   const verifyEmail = useVerifyEmail();
   const resendCode = useResendCode();
 
-  async function handleSubmitIdentity() {
+  function handleSubmitIdentity() {
     if (!firstName.trim() || !lastName.trim() || !email.trim()) {
       Alert.alert(t('invalidData'));
       return;
@@ -39,28 +48,39 @@ export default function IdentityStep({ onNext }: Props) {
     );
   }
 
-  async function handleVerifyCode() {
+  function handleCodeFilled(value: string) {
     verifyEmail.mutate(
-      { email: email.trim(), code: code.trim() },
+      { email: email.trim(), code: value },
       {
         onSuccess: () => {
           setVerified(true);
           onNext();
         },
-        onError: () => Alert.alert(t('invalidCode')),
+        onError: () => {
+          Alert.alert(t('invalidCode'));
+          setCode('');
+        },
       }
     );
   }
 
-  async function handleResend() {
+  function handleResend() {
     resendCode.mutate({ email: email.trim() });
   }
 
   if (verified) {
     return (
-      <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 32 }}>
-        <Text className="text-primary font-semibold">{t('verified')}</Text>
-      </View>
+      <ScrollView
+        style={{ flex: 1 }}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ gap: 16 }}>
+        <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 32 }}>
+          <Text className="text-primary font-semibold">{t('verified')}</Text>
+        </View>
+        <Button onPress={onNext}>
+          <Text>{tCommon('next')}</Text>
+        </Button>
+      </ScrollView>
     );
   }
 
@@ -79,21 +99,17 @@ export default function IdentityStep({ onNext }: Props) {
 
         <View style={{ gap: 8 }}>
           <Label>{t('verificationCode')}</Label>
-          <Input
-            value={code}
-            onChangeText={setCode}
-            keyboardType="number-pad"
-            maxLength={6}
-            placeholder="000000"
-          />
+          <InputOTP value={code} onChangeText={setCode} onFilled={handleCodeFilled} autoFocus />
           <Text variant="muted" className="text-xs">
             {t('codeHint')}
           </Text>
         </View>
 
-        <Button onPress={handleVerifyCode} disabled={verifyEmail.isPending}>
-          <Text>{t('verifyCode')}</Text>
-        </Button>
+        {verifyEmail.isPending && (
+          <Text variant="muted" className="text-center text-sm">
+            {tCommon('loading')}
+          </Text>
+        )}
 
         <Button variant="link" onPress={handleResend} disabled={resendCode.isPending}>
           <Text>{t('resendCode')}</Text>

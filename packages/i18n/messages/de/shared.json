@@ -699,7 +699,17 @@
         "pin_mismatch": "PINs stimmen nicht überein",
         "pin_hint": "Diese PIN schützt deinen Verschlüsselungsschlüssel. Du brauchst sie, um deine Chats auf einem neuen Gerät wiederherzustellen.",
         "setup_success": "Chat-Verschlüsselung erfolgreich eingerichtet",
-        "setup_error": "Verschlüsselung konnte nicht eingerichtet werden. Bitte versuche es erneut."
+        "setup_error": "Verschlüsselung konnte nicht eingerichtet werden. Bitte versuche es erneut.",
+        "generating_keys": "Verschlüsselungsschlüssel werden generiert\u2026",
+        "change_pin": "PIN ändern",
+        "recovery_title": "Verschlüsselungsschlüssel wiederherstellen",
+        "recovery_description": "Gib die PIN ein, die du beim Onboarding gewählt hast, um deine Verschlüsselungsschlüssel wiederherzustellen.",
+        "recovery_success": "Verschlüsselungsschlüssel erfolgreich wiederhergestellt",
+        "recovery_error": "Schlüssel konnten nicht wiederhergestellt werden. Stimmt deine PIN?",
+        "start_fresh": "Neu beginnen",
+        "start_fresh_warning": "Neu beginnen generiert neue Verschlüsselungsschlüssel. Du verlierst den Zugriff auf alte Chatnachrichten.",
+        "start_fresh_confirm": "Bist du sicher?",
+        "no_backup": "Kein Backup gefunden. Richte neue Verschlüsselungsschlüssel ein."
       }
     },
     "rooms": {

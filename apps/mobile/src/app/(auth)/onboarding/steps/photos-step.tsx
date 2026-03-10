@@ -2,24 +2,43 @@ import { MAX_PROFILE_PHOTOS } from '@openhospi/shared/constants';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
+import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
+import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void };
+type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
 
 type PhotoSlot = { uri: string; uploading: boolean; uploaded: boolean } | null;
 
 const SLOT_KEYS = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'] as const;
 
-export default function PhotosStep({ onNext }: Props) {
+function buildInitialSlots(profile: ProfileWithPhotos | undefined): PhotoSlot[] {
+  const slots: PhotoSlot[] = Array(MAX_PROFILE_PHOTOS).fill(null);
+  if (!profile?.photos) return slots;
+
+  for (const photo of profile.photos) {
+    const index = photo.slot - 1;
+    if (index >= 0 && index < MAX_PROFILE_PHOTOS) {
+      slots[index] = {
+        uri: getStoragePublicUrl(photo.url, 'profile-photos'),
+        uploading: false,
+        uploaded: true,
+      };
+    }
+  }
+  return slots;
+}
+
+export default function PhotosStep({ onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
-  const [slots, setSlots] = useState<PhotoSlot[]>(Array(MAX_PROFILE_PHOTOS).fill(null));
+  const [slots, setSlots] = useState<PhotoSlot[]>(() => buildInitialSlots(profile));
   const uploadPhoto = useUploadProfilePhoto();
 
   const hasAtLeastOnePhoto = slots.some((s) => s?.uploaded);

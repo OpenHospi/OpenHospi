@@ -1,19 +1,35 @@
 "use client";
 
 import {
-  deriveKeyFromPIN,
-  encryptPrivateKeyBackup,
-  decryptPrivateKeyBackup,
-  exportPrivateKey,
-  exportPublicKey,
-  generateKeyPair,
-  importPrivateKey,
+  generateIdentityKeyPair,
+  generateSignedPreKey,
+  generateOneTimePreKeys,
   toBase64,
   fromBase64,
+  encryptIdentityBackup,
+  decryptIdentityBackup,
+  getBackend,
+  x3dhInitiate,
+  initializeSender,
+  serializeRatchetState,
+  deserializeRatchetState,
 } from "@openhospi/crypto";
-import { PBKDF2_ITERATIONS } from "@openhospi/shared/constants";
+import type { PreKeyBundle, RatchetState } from "@openhospi/crypto";
+import {
+  ONE_TIME_PRE_KEY_BATCH_SIZE,
+  ONE_TIME_PRE_KEY_REFILL_THRESHOLD,
+} from "@openhospi/shared/constants";
 
-import { deleteStoredPrivateKey, getStoredPrivateKey, storePrivateKey } from "./store";
+import {
+  clearAllCryptoData,
+  getSession,
+  getStoredIdentity,
+  saveSession,
+  storeIdentity,
+  storeOneTimePreKeys,
+  storeSignedPreKey,
+} from "./store";
+import type { StoredIdentity } from "./store";
 
 export type KeyStatus = "ready" | "needs-recovery" | "needs-setup";
 
@@ -21,8 +37,8 @@ export async function getKeyStatus(
   userId: string,
   fetchBackup: () => Promise<{ salt: string } | null>,
 ): Promise<KeyStatus> {
-  const storedJwk = await getStoredPrivateKey(userId);
-  if (storedJwk) return "ready";
+  const stored = await getStoredIdentity(userId);
+  if (stored) return "ready";
 
   const backup = await fetchBackup();
   if (backup) return "needs-recovery";
@@ -30,83 +46,249 @@ export async function getKeyStatus(
   return "needs-setup";
 }
 
+/**
+ * Generate identity keys, signed pre-key, OPK batch.
+ * Upload all to server, create backup, store locally.
+ */
 export async function setupKeysWithPIN(
   userId: string,
   pin: string,
-  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
-  uploadBackup: (data: {
-    encryptedPrivateKey: string;
-    backupIv: string;
-    salt: string;
-  }) => Promise<void>,
+  actions: {
+    uploadIdentityKey: (identityPub: string, signingPub: string) => Promise<void>;
+    uploadSignedPreKey: (data: {
+      keyId: number;
+      publicKey: string;
+      signature: string;
+    }) => Promise<void>;
+    uploadOneTimePreKeys: (keys: { keyId: number; publicKey: string }[]) => Promise<void>;
+    uploadBackup: (data: {
+      encryptedPrivateKey: string;
+      backupIv: string;
+      salt: string;
+    }) => Promise<void>;
+  },
 ): Promise<void> {
-  // Generate new key pair
-  const keyPair = await generateKeyPair();
-  const publicKeyJwk = await exportPublicKey(keyPair.publicKey);
-  const privateKeyJwk = await exportPrivateKey(keyPair.privateKey);
+  const backend = getBackend();
 
-  // Derive wrapping key from PIN
-  const salt = crypto.getRandomValues(new Uint8Array(32));
-  const wrappingKey = await deriveKeyFromPIN(pin, salt, PBKDF2_ITERATIONS);
+  // Generate identity key pair (Ed25519 + X25519)
+  const identity = generateIdentityKeyPair(backend);
 
-  // Encrypt private key
-  const backup = await encryptPrivateKeyBackup(privateKeyJwk, wrappingKey);
+  // Generate signed pre-key
+  const spk = generateSignedPreKey(backend, identity.signing.privateKey, 1);
 
-  // Upload to server
-  await uploadPublicKey(publicKeyJwk);
-  await uploadBackup({
+  // Generate one-time pre-keys
+  const opks = generateOneTimePreKeys(backend, 1, ONE_TIME_PRE_KEY_BATCH_SIZE);
+
+  // Upload identity key
+  await actions.uploadIdentityKey(
+    toBase64(identity.dh.publicKey),
+    toBase64(identity.signing.publicKey),
+  );
+
+  // Upload signed pre-key
+  await actions.uploadSignedPreKey({
+    keyId: spk.keyId,
+    publicKey: toBase64(spk.keyPair.publicKey),
+    signature: toBase64(spk.signature),
+  });
+
+  // Upload one-time pre-keys
+  await actions.uploadOneTimePreKeys(
+    opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) })),
+  );
+
+  // Create and upload backup
+  const backupData = {
+    signingPrivateKey: toBase64(identity.signing.privateKey),
+    signingPublicKey: toBase64(identity.signing.publicKey),
+    dhPrivateKey: toBase64(identity.dh.privateKey),
+    dhPublicKey: toBase64(identity.dh.publicKey),
+  };
+  const backup = await encryptIdentityBackup(backend, backupData, pin);
+  await actions.uploadBackup({
     encryptedPrivateKey: backup.ciphertext,
     backupIv: backup.iv,
-    salt: toBase64(salt),
+    salt: backup.salt,
   });
 
   // Store locally
-  await storePrivateKey(userId, privateKeyJwk);
+  const storedIdentity: StoredIdentity = {
+    signingPublicKey: toBase64(identity.signing.publicKey),
+    signingPrivateKey: toBase64(identity.signing.privateKey),
+    dhPublicKey: toBase64(identity.dh.publicKey),
+    dhPrivateKey: toBase64(identity.dh.privateKey),
+  };
+  await storeIdentity(userId, storedIdentity);
+
+  // Store pre-key private keys locally
+  await storeSignedPreKey(userId, {
+    keyId: spk.keyId,
+    privateKey: toBase64(spk.keyPair.privateKey),
+    publicKey: toBase64(spk.keyPair.publicKey),
+  });
+  await storeOneTimePreKeys(
+    userId,
+    opks.map((opk) => ({ keyId: opk.keyId, privateKey: toBase64(opk.keyPair.privateKey) })),
+  );
 }
 
+/**
+ * Recover identity keys from server backup using PIN.
+ * Re-generates signed pre-key and OPKs (old sessions are lost).
+ */
 export async function recoverKeysWithPIN(
   userId: string,
   pin: string,
   backup: { encryptedPrivateKey: string; backupIv: string; salt: string },
+  actions: {
+    uploadIdentityKey: (identityPub: string, signingPub: string) => Promise<void>;
+    uploadSignedPreKey: (data: {
+      keyId: number;
+      publicKey: string;
+      signature: string;
+    }) => Promise<void>;
+    uploadOneTimePreKeys: (keys: { keyId: number; publicKey: string }[]) => Promise<void>;
+  },
 ): Promise<void> {
-  const salt = fromBase64(backup.salt);
-  const wrappingKey = await deriveKeyFromPIN(pin, salt, PBKDF2_ITERATIONS);
+  const backend = getBackend();
 
-  const privateKeyJwk = await decryptPrivateKeyBackup(
-    backup.encryptedPrivateKey,
-    backup.backupIv,
-    wrappingKey,
+  const decrypted = await decryptIdentityBackup(
+    backend,
+    { ciphertext: backup.encryptedPrivateKey, iv: backup.backupIv, salt: backup.salt },
+    pin,
   );
 
-  // Store locally
-  await storePrivateKey(userId, privateKeyJwk);
+  // Store recovered identity
+  const storedIdentity: StoredIdentity = {
+    signingPublicKey: decrypted.signingPublicKey,
+    signingPrivateKey: decrypted.signingPrivateKey,
+    dhPublicKey: decrypted.dhPublicKey,
+    dhPrivateKey: decrypted.dhPrivateKey,
+  };
+  await storeIdentity(userId, storedIdentity);
+
+  // Re-upload identity key (in case it was rotated)
+  await actions.uploadIdentityKey(decrypted.dhPublicKey, decrypted.signingPublicKey);
+
+  // Generate fresh pre-keys
+  const signingPrivateKey = fromBase64(decrypted.signingPrivateKey);
+  const spk = generateSignedPreKey(backend, signingPrivateKey, 1);
+  const opks = generateOneTimePreKeys(backend, 1, ONE_TIME_PRE_KEY_BATCH_SIZE);
+
+  await actions.uploadSignedPreKey({
+    keyId: spk.keyId,
+    publicKey: toBase64(spk.keyPair.publicKey),
+    signature: toBase64(spk.signature),
+  });
+  await actions.uploadOneTimePreKeys(
+    opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) })),
+  );
+
+  // Store pre-key private keys locally
+  await storeSignedPreKey(userId, {
+    keyId: spk.keyId,
+    privateKey: toBase64(spk.keyPair.privateKey),
+    publicKey: toBase64(spk.keyPair.publicKey),
+  });
+  await storeOneTimePreKeys(
+    userId,
+    opks.map((opk) => ({ keyId: opk.keyId, privateKey: toBase64(opk.keyPair.privateKey) })),
+  );
 }
 
+/**
+ * Reset all keys: clear local data, delete backup, generate fresh keys.
+ * All existing sessions/messages become unreadable.
+ */
 export async function resetKeys(
   userId: string,
-  uploadPublicKey: (jwk: JsonWebKey) => Promise<void>,
-  deleteBackup: () => Promise<void>,
+  actions: {
+    deleteBackup: () => Promise<void>;
+    uploadIdentityKey: (identityPub: string, signingPub: string) => Promise<void>;
+  },
 ): Promise<void> {
-  // Delete old local key
-  await deleteStoredPrivateKey(userId);
-
-  // Delete old backup from server
-  await deleteBackup();
-
-  // Generate fresh key pair
-  const keyPair = await generateKeyPair();
-  const publicKeyJwk = await exportPublicKey(keyPair.publicKey);
-  const privateKeyJwk = await exportPrivateKey(keyPair.privateKey);
-
-  // Upload new public key (replaces old one via upsert)
-  await uploadPublicKey(publicKeyJwk);
-
-  // Store new private key locally (backup will be set up separately)
-  await storePrivateKey(userId, privateKeyJwk);
+  await clearAllCryptoData(userId);
+  await actions.deleteBackup();
+  // User will need to set up keys again via setupKeysWithPIN
 }
 
-export async function importAndStoreKey(userId: string): Promise<CryptoKey | null> {
-  const storedJwk = await getStoredPrivateKey(userId);
-  if (!storedJwk) return null;
-  return importPrivateKey(storedJwk);
+/**
+ * Check OPK count and replenish if below threshold.
+ */
+export async function replenishOneTimePreKeys(
+  userId: string,
+  getCount: () => Promise<number>,
+  upload: (keys: { keyId: number; publicKey: string }[]) => Promise<void>,
+): Promise<void> {
+  const backend = getBackend();
+  const count = await getCount();
+  if (count >= ONE_TIME_PRE_KEY_REFILL_THRESHOLD) return;
+
+  const startKeyId = Date.now(); // Simple unique key ID
+  const opks = generateOneTimePreKeys(backend, startKeyId, ONE_TIME_PRE_KEY_BATCH_SIZE);
+
+  await upload(
+    opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) })),
+  );
+
+  await storeOneTimePreKeys(
+    userId,
+    opks.map((opk) => ({ keyId: opk.keyId, privateKey: toBase64(opk.keyPair.privateKey) })),
+  );
+}
+
+/**
+ * Get or create a Double Ratchet session with another user in a conversation.
+ * If no session exists, fetches their pre-key bundle and runs X3DH.
+ */
+export async function getOrCreateSession(
+  conversationId: string,
+  otherUserId: string,
+  myUserId: string,
+  fetchBundle: (userId: string) => Promise<PreKeyBundle | null>,
+): Promise<RatchetState> {
+  // Check for existing session
+  const existing = await getSession(conversationId, otherUserId);
+  if (existing) return deserializeRatchetState(existing);
+
+  // No session — initiate X3DH
+  const backend = getBackend();
+  const myIdentity = await getStoredIdentity(myUserId);
+  if (!myIdentity) throw new Error("Identity keys not found — setup required");
+
+  const bundleData = await fetchBundle(otherUserId);
+  if (!bundleData) throw new Error("Could not fetch pre-key bundle for recipient");
+
+  const bundle: PreKeyBundle = {
+    identityKey: fromBase64(bundleData.identityKey as unknown as string),
+    signingKey: fromBase64(bundleData.signingKey as unknown as string),
+    signedPreKeyPublic: fromBase64(bundleData.signedPreKeyPublic as unknown as string),
+    signedPreKeyId: bundleData.signedPreKeyId,
+    signedPreKeySignature: fromBase64(bundleData.signedPreKeySignature as unknown as string),
+    oneTimePreKeyPublic: bundleData.oneTimePreKeyPublic
+      ? fromBase64(bundleData.oneTimePreKeyPublic as unknown as string)
+      : undefined,
+    oneTimePreKeyId: bundleData.oneTimePreKeyId,
+  };
+
+  const myIdentityKeyPair = {
+    signing: {
+      publicKey: fromBase64(myIdentity.signingPublicKey),
+      privateKey: fromBase64(myIdentity.signingPrivateKey),
+    },
+    dh: {
+      publicKey: fromBase64(myIdentity.dhPublicKey),
+      privateKey: fromBase64(myIdentity.dhPrivateKey),
+    },
+  };
+
+  const x3dhResult = await x3dhInitiate(backend, myIdentityKeyPair, bundle);
+
+  // Initialize Double Ratchet as sender
+  const state = await initializeSender(backend, x3dhResult.sharedSecret, bundle.signedPreKeyPublic);
+
+  // Persist session
+  await saveSession(conversationId, otherUserId, serializeRatchetState(state));
+
+  return state;
 }

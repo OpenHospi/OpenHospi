@@ -1364,6 +1364,14 @@
       "report_user": "Report {name}",
       "blocked": "You have blocked this user",
       "key_reset_message": "Message from before key reset — cannot be decrypted",
+      "verify_identity": "Verify identity",
+      "safety_number": {
+        "title": "Safety number",
+        "description": "Compare this number with {name} to verify your conversation is end-to-end encrypted.",
+        "loading": "Generating safety number…",
+        "instructions": "If this number matches on both devices, your conversation is secure. Meet in person or use a trusted channel to compare.",
+        "unavailable": "Safety number unavailable. Both users must have encryption set up."
+      },
       "encryption": {
         "unlock_title": "Unlock your chats",
         "unlock_description": "Your encryption keys need to be restored on this device.",

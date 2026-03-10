@@ -12,7 +12,9 @@ export async function sendMessage(
   data: {
     ciphertext: string;
     iv: string;
-    encryptedKeys: { userId: string; wrappedKey: string }[];
+    ratchetPublicKey: string;
+    messageNumber: number;
+    previousChainLength: number;
   },
 ) {
   const session = await requireSession();
@@ -54,7 +56,9 @@ export async function sendMessage(
         senderId: userId,
         ciphertext: data.ciphertext,
         iv: data.iv,
-        encryptedKeys: data.encryptedKeys,
+        ratchetPublicKey: data.ratchetPublicKey,
+        messageNumber: data.messageNumber,
+        previousChainLength: data.previousChainLength,
         messageType: "text",
       })
       .returning({ id: messages.id });
@@ -81,7 +85,6 @@ export async function markConversationRead(conversationId: string) {
   const userId = session.user.id;
 
   await withRLS(userId, async (tx) => {
-    // Get all unread message IDs in this conversation for this user
     const unreadReceipts = await tx
       .select({ messageId: messageReceipts.messageId })
       .from(messageReceipts)
@@ -110,14 +113,11 @@ export async function openChat(roomId: string, seekerUserId: string, memberUserI
   const session = await requireSession();
   const userId = session.user.id;
 
-  // Verify the caller is either the seeker or a member of the room's house
   if (userId !== seekerUserId && !memberUserIds.includes(userId)) {
     throw new Error("Not authorized to open this chat");
   }
 
-  // Ensure the current user is in the member list
   const allMembers = [...new Set([...memberUserIds, seekerUserId])];
-
   const conversationId = await getOrCreateHospiConversation(roomId, seekerUserId, allMembers);
 
   return { conversationId };

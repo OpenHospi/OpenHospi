@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowLeft, Flag, MoreVertical, ShieldBan, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Flag, Fingerprint, MoreVertical, ShieldBan, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { KeyRecoveryDialog } from "@/components/app/key-recovery-dialog";
+import { SafetyNumberDialog } from "@/components/app/safety-number-dialog";
 import { ReportDialog } from "@/components/shared/report-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEncryptionKey } from "@/hooks/use-encryption-key";
+import { useEncryption } from "@/hooks/use-encryption";
 import { Link } from "@/i18n/navigation-app";
 import type { MessageItem } from "@/lib/queries/chat";
 
@@ -43,14 +44,18 @@ export function ChatView({
 }: Props) {
   const t = useTranslations("app.chat");
   const [isPending, startTransition] = useTransition();
-  const { privateKey, status } = useEncryptionKey(currentUserId);
+  const { status, encryptMessage, decryptMessage, getIdentityFingerprint } =
+    useEncryption(currentUserId);
   const addMessageRef = useRef<((msg: DecryptedMessage) => void) | null>(null);
+  const [safetyNumberUser, setSafetyNumberUser] = useState<{
+    userId: string;
+    name: string;
+  } | null>(null);
 
   const currentMember = members.find((m) => m.userId === currentUserId);
   const otherMembers = members.filter((m) => m.userId !== currentUserId);
   const title = otherMembers.map((m) => m.firstName).join(", ") || t("conversation");
 
-  // Check if any other member is blocked by the current user
   const blockedMember = otherMembers.find((m) => blockedUserIds.includes(m.userId));
   const isBlocked = !!blockedMember;
 
@@ -76,7 +81,6 @@ export function ChatView({
     });
   }
 
-  // Loading state while checking encryption keys
   if (status === "loading") {
     return (
       <div className="flex h-full flex-col">
@@ -91,7 +95,6 @@ export function ChatView({
     );
   }
 
-  // Key recovery needed
   if (status === "needs-recovery" || status === "needs-setup") {
     return (
       <div className="flex h-full flex-col">
@@ -137,6 +140,18 @@ export function ChatView({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {otherMembers.map((member) => (
+                <DropdownMenuItem
+                  key={`verify-${member.userId}`}
+                  onClick={() =>
+                    setSafetyNumberUser({ userId: member.userId, name: member.firstName })
+                  }
+                >
+                  <Fingerprint className="mr-2 size-4" />
+                  {t("verify_identity")}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              {otherMembers.map((member) => (
                 <div key={member.userId}>
                   {blockedUserIds.includes(member.userId) ? (
                     <DropdownMenuItem onClick={() => handleUnblock(member.userId)}>
@@ -176,7 +191,7 @@ export function ChatView({
         currentUserId={currentUserId}
         initialMessages={initialMessages}
         members={members}
-        privateKey={privateKey!}
+        decryptMessage={decryptMessage}
         addMessageRef={addMessageRef}
       />
 
@@ -189,7 +204,8 @@ export function ChatView({
         <ChatInput
           conversationId={conversationId}
           members={members}
-          privateKey={privateKey!}
+          currentUserId={currentUserId}
+          encryptMessage={encryptMessage}
           onMessageSent={({ id, plaintext }) => {
             addMessageRef.current?.({
               id,
@@ -201,6 +217,16 @@ export function ChatView({
               createdAt: new Date(),
             });
           }}
+        />
+      )}
+
+      {/* Safety Number Dialog */}
+      {safetyNumberUser && (
+        <SafetyNumberDialog
+          open={!!safetyNumberUser}
+          onOpenChange={(open) => !open && setSafetyNumberUser(null)}
+          otherUserName={safetyNumberUser.name}
+          getFingerprint={() => getIdentityFingerprint(safetyNumberUser.userId)}
         />
       )}
     </div>

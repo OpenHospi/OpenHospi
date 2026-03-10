@@ -332,11 +332,27 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       }),
       vereniging: f.default({ defaultValue: null }),
       preferredLocale: f.valuesFromArray({
-        values: ["nl", "nl", "en", "nl", "nl", "nl", "nl", "nl", "en", "en", "nl", "nl", "en", "nl", "nl"],
+        values: [
+          "nl",
+          "nl",
+          "en",
+          "nl",
+          "nl",
+          "nl",
+          "nl",
+          "nl",
+          "en",
+          "en",
+          "nl",
+          "nl",
+          "en",
+          "nl",
+          "nl",
+        ],
       }),
     },
     with: {
-      publicKeys: 1,
+      identityKeys: 1,
       privateKeyBackups: 1,
       notifications: 1,
       pushTokens: 1,
@@ -503,16 +519,27 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       streetName: f.valuesFromArray({
         values: [
           // Groningen (7)
-          "Zonnelaan", "Nieuwe Boteringestraat", "Gelkingestraat", "Oosterstraat",
-          "Zernikelaan", "Irisweg", "Folkingestraat",
+          "Zonnelaan",
+          "Nieuwe Boteringestraat",
+          "Gelkingestraat",
+          "Oosterstraat",
+          "Zernikelaan",
+          "Irisweg",
+          "Folkingestraat",
           // Amsterdam (3)
-          "Van Baerlestraat", "Ferdinand Bolstraat", "Bloemgracht",
+          "Van Baerlestraat",
+          "Ferdinand Bolstraat",
+          "Bloemgracht",
           // Utrecht (3)
-          "Oudegracht", "Heidelberglaan", "Kanaalstraat",
+          "Oudegracht",
+          "Heidelberglaan",
+          "Kanaalstraat",
           // Rotterdam (2)
-          "Boompjes", "Kralingse Plaslaan",
+          "Boompjes",
+          "Kralingse Plaslaan",
           // Leiden (2)
-          "Rapenburg", "Stationsweg",
+          "Rapenburg",
+          "Stationsweg",
           // Eindhoven (1)
           "Torenallee",
           // Nijmegen (1)
@@ -523,11 +550,23 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       }),
       houseNumber: f.valuesFromArray({
         values: [
-          "12", "45", "8a", "62", "3", "21", "17",
-          "88", "34", "52",
-          "142", "5", "78",
-          "29", "16",
-          "33", "11",
+          "12",
+          "45",
+          "8a",
+          "62",
+          "3",
+          "21",
+          "17",
+          "88",
+          "34",
+          "52",
+          "142",
+          "5",
+          "78",
+          "29",
+          "16",
+          "33",
+          "11",
           "24",
           "95",
           "7",
@@ -536,15 +575,27 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       postalCode: f.valuesFromArray({
         values: [
           // Groningen (7)
-          "9742 GR", "9712 SG", "9711 NE", "9711 NR", "9747 AA", "9742 JE", "9711 JW",
+          "9742 GR",
+          "9712 SG",
+          "9711 NE",
+          "9711 NR",
+          "9747 AA",
+          "9742 JE",
+          "9711 JW",
           // Amsterdam (3)
-          "1071 BB", "1072 MH", "1015 TM",
+          "1071 BB",
+          "1072 MH",
+          "1015 TM",
           // Utrecht (3)
-          "3511 LP", "3584 CS", "3531 CJ",
+          "3511 LP",
+          "3584 CS",
+          "3531 CJ",
           // Rotterdam (2)
-          "3011 XZ", "3061 ME",
+          "3011 XZ",
+          "3061 ME",
           // Leiden (2)
-          "2311 GJ", "2312 AS",
+          "2311 GJ",
+          "2312 AS",
           // Eindhoven (1)
           "5617 BC",
           // Nijmegen (1)
@@ -556,7 +607,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       latitude: f.valuesFromArray({
         values: [
           // Groningen (7)
-          53.2254, 53.2190, 53.2174, 53.2138, 53.2405, 53.2280, 53.2148,
+          53.2254, 53.219, 53.2174, 53.2138, 53.2405, 53.228, 53.2148,
           // Amsterdam (3)
           52.3579, 52.3548, 52.3751,
           // Utrecht (3)
@@ -564,7 +615,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           // Rotterdam (2)
           51.9185, 51.9267,
           // Leiden (2)
-          52.1583, 52.1660,
+          52.1583, 52.166,
           // Eindhoven (1)
           51.4484,
           // Nijmegen (1)
@@ -576,13 +627,13 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       longitude: f.valuesFromArray({
         values: [
           // Groningen (7)
-          6.5488, 6.5620, 6.5685, 6.5720, 6.5335, 6.5450, 6.5695,
+          6.5488, 6.562, 6.5685, 6.572, 6.5335, 6.545, 6.5695,
           // Amsterdam (3)
           4.8776, 4.8938, 4.8788,
           // Utrecht (3)
           5.1214, 5.1747, 5.1031,
           // Rotterdam (2)
-          4.4890, 4.4930,
+          4.489, 4.493,
           // Leiden (2)
           4.4889, 4.4865,
           // Eindhoven (1)
@@ -596,15 +647,27 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       rentPrice: f.valuesFromArray({
         values: [
           // Groningen (affordable)
-          "380", "420", "480", "350", "320", "370", "460",
+          "380",
+          "420",
+          "480",
+          "350",
+          "320",
+          "370",
+          "460",
           // Amsterdam (expensive)
-          "750", "680", "720",
+          "750",
+          "680",
+          "720",
           // Utrecht
-          "520", "490", "510",
+          "520",
+          "490",
+          "510",
           // Rotterdam
-          "550", "620",
+          "550",
+          "620",
           // Leiden
-          "480", "530",
+          "480",
+          "530",
           // Eindhoven
           "470",
           // Nijmegen
@@ -615,33 +678,98 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       }),
       deposit: f.valuesFromArray({
         values: [
-          "380", "420", "480", "350", "320", "370", "460",
-          "750", "680", "720",
-          "520", "490", "510",
-          "550", "620",
-          "480", "530",
+          "380",
+          "420",
+          "480",
+          "350",
+          "320",
+          "370",
+          "460",
+          "750",
+          "680",
+          "720",
+          "520",
+          "490",
+          "510",
+          "550",
+          "620",
+          "480",
+          "530",
           "470",
           "430",
           "560",
         ],
       }),
       serviceCosts: f.valuesFromArray({
-        values: ["50", "60", "75", "45", "40", "50", "65", "90", "80", "85", "70", "60", "65", "75", "80", "55", "65", "60", "55", "70"],
+        values: [
+          "50",
+          "60",
+          "75",
+          "45",
+          "40",
+          "50",
+          "65",
+          "90",
+          "80",
+          "85",
+          "70",
+          "60",
+          "65",
+          "75",
+          "80",
+          "55",
+          "65",
+          "60",
+          "55",
+          "70",
+        ],
       }),
       utilitiesIncluded: f.valuesFromArray({
         values: [
-          "not_included", "estimated", "not_included", "included", "not_included",
-          "estimated", "included", "not_included", "estimated", "not_included",
-          "not_included", "estimated", "included", "not_included", "estimated",
-          "not_included", "not_included", "estimated", "not_included", "included",
+          "not_included",
+          "estimated",
+          "not_included",
+          "included",
+          "not_included",
+          "estimated",
+          "included",
+          "not_included",
+          "estimated",
+          "not_included",
+          "not_included",
+          "estimated",
+          "included",
+          "not_included",
+          "estimated",
+          "not_included",
+          "not_included",
+          "estimated",
+          "not_included",
+          "included",
         ],
       }),
       estimatedUtilitiesCosts: f.valuesFromArray({
         values: [
-          null, "75", null, null, null,
-          "80", null, null, "65", null,
-          null, "70", null, null, "85",
-          null, null, "60", null, null,
+          null,
+          "75",
+          null,
+          null,
+          null,
+          "80",
+          null,
+          null,
+          "65",
+          null,
+          null,
+          "70",
+          null,
+          null,
+          "85",
+          null,
+          null,
+          "60",
+          null,
+          null,
         ],
       }),
       roomSizeM2: f.valuesFromArray({
@@ -807,8 +935,22 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
           ["private_kitchen", "shared_bathroom", "wifi_included", "bike_storage", "no_pets"],
           ["shared_kitchen", "balcony", "bike_storage", "wifi_included", "no_smoking"],
           ["shared_kitchen", "garden", "bike_storage", "wifi_included", "pets_allowed"],
-          ["shared_kitchen", "shared_bathroom", "garden", "bike_storage", "wifi_included", "washing_machine"],
-          ["shared_kitchen", "private_bathroom", "wifi_included", "bike_storage", "washing_machine", "dryer"],
+          [
+            "shared_kitchen",
+            "shared_bathroom",
+            "garden",
+            "bike_storage",
+            "wifi_included",
+            "washing_machine",
+          ],
+          [
+            "shared_kitchen",
+            "private_bathroom",
+            "wifi_included",
+            "bike_storage",
+            "washing_machine",
+            "dryer",
+          ],
           ["private_bathroom", "private_kitchen", "wifi_included", "bike_storage", "no_smoking"],
           ["shared_kitchen", "shared_bathroom", "bike_storage", "wifi_included", "no_pets"],
           ["shared_kitchen", "shared_bathroom", "wifi_included", "bike_storage", "storage"],
@@ -933,12 +1075,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   hospiEvents: {
     columns: {
       title: f.valuesFromArray({
-        values: [
-          "Kennismakingsavond",
-          "Huisborrel",
-          "Kijkavond",
-          "Meet & Greet",
-        ],
+        values: ["Kennismakingsavond", "Huisborrel", "Kijkavond", "Meet & Greet"],
       }),
       description: f.valuesFromArray({
         values: [
@@ -1021,12 +1158,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
         ],
       }),
       location: f.valuesFromArray({
-        values: [
-          "In het huis",
-          "Café De Vergulde Kater",
-          "Online via Zoom",
-          "Huiskamer",
-        ],
+        values: ["In het huis", "Café De Vergulde Kater", "Online via Zoom", "Huiskamer"],
       }),
       maxAttendees: f.int({ minValue: 3, maxValue: 10 }),
     },
@@ -1062,22 +1194,18 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
     columns: {
       ciphertext: f.string(),
       iv: f.string(),
-      encryptedKeys: f.default({ defaultValue: null }),
+      ratchetPublicKey: f.string(),
+      messageNumber: f.int({ minValue: 0, maxValue: 100 }),
+      previousChainLength: f.default({ defaultValue: 0 }),
       messageType: f.default({ defaultValue: "text" }),
     },
   },
 
   // --- Security (seeded via profiles.with) ---
-  publicKeys: {
+  identityKeys: {
     columns: {
-      publicKeyJwk: f.default({
-        defaultValue: {
-          kty: "EC",
-          crv: "P-256",
-          x: "fake-x-coord",
-          y: "fake-y-coord",
-        },
-      }),
+      identityPublicKey: f.string(),
+      signingPublicKey: f.string(),
     },
   },
   privateKeyBackups: {
@@ -1190,11 +1318,7 @@ const supabase = createClient(LOCAL_SUPABASE_URL, LOCAL_SERVICE_ROLE_KEY);
 const PROFILE_PHOTO_COUNTS = [5, 4, 3, 3, 2, 2, 1, 1, 1, 3, 2, 4, 1, 3, 0];
 const ROOM_PHOTO_COUNTS = [8, 5, 4, 3, 2, 1, 1, 5, 3, 4, 2, 3, 1, 4, 6, 2, 3, 5, 1, 0];
 
-async function downloadImage(
-  seed: string,
-  width: number,
-  height: number,
-): Promise<Buffer> {
+async function downloadImage(seed: string, width: number, height: number): Promise<Buffer> {
   const url = `https://picsum.photos/seed/${seed}/${width}/${height}.jpg`;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -1210,11 +1334,7 @@ async function downloadImage(
 }
 
 async function seedProfilePhoto(userId: string, slot: number): Promise<string> {
-  const imageData = await downloadImage(
-    `profile-${userId.slice(0, 8)}-${slot}`,
-    400,
-    400,
-  );
+  const imageData = await downloadImage(`profile-${userId.slice(0, 8)}-${slot}`, 400, 400);
   const path = `${userId}/slot-${slot}.jpg`;
 
   const { error } = await supabase.storage
@@ -1222,20 +1342,13 @@ async function seedProfilePhoto(userId: string, slot: number): Promise<string> {
     .upload(path, imageData, { contentType: "image/jpeg", upsert: true });
   if (error) throw error;
 
-  await db
-    .insert(schema.profilePhotos)
-    .values({ userId, slot, url: path })
-    .onConflictDoNothing();
+  await db.insert(schema.profilePhotos).values({ userId, slot, url: path }).onConflictDoNothing();
 
   return path;
 }
 
 async function seedRoomPhoto(roomId: string, slot: number): Promise<void> {
-  const imageData = await downloadImage(
-    `room-${roomId.slice(0, 8)}-${slot}`,
-    800,
-    600,
-  );
+  const imageData = await downloadImage(`room-${roomId.slice(0, 8)}-${slot}`, 800, 600);
   const path = `${roomId}/slot-${slot}.jpg`;
 
   const { error } = await supabase.storage
@@ -1243,10 +1356,7 @@ async function seedRoomPhoto(roomId: string, slot: number): Promise<void> {
     .upload(path, imageData, { contentType: "image/jpeg", upsert: true });
   if (error) throw error;
 
-  await db
-    .insert(schema.roomPhotos)
-    .values({ roomId, slot, url: path })
-    .onConflictDoNothing();
+  await db.insert(schema.roomPhotos).values({ roomId, slot, url: path }).onConflictDoNothing();
 }
 
 // Fetch seeded profiles and rooms
@@ -1264,13 +1374,9 @@ for (const bucket of ["profile-photos", "room-photos"] as const) {
   const { data: folders } = await supabase.storage.from(bucket).list();
   if (folders) {
     for (const folder of folders) {
-      const { data: files } = await supabase.storage
-        .from(bucket)
-        .list(folder.name);
+      const { data: files } = await supabase.storage.from(bucket).list(folder.name);
       if (files?.length) {
-        await supabase.storage
-          .from(bucket)
-          .remove(files.map((f) => `${folder.name}/${f.name}`));
+        await supabase.storage.from(bucket).remove(files.map((f) => `${folder.name}/${f.name}`));
       }
     }
   }
@@ -1287,9 +1393,7 @@ for (let i = 0; i < allProfiles.length; i++) {
 
   const userId = allProfiles[i].id;
   const paths = await Promise.all(
-    Array.from({ length: count }, (_, slot) =>
-      seedProfilePhoto(userId, slot + 1),
-    ),
+    Array.from({ length: count }, (_, slot) => seedProfilePhoto(userId, slot + 1)),
   );
 
   // Set avatarUrl to slot-1 path (matches app behavior)
@@ -1311,9 +1415,7 @@ for (let i = 0; i < allRooms.length; i++) {
   }
 
   const roomId = allRooms[i].id;
-  await Promise.all(
-    Array.from({ length: count }, (_, slot) => seedRoomPhoto(roomId, slot + 1)),
-  );
+  await Promise.all(Array.from({ length: count }, (_, slot) => seedRoomPhoto(roomId, slot + 1)));
 
   console.log(`  Room ${i + 1}: ${count} photos`);
 }

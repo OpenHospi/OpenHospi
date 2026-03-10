@@ -1,7 +1,7 @@
 import { defineRelations } from "drizzle-orm";
 
 import { applications, applicationStatusHistory, reviews } from "./applications";
-import { account, jwks, session, user, verification } from "./auth";
+import { account, session, user, verification } from "./auth";
 import { conversationMembers, conversations, messageReceipts, messages } from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
@@ -9,7 +9,14 @@ import { notifications, pushSubscriptions, pushTokens } from "./notifications";
 import { activeConsents, consentRecords, dataRequests, processingRestrictions } from "./privacy";
 import { profilePhotos, profiles } from "./profiles";
 import { roomPhotos, rooms } from "./rooms";
-import { blocks, privateKeyBackups, publicKeys, reports } from "./security";
+import {
+  blocks,
+  identityKeys,
+  oneTimePreKeys,
+  privateKeyBackups,
+  reports,
+  signedPreKeys,
+} from "./security";
 
 export const relations = defineRelations(
   {
@@ -18,7 +25,6 @@ export const relations = defineRelations(
     session,
     account,
     verification,
-    jwks,
     // Profiles
     profiles,
     profilePhotos,
@@ -42,7 +48,9 @@ export const relations = defineRelations(
     messages,
     messageReceipts,
     // Security
-    publicKeys,
+    identityKeys,
+    signedPreKeys,
+    oneTimePreKeys,
     privateKeyBackups,
     reports,
     blocks,
@@ -261,9 +269,21 @@ export const relations = defineRelations(
     },
 
     // ── Security relations ──
-    publicKeys: {
+    identityKeys: {
       user: r.one.profiles({
-        from: r.publicKeys.userId,
+        from: r.identityKeys.userId,
+        to: r.profiles.id,
+      }),
+    },
+    signedPreKeys: {
+      user: r.one.profiles({
+        from: r.signedPreKeys.userId,
+        to: r.profiles.id,
+      }),
+    },
+    oneTimePreKeys: {
+      user: r.one.profiles({
+        from: r.oneTimePreKeys.userId,
         to: r.profiles.id,
       }),
     },

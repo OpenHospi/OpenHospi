@@ -15,7 +15,6 @@ export async function getOrCreateHospiConversation(
   seekerUserId: string,
   memberUserIds: string[],
 ): Promise<string> {
-  // Check if conversation already exists (uses db directly — called from server actions)
   const [existing] = await db
     .select({ id: conversations.id })
     .from(conversations)
@@ -23,13 +22,11 @@ export async function getOrCreateHospiConversation(
 
   if (existing) return existing.id;
 
-  // Create new conversation
   const [conv] = await db
     .insert(conversations)
     .values({ roomId, seekerUserId, type: "direct" })
     .returning({ id: conversations.id });
 
-  // Add all members
   const members = memberUserIds.map((userId) => ({
     conversationId: conv.id,
     userId,
@@ -54,8 +51,6 @@ export type ConversationListItem = {
 
 export async function getConversations(userId: string): Promise<ConversationListItem[]> {
   return withRLS(userId, async (tx) => {
-    // Single query: get conversations with room title, last message, and unread count
-    // Excludes conversations where a block exists with any other member
     const convos = await tx
       .select({
         id: conversations.id,
@@ -77,7 +72,6 @@ export async function getConversations(userId: string): Promise<ConversationList
       .where(
         and(
           eq(conversationMembers.userId, userId),
-          // Exclude conversations where a block exists between the user and any other member
           sql`not exists(
             select 1 from conversation_members cm2
             inner join blocks b on
@@ -92,7 +86,6 @@ export async function getConversations(userId: string): Promise<ConversationList
         sql`(select m.created_at from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1) desc nulls last`,
       );
 
-    // Batch-fetch members for all conversations
     const convIds = convos.map((c) => c.id);
     const allMembers =
       convIds.length > 0
@@ -143,7 +136,9 @@ export type MessageItem = {
   senderAvatarUrl: string | null;
   ciphertext: string;
   iv: string;
-  encryptedKeys: unknown;
+  ratchetPublicKey: string;
+  messageNumber: number;
+  previousChainLength: number;
   messageType: string;
   createdAt: Date;
 };
@@ -167,7 +162,9 @@ export async function getMessages(
         senderAvatarUrl: profiles.avatarUrl,
         ciphertext: messages.ciphertext,
         iv: messages.iv,
-        encryptedKeys: messages.encryptedKeys,
+        ratchetPublicKey: messages.ratchetPublicKey,
+        messageNumber: messages.messageNumber,
+        previousChainLength: messages.previousChainLength,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })
@@ -177,7 +174,6 @@ export async function getMessages(
       .orderBy(desc(messages.createdAt))
       .limit(MESSAGES_PER_PAGE);
 
-    // innerJoin guarantees senderId is non-null
     return rows as MessageItem[];
   });
 }

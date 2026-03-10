@@ -1363,6 +1363,14 @@
       "report_user": "{name} melden",
       "blocked": "Du hast diesen Benutzer blockiert",
       "key_reset_message": "Nachricht von vor dem Schlüssel-Reset — kann nicht entschlüsselt werden",
+      "verify_identity": "Identität verifizieren",
+      "safety_number": {
+        "title": "Sicherheitsnummer",
+        "description": "Vergleiche diese Nummer mit {name}, um zu überprüfen, ob euer Gespräch Ende-zu-Ende-verschlüsselt ist.",
+        "loading": "Sicherheitsnummer wird generiert…",
+        "instructions": "Wenn diese Nummer auf beiden Geräten übereinstimmt, ist euer Gespräch sicher. Vergleicht persönlich oder über einen vertrauenswürdigen Kanal.",
+        "unavailable": "Sicherheitsnummer nicht verfügbar. Beide Benutzer müssen die Verschlüsselung eingerichtet haben."
+      },
       "encryption": {
         "unlock_title": "Entsperre deine Chats",
         "unlock_description": "Deine Verschlüsselungsschlüssel müssen auf diesem Gerät wiederhergestellt werden.",

@@ -13,7 +13,7 @@ import {
   processingRestrictions,
   profilePhotos,
   profiles,
-  publicKeys,
+  identityKeys,
   pushSubscriptions,
   reviews,
   roomPhotos,
@@ -72,10 +72,10 @@ export async function POST(request: Request) {
         })
         .from(pushSubscriptions)
         .where(eq(pushSubscriptions.userId, userId));
-      const [userPublicKey] = await tx
+      const [userIdentityKey] = await tx
         .select()
-        .from(publicKeys)
-        .where(eq(publicKeys.userId, userId));
+        .from(identityKeys)
+        .where(eq(identityKeys.userId, userId));
       const userConsents = await tx
         .select()
         .from(activeConsents)
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
         votes: userVotes,
         notifications: userNotifications,
         pushSubscriptions: userPushSubscriptions,
-        publicKey: userPublicKey ?? null,
+        identityKey: userIdentityKey ?? null,
         consents: userConsents,
         consentHistory: userConsentHistory,
         dataRequests: userDataRequests,

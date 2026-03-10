@@ -1,6 +1,6 @@
 "use client";
 
-import { encryptForGroup, importPublicKey } from "@openhospi/crypto";
+import type { EncryptedMessage } from "@openhospi/crypto";
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
@@ -9,16 +9,26 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 import { sendMessage } from "../chat-actions";
-import { fetchPublicKeys } from "../key-actions";
 
 type Props = {
   conversationId: string;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
-  privateKey: CryptoKey;
+  currentUserId: string;
+  encryptMessage: (
+    conversationId: string,
+    recipientUserId: string,
+    plaintext: string,
+  ) => Promise<EncryptedMessage>;
   onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
 
-export function ChatInput({ conversationId, members, privateKey, onMessageSent }: Props) {
+export function ChatInput({
+  conversationId,
+  members,
+  currentUserId,
+  encryptMessage,
+  onMessageSent,
+}: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -29,30 +39,25 @@ export function ChatInput({ conversationId, members, privateKey, onMessageSent }
     if (!trimmed || isPending) return;
 
     startTransition(async () => {
-      // Get public keys of all members
-      const memberIds = members.map((m) => m.userId);
-      const pubKeys = await fetchPublicKeys(memberIds);
+      // In pairwise sessions, encrypt for each recipient separately
+      const otherMember = members.find((m) => m.userId !== currentUserId);
 
-      const recipientKeys = await Promise.all(
-        pubKeys.map(async (pk) => ({
-          userId: pk.userId,
-          publicKey: await importPublicKey(pk.publicKeyJwk),
-        })),
-      );
+      // For now, encrypt for the first other member (1:1 chat)
+      // Group chat would iterate over all members with separate sessions
+      const recipient = otherMember;
+      if (!recipient) return;
 
-      // Encrypt
-      const encrypted = await encryptForGroup(trimmed, privateKey, recipientKeys);
+      const encrypted = await encryptMessage(conversationId, recipient.userId, trimmed);
 
-      // Send to server — postgres_changes delivers the message to other members
       const { messageId } = await sendMessage(conversationId, {
         ciphertext: encrypted.ciphertext,
         iv: encrypted.iv,
-        encryptedKeys: encrypted.encryptedKeys,
+        ratchetPublicKey: encrypted.header.ratchetPublicKey,
+        messageNumber: encrypted.header.messageNumber,
+        previousChainLength: encrypted.header.previousChainLength,
       });
 
-      // Optimistic update — show the sent message immediately
       onMessageSent({ id: messageId, plaintext: trimmed });
-
       setText("");
       inputRef.current?.focus();
     });

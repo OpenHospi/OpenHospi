@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
-  jsonb,
+  integer,
   pgPolicy,
   pgTable,
   primaryKey,
@@ -89,7 +89,9 @@ export const messages = pgTable(
     senderId: uuid("sender_id").references(() => profiles.id, { onDelete: "set null" }),
     ciphertext: text("ciphertext").notNull(),
     iv: text("iv").notNull(),
-    encryptedKeys: jsonb("encrypted_keys"),
+    ratchetPublicKey: text("ratchet_public_key").notNull(), // base64 sender's DH ratchet public key
+    messageNumber: integer("message_number").notNull(), // position in sending chain
+    previousChainLength: integer("previous_chain_length").notNull(), // previous sending chain length
     messageType: messageTypeEnum("message_type").notNull().default("text"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

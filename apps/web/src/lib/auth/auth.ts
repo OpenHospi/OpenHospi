@@ -7,7 +7,7 @@ import { DEFAULT_LOCALE, type Locale } from "@openhospi/i18n";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, genericOAuth, jwt, multiSession } from "better-auth/plugins";
+import { admin, genericOAuth, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
 import { sendTemplatedEmail } from "@/lib/services/email";
@@ -213,7 +213,6 @@ function createAuth() {
       }),
       multiSession(),
       admin(),
-      jwt(),
       expo(),
       nextCookies(),
     ],

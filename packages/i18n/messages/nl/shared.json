@@ -1363,6 +1363,14 @@
       "report_user": "{name} melden",
       "blocked": "Je hebt deze gebruiker geblokkeerd",
       "key_reset_message": "Bericht van voor het opnieuw instellen van de sleutel — kan niet worden ontsleuteld",
+      "verify_identity": "Identiteit verifiëren",
+      "safety_number": {
+        "title": "Veiligheidsnummer",
+        "description": "Vergelijk dit nummer met {name} om te controleren of je gesprek end-to-end versleuteld is.",
+        "loading": "Veiligheidsnummer genereren…",
+        "instructions": "Als dit nummer op beide apparaten overeenkomt, is je gesprek veilig. Vergelijk persoonlijk of via een vertrouwd kanaal.",
+        "unavailable": "Veiligheidsnummer niet beschikbaar. Beide gebruikers moeten versleuteling hebben ingesteld."
+      },
       "encryption": {
         "unlock_title": "Ontgrendel je chats",
         "unlock_description": "Je versleutelingssleutels moeten worden hersteld op dit apparaat.",

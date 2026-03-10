@@ -1,7 +1,6 @@
 "use client";
 
-import { decryptFromGroup, importPublicKey } from "@openhospi/crypto";
-import type { EncryptedKey } from "@openhospi/crypto";
+import type { EncryptedMessage } from "@openhospi/crypto";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -10,7 +9,6 @@ import type { MessageItem } from "@/lib/queries/chat";
 import { supabase } from "@/lib/supabase/client";
 
 import { markConversationRead } from "../chat-actions";
-import { fetchPublicKeys } from "../key-actions";
 import { getRealtimeToken } from "../realtime-token-action";
 
 type Props = {
@@ -18,7 +16,11 @@ type Props = {
   currentUserId: string;
   initialMessages: MessageItem[];
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
-  privateKey: CryptoKey;
+  decryptMessage: (
+    conversationId: string,
+    senderUserId: string,
+    encrypted: EncryptedMessage,
+  ) => Promise<string>;
   addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
 };
 
@@ -37,7 +39,7 @@ export function MessageThread({
   currentUserId,
   initialMessages,
   members,
-  privateKey,
+  decryptMessage,
   addMessageRef,
 }: Props) {
   const t = useTranslations("app.chat");
@@ -48,40 +50,20 @@ export function MessageThread({
 
   const decryptMessages = useCallback(
     async (msgs: MessageItem[]) => {
-      const senderIds = [...new Set(msgs.map((m) => m.senderId))];
-      const pubKeys = await fetchPublicKeys(senderIds);
-      const pubKeyMap = new Map<string, JsonWebKey>();
-      for (const pk of pubKeys) {
-        pubKeyMap.set(pk.userId, pk.publicKeyJwk);
-      }
-
       const results: DecryptedMessage[] = [];
       for (const msg of msgs) {
         try {
-          const senderPubJwk = pubKeyMap.get(msg.senderId);
-          if (!senderPubJwk) {
-            results.push({
-              id: msg.id,
-              senderId: msg.senderId,
-              senderFirstName: msg.senderFirstName,
-              senderAvatarUrl: msg.senderAvatarUrl,
-              plaintext: t("decryption_failed"),
-              messageType: msg.messageType,
-              createdAt: msg.createdAt,
-            });
-            continue;
-          }
+          const encrypted: EncryptedMessage = {
+            header: {
+              ratchetPublicKey: msg.ratchetPublicKey,
+              messageNumber: msg.messageNumber,
+              previousChainLength: msg.previousChainLength,
+            },
+            ciphertext: msg.ciphertext,
+            iv: msg.iv,
+          };
 
-          const senderPublicKey = await importPublicKey(senderPubJwk);
-          const encryptedKeys = (msg.encryptedKeys ?? []) as EncryptedKey[];
-          const plaintext = await decryptFromGroup(
-            msg.ciphertext,
-            msg.iv,
-            encryptedKeys,
-            currentUserId,
-            privateKey,
-            senderPublicKey,
-          );
+          const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
 
           results.push({
             id: msg.id,
@@ -106,35 +88,31 @@ export function MessageThread({
       }
       return results;
     },
-    [currentUserId, privateKey, t],
+    [conversationId, decryptMessage, t],
   );
 
-  // Keep a stable ref so the subscription effect doesn't re-run when decryptMessages changes
   const decryptMessagesRef = useRef(decryptMessages);
   useEffect(() => {
     decryptMessagesRef.current = decryptMessages;
   }, [decryptMessages]);
 
-  // Keep members in a ref so the subscription effect doesn't re-run on every render
   const membersRef = useRef(members);
   useEffect(() => {
     membersRef.current = members;
   }, [members]);
 
-  // Keep initialMessages in a ref — only used on mount / conversation change
   const initialMessagesRef = useRef(initialMessages);
   useEffect(() => {
     initialMessagesRef.current = initialMessages;
   }, [initialMessages]);
 
-  // Initial decryption — only re-runs when the conversation changes
+  // Initial decryption
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const decrypted = await decryptMessagesRef.current(initialMessagesRef.current);
       if (!cancelled) {
         setDecryptedMessages(decrypted.reverse());
-        // Track all initial message IDs for dedup
         for (const msg of decrypted) {
           seenIdsRef.current.add(msg.id);
         }
@@ -161,7 +139,7 @@ export function MessageThread({
     };
   });
 
-  // Supabase Realtime subscription via postgres_changes
+  // Supabase Realtime subscription
   useEffect(() => {
     let mounted = true;
 
@@ -180,7 +158,9 @@ export function MessageThread({
         senderAvatarUrl: member?.avatarUrl ?? null,
         ciphertext: row.ciphertext as string,
         iv: row.iv as string,
-        encryptedKeys: row.encrypted_keys as unknown,
+        ratchetPublicKey: row.ratchet_public_key as string,
+        messageNumber: row.message_number as number,
+        previousChainLength: row.previous_chain_length as number,
         messageType: (row.message_type as string) ?? "text",
         createdAt: new Date(row.created_at as string),
       };

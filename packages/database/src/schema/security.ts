@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   index,
-  jsonb,
+  integer,
   pgPolicy,
   pgTable,
   primaryKey,
@@ -16,48 +16,119 @@ import { reportReasonEnum, reportStatusEnum, reportTypeEnum } from "./enums";
 import { profiles } from "./profiles";
 import { rooms } from "./rooms";
 
-export const publicKeys = pgTable(
-  "public_keys",
+// ── Identity Keys (replaces publicKeys) ──
+
+export const identityKeys = pgTable(
+  "identity_keys",
   {
     userId: uuid("user_id")
       .primaryKey()
       .references(() => profiles.id, { onDelete: "cascade" }),
-    publicKeyJwk: jsonb("public_key_jwk").notNull(),
+    identityPublicKey: text("identity_public_key").notNull(), // base64 X25519 DH public key
+    signingPublicKey: text("signing_public_key").notNull(), // base64 Ed25519 signing public key
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     rotatedAt: timestamp("rotated_at", { withTimezone: true }),
   },
   (table) => [
-    pgPolicy("public_keys_select", {
+    pgPolicy("identity_keys_select", {
       for: "select",
       to: authenticatedRole,
       using: sql`true`,
     }),
-    pgPolicy("public_keys_insert", {
+    pgPolicy("identity_keys_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.userId}
-            =
-            ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
     }),
-    pgPolicy("public_keys_update", {
+    pgPolicy("identity_keys_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`${table.userId}
-            =
-            ${authUid}`,
-      withCheck: sql`${table.userId}
-            =
-            ${authUid}`,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
     }),
-    pgPolicy("public_keys_delete", {
+    pgPolicy("identity_keys_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`${table.userId}
-            =
-            ${authUid}`,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
+
+// ── Signed Pre-Keys ──
+
+export const signedPreKeys = pgTable(
+  "signed_pre_keys",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    keyId: integer("key_id").notNull(),
+    publicKey: text("public_key").notNull(), // base64 X25519 public key
+    signature: text("signature").notNull(), // base64 Ed25519 signature
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("idx_signed_pre_keys_user_key").on(table.userId, table.keyId),
+    pgPolicy("signed_pre_keys_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`true`,
+    }),
+    pgPolicy("signed_pre_keys_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("signed_pre_keys_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("signed_pre_keys_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+  ],
+);
+
+// ── One-Time Pre-Keys ──
+
+export const oneTimePreKeys = pgTable(
+  "one_time_pre_keys",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    keyId: integer("key_id").notNull(),
+    publicKey: text("public_key").notNull(), // base64 X25519 public key
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("idx_one_time_pre_keys_user").on(table.userId),
+    pgPolicy("one_time_pre_keys_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`true`,
+    }),
+    pgPolicy("one_time_pre_keys_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.userId} = ${authUid}`,
+    }),
+    pgPolicy("one_time_pre_keys_delete", {
+      for: "delete",
+      to: authenticatedRole,
+      using: sql`${table.userId} = ${authUid}`,
+    }),
+  ],
+);
+
+// ── Private Key Backups (kept — repurposed for identity key backup) ──
 
 export const privateKeyBackups = pgTable(
   "private_key_backups",
@@ -75,36 +146,28 @@ export const privateKeyBackups = pgTable(
     pgPolicy("private_key_backups_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${table.userId}
-            =
-            ${authUid}`,
+      using: sql`${table.userId} = ${authUid}`,
     }),
     pgPolicy("private_key_backups_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.userId}
-            =
-            ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
     }),
     pgPolicy("private_key_backups_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`${table.userId}
-            =
-            ${authUid}`,
-      withCheck: sql`${table.userId}
-            =
-            ${authUid}`,
+      using: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`${table.userId} = ${authUid}`,
     }),
     pgPolicy("private_key_backups_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`${table.userId}
-            =
-            ${authUid}`,
+      using: sql`${table.userId} = ${authUid}`,
     }),
   ],
 );
+
+// ── Reports ──
 
 export const reports = pgTable(
   "reports",
@@ -135,47 +198,29 @@ export const reports = pgTable(
     pgPolicy("reports_insert_own", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.reporterId}
-            =
-            ${authUid}`,
+      withCheck: sql`${table.reporterId} = ${authUid}`,
     }),
     pgPolicy("reports_select_own", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${table.reporterId}
-            =
-            ${authUid}`,
+      using: sql`${table.reporterId} = ${authUid}`,
     }),
     // Admin can see all reports (defense-in-depth; admin queries use db directly)
     pgPolicy("reports_select_admin", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from "user" where "user".id =
-            ${authUid}
-            and
-            "user"
-            .
-            role
-            =
-            'admin'
-            )`,
+      using: sql`exists(select 1 from "user" where "user".id = ${authUid} and "user".role = 'admin')`,
     }),
     // Admin can update reports (for resolving/dismissing via RLS-based access)
     pgPolicy("reports_update_admin", {
       for: "update",
       to: authenticatedRole,
-      using: sql`exists(select 1 from "user" where "user".id =
-            ${authUid}
-            and
-            "user"
-            .
-            role
-            =
-            'admin'
-            )`,
+      using: sql`exists(select 1 from "user" where "user".id = ${authUid} and "user".role = 'admin')`,
     }),
   ],
 );
+
+// ── Blocks ──
 
 export const blocks = pgTable(
   "blocks",
@@ -194,33 +239,23 @@ export const blocks = pgTable(
     pgPolicy("blocks_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${table.blockerId}
-            =
-            ${authUid}`,
+      using: sql`${table.blockerId} = ${authUid}`,
     }),
     pgPolicy("blocks_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.blockerId}
-            =
-            ${authUid}`,
+      withCheck: sql`${table.blockerId} = ${authUid}`,
     }),
     pgPolicy("blocks_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`${table.blockerId}
-            =
-            ${authUid}`,
-      withCheck: sql`${table.blockerId}
-            =
-            ${authUid}`,
+      using: sql`${table.blockerId} = ${authUid}`,
+      withCheck: sql`${table.blockerId} = ${authUid}`,
     }),
     pgPolicy("blocks_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`${table.blockerId}
-            =
-            ${authUid}`,
+      using: sql`${table.blockerId} = ${authUid}`,
     }),
   ],
 );

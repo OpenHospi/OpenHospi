@@ -15,6 +15,7 @@ export default function EditGenderScreen() {
   const headerHeight = useHeaderHeight();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
 
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
@@ -32,7 +33,7 @@ export default function EditGenderScreen() {
 
   return (
     <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: headerHeight + 16 }}>
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: headerHeight + 16, gap: 12 }}>
         <ChipPicker
           values={Gender.values}
           selected={gender}
@@ -40,6 +41,11 @@ export default function EditGenderScreen() {
           translateKey="gender"
           t={tEnums}
         />
+        {gender === Gender.prefer_not_to_say && (
+          <Text variant="muted" className="text-sm">
+            {tOnboarding('genderPreferNotToSayHint')}
+          </Text>
+        )}
       </View>
 
       <View style={{ paddingHorizontal: 16, paddingBottom: 24 }}>

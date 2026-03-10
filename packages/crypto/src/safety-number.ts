@@ -8,6 +8,8 @@
  * 4. Concatenate both 32-byte digests
  * 5. Convert to 12 groups of 5 digits (60-digit code)
  */
+
+import { toBase64 } from "./encoding";
 const SAFETY_NUMBER_ITERATIONS = 5200;
 
 /**
@@ -82,4 +84,91 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
   result.set(a);
   result.set(b, a.length);
   return result;
+}
+
+// ── QR Payload ──
+
+type SafetyNumberQRPayload = {
+  v: 1;
+  uid: string;
+  spk: string;
+  sn: string;
+};
+
+export type QRVerifySuccess = {
+  valid: true;
+  peerUserId: string;
+  peerSigningKey: string;
+};
+export type QRVerifyFailure = {
+  valid: false;
+  reason: "invalid_format" | "version_unsupported" | "mismatch";
+};
+export type QRVerifyResult = QRVerifySuccess | QRVerifyFailure;
+
+/**
+ * Encode identity + safety number into a QR payload string.
+ * The displayer shows this as a QR code; the scanner reads and verifies it.
+ *
+ * Format: base64(JSON({ v, uid, spk, sn }))
+ */
+export function encodeSafetyNumberQR(
+  userId: string,
+  signingPublicKey: Uint8Array,
+  safetyNumber: string,
+): string {
+  const payload: SafetyNumberQRPayload = {
+    v: 1,
+    uid: userId,
+    spk: toBase64(signingPublicKey),
+    sn: safetyNumber,
+  };
+  return btoa(JSON.stringify(payload));
+}
+
+/**
+ * Decode a scanned QR payload and verify against the locally computed safety number.
+ *
+ * Returns { valid: true, peerUserId, peerSigningKey } on match,
+ * or { valid: false, reason } on failure.
+ */
+export function verifySafetyNumberQR(qrData: string, expectedSafetyNumber: string): QRVerifyResult {
+  let parsed: unknown;
+  try {
+    const json = atob(qrData);
+    parsed = JSON.parse(json);
+  } catch {
+    return { valid: false, reason: "invalid_format" };
+  }
+
+  if (
+    typeof parsed !== "object" ||
+    parsed === null ||
+    !("v" in parsed) ||
+    !("uid" in parsed) ||
+    !("spk" in parsed) ||
+    !("sn" in parsed)
+  ) {
+    return { valid: false, reason: "invalid_format" };
+  }
+
+  const payload = parsed as SafetyNumberQRPayload;
+
+  if (payload.v !== 1) {
+    return { valid: false, reason: "version_unsupported" };
+  }
+
+  if (
+    typeof payload.uid !== "string" ||
+    typeof payload.spk !== "string" ||
+    typeof payload.sn !== "string"
+  ) {
+    return { valid: false, reason: "invalid_format" };
+  }
+
+  if (payload.sn !== expectedSafetyNumber) {
+    return { valid: false, reason: "mismatch" };
+  }
+
+  return { valid: true, peerUserId: payload.uid, peerSigningKey: payload.spk };
 }

@@ -62,7 +62,8 @@ export { kdfChainStep, kdfRootStep } from "./kdf-chain";
 export { encrypt, decrypt, encodeHeaderAsAad } from "./encryption";
 
 // ── Safety Numbers ──
-export { generateSafetyNumber } from "./safety-number";
+export { generateSafetyNumber, encodeSafetyNumberQR, verifySafetyNumberQR } from "./safety-number";
+export type { QRVerifyResult } from "./safety-number";
 
 // ── Backup ──
 export { deriveKeyFromPIN, encryptIdentityBackup, decryptIdentityBackup } from "./backup";

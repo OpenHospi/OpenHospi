@@ -26,3 +26,9 @@ export const syncMetadata = sqliteTable('sync_metadata', {
   lastSyncedAt: integer('last_synced_at', { mode: 'timestamp' }).notNull(),
   cursor: text('cursor'),
 });
+
+export const keyVerifications = sqliteTable('key_verifications', {
+  peerUserId: text('peer_user_id').primaryKey(),
+  signingPublicKey: text('signing_public_key').notNull(),
+  verifiedAt: integer('verified_at', { mode: 'timestamp' }).notNull(),
+});

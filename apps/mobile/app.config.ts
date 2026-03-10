@@ -241,6 +241,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     [
+      'expo-camera',
+      {
+        cameraPermission:
+          'OpenHospi needs camera access to scan QR codes for identity verification.',
+      },
+    ],
+    [
       'expo-build-properties',
       {
         android: {

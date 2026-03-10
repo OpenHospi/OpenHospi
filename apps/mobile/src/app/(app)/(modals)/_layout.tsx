@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 export default function ModalsLayout() {
   const router = useRouter();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tChat } = useTranslation('translation', { keyPrefix: 'app.chat.safety_number' });
   const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tProfile } = useTranslation('translation', { keyPrefix: 'app.profile' });
@@ -111,6 +112,13 @@ export default function ModalsLayout() {
         options={{
           sheetAllowedDetents: [0.7, 1],
           title: tOnboarding('steps.security'),
+        }}
+      />
+      <Stack.Screen
+        name="verify-identity"
+        options={{
+          sheetAllowedDetents: [0.85, 1],
+          title: tChat('title'),
         }}
       />
     </Stack>

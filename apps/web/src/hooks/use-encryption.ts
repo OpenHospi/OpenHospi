@@ -7,6 +7,7 @@ import {
   serializeRatchetState,
   deserializeRatchetState,
   generateSafetyNumber,
+  encodeSafetyNumberQR,
   fromBase64,
 } from "@openhospi/crypto";
 import type { EncryptedMessage } from "@openhospi/crypto";
@@ -21,6 +22,11 @@ import { getKeyStatus, getOrCreateSession } from "@/lib/crypto/key-management";
 import type { KeyStatus } from "@/lib/crypto/key-management";
 import { getSession, getStoredIdentity, saveSession } from "@/lib/crypto/store";
 
+export type FingerprintResult = {
+  safetyNumber: string;
+  qrPayload: string;
+} | null;
+
 type UseEncryptionResult = {
   status: "loading" | KeyStatus;
   encryptMessage: (
@@ -33,7 +39,7 @@ type UseEncryptionResult = {
     senderUserId: string,
     encrypted: EncryptedMessage,
   ) => Promise<string>;
-  getIdentityFingerprint: (otherUserId: string) => Promise<string | null>;
+  getIdentityFingerprint: (otherUserId: string) => Promise<FingerprintResult>;
 };
 
 export function useEncryption(userId: string): UseEncryptionResult {
@@ -117,19 +123,27 @@ export function useEncryption(userId: string): UseEncryptionResult {
   );
 
   const getIdentityFingerprint = useCallback(
-    async (otherUserId: string): Promise<string | null> => {
+    async (otherUserId: string): Promise<FingerprintResult> => {
       const myIdentity = await getStoredIdentity(userId);
       if (!myIdentity) return null;
 
       const [theirKeys] = await fetchIdentityKeys([otherUserId]);
       if (!theirKeys) return null;
 
-      return generateSafetyNumber(
+      const safetyNumber = await generateSafetyNumber(
         userId,
         fromBase64(myIdentity.signingPublicKey),
         otherUserId,
         fromBase64(theirKeys.signingPublicKey),
       );
+
+      const qrPayload = encodeSafetyNumberQR(
+        userId,
+        fromBase64(myIdentity.signingPublicKey),
+        safetyNumber,
+      );
+
+      return { safetyNumber, qrPayload };
     },
     [userId],
   );

@@ -1368,9 +1368,26 @@
       "safety_number": {
         "title": "Safety number",
         "description": "Compare this number with {name} to verify your conversation is end-to-end encrypted.",
-        "loading": "Generating safety number…",
+        "loading": "Generating safety number\u2026",
         "instructions": "If this number matches on both devices, your conversation is secure. Meet in person or use a trusted channel to compare.",
-        "unavailable": "Safety number unavailable. Both users must have encryption set up."
+        "unavailable": "Safety number unavailable. Both users must have encryption set up.",
+        "qr_tab": "Your Code",
+        "scan_tab": "Scan Code",
+        "scan_instructions": "Point your camera at the other person's QR code",
+        "verified": "Verified",
+        "verified_description": "Your safety numbers match. This conversation is secure.",
+        "already_verified": "Previously verified on {date}",
+        "mismatch": "Mismatch",
+        "mismatch_description": "Safety numbers do not match. This connection may not be secure.",
+        "key_changed": "Security code changed",
+        "key_changed_description": "{name}'s security key has changed. Tap to re-verify.",
+        "reverify": "Re-verify",
+        "camera_permission": "Camera access is needed to scan QR codes",
+        "camera_permission_settings": "Enable camera access in Settings to scan QR codes.",
+        "grant_camera": "Allow Camera",
+        "open_settings": "Open Settings",
+        "invalid_qr": "This QR code is not a valid OpenHospi safety number",
+        "scan_own_qr": "You scanned your own QR code"
       },
       "encryption": {
         "unlock_title": "Unlock your chats",

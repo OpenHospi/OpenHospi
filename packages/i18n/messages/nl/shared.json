@@ -553,7 +553,8 @@
     },
     "discover": {
       "title": "Kamers ontdekken",
-      "roomCount": "{showing} van {total} kamers",
+      "roomCount": "{count, plural, =0 {Geen kamers gevonden} =1 {1 kamer} other {# kamers}}",
+      "roomCountFiltered": "{showing} van {total} kamers",
       "empty": "Geen kamers gevonden met deze filters. Pas je zoekopdracht aan.",
       "filters": {
         "title": "Filters",

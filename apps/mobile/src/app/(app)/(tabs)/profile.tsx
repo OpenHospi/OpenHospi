@@ -4,7 +4,7 @@ import { getInstitution } from '@openhospi/inacademia';
 import { Settings } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +22,7 @@ export default function ProfileScreen() {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
+  const { bottom } = useSafeAreaInsets();
 
   const { data: profile, isPending } = useProfile();
   const { i18n } = useTranslation();
@@ -76,7 +77,7 @@ export default function ProfileScreen() {
 
       <ScrollView
         style={{ flex: 1, paddingHorizontal: 16 }}
-        contentContainerStyle={{ paddingBottom: 32 }}>
+        contentContainerStyle={{ paddingBottom: bottom + 16 }}>
         <View style={{ alignItems: 'center', paddingVertical: 24 }}>
           <Avatar alt={profile.firstName ?? 'Avatar'} className="size-24">
             {avatarUrl ? (

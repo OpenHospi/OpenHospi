@@ -1,7 +1,7 @@
 import { SlidersHorizontal } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ export default function DiscoverScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
+  const { bottom } = useSafeAreaInsets();
 
   const { filters } = useDiscoverFilters();
   const [searchText, setSearchText] = useState('');
@@ -64,7 +65,9 @@ export default function DiscoverScreen() {
         </View>
         {totalCount > 0 && (
           <Text variant="muted" className="text-xs">
-            {t('roomCount', { count: totalCount })}
+            {searchText
+              ? t('roomCountFiltered', { showing: filteredRooms.length, total: totalCount })
+              : t('roomCount', { count: totalCount })}
           </Text>
         )}
       </View>
@@ -96,6 +99,7 @@ export default function DiscoverScreen() {
           keyExtractor={(item) => item.id}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.5}
+          contentContainerStyle={{ paddingBottom: bottom + 16 }}
           ListFooterComponent={
             isFetchingNextPage ? (
               <View style={{ paddingVertical: 16 }}>

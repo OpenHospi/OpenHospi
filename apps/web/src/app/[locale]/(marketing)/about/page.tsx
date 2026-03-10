@@ -33,7 +33,7 @@ interface TeamMember {
   bio: string;
 }
 
-const teamPhotos = ["/team/ruben.webp", "/team/heino.webp"];
+const teamPhotos = ["/team/ruben.webp", "/team/placeholder.svg", "/team/placeholder.svg"];
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -107,7 +107,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">
             {t("team.title")}
           </h2>
-          <div className="mx-auto mt-12 grid max-w-2xl gap-8 sm:grid-cols-2">
+          <div className="mx-auto mt-12 grid max-w-4xl gap-8 sm:grid-cols-3">
             {members.map((member, i) => (
               <Card key={member.name} className="overflow-hidden p-0">
                 <div className="relative aspect-square">

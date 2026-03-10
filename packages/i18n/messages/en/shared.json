@@ -554,7 +554,8 @@
     },
     "discover": {
       "title": "Discover rooms",
-      "roomCount": "Showing {showing} of {total} rooms",
+      "roomCount": "{count, plural, =0 {No rooms found} =1 {1 room} other {# rooms}}",
+      "roomCountFiltered": "Showing {showing} of {total} rooms",
       "empty": "No rooms match your filters. Try adjusting your search.",
       "filters": {
         "title": "Filters",

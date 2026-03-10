@@ -375,17 +375,22 @@
       "description3": "OpenHospi entstand, als Ruben Mitstudierende sah, die mit kostenpflichtigen Plattformen und chaotischen Facebook-Gruppen kämpften. Er erlebte es nicht selbst, aber sah viele um sich herum damit zu kämpfen. Die Lösung war klar: etwas Besseres bauen und es Open Source machen."
     },
     "team": {
-      "title": "Das Team",
+      "title": "Der Vorstand",
       "members": [
         {
           "name": "Ruben Talstra",
-          "role": "Gründer",
+          "role": "Vorsitzender",
           "bio": "BITM-Student an der Hanze University of Applied Sciences und autodidaktischer Software-Engineer mit über 10 Jahren Erfahrung. Hat OpenHospi gegründet, um jedem Studierenden eine faire Chance auf Wohnraum zu geben — ohne Gebühren, ohne Bevorzugung."
         },
         {
+          "name": "Sophie de Klerk",
+          "role": "Schriftführerin",
+          "bio": "-"
+        },
+        {
           "name": "Heino Bosma",
-          "role": "Mitgründer",
-          "bio": "Leidenschaftlich daran interessiert, das Studentenleben zu verbessern. Hilft dabei, OpenHospis Vision und Strategie zu gestalten, um Studierende in den ganzen Niederlanden zu erreichen."
+          "role": "Schatzmeister",
+          "bio": "-"
         }
       ]
     },
@@ -759,7 +764,15 @@
     "disclaimer": "Plattformen ändern sich. Zuletzt aktualisiert: März 2026. Stimmt etwas nicht? Schreib uns an info@openhospi.nl.",
     "table": {
       "title": "Schnellvergleich",
-      "columns": ["Merkmal", "OpenHospi", "Hospi.nl", "myHospi.nl", "Dingdong", "Kamernet", "Facebook-Gruppen"],
+      "columns": [
+        "Merkmal",
+        "OpenHospi",
+        "Hospi.nl",
+        "myHospi.nl",
+        "Dingdong",
+        "Kamernet",
+        "Facebook-Gruppen"
+      ],
       "rows": [
         {
           "feature": "Preis",

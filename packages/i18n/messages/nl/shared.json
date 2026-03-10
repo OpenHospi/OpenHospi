@@ -670,7 +670,8 @@
         "bio": "Vertel iets over jezelf...",
         "preferredCity": "Selecteer een stad",
         "vereniging": "bijv. Vindicat",
-        "searchVereniging": "Zoek vereniging..."
+        "searchVereniging": "Zoek vereniging...",
+        "searchCity": "Zoek stad..."
       },
       "photoSlots": {
         "slot1": "Je beste foto",

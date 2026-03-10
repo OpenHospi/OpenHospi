@@ -670,7 +670,8 @@
         "bio": "Erzähl etwas über dich...",
         "preferredCity": "Stadt auswählen",
         "vereniging": "z.B. Vindicat",
-        "searchVereniging": "Verein suchen..."
+        "searchVereniging": "Verein suchen...",
+        "searchCity": "Stadt suchen..."
       },
       "photoSlots": {
         "slot1": "Dein bestes Foto",

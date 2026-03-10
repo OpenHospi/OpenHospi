@@ -74,7 +74,7 @@ export default function ModalsLayout() {
       <Stack.Screen
         name="edit-vereniging"
         options={{
-          sheetAllowedDetents: [0.35],
+          sheetAllowedDetents: [0.7, 1],
           title: tProfile('vereniging'),
         }}
       />

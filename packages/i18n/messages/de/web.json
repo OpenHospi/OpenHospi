@@ -65,8 +65,8 @@
       "description": "Ehrlicher Vergleich niederländischer Studentenwohnungsplattformen. Sieh, wie OpenHospi im Vergleich zu Hospi.nl, myHospi, Dingdong, Kamernet und Facebook-Gruppen abschneidet."
     },
     "e2eEncryption": {
-      "title": "E2E-Verschlüsselung — Wie Wir Deine Nachrichten Schützen",
-      "description": "Erfahre, wie OpenHospi Ende-zu-Ende-Verschlüsselung einsetzt, um deine Nachrichten privat zu halten. Inspiriert vom Signal Protocol, Open Source und vollständig transparent."
+      "title": "E2E-Verschlüsselung — Wie Wir Deine Unterhaltungen Schützen",
+      "description": "Erfahre, wie OpenHospi paarweise Ende-zu-Ende-Verschlüsselung einsetzt, um jede Unterhaltung zwischen Suchenden und Hausmitgliedern zu schützen. Inspiriert vom Signal Protocol, Open Source und vollständig transparent."
     },
     "breadcrumbs": {
       "home": "Startseite",
@@ -359,7 +359,7 @@
       },
       {
         "title": "Ende-zu-Ende verschlüsselter Chat",
-        "description": "Nachrichten sind zwischen Absender und Empfänger verschlüsselt. Wir können deine Gespräche nicht lesen."
+        "description": "Alle Nachrichten sind Ende-zu-Ende verschlüsselt — sowohl in privaten als auch in Gruppenunterhaltungen. Wir können deine Nachrichten nicht lesen."
       },
       {
         "title": "Keine Tracker",
@@ -747,7 +747,7 @@
         "items": [
           {
             "question": "Sind meine Nachrichten verschlüsselt?",
-            "answer": "Ja. Alle Chatnachrichten auf OpenHospi sind Ende-zu-Ende verschlüsselt (E2EE). Nicht einmal OpenHospi kann deine Gespräche lesen — nur du und die Person, mit der du chattest."
+            "answer": "Ja. Alle Chatnachrichten auf OpenHospi sind Ende-zu-Ende verschlüsselt (E2EE), einschließlich Gruppenunterhaltungen. Nicht einmal OpenHospi kann deine Nachrichten lesen — nur du und die anderen Mitglieder deiner Unterhaltung."
           },
           {
             "question": "Verwendet OpenHospi Tracker oder verkauft meine Daten?",
@@ -784,35 +784,60 @@
   },
   "e2eEncryption": {
     "title": "Wie Ende-zu-Ende-Verschlüsselung funktioniert",
-    "subtitle": "Vollständige Transparenz darüber, wie OpenHospi deine Nachrichten schützt",
+    "subtitle": "Vollständige Transparenz darüber, wie OpenHospi jede Unterhaltung zwischen Suchenden und Hausmitgliedern schützt.",
     "overview": {
       "title": "Was ist Ende-zu-Ende-Verschlüsselung?",
-      "description": "Ende-zu-Ende-Verschlüsselung (E2EE) bedeutet, dass nur du und die Person, mit der du chattest, deine Nachrichten lesen können. Nicht einmal OpenHospi hat Zugriff darauf. Deine Nachrichten werden auf deinem Gerät verschlüsselt, bevor sie gesendet werden, und erst auf dem Gerät des Empfängers entschlüsselt."
+      "description": "Auf OpenHospi findet jede Unterhaltung zwischen einem Zimmersuchenden und den Hausmitgliedern statt. Alle Nachrichten sind Ende-zu-Ende verschlüsselt (E2EE): Sie werden auf deinem Gerät verschlüsselt, bevor sie gesendet werden, und können nur von den anderen Mitgliedern deiner Unterhaltung entschlüsselt werden. Nicht einmal OpenHospi kann sie lesen."
+    },
+    "pairwiseEncryption": {
+      "title": "Paarweise Verschlüsselung",
+      "description": "OpenHospi verwendet paarweise Verschlüsselung — denselben Ansatz wie Signal und WhatsApp. Wenn du eine Nachricht sendest, verschlüsselt dein Gerät sie separat für jedes Mitglied in der Unterhaltung mit dessen individueller Verschlüsselungssitzung. Der Server speichert eine verschlüsselte Kopie pro Empfänger und kann die Nachricht niemals lesen. Jedes Mitglied kann nur die Kopie entschlüsseln, die speziell für es verschlüsselt wurde.",
+      "perRecipient": {
+        "label": "Pro-Empfänger-Verschlüsselung",
+        "detail": "Jede Nachricht wird separat für jedes Mitglied verschlüsselt"
+      },
+      "independentSessions": {
+        "label": "Unabhängige Sitzungen",
+        "detail": "Jedes Mitgliederpaar hat seine eigene Verschlüsselungssitzung"
+      },
+      "noSharedKey": {
+        "label": "Kein gemeinsamer Schlüssel",
+        "detail": "Die Kompromittierung einer Sitzung kann andere nicht beeinflussen"
+      }
     },
     "identityKeys": {
       "title": "Identitätsschlüssel",
-      "description": "Jeder Nutzer erhält eine einzigartige kryptografische Identität basierend auf Ed25519- und X25519-Schlüsseln. Diese Schlüssel werden auf deinem Gerät generiert und verlassen es niemals. Dein öffentlicher Identitätsschlüssel wird mit anderen geteilt, damit sie überprüfen können, mit wem sie sprechen."
+      "description": "Jeder Nutzer erhält eine einzigartige kryptografische Identität basierend auf Ed25519- und X25519-Schlüsseln. Diese Schlüssel werden auf deinem Gerät generiert und verlassen es niemals. Dein öffentlicher Identitätsschlüssel wird mit anderen Gesprächsmitgliedern geteilt, damit sie überprüfen können, mit wem sie sprechen.",
+      "ed25519": "Digitale Signaturen zur Identitätsüberprüfung und Schlüsselauthentifizierung.",
+      "x25519": "Elliptische-Kurven-Diffie-Hellman für sichere Schlüsselvereinbarung zwischen Mitgliedern."
     },
     "keyExchange": {
       "title": "Schlüsselaustausch (X3DH)",
-      "description": "Wenn du ein Gespräch startest, stellt das Extended Triple Diffie-Hellman (X3DH) Protokoll ein gemeinsames Geheimnis her — selbst wenn die andere Person offline ist. Vorab hochgeladene Schlüssel auf dem Server machen dies möglich, ohne jemals private Schlüssel preiszugeben."
+      "description": "Wenn eine Unterhaltung beginnt, stellt das Extended Triple Diffie-Hellman (X3DH) Protokoll ein gemeinsames Geheimnis zwischen jedem Mitgliederpaar her — selbst wenn einige offline sind. Bei einer Unterhaltung mit drei Mitgliedern finden drei separate X3DH-Austausche statt (einer pro Paar). Vorab hochgeladene Schlüssel auf dem Server machen dies möglich, ohne jemals private Schlüssel preiszugeben."
     },
     "doubleRatchet": {
       "title": "Double Ratchet",
-      "description": "Jede Nachricht verwendet einen einzigartigen Verschlüsselungsschlüssel, der vom Double-Ratchet-Algorithmus abgeleitet wird. Schlüssel rotieren mit jeder Nachricht und bieten Forward Secrecy: Selbst wenn ein Schlüssel kompromittiert wird, bleiben vergangene Nachrichten sicher. Alte Schlüssel werden dauerhaft gelöscht."
+      "description": "Nach X3DH hat jedes Mitgliederpaar seine eigene Double-Ratchet-Sitzung. Jede Nachricht verwendet einen einzigartigen Verschlüsselungsschlüssel, der sofort nach Verwendung verworfen wird. Schlüssel rotieren mit jeder Nachricht und bieten Forward Secrecy: Selbst wenn ein Schlüssel kompromittiert wird, bleiben vergangene Nachrichten sicher."
     },
     "messageEncryption": {
       "title": "Nachrichtenverschlüsselung",
-      "description": "Jede Nachricht wird mit AES-256-GCM verschlüsselt, einem Industriestandard für authentifizierte Verschlüsselung. Pro Nachricht werden ein einzigartiger Schlüssel und Initialisierungsvektor (IV) generiert. Der Nachrichtenheader wird als zusätzliche authentifizierte Daten (AAD) einbezogen, um Manipulation zu verhindern."
+      "description": "Jede Kopie einer Nachricht wird mit AES-256-GCM verschlüsselt, einem Industriestandard für authentifizierte Verschlüsselung. Pro Empfänger, pro Nachricht werden ein einzigartiger Schlüssel und Initialisierungsvektor (IV) generiert. Der Nachrichtenheader wird als zusätzliche authentifizierte Daten (AAD) einbezogen, um Manipulation zu verhindern.",
+      "aes": "Authentifizierte Verschlüsselung",
+      "ivLabel": "Einzigartiger IV",
+      "ivDetail": "Pro-Empfänger-Zufälligkeit",
+      "aad": "Manipulationssichere Header"
     },
     "safetyNumbers": {
       "title": "Sicherheitsnummern",
-      "description": "Du kannst überprüfen, ob dein Gespräch nicht abgefangen wurde, indem du Sicherheitsnummern mit der anderen Person vergleichst. Diese 60-stelligen Codes werden aus den Identitätsschlüsseln beider Nutzer abgeleitet und sind für jedes Gespräch einzigartig."
+      "description": "Du kannst jedes Mitglied einzeln überprüfen, indem du Sicherheitsnummern im Gesprächsinfo-Bildschirm vergleichst. Diese 60-stelligen Codes werden aus den Identitätsschlüsseln beider Nutzer abgeleitet und sind für jedes Paar einzigartig — so kannst du bestätigen, dass sich niemand als Hausmitglied oder Suchender ausgibt.",
+      "example": "60-stellige Sicherheitsnummer (Beispiel)"
     },
     "serverComparison": {
       "title": "Was der Server sieht",
-      "encrypted": "Was der Server speichert: verschlüsselte Blobs, Nachrichtenmetadaten (Zeitstempel, Gesprächs-IDs) und öffentliche Schlüssel. Nichts davon gibt Nachrichteninhalte preis.",
-      "plaintext": "Was der Server nicht sehen kann: deine tatsächlichen Nachrichten, Dateien oder Klartextinhalte. Entschlüsselungsschlüssel berühren niemals unsere Server."
+      "storedTitle": "Auf dem Server gespeichert",
+      "stored": "Verschlüsselte Chiffretexte (einer pro Empfänger, pro Nachricht), Nachrichtenmetadaten (Zeitstempel, Gesprächs-IDs) und öffentliche Schlüssel. Nichts davon gibt Nachrichteninhalte preis.",
+      "neverTitle": "Niemals zugänglich",
+      "never": "Deine tatsächlichen Nachrichten, Dateien oder Klartextinhalte. Entschlüsselungsschlüssel berühren niemals unsere Server. Der Server leitet nur verschlüsselte Daten weiter, die er nicht lesen kann."
     },
     "faq": {
       "title": "Häufig gestellte Fragen"

@@ -10,6 +10,7 @@ import {
   Lock,
   RefreshCw,
   Shield,
+  Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
@@ -38,21 +39,40 @@ export async function generateMetadata({
   };
 }
 
+// How a message flows: seeker sends to all house members (pairwise)
+const PAIRWISE_CHART = `sequenceDiagram
+    participant S as Seeker
+    participant Srv as Server
+    participant H1 as House Member 1
+    participant H2 as House Member 2
+    Note over S: Writes message
+    Note over S: Encrypts separately for<br/>each house member
+    S->>Srv: Ciphertext for H1 (Seeker↔H1 ratchet)
+    S->>Srv: Ciphertext for H2 (Seeker↔H2 ratchet)
+    Srv->>H1: Deliver H1's ciphertext
+    Srv->>H2: Deliver H2's ciphertext
+    Note over H1: Decrypts with Seeker↔H1 session
+    Note over H2: Decrypts with Seeker↔H2 session
+    Note over S,H2: Server only sees encrypted blobs —<br/>never the actual message`;
+
+// X3DH key exchange between two members
 const X3DH_CHART = `sequenceDiagram
-    participant A as Alice (Sender)
+    participant A as Member A
     participant S as Server
-    participant B as Bob (Recipient)
+    participant B as Member B
     B->>S: Upload identity key, signed pre-key, one-time pre-keys
-    A->>S: Request Bob's key bundle
-    S->>A: Return Bob's public keys
+    A->>S: Request B's key bundle
+    S->>A: Return B's public keys
     Note over A: Compute shared secret using<br/>3 Diffie-Hellman exchanges
     A->>S: Send initial message + ephemeral key
     S->>B: Deliver message
-    Note over B: Derive same shared secret<br/>from Alice's keys`;
+    Note over B: Derive same shared secret<br/>from A's keys
+    Note over A,B: Repeated for every pair<br/>of members in the conversation`;
 
+// Double Ratchet between a pair
 const DOUBLE_RATCHET_CHART = `sequenceDiagram
-    participant A as Alice
-    participant B as Bob
+    participant A as Member A
+    participant B as Member B
     Note over A,B: Session established via X3DH
     A->>B: Message 1 (key₁)
     A->>B: Message 2 (key₂)
@@ -109,6 +129,7 @@ export default async function E2eEncryptionPage({
 
   return (
     <section className="py-24">
+      {/* Safe: JSON-LD structured data from i18n translations, sanitized in seo.ts */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faq }} />
 
@@ -122,10 +143,46 @@ export default async function E2eEncryptionPage({
           <p className="mt-4 text-lg text-muted-foreground">{t("subtitle")}</p>
         </div>
 
-        {/* Overview */}
+        {/* 1. Overview */}
         <Section icon={Lock} title={t("overview.title")} description={t("overview.description")} />
 
-        {/* Identity Keys */}
+        {/* 2. How Conversations Work — Pairwise Encryption */}
+        <Section
+          icon={Users}
+          title={t("pairwiseEncryption.title")}
+          description={t("pairwiseEncryption.description")}
+        >
+          <div className="mt-6 rounded-lg border bg-muted/30 p-4">
+            <MermaidDiagram chart={PAIRWISE_CHART} />
+          </div>
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+            {(
+              [
+                {
+                  label: t("pairwiseEncryption.perRecipient.label"),
+                  detail: t("pairwiseEncryption.perRecipient.detail"),
+                },
+                {
+                  label: t("pairwiseEncryption.independentSessions.label"),
+                  detail: t("pairwiseEncryption.independentSessions.detail"),
+                },
+                {
+                  label: t("pairwiseEncryption.noSharedKey.label"),
+                  detail: t("pairwiseEncryption.noSharedKey.detail"),
+                },
+              ] as const
+            ).map((item) => (
+              <Card key={item.label} className="border-0 bg-muted/50 shadow-none">
+                <CardContent className="pt-6 text-center">
+                  <p className="text-sm font-semibold text-primary">{item.label}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{item.detail}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </Section>
+
+        {/* 3. Identity Keys */}
         <Section
           icon={Fingerprint}
           title={t("identityKeys.title")}
@@ -138,9 +195,7 @@ export default async function E2eEncryptionPage({
                   <Key className="size-4 text-primary" />
                   <h3 className="font-semibold">Ed25519</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Digital signatures for identity verification and key authentication.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("identityKeys.ed25519")}</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-muted/50 shadow-none">
@@ -149,15 +204,13 @@ export default async function E2eEncryptionPage({
                   <ArrowLeftRight className="size-4 text-primary" />
                   <h3 className="font-semibold">X25519</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Elliptic-curve Diffie-Hellman for secure key agreement between users.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("identityKeys.x25519")}</p>
               </CardContent>
             </Card>
           </div>
         </Section>
 
-        {/* Key Exchange (X3DH) */}
+        {/* 4. Key Exchange (X3DH) */}
         <Section
           icon={ArrowLeftRight}
           title={t("keyExchange.title")}
@@ -168,7 +221,7 @@ export default async function E2eEncryptionPage({
           </div>
         </Section>
 
-        {/* Double Ratchet */}
+        {/* 5. Double Ratchet */}
         <Section
           icon={RefreshCw}
           title={t("doubleRatchet.title")}
@@ -179,7 +232,7 @@ export default async function E2eEncryptionPage({
           </div>
         </Section>
 
-        {/* Message Encryption */}
+        {/* 6. Message Encryption */}
         <Section
           icon={Lock}
           title={t("messageEncryption.title")}
@@ -188,9 +241,9 @@ export default async function E2eEncryptionPage({
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {(
               [
-                { label: "AES-256-GCM", detail: "Authenticated encryption" },
-                { label: "Unique IV", detail: "Per-message randomness" },
-                { label: "AAD", detail: "Tamper-proof headers" },
+                { label: "AES-256-GCM", detail: t("messageEncryption.aes") },
+                { label: t("messageEncryption.ivLabel"), detail: t("messageEncryption.ivDetail") },
+                { label: "AAD", detail: t("messageEncryption.aad") },
               ] as const
             ).map((item) => (
               <Card key={item.label} className="border-0 bg-muted/50 shadow-none">
@@ -203,7 +256,7 @@ export default async function E2eEncryptionPage({
           </div>
         </Section>
 
-        {/* Safety Numbers */}
+        {/* 7. Safety Numbers */}
         <Section
           icon={Check}
           title={t("safetyNumbers.title")}
@@ -220,14 +273,14 @@ export default async function E2eEncryptionPage({
                   92047 31856
                 </p>
                 <p className="mt-3 text-center text-xs text-muted-foreground">
-                  60-digit safety number (example)
+                  {t("safetyNumbers.example")}
                 </p>
               </CardContent>
             </Card>
           </div>
         </Section>
 
-        {/* Server Comparison */}
+        {/* 8. Server Comparison */}
         <div className="mt-16">
           <h2 className="text-2xl font-bold tracking-tight">{t("serverComparison.title")}</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -235,24 +288,24 @@ export default async function E2eEncryptionPage({
               <CardContent className="pt-6">
                 <div className="mb-3 flex items-center gap-2">
                   <Eye className="size-5 text-muted-foreground" />
-                  <h3 className="font-semibold">Stored on server</h3>
+                  <h3 className="font-semibold">{t("serverComparison.storedTitle")}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">{t("serverComparison.encrypted")}</p>
+                <p className="text-sm text-muted-foreground">{t("serverComparison.stored")}</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-primary/5 shadow-none">
               <CardContent className="pt-6">
                 <div className="mb-3 flex items-center gap-2">
                   <EyeOff className="size-5 text-primary" />
-                  <h3 className="font-semibold">Never accessible</h3>
+                  <h3 className="font-semibold">{t("serverComparison.neverTitle")}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">{t("serverComparison.plaintext")}</p>
+                <p className="text-sm text-muted-foreground">{t("serverComparison.never")}</p>
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* FAQ */}
+        {/* 9. FAQ */}
         <div className="mt-16">
           <h2 className="text-2xl font-bold tracking-tight">{t("faq.title")}</h2>
           <div className="mt-6 space-y-4">
@@ -267,7 +320,7 @@ export default async function E2eEncryptionPage({
           </div>
         </div>
 
-        {/* Open Source CTA */}
+        {/* 10. Open Source CTA */}
         <div className="mt-16 rounded-2xl bg-primary/5 p-8 text-center sm:p-12">
           <Code className="mx-auto size-8 text-primary" />
           <h2 className="mt-4 text-2xl font-bold tracking-tight">{t("openSource.title")}</h2>

@@ -1,5 +1,6 @@
 "use client";
 
+import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from "@openhospi/crypto";
 import { PIN_LENGTH } from "@openhospi/shared/constants";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { KeyRound, Loader2 } from "lucide-react";
@@ -10,8 +11,10 @@ import { toast } from "sonner";
 import {
   deleteKeyBackup,
   fetchKeyBackup,
+  uploadIdentityKey,
   uploadKeyBackup,
-  uploadPublicKey,
+  uploadOneTimePreKeys,
+  uploadSignedPreKey,
 } from "@/app/[locale]/(app)/chat/key-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -29,7 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from "@/lib/crypto/key-management";
+import { cryptoStore } from "@/lib/crypto";
 
 type Props = {
   userId: string;
@@ -71,7 +74,11 @@ export function KeyRecoveryDialog({ userId }: Props) {
 
     startTransition(async () => {
       try {
-        await recoverKeysWithPIN(userId, pin, backup);
+        await recoverKeysWithPIN(cryptoStore, userId, pin, backup, {
+          uploadIdentityKey,
+          uploadSignedPreKey,
+          uploadOneTimePreKeys,
+        });
         toast.success(t("recovery_success"));
         window.location.reload();
       } catch {
@@ -83,7 +90,9 @@ export function KeyRecoveryDialog({ userId }: Props) {
   function handleStartFresh() {
     startTransition(async () => {
       try {
-        await resetKeys(userId, uploadPublicKey, deleteKeyBackup);
+        await resetKeys(cryptoStore, userId, {
+          deleteBackup: deleteKeyBackup,
+        });
         setShowSetup(true);
         setBackup(null);
       } catch {
@@ -106,7 +115,12 @@ export function KeyRecoveryDialog({ userId }: Props) {
 
     startTransition(async () => {
       try {
-        await setupKeysWithPIN(userId, setupPin, uploadPublicKey, uploadKeyBackup);
+        await setupKeysWithPIN(cryptoStore, userId, setupPin, {
+          uploadIdentityKey,
+          uploadSignedPreKey,
+          uploadOneTimePreKeys,
+          uploadBackup: uploadKeyBackup,
+        });
         toast.success(t("setup_success"));
         window.location.reload();
       } catch {

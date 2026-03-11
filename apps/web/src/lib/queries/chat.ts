@@ -2,9 +2,11 @@ import { db, withRLS } from "@openhospi/database";
 import {
   conversationMembers,
   conversations,
+  messageCiphertexts,
   messageReceipts,
   messages,
   profiles,
+  roomPhotos,
   rooms,
 } from "@openhospi/database/schema";
 import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
@@ -15,7 +17,6 @@ export async function getOrCreateHospiConversation(
   seekerUserId: string,
   memberUserIds: string[],
 ): Promise<string> {
-  // Check if conversation already exists (uses db directly — called from server actions)
   const [existing] = await db
     .select({ id: conversations.id })
     .from(conversations)
@@ -23,13 +24,11 @@ export async function getOrCreateHospiConversation(
 
   if (existing) return existing.id;
 
-  // Create new conversation
   const [conv] = await db
     .insert(conversations)
     .values({ roomId, seekerUserId, type: "direct" })
     .returning({ id: conversations.id });
 
-  // Add all members
   const members = memberUserIds.map((userId) => ({
     conversationId: conv.id,
     userId,
@@ -46,7 +45,6 @@ export type ConversationListItem = {
   id: string;
   type: string;
   roomTitle: string | null;
-  lastMessage: string | null;
   lastMessageAt: Date | null;
   unreadCount: number;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
@@ -54,16 +52,11 @@ export type ConversationListItem = {
 
 export async function getConversations(userId: string): Promise<ConversationListItem[]> {
   return withRLS(userId, async (tx) => {
-    // Single query: get conversations with room title, last message, and unread count
-    // Excludes conversations where a block exists with any other member
     const convos = await tx
       .select({
         id: conversations.id,
         type: conversations.type,
         roomTitle: rooms.title,
-        lastMessage: sql<
-          string | null
-        >`(select m.ciphertext from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1)`,
         lastMessageAt: sql<Date | null>`(select m.created_at from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1)`,
         unreadCount: sql<number>`(
           select count(*)::int from messages m
@@ -77,7 +70,6 @@ export async function getConversations(userId: string): Promise<ConversationList
       .where(
         and(
           eq(conversationMembers.userId, userId),
-          // Exclude conversations where a block exists between the user and any other member
           sql`not exists(
             select 1 from conversation_members cm2
             inner join blocks b on
@@ -92,7 +84,6 @@ export async function getConversations(userId: string): Promise<ConversationList
         sql`(select m.created_at from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1) desc nulls last`,
       );
 
-    // Batch-fetch members for all conversations
     const convIds = convos.map((c) => c.id);
     const allMembers =
       convIds.length > 0
@@ -128,7 +119,6 @@ export async function getConversations(userId: string): Promise<ConversationList
       id: c.id,
       type: c.type,
       roomTitle: c.roomTitle,
-      lastMessage: c.lastMessage,
       lastMessageAt: c.lastMessageAt,
       unreadCount: c.unreadCount ?? 0,
       members: membersByConv.get(c.id) ?? [],
@@ -141,13 +131,21 @@ export type MessageItem = {
   senderId: string;
   senderFirstName: string;
   senderAvatarUrl: string | null;
-  ciphertext: string;
-  iv: string;
-  encryptedKeys: unknown;
+  ciphertext: string | null;
+  iv: string | null;
+  ratchetPublicKey: string | null;
+  messageNumber: number | null;
+  previousChainLength: number | null;
   messageType: string;
   createdAt: Date;
 };
 
+/**
+ * Get messages for a conversation. For messages sent by others,
+ * joins with message_ciphertexts to get the user's own ciphertext.
+ * For messages sent by the current user, no ciphertext is returned
+ * (they see their own messages via optimistic UI).
+ */
 export async function getMessages(
   userId: string,
   conversationId: string,
@@ -165,20 +163,32 @@ export async function getMessages(
         senderId: messages.senderId,
         senderFirstName: profiles.firstName,
         senderAvatarUrl: profiles.avatarUrl,
-        ciphertext: messages.ciphertext,
-        iv: messages.iv,
-        encryptedKeys: messages.encryptedKeys,
+        ciphertext: messageCiphertexts.ciphertext,
+        iv: messageCiphertexts.iv,
+        ratchetPublicKey: messageCiphertexts.ratchetPublicKey,
+        messageNumber: messageCiphertexts.messageNumber,
+        previousChainLength: messageCiphertexts.previousChainLength,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })
       .from(messages)
       .innerJoin(profiles, eq(profiles.id, messages.senderId))
+      .leftJoin(
+        messageCiphertexts,
+        and(
+          eq(messageCiphertexts.messageId, messages.id),
+          eq(messageCiphertexts.recipientUserId, userId),
+        ),
+      )
       .where(and(...conditions))
       .orderBy(desc(messages.createdAt))
       .limit(MESSAGES_PER_PAGE);
 
-    // innerJoin guarantees senderId is non-null
-    return rows as MessageItem[];
+    return rows.map((row) => ({
+      ...row,
+      senderId: row.senderId!,
+      messageType: row.messageType as string,
+    }));
   });
 }
 
@@ -219,5 +229,101 @@ export async function getUnreadChatCount(userId: string): Promise<number> {
       .where(isNull(messageReceipts.readAt));
 
     return result?.count ?? 0;
+  });
+}
+
+export type ConversationDetail = {
+  id: string;
+  roomId: string | null;
+  seekerUserId: string | null;
+  type: string;
+  room: {
+    id: string;
+    title: string;
+    city: string;
+    rentPrice: string;
+    coverPhotoUrl: string | null;
+  } | null;
+  members: {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string | null;
+    role: "seeker" | "house_member";
+  }[];
+};
+
+export async function getConversationDetail(
+  userId: string,
+  conversationId: string,
+): Promise<ConversationDetail | null> {
+  return withRLS(userId, async (tx) => {
+    const [conv] = await tx
+      .select({
+        id: conversations.id,
+        roomId: conversations.roomId,
+        seekerUserId: conversations.seekerUserId,
+        type: conversations.type,
+      })
+      .from(conversations)
+      .where(eq(conversations.id, conversationId));
+
+    if (!conv) return null;
+
+    // Fetch room info if roomId exists
+    let roomInfo: ConversationDetail["room"] = null;
+    if (conv.roomId) {
+      const [room] = await tx
+        .select({
+          id: rooms.id,
+          title: rooms.title,
+          city: rooms.city,
+          rentPrice: rooms.rentPrice,
+        })
+        .from(rooms)
+        .where(eq(rooms.id, conv.roomId));
+
+      if (room) {
+        // Get cover photo (slot 0)
+        const [coverPhoto] = await tx
+          .select({ url: roomPhotos.url })
+          .from(roomPhotos)
+          .where(and(eq(roomPhotos.roomId, room.id), eq(roomPhotos.slot, 0)));
+
+        roomInfo = {
+          id: room.id,
+          title: room.title,
+          city: room.city,
+          rentPrice: room.rentPrice,
+          coverPhotoUrl: coverPhoto?.url ?? null,
+        };
+      }
+    }
+
+    // Fetch members with roles
+    const memberRows = await tx
+      .select({
+        userId: conversationMembers.userId,
+        firstName: profiles.firstName,
+        lastName: profiles.lastName,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(conversationMembers)
+      .innerJoin(profiles, eq(profiles.id, conversationMembers.userId))
+      .where(eq(conversationMembers.conversationId, conversationId));
+
+    const members: ConversationDetail["members"] = memberRows.map((m) => ({
+      ...m,
+      role: m.userId === conv.seekerUserId ? "seeker" : "house_member",
+    }));
+
+    return {
+      id: conv.id,
+      roomId: conv.roomId,
+      seekerUserId: conv.seekerUserId,
+      type: conv.type,
+      room: roomInfo,
+      members,
+    };
   });
 }

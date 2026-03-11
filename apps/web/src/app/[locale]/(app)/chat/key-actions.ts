@@ -2,17 +2,58 @@
 
 import { requireSession } from "@/lib/auth/server";
 import {
+  getIdentityKeysByUserIds,
   getKeyBackup,
-  getPublicKeysByUserIds,
+  getOneTimePreKeyCount,
+  getPreKeyBundle,
+  insertOneTimePreKeys,
+  insertSignedPreKey,
   removeKeyBackup,
+  upsertIdentityKey,
   upsertKeyBackup,
-  upsertPublicKey,
 } from "@/lib/services/key-mutations";
 
-export async function uploadPublicKey(publicKeyJwk: JsonWebKey) {
+// ── Identity Keys ──
+
+export async function uploadIdentityKey(identityPublicKey: string, signingPublicKey: string) {
   const session = await requireSession();
-  await upsertPublicKey(session.user.id, publicKeyJwk);
+  await upsertIdentityKey(session.user.id, identityPublicKey, signingPublicKey);
 }
+
+export async function fetchIdentityKeys(
+  userIds: string[],
+): Promise<{ userId: string; identityPublicKey: string; signingPublicKey: string }[]> {
+  const session = await requireSession();
+  return getIdentityKeysByUserIds(session.user.id, userIds);
+}
+
+// ── Pre-Keys ──
+
+export async function uploadSignedPreKey(data: {
+  keyId: number;
+  publicKey: string;
+  signature: string;
+}) {
+  const session = await requireSession();
+  await insertSignedPreKey(session.user.id, data);
+}
+
+export async function uploadOneTimePreKeys(keys: { keyId: number; publicKey: string }[]) {
+  const session = await requireSession();
+  await insertOneTimePreKeys(session.user.id, keys);
+}
+
+export async function fetchPreKeyBundle(userId: string) {
+  await requireSession();
+  return getPreKeyBundle(userId);
+}
+
+export async function getPreKeyCount(): Promise<number> {
+  const session = await requireSession();
+  return getOneTimePreKeyCount(session.user.id);
+}
+
+// ── Backup ──
 
 export async function uploadKeyBackup(data: {
   encryptedPrivateKey: string;
@@ -36,11 +77,4 @@ export async function fetchKeyBackup(): Promise<{
 export async function deleteKeyBackup() {
   const session = await requireSession();
   await removeKeyBackup(session.user.id);
-}
-
-export async function fetchPublicKeys(
-  userIds: string[],
-): Promise<{ userId: string; publicKeyJwk: JsonWebKey }[]> {
-  const session = await requireSession();
-  return getPublicKeysByUserIds(session.user.id, userIds);
 }

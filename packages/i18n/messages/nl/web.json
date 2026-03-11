@@ -64,11 +64,16 @@
       "title": "Alternatieven — Vergelijk Studentenhuisvestingsplatforms",
       "description": "Eerlijke vergelijking van Nederlandse studentenhuisvestingsplatforms. Bekijk hoe OpenHospi zich verhoudt tot Hospi.nl, myHospi, Dingdong, Kamernet en Facebook-groepen."
     },
+    "e2eEncryption": {
+      "title": "E2E-encryptie — Hoe We Je Gesprekken Beschermen",
+      "description": "Ontdek hoe OpenHospi paarsgewijze end-to-end encryptie gebruikt om elk gesprek tussen zoekers en huisgenoten te beschermen. Geïnspireerd door het Signal Protocol, open source en volledig transparant."
+    },
     "breadcrumbs": {
       "home": "Home",
       "rooms": "Studentenkamers",
       "faq": "FAQ",
-      "alternatives": "Alternatieven"
+      "alternatives": "Alternatieven",
+      "e2eEncryption": "E2E-encryptie"
     },
     "faq": {
       "costs": [
@@ -97,6 +102,24 @@
         {
           "question": "Wat gebeurt er als ik een gebruiker meld?",
           "answer": "Meldingen worden beoordeeld door ons team. We handelen snel, inclusief het blokkeren van gebruikers die onze voorwaarden schenden."
+        }
+      ],
+      "e2eEncryption": [
+        {
+          "question": "Kan OpenHospi mijn berichten lezen?",
+          "answer": "Nee. Berichten worden op je apparaat versleuteld voordat ze worden verzonden. Wij hebben nooit toegang tot je ontsleutelingssleutels en kunnen je berichten dus niet lezen."
+        },
+        {
+          "question": "Wat gebeurt er als ik mijn apparaat verlies?",
+          "answer": "Je kunt je identiteitssleutels herstellen met je PIN-back-up. Zonder de PIN kunnen oude berichten niet worden ontsleuteld — dit is een beveiligingsfunctie, geen bug."
+        },
+        {
+          "question": "Welk protocol gebruikt OpenHospi?",
+          "answer": "We gebruiken een architectuur geïnspireerd door het Signal Protocol met X3DH-sleuteluitwisseling en Double Ratchet voor forward secrecy per bericht."
+        },
+        {
+          "question": "Kan ik iemands identiteit verifiëren?",
+          "answer": "Ja. Je kunt veiligheidsnummers vergelijken in de chatinstellingen. Als ze overeenkomen, heeft niemand het gesprek onderschept."
         }
       ],
       "howItWorks": [
@@ -145,7 +168,8 @@
       "processingRegister": "Verwerkingsregister",
       "legalBasis": "Rechtsgronden",
       "dataProcessors": "Verwerkers",
-      "dpia": "DPIA"
+      "dpia": "DPIA",
+      "e2eEncryption": "E2E-encryptie"
     },
     "tagline": "Gratis, open-source studentenhuisvesting voor Nederland.",
     "openSource": "Open source",
@@ -335,7 +359,7 @@
       },
       {
         "title": "End-to-end versleutelde chat",
-        "description": "Berichten zijn versleuteld tussen verzender en ontvanger. Wij kunnen je gesprekken niet lezen."
+        "description": "Alle berichten zijn end-to-end versleuteld — in zowel privé- als groepsgesprekken. Wij kunnen je berichten niet lezen."
       },
       {
         "title": "Geen trackers",
@@ -723,7 +747,7 @@
         "items": [
           {
             "question": "Zijn mijn berichten versleuteld?",
-            "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld (E2EE). Zelfs OpenHospi kan je gesprekken niet lezen — alleen jij en de persoon met wie je chat."
+            "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld (E2EE), inclusief groepsgesprekken. Zelfs OpenHospi kan je berichten niet lezen — alleen jij en de andere leden van je gesprek."
           },
           {
             "question": "Gebruikt OpenHospi trackers of verkoopt het mijn data?",
@@ -757,6 +781,72 @@
         ]
       }
     ]
+  },
+  "e2eEncryption": {
+    "title": "Hoe End-to-End Encryptie Werkt",
+    "subtitle": "Volledige transparantie over hoe OpenHospi elk gesprek tussen zoekers en huisgenoten beschermt.",
+    "overview": {
+      "title": "Wat is End-to-End Encryptie?",
+      "description": "Op OpenHospi is elk gesprek tussen een kamerzoeker en de huisgenoten. Alle berichten zijn end-to-end versleuteld (E2EE): ze worden op je apparaat versleuteld voordat ze worden verzonden en kunnen alleen worden ontsleuteld door de andere leden van je gesprek. Zelfs OpenHospi kan ze niet lezen."
+    },
+    "pairwiseEncryption": {
+      "title": "Paarsgewijze Encryptie",
+      "description": "OpenHospi gebruikt paarsgewijze encryptie — dezelfde aanpak als Signal en WhatsApp. Wanneer je een bericht stuurt, versleutelt je apparaat het apart voor elk lid in het gesprek met hun individuele encryptiesessie. De server slaat één versleutelde kopie per ontvanger op en kan het bericht nooit lezen. Elk lid kan alleen de kopie ontsleutelen die specifiek voor hen is versleuteld.",
+      "perRecipient": {
+        "label": "Per-ontvanger encryptie",
+        "detail": "Elk bericht wordt apart versleuteld voor elk lid"
+      },
+      "independentSessions": {
+        "label": "Onafhankelijke sessies",
+        "detail": "Elk paar leden heeft een eigen encryptiesessie"
+      },
+      "noSharedKey": {
+        "label": "Geen gedeelde sleutel",
+        "detail": "Het compromitteren van één sessie heeft geen invloed op andere"
+      }
+    },
+    "identityKeys": {
+      "title": "Identiteitssleutels",
+      "description": "Elke gebruiker krijgt een unieke cryptografische identiteit op basis van Ed25519- en X25519-sleutels. Deze sleutels worden op je apparaat gegenereerd en verlaten het nooit. Je publieke identiteitssleutel wordt gedeeld met andere gespreksleden zodat zij kunnen verifiëren met wie ze praten.",
+      "ed25519": "Digitale handtekeningen voor identiteitsverificatie en sleutelauthenticatie.",
+      "x25519": "Elliptische-curve Diffie-Hellman voor veilige sleutelovereenkomst tussen leden."
+    },
+    "keyExchange": {
+      "title": "Sleuteluitwisseling (X3DH)",
+      "description": "Wanneer een gesprek start, stelt het Extended Triple Diffie-Hellman (X3DH) protocol een gedeeld geheim vast tussen elk paar leden — zelfs als sommigen offline zijn. Bij een gesprek met drie leden vinden drie aparte X3DH-uitwisselingen plaats (één per paar). Vooraf geüploade sleutels op de server maken dit mogelijk zonder ooit privésleutels prijs te geven."
+    },
+    "doubleRatchet": {
+      "title": "Double Ratchet",
+      "description": "Na X3DH heeft elk paar leden een eigen Double Ratchet-sessie. Elk bericht gebruikt een unieke encryptiesleutel die direct na gebruik wordt weggegooid. Sleutels roteren met elk bericht en bieden forward secrecy: zelfs als een sleutel wordt gecompromitteerd, blijven eerdere berichten veilig."
+    },
+    "messageEncryption": {
+      "title": "Berichtversleuteling",
+      "description": "Elke kopie van een bericht wordt versleuteld met AES-256-GCM, een industriestandaard voor geauthenticeerde encryptie. Per ontvanger, per bericht worden een unieke sleutel en initialisatievector (IV) gegenereerd. De berichtheader wordt opgenomen als aanvullende geauthenticeerde data (AAD) om manipulatie te voorkomen.",
+      "aes": "Geauthenticeerde encryptie",
+      "ivLabel": "Unieke IV",
+      "ivDetail": "Per-ontvanger willekeurigheid",
+      "aad": "Manipulatiebestendige headers"
+    },
+    "safetyNumbers": {
+      "title": "Veiligheidsnummers",
+      "description": "Je kunt elk lid individueel verifiëren door veiligheidsnummers te vergelijken in het gespreksinfo-scherm. Deze 60-cijferige codes zijn afgeleid van de identiteitssleutels van beide gebruikers en zijn uniek per paar — zodat je kunt bevestigen dat niemand zich voordoet als een huisgenoot of zoeker.",
+      "example": "60-cijferig veiligheidsnummer (voorbeeld)"
+    },
+    "serverComparison": {
+      "title": "Wat de Server Ziet",
+      "storedTitle": "Opgeslagen op server",
+      "stored": "Versleutelde ciphertexts (één per ontvanger, per bericht), berichtmetadata (tijdstempels, gespreks-ID's) en publieke sleutels. Niets hiervan onthult berichtinhoud.",
+      "neverTitle": "Nooit toegankelijk",
+      "never": "Je daadwerkelijke berichten, bestanden of enige platte tekst. Ontsleutelingssleutels raken nooit onze servers. De server geeft alleen versleutelde data door die hij niet kan lezen."
+    },
+    "faq": {
+      "title": "Veelgestelde Vragen"
+    },
+    "openSource": {
+      "title": "Open Source & Controleerbaar",
+      "description": "Alle encryptiecode is open source. Je kunt onze cryptografische implementaties bekijken, controleren of eraan bijdragen op GitHub.",
+      "cta": "Bekijk op GitHub"
+    }
   },
   "alternatives": {
     "title": "Alternatieven & Vergelijking",

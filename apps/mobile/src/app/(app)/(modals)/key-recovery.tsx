@@ -10,12 +10,16 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { useSession } from '@/lib/auth-client';
-import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from '@/lib/crypto/key-management';
+import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from '@openhospi/crypto';
+
+import { cryptoStore } from '@/lib/crypto/store';
 import {
   deleteBackupApi,
   fetchBackupApi,
   uploadBackupApi,
-  uploadPublicKeyApi,
+  uploadIdentityKeyApi,
+  uploadSignedPreKeyApi,
+  uploadOneTimePreKeysApi,
 } from '@/services/encryption';
 import { queryKeys } from '@/services/keys';
 
@@ -54,7 +58,11 @@ export default function KeyRecoveryScreen() {
 
     setLoading(true);
     try {
-      await recoverKeysWithPIN(userId, value, backup);
+      await recoverKeysWithPIN(cryptoStore, userId, value, backup, {
+        uploadIdentityKey: uploadIdentityKeyApi,
+        uploadSignedPreKey: uploadSignedPreKeyApi,
+        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
+      });
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('recovery_success'));
       router.back();
@@ -77,7 +85,7 @@ export default function KeyRecoveryScreen() {
         onPress: async () => {
           setLoading(true);
           try {
-            await resetKeys(userId, uploadPublicKeyApi, deleteBackupApi);
+            await resetKeys(cryptoStore, userId, { deleteBackup: deleteBackupApi });
             setMode('setup');
             setPin('');
             setConfirmPin('');
@@ -108,7 +116,12 @@ export default function KeyRecoveryScreen() {
 
     setLoading(true);
     try {
-      await setupKeysWithPIN(userId, value, uploadPublicKeyApi, uploadBackupApi);
+      await setupKeysWithPIN(cryptoStore, userId, value, {
+        uploadIdentityKey: uploadIdentityKeyApi,
+        uploadSignedPreKey: uploadSignedPreKeyApi,
+        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
+        uploadBackup: uploadBackupApi,
+      });
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('setup_success'));
       router.back();

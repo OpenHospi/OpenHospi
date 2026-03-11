@@ -1,13 +1,14 @@
 {
   "name": "openhospi",
   "private": true,
-  "packageManager": "pnpm@10.31.0",
+  "packageManager": "pnpm@10.32.1",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=18.18.0",
+    "node": ">=24.0.0",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
+    "setup": "bash scripts/setup.sh",
     "dev": "pnpm --filter @openhospi/web dev",
     "dev:mobile": "pnpm --filter @openhospi/mobile start",
     "dev:mobile:prebuild": "pnpm --filter @openhospi/mobile prebuild",
@@ -60,7 +61,7 @@
       "@types/react-dom": "^19.2.3",
       "drizzle-orm": "1.0.0-beta.15-859cf75",
       "rollup": ">=4.59.0",
-      "hono": ">=4.12.4",
+      "hono": ">=4.12.7",
       "@hono/node-server": ">=1.19.10",
       "minimatch@3": "3.1.4",
       "minimatch@9": "9.0.7",
@@ -69,7 +70,8 @@
       "esbuild": "0.25.10",
       "lodash": ">=4.17.23",
       "express-rate-limit": ">=8.2.2",
-      "lightningcss": "1.30.1"
+      "lightningcss": "1.30.1",
+      "@react-email/body": "^0.3.0"
     },
     "ignoredBuiltDependencies": [
       "@prisma/engines",

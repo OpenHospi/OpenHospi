@@ -1,20 +1,22 @@
 "use server";
 
+import type { CiphertextPayload } from "@openhospi/crypto";
 import { db, withRLS } from "@openhospi/database";
-import { blocks, conversationMembers, messageReceipts, messages } from "@openhospi/database/schema";
+import {
+  blocks,
+  conversationMembers,
+  messageCiphertexts,
+  messageReceipts,
+  messages,
+} from "@openhospi/database/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 
-export async function sendMessage(
-  conversationId: string,
-  data: {
-    ciphertext: string;
-    iv: string;
-    encryptedKeys: { userId: string; wrappedKey: string }[];
-  },
-) {
+export type { CiphertextPayload } from "@openhospi/crypto";
+
+export async function sendMessage(conversationId: string, payloads: CiphertextPayload[]) {
   const session = await requireSession();
   const userId = session.user.id;
 
@@ -46,19 +48,32 @@ export async function sendMessage(
     }
   }
 
+  // Insert message metadata
   const [message] = await withRLS(userId, async (tx) => {
     return tx
       .insert(messages)
       .values({
         conversationId,
         senderId: userId,
-        ciphertext: data.ciphertext,
-        iv: data.iv,
-        encryptedKeys: data.encryptedKeys,
         messageType: "text",
       })
       .returning({ id: messages.id });
   });
+
+  // Insert ciphertexts for each recipient
+  if (payloads.length > 0) {
+    await db.insert(messageCiphertexts).values(
+      payloads.map((p) => ({
+        messageId: message.id,
+        recipientUserId: p.recipientUserId,
+        ciphertext: p.ciphertext,
+        iv: p.iv,
+        ratchetPublicKey: p.ratchetPublicKey,
+        messageNumber: p.messageNumber,
+        previousChainLength: p.previousChainLength,
+      })),
+    );
+  }
 
   // Create receipts for all members except sender
   const receipts = members
@@ -81,7 +96,6 @@ export async function markConversationRead(conversationId: string) {
   const userId = session.user.id;
 
   await withRLS(userId, async (tx) => {
-    // Get all unread message IDs in this conversation for this user
     const unreadReceipts = await tx
       .select({ messageId: messageReceipts.messageId })
       .from(messageReceipts)
@@ -106,18 +120,29 @@ export async function markConversationRead(conversationId: string) {
   });
 }
 
+export async function getMessageMetadata(
+  messageId: string,
+): Promise<{ senderId: string; createdAt: Date } | null> {
+  await requireSession();
+
+  const [msg] = await db
+    .select({ senderId: messages.senderId, createdAt: messages.createdAt })
+    .from(messages)
+    .where(eq(messages.id, messageId));
+
+  if (!msg || !msg.senderId) return null;
+  return { senderId: msg.senderId, createdAt: msg.createdAt };
+}
+
 export async function openChat(roomId: string, seekerUserId: string, memberUserIds: string[]) {
   const session = await requireSession();
   const userId = session.user.id;
 
-  // Verify the caller is either the seeker or a member of the room's house
   if (userId !== seekerUserId && !memberUserIds.includes(userId)) {
     throw new Error("Not authorized to open this chat");
   }
 
-  // Ensure the current user is in the member list
   const allMembers = [...new Set([...memberUserIds, seekerUserId])];
-
   const conversationId = await getOrCreateHospiConversation(roomId, seekerUserId, allMembers);
 
   return { conversationId };

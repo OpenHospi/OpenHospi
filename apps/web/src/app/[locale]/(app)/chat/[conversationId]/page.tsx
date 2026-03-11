@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
-import { getConversationMembers, getMessages } from "@/lib/queries/chat";
+import { getConversationDetail, getConversationMembers, getMessages } from "@/lib/queries/chat";
 
 import { getBlockedUsers } from "../block-actions";
 
@@ -28,10 +28,11 @@ export default async function ConversationPage({ params }: Props) {
   setRequestLocale(locale);
   const { user } = await requireSession();
 
-  const [initialMessages, members, blockedUserIds] = await Promise.all([
+  const [initialMessages, members, blockedUserIds, conversationDetail] = await Promise.all([
     getMessages(user.id, conversationId),
     getConversationMembers(user.id, conversationId),
     getBlockedUsers(),
+    getConversationDetail(user.id, conversationId),
   ]);
 
   const chatLabel =
@@ -49,6 +50,7 @@ export default async function ConversationPage({ params }: Props) {
         initialMessages={initialMessages}
         members={members}
         blockedUserIds={blockedUserIds}
+        conversationDetail={conversationDetail}
       />
     </>
   );

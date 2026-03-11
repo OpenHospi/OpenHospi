@@ -64,11 +64,16 @@
       "title": "Alternatives — Compare Student Housing Platforms",
       "description": "Honest comparison of Dutch student housing platforms. See how OpenHospi stacks up against Hospi.nl, myHospi, Dingdong, Kamernet, and Facebook groups."
     },
+    "e2eEncryption": {
+      "title": "E2E Encryption — How We Protect Your Conversations",
+      "description": "Learn how OpenHospi uses pairwise end-to-end encryption to protect every conversation between seekers and house members. Signal Protocol-inspired, open source, and fully transparent."
+    },
     "breadcrumbs": {
       "home": "Home",
       "rooms": "Student Rooms",
       "faq": "FAQ",
-      "alternatives": "Alternatives"
+      "alternatives": "Alternatives",
+      "e2eEncryption": "E2E Encryption"
     },
     "faq": {
       "costs": [
@@ -97,6 +102,24 @@
         {
           "question": "What happens when I report a user?",
           "answer": "Reports are reviewed by our team. We take action quickly, including blocking users who violate our terms of service."
+        }
+      ],
+      "e2eEncryption": [
+        {
+          "question": "Can OpenHospi read my messages?",
+          "answer": "No. Messages are encrypted on your device before being sent. We never have access to your decryption keys, so we cannot read your messages."
+        },
+        {
+          "question": "What happens if I lose my device?",
+          "answer": "You can recover your identity keys using your PIN backup. Without the PIN, old messages cannot be decrypted — this is a security feature, not a bug."
+        },
+        {
+          "question": "What protocol does OpenHospi use?",
+          "answer": "We use a Signal Protocol-inspired architecture with X3DH key exchange and Double Ratchet for per-message forward secrecy."
+        },
+        {
+          "question": "Can I verify someone's identity?",
+          "answer": "Yes. You can compare safety numbers with each member individually in the conversation info screen. If they match, no one has intercepted that connection."
         }
       ],
       "howItWorks": [
@@ -145,7 +168,8 @@
       "processingRegister": "Processing register",
       "legalBasis": "Legal basis",
       "dataProcessors": "Data processors",
-      "dpia": "DPIA"
+      "dpia": "DPIA",
+      "e2eEncryption": "E2E Encryption"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
@@ -335,7 +359,7 @@
       },
       {
         "title": "End-to-end encrypted chat",
-        "description": "Messages are encrypted between sender and receiver. We cannot read your conversations."
+        "description": "All messages are end-to-end encrypted — in both private and group conversations. We cannot read your messages."
       },
       {
         "title": "No trackers",
@@ -723,7 +747,7 @@
         "items": [
           {
             "question": "Are my messages encrypted?",
-            "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted (E2EE). Not even OpenHospi can read your conversations — only you and the person you're chatting with."
+            "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted (E2EE), including group conversations. Not even OpenHospi can read your messages — only you and the other members of your conversation."
           },
           {
             "question": "Does OpenHospi use trackers or sell my data?",
@@ -757,6 +781,72 @@
         ]
       }
     ]
+  },
+  "e2eEncryption": {
+    "title": "How End-to-End Encryption Works",
+    "subtitle": "Complete transparency about how OpenHospi protects every conversation between seekers and house members.",
+    "overview": {
+      "title": "What is End-to-End Encryption?",
+      "description": "On OpenHospi, every conversation is between a room seeker and the house members. All messages are end-to-end encrypted (E2EE): they are encrypted on your device before being sent and can only be decrypted by the other members of your conversation. Not even OpenHospi can read them."
+    },
+    "pairwiseEncryption": {
+      "title": "Pairwise Encryption",
+      "description": "OpenHospi uses pairwise encryption — the same approach used by Signal and WhatsApp. When you send a message, your device encrypts it separately for each member in the conversation using their individual encryption session. The server stores one encrypted copy per recipient and can never see the actual message. Each member can only decrypt the copy that was encrypted specifically for them.",
+      "perRecipient": {
+        "label": "Per-recipient encryption",
+        "detail": "Each message is encrypted separately for every member"
+      },
+      "independentSessions": {
+        "label": "Independent sessions",
+        "detail": "Every pair of members has its own encryption session"
+      },
+      "noSharedKey": {
+        "label": "No shared key",
+        "detail": "Compromising one session cannot affect others"
+      }
+    },
+    "identityKeys": {
+      "title": "Identity Keys",
+      "description": "Every user gets a unique cryptographic identity based on Ed25519 and X25519 keys. These keys are generated on your device and never leave it. Your public identity key is shared with other conversation members so they can verify who they're talking to.",
+      "ed25519": "Digital signatures for identity verification and key authentication.",
+      "x25519": "Elliptic-curve Diffie-Hellman for secure key agreement between members."
+    },
+    "keyExchange": {
+      "title": "Key Exchange (X3DH)",
+      "description": "When a conversation starts, the Extended Triple Diffie-Hellman (X3DH) protocol establishes a shared secret between each pair of members — even if some are offline. For a conversation with three members, three separate X3DH exchanges take place (one for each pair). Pre-uploaded keys on the server make this possible without ever revealing private keys."
+    },
+    "doubleRatchet": {
+      "title": "Double Ratchet",
+      "description": "After X3DH, every pair of members maintains its own Double Ratchet session. Each message uses a unique encryption key that is immediately discarded after use. Keys rotate with every message, providing forward secrecy: even if a key is compromised, past messages remain safe."
+    },
+    "messageEncryption": {
+      "title": "Message Encryption",
+      "description": "Each copy of a message is encrypted with AES-256-GCM, an industry-standard authenticated encryption algorithm. A unique key and initialization vector (IV) are generated per recipient, per message. The message header is included as additional authenticated data (AAD) to prevent tampering.",
+      "aes": "Authenticated encryption",
+      "ivLabel": "Unique IV",
+      "ivDetail": "Per-recipient randomness",
+      "aad": "Tamper-proof headers"
+    },
+    "safetyNumbers": {
+      "title": "Safety Numbers",
+      "description": "You can verify each member individually by comparing safety numbers in the conversation info screen. These 60-digit codes are derived from both users' identity keys and are unique to each pair — so you can confirm that no one is impersonating a house member or seeker.",
+      "example": "60-digit safety number (example)"
+    },
+    "serverComparison": {
+      "title": "What the Server Sees",
+      "storedTitle": "Stored on server",
+      "stored": "Encrypted ciphertexts (one per recipient, per message), message metadata (timestamps, conversation IDs), and public keys. None of this reveals message content.",
+      "neverTitle": "Never accessible",
+      "never": "Your actual messages, files, or any plaintext content. Decryption keys never touch our servers. The server only relays encrypted data it cannot read."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions"
+    },
+    "openSource": {
+      "title": "Open Source & Auditable",
+      "description": "All encryption code is open source. You can review, audit, or contribute to our cryptographic implementations on GitHub.",
+      "cta": "View on GitHub"
+    }
   },
   "alternatives": {
     "title": "Alternatives & Comparison",

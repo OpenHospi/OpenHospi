@@ -8,7 +8,14 @@ import { houseMembers, houses } from "./schema/houses";
 import { adminAuditLog, notifications, pushTokens } from "./schema/notifications";
 import { profilePhotos, profiles } from "./schema/profiles";
 import { roomPhotos, rooms } from "./schema/rooms";
-import { blocks, privateKeyBackups, publicKeys, reports } from "./schema/security";
+import {
+  blocks,
+  identityKeys,
+  oneTimePreKeys,
+  privateKeyBackups,
+  reports,
+  signedPreKeys,
+} from "./schema/security";
 
 // Auth
 export type User = InferSelectModel<typeof user>;
@@ -54,7 +61,9 @@ export type Message = InferSelectModel<typeof messages>;
 export type MessageReceipt = InferSelectModel<typeof messageReceipts>;
 
 // Security
-export type PublicKey = InferSelectModel<typeof publicKeys>;
+export type IdentityKey = InferSelectModel<typeof identityKeys>;
+export type SignedPreKey = InferSelectModel<typeof signedPreKeys>;
+export type OneTimePreKey = InferSelectModel<typeof oneTimePreKeys>;
 export type PrivateKeyBackup = InferSelectModel<typeof privateKeyBackups>;
 export type Report = InferSelectModel<typeof reports>;
 export type Block = InferSelectModel<typeof blocks>;

@@ -12,11 +12,12 @@ import {
   hospiInvitations,
   houseMembers,
   houses,
+  messageCiphertexts,
   messageReceipts,
   messages,
   privateKeyBackups,
   profiles,
-  publicKeys,
+  identityKeys,
   reports,
   rooms,
   user,
@@ -74,7 +75,7 @@ async function cleanup() {
   for (const id of [USER_A, USER_B, USER_C]) {
     await db.delete(blocks).where(eq(blocks.blockerId, id));
     await db.delete(privateKeyBackups).where(eq(privateKeyBackups.userId, id));
-    await db.delete(publicKeys).where(eq(publicKeys.userId, id));
+    await db.delete(identityKeys).where(eq(identityKeys.userId, id));
   }
   await db.delete(votes).where(eq(votes.id, VOTE_ID));
   await db.delete(conversations).where(eq(conversations.id, CONVERSATION_ID));
@@ -201,9 +202,17 @@ describe("RLS policies (integration)", () => {
       id: MESSAGE_ID,
       conversationId: CONVERSATION_ID,
       senderId: USER_A,
+      messageType: "text",
+    });
+
+    await db.insert(messageCiphertexts).values({
+      messageId: MESSAGE_ID,
+      recipientUserId: USER_B,
       ciphertext: "encrypted-test",
       iv: "iv-test",
-      messageType: "text",
+      ratchetPublicKey: "test-ratchet-key",
+      messageNumber: 0,
+      previousChainLength: 0,
     });
 
     await db.insert(messageReceipts).values({
@@ -222,9 +231,9 @@ describe("RLS policies (integration)", () => {
     });
 
     // Security tables seed
-    await db.insert(publicKeys).values([
-      { userId: USER_A, publicKeyJwk: { kty: "EC", crv: "P-256", x: "test-x-a", y: "test-y-a" } },
-      { userId: USER_B, publicKeyJwk: { kty: "EC", crv: "P-256", x: "test-x-b", y: "test-y-b" } },
+    await db.insert(identityKeys).values([
+      { userId: USER_A, identityPublicKey: "test-identity-a", signingPublicKey: "test-signing-a" },
+      { userId: USER_B, identityPublicKey: "test-identity-b", signingPublicKey: "test-signing-b" },
     ]);
 
     await db.insert(privateKeyBackups).values({
@@ -482,8 +491,7 @@ describe("RLS policies (integration)", () => {
           .values({
             conversationId: CONVERSATION_ID,
             senderId: USER_A,
-            ciphertext: "temp",
-            iv: "temp-iv",
+            messageType: "text",
           })
           .returning(),
       );
@@ -542,49 +550,51 @@ describe("RLS policies (integration)", () => {
   });
 
   // -------------------------------------------------------------------------
-  // Public Keys — any authenticated can read, only own can insert/update
+  // Identity Keys — any authenticated can read, only own can insert/update
   // -------------------------------------------------------------------------
 
-  describe("publicKeys", () => {
-    it("any authenticated user can read all public keys", async () => {
-      const rows = await withRLS(USER_C, (tx) => tx.select().from(publicKeys));
+  describe("identityKeys", () => {
+    it("any authenticated user can read all identity keys", async () => {
+      const rows = await withRLS(USER_C, (tx) => tx.select().from(identityKeys));
       const ids = rows.map((r) => r.userId);
       expect(ids).toContain(USER_A);
       expect(ids).toContain(USER_B);
     });
 
-    it("user can insert own public key", async () => {
+    it("user can insert own identity key", async () => {
       const [row] = await withRLS(USER_C, (tx) =>
         tx
-          .insert(publicKeys)
+          .insert(identityKeys)
           .values({
             userId: USER_C,
-            publicKeyJwk: { kty: "EC", crv: "P-256", x: "test-x-c", y: "test-y-c" },
+            identityPublicKey: "test-identity-c",
+            signingPublicKey: "test-signing-c",
           })
           .returning(),
       );
       expect(row.userId).toBe(USER_C);
       // Cleanup
-      await db.delete(publicKeys).where(eq(publicKeys.userId, USER_C));
+      await db.delete(identityKeys).where(eq(identityKeys.userId, USER_C));
     });
 
-    it("user cannot insert a public key for another user", async () => {
+    it("user cannot insert an identity key for another user", async () => {
       await expect(
         withRLS(USER_B, (tx) =>
-          tx.insert(publicKeys).values({
+          tx.insert(identityKeys).values({
             userId: USER_C,
-            publicKeyJwk: { kty: "EC", crv: "P-256", x: "fake", y: "fake" },
+            identityPublicKey: "fake-identity",
+            signingPublicKey: "fake-signing",
           }),
         ),
       ).rejects.toThrow();
     });
 
-    it("user cannot update another user's public key", async () => {
+    it("user cannot update another user's identity key", async () => {
       const result = await withRLS(USER_B, (tx) =>
         tx
-          .update(publicKeys)
-          .set({ publicKeyJwk: { kty: "EC", crv: "P-256", x: "hacked", y: "hacked" } })
-          .where(eq(publicKeys.userId, USER_A))
+          .update(identityKeys)
+          .set({ identityPublicKey: "hacked" })
+          .where(eq(identityKeys.userId, USER_A))
           .returning(),
       );
       expect(result).toHaveLength(0);
@@ -745,8 +755,7 @@ describe("RLS policies (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_C,
-            ciphertext: "hacked",
-            iv: "hacked-iv",
+            messageType: "text",
           }),
         ),
       ).rejects.toThrow();
@@ -759,8 +768,7 @@ describe("RLS policies (integration)", () => {
           .values({
             conversationId: CONVERSATION_ID,
             senderId: USER_A,
-            ciphertext: "valid-msg",
-            iv: "valid-iv",
+            messageType: "text",
           })
           .returning(),
       );
@@ -775,8 +783,7 @@ describe("RLS policies (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_B,
-            ciphertext: "spoofed",
-            iv: "spoofed-iv",
+            messageType: "text",
           }),
         ),
       ).rejects.toThrow();
@@ -860,8 +867,7 @@ describe("RLS policies (integration)", () => {
         .values({
           conversationId: conv.id,
           senderId: USER_A,
-          ciphertext: "cascade-test",
-          iv: "cascade-iv",
+          messageType: "text",
         })
         .returning();
       await db.insert(messageReceipts).values({

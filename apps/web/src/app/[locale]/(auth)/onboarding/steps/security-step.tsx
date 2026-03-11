@@ -1,5 +1,6 @@
 "use client";
 
+import { setupKeysWithPIN } from "@openhospi/crypto";
 import { PIN_LENGTH } from "@openhospi/shared/constants";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader2, ShieldCheck } from "lucide-react";
@@ -7,12 +8,17 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { uploadKeyBackup, uploadPublicKey } from "@/app/[locale]/(app)/chat/key-actions";
+import {
+  uploadIdentityKey,
+  uploadKeyBackup,
+  uploadOneTimePreKeys,
+  uploadSignedPreKey,
+} from "@/app/[locale]/(app)/chat/key-actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import { setupKeysWithPIN } from "@/lib/crypto/key-management";
+import { cryptoStore } from "@/lib/crypto";
 
 import { finishOnboarding } from "../actions";
 
@@ -44,7 +50,12 @@ export function SecurityStep({ userId, onBack }: Props) {
 
     startTransition(async () => {
       try {
-        await setupKeysWithPIN(userId, pin, uploadPublicKey, uploadKeyBackup);
+        await setupKeysWithPIN(cryptoStore, userId, pin, {
+          uploadIdentityKey,
+          uploadSignedPreKey,
+          uploadOneTimePreKeys,
+          uploadBackup: uploadKeyBackup,
+        });
       } catch {
         toast.error(tSecurity("setup_error"));
         return;

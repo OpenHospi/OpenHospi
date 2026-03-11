@@ -32,11 +32,12 @@ import {
   hospiInvitations,
   houseMembers,
   houses,
+  messageCiphertexts,
   messageReceipts,
   messages,
   profiles,
   profilePhotos,
-  publicKeys,
+  identityKeys,
   reports,
   reviews,
   roomPhotos,
@@ -106,7 +107,7 @@ async function cleanup() {
   );
   for (const id of ALL_USERS) {
     await db.delete(blocks).where(eq(blocks.blockerId, id));
-    await db.delete(publicKeys).where(eq(publicKeys.userId, id));
+    await db.delete(identityKeys).where(eq(identityKeys.userId, id));
   }
   await db
     .delete(reviews)
@@ -877,16 +878,28 @@ describe("E2E workflow tests (integration)", () => {
           .values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
-            ciphertext: "e2e-encrypted-payload",
-            iv: "e2e-iv-001",
-            encryptedKeys: [{ recipientId: SEEKER_1, key: "wrapped-key-001" }],
+            messageType: "text",
           })
           .returning(),
       );
 
       try {
-        expect(msg.ciphertext).toBe("e2e-encrypted-payload");
-        expect(msg.encryptedKeys).toEqual([{ recipientId: SEEKER_1, key: "wrapped-key-001" }]);
+        const [ciphertext] = await withRLS(HOSPI_OWNER, (tx) =>
+          tx
+            .insert(messageCiphertexts)
+            .values({
+              messageId: msg.id,
+              recipientUserId: SEEKER_1,
+              ciphertext: "e2e-encrypted-payload",
+              iv: "e2e-iv-001",
+              ratchetPublicKey: "e2e-ratchet-key",
+              messageNumber: 0,
+              previousChainLength: 0,
+            })
+            .returning(),
+        );
+        expect(ciphertext.ciphertext).toBe("e2e-encrypted-payload");
+        expect(ciphertext.ratchetPublicKey).toBe("e2e-ratchet-key");
       } finally {
         await db.delete(messages).where(eq(messages.id, msg.id));
       }
@@ -898,8 +911,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: CONV_1,
           senderId: HOSPI_OWNER,
-          ciphertext: "read-test",
-          iv: "read-iv",
+          messageType: "text",
         })
         .returning();
 
@@ -927,8 +939,7 @@ describe("E2E workflow tests (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
-            ciphertext: "spoofed",
-            iv: "spoofed-iv",
+            messageType: "text",
           }),
         ),
       ).rejects.toThrow();
@@ -940,8 +951,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: CONV_1,
           senderId: HOSPI_OWNER,
-          ciphertext: "receipt-test",
-          iv: "receipt-iv",
+          messageType: "text",
         })
         .returning();
 
@@ -1023,8 +1033,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: conv.id,
           senderId: HOSPI_OWNER,
-          ciphertext: "cascade",
-          iv: "cascade-iv",
+          messageType: "text",
         })
         .returning();
       await db.insert(messageReceipts).values({
@@ -1187,33 +1196,35 @@ describe("E2E workflow tests (integration)", () => {
       }
     });
 
-    it("public key: insert own, read all, cannot insert for another", async () => {
+    it("identity key: insert own, read all, cannot insert for another", async () => {
       await withRLS(SEEKER_2, (tx) =>
         tx
-          .insert(publicKeys)
+          .insert(identityKeys)
           .values({
             userId: SEEKER_2,
-            publicKeyJwk: { kty: "EC", crv: "P-256", x: "e2e-x", y: "e2e-y" },
+            identityPublicKey: "e2e-identity-key",
+            signingPublicKey: "e2e-signing-key",
           })
           .returning(),
       );
 
       try {
         // Any authenticated user can read
-        const rows = await withRLS(OUTSIDER, (tx) => tx.select().from(publicKeys));
+        const rows = await withRLS(OUTSIDER, (tx) => tx.select().from(identityKeys));
         expect(rows.map((r) => r.userId)).toContain(SEEKER_2);
 
         // Cannot insert for another user
         await expect(
           withRLS(SEEKER_1, (tx) =>
-            tx.insert(publicKeys).values({
+            tx.insert(identityKeys).values({
               userId: OUTSIDER,
-              publicKeyJwk: { kty: "EC", crv: "P-256", x: "fake", y: "fake" },
+              identityPublicKey: "fake-identity",
+              signingPublicKey: "fake-signing",
             }),
           ),
         ).rejects.toThrow();
       } finally {
-        await db.delete(publicKeys).where(eq(publicKeys.userId, SEEKER_2));
+        await db.delete(identityKeys).where(eq(identityKeys.userId, SEEKER_2));
       }
     });
 

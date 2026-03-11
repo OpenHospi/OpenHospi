@@ -16,7 +16,7 @@ import {
   processingRestrictions,
   profilePhotos,
   profiles,
-  publicKeys,
+  identityKeys,
   pushSubscriptions,
   reports,
   reviews,
@@ -77,7 +77,10 @@ export async function exportData() {
       })
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, userId));
-    const [userPublicKey] = await tx.select().from(publicKeys).where(eq(publicKeys.userId, userId));
+    const [userIdentityKey] = await tx
+      .select()
+      .from(identityKeys)
+      .where(eq(identityKeys.userId, userId));
     const userConsents = await tx
       .select()
       .from(activeConsents)
@@ -135,7 +138,7 @@ export async function exportData() {
       votes: userVotes,
       notifications: userNotifications,
       pushSubscriptions: userPushSubscriptions,
-      publicKey: userPublicKey ?? null,
+      identityKey: userIdentityKey ?? null,
       consents: userConsents,
       consentHistory: userConsentHistory,
       dataRequests: userDataRequests,
@@ -190,7 +193,7 @@ export async function exportDataCSV() {
     ["votes.csv", data.votes],
     ["notifications.csv", data.notifications],
     ["push-subscriptions.csv", data.pushSubscriptions],
-    ["public-key.csv", data.publicKey ? [data.publicKey] : []],
+    ["identity-key.csv", data.identityKey ? [data.identityKey] : []],
     ["consents.csv", data.consents],
     ["consent-history.csv", data.consentHistory],
     ["data-requests.csv", data.dataRequests],

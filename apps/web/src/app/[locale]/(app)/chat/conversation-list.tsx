@@ -73,7 +73,7 @@ export function ConversationList({ conversations, currentUserId }: Props) {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground truncate text-sm">
-                  {conv.lastMessage ? t("encrypted_message") : t("no_messages")}
+                  {conv.lastMessageAt ? t("encrypted_message") : t("no_messages")}
                 </span>
                 {conv.unreadCount > 0 && (
                   <Badge className="ml-2 h-5 min-w-5 justify-center rounded-full px-1.5 font-medium">

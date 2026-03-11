@@ -1,13 +1,14 @@
 {
   "name": "openhospi",
   "private": true,
-  "packageManager": "pnpm@10.31.0",
+  "packageManager": "pnpm@10.32.1",
   "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=18.18.0",
+    "node": ">=24.0.0",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
+    "setup": "bash scripts/setup.sh",
     "dev": "pnpm --filter @openhospi/web dev",
     "dev:mobile": "pnpm --filter @openhospi/mobile start",
     "dev:mobile:prebuild": "pnpm --filter @openhospi/mobile prebuild",

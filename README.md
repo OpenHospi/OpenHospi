@@ -42,7 +42,19 @@ middlemen — just a clean platform with end-to-end encrypted chat and full tran
 
 ## Getting Started
 
-OpenHospi is in early development.
+Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Node.js 24+](https://nodejs.org/), [pnpm 9+](https://pnpm.io/),
+and the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started).
+
+```bash
+git clone https://github.com/OpenHospi/OpenHospi.git
+cd OpenHospi
+pnpm setup
+```
+
+The setup script checks prerequisites, installs dependencies, starts the local Supabase stack, creates `.env.local` with
+the correct keys, and seeds the database. Once done, start the dev server with `pnpm dev`.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full list of scripts, architecture details, and troubleshooting.
 
 ## License
 

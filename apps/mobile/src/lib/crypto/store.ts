@@ -105,6 +105,5 @@ export async function clearAllCryptoData(userId: string): Promise<void> {
   await SecureStorage.delete(`identity:${userId}`);
   await SecureStorage.delete(`spk:${userId}`);
   await SecureStorage.delete(`opk:${userId}`);
-  // Clear all sessions — can't filter by key prefix, so clear the entire crypto store
-  await SecureStorage.clear();
+  await SecureStorage.deleteByPrefix(`session:`);
 }

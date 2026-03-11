@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { eq } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 
 import { db } from '@/db/client';
 import { cryptoStore } from '@/db/schema';
@@ -69,6 +69,10 @@ export const SecureStorage = {
 
   async delete(key: string): Promise<void> {
     await db.delete(cryptoStore).where(eq(cryptoStore.key, key));
+  },
+
+  async deleteByPrefix(prefix: string): Promise<void> {
+    await db.delete(cryptoStore).where(like(cryptoStore.key, `${prefix}%`));
   },
 
   async clear(): Promise<void> {

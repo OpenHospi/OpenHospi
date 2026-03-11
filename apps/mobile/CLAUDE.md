@@ -3,7 +3,7 @@
 ## Stack
 
 | Layer      | Technology                                                            |
-|------------|-----------------------------------------------------------------------|
+| ---------- | --------------------------------------------------------------------- |
 | Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                        |
 | Styling    | **Uniwind v1.5** (Tailwind CSS v4 for RN) — NOT NativeWind            |
 | UI         | @rn-primitives/\* (accordion, dialog, tabs, etc.) + custom components |
@@ -114,6 +114,7 @@ still use `style` for layout.
 - **`babel.config.js` MUST stay** — `babel-plugin-inline-import` is required by Drizzle's SQLite migrator to import
   `.sql` migration files as strings at build time
 - Migration gate in root `_layout.tsx` — app waits for migrations before rendering
+- **NEVER create migration files manually** — always use `pnpm drizzle-kit generate` to generate migrations from the schema. Migration files in `drizzle/` and `drizzle/migrations.js` are auto-generated and must not be hand-edited.
 
 ## Components
 

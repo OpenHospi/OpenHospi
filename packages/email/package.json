@@ -19,7 +19,7 @@
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "next-intl": "^4.8.3",
-    "@react-email/components": "^1.0.8",
+    "@react-email/components": "^1.0.9",
     "@react-email/render": "^2.0.4",
     "react": "19.2.3",
     "react-dom": "19.2.3"

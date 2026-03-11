@@ -131,11 +131,11 @@ export type MessageItem = {
   senderId: string;
   senderFirstName: string;
   senderAvatarUrl: string | null;
-  ciphertext: string;
-  iv: string;
-  ratchetPublicKey: string;
-  messageNumber: number;
-  previousChainLength: number;
+  ciphertext: string | null;
+  iv: string | null;
+  ratchetPublicKey: string | null;
+  messageNumber: number | null;
+  previousChainLength: number | null;
   messageType: string;
   createdAt: Date;
 };
@@ -184,7 +184,11 @@ export async function getMessages(
       .orderBy(desc(messages.createdAt))
       .limit(MESSAGES_PER_PAGE);
 
-    return rows as MessageItem[];
+    return rows.map((row) => ({
+      ...row,
+      senderId: row.senderId!,
+      messageType: row.messageType as string,
+    }));
   });
 }
 

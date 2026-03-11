@@ -126,6 +126,20 @@ export async function markConversationRead(conversationId: string) {
   });
 }
 
+export async function getMessageMetadata(
+  messageId: string,
+): Promise<{ senderId: string; createdAt: Date } | null> {
+  await requireSession();
+
+  const [msg] = await db
+    .select({ senderId: messages.senderId, createdAt: messages.createdAt })
+    .from(messages)
+    .where(eq(messages.id, messageId));
+
+  if (!msg || !msg.senderId) return null;
+  return { senderId: msg.senderId, createdAt: msg.createdAt };
+}
+
 export async function openChat(roomId: string, seekerUserId: string, memberUserIds: string[]) {
   const session = await requireSession();
   const userId = session.user.id;

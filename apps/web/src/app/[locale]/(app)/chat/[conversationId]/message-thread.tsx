@@ -8,7 +8,7 @@ import { MessageBubble } from "@/components/app/message-bubble";
 import type { MessageItem } from "@/lib/queries/chat";
 import { supabase } from "@/lib/supabase/client";
 
-import { markConversationRead } from "../chat-actions";
+import { getMessageMetadata, markConversationRead } from "../chat-actions";
 import { getRealtimeToken } from "../realtime-token-action";
 
 type Props = {
@@ -56,7 +56,14 @@ export function MessageThread({
         if (msg.senderId === currentUserId) continue;
 
         // Skip if no ciphertext (sender's own messages on reload)
-        if (!msg.ciphertext) continue;
+        if (
+          !msg.ciphertext ||
+          !msg.iv ||
+          !msg.ratchetPublicKey ||
+          msg.messageNumber == null ||
+          msg.previousChainLength == null
+        )
+          continue;
 
         try {
           const encrypted: EncryptedMessage = {
@@ -162,43 +169,25 @@ export function MessageThread({
       const messageNumber = row.message_number as number;
       const previousChainLength = row.previous_chain_length as number;
 
-      // We'll need to fetch the message metadata separately
-      // For now, create a minimal message item and decrypt
+      // Fetch message metadata (senderId, createdAt) via server action
+      const metadata = await getMessageMetadata(messageId);
+      if (!metadata) return;
+
+      const member = membersRef.current.find((m) => m.userId === metadata.senderId);
+
       const msgItem: MessageItem = {
         id: messageId,
-        senderId: "", // Will be filled from the metadata fetch
-        senderFirstName: "",
-        senderAvatarUrl: null,
+        senderId: metadata.senderId,
+        senderFirstName: member?.firstName ?? "",
+        senderAvatarUrl: member?.avatarUrl ?? null,
         ciphertext,
         iv,
         ratchetPublicKey,
         messageNumber,
         previousChainLength,
         messageType: "text",
-        createdAt: new Date(),
+        createdAt: metadata.createdAt,
       };
-
-      // Fetch message metadata via a simple query
-      try {
-        const response = await fetch(
-          `/api/mobile/chat/conversations/${conversationId}/messages?messageId=${messageId}`,
-        );
-        if (response.ok) {
-          const data = (await response.json()) as {
-            senderId: string;
-            createdAt: string;
-          };
-          msgItem.senderId = data.senderId;
-          msgItem.createdAt = new Date(data.createdAt);
-          const member = membersRef.current.find((m) => m.userId === data.senderId);
-          msgItem.senderFirstName = member?.firstName ?? "";
-          msgItem.senderAvatarUrl = member?.avatarUrl ?? null;
-        }
-      } catch {
-        // Fallback: try to find sender from members
-      }
-
-      if (!msgItem.senderId) return;
 
       const decrypted = await decryptMessagesRef.current([msgItem]);
       if (!mounted) return;

@@ -1,6 +1,6 @@
-import { SUPABASE_URL } from './constants';
+import type { StorageBucket } from '@openhospi/shared/constants';
 
-type StorageBucket = 'profile-photos' | 'room-photos';
+import { SUPABASE_URL } from './constants';
 
 export function getStoragePublicUrl(pathOrUrl: string, bucket: StorageBucket): string {
   if (pathOrUrl.includes('://')) return pathOrUrl;

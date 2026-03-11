@@ -1,6 +1,10 @@
 "use client";
 
-import { MAX_ROOM_PHOTO_SIZE, ROOM_PHOTO_SLOTS } from "@openhospi/shared/constants";
+import {
+  MAX_ROOM_PHOTO_SIZE,
+  ROOM_PHOTO_SLOTS,
+  STORAGE_BUCKET_ROOM_PHOTOS,
+} from "@openhospi/shared/constants";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -95,7 +99,7 @@ export function RoomPhotosGrid({ roomId, photos }: Props) {
     <SortablePhotoGrid
       photos={photos}
       slots={SLOTS}
-      bucket="room-photos"
+      bucket={STORAGE_BUCKET_ROOM_PHOTOS}
       maxFileSize={MAX_ROOM_PHOTO_SIZE}
       editable
       getSlotLabel={getSlotLabel}

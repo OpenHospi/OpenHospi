@@ -1,4 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import type { City } from "@openhospi/shared/enums";
 import { City as CityEnum } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
@@ -53,7 +54,7 @@ export async function generateMetadata({
   const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
   const ogImage = room.photos[0]?.url
-    ? getStoragePublicUrl(room.photos[0].url, "room-photos")
+    ? getStoragePublicUrl(room.photos[0].url, STORAGE_BUCKET_ROOM_PHOTOS)
     : undefined;
 
   return {
@@ -200,7 +201,7 @@ async function RoomDetailPage({ locale, roomId }: { locale: Locale; roomId: stri
       addressLocality: cityName,
       addressCountry: "NL",
     },
-    ...(coverPhoto && { image: getStoragePublicUrl(coverPhoto.url, "room-photos") }),
+    ...(coverPhoto && { image: getStoragePublicUrl(coverPhoto.url, STORAGE_BUCKET_ROOM_PHOTOS) }),
     offers: {
       "@type": "Offer",
       price: room.totalCost,

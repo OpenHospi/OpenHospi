@@ -18,12 +18,12 @@ import {
   type LanguagesStepData,
   type PersonalityStepData,
 } from "@openhospi/database/validators";
+import { EMAIL_CODE_LENGTH } from "@openhospi/shared/constants";
 import { and, desc, eq, gt } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/auth";
 
 const EMAIL_CODE_IDENTIFIER_PREFIX = "onboarding-email-code:";
-const EMAIL_CODE_LENGTH = 6;
 
 function emailCodeIdentifier(userId: string): string {
   return `${EMAIL_CODE_IDENTIFIER_PREFIX}${userId}`;

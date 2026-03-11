@@ -1,4 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { Settings } from "lucide-react";
 import type { Metadata } from "next";
@@ -38,7 +39,7 @@ export async function generateMetadata({
   const title = `${room.title} — ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
   const ogImage = room.coverPhotoPath
-    ? getStoragePublicUrl(room.coverPhotoPath, "room-photos")
+    ? getStoragePublicUrl(room.coverPhotoPath, STORAGE_BUCKET_ROOM_PHOTOS)
     : undefined;
 
   return {

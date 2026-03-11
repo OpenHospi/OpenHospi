@@ -1,3 +1,4 @@
+import { STORAGE_BUCKET_ROOM_PHOTOS } from '@openhospi/shared/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Dot, Euro } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
@@ -99,7 +100,7 @@ export default function RoomDetailScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
       <ScrollView style={{ flex: 1 }}>
-        <PhotoCarousel photos={room.photos} bucket="room-photos" />
+        <PhotoCarousel photos={room.photos} bucket={STORAGE_BUCKET_ROOM_PHOTOS} />
 
         <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
           <View>

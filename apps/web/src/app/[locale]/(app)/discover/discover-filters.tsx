@@ -1,5 +1,6 @@
 "use client";
 
+import { PRICE_MAX, PRICE_MIN, PRICE_STEP } from "@openhospi/shared/constants";
 import {
   City,
   DiscoverSort,
@@ -51,10 +52,6 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
   const tEnums = useTranslations("enums");
   const router = useRouter();
   const pathname = usePathname();
-
-  const PRICE_MIN = 0;
-  const PRICE_MAX = 2000;
-  const PRICE_STEP = 25;
 
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([

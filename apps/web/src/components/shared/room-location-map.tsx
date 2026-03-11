@@ -2,6 +2,13 @@
 
 import "leaflet/dist/leaflet.css";
 
+import {
+  MAP_BORDER_WIDTH,
+  MAP_DEFAULT_ZOOM,
+  MAP_FILL_OPACITY,
+  MAP_PRIVACY_OFFSET,
+  MAP_PRIVACY_RADIUS,
+} from "@openhospi/shared/constants";
 import { useEffect, useMemo } from "react";
 import { Circle, MapContainer, TileLayer, useMap } from "react-leaflet";
 
@@ -13,15 +20,15 @@ type Props = {
 // Apply a small random-ish offset for privacy (deterministic per coord)
 function offsetCoords(lat: number, lng: number) {
   const seed = Math.abs(Math.sin(lat * 1000 + lng * 2000));
-  const offsetLat = (seed - 0.5) * 0.003;
-  const offsetLng = (((seed * 1.3) % 1) - 0.5) * 0.003;
+  const offsetLat = (seed - 0.5) * MAP_PRIVACY_OFFSET;
+  const offsetLng = (((seed * 1.3) % 1) - 0.5) * MAP_PRIVACY_OFFSET;
   return { lat: lat + offsetLat, lng: lng + offsetLng };
 }
 
 function FitBounds({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   useEffect(() => {
-    map.setView([lat, lng], 14);
+    map.setView([lat, lng], MAP_DEFAULT_ZOOM);
   }, [map, lat, lng]);
   return null;
 }
@@ -32,7 +39,7 @@ export default function RoomLocationMap({ latitude, longitude }: Props) {
   return (
     <MapContainer
       center={[offset.lat, offset.lng]}
-      zoom={14}
+      zoom={MAP_DEFAULT_ZOOM}
       scrollWheelZoom={false}
       className="h-64 w-full rounded-lg"
       style={{ zIndex: 0 }}
@@ -43,12 +50,12 @@ export default function RoomLocationMap({ latitude, longitude }: Props) {
       />
       <Circle
         center={[offset.lat, offset.lng]}
-        radius={300}
+        radius={MAP_PRIVACY_RADIUS}
         pathOptions={{
           color: "hsl(var(--primary))",
           fillColor: "hsl(var(--primary))",
-          fillOpacity: 0.15,
-          weight: 2,
+          fillOpacity: MAP_FILL_OPACITY,
+          weight: MAP_BORDER_WIDTH,
         }}
       />
       <FitBounds lat={offset.lat} lng={offset.lng} />

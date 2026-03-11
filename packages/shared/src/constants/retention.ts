@@ -1,0 +1,6 @@
+// Data retention (days)
+export const RETENTION_SESSION_IP_DAYS = 30;
+export const RETENTION_EXPIRED_SESSION_DAYS = 90;
+export const RETENTION_REPORT_MESSAGE_TEXT_DAYS = 90;
+export const RETENTION_READ_NOTIFICATION_DAYS = 180;
+export const RETENTION_CONSENT_IP_DAYS = 365;

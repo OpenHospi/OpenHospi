@@ -2,6 +2,7 @@ import { withRLS } from "@openhospi/database";
 import { profilePhotos, profiles } from "@openhospi/database/schema";
 import type { EditProfileData } from "@openhospi/database/validators";
 import { editProfileSchema } from "@openhospi/database/validators";
+import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import { and, eq } from "drizzle-orm";
 
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
@@ -53,7 +54,7 @@ export async function saveProfilePhotoForUser(userId: string, file: File, slot: 
   try {
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${userId}/slot-${slot}.${ext}`;
-    url = await uploadPhotoToStorage(file, "profile-photos", path);
+    url = await uploadPhotoToStorage(file, STORAGE_BUCKET_PROFILE_PHOTOS, path);
 
     const photoUrl = url;
     const [photo] = await withRLS(userId, async (tx) => {

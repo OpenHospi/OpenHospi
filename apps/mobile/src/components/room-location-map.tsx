@@ -1,3 +1,8 @@
+import {
+  MAP_DEFAULT_ZOOM,
+  MAP_PRIVACY_OFFSET,
+  MAP_PRIVACY_RADIUS,
+} from '@openhospi/shared/constants';
 import { useEffect, useMemo, useState } from 'react';
 import { useColorScheme, View } from 'react-native';
 import { Asset } from 'expo-asset';
@@ -15,8 +20,8 @@ type Props = {
 // Apply a small random-ish offset for privacy (deterministic per coord)
 function offsetCoords(lat: number, lng: number) {
   const seed = Math.abs(Math.sin(lat * 1000 + lng * 2000));
-  const offsetLat = (seed - 0.5) * 0.003;
-  const offsetLng = (((seed * 1.3) % 1) - 0.5) * 0.003;
+  const offsetLat = (seed - 0.5) * MAP_PRIVACY_OFFSET;
+  const offsetLng = (((seed * 1.3) % 1) - 0.5) * MAP_PRIVACY_OFFSET;
   return { lat: lat + offsetLat, lng: lng + offsetLng };
 }
 
@@ -59,7 +64,7 @@ export default function RoomLocationMap({ latitude, longitude }: Props) {
       <LeafletView
         renderLoading={() => <></>}
         mapCenterPosition={{ lat: offset.lat, lng: offset.lng }}
-        zoom={14}
+        zoom={MAP_DEFAULT_ZOOM}
         zoomControl={false}
         doDebug={false}
         source={{ html }}
@@ -67,7 +72,7 @@ export default function RoomLocationMap({ latitude, longitude }: Props) {
           {
             shapeType: MapShapeType.CIRCLE,
             center: { lat: offset.lat, lng: offset.lng },
-            radius: 300,
+            radius: MAP_PRIVACY_RADIUS,
             color: circleColor,
           },
         ]}

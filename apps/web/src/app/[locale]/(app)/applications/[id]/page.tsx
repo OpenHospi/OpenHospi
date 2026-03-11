@@ -1,4 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { isTerminalApplicationStatus } from "@openhospi/shared/enums";
 import { Camera, Home } from "lucide-react";
 import type { Metadata } from "next";
@@ -72,7 +73,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
               <StorageImage
                 src={application.roomCoverPhotoUrl}
                 alt={application.roomTitle}
-                bucket="room-photos"
+                bucket={STORAGE_BUCKET_ROOM_PHOTOS}
                 fill
                 className="object-cover sm:rounded-l-lg"
               />

@@ -2,6 +2,7 @@
 
 import { DragDropProvider, DragOverlay, useDraggable, useDroppable } from "@dnd-kit/react";
 import { ALLOWED_IMAGE_TYPES, MAX_PHOTO_CAPTION_LENGTH } from "@openhospi/shared/constants";
+import type { StorageBucket } from "@openhospi/shared/constants";
 import { Camera, GripVertical, Loader2, Pencil, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type React from "react";
@@ -30,7 +31,7 @@ type SlotItem = {
 export type SortablePhotoGridProps = {
   photos: SortablePhoto[];
   slots: number[];
-  bucket: "room-photos" | "profile-photos";
+  bucket: StorageBucket;
   maxFileSize: number;
   editable?: boolean;
   getSlotLabel: (slot: number) => string;
@@ -139,7 +140,7 @@ function PhotoSlot({
   renderEmptyExtra,
 }: {
   item: SlotItem;
-  bucket: "room-photos" | "profile-photos";
+  bucket: StorageBucket;
   editable: boolean;
   isUploading: boolean;
   isPending: boolean;

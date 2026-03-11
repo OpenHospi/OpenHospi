@@ -1,6 +1,10 @@
 "use client";
 
-import { MAX_AVATAR_SIZE, MAX_PROFILE_PHOTOS } from "@openhospi/shared/constants";
+import {
+  MAX_AVATAR_SIZE,
+  MAX_PROFILE_PHOTOS,
+  STORAGE_BUCKET_PROFILE_PHOTOS,
+} from "@openhospi/shared/constants";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -103,7 +107,7 @@ export function PhotosStep({ photos, onPhotosChange, onBack, onNext }: Props) {
       <SortablePhotoGrid
         photos={photos}
         slots={SLOTS}
-        bucket="profile-photos"
+        bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
         maxFileSize={MAX_AVATAR_SIZE}
         editable
         getSlotLabel={getSlotLabel}

@@ -6,7 +6,10 @@
   "license": "AGPL-3.0-only",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts",
+    "./enums": "./src/enums/index.ts",
+    "./constants": "./src/constants/index.ts",
+    "./constants/*": "./src/constants/*.ts",
+    "./calendar": "./src/calendar.ts",
     "./icons": "./src/icons/index.tsx",
     "./assets/*": "./assets/*"
   },

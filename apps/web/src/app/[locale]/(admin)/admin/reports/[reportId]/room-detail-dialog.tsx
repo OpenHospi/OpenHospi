@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { useTranslations } from "next-intl";
 
 import { StorageImage } from "@/components/shared/storage-image";
@@ -39,7 +40,7 @@ export function RoomDetailDialog({ room, children }: Props) {
                 alt={room.title}
                 fill
                 className="object-cover"
-                bucket="room-photos"
+                bucket={STORAGE_BUCKET_ROOM_PHOTOS}
               />
             </div>
           )}

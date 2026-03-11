@@ -4,6 +4,7 @@ import {
   MAX_ROOM_PHOTO_SIZE,
   MAX_ROOM_PHOTOS,
   ROOM_PHOTO_SLOTS,
+  STORAGE_BUCKET_ROOM_PHOTOS,
 } from "@openhospi/shared/constants";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -166,7 +167,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
           <SortablePhotoGrid
             photos={photos}
             slots={SLOTS}
-            bucket="room-photos"
+            bucket={STORAGE_BUCKET_ROOM_PHOTOS}
             maxFileSize={MAX_ROOM_PHOTO_SIZE}
             editable
             getSlotLabel={getSlotLabel}

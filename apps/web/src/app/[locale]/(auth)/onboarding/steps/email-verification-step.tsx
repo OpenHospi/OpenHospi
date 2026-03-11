@@ -1,5 +1,6 @@
 "use client";
 
+import { EMAIL_CODE_LENGTH, EMAIL_RESEND_COOLDOWN_SECONDS } from "@openhospi/shared/constants";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader2, MailCheck, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -14,9 +15,6 @@ import { Label } from "@/components/ui/label";
 
 import { resendEmailCode, verifyEmailCode } from "../actions";
 
-const OTP_LENGTH = 6;
-const RESEND_COOLDOWN_SECONDS = 60;
-
 type Props = {
   email: string;
   onBack: () => void;
@@ -27,7 +25,7 @@ export function EmailVerificationStep({ email, onBack, onVerified }: Props) {
   const t = useTranslations("app.onboarding");
   const tCommon = useTranslations("common.labels");
   const [code, setCode] = useState("");
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
+  const [cooldown, setCooldown] = useState(EMAIL_RESEND_COOLDOWN_SECONDS);
   const [isVerifying, startVerifyTransition] = useTransition();
   const [isResending, startResendTransition] = useTransition();
 
@@ -58,7 +56,7 @@ export function EmailVerificationStep({ email, onBack, onVerified }: Props) {
       }
 
       setCode("");
-      setCooldown(RESEND_COOLDOWN_SECONDS);
+      setCooldown(EMAIL_RESEND_COOLDOWN_SECONDS);
       toast.success(t("identity.verificationResent"));
     });
   }
@@ -79,13 +77,13 @@ export function EmailVerificationStep({ email, onBack, onVerified }: Props) {
           <Label htmlFor="verification-code">{t("identity.verificationCode")}</Label>
           <InputOTP
             id="verification-code"
-            maxLength={OTP_LENGTH}
+            maxLength={EMAIL_CODE_LENGTH}
             pattern={REGEXP_ONLY_DIGITS}
             value={code}
             onChange={setCode}
           >
             <InputOTPGroup>
-              {Array.from({ length: OTP_LENGTH }, (_, i) => (
+              {Array.from({ length: EMAIL_CODE_LENGTH }, (_, i) => (
                 <InputOTPSlot key={i} index={i} />
               ))}
             </InputOTPGroup>
@@ -118,7 +116,7 @@ export function EmailVerificationStep({ email, onBack, onVerified }: Props) {
             <Button
               type="button"
               onClick={handleVerify}
-              disabled={code.length !== OTP_LENGTH || isVerifying || isResending}
+              disabled={code.length !== EMAIL_CODE_LENGTH || isVerifying || isResending}
             >
               {isVerifying && <Loader2 className="animate-spin" />}
               {t("identity.verifyCode")}

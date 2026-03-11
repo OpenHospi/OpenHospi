@@ -1,5 +1,7 @@
 "use client";
 
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
+import type { StorageBucket } from "@openhospi/shared/constants";
 import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -18,10 +20,10 @@ type Photo = {
 type Props = {
   photos: Photo[];
   roomTitle: string;
-  bucket?: "room-photos" | "profile-photos";
+  bucket?: StorageBucket;
 };
 
-export function RoomGalleryHero({ photos, roomTitle, bucket = "room-photos" }: Props) {
+export function RoomGalleryHero({ photos, roomTitle, bucket = STORAGE_BUCKET_ROOM_PHOTOS }: Props) {
   const t = useTranslations("app.roomDetail");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);

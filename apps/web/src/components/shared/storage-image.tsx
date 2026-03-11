@@ -1,3 +1,5 @@
+import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
+import type { StorageBucket } from "@openhospi/shared/constants";
 import Image from "next/image";
 import type { ImageProps } from "next/image";
 
@@ -5,7 +7,7 @@ import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 
 type StorageImageProps = Omit<ImageProps, "src"> & {
   src: string;
-  bucket?: "profile-photos" | "room-photos";
+  bucket?: StorageBucket;
 };
 
 /**
@@ -16,7 +18,11 @@ type StorageImageProps = Omit<ImageProps, "src"> & {
  * @param bucket - The Supabase storage bucket name
  * @param props - All other Next.js Image props (including required alt)
  */
-export function StorageImage({ src, bucket = "profile-photos", ...props }: StorageImageProps) {
+export function StorageImage({
+  src,
+  bucket = STORAGE_BUCKET_PROFILE_PHOTOS,
+  ...props
+}: StorageImageProps) {
   const imageSrc = getStoragePublicUrl(src, bucket);
 
   // eslint-disable-next-line jsx-a11y/alt-text -- alt is passed via props

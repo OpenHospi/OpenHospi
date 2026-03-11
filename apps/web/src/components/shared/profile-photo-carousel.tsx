@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
@@ -63,7 +64,7 @@ export function ProfilePhotoCarousel({ photos, userName }: Props) {
           <StorageImage
             src={photos[0].url}
             alt={userName}
-            bucket="profile-photos"
+            bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
             fill
             className="object-cover"
           />
@@ -73,7 +74,7 @@ export function ProfilePhotoCarousel({ photos, userName }: Props) {
           initialIndex={0}
           open={lightboxOpen}
           onOpenChange={setLightboxOpen}
-          bucket="profile-photos"
+          bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
         />
       </>
     );
@@ -95,7 +96,7 @@ export function ProfilePhotoCarousel({ photos, userName }: Props) {
                     <StorageImage
                       src={photo.url}
                       alt={photo.caption ?? userName}
-                      bucket="profile-photos"
+                      bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
                       fill
                       className="object-cover"
                     />
@@ -133,7 +134,7 @@ export function ProfilePhotoCarousel({ photos, userName }: Props) {
         initialIndex={lightboxIndex}
         open={lightboxOpen}
         onOpenChange={setLightboxOpen}
-        bucket="profile-photos"
+        bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
       />
     </>
   );

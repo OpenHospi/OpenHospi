@@ -31,7 +31,7 @@ import {
   DataRequestType,
   DataRequestStatus,
   UtilitiesIncluded,
-} from "./enums.js";
+} from "./enums";
 
 const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
   Gender,

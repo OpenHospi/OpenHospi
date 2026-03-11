@@ -1,29 +1,21 @@
 "use client";
 
-import { ArrowLeft, Flag, Fingerprint, MoreVertical, ShieldBan, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { KeyRecoveryDialog } from "@/components/app/key-recovery-dialog";
-import { SafetyNumberDialog } from "@/components/app/safety-number-dialog";
-import { ReportDialog } from "@/components/shared/report-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEncryption } from "@/hooks/use-encryption";
 import { Link } from "@/i18n/navigation-app";
-import type { MessageItem } from "@/lib/queries/chat";
+import type { ConversationDetail, MessageItem } from "@/lib/queries/chat";
 
 import { blockUser, unblockUser } from "../block-actions";
 
 import { ChatInput } from "./chat-input";
+import { ConversationInfoPanel } from "./conversation-info-panel";
 import type { DecryptedMessage } from "./message-thread";
 import { MessageThread } from "./message-thread";
 
@@ -33,6 +25,7 @@ type Props = {
   initialMessages: MessageItem[];
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
   blockedUserIds: string[];
+  conversationDetail: ConversationDetail | null;
 };
 
 export function ChatView({
@@ -41,23 +34,20 @@ export function ChatView({
   initialMessages,
   members,
   blockedUserIds,
+  conversationDetail,
 }: Props) {
   const t = useTranslations("app.chat");
   const [isPending, startTransition] = useTransition();
   const { status, encryptMessage, decryptMessage, getIdentityFingerprint } =
     useEncryption(currentUserId);
   const addMessageRef = useRef<((msg: DecryptedMessage) => void) | null>(null);
-  const [safetyNumberUser, setSafetyNumberUser] = useState<{
-    userId: string;
-    name: string;
-  } | null>(null);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   const currentMember = members.find((m) => m.userId === currentUserId);
   const otherMembers = members.filter((m) => m.userId !== currentUserId);
   const title = otherMembers.map((m) => m.firstName).join(", ") || t("conversation");
 
-  const blockedMember = otherMembers.find((m) => blockedUserIds.includes(m.userId));
-  const isBlocked = !!blockedMember;
+  const isBlocked = otherMembers.some((m) => blockedUserIds.includes(m.userId));
 
   function handleBlock(userId: string) {
     startTransition(async () => {
@@ -116,7 +106,7 @@ export function ChatView({
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="relative flex h-full flex-col overflow-hidden">
       {/* Header */}
       <div className="flex shrink-0 items-center gap-3 border-b px-4 py-3">
         <Button variant="ghost" size="icon" asChild className="md:hidden">
@@ -124,64 +114,26 @@ export function ChatView({
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
-        <div className="min-w-0 flex-1">
+        <button
+          type="button"
+          className="min-w-0 flex-1 text-left"
+          onClick={() => setInfoOpen(true)}
+          disabled={!conversationDetail}
+        >
           <h2 className="truncate font-semibold">{title}</h2>
           <p className="text-muted-foreground text-xs">
             {t("members_count", { count: members.length })}
           </p>
-        </div>
-
-        {otherMembers.length > 0 && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={isPending}>
-                <MoreVertical className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {otherMembers.map((member) => (
-                <DropdownMenuItem
-                  key={`verify-${member.userId}`}
-                  onClick={() =>
-                    setSafetyNumberUser({ userId: member.userId, name: member.firstName })
-                  }
-                >
-                  <Fingerprint className="mr-2 size-4" />
-                  {t("verify_identity")}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              {otherMembers.map((member) => (
-                <div key={member.userId}>
-                  {blockedUserIds.includes(member.userId) ? (
-                    <DropdownMenuItem onClick={() => handleUnblock(member.userId)}>
-                      <ShieldCheck className="mr-2 size-4" />
-                      {t("unblock_user")}
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem onClick={() => handleBlock(member.userId)}>
-                      <ShieldBan className="mr-2 size-4" />
-                      {t("block_user")}
-                    </DropdownMenuItem>
-                  )}
-                </div>
-              ))}
-              <DropdownMenuSeparator />
-              {otherMembers.map((member) => (
-                <ReportDialog
-                  key={`report-${member.userId}`}
-                  type="user"
-                  targetId={member.userId}
-                  trigger={
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <Flag className="mr-2 size-4" />
-                      {t("report_user", { name: member.firstName })}
-                    </DropdownMenuItem>
-                  }
-                />
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        </button>
+        {conversationDetail && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setInfoOpen(true)}
+            disabled={isPending}
+          >
+            <Info className="size-4" />
+          </Button>
         )}
       </div>
 
@@ -220,13 +172,17 @@ export function ChatView({
         />
       )}
 
-      {/* Safety Number Dialog */}
-      {safetyNumberUser && (
-        <SafetyNumberDialog
-          open={!!safetyNumberUser}
-          onOpenChange={(open) => !open && setSafetyNumberUser(null)}
-          otherUserName={safetyNumberUser.name}
-          getFingerprint={() => getIdentityFingerprint(safetyNumberUser.userId)}
+      {/* Conversation Info Panel */}
+      {conversationDetail && (
+        <ConversationInfoPanel
+          open={infoOpen}
+          onClose={() => setInfoOpen(false)}
+          conversationDetail={conversationDetail}
+          currentUserId={currentUserId}
+          blockedUserIds={blockedUserIds}
+          onBlock={handleBlock}
+          onUnblock={handleUnblock}
+          getFingerprint={getIdentityFingerprint}
         />
       )}
     </div>

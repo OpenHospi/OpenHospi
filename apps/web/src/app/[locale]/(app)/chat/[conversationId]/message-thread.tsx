@@ -52,6 +52,12 @@ export function MessageThread({
     async (msgs: MessageItem[]) => {
       const results: DecryptedMessage[] = [];
       for (const msg of msgs) {
+        // Skip messages from ourselves (no ciphertext row)
+        if (msg.senderId === currentUserId) continue;
+
+        // Skip if no ciphertext (sender's own messages on reload)
+        if (!msg.ciphertext) continue;
+
         try {
           const encrypted: EncryptedMessage = {
             header: {
@@ -88,7 +94,7 @@ export function MessageThread({
       }
       return results;
     },
-    [conversationId, decryptMessage, t],
+    [conversationId, currentUserId, decryptMessage, t],
   );
 
   const decryptMessagesRef = useRef(decryptMessages);
@@ -139,31 +145,60 @@ export function MessageThread({
     };
   });
 
-  // Supabase Realtime subscription
+  // Supabase Realtime subscription — subscribe to message_ciphertexts for this user
   useEffect(() => {
     let mounted = true;
 
-    async function handleInsert(row: Record<string, unknown>) {
-      const messageId = row.id as string;
+    async function handleCiphertextInsert(row: Record<string, unknown>) {
+      const messageId = row.message_id as string;
       if (seenIdsRef.current.has(messageId)) return;
       seenIdsRef.current.add(messageId);
 
-      const senderId = row.sender_id as string;
-      const member = membersRef.current.find((m) => m.userId === senderId);
+      // We need the message metadata (senderId, createdAt) — fetch from messages table
+      // The ciphertext row has the crypto data, but not the sender info
+      const ciphertext = row.ciphertext as string;
+      const iv = row.iv as string;
+      const ratchetPublicKey = row.ratchet_public_key as string;
+      const messageNumber = row.message_number as number;
+      const previousChainLength = row.previous_chain_length as number;
 
+      // We'll need to fetch the message metadata separately
+      // For now, create a minimal message item and decrypt
       const msgItem: MessageItem = {
         id: messageId,
-        senderId,
-        senderFirstName: member?.firstName ?? "",
-        senderAvatarUrl: member?.avatarUrl ?? null,
-        ciphertext: row.ciphertext as string,
-        iv: row.iv as string,
-        ratchetPublicKey: row.ratchet_public_key as string,
-        messageNumber: row.message_number as number,
-        previousChainLength: row.previous_chain_length as number,
-        messageType: (row.message_type as string) ?? "text",
-        createdAt: new Date(row.created_at as string),
+        senderId: "", // Will be filled from the metadata fetch
+        senderFirstName: "",
+        senderAvatarUrl: null,
+        ciphertext,
+        iv,
+        ratchetPublicKey,
+        messageNumber,
+        previousChainLength,
+        messageType: "text",
+        createdAt: new Date(),
       };
+
+      // Fetch message metadata via a simple query
+      try {
+        const response = await fetch(
+          `/api/mobile/chat/conversations/${conversationId}/messages?messageId=${messageId}`,
+        );
+        if (response.ok) {
+          const data = (await response.json()) as {
+            senderId: string;
+            createdAt: string;
+          };
+          msgItem.senderId = data.senderId;
+          msgItem.createdAt = new Date(data.createdAt);
+          const member = membersRef.current.find((m) => m.userId === data.senderId);
+          msgItem.senderFirstName = member?.firstName ?? "";
+          msgItem.senderAvatarUrl = member?.avatarUrl ?? null;
+        }
+      } catch {
+        // Fallback: try to find sender from members
+      }
+
+      if (!msgItem.senderId) return;
 
       const decrypted = await decryptMessagesRef.current([msgItem]);
       if (!mounted) return;
@@ -176,18 +211,18 @@ export function MessageThread({
       supabase.realtime.setAuth(token);
 
       supabase
-        .channel(`messages:${conversationId}`)
+        .channel(`ciphertexts:${conversationId}:${currentUserId}`)
         .on(
           "postgres_changes",
           {
             event: "INSERT",
             schema: "public",
-            table: "messages",
-            filter: `conversation_id=eq.${conversationId}`,
+            table: "message_ciphertexts",
+            filter: `recipient_user_id=eq.${currentUserId}`,
           },
           (payload) => {
             if (!mounted) return;
-            handleInsert(payload.new as Record<string, unknown>);
+            handleCiphertextInsert(payload.new as Record<string, unknown>);
           },
         )
         .subscribe();
@@ -197,7 +232,7 @@ export function MessageThread({
       mounted = false;
       supabase.removeAllChannels();
     };
-  }, [conversationId]);
+  }, [conversationId, currentUserId]);
 
   // Mark as read when tab becomes visible
   useEffect(() => {

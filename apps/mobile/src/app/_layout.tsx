@@ -2,6 +2,10 @@
 import { install } from 'react-native-quick-crypto';
 install();
 
+import { setBackend } from '@openhospi/crypto';
+import { createNativeBackend } from '@openhospi/crypto/native';
+setBackend(createNativeBackend());
+
 import '../global.css';
 import { hideSplash } from '@/lib/splash';
 

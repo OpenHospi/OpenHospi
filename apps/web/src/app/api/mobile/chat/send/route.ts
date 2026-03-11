@@ -1,9 +1,24 @@
 import { db, withRLS } from "@openhospi/database";
-import { blocks, conversationMembers, messageReceipts, messages } from "@openhospi/database/schema";
+import {
+  blocks,
+  conversationMembers,
+  messageCiphertexts,
+  messageReceipts,
+  messages,
+} from "@openhospi/database/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { apiError, apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
+
+type CiphertextPayload = {
+  recipientUserId: string;
+  ciphertext: string;
+  iv: string;
+  ratchetPublicKey: string;
+  messageNumber: number;
+  previousChainLength: number;
+};
 
 export async function POST(request: Request) {
   try {
@@ -12,25 +27,28 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as {
       conversationId?: string;
-      ciphertext?: string;
-      iv?: string;
-      ratchetPublicKey?: string;
-      messageNumber?: number;
-      previousChainLength?: number;
+      payloads?: CiphertextPayload[];
     };
 
-    if (
-      !body.conversationId ||
-      !body.ciphertext ||
-      !body.iv ||
-      !body.ratchetPublicKey ||
-      body.messageNumber == null ||
-      body.previousChainLength == null
-    ) {
-      return apiError(
-        "conversationId, ciphertext, iv, ratchetPublicKey, messageNumber, and previousChainLength are required",
-        400,
-      );
+    if (!body.conversationId || !body.payloads || body.payloads.length === 0) {
+      return apiError("conversationId and payloads array are required", 400);
+    }
+
+    // Validate each payload
+    for (const p of body.payloads) {
+      if (
+        !p.recipientUserId ||
+        !p.ciphertext ||
+        !p.iv ||
+        !p.ratchetPublicKey ||
+        p.messageNumber == null ||
+        p.previousChainLength == null
+      ) {
+        return apiError(
+          "Each payload must include recipientUserId, ciphertext, iv, ratchetPublicKey, messageNumber, and previousChainLength",
+          400,
+        );
+      }
     }
 
     // Get conversation members
@@ -62,22 +80,30 @@ export async function POST(request: Request) {
       }
     }
 
-    // Insert message via RLS
+    // Insert message metadata via RLS
     const [message] = await withRLS(userId, async (tx) => {
       return tx
         .insert(messages)
         .values({
           conversationId: body.conversationId!,
           senderId: userId,
-          ciphertext: body.ciphertext!,
-          iv: body.iv!,
-          ratchetPublicKey: body.ratchetPublicKey!,
-          messageNumber: body.messageNumber!,
-          previousChainLength: body.previousChainLength!,
           messageType: "text",
         })
         .returning({ id: messages.id });
     });
+
+    // Insert ciphertexts for each recipient
+    await db.insert(messageCiphertexts).values(
+      body.payloads.map((p) => ({
+        messageId: message.id,
+        recipientUserId: p.recipientUserId,
+        ciphertext: p.ciphertext,
+        iv: p.iv,
+        ratchetPublicKey: p.ratchetPublicKey,
+        messageNumber: p.messageNumber,
+        previousChainLength: p.previousChainLength,
+      })),
+    );
 
     // Create receipts for other members
     const receipts = members

@@ -7,10 +7,26 @@ import {
   encryptIdentityBackup,
   decryptIdentityBackup,
   getBackend,
+  x3dhInitiate,
+  initializeSender,
+  serializeRatchetState,
+  deserializeRatchetState,
 } from '@openhospi/crypto';
-import { ONE_TIME_PRE_KEY_BATCH_SIZE } from '@openhospi/shared/constants';
+import type { PreKeyBundle, RatchetState } from '@openhospi/crypto';
+import {
+  ONE_TIME_PRE_KEY_BATCH_SIZE,
+  ONE_TIME_PRE_KEY_REFILL_THRESHOLD,
+} from '@openhospi/shared/constants';
 
-import { deleteStoredIdentity, getStoredIdentity, storeIdentity } from './store';
+import {
+  clearAllCryptoData,
+  getSession,
+  getStoredIdentity,
+  saveSession,
+  storeIdentity,
+  storeOneTimePreKeys,
+  storeSignedPreKey,
+} from './store';
 import type { StoredIdentity } from './store';
 
 export type KeyStatus = 'ready' | 'needs-recovery' | 'needs-setup';
@@ -87,6 +103,16 @@ export async function setupKeysWithPIN(
     dhPrivateKey: toBase64(identity.dh.privateKey),
   };
   await storeIdentity(userId, storedIdentity);
+
+  await storeSignedPreKey(userId, {
+    keyId: spk.keyId,
+    privateKey: toBase64(spk.keyPair.privateKey),
+    publicKey: toBase64(spk.keyPair.publicKey),
+  });
+  await storeOneTimePreKeys(
+    userId,
+    opks.map((opk) => ({ keyId: opk.keyId, privateKey: toBase64(opk.keyPair.privateKey) }))
+  );
 }
 
 export async function recoverKeysWithPIN(
@@ -133,6 +159,16 @@ export async function recoverKeysWithPIN(
   await actions.uploadOneTimePreKeys(
     opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) }))
   );
+
+  await storeSignedPreKey(userId, {
+    keyId: spk.keyId,
+    privateKey: toBase64(spk.keyPair.privateKey),
+    publicKey: toBase64(spk.keyPair.publicKey),
+  });
+  await storeOneTimePreKeys(
+    userId,
+    opks.map((opk) => ({ keyId: opk.keyId, privateKey: toBase64(opk.keyPair.privateKey) }))
+  );
 }
 
 export async function resetKeys(
@@ -141,6 +177,76 @@ export async function resetKeys(
     deleteBackup: () => Promise<void>;
   }
 ): Promise<void> {
-  await deleteStoredIdentity(userId);
+  await clearAllCryptoData(userId);
   await actions.deleteBackup();
+  // User will need to set up keys again via setupKeysWithPIN
+}
+
+export async function replenishOneTimePreKeys(
+  userId: string,
+  getCount: () => Promise<number>,
+  upload: (keys: { keyId: number; publicKey: string }[]) => Promise<void>
+): Promise<void> {
+  const backend = getBackend();
+  const count = await getCount();
+  if (count >= ONE_TIME_PRE_KEY_REFILL_THRESHOLD) return;
+
+  const startKeyId = Date.now();
+  const opks = generateOneTimePreKeys(backend, startKeyId, ONE_TIME_PRE_KEY_BATCH_SIZE);
+
+  await upload(
+    opks.map((opk) => ({ keyId: opk.keyId, publicKey: toBase64(opk.keyPair.publicKey) }))
+  );
+
+  await storeOneTimePreKeys(
+    userId,
+    opks.map((opk) => ({ keyId: opk.keyId, privateKey: toBase64(opk.keyPair.privateKey) }))
+  );
+}
+
+export async function getOrCreateSession(
+  conversationId: string,
+  otherUserId: string,
+  myUserId: string,
+  fetchBundle: (userId: string) => Promise<PreKeyBundle | null>
+): Promise<RatchetState> {
+  const existing = await getSession(conversationId, otherUserId);
+  if (existing) return deserializeRatchetState(existing);
+
+  const backend = getBackend();
+  const myIdentity = await getStoredIdentity(myUserId);
+  if (!myIdentity) throw new Error('Identity keys not found — setup required');
+
+  const bundleData = await fetchBundle(otherUserId);
+  if (!bundleData) throw new Error('Could not fetch pre-key bundle for recipient');
+
+  const bundle: PreKeyBundle = {
+    identityKey: fromBase64(bundleData.identityKey as unknown as string),
+    signingKey: fromBase64(bundleData.signingKey as unknown as string),
+    signedPreKeyPublic: fromBase64(bundleData.signedPreKeyPublic as unknown as string),
+    signedPreKeyId: bundleData.signedPreKeyId,
+    signedPreKeySignature: fromBase64(bundleData.signedPreKeySignature as unknown as string),
+    oneTimePreKeyPublic: bundleData.oneTimePreKeyPublic
+      ? fromBase64(bundleData.oneTimePreKeyPublic as unknown as string)
+      : undefined,
+    oneTimePreKeyId: bundleData.oneTimePreKeyId,
+  };
+
+  const myIdentityKeyPair = {
+    signing: {
+      publicKey: fromBase64(myIdentity.signingPublicKey),
+      privateKey: fromBase64(myIdentity.signingPrivateKey),
+    },
+    dh: {
+      publicKey: fromBase64(myIdentity.dhPublicKey),
+      privateKey: fromBase64(myIdentity.dhPrivateKey),
+    },
+  };
+
+  const x3dhResult = await x3dhInitiate(backend, myIdentityKeyPair, bundle);
+  const state = await initializeSender(backend, x3dhResult.sharedSecret, bundle.signedPreKeyPublic);
+
+  await saveSession(conversationId, otherUserId, serializeRatchetState(state));
+
+  return state;
 }

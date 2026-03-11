@@ -1,22 +1,28 @@
 "use server";
 
 import { db, withRLS } from "@openhospi/database";
-import { blocks, conversationMembers, messageReceipts, messages } from "@openhospi/database/schema";
+import {
+  blocks,
+  conversationMembers,
+  messageCiphertexts,
+  messageReceipts,
+  messages,
+} from "@openhospi/database/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 
-export async function sendMessage(
-  conversationId: string,
-  data: {
-    ciphertext: string;
-    iv: string;
-    ratchetPublicKey: string;
-    messageNumber: number;
-    previousChainLength: number;
-  },
-) {
+export type CiphertextPayload = {
+  recipientUserId: string;
+  ciphertext: string;
+  iv: string;
+  ratchetPublicKey: string;
+  messageNumber: number;
+  previousChainLength: number;
+};
+
+export async function sendMessage(conversationId: string, payloads: CiphertextPayload[]) {
   const session = await requireSession();
   const userId = session.user.id;
 
@@ -48,21 +54,32 @@ export async function sendMessage(
     }
   }
 
+  // Insert message metadata
   const [message] = await withRLS(userId, async (tx) => {
     return tx
       .insert(messages)
       .values({
         conversationId,
         senderId: userId,
-        ciphertext: data.ciphertext,
-        iv: data.iv,
-        ratchetPublicKey: data.ratchetPublicKey,
-        messageNumber: data.messageNumber,
-        previousChainLength: data.previousChainLength,
         messageType: "text",
       })
       .returning({ id: messages.id });
   });
+
+  // Insert ciphertexts for each recipient
+  if (payloads.length > 0) {
+    await db.insert(messageCiphertexts).values(
+      payloads.map((p) => ({
+        messageId: message.id,
+        recipientUserId: p.recipientUserId,
+        ciphertext: p.ciphertext,
+        iv: p.iv,
+        ratchetPublicKey: p.ratchetPublicKey,
+        messageNumber: p.messageNumber,
+        previousChainLength: p.previousChainLength,
+      })),
+    );
+  }
 
   // Create receipts for all members except sender
   const receipts = members

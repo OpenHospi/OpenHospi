@@ -32,6 +32,7 @@ import {
   hospiInvitations,
   houseMembers,
   houses,
+  messageCiphertexts,
   messageReceipts,
   messages,
   profiles,
@@ -877,18 +878,28 @@ describe("E2E workflow tests (integration)", () => {
           .values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
-            ciphertext: "e2e-encrypted-payload",
-            iv: "e2e-iv-001",
-            ratchetPublicKey: "e2e-ratchet-key",
-            messageNumber: 0,
-            previousChainLength: 0,
+            messageType: "text",
           })
           .returning(),
       );
 
       try {
-        expect(msg.ciphertext).toBe("e2e-encrypted-payload");
-        expect(msg.ratchetPublicKey).toBe("e2e-ratchet-key");
+        const [ciphertext] = await withRLS(HOSPI_OWNER, (tx) =>
+          tx
+            .insert(messageCiphertexts)
+            .values({
+              messageId: msg.id,
+              recipientUserId: SEEKER_1,
+              ciphertext: "e2e-encrypted-payload",
+              iv: "e2e-iv-001",
+              ratchetPublicKey: "e2e-ratchet-key",
+              messageNumber: 0,
+              previousChainLength: 0,
+            })
+            .returning(),
+        );
+        expect(ciphertext.ciphertext).toBe("e2e-encrypted-payload");
+        expect(ciphertext.ratchetPublicKey).toBe("e2e-ratchet-key");
       } finally {
         await db.delete(messages).where(eq(messages.id, msg.id));
       }
@@ -900,11 +911,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: CONV_1,
           senderId: HOSPI_OWNER,
-          ciphertext: "read-test",
-          iv: "read-iv",
-          ratchetPublicKey: "read-ratchet",
-          messageNumber: 1,
-          previousChainLength: 0,
+          messageType: "text",
         })
         .returning();
 
@@ -932,11 +939,7 @@ describe("E2E workflow tests (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
-            ciphertext: "spoofed",
-            iv: "spoofed-iv",
-            ratchetPublicKey: "spoofed-ratchet",
-            messageNumber: 0,
-            previousChainLength: 0,
+            messageType: "text",
           }),
         ),
       ).rejects.toThrow();
@@ -948,11 +951,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: CONV_1,
           senderId: HOSPI_OWNER,
-          ciphertext: "receipt-test",
-          iv: "receipt-iv",
-          ratchetPublicKey: "receipt-ratchet",
-          messageNumber: 2,
-          previousChainLength: 0,
+          messageType: "text",
         })
         .returning();
 
@@ -1034,11 +1033,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: conv.id,
           senderId: HOSPI_OWNER,
-          ciphertext: "cascade",
-          iv: "cascade-iv",
-          ratchetPublicKey: "cascade-ratchet",
-          messageNumber: 0,
-          previousChainLength: 0,
+          messageType: "text",
         })
         .returning();
       await db.insert(messageReceipts).values({

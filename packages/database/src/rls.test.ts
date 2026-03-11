@@ -12,6 +12,7 @@ import {
   hospiInvitations,
   houseMembers,
   houses,
+  messageCiphertexts,
   messageReceipts,
   messages,
   privateKeyBackups,
@@ -201,12 +202,17 @@ describe("RLS policies (integration)", () => {
       id: MESSAGE_ID,
       conversationId: CONVERSATION_ID,
       senderId: USER_A,
+      messageType: "text",
+    });
+
+    await db.insert(messageCiphertexts).values({
+      messageId: MESSAGE_ID,
+      recipientUserId: USER_B,
       ciphertext: "encrypted-test",
       iv: "iv-test",
       ratchetPublicKey: "test-ratchet-key",
       messageNumber: 0,
       previousChainLength: 0,
-      messageType: "text",
     });
 
     await db.insert(messageReceipts).values({
@@ -485,11 +491,7 @@ describe("RLS policies (integration)", () => {
           .values({
             conversationId: CONVERSATION_ID,
             senderId: USER_A,
-            ciphertext: "temp",
-            iv: "temp-iv",
-            ratchetPublicKey: "temp-ratchet",
-            messageNumber: 0,
-            previousChainLength: 0,
+            messageType: "text",
           })
           .returning(),
       );
@@ -753,11 +755,7 @@ describe("RLS policies (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_C,
-            ciphertext: "hacked",
-            iv: "hacked-iv",
-            ratchetPublicKey: "hacked-ratchet",
-            messageNumber: 0,
-            previousChainLength: 0,
+            messageType: "text",
           }),
         ),
       ).rejects.toThrow();
@@ -770,11 +768,7 @@ describe("RLS policies (integration)", () => {
           .values({
             conversationId: CONVERSATION_ID,
             senderId: USER_A,
-            ciphertext: "valid-msg",
-            iv: "valid-iv",
-            ratchetPublicKey: "valid-ratchet",
-            messageNumber: 1,
-            previousChainLength: 0,
+            messageType: "text",
           })
           .returning(),
       );
@@ -789,11 +783,7 @@ describe("RLS policies (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_B,
-            ciphertext: "spoofed",
-            iv: "spoofed-iv",
-            ratchetPublicKey: "spoofed-ratchet",
-            messageNumber: 0,
-            previousChainLength: 0,
+            messageType: "text",
           }),
         ),
       ).rejects.toThrow();
@@ -877,11 +867,7 @@ describe("RLS policies (integration)", () => {
         .values({
           conversationId: conv.id,
           senderId: USER_A,
-          ciphertext: "cascade-test",
-          iv: "cascade-iv",
-          ratchetPublicKey: "cascade-ratchet",
-          messageNumber: 0,
-          previousChainLength: 0,
+          messageType: "text",
         })
         .returning();
       await db.insert(messageReceipts).values({

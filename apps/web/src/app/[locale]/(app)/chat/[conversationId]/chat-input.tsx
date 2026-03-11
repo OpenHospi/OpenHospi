@@ -8,6 +8,7 @@ import { useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+import type { CiphertextPayload } from "../chat-actions";
 import { sendMessage } from "../chat-actions";
 
 type Props = {
@@ -39,23 +40,25 @@ export function ChatInput({
     if (!trimmed || isPending) return;
 
     startTransition(async () => {
-      // In pairwise sessions, encrypt for each recipient separately
-      const otherMember = members.find((m) => m.userId !== currentUserId);
+      const otherMembers = members.filter((m) => m.userId !== currentUserId);
+      if (otherMembers.length === 0) return;
 
-      // For now, encrypt for the first other member (1:1 chat)
-      // Group chat would iterate over all members with separate sessions
-      const recipient = otherMember;
-      if (!recipient) return;
+      // Encrypt for ALL other members (pairwise)
+      const payloads: CiphertextPayload[] = await Promise.all(
+        otherMembers.map(async (member) => {
+          const encrypted = await encryptMessage(conversationId, member.userId, trimmed);
+          return {
+            recipientUserId: member.userId,
+            ciphertext: encrypted.ciphertext,
+            iv: encrypted.iv,
+            ratchetPublicKey: encrypted.header.ratchetPublicKey,
+            messageNumber: encrypted.header.messageNumber,
+            previousChainLength: encrypted.header.previousChainLength,
+          };
+        }),
+      );
 
-      const encrypted = await encryptMessage(conversationId, recipient.userId, trimmed);
-
-      const { messageId } = await sendMessage(conversationId, {
-        ciphertext: encrypted.ciphertext,
-        iv: encrypted.iv,
-        ratchetPublicKey: encrypted.header.ratchetPublicKey,
-        messageNumber: encrypted.header.messageNumber,
-        previousChainLength: encrypted.header.previousChainLength,
-      });
+      const { messageId } = await sendMessage(conversationId, payloads);
 
       onMessageSent({ id: messageId, plaintext: trimmed });
       setText("");

@@ -32,3 +32,9 @@ export const keyVerifications = sqliteTable('key_verifications', {
   signingPublicKey: text('signing_public_key').notNull(),
   verifiedAt: integer('verified_at', { mode: 'timestamp' }).notNull(),
 });
+
+export const cryptoStore = sqliteTable('crypto_store', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+});

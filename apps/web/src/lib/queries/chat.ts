@@ -2,9 +2,11 @@ import { db, withRLS } from "@openhospi/database";
 import {
   conversationMembers,
   conversations,
+  messageCiphertexts,
   messageReceipts,
   messages,
   profiles,
+  roomPhotos,
   rooms,
 } from "@openhospi/database/schema";
 import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
@@ -43,7 +45,6 @@ export type ConversationListItem = {
   id: string;
   type: string;
   roomTitle: string | null;
-  lastMessage: string | null;
   lastMessageAt: Date | null;
   unreadCount: number;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
@@ -56,9 +57,6 @@ export async function getConversations(userId: string): Promise<ConversationList
         id: conversations.id,
         type: conversations.type,
         roomTitle: rooms.title,
-        lastMessage: sql<
-          string | null
-        >`(select m.ciphertext from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1)`,
         lastMessageAt: sql<Date | null>`(select m.created_at from messages m where m.conversation_id = ${conversations.id} order by m.created_at desc limit 1)`,
         unreadCount: sql<number>`(
           select count(*)::int from messages m
@@ -121,7 +119,6 @@ export async function getConversations(userId: string): Promise<ConversationList
       id: c.id,
       type: c.type,
       roomTitle: c.roomTitle,
-      lastMessage: c.lastMessage,
       lastMessageAt: c.lastMessageAt,
       unreadCount: c.unreadCount ?? 0,
       members: membersByConv.get(c.id) ?? [],
@@ -143,6 +140,12 @@ export type MessageItem = {
   createdAt: Date;
 };
 
+/**
+ * Get messages for a conversation. For messages sent by others,
+ * joins with message_ciphertexts to get the user's own ciphertext.
+ * For messages sent by the current user, no ciphertext is returned
+ * (they see their own messages via optimistic UI).
+ */
 export async function getMessages(
   userId: string,
   conversationId: string,
@@ -160,16 +163,23 @@ export async function getMessages(
         senderId: messages.senderId,
         senderFirstName: profiles.firstName,
         senderAvatarUrl: profiles.avatarUrl,
-        ciphertext: messages.ciphertext,
-        iv: messages.iv,
-        ratchetPublicKey: messages.ratchetPublicKey,
-        messageNumber: messages.messageNumber,
-        previousChainLength: messages.previousChainLength,
+        ciphertext: messageCiphertexts.ciphertext,
+        iv: messageCiphertexts.iv,
+        ratchetPublicKey: messageCiphertexts.ratchetPublicKey,
+        messageNumber: messageCiphertexts.messageNumber,
+        previousChainLength: messageCiphertexts.previousChainLength,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })
       .from(messages)
       .innerJoin(profiles, eq(profiles.id, messages.senderId))
+      .leftJoin(
+        messageCiphertexts,
+        and(
+          eq(messageCiphertexts.messageId, messages.id),
+          eq(messageCiphertexts.recipientUserId, userId),
+        ),
+      )
       .where(and(...conditions))
       .orderBy(desc(messages.createdAt))
       .limit(MESSAGES_PER_PAGE);
@@ -215,5 +225,101 @@ export async function getUnreadChatCount(userId: string): Promise<number> {
       .where(isNull(messageReceipts.readAt));
 
     return result?.count ?? 0;
+  });
+}
+
+export type ConversationDetail = {
+  id: string;
+  roomId: string | null;
+  seekerUserId: string | null;
+  type: string;
+  room: {
+    id: string;
+    title: string;
+    city: string;
+    rentPrice: string;
+    coverPhotoUrl: string | null;
+  } | null;
+  members: {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string | null;
+    role: "seeker" | "house_member";
+  }[];
+};
+
+export async function getConversationDetail(
+  userId: string,
+  conversationId: string,
+): Promise<ConversationDetail | null> {
+  return withRLS(userId, async (tx) => {
+    const [conv] = await tx
+      .select({
+        id: conversations.id,
+        roomId: conversations.roomId,
+        seekerUserId: conversations.seekerUserId,
+        type: conversations.type,
+      })
+      .from(conversations)
+      .where(eq(conversations.id, conversationId));
+
+    if (!conv) return null;
+
+    // Fetch room info if roomId exists
+    let roomInfo: ConversationDetail["room"] = null;
+    if (conv.roomId) {
+      const [room] = await tx
+        .select({
+          id: rooms.id,
+          title: rooms.title,
+          city: rooms.city,
+          rentPrice: rooms.rentPrice,
+        })
+        .from(rooms)
+        .where(eq(rooms.id, conv.roomId));
+
+      if (room) {
+        // Get cover photo (slot 0)
+        const [coverPhoto] = await tx
+          .select({ url: roomPhotos.url })
+          .from(roomPhotos)
+          .where(and(eq(roomPhotos.roomId, room.id), eq(roomPhotos.slot, 0)));
+
+        roomInfo = {
+          id: room.id,
+          title: room.title,
+          city: room.city,
+          rentPrice: room.rentPrice,
+          coverPhotoUrl: coverPhoto?.url ?? null,
+        };
+      }
+    }
+
+    // Fetch members with roles
+    const memberRows = await tx
+      .select({
+        userId: conversationMembers.userId,
+        firstName: profiles.firstName,
+        lastName: profiles.lastName,
+        avatarUrl: profiles.avatarUrl,
+      })
+      .from(conversationMembers)
+      .innerJoin(profiles, eq(profiles.id, conversationMembers.userId))
+      .where(eq(conversationMembers.conversationId, conversationId));
+
+    const members: ConversationDetail["members"] = memberRows.map((m) => ({
+      ...m,
+      role: m.userId === conv.seekerUserId ? "seeker" : "house_member",
+    }));
+
+    return {
+      id: conv.id,
+      roomId: conv.roomId,
+      seekerUserId: conv.seekerUserId,
+      type: conv.type,
+      room: roomInfo,
+      members,
+    };
   });
 }

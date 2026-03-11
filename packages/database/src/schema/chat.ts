@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import { authUid, authenticatedRole } from "drizzle-orm/supabase";
@@ -87,11 +88,6 @@ export const messages = pgTable(
       .notNull()
       .references(() => conversations.id, { onDelete: "cascade" }),
     senderId: uuid("sender_id").references(() => profiles.id, { onDelete: "set null" }),
-    ciphertext: text("ciphertext").notNull(),
-    iv: text("iv").notNull(),
-    ratchetPublicKey: text("ratchet_public_key").notNull(), // base64 sender's DH ratchet public key
-    messageNumber: integer("message_number").notNull(), // position in sending chain
-    previousChainLength: integer("previous_chain_length").notNull(), // previous sending chain length
     messageType: messageTypeEnum("message_type").notNull().default("text"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -116,6 +112,42 @@ export const messages = pgTable(
       for: "delete",
       to: authenticatedRole,
       using: sql`${table.senderId} = ${authUid}`,
+    }),
+  ],
+);
+
+export const messageCiphertexts = pgTable(
+  "message_ciphertexts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    messageId: uuid("message_id")
+      .notNull()
+      .references(() => messages.id, { onDelete: "cascade" }),
+    recipientUserId: uuid("recipient_user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    ciphertext: text("ciphertext").notNull(),
+    iv: text("iv").notNull(),
+    ratchetPublicKey: text("ratchet_public_key").notNull(),
+    messageNumber: integer("message_number").notNull(),
+    previousChainLength: integer("previous_chain_length").notNull(),
+  },
+  (table) => [
+    uniqueIndex("idx_message_ciphertexts_msg_recipient").on(table.messageId, table.recipientUserId),
+    index("idx_message_ciphertexts_recipient").on(table.recipientUserId),
+    pgPolicy("message_ciphertexts_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`recipient_user_id = ${authUid}`,
+    }),
+    pgPolicy("message_ciphertexts_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`exists(
+        select 1 from conversation_members cm
+        inner join messages m on m.conversation_id = cm.conversation_id
+        where m.id = message_id and cm.user_id = ${authUid}
+      )`,
     }),
   ],
 );

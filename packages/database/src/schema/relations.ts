@@ -2,7 +2,13 @@ import { defineRelations } from "drizzle-orm";
 
 import { applications, applicationStatusHistory, reviews } from "./applications";
 import { account, session, user, verification } from "./auth";
-import { conversationMembers, conversations, messageReceipts, messages } from "./chat";
+import {
+  conversationMembers,
+  conversations,
+  messageCiphertexts,
+  messageReceipts,
+  messages,
+} from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
 import { notifications, pushSubscriptions, pushTokens } from "./notifications";
@@ -46,6 +52,7 @@ export const relations = defineRelations(
     conversations,
     conversationMembers,
     messages,
+    messageCiphertexts,
     messageReceipts,
     // Security
     identityKeys,
@@ -255,7 +262,18 @@ export const relations = defineRelations(
         from: r.messages.senderId,
         to: r.profiles.id,
       }),
+      ciphertexts: r.many.messageCiphertexts(),
       receipts: r.many.messageReceipts(),
+    },
+    messageCiphertexts: {
+      message: r.one.messages({
+        from: r.messageCiphertexts.messageId,
+        to: r.messages.id,
+      }),
+      recipient: r.one.profiles({
+        from: r.messageCiphertexts.recipientUserId,
+        to: r.profiles.id,
+      }),
     },
     messageReceipts: {
       message: r.one.messages({

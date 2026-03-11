@@ -1,5 +1,6 @@
 "use server";
 
+import type { CiphertextPayload } from "@openhospi/crypto";
 import { db, withRLS } from "@openhospi/database";
 import {
   blocks,
@@ -13,14 +14,7 @@ import { and, eq, inArray, or } from "drizzle-orm";
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 
-export type CiphertextPayload = {
-  recipientUserId: string;
-  ciphertext: string;
-  iv: string;
-  ratchetPublicKey: string;
-  messageNumber: number;
-  previousChainLength: number;
-};
+export type { CiphertextPayload } from "@openhospi/crypto";
 
 export async function sendMessage(conversationId: string, payloads: CiphertextPayload[]) {
   const session = await requireSession();

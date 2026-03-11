@@ -1,3 +1,4 @@
+import type { CiphertextPayload } from '@openhospi/crypto';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
@@ -46,14 +47,7 @@ export type MessageItem = {
   createdAt: string;
 };
 
-export type CiphertextPayload = {
-  recipientUserId: string;
-  ciphertext: string;
-  iv: string;
-  ratchetPublicKey: string;
-  messageNumber: number;
-  previousChainLength: number;
-};
+export type { CiphertextPayload } from '@openhospi/crypto';
 
 export const chatKeys = {
   conversations: () => ['chat', 'conversations'] as const,

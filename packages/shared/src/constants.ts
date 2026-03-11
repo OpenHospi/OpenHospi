@@ -71,13 +71,6 @@ export type AllowedImageType = (typeof ALLOWED_IMAGE_TYPES)[number];
 export const CONSENT_STORAGE_KEY = "openhospi_consent";
 export const CONSENT_CHANGE_EVENT = "openhospi:consent-change";
 
-// IndexedDB (E2EE storage)
-export const INDEXED_DB_NAME = "openhospi-crypto";
-export const INDEXED_DB_IDENTITY_STORE = "identity";
-export const INDEXED_DB_SESSION_STORE = "sessions";
-export const INDEXED_DB_PREKEY_STORE = "prekeys";
-export const INDEXED_DB_VERSION = 1;
-
 // Layout & responsive
 export const MOBILE_BREAKPOINT = 768;
 export const LEGAL_HEADER_OFFSET = 96;
@@ -115,9 +108,6 @@ export const MAX_SKIP_MESSAGE_KEYS = 1000;
 export const SIGNED_PRE_KEY_ROTATION_DAYS = 7;
 export const ONE_TIME_PRE_KEY_BATCH_SIZE = 100;
 export const ONE_TIME_PRE_KEY_REFILL_THRESHOLD = 25;
-
-// IndexedDB v2 (session store for Double Ratchet)
-export const INDEXED_DB_SESSION_STORE_NAME = "sessions";
 
 // Rate limits (per day)
 export const RATE_LIMIT_APPLY = 20;

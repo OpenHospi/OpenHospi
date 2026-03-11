@@ -6,8 +6,9 @@
  */
 import { PBKDF2_ITERATIONS } from "@openhospi/shared/constants";
 
+import type { CryptoBackend } from "../backends/platform";
+
 import { toBase64, fromBase64 } from "./encoding";
-import type { CryptoBackend } from "./platform";
 
 export type IdentityBackupData = {
   signingPrivateKey: string; // base64

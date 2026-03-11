@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { toBase64 } from "../encoding";
-import { encodeSafetyNumberQR, verifySafetyNumberQR } from "../safety-number";
+import { toBase64 } from "../protocol/encoding";
+import { encodeSafetyNumberQR, verifySafetyNumberQR } from "../protocol/safety-number";
 
 const fakeUserId = "550e8400-e29b-41d4-a716-446655440000";
 const fakeSigningKey = new Uint8Array(32).fill(42);

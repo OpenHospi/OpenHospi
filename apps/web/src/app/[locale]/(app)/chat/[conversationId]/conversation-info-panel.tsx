@@ -1,5 +1,6 @@
 "use client";
 
+import type { FingerprintResult } from "@openhospi/crypto";
 import { Flag, Lock, Shield, ShieldBan, ShieldCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -10,7 +11,6 @@ import { ReportDialog } from "@/components/shared/report-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { FingerprintResult } from "@/hooks/use-encryption";
 import { Link } from "@/i18n/navigation-app";
 import type { ConversationDetail } from "@/lib/queries/chat";
 
@@ -22,7 +22,7 @@ type Props = {
   blockedUserIds: string[];
   onBlock: (userId: string) => void;
   onUnblock: (userId: string) => void;
-  getFingerprint: (userId: string) => Promise<FingerprintResult>;
+  getFingerprint: (userId: string) => Promise<FingerprintResult | null>;
 };
 
 function MemberRow({
@@ -38,7 +38,7 @@ function MemberRow({
   isBlocked: boolean;
   onBlock: (userId: string) => void;
   onUnblock: (userId: string) => void;
-  getFingerprint: (userId: string) => Promise<FingerprintResult>;
+  getFingerprint: (userId: string) => Promise<FingerprintResult | null>;
 }) {
   const t = useTranslations("app.chat");
   const [safetyOpen, setSafetyOpen] = useState(false);

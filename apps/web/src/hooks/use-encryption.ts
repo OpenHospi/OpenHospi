@@ -1,16 +1,12 @@
 "use client";
 
 import {
-  getBackend,
-  ratchetEncrypt,
-  ratchetDecrypt,
-  serializeRatchetState,
-  deserializeRatchetState,
-  generateSafetyNumber,
-  encodeSafetyNumberQR,
-  fromBase64,
+  getKeyStatus,
+  encryptForRecipient,
+  decryptFromSender,
+  getIdentityFingerprint,
 } from "@openhospi/crypto";
-import type { EncryptedMessage } from "@openhospi/crypto";
+import type { EncryptedMessage, KeyStatus, FingerprintResult } from "@openhospi/crypto";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -18,14 +14,7 @@ import {
   fetchPreKeyBundle,
   fetchIdentityKeys,
 } from "@/app/[locale]/(app)/chat/key-actions";
-import { getKeyStatus, getOrCreateSession } from "@/lib/crypto/key-management";
-import type { KeyStatus } from "@/lib/crypto/key-management";
-import { getSession, getStoredIdentity, saveSession } from "@/lib/crypto/store";
-
-export type FingerprintResult = {
-  safetyNumber: string;
-  qrPayload: string;
-} | null;
+import { cryptoStore } from "@/lib/crypto";
 
 type UseEncryptionResult = {
   status: "loading" | KeyStatus;
@@ -39,7 +28,7 @@ type UseEncryptionResult = {
     senderUserId: string,
     encrypted: EncryptedMessage,
   ) => Promise<string>;
-  getIdentityFingerprint: (otherUserId: string) => Promise<FingerprintResult>;
+  getFingerprint: (otherUserId: string) => Promise<FingerprintResult | null>;
 };
 
 export function useEncryption(userId: string): UseEncryptionResult {
@@ -48,7 +37,7 @@ export function useEncryption(userId: string): UseEncryptionResult {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const keyStatus = await getKeyStatus(userId, fetchKeyBackup);
+      const keyStatus = await getKeyStatus(cryptoStore, userId, fetchKeyBackup);
       if (!cancelled) setStatus(keyStatus);
     })();
     return () => {
@@ -62,37 +51,18 @@ export function useEncryption(userId: string): UseEncryptionResult {
       recipientUserId: string,
       plaintext: string,
     ): Promise<EncryptedMessage> => {
-      const backend = getBackend();
-
-      // Get or create DR session with this recipient
-      const state = await getOrCreateSession(
+      return encryptForRecipient(
+        cryptoStore,
+        userId,
         conversationId,
         recipientUserId,
-        userId,
+        plaintext,
         async (targetUserId) => {
           const bundle = await fetchPreKeyBundle(targetUserId);
           if (!bundle) return null;
-          return {
-            identityKey: fromBase64(bundle.identityPublicKey),
-            signingKey: fromBase64(bundle.signingPublicKey),
-            signedPreKeyPublic: fromBase64(bundle.signedPreKeyPublic),
-            signedPreKeyId: bundle.signedPreKeyId,
-            signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
-            oneTimePreKeyPublic: bundle.oneTimePreKeyPublic
-              ? fromBase64(bundle.oneTimePreKeyPublic)
-              : undefined,
-            oneTimePreKeyId: bundle.oneTimePreKeyId,
-          };
+          return bundle;
         },
       );
-
-      // Encrypt with Double Ratchet
-      const { state: newState, encrypted } = await ratchetEncrypt(backend, state, plaintext);
-
-      // Persist updated session
-      await saveSession(conversationId, recipientUserId, serializeRatchetState(newState));
-
-      return encrypted;
     },
     [userId],
   );
@@ -103,50 +73,20 @@ export function useEncryption(userId: string): UseEncryptionResult {
       senderUserId: string,
       encrypted: EncryptedMessage,
     ): Promise<string> => {
-      const backend = getBackend();
-
-      // Get existing session
-      const serialized = await getSession(conversationId, senderUserId);
-      if (!serialized) {
-        throw new Error("No session found for this sender — message cannot be decrypted");
-      }
-
-      const state = deserializeRatchetState(serialized);
-      const { state: newState, plaintext } = await ratchetDecrypt(backend, state, encrypted);
-
-      // Persist updated session
-      await saveSession(conversationId, senderUserId, serializeRatchetState(newState));
-
-      return plaintext;
-    },
-    [],
-  );
-
-  const getIdentityFingerprint = useCallback(
-    async (otherUserId: string): Promise<FingerprintResult> => {
-      const myIdentity = await getStoredIdentity(userId);
-      if (!myIdentity) return null;
-
-      const [theirKeys] = await fetchIdentityKeys([otherUserId]);
-      if (!theirKeys) return null;
-
-      const safetyNumber = await generateSafetyNumber(
-        userId,
-        fromBase64(myIdentity.signingPublicKey),
-        otherUserId,
-        fromBase64(theirKeys.signingPublicKey),
-      );
-
-      const qrPayload = encodeSafetyNumberQR(
-        userId,
-        fromBase64(myIdentity.signingPublicKey),
-        safetyNumber,
-      );
-
-      return { safetyNumber, qrPayload };
+      return decryptFromSender(cryptoStore, userId, conversationId, senderUserId, encrypted);
     },
     [userId],
   );
 
-  return { status, encryptMessage, decryptMessage, getIdentityFingerprint };
+  const getFingerprint = useCallback(
+    async (otherUserId: string): Promise<FingerprintResult | null> => {
+      return getIdentityFingerprint(cryptoStore, userId, otherUserId, async (userIds) => {
+        const keys = await fetchIdentityKeys(userIds);
+        return keys.map((k) => ({ signingPublicKey: k.signingPublicKey }));
+      });
+    },
+    [userId],
+  );
+
+  return { status, encryptMessage, decryptMessage, getFingerprint };
 }

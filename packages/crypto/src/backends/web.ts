@@ -6,8 +6,9 @@
  */
 import { ed25519, x25519 } from "@noble/curves/ed25519.js";
 
+import type { KeyPair } from "../protocol/types";
+
 import type { CryptoBackend } from "./platform";
-import type { KeyPair } from "./types";
 
 // Web Crypto expects Uint8Array<ArrayBuffer>, but generic Uint8Array has ArrayBufferLike.
 // This helper narrows the type to satisfy strict TS checks.
@@ -122,3 +123,5 @@ export class WebCryptoBackend implements CryptoBackend {
 export function createWebBackend(): WebCryptoBackend {
   return new WebCryptoBackend();
 }
+
+export { IndexedDBCryptoStore } from "../store/indexed-db";

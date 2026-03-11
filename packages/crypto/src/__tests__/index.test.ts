@@ -1,8 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { createWebBackend } from "./backend-web";
-import type { PreKeyBundle } from "./types";
-
+import { createWebBackend } from "../backends/web";
 import {
   // Platform
   setBackend,
@@ -44,7 +42,8 @@ import {
   deriveKeyFromPIN,
   encryptIdentityBackup,
   decryptIdentityBackup,
-} from "./index";
+} from "../index";
+import type { PreKeyBundle } from "../protocol/types";
 
 // ── Setup ──
 

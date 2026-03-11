@@ -1,3 +1,4 @@
+import type { CiphertextPayload } from "@openhospi/crypto";
 import { db, withRLS } from "@openhospi/database";
 import {
   blocks,
@@ -10,15 +11,6 @@ import { and, eq, inArray, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { apiError, apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
-
-type CiphertextPayload = {
-  recipientUserId: string;
-  ciphertext: string;
-  iv: string;
-  ratchetPublicKey: string;
-  messageNumber: number;
-  previousChainLength: number;
-};
 
 export async function POST(request: Request) {
   try {

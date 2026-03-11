@@ -5,7 +5,7 @@
  * This provides forward secrecy: once a message key is used, the chain key advances
  * and the old message key cannot be re-derived.
  */
-import type { CryptoBackend } from "./platform";
+import type { CryptoBackend } from "../backends/platform";
 
 const CHAIN_KEY_INFO = new TextEncoder().encode("OpenHospiChainKey");
 const MESSAGE_KEY_INFO = new TextEncoder().encode("OpenHospiMessageKey");

@@ -8,9 +8,10 @@
  * Based on Signal's X3DH specification:
  * https://signal.org/docs/specifications/x3dh/
  */
+import type { CryptoBackend } from "../backends/platform";
+
 import { concatBytes } from "./encoding";
 import { verifySignedPreKey } from "./keys";
-import type { CryptoBackend } from "./platform";
 import type { IdentityKeyPair, PreKeyBundle, X3DHResult } from "./types";
 
 const X3DH_INFO = new TextEncoder().encode("OpenHospiX3DH");

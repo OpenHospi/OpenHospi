@@ -9,10 +9,11 @@
  */
 import { MAX_SKIP_MESSAGE_KEYS } from "@openhospi/shared/constants";
 
+import type { CryptoBackend } from "../backends/platform";
+
 import { toBase64, fromBase64 } from "./encoding";
 import { encrypt, decrypt, encodeHeaderAsAad } from "./encryption";
 import { kdfChainStep, kdfRootStep } from "./kdf-chain";
-import type { CryptoBackend } from "./platform";
 import type {
   EncryptedMessage,
   MessageHeader,

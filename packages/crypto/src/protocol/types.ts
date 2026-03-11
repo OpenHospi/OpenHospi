@@ -50,6 +50,17 @@ export type PreKeyBundle = {
   oneTimePreKeyId?: number;
 };
 
+/** Server-side pre-key bundle (base64 strings instead of Uint8Array) */
+export type ServerPreKeyBundle = {
+  identityPublicKey: string;
+  signingPublicKey: string;
+  signedPreKeyPublic: string;
+  signedPreKeyId: number;
+  signedPreKeySignature: string;
+  oneTimePreKeyPublic?: string;
+  oneTimePreKeyId?: number;
+};
+
 /** Result of X3DH key exchange (initiator side) */
 export type X3DHResult = {
   /** 32-byte shared secret */

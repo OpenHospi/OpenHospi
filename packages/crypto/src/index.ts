@@ -11,8 +11,8 @@
  */
 
 // ── Platform ──
-export { setBackend, getBackend } from "./platform";
-export type { CryptoBackend } from "./platform";
+export { setBackend, getBackend } from "./backends/platform";
+export type { CryptoBackend } from "./backends/platform";
 
 // ── Types ──
 export type {
@@ -21,6 +21,7 @@ export type {
   SignedPreKey,
   OneTimePreKey,
   PreKeyBundle,
+  ServerPreKeyBundle,
   X3DHResult,
   RatchetState,
   SkippedKeyEntry,
@@ -29,10 +30,10 @@ export type {
   SessionState,
   SerializedRatchetState,
   SerializedSkippedKeyEntry,
-} from "./types";
+} from "./protocol/types";
 
 // ── Encoding ──
-export { toBase64, fromBase64, concatBytes, bytesEqual } from "./encoding";
+export { toBase64, fromBase64, concatBytes, bytesEqual } from "./protocol/encoding";
 
 // ── Key Generation ──
 export {
@@ -40,10 +41,10 @@ export {
   generateSignedPreKey,
   generateOneTimePreKeys,
   verifySignedPreKey,
-} from "./keys";
+} from "./protocol/keys";
 
 // ── X3DH Key Exchange ──
-export { x3dhInitiate, x3dhRespond } from "./x3dh";
+export { x3dhInitiate, x3dhRespond } from "./protocol/x3dh";
 
 // ── Double Ratchet ──
 export {
@@ -53,18 +54,49 @@ export {
   ratchetDecrypt,
   serializeRatchetState,
   deserializeRatchetState,
-} from "./double-ratchet";
+} from "./protocol/double-ratchet";
 
 // ── KDF Chain ──
-export { kdfChainStep, kdfRootStep } from "./kdf-chain";
+export { kdfChainStep, kdfRootStep } from "./protocol/kdf-chain";
 
 // ── Encryption ──
-export { encrypt, decrypt, encodeHeaderAsAad } from "./encryption";
+export { encrypt, decrypt, encodeHeaderAsAad } from "./protocol/encryption";
 
 // ── Safety Numbers ──
-export { generateSafetyNumber, encodeSafetyNumberQR, verifySafetyNumberQR } from "./safety-number";
-export type { QRVerifyResult } from "./safety-number";
+export {
+  generateSafetyNumber,
+  encodeSafetyNumberQR,
+  verifySafetyNumberQR,
+} from "./protocol/safety-number";
+export type { QRVerifyResult } from "./protocol/safety-number";
 
 // ── Backup ──
-export { deriveKeyFromPIN, encryptIdentityBackup, decryptIdentityBackup } from "./backup";
-export type { IdentityBackupData, EncryptedBackup } from "./backup";
+export { deriveKeyFromPIN, encryptIdentityBackup, decryptIdentityBackup } from "./protocol/backup";
+export type { IdentityBackupData, EncryptedBackup } from "./protocol/backup";
+
+// ── Store ──
+export type {
+  CryptoStore,
+  StoredIdentity,
+  StoredSignedPreKey,
+  StoredOneTimePreKey,
+} from "./store/types";
+
+// ── Manager: Key Management ──
+export {
+  getKeyStatus,
+  setupKeysWithPIN,
+  recoverKeysWithPIN,
+  resetKeys,
+  replenishOneTimePreKeys,
+  getOrCreateSession,
+} from "./manager/key-management";
+export type { KeyStatus } from "./manager/key-management";
+
+// ── Manager: Encryption Operations ──
+export {
+  encryptForRecipient,
+  decryptFromSender,
+  getIdentityFingerprint,
+} from "./manager/encryption-ops";
+export type { CiphertextPayload, FingerprintResult } from "./manager/encryption-ops";

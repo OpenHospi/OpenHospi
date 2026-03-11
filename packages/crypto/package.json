@@ -6,8 +6,8 @@
   "license": "AGPL-3.0-only",
   "exports": {
     ".": "./src/index.ts",
-    "./web": "./src/backend-web.ts",
-    "./native": "./src/backend-native.ts"
+    "./web": "./src/backends/web.ts",
+    "./native": "./src/backends/native.ts"
   },
   "dependencies": {
     "@noble/curves": "^2.0.1",

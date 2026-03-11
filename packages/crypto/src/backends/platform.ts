@@ -1,4 +1,4 @@
-import type { KeyPair } from "./types";
+import type { KeyPair } from "../protocol/types";
 
 /**
  * Platform-agnostic crypto backend interface.

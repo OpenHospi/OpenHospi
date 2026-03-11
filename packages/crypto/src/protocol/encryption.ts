@@ -4,7 +4,7 @@
  * The auth tag is appended to the ciphertext (Web Crypto default).
  * AAD (additional authenticated data) includes the message header for authentication.
  */
-import type { CryptoBackend } from "./platform";
+import type { CryptoBackend } from "../backends/platform";
 
 const IV_LENGTH = 12;
 

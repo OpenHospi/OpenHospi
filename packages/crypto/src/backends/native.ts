@@ -5,8 +5,9 @@
  * Curve operations are synchronous; AES/HKDF/PBKDF2 return resolved Promises
  * to match the async CryptoBackend interface.
  */
+import type { KeyPair } from "../protocol/types";
+
 import type { CryptoBackend } from "./platform";
-import type { KeyPair } from "./types";
 
 // react-native-quick-crypto provides Node.js-compatible crypto
 // eslint-disable-next-line @typescript-eslint/no-require-imports

@@ -9,7 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { useSession } from '@/lib/auth-client';
-import { setupKeysWithPIN } from '@/lib/crypto/key-management';
+import { setupKeysWithPIN } from '@openhospi/crypto';
+
+import { cryptoStore } from '@/lib/crypto/store';
 import {
   uploadIdentityKeyApi,
   uploadSignedPreKeyApi,
@@ -48,7 +50,7 @@ export default function SecurityStep() {
 
     setLoading(true);
     try {
-      await setupKeysWithPIN(session.user.id, value, {
+      await setupKeysWithPIN(cryptoStore, session.user.id, value, {
         uploadIdentityKey: uploadIdentityKeyApi,
         uploadSignedPreKey: uploadSignedPreKeyApi,
         uploadOneTimePreKeys: uploadOneTimePreKeysApi,

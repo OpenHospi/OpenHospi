@@ -4,7 +4,8 @@
  * - Signed pre-keys (X25519 + Ed25519 signature)
  * - One-time pre-keys (X25519 batch)
  */
-import type { CryptoBackend } from "./platform";
+import type { CryptoBackend } from "../backends/platform";
+
 import type { IdentityKeyPair, KeyPair, OneTimePreKey, SignedPreKey } from "./types";
 
 /**

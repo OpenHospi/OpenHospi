@@ -28,4 +28,9 @@ export const queryKeys = {
     consent: () => ['settings', 'consent'] as const,
     sessions: () => ['settings', 'sessions'] as const,
   },
+  chat: {
+    conversations: () => ['chat', 'conversations'] as const,
+    conversationDetail: (id: string) => ['chat', 'conversations', id] as const,
+    messages: (conversationId: string) => ['chat', 'messages', conversationId] as const,
+  },
 };

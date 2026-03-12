@@ -24,9 +24,6 @@ concurrency:
   group: ci-mobile-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   install:
     name: Install
@@ -34,13 +31,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - uses: actions/cache/save@v4
+      - uses: actions/cache/save@v5
         with:
           path: |
             node_modules
@@ -55,11 +52,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -75,11 +72,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -95,11 +92,11 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -115,11 +112,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v5
         with:
           path: |
             node_modules

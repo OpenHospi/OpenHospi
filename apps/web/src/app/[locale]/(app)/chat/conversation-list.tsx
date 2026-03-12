@@ -18,18 +18,19 @@ export function ConversationList({ conversations, currentUserId }: Props) {
   const format = useFormatter();
   const pathname = usePathname();
 
-  function formatTime(date: Date): string {
+  function formatTime(date: Date | string): string {
+    const d = date instanceof Date ? date : new Date(date);
     const now = new Date();
-    const diff = now.getTime() - date.getTime();
+    const diff = now.getTime() - d.getTime();
     const hours = diff / (1000 * 60 * 60);
 
     if (hours < 24) {
-      return format.dateTime(date, { hour: "2-digit", minute: "2-digit" });
+      return format.dateTime(d, { hour: "2-digit", minute: "2-digit" });
     }
     if (hours < 168) {
-      return format.dateTime(date, { weekday: "short" });
+      return format.dateTime(d, { weekday: "short" });
     }
-    return format.dateTime(date, "short");
+    return format.dateTime(d, "short");
   }
 
   if (conversations.length === 0) {

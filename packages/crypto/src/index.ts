@@ -97,6 +97,8 @@ export type { KeyStatus } from "./manager/key-management";
 export {
   encryptForRecipient,
   decryptFromSender,
+  encryptForSelf,
+  decryptForSelf,
   getIdentityFingerprint,
 } from "./manager/encryption-ops";
 export type { CiphertextPayload, FingerprintResult } from "./manager/encryption-ops";

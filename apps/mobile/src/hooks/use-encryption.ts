@@ -2,6 +2,8 @@ import {
   getKeyStatus,
   encryptForRecipient,
   decryptFromSender,
+  encryptForSelf as encryptForSelfFn,
+  decryptForSelf as decryptForSelfFn,
   getIdentityFingerprint,
 } from '@openhospi/crypto';
 import type { EncryptedMessage, KeyStatus, FingerprintResult } from '@openhospi/crypto';
@@ -23,6 +25,8 @@ type UseEncryptionResult = {
     senderUserId: string,
     encrypted: EncryptedMessage
   ) => Promise<string>;
+  encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
+  decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
   getFingerprint: (otherUserId: string) => Promise<FingerprintResult | null>;
 };
 
@@ -54,8 +58,7 @@ export function useEncryption(userId: string): UseEncryptionResult {
         plaintext,
         async (targetUserId) => {
           const bundle = await fetchPreKeyBundleApi(targetUserId);
-          if (!bundle) return null;
-          return bundle;
+          return bundle ?? null;
         }
       );
     },
@@ -73,6 +76,20 @@ export function useEncryption(userId: string): UseEncryptionResult {
     [userId]
   );
 
+  const encryptForSelf = useCallback(
+    async (plaintext: string): Promise<{ ciphertext: string; iv: string }> => {
+      return encryptForSelfFn(cryptoStore, userId, plaintext);
+    },
+    [userId]
+  );
+
+  const decryptForSelf = useCallback(
+    async (ciphertext: string, iv: string): Promise<string> => {
+      return decryptForSelfFn(cryptoStore, userId, ciphertext, iv);
+    },
+    [userId]
+  );
+
   const getFingerprint = useCallback(
     async (otherUserId: string): Promise<FingerprintResult | null> => {
       return getIdentityFingerprint(cryptoStore, userId, otherUserId, async (userIds) => {
@@ -85,5 +102,5 @@ export function useEncryption(userId: string): UseEncryptionResult {
     [userId]
   );
 
-  return { status, encryptMessage, decryptMessage, getFingerprint };
+  return { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf, getFingerprint };
 }

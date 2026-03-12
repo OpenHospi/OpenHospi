@@ -138,7 +138,8 @@ export default function ConversationScreen() {
   const { data: initialMessages, isPending: messagesLoading } = useMessages(conversationId);
   const sendMessage = useSendMessage();
   const markRead = useMarkRead(conversationId);
-  const { status, encryptMessage, decryptMessage } = useEncryption(userId);
+  const { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf } =
+    useEncryption(userId);
 
   const [messages, setMessages] = useState<DecryptedMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -179,25 +180,39 @@ export default function ConversationScreen() {
     (async () => {
       const decrypted = await Promise.all(
         initialMessages.map(async (msg): Promise<DecryptedMessage> => {
-          if (msg.senderId === userId) {
+          if (!msg.ciphertext || !msg.iv) {
             return { ...msg, decryptedText: null, decryptFailed: false };
           }
-          if (!msg.ciphertext || !msg.iv || !msg.ratchetPublicKey) {
-            return { ...msg, decryptedText: null, decryptFailed: false };
-          }
+
           try {
-            const encrypted: EncryptedMessage = {
-              ciphertext: msg.ciphertext,
-              iv: msg.iv,
-              header: {
-                ratchetPublicKey: msg.ratchetPublicKey,
-                messageNumber: msg.messageNumber ?? 0,
-                previousChainLength: msg.previousChainLength ?? 0,
-              },
-            };
-            const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
-            return { ...msg, decryptedText: plaintext, decryptFailed: false };
-          } catch {
+            if (msg.senderId === userId && msg.ratchetPublicKey === 'self') {
+              // Own message — self-encrypted
+              const plaintext = await decryptForSelf(msg.ciphertext, msg.iv);
+              return { ...msg, decryptedText: plaintext, decryptFailed: false };
+            }
+
+            if (
+              msg.ratchetPublicKey &&
+              msg.messageNumber != null &&
+              msg.previousChainLength != null
+            ) {
+              // Other member's message — Double Ratchet
+              const encrypted: EncryptedMessage = {
+                ciphertext: msg.ciphertext,
+                iv: msg.iv,
+                header: {
+                  ratchetPublicKey: msg.ratchetPublicKey,
+                  messageNumber: msg.messageNumber,
+                  previousChainLength: msg.previousChainLength,
+                },
+              };
+              const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
+              return { ...msg, decryptedText: plaintext, decryptFailed: false };
+            }
+
+            return { ...msg, decryptedText: null, decryptFailed: false };
+          } catch (error) {
+            console.error('[Chat] Decryption failed for message', msg.id, error);
             return { ...msg, decryptedText: null, decryptFailed: true };
           }
         })
@@ -205,7 +220,7 @@ export default function ConversationScreen() {
       setMessages(decrypted.slice().reverse());
       setIsDecrypting(false);
     })();
-  }, [initialMessages, status, userId, conversationId, decryptMessage]);
+  }, [initialMessages, status, userId, conversationId, decryptMessage, decryptForSelf]);
 
   // Mark conversation read on mount
   // markRead.mutate is stable per React Query — safe to exclude from deps
@@ -255,6 +270,9 @@ export default function ConversationScreen() {
 
           if (!active) return;
 
+          // Skip own messages — optimistic add already covers them
+          if (record.sender_user_id === userId) return;
+
           try {
             const senderMember = detail?.members.find((m) => m.userId === record.sender_user_id);
 
@@ -294,8 +312,8 @@ export default function ConversationScreen() {
               setMessages((prev) => [newMsg, ...prev]);
               markRead.mutate();
             }
-          } catch {
-            // Silently ignore decryption errors for realtime messages
+          } catch (error) {
+            console.error('[Chat] Realtime decryption failed', error);
           }
         }
       );
@@ -338,6 +356,17 @@ export default function ConversationScreen() {
           };
         })
       );
+
+      // Encrypt for self (HKDF-derived key)
+      const selfEncrypted = await encryptForSelf(text);
+      payloads.push({
+        recipientUserId: userId,
+        ciphertext: selfEncrypted.ciphertext,
+        iv: selfEncrypted.iv,
+        ratchetPublicKey: 'self',
+        messageNumber: 0,
+        previousChainLength: 0,
+      });
 
       await sendMessage.mutateAsync({ conversationId, payloads });
 

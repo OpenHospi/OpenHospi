@@ -20,6 +20,7 @@ type Props = {
     recipientUserId: string,
     plaintext: string,
   ) => Promise<EncryptedMessage>;
+  encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
   onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
 
@@ -28,6 +29,7 @@ export function ChatInput({
   members,
   currentUserId,
   encryptMessage,
+  encryptForSelf,
   onMessageSent,
 }: Props) {
   const t = useTranslations("app.chat");
@@ -43,7 +45,7 @@ export function ChatInput({
       const otherMembers = members.filter((m) => m.userId !== currentUserId);
       if (otherMembers.length === 0) return;
 
-      // Encrypt for ALL other members (pairwise)
+      // Encrypt for all other members (pairwise Double Ratchet)
       const payloads: CiphertextPayload[] = await Promise.all(
         otherMembers.map(async (member) => {
           const encrypted = await encryptMessage(conversationId, member.userId, trimmed);
@@ -57,6 +59,17 @@ export function ChatInput({
           };
         }),
       );
+
+      // Encrypt for self (HKDF-derived key)
+      const selfEncrypted = await encryptForSelf(trimmed);
+      payloads.push({
+        recipientUserId: currentUserId,
+        ciphertext: selfEncrypted.ciphertext,
+        iv: selfEncrypted.iv,
+        ratchetPublicKey: "self",
+        messageNumber: 0,
+        previousChainLength: 0,
+      });
 
       const { messageId } = await sendMessage(conversationId, payloads);
 

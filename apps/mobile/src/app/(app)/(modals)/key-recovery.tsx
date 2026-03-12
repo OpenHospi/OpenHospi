@@ -41,14 +41,19 @@ export default function KeyRecoveryScreen() {
 
   // Fetch backup on mount to determine mode
   useEffect(() => {
-    fetchBackupApi().then((b) => {
-      if (b) {
-        setBackup(b);
-        setMode('recover');
-      } else {
+    fetchBackupApi()
+      .then((b) => {
+        if (b) {
+          setBackup(b);
+          setMode('recover');
+        } else {
+          setMode('setup');
+        }
+      })
+      .catch((error) => {
+        console.error('[KeyRecovery] Failed to fetch backup:', error);
         setMode('setup');
-      }
-    });
+      });
   }, []);
 
   const userId = session?.user?.id;
@@ -66,7 +71,8 @@ export default function KeyRecoveryScreen() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('recovery_success'));
       router.back();
-    } catch {
+    } catch (error) {
+      console.error('[KeyRecovery] Recovery failed:', error);
       Alert.alert(t('recovery_error'));
       setPin('');
     } finally {
@@ -89,7 +95,8 @@ export default function KeyRecoveryScreen() {
             setMode('setup');
             setPin('');
             setConfirmPin('');
-          } catch {
+          } catch (error) {
+            console.error('[KeyRecovery] Reset failed:', error);
             Alert.alert(t('setup_error'));
           } finally {
             setLoading(false);
@@ -125,7 +132,8 @@ export default function KeyRecoveryScreen() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('setup_success'));
       router.back();
-    } catch {
+    } catch (error) {
+      console.error('[KeyRecovery] Setup failed:', error);
       Alert.alert(t('setup_error'));
       setConfirmPin('');
     } finally {

@@ -57,7 +57,8 @@ export default function SecurityStep() {
         uploadBackup: uploadBackupApi,
       });
       await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
-    } catch {
+    } catch (error) {
+      console.error('[SecurityStep] Setup failed:', error);
       Alert.alert(t('setup_error'));
       setConfirmPin('');
       setLoading(false);

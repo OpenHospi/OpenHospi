@@ -6,7 +6,7 @@ export default function ChatLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="[conversationId]" options={{ title: '' }} />
+      <Stack.Screen name="[conversationId]" options={{ title: '', headerBackVisible: true }} />
       <Stack.Screen name="[conversationId]/info" options={{ title: t('group_info') }} />
     </Stack>
   );

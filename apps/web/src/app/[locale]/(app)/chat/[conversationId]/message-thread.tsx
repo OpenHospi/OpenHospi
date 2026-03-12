@@ -21,6 +21,7 @@ type Props = {
     senderUserId: string,
     encrypted: EncryptedMessage,
   ) => Promise<string>;
+  decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
   addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
 };
 
@@ -40,6 +41,7 @@ export function MessageThread({
   initialMessages,
   members,
   decryptMessage,
+  decryptForSelf,
   addMessageRef,
 }: Props) {
   const t = useTranslations("app.chat");
@@ -52,56 +54,48 @@ export function MessageThread({
     async (msgs: MessageItem[]) => {
       const results: DecryptedMessage[] = [];
       for (const msg of msgs) {
-        // Skip messages from ourselves (no ciphertext row)
-        if (msg.senderId === currentUserId) continue;
+        if (!msg.ciphertext || !msg.iv) continue;
 
-        // Skip if no ciphertext (sender's own messages on reload)
-        if (
-          !msg.ciphertext ||
-          !msg.iv ||
-          !msg.ratchetPublicKey ||
-          msg.messageNumber == null ||
-          msg.previousChainLength == null
-        )
-          continue;
+        const baseMsg = {
+          id: msg.id,
+          senderId: msg.senderId,
+          senderFirstName: msg.senderFirstName,
+          senderAvatarUrl: msg.senderAvatarUrl,
+          messageType: msg.messageType,
+          createdAt: msg.createdAt,
+        };
 
         try {
-          const encrypted: EncryptedMessage = {
-            header: {
-              ratchetPublicKey: msg.ratchetPublicKey,
-              messageNumber: msg.messageNumber,
-              previousChainLength: msg.previousChainLength,
-            },
-            ciphertext: msg.ciphertext,
-            iv: msg.iv,
-          };
-
-          const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
-
-          results.push({
-            id: msg.id,
-            senderId: msg.senderId,
-            senderFirstName: msg.senderFirstName,
-            senderAvatarUrl: msg.senderAvatarUrl,
-            plaintext,
-            messageType: msg.messageType,
-            createdAt: msg.createdAt,
-          });
-        } catch {
-          results.push({
-            id: msg.id,
-            senderId: msg.senderId,
-            senderFirstName: msg.senderFirstName,
-            senderAvatarUrl: msg.senderAvatarUrl,
-            plaintext: t("key_reset_message"),
-            messageType: msg.messageType,
-            createdAt: msg.createdAt,
-          });
+          if (msg.senderId === currentUserId && msg.ratchetPublicKey === "self") {
+            // Own message — self-encrypted
+            const plaintext = await decryptForSelf(msg.ciphertext, msg.iv);
+            results.push({ ...baseMsg, plaintext });
+          } else if (
+            msg.ratchetPublicKey &&
+            msg.messageNumber != null &&
+            msg.previousChainLength != null
+          ) {
+            // Other member's message — Double Ratchet
+            const encrypted: EncryptedMessage = {
+              header: {
+                ratchetPublicKey: msg.ratchetPublicKey,
+                messageNumber: msg.messageNumber,
+                previousChainLength: msg.previousChainLength,
+              },
+              ciphertext: msg.ciphertext,
+              iv: msg.iv,
+            };
+            const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
+            results.push({ ...baseMsg, plaintext });
+          }
+        } catch (error) {
+          console.error("[MessageThread] Decryption failed for message", msg.id, error);
+          results.push({ ...baseMsg, plaintext: t("key_reset_message") });
         }
       }
       return results;
     },
-    [conversationId, currentUserId, decryptMessage, t],
+    [conversationId, currentUserId, decryptMessage, decryptForSelf, t],
   );
 
   const decryptMessagesRef = useRef(decryptMessages);
@@ -161,8 +155,6 @@ export function MessageThread({
       if (seenIdsRef.current.has(messageId)) return;
       seenIdsRef.current.add(messageId);
 
-      // We need the message metadata (senderId, createdAt) — fetch from messages table
-      // The ciphertext row has the crypto data, but not the sender info
       const ciphertext = row.ciphertext as string;
       const iv = row.iv as string;
       const ratchetPublicKey = row.ratchet_public_key as string;
@@ -172,6 +164,9 @@ export function MessageThread({
       // Fetch message metadata (senderId, createdAt) via server action
       const metadata = await getMessageMetadata(messageId);
       if (!metadata) return;
+
+      // Skip own messages — optimistic add already covers them
+      if (metadata.senderId === currentUserId) return;
 
       const member = membersRef.current.find((m) => m.userId === metadata.senderId);
 

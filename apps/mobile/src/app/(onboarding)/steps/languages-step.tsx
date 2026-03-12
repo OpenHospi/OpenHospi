@@ -1,21 +1,25 @@
 import { MAX_LANGUAGES, MIN_LANGUAGES } from '@openhospi/shared/constants';
 import { Language } from '@openhospi/shared/enums';
-import { useState } from 'react';
+import { useImperativeHandle, useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useSubmitLanguages } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
+import type { StepHandle } from '../types';
 
-export default function LanguagesStep({ onNext, profile }: Props) {
+type Props = {
+  ref?: React.Ref<StepHandle>;
+  onNext: () => void;
+  profile: ProfileWithPhotos | undefined;
+};
+
+export default function LanguagesStep({ ref, onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.language_enum' });
-  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [selected, setSelected] = useState<string[]>(profile?.languages ?? []);
   const submitLanguages = useSubmitLanguages();
@@ -39,6 +43,8 @@ export default function LanguagesStep({ onNext, profile }: Props) {
     );
   }
 
+  useImperativeHandle(ref, () => ({ submit: handleSubmit }));
+
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
       <Text variant="muted" className="text-sm">
@@ -57,12 +63,6 @@ export default function LanguagesStep({ onNext, profile }: Props) {
           );
         })}
       </View>
-
-      <Button
-        onPress={handleSubmit}
-        disabled={submitLanguages.isPending || selected.length < MIN_LANGUAGES}>
-        <Text>{tCommon('next')}</Text>
-      </Button>
     </ScrollView>
   );
 }

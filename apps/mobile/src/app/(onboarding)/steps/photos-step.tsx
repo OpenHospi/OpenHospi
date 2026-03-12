@@ -1,17 +1,22 @@
 import { MAX_PROFILE_PHOTOS } from '@openhospi/shared/constants';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useImperativeHandle, useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
 import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
+import type { StepHandle } from '../types';
+
+type Props = {
+  ref?: React.Ref<StepHandle>;
+  onNext: () => void;
+  profile: ProfileWithPhotos | undefined;
+};
 
 type PhotoSlot = { uri: string; uploading: boolean; uploaded: boolean } | null;
 
@@ -34,14 +39,23 @@ function buildInitialSlots(profile: ProfileWithPhotos | undefined): PhotoSlot[] 
   return slots;
 }
 
-export default function PhotosStep({ onNext, profile }: Props) {
+export default function PhotosStep({ ref, onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
-  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [slots, setSlots] = useState<PhotoSlot[]>(() => buildInitialSlots(profile));
   const uploadPhoto = useUploadProfilePhoto();
 
   const hasAtLeastOnePhoto = slots.some((s) => s?.uploaded);
+
+  function handleSubmit() {
+    if (!hasAtLeastOnePhoto) {
+      Alert.alert('Please upload at least one photo.');
+      return;
+    }
+    onNext();
+  }
+
+  useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   async function pickPhoto(slotIndex: number) {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -139,10 +153,6 @@ export default function PhotosStep({ onNext, profile }: Props) {
           );
         })}
       </View>
-
-      <Button onPress={onNext} disabled={!hasAtLeastOnePhoto}>
-        <Text>{tCommon('next')}</Text>
-      </Button>
     </ScrollView>
   );
 }

@@ -1,5 +1,5 @@
 import { ONBOARDING_TOTAL_STEPS } from '@openhospi/shared/constants';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import LanguagesStep from './steps/languages-step';
 import PersonalityStep from './steps/personality-step';
 import PhotosStep from './steps/photos-step';
 import SecurityStep from './steps/security-step';
+import type { StepHandle } from './types';
 
 const STEP_KEYS = [
   'identity',
@@ -28,12 +29,16 @@ const STEP_KEYS = [
   'security',
 ] as const;
 
+// Steps 1 (identity) and 7 (security) manage their own buttons
+const SELF_MANAGED_STEPS = new Set([1, 7]);
+
 export default function OnboardingScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { data: status, isPending: statusPending } = useOnboardingStatus();
   const { data: profile, isPending: profilePending } = useProfile();
   const [currentStep, setCurrentStep] = useState<number | null>(null);
+  const stepRef = useRef<StepHandle>(null);
 
   const step = currentStep ?? status?.currentStep ?? 1;
   const clampedStep = Math.min(step, ONBOARDING_TOTAL_STEPS);
@@ -60,8 +65,17 @@ export default function OnboardingScreen() {
     }
   }
 
+  function handleNextPress() {
+    if (stepRef.current) {
+      stepRef.current.submit();
+    } else {
+      handleNext();
+    }
+  }
+
   const stepKey = STEP_KEYS[clampedStep - 1];
   const progress = (clampedStep / ONBOARDING_TOTAL_STEPS) * 100;
+  const showBottomBar = !SELF_MANAGED_STEPS.has(clampedStep);
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-background">
@@ -87,15 +101,39 @@ export default function OnboardingScreen() {
         {clampedStep === 1 && (
           <IdentityStep onNext={handleNext} profile={profile} status={status} />
         )}
-        {clampedStep === 2 && <AboutStep onNext={handleNext} profile={profile} />}
-        {clampedStep === 3 && <BioStep onNext={handleNext} profile={profile} />}
-        {clampedStep === 4 && <PersonalityStep onNext={handleNext} profile={profile} />}
-        {clampedStep === 5 && <LanguagesStep onNext={handleNext} profile={profile} />}
-        {clampedStep === 6 && <PhotosStep onNext={handleNext} profile={profile} />}
+        {clampedStep === 2 && <AboutStep ref={stepRef} onNext={handleNext} profile={profile} />}
+        {clampedStep === 3 && <BioStep ref={stepRef} onNext={handleNext} profile={profile} />}
+        {clampedStep === 4 && (
+          <PersonalityStep ref={stepRef} onNext={handleNext} profile={profile} />
+        )}
+        {clampedStep === 5 && <LanguagesStep ref={stepRef} onNext={handleNext} profile={profile} />}
+        {clampedStep === 6 && <PhotosStep ref={stepRef} onNext={handleNext} profile={profile} />}
         {clampedStep === 7 && <SecurityStep />}
       </View>
 
-      {clampedStep > 1 && (
+      {showBottomBar && (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            paddingBottom: 16,
+            gap: 12,
+          }}>
+          {clampedStep > 1 ? (
+            <Button variant="ghost" onPress={handleBack} style={{ flex: 1 }}>
+              <Text>{tCommon('back')}</Text>
+            </Button>
+          ) : (
+            <View style={{ flex: 1 }} />
+          )}
+          <Button onPress={handleNextPress} style={{ flex: 1 }}>
+            <Text>{tCommon('next')}</Text>
+          </Button>
+        </View>
+      )}
+
+      {!showBottomBar && clampedStep > 1 && (
         <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
           <Button variant="ghost" onPress={handleBack}>
             <Text>{tCommon('back')}</Text>

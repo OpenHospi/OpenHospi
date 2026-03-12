@@ -54,7 +54,7 @@ catalog:
   "@hookform/resolvers": ^5.2.2
 
   # ── Types ──
-  "@types/node": ^24.11.0
+  "@types/node": ^25.4.0
 
   # ── Testing ──
   "@playwright/test": ^1.58.2

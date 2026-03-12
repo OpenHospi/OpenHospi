@@ -31,6 +31,7 @@ export function useRespondToInvitation() {
           queryKey: queryKeys.applications.detail(variables.applicationId),
         });
       }
+      queryClient.invalidateQueries({ queryKey: queryKeys.chat.conversations() });
     },
   });
 }

@@ -56,28 +56,30 @@ export const chatKeys = {
 };
 
 export function fetchConversationDetail(id: string) {
-  return api.get<ConversationDetail>(`/chat/conversations/${id}`);
+  return api.get<ConversationDetail>(`/api/mobile/chat/conversations/${id}`);
 }
 
 export function fetchMessages(conversationId: string, cursor?: string) {
   const params = cursor ? `?cursor=${cursor}` : '';
-  return api.get<MessageItem[]>(`/chat/conversations/${conversationId}/messages${params}`);
+  return api.get<MessageItem[]>(
+    `/api/mobile/chat/conversations/${conversationId}/messages${params}`
+  );
 }
 
 export function fetchRealtimeToken() {
-  return api.get<{ token: string }>('/chat/realtime-token');
+  return api.get<{ token: string }>('/api/mobile/chat/realtime-token');
 }
 
 function fetchConversations() {
-  return api.get<ConversationListItem[]>('/chat/conversations');
+  return api.get<ConversationListItem[]>('/api/mobile/chat/conversations');
 }
 
 function sendMessageApi(conversationId: string, payloads: CiphertextPayload[]) {
-  return api.post<{ messageId: string }>('/chat/send', { conversationId, payloads });
+  return api.post<{ messageId: string }>('/api/mobile/chat/send', { conversationId, payloads });
 }
 
 function markReadApi(conversationId: string) {
-  return api.post(`/chat/conversations/${conversationId}/read`);
+  return api.post(`/api/mobile/chat/conversations/${conversationId}/read`);
 }
 
 export function useConversations() {

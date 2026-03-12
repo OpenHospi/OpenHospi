@@ -1,5 +1,11 @@
 import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
+import {
+  applications,
+  hospiEvents,
+  hospiInvitations,
+  houseMembers,
+  rooms,
+} from "@openhospi/database/schema";
 import { rsvpSchema } from "@openhospi/database/validators";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
 import { and, eq, sql } from "drizzle-orm";
@@ -7,6 +13,7 @@ import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
+import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -82,10 +89,46 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         })
         .where(eq(hospiInvitations.id, invitationId));
 
+      if (newStatus === InvitationStatus.attending || newStatus === InvitationStatus.maybe) {
+        const [inv] = await tx
+          .select({ applicationId: hospiInvitations.applicationId })
+          .from(hospiInvitations)
+          .where(eq(hospiInvitations.id, invitationId));
+
+        if (inv?.applicationId) {
+          const [app] = await tx
+            .select({ roomId: applications.roomId })
+            .from(applications)
+            .where(eq(applications.id, inv.applicationId));
+          const [room] = await tx
+            .select({ houseId: rooms.houseId })
+            .from(rooms)
+            .where(eq(rooms.id, app.roomId));
+          const members = await tx
+            .select({ userId: houseMembers.userId })
+            .from(houseMembers)
+            .where(eq(houseMembers.houseId, room.houseId));
+
+          return {
+            success: true,
+            eventCreatorId: event.createdBy,
+            roomId: app.roomId,
+            memberIds: members.map((m) => m.userId),
+          };
+        }
+      }
+
       return { success: true, eventCreatorId: event.createdBy };
     });
 
     if ("error" in result && result.error) return apiError(result.error, 422);
+
+    if ("roomId" in result && result.roomId) {
+      await getOrCreateHospiConversation(result.roomId, session.user.id, [
+        ...result.memberIds,
+        session.user.id,
+      ]);
+    }
 
     if (result.eventCreatorId) {
       const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/my-rooms`;

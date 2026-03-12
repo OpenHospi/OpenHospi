@@ -1,5 +1,5 @@
 import { getBackend } from "../backends/platform";
-import { fromBase64, toBase64 } from "../protocol/encoding";
+import { fromBase64 } from "../protocol/encoding";
 import { encodeSafetyNumberQR, generateSafetyNumber } from "../protocol/safety-number";
 import {
   deserializeSenderKeyState,

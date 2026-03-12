@@ -12,7 +12,7 @@ import {
   hospiInvitations,
   houseMembers,
   houses,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
   privateKeyBackups,
@@ -205,14 +205,14 @@ describe("RLS policies (integration)", () => {
       messageType: "text",
     });
 
-    await db.insert(messageCiphertexts).values({
+    await db.insert(messagePayloads).values({
       messageId: MESSAGE_ID,
-      recipientUserId: USER_B,
+      conversationId: CONVERSATION_ID,
+      senderUserId: USER_A,
       ciphertext: "encrypted-test",
       iv: "iv-test",
-      ratchetPublicKey: "test-ratchet-key",
-      messageNumber: 0,
-      previousChainLength: 0,
+      signature: "test-signature",
+      chainIteration: 0,
     });
 
     await db.insert(messageReceipts).values({

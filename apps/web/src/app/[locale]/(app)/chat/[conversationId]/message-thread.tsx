@@ -153,7 +153,6 @@ export function MessageThread({
       const member = membersRef.current.find((m) => m.userId === senderUserId);
 
       try {
-        const payload: GroupCiphertextPayload = { ciphertext, iv, signature, chainIteration };
         const plaintext = await decryptMessagesRef.current([
           {
             id: messageId,

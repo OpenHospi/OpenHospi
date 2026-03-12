@@ -26,13 +26,7 @@ type Props = {
 
 function FingerprintDisplay({ promise }: { promise: Promise<FingerprintResult> }) {
   const t = useTranslations("app.chat.safety_number");
-
-  let result: FingerprintResult;
-  try {
-    result = use(promise);
-  } catch {
-    return <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>;
-  }
+  const result = use(promise);
 
   if (!result) {
     return <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>;
@@ -67,7 +61,8 @@ export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getFinge
 
   function handleOpenChange(isOpen: boolean) {
     if (isOpen) {
-      setPromise(getFingerprint());
+      // Wrap to catch errors — resolve to null so use() doesn't throw
+      setPromise(getFingerprint().catch(() => null));
     } else {
       setPromise(null);
     }

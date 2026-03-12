@@ -3,7 +3,7 @@ import type {
   StoredIdentity,
   StoredSignedPreKey,
   StoredOneTimePreKey,
-  SerializedRatchetState,
+  SerializedSenderKeyState,
 } from '@openhospi/crypto';
 
 import { SecureStorage } from './secure-storage';
@@ -24,26 +24,57 @@ export class MobileCryptoStore implements CryptoStore {
     await SecureStorage.delete(`identity:${userId}`);
   }
 
-  // ── Sessions ──
+  // ── Sender Keys ──
 
-  async getSession(
+  async getSenderKey(
     conversationId: string,
-    otherUserId: string
-  ): Promise<SerializedRatchetState | null> {
-    const data = await SecureStorage.get(`session:${conversationId}:${otherUserId}`);
-    return data ? (JSON.parse(data) as SerializedRatchetState) : null;
+    senderUserId: string
+  ): Promise<SerializedSenderKeyState | null> {
+    const data = await SecureStorage.get(`senderKey:${conversationId}:${senderUserId}`);
+    return data ? (JSON.parse(data) as SerializedSenderKeyState) : null;
   }
 
-  async saveSession(
+  async saveSenderKey(
     conversationId: string,
-    otherUserId: string,
-    state: SerializedRatchetState
+    senderUserId: string,
+    state: SerializedSenderKeyState
   ): Promise<void> {
-    await SecureStorage.set(`session:${conversationId}:${otherUserId}`, JSON.stringify(state));
+    await SecureStorage.set(`senderKey:${conversationId}:${senderUserId}`, JSON.stringify(state));
+    // Update index for this conversation
+    const indexKey = `senderKeyIndex:${conversationId}`;
+    const indexData = await SecureStorage.get(indexKey);
+    const index: string[] = indexData ? (JSON.parse(indexData) as string[]) : [];
+    if (!index.includes(senderUserId)) {
+      index.push(senderUserId);
+      await SecureStorage.set(indexKey, JSON.stringify(index));
+    }
   }
 
-  async deleteSession(conversationId: string, otherUserId: string): Promise<void> {
-    await SecureStorage.delete(`session:${conversationId}:${otherUserId}`);
+  async deleteSenderKey(conversationId: string, senderUserId: string): Promise<void> {
+    await SecureStorage.delete(`senderKey:${conversationId}:${senderUserId}`);
+    // Update index
+    const indexKey = `senderKeyIndex:${conversationId}`;
+    const indexData = await SecureStorage.get(indexKey);
+    if (indexData) {
+      const index = (JSON.parse(indexData) as string[]).filter((id) => id !== senderUserId);
+      if (index.length > 0) {
+        await SecureStorage.set(indexKey, JSON.stringify(index));
+      } else {
+        await SecureStorage.delete(indexKey);
+      }
+    }
+  }
+
+  async deleteAllSenderKeys(conversationId: string): Promise<void> {
+    const indexKey = `senderKeyIndex:${conversationId}`;
+    const indexData = await SecureStorage.get(indexKey);
+    if (indexData) {
+      const index = JSON.parse(indexData) as string[];
+      for (const senderUserId of index) {
+        await SecureStorage.delete(`senderKey:${conversationId}:${senderUserId}`);
+      }
+      await SecureStorage.delete(indexKey);
+    }
   }
 
   // ── Pre-Keys ──
@@ -83,7 +114,8 @@ export class MobileCryptoStore implements CryptoStore {
     await SecureStorage.delete(`identity:${userId}`);
     await SecureStorage.delete(`spk:${userId}`);
     await SecureStorage.delete(`opk:${userId}`);
-    await SecureStorage.deleteByPrefix(`session:`);
+    await SecureStorage.deleteByPrefix(`senderKey:`);
+    await SecureStorage.deleteByPrefix(`senderKeyIndex:`);
   }
 }
 

@@ -1196,12 +1196,18 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
   messages: {
     columns: {
+      messageType: f.default({ defaultValue: "text" }),
+    },
+    with: {
+      payload: 1,
+    },
+  },
+  messagePayloads: {
+    columns: {
       ciphertext: f.string(),
       iv: f.string(),
-      ratchetPublicKey: f.string(),
-      messageNumber: f.int({ minValue: 0, maxValue: 100 }),
-      previousChainLength: f.default({ defaultValue: 0 }),
-      messageType: f.default({ defaultValue: "text" }),
+      signature: f.string(),
+      chainIteration: f.int({ minValue: 0, maxValue: 100 }),
     },
   },
 

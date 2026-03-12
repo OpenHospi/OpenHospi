@@ -1,3 +1,4 @@
+import type { GroupCiphertextPayload } from '@openhospi/crypto';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Info, Send } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
@@ -29,75 +30,36 @@ import {
   type MessageItem,
 } from '@/services/chat';
 import { useKeyChangeDetection } from '@/services/verification';
-import type { EncryptedMessage, X3DHMetadata } from '@openhospi/crypto';
 
 type DecryptedMessage = MessageItem & {
   decryptedText: string | null;
   decryptFailed: boolean;
 };
 
-function buildX3DHMeta(msg: {
-  ephemeralPublicKey?: string | null;
-  senderIdentityKey?: string | null;
-  usedSignedPreKeyId?: number | null;
-  usedOneTimePreKeyId?: number | null;
-}): X3DHMetadata | undefined {
-  if (!msg.ephemeralPublicKey || !msg.senderIdentityKey || msg.usedSignedPreKeyId == null) {
-    return undefined;
-  }
-  return {
-    ephemeralPublicKey: msg.ephemeralPublicKey,
-    senderIdentityKey: msg.senderIdentityKey,
-    usedSignedPreKeyId: msg.usedSignedPreKeyId,
-    usedOneTimePreKeyId: msg.usedOneTimePreKeyId ?? undefined,
-  };
-}
-
 async function tryDecryptMessage(
   msg: {
     ciphertext: string;
     iv: string;
-    ratchetPublicKey: string | null;
-    messageNumber: number | null;
-    previousChainLength: number | null;
-    ephemeralPublicKey?: string | null;
-    senderIdentityKey?: string | null;
-    usedSignedPreKeyId?: number | null;
-    usedOneTimePreKeyId?: number | null;
+    signature: string;
+    chainIteration: number;
     senderId: string;
   },
-  userId: string,
   conversationId: string,
-  decryptMessage: (
+  decryptGroupMessage: (
     conversationId: string,
     senderUserId: string,
-    encrypted: EncryptedMessage,
-    x3dhMeta?: X3DHMetadata | null
-  ) => Promise<string>,
-  decryptForSelf: (ciphertext: string, iv: string) => Promise<string>
+    payload: GroupCiphertextPayload
+  ) => Promise<string>
 ): Promise<{ text: string | null; failed: boolean }> {
   try {
-    if (msg.senderId === userId && msg.ratchetPublicKey === 'self') {
-      const plaintext = await decryptForSelf(msg.ciphertext, msg.iv);
-      return { text: plaintext, failed: false };
-    }
-
-    if (msg.ratchetPublicKey && msg.messageNumber != null && msg.previousChainLength != null) {
-      const encrypted: EncryptedMessage = {
-        ciphertext: msg.ciphertext,
-        iv: msg.iv,
-        header: {
-          ratchetPublicKey: msg.ratchetPublicKey,
-          messageNumber: msg.messageNumber,
-          previousChainLength: msg.previousChainLength,
-        },
-      };
-      const x3dhMeta = buildX3DHMeta(msg);
-      const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted, x3dhMeta);
-      return { text: plaintext, failed: false };
-    }
-
-    return { text: null, failed: false };
+    const payload: GroupCiphertextPayload = {
+      ciphertext: msg.ciphertext,
+      iv: msg.iv,
+      signature: msg.signature,
+      chainIteration: msg.chainIteration,
+    };
+    const plaintext = await decryptGroupMessage(conversationId, msg.senderId, payload);
+    return { text: plaintext, failed: false };
   } catch (error) {
     console.error('[Chat] Decryption failed for message', error);
     return { text: null, failed: true };
@@ -163,8 +125,7 @@ export default function ConversationScreen() {
   const { data: initialMessages, isPending: messagesLoading } = useMessages(conversationId);
   const sendMessage = useSendMessage();
   const markRead = useMarkRead(conversationId);
-  const { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf } =
-    useEncryption(userId);
+  const { status, encryptGroupMessage, decryptGroupMessage } = useEncryption(userId);
 
   const [messages, setMessages] = useState<DecryptedMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -205,16 +166,20 @@ export default function ConversationScreen() {
     (async () => {
       const decrypted = await Promise.all(
         initialMessages.map(async (msg): Promise<DecryptedMessage> => {
-          if (!msg.ciphertext || !msg.iv) {
+          if (!msg.ciphertext || !msg.iv || !msg.signature || msg.chainIteration == null) {
             return { ...msg, decryptedText: null, decryptFailed: false };
           }
 
           const result = await tryDecryptMessage(
-            { ...msg, ciphertext: msg.ciphertext, iv: msg.iv },
-            userId,
+            {
+              ciphertext: msg.ciphertext,
+              iv: msg.iv,
+              signature: msg.signature,
+              chainIteration: msg.chainIteration,
+              senderId: msg.senderId,
+            },
             conversationId,
-            decryptMessage,
-            decryptForSelf
+            decryptGroupMessage
           );
           return { ...msg, decryptedText: result.text, decryptFailed: result.failed };
         })
@@ -229,7 +194,7 @@ export default function ConversationScreen() {
     return () => {
       active = false;
     };
-  }, [initialMessages, status, userId, conversationId, decryptMessage, decryptForSelf]);
+  }, [initialMessages, status, userId, conversationId, decryptGroupMessage]);
 
   // Mark conversation read on mount
   // markRead.mutate is stable per React Query — safe to exclude from deps
@@ -251,7 +216,7 @@ export default function ConversationScreen() {
 
       if (!active) return;
 
-      const channel = supabase.channel(`chat:${conversationId}`, {
+      const channel = supabase.channel(`payloads:${conversationId}`, {
         config: {
           broadcast: { self: false },
           ...(tokenData ? { params: { user_token: tokenData.token } } : {}),
@@ -263,8 +228,8 @@ export default function ConversationScreen() {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'message_ciphertexts',
-          filter: `recipient_user_id=eq.${userId}`,
+          table: 'message_payloads',
+          filter: `conversation_id=eq.${conversationId}`,
         },
         async (payload) => {
           const record = payload.new as {
@@ -272,13 +237,8 @@ export default function ConversationScreen() {
             sender_user_id: string;
             ciphertext: string;
             iv: string;
-            ratchet_public_key: string;
-            message_number: number;
-            previous_chain_length: number;
-            ephemeral_public_key: string | null;
-            sender_identity_key: string | null;
-            used_signed_pre_key_id: number | null;
-            used_one_time_pre_key_id: number | null;
+            signature: string;
+            chain_iteration: number;
           };
 
           if (!active) return;
@@ -291,19 +251,12 @@ export default function ConversationScreen() {
               {
                 ciphertext: record.ciphertext,
                 iv: record.iv,
-                ratchetPublicKey: record.ratchet_public_key,
-                messageNumber: record.message_number,
-                previousChainLength: record.previous_chain_length,
-                ephemeralPublicKey: record.ephemeral_public_key,
-                senderIdentityKey: record.sender_identity_key,
-                usedSignedPreKeyId: record.used_signed_pre_key_id,
-                usedOneTimePreKeyId: record.used_one_time_pre_key_id,
+                signature: record.signature,
+                chainIteration: record.chain_iteration,
                 senderId: record.sender_user_id,
               },
-              userId,
               conversationId,
-              decryptMessage,
-              decryptForSelf
+              decryptGroupMessage
             );
 
             const newMsg: DecryptedMessage = {
@@ -313,13 +266,8 @@ export default function ConversationScreen() {
               senderAvatarUrl: senderMember?.avatarUrl ?? null,
               ciphertext: record.ciphertext,
               iv: record.iv,
-              ratchetPublicKey: record.ratchet_public_key,
-              messageNumber: record.message_number,
-              previousChainLength: record.previous_chain_length,
-              ephemeralPublicKey: record.ephemeral_public_key,
-              senderIdentityKey: record.sender_identity_key,
-              usedSignedPreKeyId: record.used_signed_pre_key_id,
-              usedOneTimePreKeyId: record.used_one_time_pre_key_id,
+              signature: record.signature,
+              chainIteration: record.chain_iteration,
               messageType: 'text',
               createdAt: new Date().toISOString(),
               decryptedText: result.text,
@@ -348,52 +296,20 @@ export default function ConversationScreen() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, userId, conversationId, decryptMessage]);
+  }, [status, userId, conversationId, decryptGroupMessage]);
 
   async function handleSend() {
     const text = inputText.trim();
     if (!text || isSending || !detail) return;
 
-    const recipients = detail.members.filter((m) => m.userId !== userId);
-    if (recipients.length === 0) return;
-
     setIsSending(true);
     setInputText('');
 
     try {
-      const payloads = await Promise.all(
-        recipients.map(async (member) => {
-          const result = await encryptMessage(conversationId, member.userId, text);
-          return {
-            recipientUserId: member.userId,
-            ciphertext: result.encrypted.ciphertext,
-            iv: result.encrypted.iv,
-            ratchetPublicKey: result.encrypted.header.ratchetPublicKey,
-            messageNumber: result.encrypted.header.messageNumber,
-            previousChainLength: result.encrypted.header.previousChainLength,
-            ephemeralPublicKey: result.x3dhMeta?.ephemeralPublicKey,
-            senderIdentityKey: result.x3dhMeta?.senderIdentityKey,
-            usedSignedPreKeyId: result.x3dhMeta?.usedSignedPreKeyId,
-            usedOneTimePreKeyId: result.x3dhMeta?.usedOneTimePreKeyId,
-          };
-        })
-      );
+      const memberUserIds = detail.members.map((m) => m.userId);
+      const payload = await encryptGroupMessage(conversationId, memberUserIds, text);
 
-      const selfEncrypted = await encryptForSelf(text);
-      payloads.push({
-        recipientUserId: userId,
-        ciphertext: selfEncrypted.ciphertext,
-        iv: selfEncrypted.iv,
-        ratchetPublicKey: 'self',
-        messageNumber: 0,
-        previousChainLength: 0,
-        ephemeralPublicKey: undefined,
-        senderIdentityKey: undefined,
-        usedSignedPreKeyId: undefined,
-        usedOneTimePreKeyId: undefined,
-      });
-
-      await sendMessage.mutateAsync({ conversationId, payloads });
+      await sendMessage.mutateAsync({ conversationId, payload });
 
       const ownMsg: DecryptedMessage = {
         id: `optimistic-${Date.now()}`,
@@ -402,13 +318,8 @@ export default function ConversationScreen() {
         senderAvatarUrl: null,
         ciphertext: null,
         iv: null,
-        ratchetPublicKey: null,
-        messageNumber: null,
-        previousChainLength: null,
-        ephemeralPublicKey: null,
-        senderIdentityKey: null,
-        usedSignedPreKeyId: null,
-        usedOneTimePreKeyId: null,
+        signature: null,
+        chainIteration: null,
         messageType: 'text',
         createdAt: new Date().toISOString(),
         decryptedText: text,

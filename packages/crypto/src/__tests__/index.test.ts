@@ -22,18 +22,22 @@ import {
   x3dhInitiate,
   x3dhRespond,
 
-  // Double Ratchet
-  initializeSender,
-  initializeReceiver,
-  ratchetEncrypt,
-  ratchetDecrypt,
-  serializeRatchetState,
-  deserializeRatchetState,
+  // Sender Key Chain
+  senderKeyChainStep,
+  fastForwardChain,
+
+  // Sender Key
+  generateSenderKey,
+  senderKeyEncrypt,
+  senderKeyDecrypt,
+  serializeSenderKeyState,
+  deserializeSenderKeyState,
 
   // Encryption
   encrypt,
   decrypt,
-  encodeHeaderAsAad,
+  encodeGroupAad,
+  encodeSignatureData,
 
   // Safety Numbers
   generateSafetyNumber,
@@ -43,7 +47,7 @@ import {
   encryptIdentityBackup,
   decryptIdentityBackup,
 } from "../index";
-import type { PreKeyBundle } from "../protocol/types";
+import type { PreKeyBundle, SenderKeyState } from "../protocol/types";
 
 // ── Setup ──
 
@@ -271,10 +275,16 @@ describe("AES-256-GCM encryption", () => {
     await expect(decrypt(backend, key, tampered, iv)).rejects.toThrow();
   });
 
-  it("encodeHeaderAsAad produces consistent output", () => {
-    const aad1 = encodeHeaderAsAad("test-key", 5, 3);
-    const aad2 = encodeHeaderAsAad("test-key", 5, 3);
+  it("encodeGroupAad produces consistent output", () => {
+    const aad1 = encodeGroupAad("conv-1", "user-1", 5);
+    const aad2 = encodeGroupAad("conv-1", "user-1", 5);
     expect(bytesEqual(aad1, aad2)).toBe(true);
+  });
+
+  it("encodeSignatureData produces consistent output", () => {
+    const sig1 = encodeSignatureData("ct", "iv", 3);
+    const sig2 = encodeSignatureData("ct", "iv", 3);
+    expect(bytesEqual(sig1, sig2)).toBe(true);
   });
 
   it("different messages produce different IVs", async () => {
@@ -298,159 +308,341 @@ describe("AES-256-GCM encryption", () => {
   });
 });
 
-// ── Double Ratchet ──
+// ── Sender Key Chain ──
 
-describe("Double Ratchet", () => {
-  async function setupSession() {
+describe("Sender Key chain", () => {
+  it("senderKeyChainStep produces distinct chain key and message key", async () => {
     const backend = getBackend();
-    const alice = generateIdentityKeyPair(backend);
-    const bob = generateIdentityKeyPair(backend);
-    const spk = generateSignedPreKey(backend, bob.signing.privateKey, 1);
-    const [opk] = generateOneTimePreKeys(backend, 1, 1);
+    const chainKey = backend.randomBytes(32);
 
-    const bundle: PreKeyBundle = {
-      identityKey: bob.dh.publicKey,
-      signingKey: bob.signing.publicKey,
-      signedPreKeyPublic: spk.keyPair.publicKey,
-      signedPreKeyId: spk.keyId,
-      signedPreKeySignature: spk.signature,
-      oneTimePreKeyPublic: opk.keyPair.publicKey,
-      oneTimePreKeyId: opk.keyId,
-    };
+    const result = await senderKeyChainStep(backend, chainKey);
 
-    const aliceX3DH = await x3dhInitiate(backend, alice, bundle);
-    const bobSharedSecret = await x3dhRespond(
-      backend,
-      bob,
-      spk.keyPair.privateKey,
-      opk.keyPair.privateKey,
-      alice.dh.publicKey,
-      aliceX3DH.ephemeralPublicKey,
-    );
+    expect(result.nextChainKey).toHaveLength(32);
+    expect(result.messageKey).toHaveLength(32);
+    expect(bytesEqual(result.nextChainKey, result.messageKey)).toBe(false);
+    expect(bytesEqual(result.nextChainKey, chainKey)).toBe(false);
+  });
 
-    const aliceState = await initializeSender(
-      backend,
-      aliceX3DH.sharedSecret,
-      spk.keyPair.publicKey,
-    );
-    const bobState = initializeReceiver(bobSharedSecret, spk.keyPair);
+  it("senderKeyChainStep is deterministic", async () => {
+    const backend = getBackend();
+    const chainKey = backend.randomBytes(32);
 
-    return { backend, aliceState, bobState };
-  }
+    const r1 = await senderKeyChainStep(backend, chainKey);
+    const r2 = await senderKeyChainStep(backend, chainKey);
 
+    expect(bytesEqual(r1.nextChainKey, r2.nextChainKey)).toBe(true);
+    expect(bytesEqual(r1.messageKey, r2.messageKey)).toBe(true);
+  });
+
+  it("fastForwardChain advances to target iteration", async () => {
+    const backend = getBackend();
+    const chainKey = backend.randomBytes(32);
+
+    const result = await fastForwardChain(backend, chainKey, 0, 5);
+
+    expect(result.messageKey).toHaveLength(32);
+    expect(result.chainKey).toHaveLength(32);
+    expect(result.skippedKeys.size).toBe(5); // iterations 0-4 are skipped
+  });
+
+  it("fastForwardChain with 0 gap returns message key directly", async () => {
+    const backend = getBackend();
+    const chainKey = backend.randomBytes(32);
+
+    const result = await fastForwardChain(backend, chainKey, 0, 0);
+
+    expect(result.messageKey).toHaveLength(32);
+    expect(result.skippedKeys.size).toBe(0);
+  });
+
+  it("fastForwardChain throws for excessive gap", async () => {
+    const backend = getBackend();
+    const chainKey = backend.randomBytes(32);
+
+    await expect(fastForwardChain(backend, chainKey, 0, 2001)).rejects.toThrow();
+  });
+
+  it("sequential steps match fast-forward", async () => {
+    const backend = getBackend();
+    const chainKey = backend.randomBytes(32);
+
+    // Step manually 3 times
+    const s1 = await senderKeyChainStep(backend, chainKey);
+    const s2 = await senderKeyChainStep(backend, s1.nextChainKey);
+    const s3 = await senderKeyChainStep(backend, s2.nextChainKey);
+
+    // Fast-forward from 0 to 2 (skips 0, 1; returns key for 2)
+    const ff = await fastForwardChain(backend, chainKey, 0, 2);
+
+    expect(bytesEqual(s3.messageKey, ff.messageKey)).toBe(true);
+    expect(bytesEqual(s3.nextChainKey, ff.chainKey)).toBe(true);
+  });
+});
+
+// ── Sender Key Encrypt/Decrypt ──
+
+describe("Sender Key encrypt/decrypt", () => {
   it("basic encrypt → decrypt roundtrip", async () => {
-    const { backend, aliceState, bobState } = await setupSession();
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const conversationId = "conv-1";
+    const userId = "user-1";
 
-    const { state: aliceAfter, encrypted } = await ratchetEncrypt(
+    const { state: afterEncrypt, payload } = await senderKeyEncrypt(
       backend,
-      aliceState,
-      "Hello Bob!",
+      state,
+      "Hello Sender Keys!",
+      conversationId,
+      userId,
     );
-    const { plaintext } = await ratchetDecrypt(backend, bobState, encrypted);
 
-    expect(plaintext).toBe("Hello Bob!");
-    expect(aliceAfter).toBeDefined();
+    // Decrypt using the original state (before encryption advanced chain)
+    const { plaintext } = await senderKeyDecrypt(
+      backend,
+      state,
+      payload,
+      state.signingKeyPair.publicKey,
+      conversationId,
+      userId,
+    );
+
+    expect(plaintext).toBe("Hello Sender Keys!");
+    expect(afterEncrypt.iteration).toBe(state.iteration + 1);
   });
 
-  it("back-and-forth messaging", async () => {
-    const { backend, aliceState: alice, bobState: bob } = await setupSession();
+  it("multiple messages in sequence", async () => {
+    const backend = getBackend();
+    let senderState = generateSenderKey(backend);
+    let receiverState: SenderKeyState = { ...senderState };
+    const signingPub = senderState.signingKeyPair.publicKey;
+    const convId = "conv-1";
+    const userId = "user-1";
 
-    // Alice → Bob
-    const { state: a1, encrypted: e1 } = await ratchetEncrypt(backend, alice, "msg 1");
-    const { state: b1, plaintext: p1 } = await ratchetDecrypt(backend, bob, e1);
-    expect(p1).toBe("msg 1");
+    for (let i = 0; i < 5; i++) {
+      const { state: newSenderState, payload } = await senderKeyEncrypt(
+        backend,
+        senderState,
+        `message ${i}`,
+        convId,
+        userId,
+      );
+      senderState = newSenderState;
 
-    // Bob → Alice (DH ratchet step)
-    const { state: b2, encrypted: e2 } = await ratchetEncrypt(backend, b1, "reply 1");
-    const { state: a2, plaintext: p2 } = await ratchetDecrypt(backend, a1, e2);
-    expect(p2).toBe("reply 1");
+      const { state: newReceiverState, plaintext } = await senderKeyDecrypt(
+        backend,
+        receiverState,
+        payload,
+        signingPub,
+        convId,
+        userId,
+      );
+      receiverState = newReceiverState;
 
-    // Alice → Bob again
-    const { encrypted: e3 } = await ratchetEncrypt(backend, a2, "msg 2");
-    const { plaintext: p3 } = await ratchetDecrypt(backend, b2, e3);
-    expect(p3).toBe("msg 2");
+      expect(plaintext).toBe(`message ${i}`);
+    }
+
+    expect(senderState.iteration).toBe(5);
   });
 
-  it("multiple messages in same direction (symmetric chain)", async () => {
-    const { backend, aliceState, bobState } = await setupSession();
+  it("out-of-order message delivery", async () => {
+    const backend = getBackend();
+    const senderState = generateSenderKey(backend);
+    const receiverState: SenderKeyState = { ...senderState };
+    const signingPub = senderState.signingKeyPair.publicKey;
+    const convId = "conv-1";
+    const userId = "user-1";
 
-    const { state: a1, encrypted: e1 } = await ratchetEncrypt(backend, aliceState, "first");
-    const { state: a2, encrypted: e2 } = await ratchetEncrypt(backend, a1, "second");
-    const { encrypted: e3 } = await ratchetEncrypt(backend, a2, "third");
+    // Encrypt 3 messages
+    const { state: s1, payload: p1 } = await senderKeyEncrypt(
+      backend,
+      senderState,
+      "first",
+      convId,
+      userId,
+    );
+    const { state: s2, payload: p2 } = await senderKeyEncrypt(
+      backend,
+      s1,
+      "second",
+      convId,
+      userId,
+    );
+    const { payload: p3 } = await senderKeyEncrypt(backend, s2, "third", convId, userId);
 
-    const { state: b1, plaintext: p1 } = await ratchetDecrypt(backend, bobState, e1);
-    const { state: b2, plaintext: p2 } = await ratchetDecrypt(backend, b1, e2);
-    const { plaintext: p3 } = await ratchetDecrypt(backend, b2, e3);
+    // Decrypt in reverse order
+    const { state: r1, plaintext: t3 } = await senderKeyDecrypt(
+      backend,
+      receiverState,
+      p3,
+      signingPub,
+      convId,
+      userId,
+    );
+    expect(t3).toBe("third");
 
-    expect(p1).toBe("first");
-    expect(p2).toBe("second");
-    expect(p3).toBe("third");
+    // First message — should use skipped keys
+    const { state: r2, plaintext: t1 } = await senderKeyDecrypt(
+      backend,
+      r1,
+      p1,
+      signingPub,
+      convId,
+      userId,
+    );
+    expect(t1).toBe("first");
+
+    // Second message — should use skipped keys
+    const { plaintext: t2 } = await senderKeyDecrypt(backend, r2, p2, signingPub, convId, userId);
+    expect(t2).toBe("second");
   });
 
-  it("out-of-order messages are handled via skipped keys", async () => {
-    const { backend, aliceState, bobState } = await setupSession();
+  it("tampered signature → verification fails", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const convId = "conv-1";
+    const userId = "user-1";
 
-    const { state: a1, encrypted: e1 } = await ratchetEncrypt(backend, aliceState, "first");
-    const { encrypted: e2 } = await ratchetEncrypt(backend, a1, "second");
+    const { payload } = await senderKeyEncrypt(backend, state, "tamper test", convId, userId);
 
-    // Decrypt second first (out of order)
-    const { state: b1, plaintext: p2 } = await ratchetDecrypt(backend, bobState, e2);
-    expect(p2).toBe("second");
+    // Tamper with signature
+    const sigBytes = fromBase64(payload.signature);
+    sigBytes[0] ^= 0xff;
+    const tampered = { ...payload, signature: toBase64(sigBytes) };
 
-    // Now decrypt the skipped first message
-    const { plaintext: p1 } = await ratchetDecrypt(backend, b1, e1);
-    expect(p1).toBe("first");
+    await expect(
+      senderKeyDecrypt(backend, state, tampered, state.signingKeyPair.publicKey, convId, userId),
+    ).rejects.toThrow();
   });
 
-  it("each message uses a different encryption key", async () => {
-    const { backend, aliceState } = await setupSession();
+  it("wrong conversationId → AAD mismatch → decrypt fails", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const userId = "user-1";
 
-    const { state: a1, encrypted: e1 } = await ratchetEncrypt(backend, aliceState, "same text");
-    const { encrypted: e2 } = await ratchetEncrypt(backend, a1, "same text");
+    const { payload } = await senderKeyEncrypt(backend, state, "aad test", "conv-1", userId);
 
-    expect(e1.ciphertext).not.toBe(e2.ciphertext);
+    await expect(
+      senderKeyDecrypt(
+        backend,
+        state,
+        payload,
+        state.signingKeyPair.publicKey,
+        "conv-wrong",
+        userId,
+      ),
+    ).rejects.toThrow();
+  });
+
+  it("wrong senderUserId → AAD mismatch → decrypt fails", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const convId = "conv-1";
+
+    const { payload } = await senderKeyEncrypt(backend, state, "aad test", convId, "user-1");
+
+    await expect(
+      senderKeyDecrypt(
+        backend,
+        state,
+        payload,
+        state.signingKeyPair.publicKey,
+        convId,
+        "user-wrong",
+      ),
+    ).rejects.toThrow();
+  });
+
+  it("each message uses a different encryption key (different ciphertext)", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+
+    const { state: s1, payload: p1 } = await senderKeyEncrypt(
+      backend,
+      state,
+      "same text",
+      "conv-1",
+      "user-1",
+    );
+    const { payload: p2 } = await senderKeyEncrypt(backend, s1, "same text", "conv-1", "user-1");
+
+    expect(p1.ciphertext).not.toBe(p2.ciphertext);
+    expect(p1.chainIteration).not.toBe(p2.chainIteration);
   });
 
   it("serialization roundtrip preserves state", async () => {
-    const { backend, aliceState } = await setupSession();
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
 
-    const { state: afterEncrypt, encrypted } = await ratchetEncrypt(
+    const { state: afterEncrypt, payload } = await senderKeyEncrypt(
       backend,
-      aliceState,
+      state,
       "serialize test",
+      "conv-1",
+      "user-1",
     );
 
-    const serialized = serializeRatchetState(afterEncrypt);
-    const deserialized = deserializeRatchetState(serialized);
+    const serialized = serializeSenderKeyState(afterEncrypt);
+    const deserialized = deserializeSenderKeyState(serialized);
 
-    const { encrypted: e2 } = await ratchetEncrypt(backend, deserialized, "after deserialize");
-    expect(e2.ciphertext).toBeDefined();
-    expect(e2.header.messageNumber).toBe(encrypted.header.messageNumber + 1);
-  });
-
-  it("wrong session → decryption fails", async () => {
-    const { backend, aliceState } = await setupSession();
-    const session2 = await setupSession();
-
-    const { encrypted } = await ratchetEncrypt(backend, aliceState, "wrong session");
-    await expect(ratchetDecrypt(backend, session2.bobState, encrypted)).rejects.toThrow();
+    const { payload: p2 } = await senderKeyEncrypt(
+      backend,
+      deserialized,
+      "after deserialize",
+      "conv-1",
+      "user-1",
+    );
+    expect(p2.ciphertext).toBeDefined();
+    expect(p2.chainIteration).toBe(payload.chainIteration + 1);
   });
 
   it("empty string roundtrips correctly", async () => {
-    const { backend, aliceState, bobState } = await setupSession();
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
 
-    const { encrypted } = await ratchetEncrypt(backend, aliceState, "");
-    const { plaintext } = await ratchetDecrypt(backend, bobState, encrypted);
+    const { payload } = await senderKeyEncrypt(backend, state, "", "conv-1", "user-1");
+    const { plaintext } = await senderKeyDecrypt(
+      backend,
+      state,
+      payload,
+      state.signingKeyPair.publicKey,
+      "conv-1",
+      "user-1",
+    );
     expect(plaintext).toBe("");
   });
 
   it("large message (50KB) roundtrips correctly", async () => {
-    const { backend, aliceState, bobState } = await setupSession();
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
     const large = "x".repeat(50_000);
 
-    const { encrypted } = await ratchetEncrypt(backend, aliceState, large);
-    const { plaintext } = await ratchetDecrypt(backend, bobState, encrypted);
+    const { payload } = await senderKeyEncrypt(backend, state, large, "conv-1", "user-1");
+    const { plaintext } = await senderKeyDecrypt(
+      backend,
+      state,
+      payload,
+      state.signingKeyPair.publicKey,
+      "conv-1",
+      "user-1",
+    );
     expect(plaintext).toBe(large);
+  });
+
+  it("unicode roundtrips correctly", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const text = "Héllo wörld €100 你好世界";
+
+    const { payload } = await senderKeyEncrypt(backend, state, text, "conv-1", "user-1");
+    const { plaintext } = await senderKeyDecrypt(
+      backend,
+      state,
+      payload,
+      state.signingKeyPair.publicKey,
+      "conv-1",
+      "user-1",
+    );
+    expect(plaintext).toBe(text);
   });
 });
 

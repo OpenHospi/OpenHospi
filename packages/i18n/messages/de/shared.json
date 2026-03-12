@@ -1362,7 +1362,7 @@
       "report_message": "Nachricht melden",
       "report_user": "{name} melden",
       "blocked": "Du hast diesen Benutzer blockiert",
-      "key_reset_message": "Nachricht von vor dem Schlüssel-Reset — kann nicht entschlüsselt werden",
+      "key_reset_message": "Nachricht kann nicht entschlüsselt werden — Verschlüsselungsschlüssel nicht verfügbar",
       "verify_identity": "Identität verifizieren",
       "all_members": "Alle Mitglieder",
       "e2e_info": "Nachrichten sind Ende-zu-Ende-verschlüsselt",

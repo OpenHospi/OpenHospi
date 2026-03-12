@@ -1362,7 +1362,7 @@
       "report_message": "Bericht melden",
       "report_user": "{name} melden",
       "blocked": "Je hebt deze gebruiker geblokkeerd",
-      "key_reset_message": "Bericht van voor het opnieuw instellen van de sleutel — kan niet worden ontsleuteld",
+      "key_reset_message": "Bericht kan niet worden ontsleuteld — versleutelingssleutel niet beschikbaar",
       "verify_identity": "Identiteit verifiëren",
       "all_members": "Alle leden",
       "e2e_info": "Berichten zijn end-to-end versleuteld",

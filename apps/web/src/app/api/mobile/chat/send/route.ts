@@ -1,9 +1,9 @@
-import type { CiphertextPayload } from "@openhospi/crypto";
+import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { db, withRLS } from "@openhospi/database";
 import {
   blocks,
   conversationMembers,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
 } from "@openhospi/database/schema";
@@ -19,28 +19,21 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as {
       conversationId?: string;
-      payloads?: CiphertextPayload[];
+      payload?: GroupCiphertextPayload;
     };
 
-    if (!body.conversationId || !body.payloads || body.payloads.length === 0) {
-      return apiError("conversationId and payloads array are required", 400);
-    }
-
-    // Validate each payload
-    for (const p of body.payloads) {
-      if (
-        !p.recipientUserId ||
-        !p.ciphertext ||
-        !p.iv ||
-        !p.ratchetPublicKey ||
-        p.messageNumber == null ||
-        p.previousChainLength == null
-      ) {
-        return apiError(
-          "Each payload must include recipientUserId, ciphertext, iv, ratchetPublicKey, messageNumber, and previousChainLength",
-          400,
-        );
-      }
+    if (
+      !body.conversationId ||
+      !body.payload ||
+      !body.payload.ciphertext ||
+      !body.payload.iv ||
+      !body.payload.signature ||
+      body.payload.chainIteration == null
+    ) {
+      return apiError(
+        "conversationId and payload (ciphertext, iv, signature, chainIteration) are required",
+        400,
+      );
     }
 
     // Get conversation members
@@ -84,22 +77,16 @@ export async function POST(request: Request) {
         .returning({ id: messages.id });
     });
 
-    // Insert ciphertexts for each recipient
-    await db.insert(messageCiphertexts).values(
-      body.payloads.map((p) => ({
-        messageId: message.id,
-        recipientUserId: p.recipientUserId,
-        ciphertext: p.ciphertext,
-        iv: p.iv,
-        ratchetPublicKey: p.ratchetPublicKey,
-        messageNumber: p.messageNumber,
-        previousChainLength: p.previousChainLength,
-        ephemeralPublicKey: p.ephemeralPublicKey ?? null,
-        senderIdentityKey: p.senderIdentityKey ?? null,
-        usedSignedPreKeyId: p.usedSignedPreKeyId ?? null,
-        usedOneTimePreKeyId: p.usedOneTimePreKeyId ?? null,
-      })),
-    );
+    // Insert single message payload
+    await db.insert(messagePayloads).values({
+      messageId: message.id,
+      conversationId: body.conversationId!,
+      senderUserId: userId,
+      ciphertext: body.payload.ciphertext,
+      iv: body.payload.iv,
+      signature: body.payload.signature,
+      chainIteration: body.payload.chainIteration,
+    });
 
     // Create receipts for other members
     const receipts = members

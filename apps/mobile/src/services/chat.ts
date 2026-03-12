@@ -1,4 +1,4 @@
-import type { CiphertextPayload } from '@openhospi/crypto';
+import type { GroupCiphertextPayload } from '@openhospi/crypto';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
@@ -41,13 +41,8 @@ export type MessageItem = {
   senderAvatarUrl: string | null;
   ciphertext: string | null;
   iv: string | null;
-  ratchetPublicKey: string | null;
-  messageNumber: number | null;
-  previousChainLength: number | null;
-  ephemeralPublicKey: string | null;
-  senderIdentityKey: string | null;
-  usedSignedPreKeyId: number | null;
-  usedOneTimePreKeyId: number | null;
+  signature: string | null;
+  chainIteration: number | null;
   messageType: string;
   createdAt: string;
 };
@@ -71,8 +66,8 @@ function fetchConversations() {
   return api.get<ConversationListItem[]>('/api/mobile/chat/conversations');
 }
 
-function sendMessageApi(conversationId: string, payloads: CiphertextPayload[]) {
-  return api.post<{ messageId: string }>('/api/mobile/chat/send', { conversationId, payloads });
+function sendMessageApi(conversationId: string, payload: GroupCiphertextPayload) {
+  return api.post<{ messageId: string }>('/api/mobile/chat/send', { conversationId, payload });
 }
 
 function markReadApi(conversationId: string) {
@@ -107,11 +102,11 @@ export function useSendMessage() {
   return useMutation({
     mutationFn: ({
       conversationId,
-      payloads,
+      payload,
     }: {
       conversationId: string;
-      payloads: CiphertextPayload[];
-    }) => sendMessageApi(conversationId, payloads),
+      payload: GroupCiphertextPayload;
+    }) => sendMessageApi(conversationId, payload),
     onSuccess: (_, { conversationId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.chat.messages(conversationId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.chat.conversations() });

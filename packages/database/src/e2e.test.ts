@@ -32,7 +32,7 @@ import {
   hospiInvitations,
   houseMembers,
   houses,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
   profiles,
@@ -884,22 +884,22 @@ describe("E2E workflow tests (integration)", () => {
       );
 
       try {
-        const [ciphertext] = await withRLS(HOSPI_OWNER, (tx) =>
+        const [payload] = await withRLS(HOSPI_OWNER, (tx) =>
           tx
-            .insert(messageCiphertexts)
+            .insert(messagePayloads)
             .values({
               messageId: msg.id,
-              recipientUserId: SEEKER_1,
+              conversationId: CONV_1,
+              senderUserId: HOSPI_OWNER,
               ciphertext: "e2e-encrypted-payload",
               iv: "e2e-iv-001",
-              ratchetPublicKey: "e2e-ratchet-key",
-              messageNumber: 0,
-              previousChainLength: 0,
+              signature: "e2e-signature",
+              chainIteration: 0,
             })
             .returning(),
         );
-        expect(ciphertext.ciphertext).toBe("e2e-encrypted-payload");
-        expect(ciphertext.ratchetPublicKey).toBe("e2e-ratchet-key");
+        expect(payload.ciphertext).toBe("e2e-encrypted-payload");
+        expect(payload.signature).toBe("e2e-signature");
       } finally {
         await db.delete(messages).where(eq(messages.id, msg.id));
       }

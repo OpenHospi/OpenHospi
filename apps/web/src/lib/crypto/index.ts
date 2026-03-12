@@ -1,6 +1,10 @@
 "use client";
 
-import { IndexedDBCryptoStore } from "@openhospi/crypto/web";
+import { setBackend } from "@openhospi/crypto";
+import { createWebBackend, IndexedDBCryptoStore } from "@openhospi/crypto/web";
+
+// Initialize the crypto backend for Web (noble/curves + Web Crypto API)
+setBackend(createWebBackend());
 
 const INDEXED_DB_NAME = "openhospi-crypto";
 const INDEXED_DB_VERSION = 1;

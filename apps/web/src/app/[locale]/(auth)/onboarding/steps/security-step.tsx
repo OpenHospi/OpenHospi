@@ -56,7 +56,8 @@ export function SecurityStep({ userId, onBack }: Props) {
           uploadOneTimePreKeys,
           uploadBackup: uploadKeyBackup,
         });
-      } catch {
+      } catch (error) {
+        console.error("[SecurityStep] Encryption setup failed:", error);
         toast.error(tSecurity("setup_error"));
         return;
       }

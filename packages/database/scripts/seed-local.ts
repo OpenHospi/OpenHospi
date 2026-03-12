@@ -1199,7 +1199,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       messageType: f.default({ defaultValue: "text" }),
     },
     with: {
-      payload: 1,
+      messagePayloads: 1,
     },
   },
   messagePayloads: {

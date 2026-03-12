@@ -8,6 +8,7 @@ on:
       - "packages/shared/**"
       - "packages/i18n/**"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/ci-mobile.yml"
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "packages/shared/**"
       - "packages/i18n/**"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/ci-mobile.yml"
 
 concurrency:
@@ -23,58 +25,102 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  install:
+    name: Install
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/save@v5
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-mobile-${{ hashFiles('pnpm-lock.yaml') }}
+
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - run: corepack enable
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - uses: actions/cache/restore@v5
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-mobile-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm --filter @openhospi/mobile lint
 
   typecheck:
     name: Type Check
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v5
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-mobile-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm --filter @openhospi/mobile typecheck
 
   format:
     name: Format Check
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v5
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-mobile-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm --filter @openhospi/mobile format:check
 
   expo-doctor:
     name: Expo Doctor
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - run: corepack enable
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: cd apps/mobile && npx expo-doctor@latest
+      - uses: actions/cache/restore@v5
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-mobile-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm expo:doctor

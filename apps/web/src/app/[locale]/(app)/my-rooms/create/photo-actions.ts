@@ -3,6 +3,7 @@
 import { withRLS } from "@openhospi/database";
 import { roomPhotos } from "@openhospi/database/schema";
 import { roomPhotoCaptionSchema } from "@openhospi/database/validators";
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -30,7 +31,7 @@ export async function saveRoomPhoto(formData: FormData) {
   try {
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${roomId}/slot-${slot}.${ext}`;
-    url = await uploadPhotoToStorage(file, "room-photos", path);
+    url = await uploadPhotoToStorage(file, STORAGE_BUCKET_ROOM_PHOTOS, path);
 
     const photoUrl = url;
     const [photo] = await withRLS(userId, (tx) =>

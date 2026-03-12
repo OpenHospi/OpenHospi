@@ -1,3 +1,5 @@
+import type { StorageBucket } from "@openhospi/shared/constants";
+
 /**
  * Client-safe utility for converting storage paths to public URLs.
  * This file has no server-only dependencies and can be used in client components.
@@ -11,10 +13,7 @@
  * @param bucket - The storage bucket name
  * @returns Full public URL
  */
-export function getStoragePublicUrl(
-  pathOrUrl: string,
-  bucket: "profile-photos" | "room-photos",
-): string {
+export function getStoragePublicUrl(pathOrUrl: string, bucket: StorageBucket): string {
   // If it's already a URL, return as is
   if (pathOrUrl.includes("://")) {
     return pathOrUrl;

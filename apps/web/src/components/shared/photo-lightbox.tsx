@@ -1,5 +1,7 @@
 "use client";
 
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
+import type { StorageBucket } from "@openhospi/shared/constants";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -26,7 +28,7 @@ type Props = {
   initialIndex: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  bucket?: "room-photos" | "profile-photos";
+  bucket?: StorageBucket;
 };
 
 export function PhotoLightbox({
@@ -34,7 +36,7 @@ export function PhotoLightbox({
   initialIndex,
   open,
   onOpenChange,
-  bucket = "room-photos",
+  bucket = STORAGE_BUCKET_ROOM_PHOTOS,
 }: Props) {
   const t = useTranslations("common.gallery");
   const [api, setApi] = useState<CarouselApi>();

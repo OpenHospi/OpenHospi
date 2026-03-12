@@ -1,3 +1,4 @@
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { Camera, Home } from "lucide-react";
 import { getFormatter, getTranslations } from "next-intl/server";
 
@@ -28,7 +29,7 @@ export async function ApplicationCard({ application }: Props) {
             <StorageImage
               src={application.roomCoverPhotoUrl}
               alt={application.roomTitle}
-              bucket="room-photos"
+              bucket={STORAGE_BUCKET_ROOM_PHOTOS}
               fill
               className="object-cover"
             />

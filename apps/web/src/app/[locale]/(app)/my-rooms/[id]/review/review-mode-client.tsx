@@ -1,5 +1,6 @@
 "use client";
 
+import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import { ReviewDecision } from "@openhospi/shared/enums";
 import { ArrowLeft, Minus, ThumbsDown, ThumbsUp, UserCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -110,7 +111,7 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
               <StorageImage
                 src={photo.url}
                 alt={photo.caption ?? applicant.firstName}
-                bucket="profile-photos"
+                bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
                 fill
                 className="object-cover"
               />

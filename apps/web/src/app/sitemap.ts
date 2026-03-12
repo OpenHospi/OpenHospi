@@ -1,6 +1,7 @@
 import { db } from "@openhospi/database";
 import { roomPhotos, rooms } from "@openhospi/database/schema";
 import { SUPPORTED_LOCALES } from "@openhospi/i18n";
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";
@@ -79,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const photosByRoom = new Map<string, string[]>();
   for (const photo of allPhotos) {
     const existing = photosByRoom.get(photo.roomId) ?? [];
-    existing.push(getStoragePublicUrl(photo.url, "room-photos"));
+    existing.push(getStoragePublicUrl(photo.url, STORAGE_BUCKET_ROOM_PHOTOS));
     photosByRoom.set(photo.roomId, existing);
   }
 

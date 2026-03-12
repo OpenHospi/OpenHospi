@@ -1,3 +1,7 @@
+import {
+  STORAGE_BUCKET_PROFILE_PHOTOS,
+  STORAGE_BUCKET_ROOM_PHOTOS,
+} from "@openhospi/shared/constants";
 import { createClient } from "@supabase/supabase-js";
 import { asc, eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -1338,7 +1342,7 @@ async function seedProfilePhoto(userId: string, slot: number): Promise<string> {
   const path = `${userId}/slot-${slot}.jpg`;
 
   const { error } = await supabase.storage
-    .from("profile-photos")
+    .from(STORAGE_BUCKET_PROFILE_PHOTOS)
     .upload(path, imageData, { contentType: "image/jpeg", upsert: true });
   if (error) throw error;
 
@@ -1352,7 +1356,7 @@ async function seedRoomPhoto(roomId: string, slot: number): Promise<void> {
   const path = `${roomId}/slot-${slot}.jpg`;
 
   const { error } = await supabase.storage
-    .from("room-photos")
+    .from(STORAGE_BUCKET_ROOM_PHOTOS)
     .upload(path, imageData, { contentType: "image/jpeg", upsert: true });
   if (error) throw error;
 
@@ -1370,7 +1374,7 @@ const allRooms = await db
   .orderBy(asc(schema.rooms.id));
 
 // Clean existing storage files (idempotent re-runs)
-for (const bucket of ["profile-photos", "room-photos"] as const) {
+for (const bucket of [STORAGE_BUCKET_PROFILE_PHOTOS, STORAGE_BUCKET_ROOM_PHOTOS] as const) {
   const { data: folders } = await supabase.storage.from(bucket).list();
   if (folders) {
     for (const folder of folders) {

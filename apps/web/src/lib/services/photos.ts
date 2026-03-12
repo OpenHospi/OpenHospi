@@ -1,7 +1,10 @@
 import {
   ALLOWED_IMAGE_TYPES,
+  JPEG_QUALITY,
   MAX_AVATAR_SIZE,
   MAX_ROOM_PHOTO_SIZE,
+  STORAGE_BUCKET_PROFILE_PHOTOS,
+  STORAGE_BUCKET_ROOM_PHOTOS,
 } from "@openhospi/shared/constants";
 import type { AllowedImageType } from "@openhospi/shared/constants";
 
@@ -20,7 +23,7 @@ async function convertHeicToJpeg(buffer: Buffer): Promise<Buffer> {
   return sharp(Buffer.from(data.buffer), {
     raw: { width, height, channels: 4 },
   })
-    .jpeg({ quality: 85 })
+    .jpeg({ quality: JPEG_QUALITY })
     .toBuffer();
 }
 
@@ -29,7 +32,7 @@ export async function uploadPhotoToStorage(
   bucket: string,
   path: string,
 ): Promise<string> {
-  const maxSize = bucket === "room-photos" ? MAX_ROOM_PHOTO_SIZE : MAX_AVATAR_SIZE;
+  const maxSize = bucket === STORAGE_BUCKET_ROOM_PHOTOS ? MAX_ROOM_PHOTO_SIZE : MAX_AVATAR_SIZE;
 
   if (file.size > maxSize) {
     throw new Error("File too large");
@@ -74,7 +77,7 @@ export async function deletePhotoFromStorage(pathOrUrl: string): Promise<void> {
   // If it's a full URL, extract the path
   if (pathOrUrl.includes("://")) {
     // Try both buckets
-    for (const bucket of ["profile-photos", "room-photos"] as const) {
+    for (const bucket of [STORAGE_BUCKET_PROFILE_PHOTOS, STORAGE_BUCKET_ROOM_PHOTOS] as const) {
       const path = extractStoragePath(pathOrUrl, bucket);
       if (path) {
         await supabaseAdmin.storage.from(bucket).remove([path]);
@@ -83,7 +86,7 @@ export async function deletePhotoFromStorage(pathOrUrl: string): Promise<void> {
     }
   } else {
     // It's already a path, try both buckets
-    for (const bucket of ["profile-photos", "room-photos"] as const) {
+    for (const bucket of [STORAGE_BUCKET_PROFILE_PHOTOS, STORAGE_BUCKET_ROOM_PHOTOS] as const) {
       const { error } = await supabaseAdmin.storage.from(bucket).remove([pathOrUrl]);
       if (!error) return;
     }

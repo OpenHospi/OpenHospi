@@ -1,5 +1,7 @@
 "use client";
 
+import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
+
 import { StorageImage } from "@/components/shared/storage-image";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +44,7 @@ export function UserAvatar({ avatarUrl, userName, size = "md", className }: User
       <StorageImage
         src={avatarUrl}
         alt={userName}
-        bucket="profile-photos"
+        bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
         fill
         className="object-cover"
       />

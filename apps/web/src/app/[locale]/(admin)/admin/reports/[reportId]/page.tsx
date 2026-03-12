@@ -1,4 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
+import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import type { ReportStatus } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -163,7 +164,7 @@ export default async function ReportDetailPage({ params }: Props) {
                             <StorageImage
                               src={roomDetail.coverPhotoUrl}
                               alt={roomDetail.title}
-                              bucket="room-photos"
+                              bucket={STORAGE_BUCKET_ROOM_PHOTOS}
                               fill
                               className="object-cover"
                             />

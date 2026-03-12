@@ -26,15 +26,11 @@ export class MobileCryptoStore implements CryptoStore {
 
   // ── Sessions ──
 
-  private sessionKey(conversationId: string, otherUserId: string): string {
-    return `session:${conversationId}:${otherUserId}`;
-  }
-
   async getSession(
     conversationId: string,
     otherUserId: string
   ): Promise<SerializedRatchetState | null> {
-    const data = await SecureStorage.get(this.sessionKey(conversationId, otherUserId));
+    const data = await SecureStorage.get(`session:${conversationId}:${otherUserId}`);
     return data ? (JSON.parse(data) as SerializedRatchetState) : null;
   }
 
@@ -43,11 +39,11 @@ export class MobileCryptoStore implements CryptoStore {
     otherUserId: string,
     state: SerializedRatchetState
   ): Promise<void> {
-    await SecureStorage.set(this.sessionKey(conversationId, otherUserId), JSON.stringify(state));
+    await SecureStorage.set(`session:${conversationId}:${otherUserId}`, JSON.stringify(state));
   }
 
   async deleteSession(conversationId: string, otherUserId: string): Promise<void> {
-    await SecureStorage.delete(this.sessionKey(conversationId, otherUserId));
+    await SecureStorage.delete(`session:${conversationId}:${otherUserId}`);
   }
 
   // ── Pre-Keys ──

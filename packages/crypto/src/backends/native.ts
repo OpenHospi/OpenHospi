@@ -1,10 +1,15 @@
 /**
- * React Native crypto backend using react-native-quick-crypto.
+ * React Native crypto backend.
  *
- * Provides OpenSSL 3.6+ via Nitro Modules with full Node.js crypto API.
- * Curve operations are synchronous; AES/HKDF/PBKDF2 return resolved Promises
- * to match the async CryptoBackend interface.
+ * Uses @noble/curves for all Ed25519/X25519 operations — identical to the web
+ * backend — so key formats and signatures are 100% interoperable between platforms.
+ *
+ * Uses react-native-quick-crypto (OpenSSL via Nitro Modules) for symmetric
+ * operations (AES-256-GCM, HKDF, PBKDF2) and randomBytes where native
+ * performance matters.
  */
+import { ed25519, x25519 } from "@noble/curves/ed25519.js";
+
 import type { KeyPair } from "../protocol/types";
 
 import type { CryptoBackend } from "./platform";
@@ -15,72 +20,39 @@ const QuickCrypto = require("react-native-quick-crypto");
 
 export class NativeCryptoBackend implements CryptoBackend {
   generateX25519KeyPair(): KeyPair {
-    const { publicKey, privateKey } = QuickCrypto.generateKeyPairSync("x25519");
-    return {
-      publicKey: extractRawPublicKey(publicKey),
-      privateKey: extractRawPrivateKey(privateKey),
-    };
+    const privateKey = x25519.utils.randomSecretKey();
+    const publicKey = x25519.getPublicKey(privateKey);
+    return { publicKey, privateKey };
   }
 
   x25519(privateKey: Uint8Array, publicKey: Uint8Array): Uint8Array {
-    const ecdh = QuickCrypto.createECDH("x25519");
-    ecdh.setPrivateKey(Buffer.from(privateKey));
-    return new Uint8Array(ecdh.computeSecret(Buffer.from(publicKey)));
+    return x25519.getSharedSecret(privateKey, publicKey);
   }
 
   generateEd25519KeyPair(): KeyPair {
-    const { publicKey, privateKey } = QuickCrypto.generateKeyPairSync("ed25519");
-    return {
-      publicKey: extractRawPublicKey(publicKey),
-      privateKey: extractRawPrivateKey(privateKey),
-    };
+    const privateKey = ed25519.utils.randomSecretKey();
+    const publicKey = ed25519.getPublicKey(privateKey);
+    return { publicKey, privateKey };
   }
 
   ed25519Sign(privateKey: Uint8Array, message: Uint8Array): Uint8Array {
-    return new Uint8Array(
-      QuickCrypto.sign(null, Buffer.from(message), {
-        key: Buffer.from(privateKey),
-        format: "der",
-        type: "pkcs8",
-      }),
-    );
+    return ed25519.sign(message, privateKey);
   }
 
   ed25519Verify(publicKey: Uint8Array, message: Uint8Array, signature: Uint8Array): boolean {
     try {
-      return QuickCrypto.verify(
-        null,
-        Buffer.from(message),
-        {
-          key: Buffer.from(publicKey),
-          format: "der",
-          type: "spki",
-        },
-        Buffer.from(signature),
-      );
+      return ed25519.verify(signature, message, publicKey);
     } catch {
       return false;
     }
   }
 
   edToX25519Public(edPublicKey: Uint8Array): Uint8Array {
-    const keyObj = QuickCrypto.createPublicKey({
-      key: Buffer.from(edPublicKey),
-      format: "der",
-      type: "spki",
-    });
-    const converted = keyObj.convert("x25519");
-    return extractRawPublicKey(converted.export({ type: "spki", format: "der" }));
+    return ed25519.utils.toMontgomery(edPublicKey);
   }
 
   edToX25519Private(edPrivateKey: Uint8Array): Uint8Array {
-    const keyObj = QuickCrypto.createPrivateKey({
-      key: Buffer.from(edPrivateKey),
-      format: "der",
-      type: "pkcs8",
-    });
-    const converted = keyObj.convert("x25519");
-    return extractRawPrivateKey(converted.export({ type: "pkcs8", format: "der" }));
+    return ed25519.utils.toMontgomerySecret(edPrivateKey);
   }
 
   randomBytes(length: number): Uint8Array {
@@ -152,16 +124,6 @@ export class NativeCryptoBackend implements CryptoBackend {
       ),
     );
   }
-}
-
-function extractRawPublicKey(derBuffer: Buffer): Uint8Array {
-  // X25519/Ed25519 SPKI DER: last 32 bytes are the raw public key
-  return new Uint8Array(derBuffer.slice(-32));
-}
-
-function extractRawPrivateKey(derBuffer: Buffer): Uint8Array {
-  // X25519/Ed25519 PKCS8 DER: last 32 bytes are the raw private key
-  return new Uint8Array(derBuffer.slice(-32));
 }
 
 export function createNativeBackend(): NativeCryptoBackend {

@@ -2,6 +2,7 @@ import type { CiphertextPayload } from '@openhospi/crypto';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { queryKeys } from '@/services/keys';
 
 export type ConversationListItem = {
   id: string;
@@ -47,14 +48,6 @@ export type MessageItem = {
   createdAt: string;
 };
 
-export type { CiphertextPayload } from '@openhospi/crypto';
-
-export const chatKeys = {
-  conversations: () => ['chat', 'conversations'] as const,
-  conversationDetail: (id: string) => ['chat', 'conversations', id] as const,
-  messages: (conversationId: string) => ['chat', 'messages', conversationId] as const,
-};
-
 export function fetchConversationDetail(id: string) {
   return api.get<ConversationDetail>(`/api/mobile/chat/conversations/${id}`);
 }
@@ -84,14 +77,14 @@ function markReadApi(conversationId: string) {
 
 export function useConversations() {
   return useQuery({
-    queryKey: chatKeys.conversations(),
+    queryKey: queryKeys.chat.conversations(),
     queryFn: fetchConversations,
   });
 }
 
 export function useConversationDetail(id: string) {
   return useQuery({
-    queryKey: chatKeys.conversationDetail(id),
+    queryKey: queryKeys.chat.conversationDetail(id),
     queryFn: () => fetchConversationDetail(id),
     enabled: !!id,
   });
@@ -99,7 +92,7 @@ export function useConversationDetail(id: string) {
 
 export function useMessages(conversationId: string) {
   return useQuery({
-    queryKey: chatKeys.messages(conversationId),
+    queryKey: queryKeys.chat.messages(conversationId),
     queryFn: () => fetchMessages(conversationId),
     enabled: !!conversationId,
   });
@@ -116,8 +109,8 @@ export function useSendMessage() {
       payloads: CiphertextPayload[];
     }) => sendMessageApi(conversationId, payloads),
     onSuccess: (_, { conversationId }) => {
-      queryClient.invalidateQueries({ queryKey: chatKeys.messages(conversationId) });
-      queryClient.invalidateQueries({ queryKey: chatKeys.conversations() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.chat.messages(conversationId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.chat.conversations() });
     },
   });
 }
@@ -127,7 +120,7 @@ export function useMarkRead(conversationId: string) {
   return useMutation({
     mutationFn: () => markReadApi(conversationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: chatKeys.conversations() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.chat.conversations() });
     },
   });
 }

@@ -10,15 +10,23 @@ const QuickCrypto = require('react-native-quick-crypto');
 
 const MASTER_KEY_ID = 'openhospi_master_key';
 
+let cachedMasterKey: Buffer | null = null;
+
 async function getMasterKey(): Promise<Buffer> {
+  if (cachedMasterKey) return cachedMasterKey;
+
   const stored = await SecureStore.getItemAsync(MASTER_KEY_ID);
-  if (stored) return Buffer.from(stored, 'base64');
+  if (stored) {
+    cachedMasterKey = Buffer.from(stored, 'base64');
+    return cachedMasterKey;
+  }
 
   const key: Buffer = QuickCrypto.randomBytes(32);
   await SecureStore.setItemAsync(MASTER_KEY_ID, Buffer.from(key).toString('base64'), {
     keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
   });
-  return Buffer.from(key);
+  cachedMasterKey = Buffer.from(key);
+  return cachedMasterKey;
 }
 
 function encryptData(masterKey: Buffer, plaintext: string): { iv: string; content: string } {

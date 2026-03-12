@@ -36,6 +36,51 @@ type DecryptedMessage = MessageItem & {
   decryptFailed: boolean;
 };
 
+async function tryDecryptMessage(
+  msg: {
+    ciphertext: string;
+    iv: string;
+    ratchetPublicKey: string | null;
+    messageNumber: number | null;
+    previousChainLength: number | null;
+    senderId: string;
+  },
+  userId: string,
+  conversationId: string,
+  decryptMessage: (
+    conversationId: string,
+    senderUserId: string,
+    encrypted: EncryptedMessage
+  ) => Promise<string>,
+  decryptForSelf: (ciphertext: string, iv: string) => Promise<string>
+): Promise<{ text: string | null; failed: boolean }> {
+  try {
+    if (msg.senderId === userId && msg.ratchetPublicKey === 'self') {
+      const plaintext = await decryptForSelf(msg.ciphertext, msg.iv);
+      return { text: plaintext, failed: false };
+    }
+
+    if (msg.ratchetPublicKey && msg.messageNumber != null && msg.previousChainLength != null) {
+      const encrypted: EncryptedMessage = {
+        ciphertext: msg.ciphertext,
+        iv: msg.iv,
+        header: {
+          ratchetPublicKey: msg.ratchetPublicKey,
+          messageNumber: msg.messageNumber,
+          previousChainLength: msg.previousChainLength,
+        },
+      };
+      const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
+      return { text: plaintext, failed: false };
+    }
+
+    return { text: null, failed: false };
+  } catch (error) {
+    console.error('[Chat] Decryption failed for message', error);
+    return { text: null, failed: true };
+  }
+}
+
 function MessageBubble({ message, isOwn }: { message: DecryptedMessage; isOwn: boolean }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.chat' });
 
@@ -44,84 +89,40 @@ function MessageBubble({ message, isOwn }: { message: DecryptedMessage; isOwn: b
     minute: '2-digit',
   });
 
-  if (isOwn) {
-    return (
-      <View
-        style={{ alignSelf: 'flex-end', maxWidth: '80%', marginHorizontal: 16, marginVertical: 2 }}>
-        <View
-          style={{
-            borderRadius: 18,
-            borderBottomRightRadius: 4,
-            paddingHorizontal: 14,
-            paddingVertical: 8,
-          }}
-          className="bg-primary">
-          <Text className="text-primary-foreground text-sm leading-5">
-            {message.decryptedText ?? t('encrypted_message')}
-          </Text>
-        </View>
-        <Text
-          className="text-muted-foreground text-xs"
-          style={{ alignSelf: 'flex-end', marginTop: 2, marginRight: 4 }}>
-          {time}
-        </Text>
-      </View>
-    );
-  }
+  const text = message.decryptFailed
+    ? t('decryption_failed')
+    : (message.decryptedText ?? t('encrypted_message'));
 
   return (
     <View
-      style={{ alignSelf: 'flex-start', maxWidth: '80%', marginHorizontal: 16, marginVertical: 2 }}>
+      style={{
+        alignSelf: isOwn ? 'flex-end' : 'flex-start',
+        maxWidth: '80%',
+        marginHorizontal: 16,
+        marginVertical: 2,
+      }}>
       <View
         style={{
           borderRadius: 18,
-          borderBottomLeftRadius: 4,
+          ...(isOwn ? { borderBottomRightRadius: 4 } : { borderBottomLeftRadius: 4 }),
           paddingHorizontal: 14,
           paddingVertical: 8,
         }}
-        className="bg-muted">
-        {message.decryptFailed ? (
-          <Text className="text-muted-foreground text-sm leading-5 italic">
-            {t('decryption_failed')}
-          </Text>
-        ) : (
-          <Text className="text-foreground text-sm leading-5">
-            {message.decryptedText ?? t('encrypted_message')}
-          </Text>
-        )}
-      </View>
-      <Text className="text-muted-foreground text-xs" style={{ marginTop: 2, marginLeft: 4 }}>
-        {message.senderFirstName} · {time}
-      </Text>
-    </View>
-  );
-}
-
-function EncryptionGate({
-  status,
-  onSetup,
-}: {
-  status: 'needs-setup' | 'needs-recovery';
-  onSetup: () => void;
-}) {
-  const { t } = useTranslation('translation', { keyPrefix: 'app.chat.encryption' });
-
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, padding: 32 }}>
-      <Text className="text-foreground text-center text-lg font-semibold">
-        {status === 'needs-recovery' ? t('unlock_title') : t('setup_title')}
-      </Text>
-      <Text variant="muted" className="text-center text-sm">
-        {status === 'needs-recovery' ? t('unlock_description') : t('setup_description')}
-      </Text>
-      <Pressable
-        onPress={onSetup}
-        style={{ paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}
-        className="bg-primary">
-        <Text className="text-primary-foreground font-semibold">
-          {status === 'needs-recovery' ? t('unlock_pin') : t('setup_with_pin')}
+        className={isOwn ? 'bg-primary' : 'bg-muted'}>
+        <Text
+          className={`text-sm leading-5 ${message.decryptFailed ? 'text-muted-foreground italic' : isOwn ? 'text-primary-foreground' : 'text-foreground'}`}>
+          {text}
         </Text>
-      </Pressable>
+      </View>
+      <Text
+        className="text-muted-foreground text-xs"
+        style={{
+          alignSelf: isOwn ? 'flex-end' : 'flex-start',
+          marginTop: 2,
+          ...(isOwn ? { marginRight: 4 } : { marginLeft: 4 }),
+        }}>
+        {isOwn ? time : `${message.senderFirstName} · ${time}`}
+      </Text>
     </View>
   );
 }
@@ -154,12 +155,11 @@ export default function ConversationScreen() {
   const [isSending, setIsSending] = useState(false);
 
   const channelRef = useRef<RealtimeChannel | null>(null);
-  const flatListRef = useRef<FlatList<DecryptedMessage>>(null);
 
   const otherMembers = detail?.members.filter((m) => m.userId !== userId) ?? [];
   const firstOther = otherMembers[0];
 
-  const { hasChanged: keyChanged } = useKeyChangeDetection(firstOther?.userId ?? '', undefined);
+  const { hasChanged: keyChanged } = useKeyChangeDetection(firstOther?.userId ?? '');
 
   // Set header title
   useEffect(() => {
@@ -193,7 +193,9 @@ export default function ConversationScreen() {
   useEffect(() => {
     if (!initialMessages || status !== 'ready') return;
 
+    let active = true;
     setIsDecrypting(true);
+
     (async () => {
       const decrypted = await Promise.all(
         initialMessages.map(async (msg): Promise<DecryptedMessage> => {
@@ -201,42 +203,26 @@ export default function ConversationScreen() {
             return { ...msg, decryptedText: null, decryptFailed: false };
           }
 
-          try {
-            if (msg.senderId === userId && msg.ratchetPublicKey === 'self') {
-              // Own message — self-encrypted
-              const plaintext = await decryptForSelf(msg.ciphertext, msg.iv);
-              return { ...msg, decryptedText: plaintext, decryptFailed: false };
-            }
-
-            if (
-              msg.ratchetPublicKey &&
-              msg.messageNumber != null &&
-              msg.previousChainLength != null
-            ) {
-              // Other member's message — Double Ratchet
-              const encrypted: EncryptedMessage = {
-                ciphertext: msg.ciphertext,
-                iv: msg.iv,
-                header: {
-                  ratchetPublicKey: msg.ratchetPublicKey,
-                  messageNumber: msg.messageNumber,
-                  previousChainLength: msg.previousChainLength,
-                },
-              };
-              const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
-              return { ...msg, decryptedText: plaintext, decryptFailed: false };
-            }
-
-            return { ...msg, decryptedText: null, decryptFailed: false };
-          } catch (error) {
-            console.error('[Chat] Decryption failed for message', msg.id, error);
-            return { ...msg, decryptedText: null, decryptFailed: true };
-          }
+          const result = await tryDecryptMessage(
+            { ...msg, ciphertext: msg.ciphertext, iv: msg.iv },
+            userId,
+            conversationId,
+            decryptMessage,
+            decryptForSelf
+          );
+          return { ...msg, decryptedText: result.text, decryptFailed: result.failed };
         })
       );
-      setMessages(decrypted);
-      setIsDecrypting(false);
+
+      if (active) {
+        setMessages(decrypted);
+        setIsDecrypting(false);
+      }
     })();
+
+    return () => {
+      active = false;
+    };
   }, [initialMessages, status, userId, conversationId, decryptMessage, decryptForSelf]);
 
   // Mark conversation read on mount
@@ -286,27 +272,24 @@ export default function ConversationScreen() {
           };
 
           if (!active) return;
-
-          // Skip own messages — optimistic add already covers them
           if (record.sender_user_id === userId) return;
 
           try {
             const senderMember = detail?.members.find((m) => m.userId === record.sender_user_id);
 
-            const encrypted: EncryptedMessage = {
-              ciphertext: record.ciphertext,
-              iv: record.iv,
-              header: {
+            const result = await tryDecryptMessage(
+              {
+                ciphertext: record.ciphertext,
+                iv: record.iv,
                 ratchetPublicKey: record.ratchet_public_key,
                 messageNumber: record.message_number,
                 previousChainLength: record.previous_chain_length,
+                senderId: record.sender_user_id,
               },
-            };
-
-            const plaintext = await decryptMessage(
+              userId,
               conversationId,
-              record.sender_user_id,
-              encrypted
+              decryptMessage,
+              decryptForSelf
             );
 
             const newMsg: DecryptedMessage = {
@@ -321,8 +304,8 @@ export default function ConversationScreen() {
               previousChainLength: record.previous_chain_length,
               messageType: 'text',
               createdAt: new Date().toISOString(),
-              decryptedText: plaintext,
-              decryptFailed: false,
+              decryptedText: result.text,
+              decryptFailed: result.failed,
             };
 
             if (active) {
@@ -374,7 +357,6 @@ export default function ConversationScreen() {
         })
       );
 
-      // Encrypt for self (HKDF-derived key)
       const selfEncrypted = await encryptForSelf(text);
       payloads.push({
         recipientUserId: userId,
@@ -387,7 +369,6 @@ export default function ConversationScreen() {
 
       await sendMessage.mutateAsync({ conversationId, payloads });
 
-      // Optimistically add own message to the list
       const ownMsg: DecryptedMessage = {
         id: `optimistic-${Date.now()}`,
         senderId: userId,
@@ -430,10 +411,35 @@ export default function ConversationScreen() {
   if (status === 'needs-setup' || status === 'needs-recovery') {
     return (
       <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
-        <EncryptionGate
-          status={status}
-          onSetup={() => router.push('/(app)/(modals)/key-recovery' as never)}
-        />
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 16,
+            padding: 32,
+          }}>
+          <Text className="text-foreground text-center text-lg font-semibold">
+            {status === 'needs-recovery'
+              ? t('encryption.unlock_title')
+              : t('encryption.setup_title')}
+          </Text>
+          <Text variant="muted" className="text-center text-sm">
+            {status === 'needs-recovery'
+              ? t('encryption.unlock_description')
+              : t('encryption.setup_description')}
+          </Text>
+          <Pressable
+            onPress={() => router.push('/(app)/(modals)/key-recovery' as never)}
+            style={{ paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}
+            className="bg-primary">
+            <Text className="text-primary-foreground font-semibold">
+              {status === 'needs-recovery'
+                ? t('encryption.unlock_pin')
+                : t('encryption.setup_with_pin')}
+            </Text>
+          </Pressable>
+        </View>
       </SafeAreaView>
     );
   }
@@ -461,7 +467,6 @@ export default function ConversationScreen() {
           </View>
         ) : (
           <FlatList
-            ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (

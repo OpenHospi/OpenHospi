@@ -9,7 +9,7 @@ import { Text } from '@/components/ui/text';
 import { useSubmitPersonality } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@/services/types';
 
-import type { StepHandle } from '../types';
+import type { StepHandle } from '@/components/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;

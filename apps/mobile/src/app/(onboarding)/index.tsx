@@ -17,7 +17,7 @@ import LanguagesStep from './steps/languages-step';
 import PersonalityStep from './steps/personality-step';
 import PhotosStep from './steps/photos-step';
 import SecurityStep from './steps/security-step';
-import type { StepHandle } from './types';
+import type { StepHandle } from '@/components/onboarding-types';
 
 const STEP_KEYS = [
   'identity',

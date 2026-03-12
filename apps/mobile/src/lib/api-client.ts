@@ -1,7 +1,5 @@
-import * as SecureStore from 'expo-secure-store';
-
 import { API_BASE_URL } from '@/lib/constants';
-import { BEARER_TOKEN_KEY } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 
 export class ApiError extends Error {
   constructor(
@@ -14,14 +12,14 @@ export class ApiError extends Error {
   }
 }
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const token = await SecureStore.getItemAsync(BEARER_TOKEN_KEY);
-  if (!token) return {};
-  return { Authorization: `Bearer ${token}` };
+function getAuthHeaders(): Record<string, string> {
+  const cookies = authClient.getCookie();
+  if (!cookies) return {};
+  return { Cookie: cookies };
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const authHeaders = await getAuthHeaders();
+  const authHeaders = getAuthHeaders();
   const headers: Record<string, string> = {
     ...authHeaders,
   };
@@ -33,6 +31,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers,
+    credentials: 'omit',
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 

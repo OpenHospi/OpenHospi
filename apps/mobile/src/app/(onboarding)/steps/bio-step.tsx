@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useSubmitBio } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@/services/types';
 
-import type { StepHandle } from '../types';
+import type { StepHandle } from '@/components/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;

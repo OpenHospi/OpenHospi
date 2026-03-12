@@ -68,6 +68,15 @@ export const account = pgTable(
   (table) => [index("account_userId_idx").on(table.userId)],
 );
 
+export const jwks = pgTable("jwks", {
+  id: uuid("id")
+    .default(sql`pg_catalog.gen_random_uuid()`)
+    .primaryKey(),
+  publicKey: text("public_key").notNull(),
+  privateKey: text("private_key").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const verification = pgTable(
   "verification",
   {

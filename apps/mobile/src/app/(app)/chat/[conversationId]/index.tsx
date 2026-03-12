@@ -3,6 +3,7 @@ import { Info, Send } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -138,8 +139,14 @@ export default function ConversationScreen() {
   const { data: initialMessages, isPending: messagesLoading } = useMessages(conversationId);
   const sendMessage = useSendMessage();
   const markRead = useMarkRead(conversationId);
-  const { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf } =
-    useEncryption(userId);
+  const {
+    status,
+    encryptMessage,
+    decryptMessage,
+    encryptForSelf,
+    decryptForSelf,
+    ensureSessionForPeer,
+  } = useEncryption(userId);
 
   const [messages, setMessages] = useState<DecryptedMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -170,6 +177,17 @@ export default function ConversationScreen() {
       ),
     });
   }, [detail, conversationId, navigation, router, userId]);
+
+  // Bootstrap crypto sessions for all other members
+  useEffect(() => {
+    if (status !== 'ready' || !detail) return;
+    const others = detail.members.filter((m) => m.userId !== userId);
+    for (const other of others) {
+      ensureSessionForPeer(conversationId, other.userId).catch((error) =>
+        console.error('[Chat] Session bootstrap failed for', other.userId, error)
+      );
+    }
+  }, [status, detail, userId, conversationId, ensureSessionForPeer]);
 
   // Decrypt initial messages
   useEffect(() => {
@@ -216,7 +234,7 @@ export default function ConversationScreen() {
           }
         })
       );
-      setMessages(decrypted.slice().reverse());
+      setMessages(decrypted);
       setIsDecrypting(false);
     })();
   }, [initialMessages, status, userId, conversationId, decryptMessage, decryptForSelf]);
@@ -386,8 +404,10 @@ export default function ConversationScreen() {
         decryptFailed: false,
       };
       setMessages((prev) => [ownMsg, ...prev]);
-    } catch {
+    } catch (error) {
+      console.error('[Chat] Failed to send message:', error);
       setInputText(text);
+      Alert.alert(t('error_title'), t('send_error'));
     } finally {
       setIsSending(false);
     }

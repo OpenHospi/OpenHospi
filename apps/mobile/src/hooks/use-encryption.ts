@@ -1,5 +1,6 @@
 import {
   getKeyStatus,
+  ensureSession,
   encryptForRecipient,
   decryptFromSender,
   encryptForSelf as encryptForSelfFn,
@@ -28,6 +29,7 @@ type UseEncryptionResult = {
   encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
   decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
   getFingerprint: (otherUserId: string) => Promise<FingerprintResult | null>;
+  ensureSessionForPeer: (conversationId: string, otherUserId: string) => Promise<boolean>;
 };
 
 export function useEncryption(userId: string): UseEncryptionResult {
@@ -90,6 +92,22 @@ export function useEncryption(userId: string): UseEncryptionResult {
     [userId]
   );
 
+  const ensureSessionForPeer = useCallback(
+    async (conversationId: string, otherUserId: string): Promise<boolean> => {
+      return ensureSession(
+        cryptoStore,
+        conversationId,
+        otherUserId,
+        userId,
+        async (targetUserId) => {
+          const bundle = await fetchPreKeyBundleApi(targetUserId);
+          return bundle ?? null;
+        }
+      );
+    },
+    [userId]
+  );
+
   const getFingerprint = useCallback(
     async (otherUserId: string): Promise<FingerprintResult | null> => {
       return getIdentityFingerprint(cryptoStore, userId, otherUserId, async (userIds) => {
@@ -102,5 +120,13 @@ export function useEncryption(userId: string): UseEncryptionResult {
     [userId]
   );
 
-  return { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf, getFingerprint };
+  return {
+    status,
+    encryptMessage,
+    decryptMessage,
+    encryptForSelf,
+    decryptForSelf,
+    getFingerprint,
+    ensureSessionForPeer,
+  };
 }

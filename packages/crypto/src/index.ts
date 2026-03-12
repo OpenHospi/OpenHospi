@@ -95,6 +95,7 @@ export type { KeyStatus } from "./manager/key-management";
 
 // ── Manager: Encryption Operations ──
 export {
+  ensureSession,
   encryptForRecipient,
   decryptFromSender,
   encryptForSelf,

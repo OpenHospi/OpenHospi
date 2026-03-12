@@ -1368,6 +1368,8 @@
       "e2e_info": "Berichten zijn end-to-end versleuteld",
       "group_info": "Groepinfo",
       "house_members": "Huisgenoten",
+      "error_title": "Verzenden mislukt",
+      "send_error": "Bericht kon niet worden verzonden. Probeer het opnieuw.",
       "loading_messages": "Berichten laden...",
       "mute_conversation": "Gesprek dempen",
       "no_conversations": "Nog geen gesprekken",

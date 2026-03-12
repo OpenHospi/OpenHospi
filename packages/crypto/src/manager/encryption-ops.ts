@@ -64,6 +64,25 @@ export async function decryptForSelf(
   return new TextDecoder().decode(plaintext);
 }
 
+// ── Session Bootstrap ──
+
+export async function ensureSession(
+  store: CryptoStore,
+  conversationId: string,
+  otherUserId: string,
+  myUserId: string,
+  fetchBundle: (userId: string) => Promise<ServerPreKeyBundle | null>,
+): Promise<boolean> {
+  const existing = await store.getSession(conversationId, otherUserId);
+  if (existing) return true;
+  try {
+    await getOrCreateSession(store, conversationId, otherUserId, myUserId, fetchBundle);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // ── Double Ratchet Operations ──
 
 export async function encryptForRecipient(

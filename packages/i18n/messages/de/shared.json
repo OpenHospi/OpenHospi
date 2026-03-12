@@ -1368,6 +1368,8 @@
       "e2e_info": "Nachrichten sind Ende-zu-Ende-verschlüsselt",
       "group_info": "Gruppeninfo",
       "house_members": "Hausmitglieder",
+      "error_title": "Senden fehlgeschlagen",
+      "send_error": "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut.",
       "loading_messages": "Nachrichten werden geladen...",
       "mute_conversation": "Unterhaltung stummschalten",
       "no_conversations": "Noch keine Unterhaltungen",

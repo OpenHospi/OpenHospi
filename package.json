@@ -74,7 +74,16 @@
     "ignoredBuiltDependencies": [
       "@prisma/engines",
       "prisma"
-    ]
+    ],
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "prisma",
+        "@prisma/client"
+      ],
+      "allowedVersions": {
+        "magicast": ">=0.3.5"
+      }
+    }
   },
   "devDependencies": {
     "@lingual/i18n-check": "0.8.19",

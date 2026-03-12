@@ -15,7 +15,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { ProfileFieldRow } from '@/components/profile-field-row';
 import { ProfileSectionCard } from '@/components/profile-section-card';
 import { useTranslation } from 'react-i18next';
-import { authClient } from '@/lib/auth-client';
+import * as SecureStore from 'expo-secure-store';
+import { authClient, BEARER_TOKEN_KEY } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useProfile } from '@/services/profile';
@@ -223,6 +224,7 @@ export default function ProfileScreen() {
             onPress={() => {
               queryClient.clear();
               authClient.signOut();
+              SecureStore.deleteItemAsync(BEARER_TOKEN_KEY);
             }}>
             <Text>{tCommon('logout')}</Text>
           </Button>

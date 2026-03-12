@@ -15,7 +15,8 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
-import { authClient } from '@/lib/auth-client';
+import * as SecureStore from 'expo-secure-store';
+import { authClient, BEARER_TOKEN_KEY } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { registerForPushNotifications } from '@/lib/notifications';
 import {
@@ -425,6 +426,7 @@ function DeleteAccountSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction
                   onSuccess: () => {
                     queryClient.clear();
                     authClient.signOut();
+                    SecureStore.deleteItemAsync(BEARER_TOKEN_KEY);
                   },
                 });
               },

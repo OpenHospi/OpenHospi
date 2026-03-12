@@ -1,0 +1,5 @@
+name: OpenHospi CodeQL Config
+
+paths-ignore:
+  # Vendored asset from react-native-leaflet-view — not our code
+  - apps/mobile/assets/leaflet.html

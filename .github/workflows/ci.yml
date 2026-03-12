@@ -7,6 +7,7 @@ on:
       - "apps/web/**"
       - "packages/**"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/ci.yml"
       - "vitest*"
       - "tsconfig*"
@@ -16,6 +17,7 @@ on:
       - "apps/web/**"
       - "packages/**"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/ci.yml"
 
 concurrency:
@@ -23,8 +25,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  install:
+    name: Install
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -35,10 +37,37 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm lint
 
   typecheck:
     name: Type Check
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -47,12 +76,18 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm typecheck
 
   format:
     name: Format Check
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -61,12 +96,18 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm -r format:check
 
   i18n:
     name: i18n Completeness
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -75,12 +116,18 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm i18n:check
 
   test:
     name: Unit Tests
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -89,12 +136,18 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm vitest run --exclude 'packages/database/src/**'
 
   audit:
     name: Dependency Audit
+    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 5
     continue-on-error: true
@@ -104,6 +157,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm audit --audit-level=moderate

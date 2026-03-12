@@ -26,9 +26,9 @@ catalog:
   eslint-config-expo: ~55.0.0
   eslint-plugin-prettier: ^5.5.5
 
-  # ── React ──
-  react: 19.2.3
-  react-dom: 19.2.3
+  # ── React (pinned to 19.2.0 — Expo SDK 55 requirement, web is compatible) ──
+  react: 19.2.0
+  react-dom: 19.2.0
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
 

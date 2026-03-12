@@ -20,11 +20,17 @@ export function useRespondToInvitation() {
       data,
     }: {
       invitationId: string;
+      applicationId?: string;
       data: { status: string; declineReason?: string };
     }) => api.post(`/api/mobile/invitations/${invitationId}/rsvp`, data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.invitations.list() });
       queryClient.invalidateQueries({ queryKey: queryKeys.applications.list() });
+      if (variables.applicationId) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.applications.detail(variables.applicationId),
+        });
+      }
     },
   });
 }

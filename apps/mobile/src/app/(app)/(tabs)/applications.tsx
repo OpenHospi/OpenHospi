@@ -1,19 +1,16 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Dot, Euro, FileText, Home } from 'lucide-react-native';
-import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
-import { useInvitations } from '@/services/invitations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { UserApplication, UserInvitation } from '@/services/types';
+import type { UserApplication } from '@/services/types';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
@@ -81,37 +78,6 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
   );
 }
 
-function InvitationCard({ item }: { item: UserInvitation }) {
-  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
-
-  return (
-    <Card style={{ gap: 4, padding: 12, paddingVertical: 12 }}>
-      <Text className="text-card-foreground font-semibold">{item.eventTitle}</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text variant="muted" className="text-sm">
-          {item.eventDate}
-        </Text>
-        <Dot size={14} className="text-muted-foreground" />
-        <Text variant="muted" className="text-sm">
-          {item.timeStart}
-          {item.timeEnd ? ` - ${item.timeEnd}` : ''}
-        </Text>
-      </View>
-      <Text variant="muted" className="text-sm">
-        {item.roomTitle}
-      </Text>
-      {item.cancelledAt ? (
-        <Text className="text-destructive text-sm">{t('cancelled')}</Text>
-      ) : (
-        <Badge variant="secondary" style={{ alignSelf: 'flex-start' }} className="rounded-full">
-          <Text>{tEnums(`invitation_status.${item.status}`)}</Text>
-        </Badge>
-      )}
-    </Card>
-  );
-}
-
 function EmptyState({ message }: { message: string }) {
   return (
     <View
@@ -135,22 +101,20 @@ function EmptyState({ message }: { message: string }) {
 
 export default function ApplicationsScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
-  const { t: tInvitations } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const router = useRouter();
 
-  const [tab, setTab] = useState('applications');
-  const {
-    data: applications,
-    isPending: appsPending,
-    refetch: refetchApps,
-    isRefetching: isRefetchingApps,
-  } = useApplications();
-  const {
-    data: invitations,
-    isPending: invPending,
-    refetch: refetchInv,
-    isRefetching: isRefetchingInv,
-  } = useInvitations();
+  const { data: applications, isPending, refetch, isRefetching } = useApplications();
+
+  if (isPending) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background"
+        edges={['top']}>
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
@@ -158,65 +122,22 @@ export default function ApplicationsScreen() {
         <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
       </View>
 
-      <Tabs value={tab} onValueChange={setTab} style={{ flex: 1 }}>
-        <View style={{ paddingHorizontal: 16 }}>
-          <TabsList style={{ width: '100%' }}>
-            <TabsTrigger value="applications" style={{ flex: 1 }}>
-              <Text>{t('title')}</Text>
-            </TabsTrigger>
-            <TabsTrigger value="invitations" style={{ flex: 1 }}>
-              <Text>{tInvitations('title')}</Text>
-            </TabsTrigger>
-          </TabsList>
-        </View>
-
-        <TabsContent value="applications" style={{ flex: 1, paddingTop: 8 }}>
-          {appsPending ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size="large" />
-            </View>
-          ) : (
-            <FlatList
-              data={applications ?? []}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }: { item: UserApplication }) => (
-                <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
-                  <ApplicationCard
-                    item={item}
-                    onPress={() => router.push(`/(app)/application/${item.id}` as never)}
-                  />
-                </View>
-              )}
-              ListEmptyComponent={<EmptyState message={t('empty')} />}
-              contentContainerStyle={!applications?.length ? { flex: 1 } : { paddingBottom: 16 }}
-              refreshing={isRefetchingApps}
-              onRefresh={refetchApps}
+      <FlatList
+        data={applications ?? []}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }: { item: UserApplication }) => (
+          <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
+            <ApplicationCard
+              item={item}
+              onPress={() => router.push(`/(app)/application/${item.id}` as never)}
             />
-          )}
-        </TabsContent>
-
-        <TabsContent value="invitations" style={{ flex: 1, paddingTop: 8 }}>
-          {invPending ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size="large" />
-            </View>
-          ) : (
-            <FlatList
-              data={invitations ?? []}
-              keyExtractor={(item) => item.invitationId}
-              renderItem={({ item }: { item: UserInvitation }) => (
-                <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
-                  <InvitationCard item={item} />
-                </View>
-              )}
-              ListEmptyComponent={<EmptyState message={tInvitations('empty')} />}
-              contentContainerStyle={!invitations?.length ? { flex: 1 } : { paddingBottom: 16 }}
-              refreshing={isRefetchingInv}
-              onRefresh={refetchInv}
-            />
-          )}
-        </TabsContent>
-      </Tabs>
+          </View>
+        )}
+        ListEmptyComponent={<EmptyState message={t('empty')} />}
+        contentContainerStyle={!applications?.length ? { flex: 1 } : { paddingBottom: 16 }}
+        refreshing={isRefetching}
+        onRefresh={refetch}
+      />
     </SafeAreaView>
   );
 }

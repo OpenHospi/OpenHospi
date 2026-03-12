@@ -165,6 +165,7 @@ export type ApplicationDetail = UserApplication & {
   roomAvailableFrom: string | null;
   roomFeatures: RoomFeature[];
   roomLocationTags: LocationTag[];
+  invitation: UserInvitation | null;
 };
 
 export type UserInvitation = {

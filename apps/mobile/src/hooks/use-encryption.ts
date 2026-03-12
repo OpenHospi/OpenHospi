@@ -1,13 +1,18 @@
 import {
   getKeyStatus,
-  ensureSession,
   encryptForRecipient,
   decryptFromSender,
   encryptForSelf as encryptForSelfFn,
   decryptForSelf as decryptForSelfFn,
   getIdentityFingerprint,
 } from '@openhospi/crypto';
-import type { EncryptedMessage, KeyStatus, FingerprintResult } from '@openhospi/crypto';
+import type {
+  EncryptedMessage,
+  EncryptResult,
+  KeyStatus,
+  FingerprintResult,
+  X3DHMetadata,
+} from '@openhospi/crypto';
 import { useEffect, useState } from 'react';
 
 import { cryptoStore } from '@/lib/crypto/store';
@@ -37,7 +42,7 @@ export function useEncryption(userId: string) {
     conversationId: string,
     recipientUserId: string,
     plaintext: string
-  ): Promise<EncryptedMessage> {
+  ): Promise<EncryptResult> {
     return encryptForRecipient(
       cryptoStore,
       userId,
@@ -51,9 +56,17 @@ export function useEncryption(userId: string) {
   async function decryptMessage(
     conversationId: string,
     senderUserId: string,
-    encrypted: EncryptedMessage
+    encrypted: EncryptedMessage,
+    x3dhMeta?: X3DHMetadata | null
   ): Promise<string> {
-    return decryptFromSender(cryptoStore, userId, conversationId, senderUserId, encrypted);
+    return decryptFromSender(
+      cryptoStore,
+      userId,
+      conversationId,
+      senderUserId,
+      encrypted,
+      x3dhMeta
+    );
   }
 
   async function encryptForSelf(plaintext: string): Promise<{ ciphertext: string; iv: string }> {
@@ -62,13 +75,6 @@ export function useEncryption(userId: string) {
 
   async function decryptForSelf(ciphertext: string, iv: string): Promise<string> {
     return decryptForSelfFn(cryptoStore, userId, ciphertext, iv);
-  }
-
-  async function ensureSessionForPeer(
-    conversationId: string,
-    otherUserId: string
-  ): Promise<boolean> {
-    return ensureSession(cryptoStore, conversationId, otherUserId, userId, fetchBundle);
   }
 
   async function getFingerprint(otherUserId: string): Promise<FingerprintResult | null> {
@@ -87,6 +93,5 @@ export function useEncryption(userId: string) {
     encryptForSelf,
     decryptForSelf,
     getFingerprint,
-    ensureSessionForPeer,
   };
 }

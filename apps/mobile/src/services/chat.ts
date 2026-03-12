@@ -44,6 +44,10 @@ export type MessageItem = {
   ratchetPublicKey: string | null;
   messageNumber: number | null;
   previousChainLength: number | null;
+  ephemeralPublicKey: string | null;
+  senderIdentityKey: string | null;
+  usedSignedPreKeyId: number | null;
+  usedOneTimePreKeyId: number | null;
   messageType: string;
   createdAt: string;
 };

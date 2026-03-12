@@ -104,7 +104,9 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
   }
 
   return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingBottom: 32 }}>
       <View style={{ gap: 12 }}>
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];

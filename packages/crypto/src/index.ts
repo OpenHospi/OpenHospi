@@ -90,16 +90,21 @@ export {
   resetKeys,
   replenishOneTimePreKeys,
   getOrCreateSession,
+  createSessionAsResponder,
 } from "./manager/key-management";
-export type { KeyStatus } from "./manager/key-management";
+export type { KeyStatus, X3DHSessionMeta } from "./manager/key-management";
 
 // ── Manager: Encryption Operations ──
 export {
-  ensureSession,
   encryptForRecipient,
   decryptFromSender,
   encryptForSelf,
   decryptForSelf,
   getIdentityFingerprint,
 } from "./manager/encryption-ops";
-export type { CiphertextPayload, FingerprintResult } from "./manager/encryption-ops";
+export type {
+  CiphertextPayload,
+  EncryptResult,
+  X3DHMetadata,
+  FingerprintResult,
+} from "./manager/encryption-ops";

@@ -92,7 +92,7 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
     <ScrollView
       style={{ flex: 1 }}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
+      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingBottom: 32 }}>
       <View style={{ gap: 8 }}>
         <Label>{t('gender')}</Label>
         <ChipPicker

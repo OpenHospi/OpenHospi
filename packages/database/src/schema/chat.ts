@@ -131,6 +131,11 @@ export const messageCiphertexts = pgTable(
     ratchetPublicKey: text("ratchet_public_key").notNull(),
     messageNumber: integer("message_number").notNull(),
     previousChainLength: integer("previous_chain_length").notNull(),
+    // X3DH metadata — only populated on the first message that establishes a session
+    ephemeralPublicKey: text("ephemeral_public_key"),
+    senderIdentityKey: text("sender_identity_key"),
+    usedSignedPreKeyId: integer("used_signed_pre_key_id"),
+    usedOneTimePreKeyId: integer("used_one_time_pre_key_id"),
   },
   (table) => [
     uniqueIndex("idx_message_ciphertexts_msg_recipient").on(table.messageId, table.recipientUserId),

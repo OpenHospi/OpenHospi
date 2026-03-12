@@ -46,7 +46,9 @@ export default function PersonalityStep({ ref, onNext, profile }: Props) {
   useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingBottom: 32 }}>
       <Text variant="muted" className="text-sm">
         {t('tagCounter', {
           count: selected.length,

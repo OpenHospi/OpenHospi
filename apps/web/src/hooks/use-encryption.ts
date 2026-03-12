@@ -8,7 +8,13 @@ import {
   decryptForSelf as decryptForSelfFn,
   getIdentityFingerprint,
 } from "@openhospi/crypto";
-import type { EncryptedMessage, KeyStatus, FingerprintResult } from "@openhospi/crypto";
+import type {
+  EncryptedMessage,
+  EncryptResult,
+  KeyStatus,
+  FingerprintResult,
+  X3DHMetadata,
+} from "@openhospi/crypto";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -24,11 +30,12 @@ type UseEncryptionResult = {
     conversationId: string,
     recipientUserId: string,
     plaintext: string,
-  ) => Promise<EncryptedMessage>;
+  ) => Promise<EncryptResult>;
   decryptMessage: (
     conversationId: string,
     senderUserId: string,
     encrypted: EncryptedMessage,
+    x3dhMeta?: X3DHMetadata | null,
   ) => Promise<string>;
   encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
   decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
@@ -54,7 +61,7 @@ export function useEncryption(userId: string): UseEncryptionResult {
       conversationId: string,
       recipientUserId: string,
       plaintext: string,
-    ): Promise<EncryptedMessage> => {
+    ): Promise<EncryptResult> => {
       return encryptForRecipient(
         cryptoStore,
         userId,
@@ -75,8 +82,16 @@ export function useEncryption(userId: string): UseEncryptionResult {
       conversationId: string,
       senderUserId: string,
       encrypted: EncryptedMessage,
+      x3dhMeta?: X3DHMetadata | null,
     ): Promise<string> => {
-      return decryptFromSender(cryptoStore, userId, conversationId, senderUserId, encrypted);
+      return decryptFromSender(
+        cryptoStore,
+        userId,
+        conversationId,
+        senderUserId,
+        encrypted,
+        x3dhMeta,
+      );
     },
     [userId],
   );

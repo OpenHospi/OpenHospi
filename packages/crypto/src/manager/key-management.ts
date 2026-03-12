@@ -7,6 +7,7 @@ import { getBackend } from "../backends/platform";
 import { decryptIdentityBackup, encryptIdentityBackup } from "../protocol/backup";
 import {
   deserializeRatchetState,
+  initializeReceiver,
   initializeSender,
   serializeRatchetState,
 } from "../protocol/double-ratchet";
@@ -16,11 +17,23 @@ import {
   generateOneTimePreKeys,
   generateSignedPreKey,
 } from "../protocol/keys";
-import type { PreKeyBundle, RatchetState, ServerPreKeyBundle } from "../protocol/types";
-import { x3dhInitiate } from "../protocol/x3dh";
+import type {
+  IdentityKeyPair,
+  PreKeyBundle,
+  RatchetState,
+  ServerPreKeyBundle,
+} from "../protocol/types";
+import { x3dhInitiate, x3dhRespond } from "../protocol/x3dh";
 import type { CryptoStore, StoredIdentity } from "../store/types";
 
 export type KeyStatus = "ready" | "needs-recovery" | "needs-setup";
+
+export type X3DHSessionMeta = {
+  ephemeralPublicKey: string; // base64
+  senderIdentityKey: string; // base64
+  usedSignedPreKeyId: number;
+  usedOneTimePreKeyId?: number;
+};
 
 export async function getKeyStatus(
   store: CryptoStore,
@@ -199,15 +212,19 @@ export async function replenishOneTimePreKeys(
   );
 }
 
+/**
+ * Get or create a Double Ratchet session as INITIATOR (sender of first message).
+ * Returns the ratchet state and X3DH metadata (only when a new session was created).
+ */
 export async function getOrCreateSession(
   store: CryptoStore,
   conversationId: string,
   otherUserId: string,
   myUserId: string,
   fetchBundle: (userId: string) => Promise<ServerPreKeyBundle | null>,
-): Promise<RatchetState> {
+): Promise<{ state: RatchetState; x3dhMeta?: X3DHSessionMeta }> {
   const existing = await store.getSession(conversationId, otherUserId);
-  if (existing) return deserializeRatchetState(existing);
+  if (existing) return { state: deserializeRatchetState(existing) };
 
   const backend = getBackend();
   const myIdentity = await store.getStoredIdentity(myUserId);
@@ -228,7 +245,7 @@ export async function getOrCreateSession(
     oneTimePreKeyId: bundleData.oneTimePreKeyId,
   };
 
-  const myIdentityKeyPair = {
+  const myIdentityKeyPair: IdentityKeyPair = {
     signing: {
       publicKey: fromBase64(myIdentity.signingPublicKey),
       privateKey: fromBase64(myIdentity.signingPrivateKey),
@@ -244,5 +261,72 @@ export async function getOrCreateSession(
 
   await store.saveSession(conversationId, otherUserId, serializeRatchetState(state));
 
+  return {
+    state,
+    x3dhMeta: {
+      ephemeralPublicKey: toBase64(x3dhResult.ephemeralPublicKey),
+      senderIdentityKey: toBase64(myIdentityKeyPair.dh.publicKey),
+      usedSignedPreKeyId: x3dhResult.usedSignedPreKeyId,
+      usedOneTimePreKeyId: x3dhResult.usedOneTimePreKeyId,
+    },
+  };
+}
+
+/**
+ * Create a Double Ratchet session as RESPONDER (receiver of first message).
+ * Uses X3DH metadata from the incoming PreKey message to derive the shared secret.
+ */
+export async function createSessionAsResponder(
+  store: CryptoStore,
+  conversationId: string,
+  senderUserId: string,
+  myUserId: string,
+  x3dhMeta: {
+    ephemeralPublicKey: string;
+    senderIdentityKey: string;
+    usedSignedPreKeyId: number;
+    usedOneTimePreKeyId?: number;
+  },
+): Promise<RatchetState> {
+  const backend = getBackend();
+  const myIdentity = await store.getStoredIdentity(myUserId);
+  if (!myIdentity) throw new Error("Identity keys not found");
+
+  const spks = await store.getStoredSignedPreKeys(myUserId);
+  const spk = spks.find((k) => k.keyId === x3dhMeta.usedSignedPreKeyId);
+  if (!spk) throw new Error("Signed pre-key not found");
+
+  let opkPrivate: Uint8Array | null = null;
+  if (x3dhMeta.usedOneTimePreKeyId != null) {
+    const opkPrivateB64 = await store.consumeOneTimePreKey(myUserId, x3dhMeta.usedOneTimePreKeyId);
+    if (opkPrivateB64) opkPrivate = fromBase64(opkPrivateB64);
+  }
+
+  const myIdentityKeyPair: IdentityKeyPair = {
+    signing: {
+      publicKey: fromBase64(myIdentity.signingPublicKey),
+      privateKey: fromBase64(myIdentity.signingPrivateKey),
+    },
+    dh: {
+      publicKey: fromBase64(myIdentity.dhPublicKey),
+      privateKey: fromBase64(myIdentity.dhPrivateKey),
+    },
+  };
+
+  const sharedSecret = await x3dhRespond(
+    backend,
+    myIdentityKeyPair,
+    fromBase64(spk.privateKey),
+    opkPrivate,
+    fromBase64(x3dhMeta.senderIdentityKey),
+    fromBase64(x3dhMeta.ephemeralPublicKey),
+  );
+
+  const state = initializeReceiver(sharedSecret, {
+    publicKey: fromBase64(spk.publicKey),
+    privateKey: fromBase64(spk.privateKey),
+  });
+
+  await store.saveSession(conversationId, senderUserId, serializeRatchetState(state));
   return state;
 }

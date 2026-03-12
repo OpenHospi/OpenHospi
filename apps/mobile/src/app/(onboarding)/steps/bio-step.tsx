@@ -1,6 +1,6 @@
 import { MAX_BIO_LENGTH } from '@openhospi/shared/constants';
 import { useImperativeHandle, useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Label } from '@/components/ui/label';
@@ -33,22 +33,17 @@ export default function BioStep({ ref, onNext, profile }: Props) {
   useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ gap: 16 }}>
-      <View style={{ gap: 8 }}>
-        <Label>{t('fields.bio')}</Label>
-        <Textarea
-          value={bio}
-          onChangeText={setBio}
-          placeholder={t('placeholders.bio')}
-          maxLength={MAX_BIO_LENGTH}
-        />
-        <Text variant="muted" className="text-right text-xs">
-          {bio.length}/{MAX_BIO_LENGTH}
-        </Text>
-      </View>
-    </ScrollView>
+    <View style={{ flex: 1, gap: 8 }}>
+      <Label>{t('fields.bio')}</Label>
+      <Textarea
+        value={bio}
+        onChangeText={setBio}
+        placeholder={t('placeholders.bio')}
+        maxLength={MAX_BIO_LENGTH}
+      />
+      <Text variant="muted" className="text-right text-xs">
+        {bio.length}/{MAX_BIO_LENGTH}
+      </Text>
+    </View>
   );
 }

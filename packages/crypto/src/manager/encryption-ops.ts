@@ -11,7 +11,8 @@ import { encodeSafetyNumberQR, generateSafetyNumber } from "../protocol/safety-n
 import type { EncryptedMessage, ServerPreKeyBundle } from "../protocol/types";
 import type { CryptoStore } from "../store/types";
 
-import { getOrCreateSession } from "./key-management";
+import { createSessionAsResponder, getOrCreateSession } from "./key-management";
+import type { X3DHSessionMeta } from "./key-management";
 
 // ── Types ──
 
@@ -22,6 +23,23 @@ export type CiphertextPayload = {
   ratchetPublicKey: string;
   messageNumber: number;
   previousChainLength: number;
+  // X3DH metadata — only present on the first message of a new session
+  ephemeralPublicKey?: string;
+  senderIdentityKey?: string;
+  usedSignedPreKeyId?: number;
+  usedOneTimePreKeyId?: number;
+};
+
+export type EncryptResult = {
+  encrypted: EncryptedMessage;
+  x3dhMeta?: X3DHSessionMeta;
+};
+
+export type X3DHMetadata = {
+  ephemeralPublicKey: string;
+  senderIdentityKey: string;
+  usedSignedPreKeyId: number;
+  usedOneTimePreKeyId?: number;
 };
 
 export type FingerprintResult = {
@@ -64,25 +82,6 @@ export async function decryptForSelf(
   return new TextDecoder().decode(plaintext);
 }
 
-// ── Session Bootstrap ──
-
-export async function ensureSession(
-  store: CryptoStore,
-  conversationId: string,
-  otherUserId: string,
-  myUserId: string,
-  fetchBundle: (userId: string) => Promise<ServerPreKeyBundle | null>,
-): Promise<boolean> {
-  const existing = await store.getSession(conversationId, otherUserId);
-  if (existing) return true;
-  try {
-    await getOrCreateSession(store, conversationId, otherUserId, myUserId, fetchBundle);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 // ── Double Ratchet Operations ──
 
 export async function encryptForRecipient(
@@ -92,10 +91,10 @@ export async function encryptForRecipient(
   recipientUserId: string,
   plaintext: string,
   fetchBundle: (userId: string) => Promise<ServerPreKeyBundle | null>,
-): Promise<EncryptedMessage> {
+): Promise<EncryptResult> {
   const backend = getBackend();
 
-  const state = await getOrCreateSession(
+  const { state, x3dhMeta } = await getOrCreateSession(
     store,
     conversationId,
     recipientUserId,
@@ -106,7 +105,7 @@ export async function encryptForRecipient(
   const { state: newState, encrypted } = await ratchetEncrypt(backend, state, plaintext);
   await store.saveSession(conversationId, recipientUserId, serializeRatchetState(newState));
 
-  return encrypted;
+  return { encrypted, x3dhMeta };
 }
 
 export async function decryptFromSender(
@@ -115,12 +114,20 @@ export async function decryptFromSender(
   conversationId: string,
   senderUserId: string,
   encrypted: EncryptedMessage,
+  x3dhMeta?: X3DHMetadata | null,
 ): Promise<string> {
   const backend = getBackend();
 
-  const serialized = await store.getSession(conversationId, senderUserId);
+  let serialized = await store.getSession(conversationId, senderUserId);
+
+  // No session — create one as responder if X3DH metadata is available
+  if (!serialized && x3dhMeta) {
+    await createSessionAsResponder(store, conversationId, senderUserId, userId, x3dhMeta);
+    serialized = await store.getSession(conversationId, senderUserId);
+  }
+
   if (!serialized) {
-    throw new Error("No session found for this sender — message cannot be decrypted");
+    throw new Error("No session found and no X3DH metadata to establish one");
   }
 
   const state = deserializeRatchetState(serialized);

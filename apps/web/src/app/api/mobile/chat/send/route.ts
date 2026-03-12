@@ -94,6 +94,10 @@ export async function POST(request: Request) {
         ratchetPublicKey: p.ratchetPublicKey,
         messageNumber: p.messageNumber,
         previousChainLength: p.previousChainLength,
+        ephemeralPublicKey: p.ephemeralPublicKey ?? null,
+        senderIdentityKey: p.senderIdentityKey ?? null,
+        usedSignedPreKeyId: p.usedSignedPreKeyId ?? null,
+        usedOneTimePreKeyId: p.usedOneTimePreKeyId ?? null,
       })),
     );
 

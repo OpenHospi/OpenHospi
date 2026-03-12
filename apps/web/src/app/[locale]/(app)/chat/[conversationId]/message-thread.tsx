@@ -1,6 +1,6 @@
 "use client";
 
-import type { EncryptedMessage } from "@openhospi/crypto";
+import type { EncryptedMessage, X3DHMetadata } from "@openhospi/crypto";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -20,6 +20,7 @@ type Props = {
     conversationId: string,
     senderUserId: string,
     encrypted: EncryptedMessage,
+    x3dhMeta?: X3DHMetadata | null,
   ) => Promise<string>;
   decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
   addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
@@ -34,6 +35,23 @@ export type DecryptedMessage = {
   messageType: string;
   createdAt: Date;
 };
+
+function buildX3DHMeta(msg: {
+  ephemeralPublicKey?: string | null;
+  senderIdentityKey?: string | null;
+  usedSignedPreKeyId?: number | null;
+  usedOneTimePreKeyId?: number | null;
+}): X3DHMetadata | undefined {
+  if (!msg.ephemeralPublicKey || !msg.senderIdentityKey || msg.usedSignedPreKeyId == null) {
+    return undefined;
+  }
+  return {
+    ephemeralPublicKey: msg.ephemeralPublicKey,
+    senderIdentityKey: msg.senderIdentityKey,
+    usedSignedPreKeyId: msg.usedSignedPreKeyId,
+    usedOneTimePreKeyId: msg.usedOneTimePreKeyId ?? undefined,
+  };
+}
 
 export function MessageThread({
   conversationId,
@@ -85,7 +103,13 @@ export function MessageThread({
               ciphertext: msg.ciphertext,
               iv: msg.iv,
             };
-            const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
+            const x3dhMeta = buildX3DHMeta(msg);
+            const plaintext = await decryptMessage(
+              conversationId,
+              msg.senderId,
+              encrypted,
+              x3dhMeta,
+            );
             results.push({ ...baseMsg, plaintext });
           }
         } catch (error) {
@@ -160,6 +184,10 @@ export function MessageThread({
       const ratchetPublicKey = row.ratchet_public_key as string;
       const messageNumber = row.message_number as number;
       const previousChainLength = row.previous_chain_length as number;
+      const ephemeralPublicKey = (row.ephemeral_public_key as string) ?? null;
+      const senderIdentityKey = (row.sender_identity_key as string) ?? null;
+      const usedSignedPreKeyId = (row.used_signed_pre_key_id as number) ?? null;
+      const usedOneTimePreKeyId = (row.used_one_time_pre_key_id as number) ?? null;
 
       // Fetch message metadata (senderId, createdAt) via server action
       const metadata = await getMessageMetadata(messageId);
@@ -180,6 +208,10 @@ export function MessageThread({
         ratchetPublicKey,
         messageNumber,
         previousChainLength,
+        ephemeralPublicKey,
+        senderIdentityKey,
+        usedSignedPreKeyId,
+        usedOneTimePreKeyId,
         messageType: "text",
         createdAt: metadata.createdAt,
       };

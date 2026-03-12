@@ -136,6 +136,10 @@ export type MessageItem = {
   ratchetPublicKey: string | null;
   messageNumber: number | null;
   previousChainLength: number | null;
+  ephemeralPublicKey: string | null;
+  senderIdentityKey: string | null;
+  usedSignedPreKeyId: number | null;
+  usedOneTimePreKeyId: number | null;
   messageType: string;
   createdAt: Date;
 };
@@ -168,6 +172,10 @@ export async function getMessages(
         ratchetPublicKey: messageCiphertexts.ratchetPublicKey,
         messageNumber: messageCiphertexts.messageNumber,
         previousChainLength: messageCiphertexts.previousChainLength,
+        ephemeralPublicKey: messageCiphertexts.ephemeralPublicKey,
+        senderIdentityKey: messageCiphertexts.senderIdentityKey,
+        usedSignedPreKeyId: messageCiphertexts.usedSignedPreKeyId,
+        usedOneTimePreKeyId: messageCiphertexts.usedOneTimePreKeyId,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })

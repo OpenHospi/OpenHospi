@@ -1,6 +1,6 @@
 "use client";
 
-import type { EncryptedMessage } from "@openhospi/crypto";
+import type { EncryptResult } from "@openhospi/crypto";
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
@@ -19,7 +19,7 @@ type Props = {
     conversationId: string,
     recipientUserId: string,
     plaintext: string,
-  ) => Promise<EncryptedMessage>;
+  ) => Promise<EncryptResult>;
   encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
   onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
@@ -48,14 +48,18 @@ export function ChatInput({
       // Encrypt for all other members (pairwise Double Ratchet)
       const payloads: CiphertextPayload[] = await Promise.all(
         otherMembers.map(async (member) => {
-          const encrypted = await encryptMessage(conversationId, member.userId, trimmed);
+          const result = await encryptMessage(conversationId, member.userId, trimmed);
           return {
             recipientUserId: member.userId,
-            ciphertext: encrypted.ciphertext,
-            iv: encrypted.iv,
-            ratchetPublicKey: encrypted.header.ratchetPublicKey,
-            messageNumber: encrypted.header.messageNumber,
-            previousChainLength: encrypted.header.previousChainLength,
+            ciphertext: result.encrypted.ciphertext,
+            iv: result.encrypted.iv,
+            ratchetPublicKey: result.encrypted.header.ratchetPublicKey,
+            messageNumber: result.encrypted.header.messageNumber,
+            previousChainLength: result.encrypted.header.previousChainLength,
+            ephemeralPublicKey: result.x3dhMeta?.ephemeralPublicKey,
+            senderIdentityKey: result.x3dhMeta?.senderIdentityKey,
+            usedSignedPreKeyId: result.x3dhMeta?.usedSignedPreKeyId,
+            usedOneTimePreKeyId: result.x3dhMeta?.usedOneTimePreKeyId,
           };
         }),
       );

@@ -2,7 +2,7 @@ name: CI Mobile
 
 on:
   pull_request:
-    branches: [ dev, main ]
+    branches: [dev, main]
     paths:
       - "apps/mobile/**"
       - "packages/shared/**"
@@ -11,7 +11,7 @@ on:
       - "pnpm-workspace.yaml"
       - ".github/workflows/ci-mobile.yml"
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "apps/mobile/**"
       - "packages/shared/**"
@@ -23,6 +23,9 @@ on:
 concurrency:
   group: ci-mobile-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   install:

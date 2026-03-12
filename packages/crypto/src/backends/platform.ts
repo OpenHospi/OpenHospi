@@ -65,6 +65,9 @@ export interface CryptoBackend {
     iterations: number,
     keyLength: number,
   ): Promise<Uint8Array>;
+
+  /** HMAC-SHA256: returns 32-byte MAC */
+  hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array>;
 }
 
 /** Global backend instance — set via setBackend() at app startup */

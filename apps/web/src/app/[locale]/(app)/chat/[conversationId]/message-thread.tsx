@@ -1,6 +1,6 @@
 "use client";
 
-import type { EncryptedMessage, X3DHMetadata } from "@openhospi/crypto";
+import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -8,7 +8,7 @@ import { MessageBubble } from "@/components/app/message-bubble";
 import type { MessageItem } from "@/lib/queries/chat";
 import { supabase } from "@/lib/supabase/client";
 
-import { getMessageMetadata, markConversationRead } from "../chat-actions";
+import { markConversationRead } from "../chat-actions";
 import { getRealtimeToken } from "../realtime-token-action";
 
 type Props = {
@@ -16,13 +16,11 @@ type Props = {
   currentUserId: string;
   initialMessages: MessageItem[];
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
-  decryptMessage: (
+  decryptGroupMessage: (
     conversationId: string,
     senderUserId: string,
-    encrypted: EncryptedMessage,
-    x3dhMeta?: X3DHMetadata | null,
+    payload: GroupCiphertextPayload,
   ) => Promise<string>;
-  decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
   addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
 };
 
@@ -36,30 +34,12 @@ export type DecryptedMessage = {
   createdAt: Date;
 };
 
-function buildX3DHMeta(msg: {
-  ephemeralPublicKey?: string | null;
-  senderIdentityKey?: string | null;
-  usedSignedPreKeyId?: number | null;
-  usedOneTimePreKeyId?: number | null;
-}): X3DHMetadata | undefined {
-  if (!msg.ephemeralPublicKey || !msg.senderIdentityKey || msg.usedSignedPreKeyId == null) {
-    return undefined;
-  }
-  return {
-    ephemeralPublicKey: msg.ephemeralPublicKey,
-    senderIdentityKey: msg.senderIdentityKey,
-    usedSignedPreKeyId: msg.usedSignedPreKeyId,
-    usedOneTimePreKeyId: msg.usedOneTimePreKeyId ?? undefined,
-  };
-}
-
 export function MessageThread({
   conversationId,
   currentUserId,
   initialMessages,
   members,
-  decryptMessage,
-  decryptForSelf,
+  decryptGroupMessage,
   addMessageRef,
 }: Props) {
   const t = useTranslations("app.chat");
@@ -72,7 +52,7 @@ export function MessageThread({
     async (msgs: MessageItem[]) => {
       const results: DecryptedMessage[] = [];
       for (const msg of msgs) {
-        if (!msg.ciphertext || !msg.iv) continue;
+        if (!msg.ciphertext || !msg.iv || !msg.signature || msg.chainIteration == null) continue;
 
         const baseMsg = {
           id: msg.id,
@@ -84,34 +64,14 @@ export function MessageThread({
         };
 
         try {
-          if (msg.senderId === currentUserId && msg.ratchetPublicKey === "self") {
-            // Own message — self-encrypted
-            const plaintext = await decryptForSelf(msg.ciphertext, msg.iv);
-            results.push({ ...baseMsg, plaintext });
-          } else if (
-            msg.ratchetPublicKey &&
-            msg.messageNumber != null &&
-            msg.previousChainLength != null
-          ) {
-            // Other member's message — Double Ratchet
-            const encrypted: EncryptedMessage = {
-              header: {
-                ratchetPublicKey: msg.ratchetPublicKey,
-                messageNumber: msg.messageNumber,
-                previousChainLength: msg.previousChainLength,
-              },
-              ciphertext: msg.ciphertext,
-              iv: msg.iv,
-            };
-            const x3dhMeta = buildX3DHMeta(msg);
-            const plaintext = await decryptMessage(
-              conversationId,
-              msg.senderId,
-              encrypted,
-              x3dhMeta,
-            );
-            results.push({ ...baseMsg, plaintext });
-          }
+          const payload: GroupCiphertextPayload = {
+            ciphertext: msg.ciphertext,
+            iv: msg.iv,
+            signature: msg.signature,
+            chainIteration: msg.chainIteration,
+          };
+          const plaintext = await decryptGroupMessage(conversationId, msg.senderId, payload);
+          results.push({ ...baseMsg, plaintext });
         } catch (error) {
           console.error("[MessageThread] Decryption failed for message", msg.id, error);
           results.push({ ...baseMsg, plaintext: t("key_reset_message") });
@@ -119,7 +79,7 @@ export function MessageThread({
       }
       return results;
     },
-    [conversationId, currentUserId, decryptMessage, decryptForSelf, t],
+    [conversationId, decryptGroupMessage, t],
   );
 
   const decryptMessagesRef = useRef(decryptMessages);
@@ -170,55 +130,63 @@ export function MessageThread({
     };
   });
 
-  // Supabase Realtime subscription — subscribe to message_ciphertexts for this user
+  // Supabase Realtime subscription — subscribe to message_payloads for this conversation
   useEffect(() => {
     let mounted = true;
 
-    async function handleCiphertextInsert(row: Record<string, unknown>) {
+    async function handlePayloadInsert(row: Record<string, unknown>) {
       const messageId = row.message_id as string;
       if (seenIdsRef.current.has(messageId)) return;
       seenIdsRef.current.add(messageId);
 
-      const ciphertext = row.ciphertext as string;
-      const iv = row.iv as string;
-      const ratchetPublicKey = row.ratchet_public_key as string;
-      const messageNumber = row.message_number as number;
-      const previousChainLength = row.previous_chain_length as number;
-      const ephemeralPublicKey = (row.ephemeral_public_key as string) ?? null;
-      const senderIdentityKey = (row.sender_identity_key as string) ?? null;
-      const usedSignedPreKeyId = (row.used_signed_pre_key_id as number) ?? null;
-      const usedOneTimePreKeyId = (row.used_one_time_pre_key_id as number) ?? null;
-
-      // Fetch message metadata (senderId, createdAt) via server action
-      const metadata = await getMessageMetadata(messageId);
-      if (!metadata) return;
+      const senderUserId = row.sender_user_id as string;
 
       // Skip own messages — optimistic add already covers them
-      if (metadata.senderId === currentUserId) return;
+      if (senderUserId === currentUserId) return;
 
-      const member = membersRef.current.find((m) => m.userId === metadata.senderId);
+      const ciphertext = row.ciphertext as string;
+      const iv = row.iv as string;
+      const signature = row.signature as string;
+      const chainIteration = row.chain_iteration as number;
+      const createdAt = row.created_at ? new Date(row.created_at as string) : new Date();
 
-      const msgItem: MessageItem = {
-        id: messageId,
-        senderId: metadata.senderId,
-        senderFirstName: member?.firstName ?? "",
-        senderAvatarUrl: member?.avatarUrl ?? null,
-        ciphertext,
-        iv,
-        ratchetPublicKey,
-        messageNumber,
-        previousChainLength,
-        ephemeralPublicKey,
-        senderIdentityKey,
-        usedSignedPreKeyId,
-        usedOneTimePreKeyId,
-        messageType: "text",
-        createdAt: metadata.createdAt,
-      };
+      const member = membersRef.current.find((m) => m.userId === senderUserId);
 
-      const decrypted = await decryptMessagesRef.current([msgItem]);
-      if (!mounted) return;
-      setDecryptedMessages((prev) => [...prev, ...decrypted]);
+      try {
+        const payload: GroupCiphertextPayload = { ciphertext, iv, signature, chainIteration };
+        const plaintext = await decryptMessagesRef.current([
+          {
+            id: messageId,
+            senderId: senderUserId,
+            senderFirstName: member?.firstName ?? "",
+            senderAvatarUrl: member?.avatarUrl ?? null,
+            ciphertext,
+            iv,
+            signature,
+            chainIteration,
+            messageType: "text",
+            createdAt,
+          },
+        ]);
+
+        if (!mounted) return;
+        setDecryptedMessages((prev) => [...prev, ...plaintext]);
+      } catch (error) {
+        console.error("[MessageThread] Realtime decryption failed", error);
+        if (!mounted) return;
+        setDecryptedMessages((prev) => [
+          ...prev,
+          {
+            id: messageId,
+            senderId: senderUserId,
+            senderFirstName: member?.firstName ?? "",
+            senderAvatarUrl: member?.avatarUrl ?? null,
+            plaintext: t("key_reset_message"),
+            messageType: "text",
+            createdAt,
+          },
+        ]);
+      }
     }
 
     (async () => {
@@ -227,18 +195,18 @@ export function MessageThread({
       supabase.realtime.setAuth(token);
 
       supabase
-        .channel(`ciphertexts:${conversationId}:${currentUserId}`)
+        .channel(`payloads:${conversationId}`)
         .on(
           "postgres_changes",
           {
             event: "INSERT",
             schema: "public",
-            table: "message_ciphertexts",
-            filter: `recipient_user_id=eq.${currentUserId}`,
+            table: "message_payloads",
+            filter: `conversation_id=eq.${conversationId}`,
           },
           (payload) => {
             if (!mounted) return;
-            handleCiphertextInsert(payload.new as Record<string, unknown>);
+            handlePayloadInsert(payload.new as Record<string, unknown>);
           },
         )
         .subscribe();
@@ -248,7 +216,7 @@ export function MessageThread({
       mounted = false;
       supabase.removeAllChannels();
     };
-  }, [conversationId, currentUserId]);
+  }, [conversationId, currentUserId, t]);
 
   // Mark as read when tab becomes visible
   useEffect(() => {

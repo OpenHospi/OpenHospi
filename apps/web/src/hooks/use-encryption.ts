@@ -2,43 +2,35 @@
 
 import {
   getKeyStatus,
-  encryptForRecipient,
-  decryptFromSender,
-  encryptForSelf as encryptForSelfFn,
-  decryptForSelf as decryptForSelfFn,
+  encryptGroupMessage as encryptGroupMessageFn,
+  decryptGroupMessage as decryptGroupMessageFn,
   getIdentityFingerprint,
 } from "@openhospi/crypto";
-import type {
-  EncryptedMessage,
-  EncryptResult,
-  KeyStatus,
-  FingerprintResult,
-  X3DHMetadata,
-} from "@openhospi/crypto";
+import type { GroupCiphertextPayload, KeyStatus, FingerprintResult } from "@openhospi/crypto";
 import { useCallback, useEffect, useState } from "react";
 
 import {
   fetchKeyBackup,
   fetchPreKeyBundle,
   fetchIdentityKeys,
+  storeSenderKeyDistributions,
+  fetchSenderKeyDistribution,
+  getExistingDistributionRecipients,
 } from "@/app/[locale]/(app)/chat/key-actions";
 import { cryptoStore } from "@/lib/crypto";
 
 type UseEncryptionResult = {
   status: "loading" | KeyStatus;
-  encryptMessage: (
+  encryptGroupMessage: (
     conversationId: string,
-    recipientUserId: string,
+    memberUserIds: string[],
     plaintext: string,
-  ) => Promise<EncryptResult>;
-  decryptMessage: (
+  ) => Promise<GroupCiphertextPayload>;
+  decryptGroupMessage: (
     conversationId: string,
     senderUserId: string,
-    encrypted: EncryptedMessage,
-    x3dhMeta?: X3DHMetadata | null,
+    payload: GroupCiphertextPayload,
   ) => Promise<string>;
-  encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
-  decryptForSelf: (ciphertext: string, iv: string) => Promise<string>;
   getFingerprint: (otherUserId: string) => Promise<FingerprintResult | null>;
 };
 
@@ -56,56 +48,45 @@ export function useEncryption(userId: string): UseEncryptionResult {
     };
   }, [userId]);
 
-  const encryptMessage = useCallback(
+  const encryptGroupMessage = useCallback(
     async (
       conversationId: string,
-      recipientUserId: string,
+      memberUserIds: string[],
       plaintext: string,
-    ): Promise<EncryptResult> => {
-      return encryptForRecipient(
+    ): Promise<GroupCiphertextPayload> => {
+      return encryptGroupMessageFn(
         cryptoStore,
         userId,
         conversationId,
-        recipientUserId,
+        memberUserIds,
         plaintext,
         async (targetUserId) => {
           const bundle = await fetchPreKeyBundle(targetUserId);
           return bundle ?? null;
         },
+        async (distributions) => {
+          await storeSenderKeyDistributions(conversationId, distributions);
+        },
+        getExistingDistributionRecipients,
       );
     },
     [userId],
   );
 
-  const decryptMessage = useCallback(
+  const decryptGroupMessage = useCallback(
     async (
       conversationId: string,
       senderUserId: string,
-      encrypted: EncryptedMessage,
-      x3dhMeta?: X3DHMetadata | null,
+      payload: GroupCiphertextPayload,
     ): Promise<string> => {
-      return decryptFromSender(
+      return decryptGroupMessageFn(
         cryptoStore,
         userId,
         conversationId,
         senderUserId,
-        encrypted,
-        x3dhMeta,
+        payload,
+        fetchSenderKeyDistribution,
       );
-    },
-    [userId],
-  );
-
-  const encryptForSelf = useCallback(
-    async (plaintext: string): Promise<{ ciphertext: string; iv: string }> => {
-      return encryptForSelfFn(cryptoStore, userId, plaintext);
-    },
-    [userId],
-  );
-
-  const decryptForSelf = useCallback(
-    async (ciphertext: string, iv: string): Promise<string> => {
-      return decryptForSelfFn(cryptoStore, userId, ciphertext, iv);
     },
     [userId],
   );
@@ -120,5 +101,5 @@ export function useEncryption(userId: string): UseEncryptionResult {
     [userId],
   );
 
-  return { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf, getFingerprint };
+  return { status, encryptGroupMessage, decryptGroupMessage, getFingerprint };
 }

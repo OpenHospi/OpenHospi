@@ -116,43 +116,78 @@ export const messages = pgTable(
   ],
 );
 
-export const messageCiphertexts = pgTable(
-  "message_ciphertexts",
+export const messagePayloads = pgTable(
+  "message_payloads",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     messageId: uuid("message_id")
       .notNull()
       .references(() => messages.id, { onDelete: "cascade" }),
-    recipientUserId: uuid("recipient_user_id")
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    senderUserId: uuid("sender_user_id")
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
     ciphertext: text("ciphertext").notNull(),
     iv: text("iv").notNull(),
-    ratchetPublicKey: text("ratchet_public_key").notNull(),
-    messageNumber: integer("message_number").notNull(),
-    previousChainLength: integer("previous_chain_length").notNull(),
-    // X3DH metadata — only populated on the first message that establishes a session
-    ephemeralPublicKey: text("ephemeral_public_key"),
-    senderIdentityKey: text("sender_identity_key"),
-    usedSignedPreKeyId: integer("used_signed_pre_key_id"),
-    usedOneTimePreKeyId: integer("used_one_time_pre_key_id"),
+    signature: text("signature").notNull(),
+    chainIteration: integer("chain_iteration").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    uniqueIndex("idx_message_ciphertexts_msg_recipient").on(table.messageId, table.recipientUserId),
-    index("idx_message_ciphertexts_recipient").on(table.recipientUserId),
-    pgPolicy("message_ciphertexts_select", {
+    uniqueIndex("idx_message_payloads_message_id").on(table.messageId),
+    index("idx_message_payloads_conversation_id").on(table.conversationId),
+    pgPolicy("message_payloads_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`recipient_user_id = ${authUid}`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.uid()))`,
     }),
-    pgPolicy("message_ciphertexts_insert", {
+    pgPolicy("message_payloads_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`exists(
-        select 1 from conversation_members cm
-        inner join messages m on m.conversation_id = cm.conversation_id
-        where m.id = message_id and cm.user_id = ${authUid}
-      )`,
+      withCheck: sql`${table.senderUserId} = (select auth.uid()) and exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = (select auth.uid()))`,
+    }),
+  ],
+);
+
+export const senderKeyDistributions = pgTable(
+  "sender_key_distributions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    distributorUserId: uuid("distributor_user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    recipientUserId: uuid("recipient_user_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    encryptedKeyData: text("encrypted_key_data").notNull(),
+    iv: text("iv").notNull(),
+    ephemeralPublicKey: text("ephemeral_public_key").notNull(),
+    senderIdentityKey: text("sender_identity_key").notNull(),
+    usedSignedPreKeyId: integer("used_signed_pre_key_id").notNull(),
+    usedOneTimePreKeyId: integer("used_one_time_pre_key_id"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    unique("sender_key_distributions_unique").on(
+      table.conversationId,
+      table.distributorUserId,
+      table.recipientUserId,
+    ),
+    index("idx_sender_key_distributions_recipient").on(table.recipientUserId),
+    pgPolicy("sender_key_distributions_select", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${table.distributorUserId} = (select auth.uid()) or ${table.recipientUserId} = (select auth.uid())`,
+    }),
+    pgPolicy("sender_key_distributions_insert", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${table.distributorUserId} = (select auth.uid())`,
     }),
   ],
 );

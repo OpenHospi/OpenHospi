@@ -26,7 +26,13 @@ type Props = {
 
 function FingerprintDisplay({ promise }: { promise: Promise<FingerprintResult> }) {
   const t = useTranslations("app.chat.safety_number");
-  const result = use(promise);
+
+  let result: FingerprintResult;
+  try {
+    result = use(promise);
+  } catch {
+    return <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>;
+  }
 
   if (!result) {
     return <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>;

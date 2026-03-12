@@ -2,7 +2,7 @@
  * AES-256-GCM encryption/decryption wrappers.
  *
  * The auth tag is appended to the ciphertext (Web Crypto default).
- * AAD (additional authenticated data) includes the message header for authentication.
+ * AAD (additional authenticated data) binds ciphertext to context.
  */
 import type { CryptoBackend } from "../backends/platform";
 
@@ -38,14 +38,23 @@ export async function decrypt(
 }
 
 /**
- * Encode a message header as AAD bytes for AES-GCM authentication.
- * This binds the header to the ciphertext — any modification is detected.
+ * Encode AAD for group messages — binds ciphertext to conversation + sender + iteration.
  */
-export function encodeHeaderAsAad(
-  ratchetPublicKey: string,
-  messageNumber: number,
-  previousChainLength: number,
+export function encodeGroupAad(
+  conversationId: string,
+  senderUserId: string,
+  chainIteration: number,
 ): Uint8Array {
-  const headerStr = `${ratchetPublicKey}|${messageNumber}|${previousChainLength}`;
-  return new TextEncoder().encode(headerStr);
+  return new TextEncoder().encode(`${conversationId}|${senderUserId}|${chainIteration}`);
+}
+
+/**
+ * Encode data for Ed25519 signing — binds signature to ciphertext + iv + iteration.
+ */
+export function encodeSignatureData(
+  ciphertext: string,
+  iv: string,
+  chainIteration: number,
+): Uint8Array {
+  return new TextEncoder().encode(`${ciphertext}|${iv}|${chainIteration}`);
 }

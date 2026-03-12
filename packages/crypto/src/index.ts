@@ -1,8 +1,9 @@
 /**
- * @openhospi/crypto — Signal Protocol-inspired E2EE
+ * @openhospi/crypto — Signal Sender Keys E2EE
  *
- * X3DH key exchange + Double Ratchet with X25519/Ed25519 + AES-256-GCM.
- * Provides forward secrecy, break-in recovery, and MITM detection via safety numbers.
+ * X3DH key exchange for Sender Key distribution + HMAC chain ratchet with
+ * X25519/Ed25519 + AES-256-GCM. Provides forward secrecy and MITM detection
+ * via safety numbers.
  *
  * Usage:
  *   import { setBackend } from "@openhospi/crypto";
@@ -23,13 +24,11 @@ export type {
   PreKeyBundle,
   ServerPreKeyBundle,
   X3DHResult,
-  RatchetState,
-  SkippedKeyEntry,
-  MessageHeader,
-  EncryptedMessage,
-  SessionState,
-  SerializedRatchetState,
-  SerializedSkippedKeyEntry,
+  SenderKeyState,
+  SerializedSenderKeyState,
+  SenderKeyDistributionData,
+  GroupCiphertextPayload,
+  SenderKeyDistributionEnvelope,
 } from "./protocol/types";
 
 // ── Encoding ──
@@ -46,21 +45,20 @@ export {
 // ── X3DH Key Exchange ──
 export { x3dhInitiate, x3dhRespond } from "./protocol/x3dh";
 
-// ── Double Ratchet ──
-export {
-  initializeSender,
-  initializeReceiver,
-  ratchetEncrypt,
-  ratchetDecrypt,
-  serializeRatchetState,
-  deserializeRatchetState,
-} from "./protocol/double-ratchet";
+// ── Sender Key Chain ──
+export { senderKeyChainStep, fastForwardChain } from "./protocol/sender-key-chain";
 
-// ── KDF Chain ──
-export { kdfChainStep, kdfRootStep } from "./protocol/kdf-chain";
+// ── Sender Key ──
+export {
+  generateSenderKey,
+  senderKeyEncrypt,
+  senderKeyDecrypt,
+  serializeSenderKeyState,
+  deserializeSenderKeyState,
+} from "./protocol/sender-key";
 
 // ── Encryption ──
-export { encrypt, decrypt, encodeHeaderAsAad } from "./protocol/encryption";
+export { encrypt, decrypt, encodeGroupAad, encodeSignatureData } from "./protocol/encryption";
 
 // ── Safety Numbers ──
 export {
@@ -89,22 +87,16 @@ export {
   recoverKeysWithPIN,
   resetKeys,
   replenishOneTimePreKeys,
-  getOrCreateSession,
-  createSessionAsResponder,
+  getOrCreateOwnSenderKey,
+  distributeSenderKey,
+  receiveSenderKeyDistribution,
 } from "./manager/key-management";
-export type { KeyStatus, X3DHSessionMeta } from "./manager/key-management";
+export type { KeyStatus } from "./manager/key-management";
 
 // ── Manager: Encryption Operations ──
 export {
-  encryptForRecipient,
-  decryptFromSender,
-  encryptForSelf,
-  decryptForSelf,
+  encryptGroupMessage,
+  decryptGroupMessage,
   getIdentityFingerprint,
 } from "./manager/encryption-ops";
-export type {
-  CiphertextPayload,
-  EncryptResult,
-  X3DHMetadata,
-  FingerprintResult,
-} from "./manager/encryption-ops";
+export type { FingerprintResult } from "./manager/encryption-ops";

@@ -1,5 +1,5 @@
 /**
- * Signal Protocol types for X3DH + Double Ratchet E2EE.
+ * Signal Sender Keys protocol types for E2EE.
  *
  * All keys are raw Uint8Array bytes — no CryptoKey wrappers.
  * Ed25519 for signing, X25519 for Diffie-Hellman.
@@ -73,89 +73,50 @@ export type X3DHResult = {
   usedOneTimePreKeyId?: number;
 };
 
-/** Double Ratchet session state (serializable for persistence) */
-export type RatchetState = {
-  /** 32-byte root key */
-  rootKey: Uint8Array;
-  /** Sending chain key (null before first send after DH step) */
-  sendingChainKey: Uint8Array | null;
-  /** Receiving chain key (null before first receive) */
-  receivingChainKey: Uint8Array | null;
-  /** Our current DH ratchet key pair (X25519) */
-  dhSendingKeyPair: KeyPair;
-  /** Their current DH ratchet public key */
-  dhReceivingPublicKey: Uint8Array | null;
-  /** Number of messages sent in current sending chain */
-  sendingChainLength: number;
-  /** Number of messages received in current receiving chain */
-  receivingChainLength: number;
-  /** Previous sending chain length (for header) */
-  previousSendingChainLength: number;
-  /** Skipped message keys: serialized as array of [key, value] pairs */
-  skippedMessageKeys: SkippedKeyEntry[];
+// ── Sender Key Types ──
+
+/** Sender Key state for a single user in a conversation */
+export type SenderKeyState = {
+  /** Current HMAC chain key (32 bytes) */
+  chainKey: Uint8Array;
+  /** Ed25519 signing key pair for authenticating ciphertexts */
+  signingKeyPair: KeyPair;
+  /** Current chain iteration (incremented per message) */
+  iteration: number;
+  /** Cached message keys for out-of-order delivery: iteration → messageKey */
+  skippedMessageKeys: Map<number, Uint8Array>;
 };
 
-/** Entry for a skipped message key */
-export type SkippedKeyEntry = {
-  /** Base64 of the ratchet public key */
-  ratchetPublicKey: string;
-  /** Message number in that chain */
-  messageNumber: number;
-  /** 32-byte message key */
-  messageKey: Uint8Array;
+/** JSON-safe version of SenderKeyState */
+export type SerializedSenderKeyState = {
+  chainKey: string; // base64
+  signingPublicKey: string; // base64
+  signingPrivateKey?: string; // base64, only present for OWN sender key
+  iteration: number;
+  skippedMessageKeys: Array<{ iteration: number; messageKey: string }>;
 };
 
-/** Header sent with each Double Ratchet message */
-export type MessageHeader = {
-  /** Sender's current DH ratchet public key (base64) */
-  ratchetPublicKey: string;
-  /** Message number in current sending chain */
-  messageNumber: number;
-  /** Length of previous sending chain */
-  previousChainLength: number;
+/** Data distributed to group members to enable decryption */
+export type SenderKeyDistributionData = {
+  chainKey: string; // base64, initial chain key
+  signingPublicKey: string; // base64, Ed25519 verification key
+  iteration: number; // starting iteration (0 for fresh)
 };
 
-/** Encrypted message output from Double Ratchet */
-export type EncryptedMessage = {
-  header: MessageHeader;
-  /** Base64-encoded ciphertext */
-  ciphertext: string;
-  /** Base64-encoded IV */
-  iv: string;
+/** Encrypted group message payload (one per message, shared by all recipients) */
+export type GroupCiphertextPayload = {
+  ciphertext: string; // base64, AES-256-GCM
+  iv: string; // base64, 12 bytes
+  signature: string; // base64, Ed25519 over (ciphertext || iv || iteration)
+  chainIteration: number; // position in sender's chain
 };
 
-/** Full serializable session state for IndexedDB/SQLite persistence */
-export type SessionState = {
-  /** Our identity key pair (Ed25519 signing + X25519 DH) */
-  localIdentity: {
-    signingPublicKey: string; // base64
-    dhPublicKey: string; // base64
-  };
-  /** Remote user's identity public keys */
-  remoteIdentity: {
-    signingPublicKey: string; // base64
-    dhPublicKey: string; // base64
-  };
-  /** Serialized ratchet state */
-  ratchet: SerializedRatchetState;
-};
-
-/** JSON-safe version of RatchetState (all Uint8Arrays as base64) */
-export type SerializedRatchetState = {
-  rootKey: string;
-  sendingChainKey: string | null;
-  receivingChainKey: string | null;
-  dhSendingKeyPair: { publicKey: string; privateKey: string };
-  dhReceivingPublicKey: string | null;
-  sendingChainLength: number;
-  receivingChainLength: number;
-  previousSendingChainLength: number;
-  skippedMessageKeys: SerializedSkippedKeyEntry[];
-};
-
-/** JSON-safe skipped key entry */
-export type SerializedSkippedKeyEntry = {
-  ratchetPublicKey: string;
-  messageNumber: number;
-  messageKey: string;
+/** X3DH-encrypted envelope containing a Sender Key distribution */
+export type SenderKeyDistributionEnvelope = {
+  encryptedKeyData: string; // base64, AES-GCM encrypted SenderKeyDistributionData
+  iv: string; // base64
+  ephemeralPublicKey: string; // base64, X3DH
+  senderIdentityKey: string; // base64, X3DH sender's DH identity pub
+  usedSignedPreKeyId: number;
+  usedOneTimePreKeyId?: number;
 };

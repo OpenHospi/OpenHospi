@@ -1,11 +1,11 @@
 "use server";
 
-import type { CiphertextPayload } from "@openhospi/crypto";
+import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { db, withRLS } from "@openhospi/database";
 import {
   blocks,
   conversationMembers,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
 } from "@openhospi/database/schema";
@@ -14,9 +14,9 @@ import { and, eq, inArray, or } from "drizzle-orm";
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 
-export type { CiphertextPayload } from "@openhospi/crypto";
+export type { GroupCiphertextPayload } from "@openhospi/crypto";
 
-export async function sendMessage(conversationId: string, payloads: CiphertextPayload[]) {
+export async function sendMessage(conversationId: string, payload: GroupCiphertextPayload) {
   const session = await requireSession();
   const userId = session.user.id;
 
@@ -60,24 +60,16 @@ export async function sendMessage(conversationId: string, payloads: CiphertextPa
       .returning({ id: messages.id });
   });
 
-  // Insert ciphertexts for each recipient
-  if (payloads.length > 0) {
-    await db.insert(messageCiphertexts).values(
-      payloads.map((p) => ({
-        messageId: message.id,
-        recipientUserId: p.recipientUserId,
-        ciphertext: p.ciphertext,
-        iv: p.iv,
-        ratchetPublicKey: p.ratchetPublicKey,
-        messageNumber: p.messageNumber,
-        previousChainLength: p.previousChainLength,
-        ephemeralPublicKey: p.ephemeralPublicKey ?? null,
-        senderIdentityKey: p.senderIdentityKey ?? null,
-        usedSignedPreKeyId: p.usedSignedPreKeyId ?? null,
-        usedOneTimePreKeyId: p.usedOneTimePreKeyId ?? null,
-      })),
-    );
-  }
+  // Insert single payload for all recipients
+  await db.insert(messagePayloads).values({
+    messageId: message.id,
+    conversationId,
+    senderUserId: userId,
+    ciphertext: payload.ciphertext,
+    iv: payload.iv,
+    signature: payload.signature,
+    chainIteration: payload.chainIteration,
+  });
 
   // Create receipts for all members except sender
   const receipts = members

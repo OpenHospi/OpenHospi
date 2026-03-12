@@ -1,11 +1,13 @@
+import type { SenderKeyDistributionEnvelope } from "@openhospi/crypto";
 import { db, withRLS } from "@openhospi/database";
 import {
   identityKeys,
   oneTimePreKeys,
   privateKeyBackups,
+  senderKeyDistributions,
   signedPreKeys,
 } from "@openhospi/database/schema";
-import { eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 // ── Identity Keys ──
 
@@ -135,7 +137,7 @@ export async function getPreKeyBundle(targetUserId: string): Promise<{
   };
 }
 
-// ── Private Key Backups (kept — repurposed for identity key backup) ──
+// ── Private Key Backups ──
 
 export async function upsertKeyBackup(
   userId: string,
@@ -168,4 +170,99 @@ export async function getKeyBackup(userId: string) {
 
 export async function removeKeyBackup(userId: string) {
   await db.delete(privateKeyBackups).where(eq(privateKeyBackups.userId, userId));
+}
+
+// ── Sender Key Distributions ──
+
+export async function insertSenderKeyDistributions(
+  distributorUserId: string,
+  conversationId: string,
+  distributions: Array<{
+    recipientUserId: string;
+    envelope: SenderKeyDistributionEnvelope;
+  }>,
+) {
+  if (distributions.length === 0) return;
+
+  for (const dist of distributions) {
+    await db
+      .insert(senderKeyDistributions)
+      .values({
+        conversationId,
+        distributorUserId,
+        recipientUserId: dist.recipientUserId,
+        encryptedKeyData: dist.envelope.encryptedKeyData,
+        iv: dist.envelope.iv,
+        ephemeralPublicKey: dist.envelope.ephemeralPublicKey,
+        senderIdentityKey: dist.envelope.senderIdentityKey,
+        usedSignedPreKeyId: dist.envelope.usedSignedPreKeyId,
+        usedOneTimePreKeyId: dist.envelope.usedOneTimePreKeyId ?? null,
+      })
+      .onConflictDoUpdate({
+        target: [
+          senderKeyDistributions.conversationId,
+          senderKeyDistributions.distributorUserId,
+          senderKeyDistributions.recipientUserId,
+        ],
+        set: {
+          encryptedKeyData: dist.envelope.encryptedKeyData,
+          iv: dist.envelope.iv,
+          ephemeralPublicKey: dist.envelope.ephemeralPublicKey,
+          senderIdentityKey: dist.envelope.senderIdentityKey,
+          usedSignedPreKeyId: dist.envelope.usedSignedPreKeyId,
+          usedOneTimePreKeyId: dist.envelope.usedOneTimePreKeyId ?? null,
+        },
+      });
+  }
+}
+
+export async function getSenderKeyDistribution(
+  conversationId: string,
+  distributorUserId: string,
+  recipientUserId: string,
+): Promise<SenderKeyDistributionEnvelope | null> {
+  const [row] = await db
+    .select({
+      encryptedKeyData: senderKeyDistributions.encryptedKeyData,
+      iv: senderKeyDistributions.iv,
+      ephemeralPublicKey: senderKeyDistributions.ephemeralPublicKey,
+      senderIdentityKey: senderKeyDistributions.senderIdentityKey,
+      usedSignedPreKeyId: senderKeyDistributions.usedSignedPreKeyId,
+      usedOneTimePreKeyId: senderKeyDistributions.usedOneTimePreKeyId,
+    })
+    .from(senderKeyDistributions)
+    .where(
+      and(
+        eq(senderKeyDistributions.conversationId, conversationId),
+        eq(senderKeyDistributions.distributorUserId, distributorUserId),
+        eq(senderKeyDistributions.recipientUserId, recipientUserId),
+      ),
+    );
+
+  if (!row) return null;
+
+  return {
+    encryptedKeyData: row.encryptedKeyData,
+    iv: row.iv,
+    ephemeralPublicKey: row.ephemeralPublicKey,
+    senderIdentityKey: row.senderIdentityKey,
+    usedSignedPreKeyId: row.usedSignedPreKeyId,
+    usedOneTimePreKeyId: row.usedOneTimePreKeyId ?? undefined,
+  };
+}
+
+export async function getDistributionRecipients(
+  conversationId: string,
+  distributorUserId: string,
+): Promise<string[]> {
+  const rows = await db
+    .select({ recipientUserId: senderKeyDistributions.recipientUserId })
+    .from(senderKeyDistributions)
+    .where(
+      and(
+        eq(senderKeyDistributions.conversationId, conversationId),
+        eq(senderKeyDistributions.distributorUserId, distributorUserId),
+      ),
+    );
+  return rows.map((r) => r.recipientUserId);
 }

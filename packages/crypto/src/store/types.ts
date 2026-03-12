@@ -1,4 +1,4 @@
-import type { SerializedRatchetState } from "../protocol/types";
+import type { SerializedSenderKeyState } from "../protocol/types";
 
 export type StoredIdentity = {
   signingPublicKey: string; // base64
@@ -19,21 +19,27 @@ export type StoredOneTimePreKey = {
 };
 
 export interface CryptoStore {
+  // Identity
   getStoredIdentity(userId: string): Promise<StoredIdentity | null>;
   storeIdentity(userId: string, identity: StoredIdentity): Promise<void>;
   deleteStoredIdentity(userId: string): Promise<void>;
 
-  getSession(conversationId: string, otherUserId: string): Promise<SerializedRatchetState | null>;
-  saveSession(
+  // Sender Keys (replaces sessions)
+  getSenderKey(
     conversationId: string,
-    otherUserId: string,
-    state: SerializedRatchetState,
+    senderUserId: string,
+  ): Promise<SerializedSenderKeyState | null>;
+  saveSenderKey(
+    conversationId: string,
+    senderUserId: string,
+    state: SerializedSenderKeyState,
   ): Promise<void>;
-  deleteSession(conversationId: string, otherUserId: string): Promise<void>;
+  deleteSenderKey(conversationId: string, senderUserId: string): Promise<void>;
+  deleteAllSenderKeys(conversationId: string): Promise<void>;
 
+  // Pre-keys
   getStoredSignedPreKeys(userId: string): Promise<StoredSignedPreKey[]>;
   storeSignedPreKey(userId: string, spk: StoredSignedPreKey): Promise<void>;
-
   getStoredOneTimePreKeys(userId: string): Promise<StoredOneTimePreKey[]>;
   storeOneTimePreKeys(userId: string, keys: StoredOneTimePreKey[]): Promise<void>;
   consumeOneTimePreKey(userId: string, keyId: number): Promise<string | null>;

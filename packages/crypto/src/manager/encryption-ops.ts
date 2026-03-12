@@ -1,138 +1,137 @@
 import { getBackend } from "../backends/platform";
-import {
-  deserializeRatchetState,
-  ratchetDecrypt,
-  ratchetEncrypt,
-  serializeRatchetState,
-} from "../protocol/double-ratchet";
 import { fromBase64, toBase64 } from "../protocol/encoding";
-import { decrypt, encrypt } from "../protocol/encryption";
 import { encodeSafetyNumberQR, generateSafetyNumber } from "../protocol/safety-number";
-import type { EncryptedMessage, ServerPreKeyBundle } from "../protocol/types";
+import {
+  deserializeSenderKeyState,
+  senderKeyDecrypt,
+  senderKeyEncrypt,
+  serializeSenderKeyState,
+} from "../protocol/sender-key";
+import type {
+  GroupCiphertextPayload,
+  SenderKeyDistributionEnvelope,
+  ServerPreKeyBundle,
+} from "../protocol/types";
 import type { CryptoStore } from "../store/types";
 
-import { createSessionAsResponder, getOrCreateSession } from "./key-management";
-import type { X3DHSessionMeta } from "./key-management";
-
-// ── Types ──
-
-export type CiphertextPayload = {
-  recipientUserId: string;
-  ciphertext: string;
-  iv: string;
-  ratchetPublicKey: string;
-  messageNumber: number;
-  previousChainLength: number;
-  // X3DH metadata — only present on the first message of a new session
-  ephemeralPublicKey?: string;
-  senderIdentityKey?: string;
-  usedSignedPreKeyId?: number;
-  usedOneTimePreKeyId?: number;
-};
-
-export type EncryptResult = {
-  encrypted: EncryptedMessage;
-  x3dhMeta?: X3DHSessionMeta;
-};
-
-export type X3DHMetadata = {
-  ephemeralPublicKey: string;
-  senderIdentityKey: string;
-  usedSignedPreKeyId: number;
-  usedOneTimePreKeyId?: number;
-};
+import {
+  distributeSenderKey,
+  getOrCreateOwnSenderKey,
+  receiveSenderKeyDistribution,
+} from "./key-management";
 
 export type FingerprintResult = {
   safetyNumber: string;
   qrPayload: string;
 };
 
-// ── Self-Encryption (HKDF-derived AES-256-GCM) ──
-
-const SELF_ENCRYPT_SALT = new TextEncoder().encode("OpenHospiSelfEncryption");
-const SELF_ENCRYPT_INFO = new TextEncoder().encode("self-encrypt");
-
-async function deriveSelfKey(store: CryptoStore, userId: string): Promise<Uint8Array> {
-  const backend = getBackend();
-  const identity = await store.getStoredIdentity(userId);
-  if (!identity) throw new Error("No identity found — cannot derive self-encryption key");
-  return backend.hkdf(fromBase64(identity.dhPrivateKey), SELF_ENCRYPT_SALT, SELF_ENCRYPT_INFO, 32);
-}
-
-export async function encryptForSelf(
-  store: CryptoStore,
-  userId: string,
-  plaintext: string,
-): Promise<{ ciphertext: string; iv: string }> {
-  const backend = getBackend();
-  const key = await deriveSelfKey(store, userId);
-  const { ciphertext, iv } = await encrypt(backend, key, new TextEncoder().encode(plaintext));
-  return { ciphertext: toBase64(ciphertext), iv: toBase64(iv) };
-}
-
-export async function decryptForSelf(
-  store: CryptoStore,
-  userId: string,
-  ciphertextB64: string,
-  ivB64: string,
-): Promise<string> {
-  const backend = getBackend();
-  const key = await deriveSelfKey(store, userId);
-  const plaintext = await decrypt(backend, key, fromBase64(ciphertextB64), fromBase64(ivB64));
-  return new TextDecoder().decode(plaintext);
-}
-
-// ── Double Ratchet Operations ──
-
-export async function encryptForRecipient(
+/**
+ * Encrypt a message for the group using Sender Keys.
+ *
+ * 1. Get/create own Sender Key
+ * 2. Distribute to members who don't have it yet
+ * 3. Encrypt once for the group
+ */
+export async function encryptGroupMessage(
   store: CryptoStore,
   userId: string,
   conversationId: string,
-  recipientUserId: string,
+  memberUserIds: string[],
   plaintext: string,
   fetchBundle: (userId: string) => Promise<ServerPreKeyBundle | null>,
-): Promise<EncryptResult> {
-  const backend = getBackend();
+  storeDistributions: (
+    distributions: Array<{
+      recipientUserId: string;
+      envelope: SenderKeyDistributionEnvelope;
+    }>,
+  ) => Promise<void>,
+  getExistingDistributionRecipients: (conversationId: string) => Promise<string[]>,
+): Promise<GroupCiphertextPayload> {
+  const { state, isNew } = await getOrCreateOwnSenderKey(store, conversationId, userId);
 
-  const { state, x3dhMeta } = await getOrCreateSession(
-    store,
+  const otherMembers = memberUserIds.filter((id) => id !== userId);
+
+  let membersToDistribute: string[];
+  if (isNew) {
+    membersToDistribute = otherMembers;
+  } else {
+    const existingRecipients = await getExistingDistributionRecipients(conversationId);
+    const existingSet = new Set(existingRecipients);
+    membersToDistribute = otherMembers.filter((id) => !existingSet.has(id));
+  }
+
+  if (membersToDistribute.length > 0) {
+    const distributions = await distributeSenderKey(
+      store,
+      conversationId,
+      userId,
+      membersToDistribute,
+      state,
+      fetchBundle,
+    );
+    if (distributions.length > 0) {
+      await storeDistributions(distributions);
+    }
+  }
+
+  const { state: newState, payload } = await senderKeyEncrypt(
+    getBackend(),
+    state,
+    plaintext,
     conversationId,
-    recipientUserId,
     userId,
-    fetchBundle,
   );
 
-  const { state: newState, encrypted } = await ratchetEncrypt(backend, state, plaintext);
-  await store.saveSession(conversationId, recipientUserId, serializeRatchetState(newState));
+  await store.saveSenderKey(conversationId, userId, serializeSenderKeyState(newState));
 
-  return { encrypted, x3dhMeta };
+  return payload;
 }
 
-export async function decryptFromSender(
+/**
+ * Decrypt a group message using the sender's Sender Key.
+ *
+ * 1. Look up sender's Sender Key in local store
+ * 2. If not found, fetch the distribution from the server
+ * 3. Decrypt the message
+ */
+export async function decryptGroupMessage(
   store: CryptoStore,
   userId: string,
   conversationId: string,
   senderUserId: string,
-  encrypted: EncryptedMessage,
-  x3dhMeta?: X3DHMetadata | null,
+  payload: GroupCiphertextPayload,
+  fetchDistribution: (
+    conversationId: string,
+    senderUserId: string,
+  ) => Promise<SenderKeyDistributionEnvelope | null>,
 ): Promise<string> {
-  const backend = getBackend();
-
-  let serialized = await store.getSession(conversationId, senderUserId);
-
-  // No session — create one as responder if X3DH metadata is available
-  if (!serialized && x3dhMeta) {
-    await createSessionAsResponder(store, conversationId, senderUserId, userId, x3dhMeta);
-    serialized = await store.getSession(conversationId, senderUserId);
-  }
+  let serialized = await store.getSenderKey(conversationId, senderUserId);
 
   if (!serialized) {
-    throw new Error("No session found and no X3DH metadata to establish one");
+    const envelope = await fetchDistribution(conversationId, senderUserId);
+    if (!envelope) {
+      throw new Error("No Sender Key found and no distribution available from server");
+    }
+    await receiveSenderKeyDistribution(store, conversationId, senderUserId, userId, envelope);
+    serialized = await store.getSenderKey(conversationId, senderUserId);
+    if (!serialized) {
+      throw new Error("Failed to store received Sender Key distribution");
+    }
   }
 
-  const state = deserializeRatchetState(serialized);
-  const { state: newState, plaintext } = await ratchetDecrypt(backend, state, encrypted);
-  await store.saveSession(conversationId, senderUserId, serializeRatchetState(newState));
+  const state = deserializeSenderKeyState(serialized);
+  const signingPublicKey = fromBase64(serialized.signingPublicKey);
+
+  const { state: newState, plaintext } = await senderKeyDecrypt(
+    getBackend(),
+    state,
+    payload,
+    signingPublicKey,
+    conversationId,
+    senderUserId,
+  );
+
+  await store.saveSenderKey(conversationId, senderUserId, serializeSenderKeyState(newState));
 
   return plaintext;
 }

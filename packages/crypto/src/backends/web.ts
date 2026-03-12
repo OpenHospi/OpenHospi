@@ -102,6 +102,17 @@ export class WebCryptoBackend implements CryptoBackend {
     return new Uint8Array(result);
   }
 
+  async hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array> {
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      buf(key),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+    return new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, buf(data)));
+  }
+
   async pbkdf2(
     password: Uint8Array,
     salt: Uint8Array,

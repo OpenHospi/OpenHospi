@@ -1,4 +1,4 @@
-import type { SerializedRatchetState } from "../protocol/types";
+import type { SerializedSenderKeyState } from "../protocol/types";
 
 import type { CryptoStore, StoredIdentity, StoredOneTimePreKey, StoredSignedPreKey } from "./types";
 
@@ -7,7 +7,7 @@ export class IndexedDBCryptoStore implements CryptoStore {
     private dbName: string,
     private dbVersion: number,
     private identityStore: string,
-    private sessionStore: string,
+    private senderKeyStore: string,
     private prekeyStore: string,
   ) {}
 
@@ -19,8 +19,8 @@ export class IndexedDBCryptoStore implements CryptoStore {
         if (!db.objectStoreNames.contains(this.identityStore)) {
           db.createObjectStore(this.identityStore);
         }
-        if (!db.objectStoreNames.contains(this.sessionStore)) {
-          db.createObjectStore(this.sessionStore);
+        if (!db.objectStoreNames.contains(this.senderKeyStore)) {
+          db.createObjectStore(this.senderKeyStore);
         }
         if (!db.objectStoreNames.contains(this.prekeyStore)) {
           db.createObjectStore(this.prekeyStore);
@@ -78,32 +78,52 @@ export class IndexedDBCryptoStore implements CryptoStore {
     return this.idbDelete(this.identityStore, userId);
   }
 
-  // ── Sessions ──
+  // ── Sender Keys ──
 
-  private sessionKey(conversationId: string, otherUserId: string): string {
-    return `${conversationId}:${otherUserId}`;
+  private senderKeyKey(conversationId: string, senderUserId: string): string {
+    return `${conversationId}:${senderUserId}`;
   }
 
-  async getSession(
+  async getSenderKey(
     conversationId: string,
-    otherUserId: string,
-  ): Promise<SerializedRatchetState | null> {
-    return this.idbGet<SerializedRatchetState>(
-      this.sessionStore,
-      this.sessionKey(conversationId, otherUserId),
+    senderUserId: string,
+  ): Promise<SerializedSenderKeyState | null> {
+    return this.idbGet<SerializedSenderKeyState>(
+      this.senderKeyStore,
+      this.senderKeyKey(conversationId, senderUserId),
     );
   }
 
-  async saveSession(
+  async saveSenderKey(
     conversationId: string,
-    otherUserId: string,
-    state: SerializedRatchetState,
+    senderUserId: string,
+    state: SerializedSenderKeyState,
   ): Promise<void> {
-    return this.idbPut(this.sessionStore, this.sessionKey(conversationId, otherUserId), state);
+    return this.idbPut(this.senderKeyStore, this.senderKeyKey(conversationId, senderUserId), state);
   }
 
-  async deleteSession(conversationId: string, otherUserId: string): Promise<void> {
-    return this.idbDelete(this.sessionStore, this.sessionKey(conversationId, otherUserId));
+  async deleteSenderKey(conversationId: string, senderUserId: string): Promise<void> {
+    return this.idbDelete(this.senderKeyStore, this.senderKeyKey(conversationId, senderUserId));
+  }
+
+  async deleteAllSenderKeys(conversationId: string): Promise<void> {
+    const db = await this.openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(this.senderKeyStore, "readwrite");
+      const store = tx.objectStore(this.senderKeyStore);
+      const request = store.openCursor();
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (cursor) {
+          if (typeof cursor.key === "string" && cursor.key.startsWith(`${conversationId}:`)) {
+            cursor.delete();
+          }
+          cursor.continue();
+        }
+      };
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
   }
 
   // ── Pre-Keys ──
@@ -141,16 +161,14 @@ export class IndexedDBCryptoStore implements CryptoStore {
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(
-        [this.identityStore, this.sessionStore, this.prekeyStore],
+        [this.identityStore, this.senderKeyStore, this.prekeyStore],
         "readwrite",
       );
 
       tx.objectStore(this.identityStore).delete(userId);
       tx.objectStore(this.prekeyStore).delete(`spk:${userId}`);
       tx.objectStore(this.prekeyStore).delete(`opk:${userId}`);
-
-      // Clear all sessions (can't filter by key prefix in IDB, so clear all)
-      tx.objectStore(this.sessionStore).clear();
+      tx.objectStore(this.senderKeyStore).clear();
 
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);

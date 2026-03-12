@@ -38,7 +38,7 @@ export function ChatView({
 }: Props) {
   const t = useTranslations("app.chat");
   const [isPending, startTransition] = useTransition();
-  const { status, encryptMessage, decryptMessage, encryptForSelf, decryptForSelf, getFingerprint } =
+  const { status, encryptGroupMessage, decryptGroupMessage, getFingerprint } =
     useEncryption(currentUserId);
   const addMessageRef = useRef<((msg: DecryptedMessage) => void) | null>(null);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -143,8 +143,7 @@ export function ChatView({
         currentUserId={currentUserId}
         initialMessages={initialMessages}
         members={members}
-        decryptMessage={decryptMessage}
-        decryptForSelf={decryptForSelf}
+        decryptGroupMessage={decryptGroupMessage}
         addMessageRef={addMessageRef}
       />
 
@@ -158,8 +157,7 @@ export function ChatView({
           conversationId={conversationId}
           members={members}
           currentUserId={currentUserId}
-          encryptMessage={encryptMessage}
-          encryptForSelf={encryptForSelf}
+          encryptGroupMessage={encryptGroupMessage}
           onMessageSent={({ id, plaintext }) => {
             addMessageRef.current?.({
               id,

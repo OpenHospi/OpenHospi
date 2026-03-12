@@ -1,12 +1,17 @@
 "use server";
 
+import type { SenderKeyDistributionEnvelope } from "@openhospi/crypto";
+
 import { requireSession } from "@/lib/auth/server";
 import {
+  getDistributionRecipients,
   getIdentityKeysByUserIds,
   getKeyBackup,
   getOneTimePreKeyCount,
   getPreKeyBundle,
+  getSenderKeyDistribution,
   insertOneTimePreKeys,
+  insertSenderKeyDistributions,
   insertSignedPreKey,
   removeKeyBackup,
   upsertIdentityKey,
@@ -77,4 +82,30 @@ export async function fetchKeyBackup(): Promise<{
 export async function deleteKeyBackup() {
   const session = await requireSession();
   await removeKeyBackup(session.user.id);
+}
+
+// ── Sender Key Distributions ──
+
+export async function storeSenderKeyDistributions(
+  conversationId: string,
+  distributions: Array<{
+    recipientUserId: string;
+    envelope: SenderKeyDistributionEnvelope;
+  }>,
+): Promise<void> {
+  const session = await requireSession();
+  await insertSenderKeyDistributions(session.user.id, conversationId, distributions);
+}
+
+export async function fetchSenderKeyDistribution(
+  conversationId: string,
+  senderUserId: string,
+): Promise<SenderKeyDistributionEnvelope | null> {
+  const session = await requireSession();
+  return getSenderKeyDistribution(conversationId, senderUserId, session.user.id);
+}
+
+export async function getExistingDistributionRecipients(conversationId: string): Promise<string[]> {
+  const session = await requireSession();
+  return getDistributionRecipients(conversationId, session.user.id);
 }

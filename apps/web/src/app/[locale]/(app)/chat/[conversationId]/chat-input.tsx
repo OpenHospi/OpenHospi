@@ -1,6 +1,6 @@
 "use client";
 
-import type { EncryptResult } from "@openhospi/crypto";
+import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
@@ -8,19 +8,17 @@ import { useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import type { CiphertextPayload } from "../chat-actions";
 import { sendMessage } from "../chat-actions";
 
 type Props = {
   conversationId: string;
   members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
   currentUserId: string;
-  encryptMessage: (
+  encryptGroupMessage: (
     conversationId: string,
-    recipientUserId: string,
+    memberUserIds: string[],
     plaintext: string,
-  ) => Promise<EncryptResult>;
-  encryptForSelf: (plaintext: string) => Promise<{ ciphertext: string; iv: string }>;
+  ) => Promise<GroupCiphertextPayload>;
   onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
 
@@ -28,8 +26,7 @@ export function ChatInput({
   conversationId,
   members,
   currentUserId,
-  encryptMessage,
-  encryptForSelf,
+  encryptGroupMessage,
   onMessageSent,
 }: Props) {
   const t = useTranslations("app.chat");
@@ -45,37 +42,14 @@ export function ChatInput({
       const otherMembers = members.filter((m) => m.userId !== currentUserId);
       if (otherMembers.length === 0) return;
 
-      // Encrypt for all other members (pairwise Double Ratchet)
-      const payloads: CiphertextPayload[] = await Promise.all(
-        otherMembers.map(async (member) => {
-          const result = await encryptMessage(conversationId, member.userId, trimmed);
-          return {
-            recipientUserId: member.userId,
-            ciphertext: result.encrypted.ciphertext,
-            iv: result.encrypted.iv,
-            ratchetPublicKey: result.encrypted.header.ratchetPublicKey,
-            messageNumber: result.encrypted.header.messageNumber,
-            previousChainLength: result.encrypted.header.previousChainLength,
-            ephemeralPublicKey: result.x3dhMeta?.ephemeralPublicKey,
-            senderIdentityKey: result.x3dhMeta?.senderIdentityKey,
-            usedSignedPreKeyId: result.x3dhMeta?.usedSignedPreKeyId,
-            usedOneTimePreKeyId: result.x3dhMeta?.usedOneTimePreKeyId,
-          };
-        }),
+      // Encrypt once for the group
+      const payload = await encryptGroupMessage(
+        conversationId,
+        members.map((m) => m.userId),
+        trimmed,
       );
 
-      // Encrypt for self (HKDF-derived key)
-      const selfEncrypted = await encryptForSelf(trimmed);
-      payloads.push({
-        recipientUserId: currentUserId,
-        ciphertext: selfEncrypted.ciphertext,
-        iv: selfEncrypted.iv,
-        ratchetPublicKey: "self",
-        messageNumber: 0,
-        previousChainLength: 0,
-      });
-
-      const { messageId } = await sendMessage(conversationId, payloads);
+      const { messageId } = await sendMessage(conversationId, payload);
 
       onMessageSent({ id: messageId, plaintext: trimmed });
       setText("");

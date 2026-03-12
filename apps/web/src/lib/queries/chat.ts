@@ -2,7 +2,7 @@ import { db, withRLS } from "@openhospi/database";
 import {
   conversationMembers,
   conversations,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
   profiles,
@@ -133,22 +133,15 @@ export type MessageItem = {
   senderAvatarUrl: string | null;
   ciphertext: string | null;
   iv: string | null;
-  ratchetPublicKey: string | null;
-  messageNumber: number | null;
-  previousChainLength: number | null;
-  ephemeralPublicKey: string | null;
-  senderIdentityKey: string | null;
-  usedSignedPreKeyId: number | null;
-  usedOneTimePreKeyId: number | null;
+  signature: string | null;
+  chainIteration: number | null;
   messageType: string;
   createdAt: Date;
 };
 
 /**
- * Get messages for a conversation. For messages sent by others,
- * joins with message_ciphertexts to get the user's own ciphertext.
- * For messages sent by the current user, no ciphertext is returned
- * (they see their own messages via optimistic UI).
+ * Get messages for a conversation.
+ * Joins with message_payloads (1:1) — all members see the same payload.
  */
 export async function getMessages(
   userId: string,
@@ -167,27 +160,16 @@ export async function getMessages(
         senderId: messages.senderId,
         senderFirstName: profiles.firstName,
         senderAvatarUrl: profiles.avatarUrl,
-        ciphertext: messageCiphertexts.ciphertext,
-        iv: messageCiphertexts.iv,
-        ratchetPublicKey: messageCiphertexts.ratchetPublicKey,
-        messageNumber: messageCiphertexts.messageNumber,
-        previousChainLength: messageCiphertexts.previousChainLength,
-        ephemeralPublicKey: messageCiphertexts.ephemeralPublicKey,
-        senderIdentityKey: messageCiphertexts.senderIdentityKey,
-        usedSignedPreKeyId: messageCiphertexts.usedSignedPreKeyId,
-        usedOneTimePreKeyId: messageCiphertexts.usedOneTimePreKeyId,
+        ciphertext: messagePayloads.ciphertext,
+        iv: messagePayloads.iv,
+        signature: messagePayloads.signature,
+        chainIteration: messagePayloads.chainIteration,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })
       .from(messages)
       .innerJoin(profiles, eq(profiles.id, messages.senderId))
-      .leftJoin(
-        messageCiphertexts,
-        and(
-          eq(messageCiphertexts.messageId, messages.id),
-          eq(messageCiphertexts.recipientUserId, userId),
-        ),
-      )
+      .leftJoin(messagePayloads, eq(messagePayloads.messageId, messages.id))
       .where(and(...conditions))
       .orderBy(desc(messages.createdAt))
       .limit(MESSAGES_PER_PAGE);

@@ -5,9 +5,10 @@ import { account, session, user, verification } from "./auth";
 import {
   conversationMembers,
   conversations,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
+  senderKeyDistributions,
 } from "./chat";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
@@ -52,8 +53,9 @@ export const relations = defineRelations(
     conversations,
     conversationMembers,
     messages,
-    messageCiphertexts,
+    messagePayloads,
     messageReceipts,
+    senderKeyDistributions,
     // Security
     identityKeys,
     signedPreKeys,
@@ -262,17 +264,17 @@ export const relations = defineRelations(
         from: r.messages.senderId,
         to: r.profiles.id,
       }),
-      ciphertexts: r.many.messageCiphertexts(),
+      payload: r.one.messagePayloads(),
       receipts: r.many.messageReceipts(),
     },
-    messageCiphertexts: {
+    messagePayloads: {
       message: r.one.messages({
-        from: r.messageCiphertexts.messageId,
+        from: r.messagePayloads.messageId,
         to: r.messages.id,
       }),
-      recipient: r.one.profiles({
-        from: r.messageCiphertexts.recipientUserId,
-        to: r.profiles.id,
+      conversation: r.one.conversations({
+        from: r.messagePayloads.conversationId,
+        to: r.conversations.id,
       }),
     },
     messageReceipts: {
@@ -283,6 +285,22 @@ export const relations = defineRelations(
       user: r.one.profiles({
         from: r.messageReceipts.userId,
         to: r.profiles.id,
+      }),
+    },
+    senderKeyDistributions: {
+      conversation: r.one.conversations({
+        from: r.senderKeyDistributions.conversationId,
+        to: r.conversations.id,
+      }),
+      distributor: r.one.profiles({
+        from: r.senderKeyDistributions.distributorUserId,
+        to: r.profiles.id,
+        alias: "distributor",
+      }),
+      recipient: r.one.profiles({
+        from: r.senderKeyDistributions.recipientUserId,
+        to: r.profiles.id,
+        alias: "skdRecipient",
       }),
     },
 

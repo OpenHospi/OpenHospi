@@ -108,6 +108,12 @@ export class NativeCryptoBackend implements CryptoBackend {
     return new Uint8Array(decrypted);
   }
 
+  async hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array> {
+    const hmac = QuickCrypto.createHmac("sha256", Buffer.from(key));
+    hmac.update(Buffer.from(data));
+    return new Uint8Array(hmac.digest());
+  }
+
   async pbkdf2(
     password: Uint8Array,
     salt: Uint8Array,

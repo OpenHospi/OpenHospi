@@ -164,9 +164,8 @@ export default function ConversationScreen() {
       headerRight: () => (
         <Pressable
           onPress={() => router.push(`/(app)/chat/${conversationId}/info` as never)}
-          hitSlop={8}
-          style={{ paddingRight: 8 }}>
-          <Info size={20} className="text-foreground" />
+          hitSlop={8}>
+          <Info size={22} className="text-foreground" />
         </Pressable>
       ),
     });

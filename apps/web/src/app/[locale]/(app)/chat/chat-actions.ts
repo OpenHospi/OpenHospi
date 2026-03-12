@@ -69,6 +69,7 @@ export async function sendMessage(conversationId: string, payload: GroupCipherte
     iv: payload.iv,
     signature: payload.signature,
     chainIteration: payload.chainIteration,
+    chainId: payload.chainId,
   });
 
   // Create receipts for all members except sender

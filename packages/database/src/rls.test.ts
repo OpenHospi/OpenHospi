@@ -213,6 +213,7 @@ describe("RLS policies (integration)", () => {
       iv: "iv-test",
       signature: "test-signature",
       chainIteration: 0,
+      chainId: "test-chain-id",
     });
 
     await db.insert(messageReceipts).values({

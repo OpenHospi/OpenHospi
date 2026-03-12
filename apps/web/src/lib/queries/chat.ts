@@ -135,6 +135,7 @@ export type MessageItem = {
   iv: string | null;
   signature: string | null;
   chainIteration: number | null;
+  chainId: string | null;
   messageType: string;
   createdAt: Date;
 };
@@ -164,6 +165,7 @@ export async function getMessages(
         iv: messagePayloads.iv,
         signature: messagePayloads.signature,
         chainIteration: messagePayloads.chainIteration,
+        chainId: messagePayloads.chainId,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })

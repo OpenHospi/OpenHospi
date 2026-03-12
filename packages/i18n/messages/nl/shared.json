@@ -1363,6 +1363,7 @@
       "report_user": "{name} melden",
       "blocked": "Je hebt deze gebruiker geblokkeerd",
       "key_reset_message": "Bericht kan niet worden ontsleuteld — versleutelingssleutel niet beschikbaar",
+      "own_message_unavailable": "Bericht verzonden vanaf een ander apparaat",
       "verify_identity": "Identiteit verifiëren",
       "all_members": "Alle leden",
       "e2e_info": "Berichten zijn end-to-end versleuteld",

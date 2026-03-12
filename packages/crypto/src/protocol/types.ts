@@ -77,6 +77,8 @@ export type X3DHResult = {
 
 /** Sender Key state for a single user in a conversation */
 export type SenderKeyState = {
+  /** Unique identifier for this key generation (like Signal's distributionId) */
+  chainId: string;
   /** Current HMAC chain key (32 bytes) */
   chainKey: Uint8Array;
   /** Ed25519 signing key pair for authenticating ciphertexts */
@@ -89,6 +91,7 @@ export type SenderKeyState = {
 
 /** JSON-safe version of SenderKeyState */
 export type SerializedSenderKeyState = {
+  chainId: string;
   chainKey: string; // base64
   signingPublicKey: string; // base64
   signingPrivateKey?: string; // base64, only present for OWN sender key
@@ -98,6 +101,7 @@ export type SerializedSenderKeyState = {
 
 /** Data distributed to group members to enable decryption */
 export type SenderKeyDistributionData = {
+  chainId: string; // unique identifier for this key generation
   chainKey: string; // base64, initial chain key
   signingPublicKey: string; // base64, Ed25519 verification key
   iteration: number; // starting iteration (0 for fresh)
@@ -107,8 +111,9 @@ export type SenderKeyDistributionData = {
 export type GroupCiphertextPayload = {
   ciphertext: string; // base64, AES-256-GCM
   iv: string; // base64, 12 bytes
-  signature: string; // base64, Ed25519 over (ciphertext || iv || iteration)
+  signature: string; // base64, Ed25519 over (ciphertext || iv || iteration || chainId)
   chainIteration: number; // position in sender's chain
+  chainId: string; // identifies which key generation was used
 };
 
 /** X3DH-encrypted envelope containing a Sender Key distribution */

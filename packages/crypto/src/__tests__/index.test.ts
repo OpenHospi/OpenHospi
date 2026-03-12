@@ -32,6 +32,7 @@ import {
   senderKeyDecrypt,
   serializeSenderKeyState,
   deserializeSenderKeyState,
+  StaleSenderKeyError,
 
   // Encryption
   encrypt,
@@ -276,14 +277,14 @@ describe("AES-256-GCM encryption", () => {
   });
 
   it("encodeGroupAad produces consistent output", () => {
-    const aad1 = encodeGroupAad("conv-1", "user-1", 5);
-    const aad2 = encodeGroupAad("conv-1", "user-1", 5);
+    const aad1 = encodeGroupAad("conv-1", "user-1", 5, "chain-1");
+    const aad2 = encodeGroupAad("conv-1", "user-1", 5, "chain-1");
     expect(bytesEqual(aad1, aad2)).toBe(true);
   });
 
   it("encodeSignatureData produces consistent output", () => {
-    const sig1 = encodeSignatureData("ct", "iv", 3);
-    const sig2 = encodeSignatureData("ct", "iv", 3);
+    const sig1 = encodeSignatureData("ct", "iv", 3, "chain-1");
+    const sig2 = encodeSignatureData("ct", "iv", 3, "chain-1");
     expect(bytesEqual(sig1, sig2)).toBe(true);
   });
 
@@ -569,7 +570,7 @@ describe("Sender Key encrypt/decrypt", () => {
     expect(p1.chainIteration).not.toBe(p2.chainIteration);
   });
 
-  it("serialization roundtrip preserves state", async () => {
+  it("serialization roundtrip preserves state including chainId", async () => {
     const backend = getBackend();
     const state = generateSenderKey(backend);
 
@@ -582,7 +583,10 @@ describe("Sender Key encrypt/decrypt", () => {
     );
 
     const serialized = serializeSenderKeyState(afterEncrypt);
+    expect(serialized.chainId).toBe(state.chainId);
+
     const deserialized = deserializeSenderKeyState(serialized);
+    expect(deserialized.chainId).toBe(state.chainId);
 
     const { payload: p2 } = await senderKeyEncrypt(
       backend,
@@ -593,6 +597,7 @@ describe("Sender Key encrypt/decrypt", () => {
     );
     expect(p2.ciphertext).toBeDefined();
     expect(p2.chainIteration).toBe(payload.chainIteration + 1);
+    expect(p2.chainId).toBe(state.chainId);
   });
 
   it("empty string roundtrips correctly", async () => {
@@ -643,6 +648,78 @@ describe("Sender Key encrypt/decrypt", () => {
       "user-1",
     );
     expect(plaintext).toBe(text);
+  });
+
+  it("chainId is present in generated state and payload", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+
+    expect(state.chainId).toBeDefined();
+    expect(typeof state.chainId).toBe("string");
+    expect(state.chainId.length).toBeGreaterThan(0);
+
+    const { payload } = await senderKeyEncrypt(backend, state, "test", "conv-1", "user-1");
+    expect(payload.chainId).toBe(state.chainId);
+  });
+
+  it("StaleSenderKeyError is thrown for past iteration without cached key", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const convId = "conv-1";
+    const userId = "user-1";
+
+    // Encrypt two messages
+    const { state: s1, payload: p1 } = await senderKeyEncrypt(
+      backend,
+      state,
+      "msg 1",
+      convId,
+      userId,
+    );
+    const { payload: _p2 } = await senderKeyEncrypt(backend, s1, "msg 2", convId, userId);
+
+    // Receiver processes only the second message (fast-forwards past first)
+    const receiverState: SenderKeyState = { ...state };
+    const { state: r1 } = await senderKeyDecrypt(
+      backend,
+      receiverState,
+      _p2,
+      state.signingKeyPair.publicKey,
+      convId,
+      userId,
+    );
+
+    // Now consume the skipped key for iteration 0
+    const { state: r2 } = await senderKeyDecrypt(
+      backend,
+      r1,
+      p1,
+      state.signingKeyPair.publicKey,
+      convId,
+      userId,
+    );
+
+    // Try to decrypt the same first message again — no cached key, iteration is behind
+    await expect(
+      senderKeyDecrypt(backend, r2, p1, state.signingKeyPair.publicKey, convId, userId),
+    ).rejects.toThrow(StaleSenderKeyError);
+  });
+
+  it("wrong chainId → AAD mismatch → decrypt fails", async () => {
+    const backend = getBackend();
+    const state = generateSenderKey(backend);
+    const convId = "conv-1";
+    const userId = "user-1";
+
+    const { payload } = await senderKeyEncrypt(backend, state, "chainId test", convId, userId);
+
+    // Tamper with chainId
+    const tampered = { ...payload, chainId: "wrong-chain-id" };
+
+    // Signature verification should fail because chainId is part of the signed data
+    await expect(
+      senderKeyDecrypt(backend, state, tampered, state.signingKeyPair.publicKey, convId, userId),
+    ).rejects.toThrow();
   });
 });
 

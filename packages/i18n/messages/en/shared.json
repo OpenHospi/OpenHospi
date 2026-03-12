@@ -1364,6 +1364,7 @@
       "report_user": "Report {name}",
       "blocked": "You have blocked this user",
       "key_reset_message": "Message cannot be decrypted — encryption key unavailable",
+      "own_message_unavailable": "Message sent from another device",
       "verify_identity": "Verify identity",
       "all_members": "All Members",
       "e2e_info": "Messages are end-to-end encrypted",

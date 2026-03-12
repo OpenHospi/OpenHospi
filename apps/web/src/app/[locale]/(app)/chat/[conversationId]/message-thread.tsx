@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MessageBubble } from "@/components/app/message-bubble";
+import { sentMessageCache } from "@/lib/crypto/sent-message-cache";
 import type { MessageItem } from "@/lib/queries/chat";
 import { supabase } from "@/lib/supabase/client";
 
@@ -50,6 +51,10 @@ export function MessageThread({
 
   const decryptMessages = useCallback(
     async (msgs: MessageItem[]) => {
+      // Batch-fetch cached plaintext for own messages
+      const ownMsgIds = msgs.filter((m) => m.senderId === currentUserId).map((m) => m.id);
+      const cachedPlaintexts = await sentMessageCache.getMultiple(ownMsgIds);
+
       const results: DecryptedMessage[] = [];
       for (const msg of msgs) {
         if (!msg.ciphertext || !msg.iv || !msg.signature || msg.chainIteration == null) continue;
@@ -63,12 +68,23 @@ export function MessageThread({
           createdAt: msg.createdAt,
         };
 
+        // Skip decryption for own messages — use cached plaintext
+        if (msg.senderId === currentUserId) {
+          const cached = cachedPlaintexts.get(msg.id);
+          results.push({
+            ...baseMsg,
+            plaintext: cached ?? t("own_message_unavailable"),
+          });
+          continue;
+        }
+
         try {
           const payload: GroupCiphertextPayload = {
             ciphertext: msg.ciphertext,
             iv: msg.iv,
             signature: msg.signature,
             chainIteration: msg.chainIteration,
+            chainId: msg.chainId ?? "",
           };
           const plaintext = await decryptGroupMessage(conversationId, msg.senderId, payload);
           results.push({ ...baseMsg, plaintext });
@@ -79,7 +95,7 @@ export function MessageThread({
       }
       return results;
     },
-    [conversationId, decryptGroupMessage, t],
+    [conversationId, currentUserId, decryptGroupMessage, t],
   );
 
   const decryptMessagesRef = useRef(decryptMessages);
@@ -148,6 +164,7 @@ export function MessageThread({
       const iv = row.iv as string;
       const signature = row.signature as string;
       const chainIteration = row.chain_iteration as number;
+      const chainId = (row.chain_id as string) ?? "";
       const createdAt = row.created_at ? new Date(row.created_at as string) : new Date();
 
       const member = membersRef.current.find((m) => m.userId === senderUserId);
@@ -163,6 +180,7 @@ export function MessageThread({
             iv,
             signature,
             chainIteration,
+            chainId,
             messageType: "text",
             createdAt,
           },

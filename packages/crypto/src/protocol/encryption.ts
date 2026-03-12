@@ -38,23 +38,25 @@ export async function decrypt(
 }
 
 /**
- * Encode AAD for group messages — binds ciphertext to conversation + sender + iteration.
+ * Encode AAD for group messages — binds ciphertext to conversation + sender + iteration + chainId.
  */
 export function encodeGroupAad(
   conversationId: string,
   senderUserId: string,
   chainIteration: number,
+  chainId: string,
 ): Uint8Array {
-  return new TextEncoder().encode(`${conversationId}|${senderUserId}|${chainIteration}`);
+  return new TextEncoder().encode(`${conversationId}|${senderUserId}|${chainIteration}|${chainId}`);
 }
 
 /**
- * Encode data for Ed25519 signing — binds signature to ciphertext + iv + iteration.
+ * Encode data for Ed25519 signing — binds signature to ciphertext + iv + iteration + chainId.
  */
 export function encodeSignatureData(
   ciphertext: string,
   iv: string,
   chainIteration: number,
+  chainId: string,
 ): Uint8Array {
-  return new TextEncoder().encode(`${ciphertext}|${iv}|${chainIteration}`);
+  return new TextEncoder().encode(`${ciphertext}|${iv}|${chainIteration}|${chainId}`);
 }

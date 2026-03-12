@@ -28,10 +28,11 @@ export async function POST(request: Request) {
       !body.payload.ciphertext ||
       !body.payload.iv ||
       !body.payload.signature ||
-      body.payload.chainIteration == null
+      body.payload.chainIteration == null ||
+      !body.payload.chainId
     ) {
       return apiError(
-        "conversationId and payload (ciphertext, iv, signature, chainIteration) are required",
+        "conversationId and payload (ciphertext, iv, signature, chainIteration, chainId) are required",
         400,
       );
     }
@@ -86,6 +87,7 @@ export async function POST(request: Request) {
       iv: body.payload.iv,
       signature: body.payload.signature,
       chainIteration: body.payload.chainIteration,
+      chainId: body.payload.chainId,
     });
 
     // Create receipts for other members

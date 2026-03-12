@@ -13,11 +13,27 @@ import { fastForwardChain, senderKeyChainStep } from "./sender-key-chain";
 import type { GroupCiphertextPayload, SenderKeyState, SerializedSenderKeyState } from "./types";
 
 /**
+ * Typed error for when a message's iteration is behind the current chain state
+ * and no cached key exists. The caller should fetch a fresh Sender Key distribution
+ * and retry.
+ */
+export class StaleSenderKeyError extends Error {
+  constructor(messageIteration: number, currentIteration: number) {
+    super(
+      `Sender Key: message iteration ${messageIteration} < current ${currentIteration} and no cached key`,
+    );
+    this.name = "StaleSenderKeyError";
+  }
+}
+
+/**
  * Generate a fresh Sender Key for a conversation.
  * The signing key pair is Ed25519 — used to authenticate each ciphertext.
+ * Each key generation gets a unique chainId (like Signal's distributionId).
  */
 export function generateSenderKey(backend: CryptoBackend): SenderKeyState {
   return {
+    chainId: toBase64(backend.randomBytes(16)),
     chainKey: backend.randomBytes(32),
     signingKeyPair: backend.generateEd25519KeyPair(),
     iteration: 0,
@@ -29,8 +45,8 @@ export function generateSenderKey(backend: CryptoBackend): SenderKeyState {
  * Encrypt plaintext using the Sender Key chain.
  *
  * 1. Advance chain → derive messageKey
- * 2. Encrypt with AES-256-GCM using AAD = "${conversationId}|${senderUserId}|${iteration}"
- * 3. Sign (ciphertext || iv || iteration) with Ed25519
+ * 2. Encrypt with AES-256-GCM using AAD = "${conversationId}|${senderUserId}|${iteration}|${chainId}"
+ * 3. Sign (ciphertext || iv || iteration || chainId) with Ed25519
  */
 export async function senderKeyEncrypt(
   backend: CryptoBackend,
@@ -44,8 +60,8 @@ export async function senderKeyEncrypt(
   // Advance chain
   const { nextChainKey, messageKey } = await senderKeyChainStep(backend, state.chainKey);
 
-  // Encrypt with AAD binding to conversation + sender + iteration
-  const aad = encodeGroupAad(conversationId, senderUserId, currentIteration);
+  // Encrypt with AAD binding to conversation + sender + iteration + chainId
+  const aad = encodeGroupAad(conversationId, senderUserId, currentIteration, state.chainId);
   const { ciphertext, iv } = await encrypt(
     backend,
     messageKey,
@@ -54,7 +70,12 @@ export async function senderKeyEncrypt(
   );
 
   // Sign for authentication
-  const signData = encodeSignatureData(toBase64(ciphertext), toBase64(iv), currentIteration);
+  const signData = encodeSignatureData(
+    toBase64(ciphertext),
+    toBase64(iv),
+    currentIteration,
+    state.chainId,
+  );
   const signature = backend.ed25519Sign(state.signingKeyPair.privateKey, signData);
 
   const payload: GroupCiphertextPayload = {
@@ -62,6 +83,7 @@ export async function senderKeyEncrypt(
     iv: toBase64(iv),
     signature: toBase64(signature),
     chainIteration: currentIteration,
+    chainId: state.chainId,
   };
 
   const newState: SenderKeyState = {
@@ -89,7 +111,12 @@ export async function senderKeyDecrypt(
   senderUserId: string,
 ): Promise<{ state: SenderKeyState; plaintext: string }> {
   // Verify signature first
-  const signData = encodeSignatureData(payload.ciphertext, payload.iv, payload.chainIteration);
+  const signData = encodeSignatureData(
+    payload.ciphertext,
+    payload.iv,
+    payload.chainIteration,
+    payload.chainId,
+  );
   const sigValid = backend.ed25519Verify(signingPublicKey, signData, fromBase64(payload.signature));
   if (!sigValid) {
     throw new Error("Sender Key: Ed25519 signature verification failed");
@@ -128,13 +155,11 @@ export async function senderKeyDecrypt(
       skippedMessageKeys: newSkipped,
     };
   } else {
-    throw new Error(
-      `Sender Key: message iteration ${payload.chainIteration} < current ${state.iteration} and no cached key`,
-    );
+    throw new StaleSenderKeyError(payload.chainIteration, state.iteration);
   }
 
   // Decrypt
-  const aad = encodeGroupAad(conversationId, senderUserId, payload.chainIteration);
+  const aad = encodeGroupAad(conversationId, senderUserId, payload.chainIteration, payload.chainId);
   const plainBytes = await decrypt(
     backend,
     messageKey,
@@ -149,6 +174,7 @@ export async function senderKeyDecrypt(
 /** Serialize SenderKeyState for storage (IndexedDB / SecureStorage) */
 export function serializeSenderKeyState(state: SenderKeyState): SerializedSenderKeyState {
   return {
+    chainId: state.chainId,
     chainKey: toBase64(state.chainKey),
     signingPublicKey: toBase64(state.signingKeyPair.publicKey),
     signingPrivateKey: toBase64(state.signingKeyPair.privateKey),
@@ -168,6 +194,7 @@ export function deserializeSenderKeyState(data: SerializedSenderKeyState): Sende
   }
 
   return {
+    chainId: data.chainId,
     chainKey: fromBase64(data.chainKey),
     signingKeyPair: {
       publicKey: fromBase64(data.signingPublicKey),

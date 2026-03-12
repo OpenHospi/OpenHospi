@@ -2,6 +2,8 @@ import type { SerializedSenderKeyState } from "../protocol/types";
 
 import type { CryptoStore, StoredIdentity, StoredOneTimePreKey, StoredSignedPreKey } from "./types";
 
+const MAX_SENDER_KEY_STATES = 5;
+
 export class IndexedDBCryptoStore implements CryptoStore {
   constructor(
     private dbName: string,
@@ -78,20 +80,49 @@ export class IndexedDBCryptoStore implements CryptoStore {
     return this.idbDelete(this.identityStore, userId);
   }
 
-  // ── Sender Keys ──
+  // ── Sender Keys (multi-state: up to 5 states per sender) ──
 
   private senderKeyKey(conversationId: string, senderUserId: string): string {
     return `${conversationId}:${senderUserId}`;
   }
 
+  /**
+   * Migrate old single-state format to multi-state array.
+   * Old format: SerializedSenderKeyState (plain object without chainId array wrapper)
+   * New format: SerializedSenderKeyState[] (array of states)
+   */
+  private migrateToMultiState(stored: unknown): SerializedSenderKeyState[] {
+    if (Array.isArray(stored)) return stored as SerializedSenderKeyState[];
+    if (stored && typeof stored === "object" && "chainKey" in stored) {
+      const single = stored as SerializedSenderKeyState;
+      if (!single.chainId) {
+        // Old format without chainId — generate one for migration
+        single.chainId = `migrated-${Date.now()}`;
+      }
+      return [single];
+    }
+    return [];
+  }
+
   async getSenderKey(
     conversationId: string,
     senderUserId: string,
+    chainId?: string,
   ): Promise<SerializedSenderKeyState | null> {
-    return this.idbGet<SerializedSenderKeyState>(
+    const raw = await this.idbGet<unknown>(
       this.senderKeyStore,
       this.senderKeyKey(conversationId, senderUserId),
     );
+    if (!raw) return null;
+
+    const states = this.migrateToMultiState(raw);
+    if (states.length === 0) return null;
+
+    if (chainId) {
+      return states.find((s) => s.chainId === chainId) ?? null;
+    }
+    // Return latest (first in array)
+    return states[0];
   }
 
   async saveSenderKey(
@@ -99,7 +130,21 @@ export class IndexedDBCryptoStore implements CryptoStore {
     senderUserId: string,
     state: SerializedSenderKeyState,
   ): Promise<void> {
-    return this.idbPut(this.senderKeyStore, this.senderKeyKey(conversationId, senderUserId), state);
+    const key = this.senderKeyKey(conversationId, senderUserId);
+    const raw = await this.idbGet<unknown>(this.senderKeyStore, key);
+    const existing = raw ? this.migrateToMultiState(raw) : [];
+
+    // Replace existing state with same chainId, or prepend new
+    const idx = existing.findIndex((s) => s.chainId === state.chainId);
+    if (idx >= 0) {
+      existing[idx] = state;
+    } else {
+      existing.unshift(state);
+    }
+
+    // Trim to max states
+    const trimmed = existing.slice(0, MAX_SENDER_KEY_STATES);
+    return this.idbPut(this.senderKeyStore, key, trimmed);
   }
 
   async deleteSenderKey(conversationId: string, senderUserId: string): Promise<void> {

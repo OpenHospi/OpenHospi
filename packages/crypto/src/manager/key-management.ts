@@ -258,6 +258,7 @@ export async function distributeSenderKey(
   };
 
   const distributionData: SenderKeyDistributionData = {
+    chainId: state.chainId,
     chainKey: toBase64(state.chainKey),
     signingPublicKey: toBase64(state.signingKeyPair.publicKey),
     iteration: state.iteration,
@@ -369,6 +370,7 @@ export async function receiveSenderKeyDistribution(
 
   // Store the sender's Sender Key (without signing private key — we only need the public key)
   await store.saveSenderKey(conversationId, senderUserId, {
+    chainId: data.chainId,
     chainKey: data.chainKey,
     signingPublicKey: data.signingPublicKey,
     iteration: data.iteration,

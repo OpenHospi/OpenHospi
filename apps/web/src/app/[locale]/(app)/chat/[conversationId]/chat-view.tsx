@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEncryption } from "@/hooks/use-encryption";
 import { Link } from "@/i18n/navigation-app";
+import { sentMessageCache } from "@/lib/crypto/sent-message-cache";
 import type { ConversationDetail, MessageItem } from "@/lib/queries/chat";
 
 import { blockUser, unblockUser } from "../block-actions";
@@ -159,6 +160,7 @@ export function ChatView({
           currentUserId={currentUserId}
           encryptGroupMessage={encryptGroupMessage}
           onMessageSent={({ id, plaintext }) => {
+            sentMessageCache.save(id, plaintext);
             addMessageRef.current?.({
               id,
               senderId: currentUserId,

@@ -895,6 +895,7 @@ describe("E2E workflow tests (integration)", () => {
               iv: "e2e-iv-001",
               signature: "e2e-signature",
               chainIteration: 0,
+              chainId: "e2e-chain-id-001",
             })
             .returning(),
         );

@@ -3,6 +3,7 @@ import { fromBase64 } from "../protocol/encoding";
 import { encodeSafetyNumberQR, generateSafetyNumber } from "../protocol/safety-number";
 import {
   deserializeSenderKeyState,
+  StaleSenderKeyError,
   senderKeyDecrypt,
   senderKeyEncrypt,
   serializeSenderKeyState,
@@ -90,9 +91,9 @@ export async function encryptGroupMessage(
 /**
  * Decrypt a group message using the sender's Sender Key.
  *
- * 1. Look up sender's Sender Key in local store
+ * 1. Look up sender's Sender Key by chainId from the payload
  * 2. If not found, fetch the distribution from the server
- * 3. Decrypt the message
+ * 3. On StaleSenderKeyError, fetch fresh distribution and retry once
  */
 export async function decryptGroupMessage(
   store: CryptoStore,
@@ -105,15 +106,25 @@ export async function decryptGroupMessage(
     senderUserId: string,
   ) => Promise<SenderKeyDistributionEnvelope | null>,
 ): Promise<string> {
-  let serialized = await store.getSenderKey(conversationId, senderUserId);
+  // Look up by chainId first for correct multi-state resolution
+  let serialized = await store.getSenderKey(conversationId, senderUserId, payload.chainId);
 
   if (!serialized) {
+    // Try without chainId (latest state) as fallback
+    serialized = await store.getSenderKey(conversationId, senderUserId);
+  }
+
+  if (!serialized) {
+    // No local key at all — fetch distribution
     const envelope = await fetchDistribution(conversationId, senderUserId);
     if (!envelope) {
       throw new Error("No Sender Key found and no distribution available from server");
     }
     await receiveSenderKeyDistribution(store, conversationId, senderUserId, userId, envelope);
-    serialized = await store.getSenderKey(conversationId, senderUserId);
+    serialized = await store.getSenderKey(conversationId, senderUserId, payload.chainId);
+    if (!serialized) {
+      serialized = await store.getSenderKey(conversationId, senderUserId);
+    }
     if (!serialized) {
       throw new Error("Failed to store received Sender Key distribution");
     }
@@ -122,18 +133,55 @@ export async function decryptGroupMessage(
   const state = deserializeSenderKeyState(serialized);
   const signingPublicKey = fromBase64(serialized.signingPublicKey);
 
-  const { state: newState, plaintext } = await senderKeyDecrypt(
-    getBackend(),
-    state,
-    payload,
-    signingPublicKey,
-    conversationId,
-    senderUserId,
-  );
+  try {
+    const { state: newState, plaintext } = await senderKeyDecrypt(
+      getBackend(),
+      state,
+      payload,
+      signingPublicKey,
+      conversationId,
+      senderUserId,
+    );
 
-  await store.saveSenderKey(conversationId, senderUserId, serializeSenderKeyState(newState));
+    await store.saveSenderKey(conversationId, senderUserId, serializeSenderKeyState(newState));
 
-  return plaintext;
+    return plaintext;
+  } catch (firstError) {
+    // On stale key error for another user's message, try fetching fresh distribution
+    if (firstError instanceof StaleSenderKeyError && senderUserId !== userId) {
+      const envelope = await fetchDistribution(conversationId, senderUserId);
+      if (envelope) {
+        await receiveSenderKeyDistribution(store, conversationId, senderUserId, userId, envelope);
+        const freshSerialized = await store.getSenderKey(
+          conversationId,
+          senderUserId,
+          payload.chainId,
+        );
+        if (freshSerialized) {
+          const freshState = deserializeSenderKeyState(freshSerialized);
+          const freshSigningKey = fromBase64(freshSerialized.signingPublicKey);
+
+          const { state: newState, plaintext } = await senderKeyDecrypt(
+            getBackend(),
+            freshState,
+            payload,
+            freshSigningKey,
+            conversationId,
+            senderUserId,
+          );
+
+          await store.saveSenderKey(
+            conversationId,
+            senderUserId,
+            serializeSenderKeyState(newState),
+          );
+
+          return plaintext;
+        }
+      }
+    }
+    throw firstError;
+  }
 }
 
 // ── Safety Numbers ──

@@ -28,6 +28,7 @@ export interface CryptoStore {
   getSenderKey(
     conversationId: string,
     senderUserId: string,
+    chainId?: string,
   ): Promise<SerializedSenderKeyState | null>;
   saveSenderKey(
     conversationId: string,

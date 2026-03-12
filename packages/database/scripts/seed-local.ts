@@ -1208,6 +1208,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       iv: f.string(),
       signature: f.string(),
       chainIteration: f.int({ minValue: 0, maxValue: 100 }),
+      chainId: f.string(),
     },
   },
 

@@ -8,6 +8,8 @@ import type {
 
 import { SecureStorage } from './secure-storage';
 
+const MAX_SENDER_KEY_STATES = 5;
+
 export class MobileCryptoStore implements CryptoStore {
   // ── Identity ──
 
@@ -24,14 +26,36 @@ export class MobileCryptoStore implements CryptoStore {
     await SecureStorage.delete(`identity:${userId}`);
   }
 
-  // ── Sender Keys ──
+  // ── Sender Keys (multi-state: up to 5 states per sender) ──
+
+  private migrateToMultiState(raw: string): SerializedSenderKeyState[] {
+    const parsed = JSON.parse(raw) as unknown;
+    if (Array.isArray(parsed)) return parsed as SerializedSenderKeyState[];
+    if (parsed && typeof parsed === 'object' && 'chainKey' in parsed) {
+      const single = parsed as SerializedSenderKeyState;
+      if (!single.chainId) {
+        single.chainId = `migrated-${Date.now()}`;
+      }
+      return [single];
+    }
+    return [];
+  }
 
   async getSenderKey(
     conversationId: string,
-    senderUserId: string
+    senderUserId: string,
+    chainId?: string
   ): Promise<SerializedSenderKeyState | null> {
     const data = await SecureStorage.get(`senderKey:${conversationId}:${senderUserId}`);
-    return data ? (JSON.parse(data) as SerializedSenderKeyState) : null;
+    if (!data) return null;
+
+    const states = this.migrateToMultiState(data);
+    if (states.length === 0) return null;
+
+    if (chainId) {
+      return states.find((s) => s.chainId === chainId) ?? null;
+    }
+    return states[0];
   }
 
   async saveSenderKey(
@@ -39,7 +63,20 @@ export class MobileCryptoStore implements CryptoStore {
     senderUserId: string,
     state: SerializedSenderKeyState
   ): Promise<void> {
-    await SecureStorage.set(`senderKey:${conversationId}:${senderUserId}`, JSON.stringify(state));
+    const key = `senderKey:${conversationId}:${senderUserId}`;
+    const data = await SecureStorage.get(key);
+    const existing = data ? this.migrateToMultiState(data) : [];
+
+    const idx = existing.findIndex((s) => s.chainId === state.chainId);
+    if (idx >= 0) {
+      existing[idx] = state;
+    } else {
+      existing.unshift(state);
+    }
+
+    const trimmed = existing.slice(0, MAX_SENDER_KEY_STATES);
+    await SecureStorage.set(key, JSON.stringify(trimmed));
+
     // Update index for this conversation
     const indexKey = `senderKeyIndex:${conversationId}`;
     const indexData = await SecureStorage.get(indexKey);

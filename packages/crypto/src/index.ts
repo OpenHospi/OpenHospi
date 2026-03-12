@@ -55,6 +55,7 @@ export {
   senderKeyDecrypt,
   serializeSenderKeyState,
   deserializeSenderKeyState,
+  StaleSenderKeyError,
 } from "./protocol/sender-key";
 
 // ── Encryption ──

@@ -43,6 +43,7 @@ export type MessageItem = {
   iv: string | null;
   signature: string | null;
   chainIteration: number | null;
+  chainId: string | null;
   messageType: string;
   createdAt: string;
 };

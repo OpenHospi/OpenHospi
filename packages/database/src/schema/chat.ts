@@ -133,6 +133,7 @@ export const messagePayloads = pgTable(
     iv: text("iv").notNull(),
     signature: text("signature").notNull(),
     chainIteration: integer("chain_iteration").notNull(),
+    chainId: text("chain_id").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

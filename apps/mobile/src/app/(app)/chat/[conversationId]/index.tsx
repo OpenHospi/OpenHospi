@@ -18,6 +18,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 
 import { Text } from '@/components/ui/text';
 import { KeyChangeBanner } from '@/components/key-change-banner';
+import { sentMessageCache } from '@/lib/crypto/sent-message-cache';
 import { useAppSession } from '@/context/session';
 import { useEncryption } from '@/hooks/use-encryption';
 import { supabase } from '@/lib/supabase';
@@ -42,6 +43,7 @@ async function tryDecryptMessage(
     iv: string;
     signature: string;
     chainIteration: number;
+    chainId: string;
     senderId: string;
   },
   conversationId: string,
@@ -57,6 +59,7 @@ async function tryDecryptMessage(
       iv: msg.iv,
       signature: msg.signature,
       chainIteration: msg.chainIteration,
+      chainId: msg.chainId,
     };
     const plaintext = await decryptGroupMessage(conversationId, msg.senderId, payload);
     return { text: plaintext, failed: false };
@@ -170,12 +173,19 @@ export default function ConversationScreen() {
             return { ...msg, decryptedText: null, decryptFailed: false };
           }
 
+          // Skip decryption for own messages — use cached plaintext
+          if (msg.senderId === userId) {
+            const cached = await sentMessageCache.get(msg.id);
+            return { ...msg, decryptedText: cached, decryptFailed: !cached };
+          }
+
           const result = await tryDecryptMessage(
             {
               ciphertext: msg.ciphertext,
               iv: msg.iv,
               signature: msg.signature,
               chainIteration: msg.chainIteration,
+              chainId: msg.chainId ?? '',
               senderId: msg.senderId,
             },
             conversationId,
@@ -239,6 +249,7 @@ export default function ConversationScreen() {
             iv: string;
             signature: string;
             chain_iteration: number;
+            chain_id: string;
           };
 
           if (!active) return;
@@ -253,6 +264,7 @@ export default function ConversationScreen() {
                 iv: record.iv,
                 signature: record.signature,
                 chainIteration: record.chain_iteration,
+                chainId: record.chain_id ?? '',
                 senderId: record.sender_user_id,
               },
               conversationId,
@@ -268,6 +280,7 @@ export default function ConversationScreen() {
               iv: record.iv,
               signature: record.signature,
               chainIteration: record.chain_iteration,
+              chainId: record.chain_id ?? '',
               messageType: 'text',
               createdAt: new Date().toISOString(),
               decryptedText: result.text,
@@ -309,10 +322,12 @@ export default function ConversationScreen() {
       const memberUserIds = detail.members.map((m) => m.userId);
       const payload = await encryptGroupMessage(conversationId, memberUserIds, text);
 
-      await sendMessage.mutateAsync({ conversationId, payload });
+      const result = await sendMessage.mutateAsync({ conversationId, payload });
+      const messageId = result?.messageId ?? `optimistic-${Date.now()}`;
+      await sentMessageCache.save(messageId, text);
 
       const ownMsg: DecryptedMessage = {
-        id: `optimistic-${Date.now()}`,
+        id: messageId,
         senderId: userId,
         senderFirstName: session?.user?.name ?? '',
         senderAvatarUrl: null,
@@ -320,6 +335,7 @@ export default function ConversationScreen() {
         iv: null,
         signature: null,
         chainIteration: null,
+        chainId: null,
         messageType: 'text',
         createdAt: new Date().toISOString(),
         decryptedText: text,

@@ -6,7 +6,6 @@ import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import { activeConsents, pushSubscriptions } from "@/lib/db/schema";
 
-
 export async function subscribePush(subscription: {
   endpoint: string;
   keys: { p256dh: string; auth: string };

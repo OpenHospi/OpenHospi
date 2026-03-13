@@ -6,7 +6,6 @@ import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/au
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { votes } from "@/lib/db/schema";
 
-
 export async function submitVotes(
   roomId: string,
   rankings: { applicantId: string; rank: number }[],

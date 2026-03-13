@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { eq, like } from 'drizzle-orm';
 
 import { db } from '@/lib/db';
-import { cryptoStore } from '@/lib/db/schema';
+import { encryptedStore } from '@/lib/db/schema';
 
 // react-native-quick-crypto is already installed and polyfilled in _layout.tsx
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -59,16 +59,16 @@ export const SecureStorage = {
     const encrypted = encryptData(masterKey, value);
     const blob = JSON.stringify(encrypted);
     await db
-      .insert(cryptoStore)
+      .insert(encryptedStore)
       .values({ key, value: blob, updatedAt: new Date() })
       .onConflictDoUpdate({
-        target: cryptoStore.key,
+        target: encryptedStore.key,
         set: { value: blob, updatedAt: new Date() },
       });
   },
 
   async get(key: string): Promise<string | null> {
-    const [row] = await db.select().from(cryptoStore).where(eq(cryptoStore.key, key));
+    const [row] = await db.select().from(encryptedStore).where(eq(encryptedStore.key, key));
     if (!row) return null;
     const masterKey = await getMasterKey();
     const payload = JSON.parse(row.value) as { iv: string; content: string };
@@ -76,14 +76,14 @@ export const SecureStorage = {
   },
 
   async delete(key: string): Promise<void> {
-    await db.delete(cryptoStore).where(eq(cryptoStore.key, key));
+    await db.delete(encryptedStore).where(eq(encryptedStore.key, key));
   },
 
   async deleteByPrefix(prefix: string): Promise<void> {
-    await db.delete(cryptoStore).where(like(cryptoStore.key, `${prefix}%`));
+    await db.delete(encryptedStore).where(like(encryptedStore.key, `${prefix}%`));
   },
 
   async clear(): Promise<void> {
-    await db.delete(cryptoStore);
+    await db.delete(encryptedStore);
   },
 };

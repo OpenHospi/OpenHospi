@@ -2,8 +2,8 @@
 
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
-import type { CreateEventData } from "@openhospi/database/validators";
-import { createEventSchema } from "@openhospi/database/validators";
+import type { CreateEventData } from "@openhospi/validators";
+import { createEventSchema } from "@openhospi/validators";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

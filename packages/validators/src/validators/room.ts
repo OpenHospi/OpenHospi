@@ -15,14 +15,11 @@ import {
   UtilitiesIncluded,
   Vereniging,
 } from "@openhospi/shared/enums";
-import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
-
-import { roomPhotos, rooms } from "../schema/rooms";
 
 const DUTCH_POSTAL_CODE_REGEX = /^\d{4}\s?[A-Za-z]{2}$/;
 
-const baseRoomSchema = createInsertSchema(rooms, {
+const baseRoomSchema = z.object({
   title: z.string().min(1).max(MAX_ROOM_TITLE_LENGTH),
   description: z.string().max(MAX_ROOM_DESCRIPTION_LENGTH).optional(),
   city: z.enum(City.values),
@@ -49,7 +46,6 @@ const baseRoomSchema = createInsertSchema(rooms, {
   preferredGender: z.enum(GenderPreference.values).optional(),
   preferredAgeMin: z.coerce.number().int().min(16).max(99).optional(),
   preferredAgeMax: z.coerce.number().int().min(16).max(99).optional(),
-
   acceptedLanguages: z.array(z.enum(Language.values)).optional(),
   roomVereniging: z.enum(Vereniging.values).optional(),
   shareLinkExpiresAt: z.string().optional(),
@@ -145,9 +141,9 @@ export const shareLinkSettingsSchema = baseRoomSchema.pick({
   shareLinkMaxUses: true,
 });
 
-export const roomPhotoCaptionSchema = createInsertSchema(roomPhotos, {
+export const roomPhotoCaptionSchema = z.object({
   caption: z.string().max(MAX_PHOTO_CAPTION_LENGTH).optional(),
-}).pick({ caption: true });
+});
 
 export type RoomBasicInfoData = z.infer<typeof roomBasicInfoSchema>;
 export type RoomDetailsData = z.infer<typeof roomDetailsSchema>;

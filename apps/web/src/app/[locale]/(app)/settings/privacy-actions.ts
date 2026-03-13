@@ -12,7 +12,7 @@ import {
   submitDataRequestSchema,
   type RequestProcessingRestrictionData,
   type SubmitDataRequestData,
-} from "@openhospi/database/validators";
+} from "@openhospi/validators";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import { and, desc, eq, isNull } from "drizzle-orm";

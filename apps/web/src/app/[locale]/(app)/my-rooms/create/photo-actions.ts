@@ -2,7 +2,7 @@
 
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { roomPhotos } from "@/lib/db/schema";
-import { roomPhotoCaptionSchema } from "@openhospi/database/validators";
+import { roomPhotoCaptionSchema } from "@openhospi/validators";
 import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

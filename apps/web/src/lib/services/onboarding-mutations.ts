@@ -17,7 +17,7 @@ import {
   type IdentityStepData,
   type LanguagesStepData,
   type PersonalityStepData,
-} from "@openhospi/database/validators";
+} from "@openhospi/validators";
 import { EMAIL_CODE_LENGTH } from "@openhospi/shared/constants";
 import { and, desc, eq, gt } from "drizzle-orm";
 

@@ -1,8 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 import { eq, like } from 'drizzle-orm';
 
-import { db } from '@/db/client';
-import { cryptoStore } from '@/db/schema';
+import { db } from '@/lib/db';
+import { cryptoStore } from '@/lib/db/schema';
 
 // react-native-quick-crypto is already installed and polyfilled in _layout.tsx
 // eslint-disable-next-line @typescript-eslint/no-require-imports

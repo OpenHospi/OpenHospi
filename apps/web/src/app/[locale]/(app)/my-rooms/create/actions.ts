@@ -6,12 +6,12 @@ import type {
   RoomBasicInfoData,
   RoomDetailsData,
   RoomPreferencesData,
-} from "@openhospi/database/validators";
+} from "@openhospi/validators";
 import {
   roomBasicInfoSchema,
   roomDetailsSchema,
   roomPreferencesSchema,
-} from "@openhospi/database/validators";
+} from "@openhospi/validators";
 import {
   GenderPreference,
   HouseMemberRole,

@@ -1,6 +1,6 @@
 "use client";
 
-import { personalityStepSchema } from "@openhospi/database/validators";
+import { personalityStepSchema } from "@openhospi/validators";
 import { MAX_LIFESTYLE_TAGS, MIN_LIFESTYLE_TAGS } from "@openhospi/shared/constants";
 import { LifestyleTag } from "@openhospi/shared/enums";
 import { useTranslations } from "next-intl";

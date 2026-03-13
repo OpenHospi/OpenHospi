@@ -1,7 +1,7 @@
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { profilePhotos, profiles } from "@/lib/db/schema";
-import type { EditProfileData } from "@openhospi/database/validators";
-import { editProfileSchema } from "@openhospi/database/validators";
+import type { EditProfileData } from "@openhospi/validators";
+import { editProfileSchema } from "@openhospi/validators";
 import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import { and, eq } from "drizzle-orm";
 

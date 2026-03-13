@@ -1,7 +1,7 @@
 "use client";
 
-import type { RoomPreferencesData } from "@openhospi/database/validators";
-import { roomPreferencesSchema } from "@openhospi/database/validators";
+import type { RoomPreferencesData } from "@openhospi/validators";
+import { roomPreferencesSchema } from "@openhospi/validators";
 import {
   GenderPreference,
   Language,

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { eq } from 'drizzle-orm';
 
-import { db } from '@/db/client';
-import { keyVerifications } from '@/db/schema';
+import { db } from '@/lib/db';
+import { keyVerifications } from '@/lib/db/schema';
 import { api } from '@/lib/api-client';
 import { queryKeys } from './keys';
 

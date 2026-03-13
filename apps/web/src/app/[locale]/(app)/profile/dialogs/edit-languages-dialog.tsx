@@ -1,6 +1,6 @@
 "use client";
 
-import { languagesStepSchema } from "@openhospi/database/validators";
+import { languagesStepSchema } from "@openhospi/validators";
 import { MAX_LANGUAGES, MIN_LANGUAGES } from "@openhospi/shared/constants";
 import { Language } from "@openhospi/shared/enums";
 import { useTranslations } from "next-intl";

@@ -110,7 +110,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@openhospi/database": "workspace:*",
+    "@openhospi/validators": "workspace:*",
     "@types/react": "~19.2.14",
     "babel-plugin-inline-import": "^3.0.0",
     "drizzle-kit": "catalog:",

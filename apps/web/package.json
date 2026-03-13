@@ -30,7 +30,7 @@
     "@hookform/resolvers": "catalog:",
     "@icons-pack/react-simple-icons": "^13.12.0",
     "@openhospi/crypto": "workspace:*",
-    "@openhospi/database": "workspace:*",
+    "@openhospi/validators": "workspace:*",
     "@openhospi/email": "workspace:*",
     "@openhospi/i18n": "workspace:*",
     "@openhospi/inacademia": "workspace:*",

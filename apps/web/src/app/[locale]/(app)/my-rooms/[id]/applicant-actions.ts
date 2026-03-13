@@ -2,8 +2,8 @@
 
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { applications, reviews } from "@/lib/db/schema";
-import type { ReviewData } from "@openhospi/database/validators";
-import { reviewSchema } from "@openhospi/database/validators";
+import type { ReviewData } from "@openhospi/validators";
+import { reviewSchema } from "@openhospi/validators";
 import {
   ApplicationStatus,
   HouseMemberRole,

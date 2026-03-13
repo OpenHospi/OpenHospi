@@ -16,7 +16,7 @@ const cspHeader = `
   base-uri 'self';
   object-src 'none';
 `
-  .replaceAll('\n', "")
+  .replaceAll("\n", "")
   .trim();
 
 const nextConfig: NextConfig = {
@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: [
     "@openhospi/shared",
-    "@openhospi/database",
+    "@openhospi/validators",
     "@openhospi/inacademia",
     "@openhospi/crypto",
     "@openhospi/i18n",

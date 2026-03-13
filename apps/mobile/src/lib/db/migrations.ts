@@ -1,8 +1,8 @@
 import { useEffect, useReducer } from 'react';
 import { migrate } from 'drizzle-orm/expo-sqlite/migrator';
 
-import { db } from './client';
-import migrations from '../../drizzle/migrations';
+import { db } from './index';
+import migrations from '../../../drizzle/migrations';
 
 interface State {
   success: boolean;

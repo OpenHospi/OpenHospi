@@ -1,6 +1,6 @@
 "use server";
 
-import type { ApplyToRoomData } from "@openhospi/database/validators";
+import type { ApplyToRoomData } from "@openhospi/validators";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";

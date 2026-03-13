@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReviewData } from "@openhospi/database/validators";
-import { reviewSchema } from "@openhospi/database/validators";
+import type { ReviewData } from "@openhospi/validators";
+import { reviewSchema } from "@openhospi/validators";
 import { MAX_NOTES_LENGTH, STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
 import { Check, Loader2, UserCircle, X } from "lucide-react";

@@ -1,8 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { db } from "./db";
-import { withRLS } from "./rls";
+import { createDrizzleSupabaseClient, db } from "..";
 import {
   applications,
   blocks,
@@ -22,7 +21,7 @@ import {
   rooms,
   user,
   votes,
-} from "./schema";
+} from "../schema";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -266,7 +265,9 @@ describe("RLS policies (integration)", () => {
 
   describe("profiles", () => {
     it("authenticated user can read all profiles", async () => {
-      const rows = await withRLS(USER_C, (tx) => tx.select().from(profiles));
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
+        tx.select().from(profiles),
+      );
       const ids = rows.map((r) => r.id);
       expect(ids).toContain(USER_A);
       expect(ids).toContain(USER_B);
@@ -274,7 +275,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("user can update own profile", async () => {
-      const [updated] = await withRLS(USER_A, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.update(profiles).set({ bio: "rls-test" }).where(eq(profiles.id, USER_A)).returning(),
       );
       expect(updated.bio).toBe("rls-test");
@@ -283,7 +284,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("user cannot update another user's profile", async () => {
-      const result = await withRLS(USER_B, (tx) =>
+      const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.update(profiles).set({ bio: "hacked" }).where(eq(profiles.id, USER_A)).returning(),
       );
       expect(result).toHaveLength(0);
@@ -308,21 +309,21 @@ describe("RLS policies (integration)", () => {
     });
 
     it("owner can see own draft rooms", async () => {
-      const rows = await withRLS(USER_A, (tx) => tx.select().from(rooms));
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) => tx.select().from(rooms));
       const ids = rows.map((r) => r.id);
       expect(ids).toContain(ACTIVE_ROOM);
       expect(ids).toContain(DRAFT_ROOM);
     });
 
     it("non-owner cannot see others' draft rooms", async () => {
-      const rows = await withRLS(USER_C, (tx) => tx.select().from(rooms));
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) => tx.select().from(rooms));
       const ids = rows.map((r) => r.id);
       expect(ids).toContain(ACTIVE_ROOM);
       expect(ids).not.toContain(DRAFT_ROOM);
     });
 
     it("owner can update own room", async () => {
-      const [updated] = await withRLS(USER_A, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx
           .update(rooms)
           .set({ description: "rls-update" })
@@ -334,7 +335,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("non-owner cannot update room", async () => {
-      const result = await withRLS(USER_B, (tx) =>
+      const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx
           .update(rooms)
           .set({ description: "hacked" })
@@ -351,14 +352,14 @@ describe("RLS policies (integration)", () => {
 
   describe("houseMembers", () => {
     it("house member can see co-members in same house", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(houseMembers).where(eq(houseMembers.houseId, HOUSE_ID)),
       );
       expect(rows).toHaveLength(2);
     });
 
     it("outsider cannot see house members", async () => {
-      const rows = await withRLS(USER_C, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(houseMembers).where(eq(houseMembers.houseId, HOUSE_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -366,7 +367,7 @@ describe("RLS policies (integration)", () => {
 
     it("non-owner cannot add house members", async () => {
       await expect(
-        withRLS(USER_B, (tx) =>
+        createDrizzleSupabaseClient(USER_B).rls((tx) =>
           tx.insert(houseMembers).values({ houseId: HOUSE_ID, userId: USER_C }),
         ),
       ).rejects.toThrow();
@@ -379,7 +380,7 @@ describe("RLS policies (integration)", () => {
 
   describe("hospiEvents", () => {
     it("house member can see events in their room", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(hospiEvents).where(eq(hospiEvents.roomId, ACTIVE_ROOM)),
       );
       expect(rows).toHaveLength(1);
@@ -387,14 +388,14 @@ describe("RLS policies (integration)", () => {
     });
 
     it("outsider cannot see events", async () => {
-      const rows = await withRLS(USER_C, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(hospiEvents).where(eq(hospiEvents.roomId, ACTIVE_ROOM)),
       );
       expect(rows).toHaveLength(0);
     });
 
     it("creator can update event", async () => {
-      const [updated] = await withRLS(USER_A, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx
           .update(hospiEvents)
           .set({ notes: "rls-note" })
@@ -406,7 +407,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("non-creator house member cannot update event", async () => {
-      const result = await withRLS(USER_B, (tx) =>
+      const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx
           .update(hospiEvents)
           .set({ notes: "hacked" })
@@ -423,21 +424,21 @@ describe("RLS policies (integration)", () => {
 
   describe("hospiInvitations", () => {
     it("invitee can see own invitation", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, INVITATION_ID)),
       );
       expect(rows).toHaveLength(1);
     });
 
     it("event creator can see invitation", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, INVITATION_ID)),
       );
       expect(rows).toHaveLength(1);
     });
 
     it("outsider cannot see invitation", async () => {
-      const rows = await withRLS(USER_C, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, INVITATION_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -450,14 +451,14 @@ describe("RLS policies (integration)", () => {
 
   describe("conversations", () => {
     it("member can see conversation", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(conversations).where(eq(conversations.id, CONVERSATION_ID)),
       );
       expect(rows).toHaveLength(1);
     });
 
     it("non-member cannot see conversation", async () => {
-      const rows = await withRLS(USER_C, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(conversations).where(eq(conversations.id, CONVERSATION_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -470,7 +471,7 @@ describe("RLS policies (integration)", () => {
 
   describe("messages", () => {
     it("conversation member can see messages", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(messages).where(eq(messages.conversationId, CONVERSATION_ID)),
       );
       expect(rows).toHaveLength(1);
@@ -478,7 +479,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("non-member cannot see messages", async () => {
-      const rows = await withRLS(USER_C, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(messages).where(eq(messages.conversationId, CONVERSATION_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -486,7 +487,7 @@ describe("RLS policies (integration)", () => {
 
     it("sender can delete own message", async () => {
       // Insert a temporary message then delete it
-      const [msg] = await withRLS(USER_A, (tx) =>
+      const [msg] = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx
           .insert(messages)
           .values({
@@ -496,14 +497,14 @@ describe("RLS policies (integration)", () => {
           })
           .returning(),
       );
-      const deleted = await withRLS(USER_A, (tx) =>
+      const deleted = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.delete(messages).where(eq(messages.id, msg.id)).returning(),
       );
       expect(deleted).toHaveLength(1);
     });
 
     it("non-sender cannot delete message", async () => {
-      const result = await withRLS(USER_B, (tx) =>
+      const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.delete(messages).where(eq(messages.id, MESSAGE_ID)).returning(),
       );
       expect(result).toHaveLength(0);
@@ -516,14 +517,14 @@ describe("RLS policies (integration)", () => {
 
   describe("votes", () => {
     it("voter can see own votes", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(votes).where(eq(votes.id, VOTE_ID)),
       );
       expect(rows).toHaveLength(1);
     });
 
     it("outsider cannot see votes", async () => {
-      const rows = await withRLS(USER_C, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(votes).where(eq(votes.id, VOTE_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -536,14 +537,14 @@ describe("RLS policies (integration)", () => {
 
   describe("messageReceipts", () => {
     it("recipient can see own receipts", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, MESSAGE_ID)),
       );
       expect(rows).toHaveLength(1);
     });
 
     it("other user cannot see receipts", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, MESSAGE_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -556,14 +557,16 @@ describe("RLS policies (integration)", () => {
 
   describe("identityKeys", () => {
     it("any authenticated user can read all identity keys", async () => {
-      const rows = await withRLS(USER_C, (tx) => tx.select().from(identityKeys));
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
+        tx.select().from(identityKeys),
+      );
       const ids = rows.map((r) => r.userId);
       expect(ids).toContain(USER_A);
       expect(ids).toContain(USER_B);
     });
 
     it("user can insert own identity key", async () => {
-      const [row] = await withRLS(USER_C, (tx) =>
+      const [row] = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx
           .insert(identityKeys)
           .values({
@@ -580,7 +583,7 @@ describe("RLS policies (integration)", () => {
 
     it("user cannot insert an identity key for another user", async () => {
       await expect(
-        withRLS(USER_B, (tx) =>
+        createDrizzleSupabaseClient(USER_B).rls((tx) =>
           tx.insert(identityKeys).values({
             userId: USER_C,
             identityPublicKey: "fake-identity",
@@ -591,7 +594,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("user cannot update another user's identity key", async () => {
-      const result = await withRLS(USER_B, (tx) =>
+      const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx
           .update(identityKeys)
           .set({ identityPublicKey: "hacked" })
@@ -608,7 +611,7 @@ describe("RLS policies (integration)", () => {
 
   describe("privateKeyBackups", () => {
     it("user can read own backup", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(privateKeyBackups).where(eq(privateKeyBackups.userId, USER_A)),
       );
       expect(rows).toHaveLength(1);
@@ -616,14 +619,14 @@ describe("RLS policies (integration)", () => {
     });
 
     it("user cannot read another user's backup", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(privateKeyBackups).where(eq(privateKeyBackups.userId, USER_A)),
       );
       expect(rows).toHaveLength(0);
     });
 
     it("user can insert own backup", async () => {
-      const [row] = await withRLS(USER_B, (tx) =>
+      const [row] = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx
           .insert(privateKeyBackups)
           .values({
@@ -641,7 +644,7 @@ describe("RLS policies (integration)", () => {
 
     it("user cannot insert backup for another user", async () => {
       await expect(
-        withRLS(USER_B, (tx) =>
+        createDrizzleSupabaseClient(USER_B).rls((tx) =>
           tx.insert(privateKeyBackups).values({
             userId: USER_C,
             encryptedPrivateKey: "fake",
@@ -659,7 +662,7 @@ describe("RLS policies (integration)", () => {
 
   describe("blocks", () => {
     it("blocker can read own blocks", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(blocks).where(eq(blocks.blockerId, USER_A)),
       );
       expect(rows).toHaveLength(1);
@@ -667,12 +670,12 @@ describe("RLS policies (integration)", () => {
     });
 
     it("blocked user cannot see blocks created by others", async () => {
-      const rows = await withRLS(USER_B, (tx) => tx.select().from(blocks));
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) => tx.select().from(blocks));
       expect(rows).toHaveLength(0);
     });
 
     it("user can insert a block (as blocker)", async () => {
-      const [row] = await withRLS(USER_C, (tx) =>
+      const [row] = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.insert(blocks).values({ blockerId: USER_C, blockedId: USER_A }).returning(),
       );
       expect(row.blockerId).toBe(USER_C);
@@ -682,7 +685,9 @@ describe("RLS policies (integration)", () => {
 
     it("user cannot insert a block on behalf of another user", async () => {
       await expect(
-        withRLS(USER_C, (tx) => tx.insert(blocks).values({ blockerId: USER_A, blockedId: USER_C })),
+        createDrizzleSupabaseClient(USER_C).rls((tx) =>
+          tx.insert(blocks).values({ blockerId: USER_A, blockedId: USER_C }),
+        ),
       ).rejects.toThrow();
     });
   });
@@ -693,14 +698,14 @@ describe("RLS policies (integration)", () => {
 
   describe("reports", () => {
     it("reporter can see own reports", async () => {
-      const rows = await withRLS(USER_A, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(reports).where(eq(reports.id, REPORT_ID)),
       );
       expect(rows).toHaveLength(1);
     });
 
     it("reporter cannot see other users' reports", async () => {
-      const rows = await withRLS(USER_B, (tx) =>
+      const rows = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.select().from(reports).where(eq(reports.id, REPORT_ID)),
       );
       expect(rows).toHaveLength(0);
@@ -710,7 +715,7 @@ describe("RLS policies (integration)", () => {
       // Temporarily make USER_C admin
       await db.update(user).set({ role: "admin" }).where(eq(user.id, USER_C));
       try {
-        const rows = await withRLS(USER_C, (tx) =>
+        const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
           tx.select().from(reports).where(eq(reports.id, REPORT_ID)),
         );
         expect(rows).toHaveLength(1);
@@ -722,7 +727,7 @@ describe("RLS policies (integration)", () => {
     it("admin can update report status", async () => {
       await db.update(user).set({ role: "admin" }).where(eq(user.id, USER_C));
       try {
-        const [updated] = await withRLS(USER_C, (tx) =>
+        const [updated] = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
           tx
             .update(reports)
             .set({ status: "resolved" })
@@ -738,7 +743,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("non-admin cannot update reports", async () => {
-      const result = await withRLS(USER_B, (tx) =>
+      const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx.update(reports).set({ status: "resolved" }).where(eq(reports.id, REPORT_ID)).returning(),
       );
       expect(result).toHaveLength(0);
@@ -752,7 +757,7 @@ describe("RLS policies (integration)", () => {
   describe("chat integration", () => {
     it("non-member cannot insert messages into a conversation", async () => {
       await expect(
-        withRLS(USER_C, (tx) =>
+        createDrizzleSupabaseClient(USER_C).rls((tx) =>
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_C,
@@ -763,7 +768,7 @@ describe("RLS policies (integration)", () => {
     });
 
     it("conversation member can insert messages", async () => {
-      const [msg] = await withRLS(USER_A, (tx) =>
+      const [msg] = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx
           .insert(messages)
           .values({
@@ -780,7 +785,7 @@ describe("RLS policies (integration)", () => {
 
     it("member cannot insert message as another user", async () => {
       await expect(
-        withRLS(USER_A, (tx) =>
+        createDrizzleSupabaseClient(USER_A).rls((tx) =>
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_B,
@@ -791,12 +796,12 @@ describe("RLS policies (integration)", () => {
     });
 
     it("receipt owner can read own receipts, others cannot", async () => {
-      const rowsOwner = await withRLS(USER_A, (tx) =>
+      const rowsOwner = await createDrizzleSupabaseClient(USER_A).rls((tx) =>
         tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, MESSAGE_ID)),
       );
       expect(rowsOwner).toHaveLength(1);
 
-      const rowsOther = await withRLS(USER_C, (tx) =>
+      const rowsOther = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, MESSAGE_ID)),
       );
       expect(rowsOther).toHaveLength(0);

@@ -1,7 +1,7 @@
 "use client";
 
-import type { CreateEventData } from "@openhospi/database/validators";
-import { createEventSchema } from "@openhospi/database/validators";
+import type { CreateEventData } from "@openhospi/validators";
+import { createEventSchema } from "@openhospi/validators";
 import {
   MAX_EVENT_DESCRIPTION_LENGTH,
   MAX_EVENT_LOCATION_LENGTH,

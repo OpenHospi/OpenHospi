@@ -1,6 +1,6 @@
 "use client";
 
-import type { AboutStepData } from "@openhospi/database/validators";
+import type { AboutStepData } from "@openhospi/validators";
 import { ONBOARDING_TOTAL_STEPS } from "@openhospi/shared/constants";
 import { useTranslations } from "next-intl";
 import { useState } from "react";

@@ -1,7 +1,7 @@
 "use client";
 
-import type { EditRoomData } from "@openhospi/database/validators";
-import { editRoomSchema } from "@openhospi/database/validators";
+import type { EditRoomData } from "@openhospi/validators";
+import { editRoomSchema } from "@openhospi/validators";
 import {
   City,
   Furnishing,

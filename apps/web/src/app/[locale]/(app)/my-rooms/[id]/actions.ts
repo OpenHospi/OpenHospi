@@ -2,8 +2,8 @@
 
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { roomPhotos, rooms } from "@/lib/db/schema";
-import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
-import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
+import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/validators";
+import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/validators";
 import type { Locale } from "@openhospi/i18n";
 import {
   GenderPreference,

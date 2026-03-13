@@ -1,7 +1,7 @@
 "use client";
 
-import type { AboutStepData } from "@openhospi/database/validators";
-import { aboutStepSchema } from "@openhospi/database/validators";
+import type { AboutStepData } from "@openhospi/validators";
+import { aboutStepSchema } from "@openhospi/validators";
 import { City, Gender, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";

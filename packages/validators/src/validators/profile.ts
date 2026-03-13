@@ -14,12 +14,9 @@ import {
   StudyLevel,
   Vereniging,
 } from "@openhospi/shared/enums";
-import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
 
-import { profiles } from "../schema/profiles";
-
-const baseProfileSchema = createInsertSchema(profiles, {
+const baseProfileSchema = z.object({
   gender: z.enum(Gender.values),
   birthDate: z.string().min(1),
   studyProgram: z.string().min(1).max(MAX_STUDY_PROGRAM_LENGTH),

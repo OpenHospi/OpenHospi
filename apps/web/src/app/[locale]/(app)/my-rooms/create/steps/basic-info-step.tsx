@@ -1,7 +1,7 @@
 "use client";
 
-import type { RoomBasicInfoData } from "@openhospi/database/validators";
-import { roomBasicInfoSchema } from "@openhospi/database/validators";
+import type { RoomBasicInfoData } from "@openhospi/validators";
+import { roomBasicInfoSchema } from "@openhospi/validators";
 import { MAX_ROOM_DESCRIPTION_LENGTH } from "@openhospi/shared/constants";
 import { City } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";

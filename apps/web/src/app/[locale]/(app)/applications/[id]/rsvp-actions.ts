@@ -2,8 +2,8 @@
 
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
-import type { RsvpData } from "@openhospi/database/validators";
-import { rsvpSchema } from "@openhospi/database/validators";
+import type { RsvpData } from "@openhospi/validators";
+import { rsvpSchema } from "@openhospi/validators";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
 import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

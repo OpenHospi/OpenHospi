@@ -2,18 +2,13 @@ import {
   MAX_PERSONAL_MESSAGE_LENGTH,
   MIN_PERSONAL_MESSAGE_LENGTH,
 } from "@openhospi/shared/constants";
-import { createInsertSchema } from "drizzle-orm/zod";
 import { z } from "zod";
 
-import { applications } from "../schema/applications";
-
-export const applyToRoomSchema = createInsertSchema(applications, {
+export const applyToRoomSchema = z.object({
   personalMessage: z
     .string()
     .min(MIN_PERSONAL_MESSAGE_LENGTH, { message: "min_length" })
     .max(MAX_PERSONAL_MESSAGE_LENGTH, { message: "max_length" }),
-}).pick({
-  personalMessage: true,
 });
 
 export type ApplyToRoomData = z.infer<typeof applyToRoomSchema>;

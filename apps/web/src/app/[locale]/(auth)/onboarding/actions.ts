@@ -6,7 +6,7 @@ import type {
   IdentityStepData,
   LanguagesStepData,
   PersonalityStepData,
-} from "@openhospi/database/validators";
+} from "@openhospi/validators";
 import type { Locale } from "@openhospi/i18n";
 import { getLocale } from "next-intl/server";
 

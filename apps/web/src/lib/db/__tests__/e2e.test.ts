@@ -20,8 +20,7 @@ import {
 import { and, eq, sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { db } from "./db";
-import { withRLS } from "./rls";
+import { createDrizzleSupabaseClient, db } from "..";
 import {
   adminAuditLog,
   applications,
@@ -44,7 +43,7 @@ import {
   rooms,
   user,
   votes,
-} from "./schema";
+} from "../schema";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -303,7 +302,7 @@ describe("E2E workflow tests (integration)", () => {
 
   describe("user lifecycle & onboarding", () => {
     it("onboarding step 1: update about fields", async () => {
-      const [updated] = await withRLS(SEEKER_1, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .update(profiles)
           .set({
@@ -330,7 +329,7 @@ describe("E2E workflow tests (integration)", () => {
 
     it("onboarding step 2: set lifestyleTags array", async () => {
       const tags = [LifestyleTag.sociable, LifestyleTag.sports, LifestyleTag.cooking] as const;
-      const [updated] = await withRLS(SEEKER_1, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .update(profiles)
           .set({ lifestyleTags: [...tags] })
@@ -346,7 +345,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("onboarding step 3: set preferences", async () => {
-      const [updated] = await withRLS(SEEKER_1, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .update(profiles)
           .set({
@@ -373,7 +372,7 @@ describe("E2E workflow tests (integration)", () => {
         })
         .where(eq(profiles.id, SEEKER_1));
 
-      const [p] = await withRLS(SEEKER_1, (tx) =>
+      const [p] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx.select().from(profiles).where(eq(profiles.id, SEEKER_1)),
       );
       expect(p.gender).not.toBeNull();
@@ -398,7 +397,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("profile photo via RLS: own insert + any auth read", async () => {
-      const [photo] = await withRLS(SEEKER_1, (tx) =>
+      const [photo] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .insert(profilePhotos)
           .values({
@@ -411,7 +410,7 @@ describe("E2E workflow tests (integration)", () => {
       expect(photo.userId).toBe(SEEKER_1);
 
       // Any authenticated user can read profile photos
-      const rows = await withRLS(OUTSIDER, (tx) =>
+      const rows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
         tx.select().from(profilePhotos).where(eq(profilePhotos.userId, SEEKER_1)),
       );
       expect(rows).toHaveLength(1);
@@ -421,7 +420,7 @@ describe("E2E workflow tests (integration)", () => {
 
     it("cannot insert profile photo for another user", async () => {
       await expect(
-        withRLS(OUTSIDER, (tx) =>
+        createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
           tx.insert(profilePhotos).values({
             userId: SEEKER_1,
             slot: 1,
@@ -446,7 +445,7 @@ describe("E2E workflow tests (integration)", () => {
     it("transition: draft → active", async () => {
       expect(isValidRoomTransition(RoomStatus.draft, RoomStatus.active)).toBe(true);
 
-      const [updated] = await withRLS(HOSPI_OWNER, (tx) =>
+      const [updated] = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx
           .update(rooms)
           .set({ status: RoomStatus.active })
@@ -463,7 +462,7 @@ describe("E2E workflow tests (integration)", () => {
     it("transition: active → paused", async () => {
       expect(isValidRoomTransition(RoomStatus.active, RoomStatus.paused)).toBe(true);
 
-      await withRLS(HOSPI_OWNER, (tx) =>
+      await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx.update(rooms).set({ status: RoomStatus.paused }).where(eq(rooms.id, ROOM_DRAFT)),
       );
 
@@ -472,14 +471,16 @@ describe("E2E workflow tests (integration)", () => {
       expect(anonRows.map((r) => r.id)).not.toContain(ROOM_DRAFT);
 
       // Owner still sees it
-      const ownerRows = await withRLS(HOSPI_OWNER, (tx) => tx.select().from(rooms));
+      const ownerRows = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
+        tx.select().from(rooms),
+      );
       expect(ownerRows.map((r) => r.id)).toContain(ROOM_DRAFT);
     });
 
     it("transition: paused → active", async () => {
       expect(isValidRoomTransition(RoomStatus.paused, RoomStatus.active)).toBe(true);
 
-      await withRLS(HOSPI_OWNER, (tx) =>
+      await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx.update(rooms).set({ status: RoomStatus.active }).where(eq(rooms.id, ROOM_DRAFT)),
       );
 
@@ -490,7 +491,7 @@ describe("E2E workflow tests (integration)", () => {
     it("transition: active → closed", async () => {
       expect(isValidRoomTransition(RoomStatus.active, RoomStatus.closed)).toBe(true);
 
-      await withRLS(HOSPI_OWNER, (tx) =>
+      await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx.update(rooms).set({ status: RoomStatus.closed }).where(eq(rooms.id, ROOM_DRAFT)),
       );
 
@@ -520,7 +521,7 @@ describe("E2E workflow tests (integration)", () => {
 
   describe("application lifecycle", () => {
     it("seeker application defaults to sent status", async () => {
-      const [app] = await withRLS(SEEKER_1, (tx) =>
+      const [app] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx.select().from(applications).where(eq(applications.id, APP_1)),
       );
       expect(app.status).toBe(ApplicationStatus.sent);
@@ -533,7 +534,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("owner sees application for their room", async () => {
-      const rows = await withRLS(HOSPI_OWNER, (tx) =>
+      const rows = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx.select().from(applications).where(eq(applications.roomId, ROOM_1)),
       );
       expect(rows.length).toBeGreaterThanOrEqual(1);
@@ -541,7 +542,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("outsider cannot see applications", async () => {
-      const rows = await withRLS(OUTSIDER, (tx) =>
+      const rows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
         tx.select().from(applications).where(eq(applications.roomId, ROOM_1)),
       );
       expect(rows).toHaveLength(0);
@@ -562,7 +563,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(isValidApplicationTransition(ApplicationStatus.sent, ApplicationStatus.seen)).toBe(
           true,
         );
-        await withRLS(HOSPI_OWNER, (tx) =>
+        await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx
             .update(applications)
             .set({ status: ApplicationStatus.seen })
@@ -573,7 +574,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(isValidApplicationTransition(ApplicationStatus.seen, ApplicationStatus.liked)).toBe(
           true,
         );
-        await withRLS(HOSPI_OWNER, (tx) =>
+        await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx
             .update(applications)
             .set({ status: ApplicationStatus.liked })
@@ -584,7 +585,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(isValidApplicationTransition(ApplicationStatus.liked, ApplicationStatus.hospi)).toBe(
           true,
         );
-        await withRLS(HOSPI_OWNER, (tx) =>
+        await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx
             .update(applications)
             .set({ status: ApplicationStatus.hospi })
@@ -595,7 +596,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(
           isValidApplicationTransition(ApplicationStatus.hospi, ApplicationStatus.accepted),
         ).toBe(true);
-        await withRLS(HOSPI_OWNER, (tx) =>
+        await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx
             .update(applications)
             .set({ status: ApplicationStatus.accepted })
@@ -634,7 +635,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(
           isValidApplicationTransition(ApplicationStatus.sent, ApplicationStatus.withdrawn),
         ).toBe(true);
-        await withRLS(SEEKER_2, (tx) =>
+        await createDrizzleSupabaseClient(SEEKER_2).rls((tx) =>
           tx
             .update(applications)
             .set({ status: ApplicationStatus.withdrawn })
@@ -653,7 +654,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("review: house member inserts, room members can read, outsider cannot", async () => {
-      const [review] = await withRLS(HOSPI_MATE, (tx) =>
+      const [review] = await createDrizzleSupabaseClient(HOSPI_MATE).rls((tx) =>
         tx
           .insert(reviews)
           .values({
@@ -668,13 +669,13 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Other room member can read
-        const ownerRows = await withRLS(HOSPI_OWNER, (tx) =>
+        const ownerRows = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx.select().from(reviews).where(eq(reviews.roomId, ROOM_1)),
         );
         expect(ownerRows.length).toBeGreaterThanOrEqual(1);
 
         // Outsider cannot read
-        const outsiderRows = await withRLS(OUTSIDER, (tx) =>
+        const outsiderRows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
           tx.select().from(reviews).where(eq(reviews.roomId, ROOM_1)),
         );
         expect(outsiderRows).toHaveLength(0);
@@ -715,19 +716,19 @@ describe("E2E workflow tests (integration)", () => {
 
   describe("event & voting system", () => {
     it("event visible to house members, not outsider", async () => {
-      const mateRows = await withRLS(HOSPI_MATE, (tx) =>
+      const mateRows = await createDrizzleSupabaseClient(HOSPI_MATE).rls((tx) =>
         tx.select().from(hospiEvents).where(eq(hospiEvents.id, EVENT_1)),
       );
       expect(mateRows).toHaveLength(1);
 
-      const outsiderRows = await withRLS(OUTSIDER, (tx) =>
+      const outsiderRows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
         tx.select().from(hospiEvents).where(eq(hospiEvents.id, EVENT_1)),
       );
       expect(outsiderRows).toHaveLength(0);
     });
 
     it("creator invites seeker → invitee sees invitation", async () => {
-      const [inv] = await withRLS(HOSPI_OWNER, (tx) =>
+      const [inv] = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx
           .insert(hospiInvitations)
           .values({
@@ -741,7 +742,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(inv.status).toBe(InvitationStatus.pending);
 
         // Invitee sees own invitation
-        const seekerRows = await withRLS(SEEKER_1, (tx) =>
+        const seekerRows = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.select().from(hospiInvitations).where(eq(hospiInvitations.id, inv.id)),
         );
         expect(seekerRows).toHaveLength(1);
@@ -764,7 +765,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(
           isValidInvitationTransition(InvitationStatus.pending, InvitationStatus.attending),
         ).toBe(true);
-        await withRLS(SEEKER_1, (tx) =>
+        await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx
             .update(hospiInvitations)
             .set({ status: InvitationStatus.attending })
@@ -775,7 +776,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(
           isValidInvitationTransition(InvitationStatus.attending, InvitationStatus.not_attending),
         ).toBe(true);
-        await withRLS(SEEKER_1, (tx) =>
+        await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx
             .update(hospiInvitations)
             .set({ status: InvitationStatus.not_attending })
@@ -808,7 +809,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("vote insert + room member access + outsider denied", async () => {
-      const [vote] = await withRLS(HOSPI_MATE, (tx) =>
+      const [vote] = await createDrizzleSupabaseClient(HOSPI_MATE).rls((tx) =>
         tx
           .insert(votes)
           .values({
@@ -823,13 +824,13 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Room member (owner) sees votes
-        const ownerRows = await withRLS(HOSPI_OWNER, (tx) =>
+        const ownerRows = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx.select().from(votes).where(eq(votes.roomId, ROOM_1)),
         );
         expect(ownerRows.length).toBeGreaterThanOrEqual(1);
 
         // Outsider cannot
-        const outsiderRows = await withRLS(OUTSIDER, (tx) =>
+        const outsiderRows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
           tx.select().from(votes).where(eq(votes.roomId, ROOM_1)),
         );
         expect(outsiderRows).toHaveLength(0);
@@ -872,7 +873,7 @@ describe("E2E workflow tests (integration)", () => {
 
   describe("chat workflow", () => {
     it("member sends encrypted message", async () => {
-      const [msg] = await withRLS(HOSPI_OWNER, (tx) =>
+      const [msg] = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx
           .insert(messages)
           .values({
@@ -884,7 +885,7 @@ describe("E2E workflow tests (integration)", () => {
       );
 
       try {
-        const [payload] = await withRLS(HOSPI_OWNER, (tx) =>
+        const [payload] = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
           tx
             .insert(messagePayloads)
             .values({
@@ -917,7 +918,7 @@ describe("E2E workflow tests (integration)", () => {
         .returning();
 
       try {
-        const rows = await withRLS(SEEKER_1, (tx) =>
+        const rows = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.select().from(messages).where(eq(messages.conversationId, CONV_1)),
         );
         expect(rows.length).toBeGreaterThanOrEqual(1);
@@ -928,7 +929,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("non-member cannot read messages", async () => {
-      const rows = await withRLS(OUTSIDER, (tx) =>
+      const rows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
         tx.select().from(messages).where(eq(messages.conversationId, CONV_1)),
       );
       expect(rows).toHaveLength(0);
@@ -936,7 +937,7 @@ describe("E2E workflow tests (integration)", () => {
 
     it("cannot spoof senderId", async () => {
       await expect(
-        withRLS(SEEKER_1, (tx) =>
+        createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.insert(messages).values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
@@ -958,7 +959,7 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // SEEKER_1 inserts receipt
-        await withRLS(SEEKER_1, (tx) =>
+        await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.insert(messageReceipts).values({
             messageId: msg.id,
             userId: SEEKER_1,
@@ -967,7 +968,7 @@ describe("E2E workflow tests (integration)", () => {
         );
 
         // Update to read
-        const [receipt] = await withRLS(SEEKER_1, (tx) =>
+        const [receipt] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx
             .update(messageReceipts)
             .set({ status: "read", readAt: new Date() })
@@ -978,7 +979,7 @@ describe("E2E workflow tests (integration)", () => {
         expect(receipt.readAt).not.toBeNull();
 
         // Only SEEKER_1 sees the receipt
-        const outsiderReceipts = await withRLS(OUTSIDER, (tx) =>
+        const outsiderReceipts = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
           tx.select().from(messageReceipts).where(eq(messageReceipts.messageId, msg.id)),
         );
         expect(outsiderReceipts).toHaveLength(0);
@@ -988,7 +989,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("mute toggle on conversation membership", async () => {
-      await withRLS(SEEKER_1, (tx) =>
+      await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .update(conversationMembers)
           .set({ muted: true })
@@ -1070,23 +1071,25 @@ describe("E2E workflow tests (integration)", () => {
 
   describe("security & moderation", () => {
     it("block flow: blocker sees, blocked user cannot, then unblock", async () => {
-      await withRLS(SEEKER_1, (tx) =>
+      await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx.insert(blocks).values({ blockerId: SEEKER_1, blockedId: SEEKER_2 }),
       );
 
       // SEEKER_1 sees the block
-      const s1Blocks = await withRLS(SEEKER_1, (tx) =>
+      const s1Blocks = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx.select().from(blocks).where(eq(blocks.blockerId, SEEKER_1)),
       );
       expect(s1Blocks).toHaveLength(1);
       expect(s1Blocks[0].blockedId).toBe(SEEKER_2);
 
       // SEEKER_2 cannot see blocks
-      const s2Blocks = await withRLS(SEEKER_2, (tx) => tx.select().from(blocks));
+      const s2Blocks = await createDrizzleSupabaseClient(SEEKER_2).rls((tx) =>
+        tx.select().from(blocks),
+      );
       expect(s2Blocks).toHaveLength(0);
 
       // Unblock
-      await withRLS(SEEKER_1, (tx) =>
+      await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .delete(blocks)
           .where(and(eq(blocks.blockerId, SEEKER_1), eq(blocks.blockedId, SEEKER_2))),
@@ -1095,14 +1098,14 @@ describe("E2E workflow tests (integration)", () => {
 
     it("cannot block as another user", async () => {
       await expect(
-        withRLS(SEEKER_1, (tx) =>
+        createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.insert(blocks).values({ blockerId: SEEKER_2, blockedId: OUTSIDER }),
         ),
       ).rejects.toThrow();
     });
 
     it("report flow: reporter sees, reported user cannot", async () => {
-      const [report] = await withRLS(SEEKER_1, (tx) =>
+      const [report] = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
         tx
           .insert(reports)
           .values({
@@ -1117,13 +1120,13 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Reporter sees own report
-        const reporterRows = await withRLS(SEEKER_1, (tx) =>
+        const reporterRows = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.select().from(reports).where(eq(reports.id, report.id)),
         );
         expect(reporterRows).toHaveLength(1);
 
         // Reported user cannot
-        const reportedRows = await withRLS(SEEKER_2, (tx) =>
+        const reportedRows = await createDrizzleSupabaseClient(SEEKER_2).rls((tx) =>
           tx.select().from(reports).where(eq(reports.id, report.id)),
         );
         expect(reportedRows).toHaveLength(0);
@@ -1145,7 +1148,7 @@ describe("E2E workflow tests (integration)", () => {
         .returning();
 
       try {
-        const adminRows = await withRLS(ADMIN_USER, (tx) =>
+        const adminRows = await createDrizzleSupabaseClient(ADMIN_USER).rls((tx) =>
           tx.select().from(reports).where(eq(reports.id, report.id)),
         );
         expect(adminRows).toHaveLength(1);
@@ -1168,7 +1171,7 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Admin resolves
-        const [resolved] = await withRLS(ADMIN_USER, (tx) =>
+        const [resolved] = await createDrizzleSupabaseClient(ADMIN_USER).rls((tx) =>
           tx
             .update(reports)
             .set({ status: ReportStatus.resolved })
@@ -1184,7 +1187,7 @@ describe("E2E workflow tests (integration)", () => {
           .where(eq(reports.id, report.id));
 
         // Non-admin cannot update
-        const result = await withRLS(SEEKER_1, (tx) =>
+        const result = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx
             .update(reports)
             .set({ status: ReportStatus.resolved })
@@ -1198,7 +1201,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("identity key: insert own, read all, cannot insert for another", async () => {
-      await withRLS(SEEKER_2, (tx) =>
+      await createDrizzleSupabaseClient(SEEKER_2).rls((tx) =>
         tx
           .insert(identityKeys)
           .values({
@@ -1211,12 +1214,14 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Any authenticated user can read
-        const rows = await withRLS(OUTSIDER, (tx) => tx.select().from(identityKeys));
+        const rows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
+          tx.select().from(identityKeys),
+        );
         expect(rows.map((r) => r.userId)).toContain(SEEKER_2);
 
         // Cannot insert for another user
         await expect(
-          withRLS(SEEKER_1, (tx) =>
+          createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
             tx.insert(identityKeys).values({
               userId: OUTSIDER,
               identityPublicKey: "fake-identity",
@@ -1230,7 +1235,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("admin audit log: admin inserts + reads, non-admin blocked", async () => {
-      const [entry] = await withRLS(ADMIN_USER, (tx) =>
+      const [entry] = await createDrizzleSupabaseClient(ADMIN_USER).rls((tx) =>
         tx
           .insert(adminAuditLog)
           .values({
@@ -1244,20 +1249,20 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Admin reads
-        const adminRows = await withRLS(ADMIN_USER, (tx) =>
+        const adminRows = await createDrizzleSupabaseClient(ADMIN_USER).rls((tx) =>
           tx.select().from(adminAuditLog).where(eq(adminAuditLog.id, entry.id)),
         );
         expect(adminRows).toHaveLength(1);
 
         // Non-admin cannot read
-        const seekerRows = await withRLS(SEEKER_1, (tx) =>
+        const seekerRows = await createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
           tx.select().from(adminAuditLog).where(eq(adminAuditLog.id, entry.id)),
         );
         expect(seekerRows).toHaveLength(0);
 
         // Non-admin cannot insert
         await expect(
-          withRLS(SEEKER_1, (tx) =>
+          createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
             tx.insert(adminAuditLog).values({
               adminUserId: SEEKER_1,
               action: AdminAction.suspend_user,
@@ -1285,7 +1290,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("room photo RLS: owner inserts, any auth reads, non-owner cannot insert", async () => {
-      const [photo] = await withRLS(HOSPI_OWNER, (tx) =>
+      const [photo] = await createDrizzleSupabaseClient(HOSPI_OWNER).rls((tx) =>
         tx
           .insert(roomPhotos)
           .values({
@@ -1298,14 +1303,14 @@ describe("E2E workflow tests (integration)", () => {
 
       try {
         // Any authenticated user can read room photos
-        const rows = await withRLS(OUTSIDER, (tx) =>
+        const rows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
           tx.select().from(roomPhotos).where(eq(roomPhotos.roomId, ROOM_1)),
         );
         expect(rows).toHaveLength(1);
 
         // Non-owner cannot insert
         await expect(
-          withRLS(OUTSIDER, (tx) =>
+          createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
             tx.insert(roomPhotos).values({
               roomId: ROOM_1,
               slot: 1,

@@ -1,7 +1,7 @@
 "use client";
 
-import type { RoomDetailsData } from "@openhospi/database/validators";
-import { roomDetailsSchema } from "@openhospi/database/validators";
+import type { RoomDetailsData } from "@openhospi/validators";
+import { roomDetailsSchema } from "@openhospi/validators";
 import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from "@openhospi/shared/enums";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";

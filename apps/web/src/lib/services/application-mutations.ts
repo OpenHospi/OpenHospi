@@ -1,7 +1,7 @@
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { applications, houseMembers, houses, profiles, rooms } from "@/lib/db/schema";
-import type { ApplyToRoomData } from "@openhospi/database/validators";
-import { applyToRoomSchema } from "@openhospi/database/validators";
+import type { ApplyToRoomData } from "@openhospi/validators";
+import { applyToRoomSchema } from "@openhospi/validators";
 import {
   ApplicationStatus,
   RoomStatus,

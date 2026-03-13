@@ -1,7 +1,7 @@
 "use client";
 
-import type { EditProfileData } from "@openhospi/database/validators";
-import { aboutStepSchema, bioStepSchema } from "@openhospi/database/validators";
+import type { EditProfileData } from "@openhospi/validators";
+import { aboutStepSchema, bioStepSchema } from "@openhospi/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
 import { Gender, StudyLevel } from "@openhospi/shared/enums";
 import { useTranslations } from "next-intl";

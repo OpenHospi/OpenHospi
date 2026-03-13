@@ -21,7 +21,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useUniwind } from 'uniwind';
 
 import { SessionProvider, useAppSession } from '@/context/session';
-import { useRunMigrations } from '@/db/migrations';
+import { useRunMigrations } from '@/lib/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
 import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient } from '@/lib/query-client';

@@ -1,7 +1,7 @@
 "use client";
 
-import type { ApplyToRoomData } from "@openhospi/database/validators";
-import { applyToRoomSchema } from "@openhospi/database/validators";
+import type { ApplyToRoomData } from "@openhospi/validators";
+import { applyToRoomSchema } from "@openhospi/validators";
 import {
   MAX_PERSONAL_MESSAGE_LENGTH,
   MIN_PERSONAL_MESSAGE_LENGTH,

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, uuid, index } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: uuid("id")
@@ -9,15 +9,15 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
-  role: text("role").default("user"),
-  banned: boolean("banned").default(false),
-  banReason: text("ban_reason"),
-  banExpires: timestamp("ban_expires"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
-    .$onUpdate(() => new Date())
+    .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  role: text("role"),
+  banned: boolean("banned").default(false),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
 });
 
 export const session = pgTable(
@@ -30,7 +30,7 @@ export const session = pgTable(
     token: text("token").notNull().unique(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
-      .$onUpdate(() => new Date())
+      .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
@@ -62,20 +62,11 @@ export const account = pgTable(
     password: text("password"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
-      .$onUpdate(() => new Date())
+      .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
   (table) => [index("account_userId_idx").on(table.userId)],
 );
-
-export const jwks = pgTable("jwks", {
-  id: uuid("id")
-    .default(sql`pg_catalog.gen_random_uuid()`)
-    .primaryKey(),
-  publicKey: text("public_key").notNull(),
-  privateKey: text("private_key").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
 
 export const verification = pgTable(
   "verification",
@@ -89,8 +80,18 @@ export const verification = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
-      .$onUpdate(() => new Date())
+      .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
+
+export const jwks = pgTable("jwks", {
+  id: uuid("id")
+    .default(sql`pg_catalog.gen_random_uuid()`)
+    .primaryKey(),
+  publicKey: text("public_key").notNull(),
+  privateKey: text("private_key").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  expiresAt: timestamp("expires_at"),
+});

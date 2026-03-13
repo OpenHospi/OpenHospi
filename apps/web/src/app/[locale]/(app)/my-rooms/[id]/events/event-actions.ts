@@ -33,7 +33,7 @@ export async function createEvent(roomId: string, data: CreateEventData) {
         timeStart: parsed.data.timeStart,
         timeEnd: parsed.data.timeEnd || null,
         location: parsed.data.location || null,
-        rsvpDeadline: parsed.data.rsvpDeadline || null,
+        rsvpDeadline: parsed.data.rsvpDeadline ? new Date(parsed.data.rsvpDeadline) : null,
         maxAttendees: parsed.data.maxAttendees || null,
         notes: parsed.data.notes || null,
       })
@@ -65,7 +65,7 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
         timeStart: parsed.data.timeStart,
         timeEnd: parsed.data.timeEnd || null,
         location: parsed.data.location || null,
-        rsvpDeadline: parsed.data.rsvpDeadline || null,
+        rsvpDeadline: parsed.data.rsvpDeadline ? new Date(parsed.data.rsvpDeadline) : null,
         maxAttendees: parsed.data.maxAttendees || null,
         notes: parsed.data.notes || null,
         sequence: sql`${hospiEvents.sequence} + 1`,

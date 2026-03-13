@@ -1,8 +1,8 @@
 "use client";
 
-import { languagesStepSchema } from "@openhospi/validators";
 import { MAX_LANGUAGES, MIN_LANGUAGES } from "@openhospi/shared/constants";
 import { Language } from "@openhospi/shared/enums";
+import { languagesStepSchema } from "@openhospi/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";

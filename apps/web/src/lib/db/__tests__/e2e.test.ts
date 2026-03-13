@@ -17,7 +17,7 @@ import {
   VALID_INVITATION_TRANSITIONS,
   VALID_ROOM_TRANSITIONS,
 } from "@openhospi/shared/enums";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createDrizzleSupabaseClient, db } from "..";
@@ -108,18 +108,12 @@ async function cleanup() {
     await db.delete(blocks).where(eq(blocks.blockerId, id));
     await db.delete(identityKeys).where(eq(identityKeys.userId, id));
   }
-  await db
-    .delete(reviews)
-    .where(sql`${reviews.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
-  await db.delete(votes).where(sql`${votes.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
-  await db
-    .delete(applications)
-    .where(sql`${applications.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
+  await db.delete(reviews).where(inArray(reviews.roomId, [ROOM_1, ROOM_DRAFT]));
+  await db.delete(votes).where(inArray(votes.roomId, [ROOM_1, ROOM_DRAFT]));
+  await db.delete(applications).where(inArray(applications.roomId, [ROOM_1, ROOM_DRAFT]));
   await db.delete(conversations).where(eq(conversations.id, CONV_1));
   await db.delete(hospiEvents).where(eq(hospiEvents.id, EVENT_1));
-  await db
-    .delete(roomPhotos)
-    .where(sql`${roomPhotos.roomId} IN (${sql`${ROOM_1}`}, ${sql`${ROOM_DRAFT}`})`);
+  await db.delete(roomPhotos).where(inArray(roomPhotos.roomId, [ROOM_1, ROOM_DRAFT]));
   await db.delete(rooms).where(eq(rooms.id, ROOM_1));
   await db.delete(rooms).where(eq(rooms.id, ROOM_DRAFT));
   await db.delete(houses).where(eq(houses.id, HOUSE_1));

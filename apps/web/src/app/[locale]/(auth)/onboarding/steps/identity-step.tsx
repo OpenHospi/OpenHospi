@@ -1,8 +1,8 @@
 "use client";
 
+import { getInstitution } from "@openhospi/inacademia";
 import type { IdentityStepData } from "@openhospi/validators";
 import { identityStepSchema } from "@openhospi/validators";
-import { getInstitution } from "@openhospi/inacademia";
 import { Building2, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";

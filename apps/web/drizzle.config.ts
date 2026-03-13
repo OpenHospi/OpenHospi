@@ -1,11 +1,11 @@
 import { existsSync } from "node:fs";
 
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
 // Load .env.prod from monorepo root for production
 const envPath = "../../.env.prod";
-if (existsSync(envPath)) dotenv.config({ path: envPath });
+if (existsSync(envPath)) config({ path: envPath });
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required. Set it in .env.prod or environment.");

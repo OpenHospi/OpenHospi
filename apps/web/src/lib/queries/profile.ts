@@ -1,7 +1,8 @@
+import { eq } from "drizzle-orm";
+
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { privateKeyBackups, profilePhotos, profiles } from "@/lib/db/schema";
 import type { Profile, ProfilePhoto } from "@/lib/db/types";
-import { eq } from "drizzle-orm";
 
 export type { Profile, ProfilePhoto };
 

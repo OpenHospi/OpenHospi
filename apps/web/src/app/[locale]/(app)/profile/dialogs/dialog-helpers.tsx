@@ -1,7 +1,7 @@
 "use client";
 
-import type { EditProfileData } from "@openhospi/validators";
 import type { LifestyleTag, Language } from "@openhospi/shared/enums";
+import type { EditProfileData } from "@openhospi/validators";
 import { Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";

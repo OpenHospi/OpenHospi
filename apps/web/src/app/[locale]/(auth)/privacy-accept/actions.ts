@@ -1,11 +1,11 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profiles } from "@/lib/db/schema";
 
 export async function acceptPrivacyPolicy() {
   const session = await requireSession();

@@ -1,6 +1,7 @@
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
+
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { hospiEvents, hospiInvitations, profiles } from "@/lib/db/schema";
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
 
 export type EventSummary = {
   id: string;

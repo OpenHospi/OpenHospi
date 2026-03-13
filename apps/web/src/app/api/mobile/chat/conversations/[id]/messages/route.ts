@@ -1,9 +1,9 @@
-import { db } from "@/lib/db";
-import { messages } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { db } from "@/lib/db";
+import { messages } from "@/lib/db/schema";
 import { getMessages } from "@/lib/queries/chat";
 
 type RouteParams = { params: Promise<{ id: string }> };

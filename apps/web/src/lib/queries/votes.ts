@@ -1,11 +1,12 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, profiles, votes } from "@/lib/db/schema";
 import {
   ApplicationStatus,
   isTerminalApplicationStatus,
   type StudyLevel,
 } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne, sum } from "drizzle-orm";
+
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, profiles, votes } from "@/lib/db/schema";
 
 export type VotableApplicant = {
   applicationId: string;

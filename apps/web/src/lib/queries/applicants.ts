@@ -1,9 +1,10 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, profilePhotos, profiles, reviews } from "@/lib/db/schema";
 import { MAX_APPLICANTS_PER_PAGE } from "@openhospi/shared/constants";
 import type { Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne } from "drizzle-orm";
+
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, profilePhotos, profiles, reviews } from "@/lib/db/schema";
 
 export type ApplicantReview = {
   reviewerId: string;

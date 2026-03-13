@@ -10,18 +10,18 @@ import {
   messages,
   senderKeyDistributions,
 } from "./chat";
-import { hospiEvents, hospiInvitations, votes } from "./events";
-import { houseMembers, houses } from "./houses";
-import { notifications, pushSubscriptions, pushTokens } from "./notifications";
-import { activeConsents, consentRecords, dataRequests, processingRestrictions } from "./privacy";
-import { profilePhotos, profiles } from "./profiles";
-import { roomPhotos, rooms } from "./rooms";
 import {
   identityKeys,
   oneTimePreKeys,
   privateKeyBackups,
   signedPreKeys,
 } from "./encryption-schema";
+import { hospiEvents, hospiInvitations, votes } from "./events";
+import { houseMembers, houses } from "./houses";
+import { notifications, pushSubscriptions, pushTokens } from "./notifications";
+import { activeConsents, consentRecords, dataRequests, processingRestrictions } from "./privacy";
+import { profilePhotos, profiles } from "./profiles";
+import { roomPhotos, rooms } from "./rooms";
 import { blocks, reports } from "./security";
 
 export const relations = defineRelations(

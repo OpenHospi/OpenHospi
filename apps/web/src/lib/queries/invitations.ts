@@ -1,8 +1,8 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type UserInvitation = {

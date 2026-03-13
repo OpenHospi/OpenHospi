@@ -1,13 +1,13 @@
 "use client";
 
-import type { CreateEventData } from "@openhospi/validators";
-import { createEventSchema } from "@openhospi/validators";
 import {
   MAX_EVENT_DESCRIPTION_LENGTH,
   MAX_EVENT_LOCATION_LENGTH,
   MAX_EVENT_NOTES_LENGTH,
   MAX_EVENT_TITLE_LENGTH,
 } from "@openhospi/shared/constants";
+import type { CreateEventData } from "@openhospi/validators";
+import { createEventSchema } from "@openhospi/validators";
 import { Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";

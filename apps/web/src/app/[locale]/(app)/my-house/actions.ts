@@ -1,7 +1,5 @@
 "use server";
 
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
-import { houseMembers, houses } from "@/lib/db/schema";
 import type { Locale } from "@openhospi/i18n";
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
@@ -10,6 +8,8 @@ import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { houseMembers, houses } from "@/lib/db/schema";
 
 export async function createHouse(formData: FormData): Promise<void> {
   const session = await requireSession();

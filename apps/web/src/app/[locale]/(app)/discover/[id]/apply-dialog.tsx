@@ -1,11 +1,11 @@
 "use client";
 
-import type { ApplyToRoomData } from "@openhospi/validators";
-import { applyToRoomSchema } from "@openhospi/validators";
 import {
   MAX_PERSONAL_MESSAGE_LENGTH,
   MIN_PERSONAL_MESSAGE_LENGTH,
 } from "@openhospi/shared/constants";
+import type { ApplyToRoomData } from "@openhospi/validators";
+import { applyToRoomSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";

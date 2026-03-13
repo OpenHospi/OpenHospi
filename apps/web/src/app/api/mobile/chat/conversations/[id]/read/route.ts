@@ -1,9 +1,9 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { messageReceipts, messages } from "@/lib/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { messageReceipts, messages } from "@/lib/db/schema";
 
 type RouteParams = { params: Promise<{ id: string }> };
 

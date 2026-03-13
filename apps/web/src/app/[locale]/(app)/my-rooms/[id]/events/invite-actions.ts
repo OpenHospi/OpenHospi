@@ -1,7 +1,5 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, houseMembers, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { MAX_INVITATIONS_PER_EVENT } from "@openhospi/shared/constants";
 import {
   ApplicationStatus,
@@ -12,6 +10,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, houseMembers, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";

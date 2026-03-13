@@ -1,11 +1,11 @@
-import { db } from "@/lib/db";
-import { roomPhotos, rooms } from "@/lib/db/schema";
 import { SUPPORTED_LOCALES } from "@openhospi/i18n";
 import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";
 
+import { db } from "@/lib/db";
+import { roomPhotos, rooms } from "@/lib/db/schema";
 import { getCitiesWithRoomCount } from "@/lib/queries/discover";
 import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 

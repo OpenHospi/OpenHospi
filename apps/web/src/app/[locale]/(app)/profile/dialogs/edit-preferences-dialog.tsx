@@ -1,7 +1,7 @@
 "use client";
 
-import type { EditProfileData } from "@openhospi/validators";
 import { City, Vereniging } from "@openhospi/shared/enums";
+import type { EditProfileData } from "@openhospi/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

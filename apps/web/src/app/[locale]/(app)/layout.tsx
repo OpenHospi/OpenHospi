@@ -1,5 +1,3 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 import { AlertTriangle } from "lucide-react";
@@ -21,6 +19,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profiles } from "@/lib/db/schema";
 
 type Props = {
   children: React.ReactNode;

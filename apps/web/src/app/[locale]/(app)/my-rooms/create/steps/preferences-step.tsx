@@ -1,7 +1,5 @@
 "use client";
 
-import type { RoomPreferencesData } from "@openhospi/validators";
-import { roomPreferencesSchema } from "@openhospi/validators";
 import {
   GenderPreference,
   Language,
@@ -9,6 +7,8 @@ import {
   RoomFeature,
   Vereniging,
 } from "@openhospi/shared/enums";
+import type { RoomPreferencesData } from "@openhospi/validators";
+import { roomPreferencesSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";

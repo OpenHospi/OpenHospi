@@ -1,11 +1,11 @@
 "use client";
 
+import { ROOM_CREATE_TOTAL_STEPS } from "@openhospi/shared/constants";
 import type {
   RoomBasicInfoData,
   RoomDetailsData,
   RoomPreferencesData,
 } from "@openhospi/validators";
-import { ROOM_CREATE_TOTAL_STEPS } from "@openhospi/shared/constants";
 import { Check } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";

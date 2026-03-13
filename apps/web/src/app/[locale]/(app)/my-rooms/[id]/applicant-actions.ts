@@ -1,9 +1,5 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, reviews } from "@/lib/db/schema";
-import type { ReviewData } from "@openhospi/validators";
-import { reviewSchema } from "@openhospi/validators";
 import {
   ApplicationStatus,
   HouseMemberRole,
@@ -11,6 +7,8 @@ import {
   isValidApplicationTransition,
   REVIEW_DECISION_TO_APPLICATION_STATUS,
 } from "@openhospi/shared/enums";
+import type { ReviewData } from "@openhospi/validators";
+import { reviewSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -20,6 +18,8 @@ import {
   requireNotRestricted,
   requireSession,
 } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, reviews } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 
 export async function markApplicationsSeen(roomId: string) {

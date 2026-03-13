@@ -1,5 +1,3 @@
-import { db } from "@/lib/db";
-import { houses } from "@/lib/db/schema";
 import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
 import { Home } from "lucide-react";
@@ -11,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
+import { db } from "@/lib/db";
+import { houses } from "@/lib/db/schema";
 
 import { JoinHouseButton } from "./join-house-button";
 

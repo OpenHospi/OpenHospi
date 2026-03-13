@@ -1,4 +1,6 @@
 import type { SenderKeyDistributionEnvelope } from "@openhospi/crypto";
+import { and, eq, inArray, sql } from "drizzle-orm";
+
 import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   identityKeys,
@@ -7,7 +9,6 @@ import {
   senderKeyDistributions,
   signedPreKeys,
 } from "@/lib/db/schema";
-import { and, eq, inArray, sql } from "drizzle-orm";
 
 // ── Identity Keys ──
 

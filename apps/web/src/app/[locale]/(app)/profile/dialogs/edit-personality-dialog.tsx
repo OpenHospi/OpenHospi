@@ -1,8 +1,8 @@
 "use client";
 
-import { personalityStepSchema } from "@openhospi/validators";
 import { MAX_LIFESTYLE_TAGS, MIN_LIFESTYLE_TAGS } from "@openhospi/shared/constants";
 import { LifestyleTag } from "@openhospi/shared/enums";
+import { personalityStepSchema } from "@openhospi/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";

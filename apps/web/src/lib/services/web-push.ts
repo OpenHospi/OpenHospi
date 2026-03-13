@@ -1,7 +1,8 @@
-import { db } from "@/lib/db";
-import { pushSubscriptions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendNotification, setVapidDetails } from "web-push";
+
+import { db } from "@/lib/db";
+import { pushSubscriptions } from "@/lib/db/schema";
 
 let vapidConfigured = false;
 

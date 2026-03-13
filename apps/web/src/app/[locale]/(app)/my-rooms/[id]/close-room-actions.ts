@@ -1,7 +1,5 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, rooms } from "@/lib/db/schema";
 import {
   ApplicationStatus,
   isTerminalApplicationStatus,
@@ -11,6 +9,8 @@ import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, rooms } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 import { notifyUser } from "@/lib/queries/notifications";
 

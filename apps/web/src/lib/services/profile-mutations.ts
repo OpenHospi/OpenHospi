@@ -1,10 +1,10 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profilePhotos, profiles } from "@/lib/db/schema";
+import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import type { EditProfileData } from "@openhospi/validators";
 import { editProfileSchema } from "@openhospi/validators";
-import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
 import { and, eq } from "drizzle-orm";
 
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profilePhotos, profiles } from "@/lib/db/schema";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
 type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];

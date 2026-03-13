@@ -1,5 +1,10 @@
 "use server";
 
+import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import { eq } from "drizzle-orm";
+
+import { requireSession } from "@/lib/auth/server";
 import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
@@ -25,11 +30,6 @@ import {
   user,
   votes,
 } from "@/lib/db/schema";
-import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
-import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import { eq } from "drizzle-orm";
-
-import { requireSession } from "@/lib/auth/server";
 import { deletePhotoFromStorage } from "@/lib/services/photos";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 

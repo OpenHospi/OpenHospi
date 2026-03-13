@@ -1,9 +1,9 @@
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
 import { computeEndDateTime, generateICS } from "@openhospi/shared/calendar";
 import { eq, and } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params;

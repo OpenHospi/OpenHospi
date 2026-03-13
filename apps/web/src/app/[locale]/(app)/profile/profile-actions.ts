@@ -1,12 +1,12 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profilePhotos } from "@/lib/db/schema";
 import type { EditProfileData } from "@openhospi/validators";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profilePhotos } from "@/lib/db/schema";
 import {
   deleteProfilePhotoForUser,
   saveProfilePhotoForUser,

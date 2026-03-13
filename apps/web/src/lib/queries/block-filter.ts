@@ -1,5 +1,6 @@
-import { blocks } from "@/lib/db/schema";
 import { type AnyColumn, eq, sql, type SQL } from "drizzle-orm";
+
+import { blocks } from "@/lib/db/schema";
 
 /**
  * Returns a SQL subquery that selects all user IDs blocked by or blocking the current user.

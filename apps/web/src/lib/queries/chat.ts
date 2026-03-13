@@ -1,3 +1,6 @@
+import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
+import { and, count, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm";
+
 import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   conversationMembers,
@@ -9,8 +12,6 @@ import {
   roomPhotos,
   rooms,
 } from "@/lib/db/schema";
-import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
-import { and, count, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm";
 
 export async function getOrCreateHospiConversation(
   roomId: string,

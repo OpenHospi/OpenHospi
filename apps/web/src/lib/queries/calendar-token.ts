@@ -1,10 +1,11 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { calendarTokens } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
+import { db } from "@/lib/db";
+import { calendarTokens } from "@/lib/db/schema";
+
 
 export async function getCalendarToken(): Promise<string | null> {
   const session = await requireSession();

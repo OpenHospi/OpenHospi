@@ -14,7 +14,13 @@ import {
 } from "drizzle-orm/pg-core";
 import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
-import { conversationTypeEnum, deliveryStatusEnum, messageTypeEnum } from "./enums";
+import { devices } from "./encryption-schema";
+import {
+  conversationTypeEnum,
+  deliveryStatusEnum,
+  messageTypeEnum,
+  senderKeyDistributionStatusEnum,
+} from "./enums";
 import { profiles } from "./profiles";
 import { rooms } from "./rooms";
 
@@ -159,36 +165,41 @@ export const senderKeyDistributions = pgTable(
     conversationId: uuid("conversation_id")
       .notNull()
       .references(() => conversations.id, { onDelete: "cascade" }),
-    distributorUserId: uuid("distributor_user_id")
+    senderUserId: uuid("sender_user_id")
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
-    recipientUserId: uuid("recipient_user_id")
+    senderDeviceId: uuid("sender_device_id")
       .notNull()
-      .references(() => profiles.id, { onDelete: "cascade" }),
-    encryptedKeyData: text("encrypted_key_data").notNull(),
-    iv: text("iv").notNull(),
-    ephemeralPublicKey: text("ephemeral_public_key").notNull(),
-    senderIdentityKey: text("sender_identity_key").notNull(),
-    usedSignedPreKeyId: integer("used_signed_pre_key_id").notNull(),
-    usedOneTimePreKeyId: integer("used_one_time_pre_key_id"),
+      .references(() => devices.id, { onDelete: "cascade" }),
+    recipientDeviceId: uuid("recipient_device_id")
+      .notNull()
+      .references(() => devices.id, { onDelete: "cascade" }),
+    ciphertext: text("ciphertext").notNull(),
+    status: senderKeyDistributionStatusEnum("status").notNull().default("pending"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    deliveredAt: timestamp("delivered_at", { withTimezone: true }),
   },
   (table) => [
     unique("sender_key_distributions_unique").on(
       table.conversationId,
-      table.distributorUserId,
-      table.recipientUserId,
+      table.senderDeviceId,
+      table.recipientDeviceId,
     ),
-    index("idx_sender_key_distributions_recipient").on(table.recipientUserId),
+    index("idx_sender_key_distributions_recipient_device").on(table.recipientDeviceId),
     pgPolicy("sender_key_distributions_select", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${table.distributorUserId} = (select auth.uid()) or ${table.recipientUserId} = (select auth.uid())`,
+      using: sql`${table.senderUserId} = (select auth.uid()) or exists(select 1 from devices d where d.id = ${table.recipientDeviceId} and d.user_id = (select auth.uid()))`,
     }),
     pgPolicy("sender_key_distributions_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.distributorUserId} = (select auth.uid())`,
+      withCheck: sql`exists(select 1 from devices d where d.id = ${table.senderDeviceId} and d.user_id = (select auth.uid()))`,
+    }),
+    pgPolicy("sender_key_distributions_update", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`exists(select 1 from devices d where d.id = ${table.recipientDeviceId} and d.user_id = (select auth.uid()))`,
     }),
   ],
 );

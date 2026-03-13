@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 
 import { apiError, apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
-import { getIdentityKeysByUserIds } from "@/lib/services/key-mutations";
+import { getDevicesForUser } from "@/lib/services/key-mutations";
 
 export async function POST(request: Request) {
   try {
     const session = await requireApiSession(request);
-    const body = (await request.json()) as { userIds?: string[] };
+    const body = (await request.json()) as { targetUserId?: string };
 
-    if (!Array.isArray(body.userIds) || body.userIds.length === 0 || body.userIds.length > 50) {
-      return apiError("userIds must be a non-empty array of up to 50 items", 400);
+    if (!body.targetUserId) {
+      return apiError("targetUserId is required", 400);
     }
 
-    const keys = await getIdentityKeysByUserIds(session.user.id, body.userIds);
-    return apiSuccess(keys);
+    const userDevices = await getDevicesForUser(session.user.id, body.targetUserId);
+    return apiSuccess(userDevices);
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;

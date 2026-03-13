@@ -21,7 +21,7 @@ import {
   processingRestrictions,
   profilePhotos,
   profiles,
-  identityKeys,
+  devices,
   pushSubscriptions,
   reports,
   reviews,
@@ -77,10 +77,7 @@ export async function exportData() {
       })
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, userId));
-    const [userIdentityKey] = await tx
-      .select()
-      .from(identityKeys)
-      .where(eq(identityKeys.userId, userId));
+    const userDevices = await tx.select().from(devices).where(eq(devices.userId, userId));
     const userConsents = await tx
       .select()
       .from(activeConsents)
@@ -138,7 +135,7 @@ export async function exportData() {
       votes: userVotes,
       notifications: userNotifications,
       pushSubscriptions: userPushSubscriptions,
-      identityKey: userIdentityKey ?? null,
+      devices: userDevices,
       consents: userConsents,
       consentHistory: userConsentHistory,
       dataRequests: userDataRequests,
@@ -193,7 +190,7 @@ export async function exportDataCSV() {
     ["votes.csv", data.votes],
     ["notifications.csv", data.notifications],
     ["push-subscriptions.csv", data.pushSubscriptions],
-    ["identity-key.csv", data.identityKey ? [data.identityKey] : []],
+    ["devices.csv", data.devices],
     ["consents.csv", data.consents],
     ["consent-history.csv", data.consentHistory],
     ["data-requests.csv", data.dataRequests],

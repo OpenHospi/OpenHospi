@@ -1,40 +1,25 @@
-import type { SenderKeyDistributionEnvelope } from "@openhospi/crypto";
 import { NextResponse } from "next/server";
 
 import { apiError, apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import {
-  getDistributionRecipients,
-  getSenderKeyDistribution,
-  insertSenderKeyDistributions,
+  getPendingSenderKeyDistributions,
+  insertSenderKeyDistribution,
+  markDistributionDelivered,
 } from "@/lib/services/key-mutations";
 
 export async function GET(request: Request) {
   try {
-    const session = await requireApiSession(request);
-    const userId = session.user.id;
+    await requireApiSession(request);
 
     const url = new URL(request.url);
-    const conversationId = url.searchParams.get("conversationId");
+    const recipientDeviceId = url.searchParams.get("recipientDeviceId");
 
-    if (!conversationId) {
-      return apiError("conversationId is required", 400);
+    if (!recipientDeviceId) {
+      return apiError("recipientDeviceId is required", 400);
     }
 
-    // List mode: return recipient IDs for the current user's distributions
-    const listRecipients = url.searchParams.get("listRecipients");
-    if (listRecipients === "true") {
-      const recipients = await getDistributionRecipients(conversationId, userId);
-      return apiSuccess({ recipients });
-    }
-
-    // Fetch mode: return a specific distribution for the current user
-    const senderUserId = url.searchParams.get("senderUserId");
-    if (!senderUserId) {
-      return apiError("senderUserId or listRecipients=true is required", 400);
-    }
-
-    const distribution = await getSenderKeyDistribution(conversationId, senderUserId, userId);
-    return apiSuccess(distribution);
+    const distributions = await getPendingSenderKeyDistributions(recipientDeviceId);
+    return apiSuccess({ distributions });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;
@@ -48,18 +33,48 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as {
       conversationId?: string;
-      distributions?: {
-        recipientUserId: string;
-        envelope: SenderKeyDistributionEnvelope;
-      }[];
+      senderDeviceId?: string;
+      recipientDeviceId?: string;
+      ciphertext?: string;
     };
 
-    if (!body.conversationId || !body.distributions || body.distributions.length === 0) {
-      return apiError("conversationId and distributions array are required", 400);
+    if (
+      !body.conversationId ||
+      !body.senderDeviceId ||
+      !body.recipientDeviceId ||
+      !body.ciphertext
+    ) {
+      return apiError(
+        "conversationId, senderDeviceId, recipientDeviceId, and ciphertext are required",
+        400,
+      );
     }
 
-    await insertSenderKeyDistributions(userId, body.conversationId, body.distributions);
+    await insertSenderKeyDistribution(
+      body.conversationId,
+      userId,
+      body.senderDeviceId,
+      body.recipientDeviceId,
+      body.ciphertext,
+    );
 
+    return apiSuccess({ ok: true });
+  } catch (e) {
+    if (e instanceof NextResponse) return e;
+    throw e;
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    await requireApiSession(request);
+
+    const body = (await request.json()) as { distributionId?: string };
+    if (!body.distributionId) {
+      return apiError("distributionId is required", 400);
+    }
+
+    await markDistributionDelivered(body.distributionId);
     return apiSuccess({ ok: true });
   } catch (e) {
     if (e instanceof NextResponse) return e;

@@ -10,12 +10,7 @@ import {
   messages,
   senderKeyDistributions,
 } from "./chat";
-import {
-  identityKeys,
-  oneTimePreKeys,
-  privateKeyBackups,
-  signedPreKeys,
-} from "./encryption-schema";
+import { devices, oneTimePreKeys, privateKeyBackups, signedPreKeys } from "./encryption-schema";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
 import { notifications, pushSubscriptions, pushTokens } from "./notifications";
@@ -56,7 +51,7 @@ export const relations = defineRelations(
     messageReceipts,
     senderKeyDistributions,
     // Security
-    identityKeys,
+    devices,
     signedPreKeys,
     oneTimePreKeys,
     privateKeyBackups,
@@ -291,35 +286,42 @@ export const relations = defineRelations(
         from: r.senderKeyDistributions.conversationId,
         to: r.conversations.id,
       }),
-      distributor: r.one.profiles({
-        from: r.senderKeyDistributions.distributorUserId,
+      sender: r.one.profiles({
+        from: r.senderKeyDistributions.senderUserId,
         to: r.profiles.id,
-        alias: "distributor",
+        alias: "skdSender",
       }),
-      recipient: r.one.profiles({
-        from: r.senderKeyDistributions.recipientUserId,
-        to: r.profiles.id,
-        alias: "skdRecipient",
+      senderDevice: r.one.devices({
+        from: r.senderKeyDistributions.senderDeviceId,
+        to: r.devices.id,
+        alias: "skdSenderDevice",
+      }),
+      recipientDevice: r.one.devices({
+        from: r.senderKeyDistributions.recipientDeviceId,
+        to: r.devices.id,
+        alias: "skdRecipientDevice",
       }),
     },
 
     // ── Security relations ──
-    identityKeys: {
-      user: r.one.profiles({
-        from: r.identityKeys.userId,
-        to: r.profiles.id,
+    devices: {
+      user: r.one.user({
+        from: r.devices.userId,
+        to: r.user.id,
       }),
+      signedPreKeys: r.many.signedPreKeys(),
+      oneTimePreKeys: r.many.oneTimePreKeys(),
     },
     signedPreKeys: {
-      user: r.one.profiles({
-        from: r.signedPreKeys.userId,
-        to: r.profiles.id,
+      device: r.one.devices({
+        from: r.signedPreKeys.deviceId,
+        to: r.devices.id,
       }),
     },
     oneTimePreKeys: {
-      user: r.one.profiles({
-        from: r.oneTimePreKeys.userId,
-        to: r.profiles.id,
+      device: r.one.devices({
+        from: r.oneTimePreKeys.deviceId,
+        to: r.devices.id,
       }),
     },
     privateKeyBackups: {

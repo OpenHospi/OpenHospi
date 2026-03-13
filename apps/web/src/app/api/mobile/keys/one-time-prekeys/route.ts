@@ -5,16 +5,21 @@ import { getOneTimePreKeyCount, insertOneTimePreKeys } from "@/lib/services/key-
 
 export async function POST(request: Request) {
   try {
-    const session = await requireApiSession(request);
+    await requireApiSession(request);
     const body = (await request.json()) as {
+      deviceId?: string;
       keys?: { keyId: number; publicKey: string }[];
     };
+
+    if (!body.deviceId) {
+      return apiError("deviceId is required", 400);
+    }
 
     if (!Array.isArray(body.keys) || body.keys.length === 0) {
       return apiError("keys must be a non-empty array", 400);
     }
 
-    await insertOneTimePreKeys(session.user.id, body.keys);
+    await insertOneTimePreKeys(body.deviceId, body.keys);
 
     return apiSuccess({ success: true });
   } catch (e) {
@@ -25,8 +30,16 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    const session = await requireApiSession(request);
-    const count = await getOneTimePreKeyCount(session.user.id);
+    await requireApiSession(request);
+
+    const url = new URL(request.url);
+    const deviceId = url.searchParams.get("deviceId");
+
+    if (!deviceId) {
+      return apiError("deviceId query parameter is required", 400);
+    }
+
+    const count = await getOneTimePreKeyCount(deviceId);
 
     return apiSuccess({ count });
   } catch (e) {

@@ -5,18 +5,19 @@ import { insertSignedPreKey } from "@/lib/services/key-mutations";
 
 export async function POST(request: Request) {
   try {
-    const session = await requireApiSession(request);
+    await requireApiSession(request);
     const body = (await request.json()) as {
+      deviceId?: string;
       keyId?: number;
       publicKey?: string;
       signature?: string;
     };
 
-    if (body.keyId == null || !body.publicKey || !body.signature) {
-      return apiError("keyId, publicKey, and signature are required", 400);
+    if (!body.deviceId || body.keyId == null || !body.publicKey || !body.signature) {
+      return apiError("deviceId, keyId, publicKey, and signature are required", 400);
     }
 
-    await insertSignedPreKey(session.user.id, {
+    await insertSignedPreKey(body.deviceId, {
       keyId: body.keyId,
       publicKey: body.publicKey,
       signature: body.signature,

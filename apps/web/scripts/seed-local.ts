@@ -356,7 +356,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
       }),
     },
     with: {
-      identityKeys: 1,
+      devices: 1,
       privateKeyBackups: 1,
       notifications: 1,
       pushTokens: 1,
@@ -1213,10 +1213,12 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
 
   // --- Security (seeded via profiles.with) ---
-  identityKeys: {
+  devices: {
     columns: {
-      identityPublicKey: f.string(),
-      signingPublicKey: f.string(),
+      deviceId: f.int({ minValue: 1, maxValue: 3 }),
+      registrationId: f.int({ minValue: 10000, maxValue: 99999 }),
+      identityKeyPublic: f.string(),
+      platform: f.valuesFromArray({ values: ["web", "ios", "android"] }),
     },
   },
   privateKeyBackups: {

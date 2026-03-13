@@ -1,40 +1,58 @@
 import { sql } from "drizzle-orm";
-import { index, integer, pgPolicy, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  integer,
+  pgPolicy,
+  pgTable,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
-import { profiles } from "./profiles";
+import { user } from "./auth-schema";
+import { platformEnum } from "./enums";
 
-// ── Identity Keys (replaces publicKeys) ──
+// ── Devices (per-user, per-platform) ──
 
-export const identityKeys = pgTable(
-  "identity_keys",
+export const devices = pgTable(
+  "devices",
   {
+    id: uuid("id").defaultRandom().primaryKey(),
     userId: uuid("user_id")
-      .primaryKey()
-      .references(() => profiles.id, { onDelete: "cascade" }),
-    identityPublicKey: text("identity_public_key").notNull(), // base64 X25519 DH public key
-    signingPublicKey: text("signing_public_key").notNull(), // base64 Ed25519 signing public key
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    deviceId: integer("device_id").notNull(), // per-user device number
+    registrationId: integer("registration_id").notNull(), // random uint32
+    identityKeyPublic: text("identity_key_public").notNull(), // base64 Curve25519
+    platform: platformEnum("platform").notNull(),
+    pushToken: text("push_token"),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    isActive: boolean("is_active").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    rotatedAt: timestamp("rotated_at", { withTimezone: true }),
   },
   (table) => [
-    pgPolicy("identity_keys_select", {
+    unique("devices_user_id_device_id_key").on(table.userId, table.deviceId),
+    index("idx_devices_user_id").on(table.userId),
+    pgPolicy("devices_select", {
       for: "select",
       to: authenticatedRole,
       using: sql`true`,
     }),
-    pgPolicy("identity_keys_insert", {
+    pgPolicy("devices_insert", {
       for: "insert",
       to: authenticatedRole,
       withCheck: sql`${table.userId} = ${authUid}`,
     }),
-    pgPolicy("identity_keys_update", {
+    pgPolicy("devices_update", {
       for: "update",
       to: authenticatedRole,
       using: sql`${table.userId} = ${authUid}`,
       withCheck: sql`${table.userId} = ${authUid}`,
     }),
-    pgPolicy("identity_keys_delete", {
+    pgPolicy("devices_delete", {
       for: "delete",
       to: authenticatedRole,
       using: sql`${table.userId} = ${authUid}`,
@@ -42,23 +60,22 @@ export const identityKeys = pgTable(
   ],
 );
 
-// ── Signed Pre-Keys ──
+// ── Signed Pre-Keys (per-device) ──
 
 export const signedPreKeys = pgTable(
   "signed_pre_keys",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: uuid("user_id")
+    deviceId: uuid("device_id")
       .notNull()
-      .references(() => profiles.id, { onDelete: "cascade" }),
+      .references(() => devices.id, { onDelete: "cascade" }),
     keyId: integer("key_id").notNull(),
-    publicKey: text("public_key").notNull(), // base64 X25519 public key
-    signature: text("signature").notNull(), // base64 Ed25519 signature
+    publicKey: text("public_key").notNull(), // base64 X25519
+    signature: text("signature").notNull(), // base64 Ed25519
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }),
   },
   (table) => [
-    index("idx_signed_pre_keys_user_key").on(table.userId, table.keyId),
+    unique("signed_pre_keys_device_id_key_id_key").on(table.deviceId, table.keyId),
     pgPolicy("signed_pre_keys_select", {
       for: "select",
       to: authenticatedRole,
@@ -67,37 +84,39 @@ export const signedPreKeys = pgTable(
     pgPolicy("signed_pre_keys_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`exists(select 1 from devices d where d.id = ${table.deviceId} and d.user_id = (select auth.uid()))`,
     }),
     pgPolicy("signed_pre_keys_update", {
       for: "update",
       to: authenticatedRole,
-      using: sql`${table.userId} = ${authUid}`,
-      withCheck: sql`${table.userId} = ${authUid}`,
+      using: sql`exists(select 1 from devices d where d.id = ${table.deviceId} and d.user_id = (select auth.uid()))`,
+      withCheck: sql`exists(select 1 from devices d where d.id = ${table.deviceId} and d.user_id = (select auth.uid()))`,
     }),
     pgPolicy("signed_pre_keys_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`${table.userId} = ${authUid}`,
+      using: sql`exists(select 1 from devices d where d.id = ${table.deviceId} and d.user_id = (select auth.uid()))`,
     }),
   ],
 );
 
-// ── One-Time Pre-Keys ──
+// ── One-Time Pre-Keys (per-device) ──
 
 export const oneTimePreKeys = pgTable(
   "one_time_pre_keys",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: uuid("user_id")
+    deviceId: uuid("device_id")
       .notNull()
-      .references(() => profiles.id, { onDelete: "cascade" }),
+      .references(() => devices.id, { onDelete: "cascade" }),
     keyId: integer("key_id").notNull(),
-    publicKey: text("public_key").notNull(), // base64 X25519 public key
+    publicKey: text("public_key").notNull(), // base64 X25519
+    used: boolean("used").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    index("idx_one_time_pre_keys_user").on(table.userId),
+    unique("one_time_pre_keys_device_id_key_id_key").on(table.deviceId, table.keyId),
+    index("idx_one_time_pre_keys_device").on(table.deviceId),
     pgPolicy("one_time_pre_keys_select", {
       for: "select",
       to: authenticatedRole,
@@ -106,12 +125,12 @@ export const oneTimePreKeys = pgTable(
     pgPolicy("one_time_pre_keys_insert", {
       for: "insert",
       to: authenticatedRole,
-      withCheck: sql`${table.userId} = ${authUid}`,
+      withCheck: sql`exists(select 1 from devices d where d.id = ${table.deviceId} and d.user_id = (select auth.uid()))`,
     }),
     pgPolicy("one_time_pre_keys_delete", {
       for: "delete",
       to: authenticatedRole,
-      using: sql`${table.userId} = ${authUid}`,
+      using: sql`exists(select 1 from devices d where d.id = ${table.deviceId} and d.user_id = (select auth.uid()))`,
     }),
   ],
 );
@@ -123,7 +142,7 @@ export const privateKeyBackups = pgTable(
   {
     userId: uuid("user_id")
       .primaryKey()
-      .references(() => profiles.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     encryptedPrivateKey: text("encrypted_private_key").notNull(),
     backupIv: text("backup_iv").notNull(),
     salt: text("salt").notNull(), // PBKDF2 salt (base64)

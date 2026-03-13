@@ -16,7 +16,7 @@ import {
   messages,
   privateKeyBackups,
   profiles,
-  identityKeys,
+  devices,
   reports,
   rooms,
   user,
@@ -74,7 +74,7 @@ async function cleanup() {
   for (const id of [USER_A, USER_B, USER_C]) {
     await db.delete(blocks).where(eq(blocks.blockerId, id));
     await db.delete(privateKeyBackups).where(eq(privateKeyBackups.userId, id));
-    await db.delete(identityKeys).where(eq(identityKeys.userId, id));
+    await db.delete(devices).where(eq(devices.userId, id));
   }
   await db.delete(votes).where(eq(votes.id, VOTE_ID));
   await db.delete(conversations).where(eq(conversations.id, CONVERSATION_ID));
@@ -231,9 +231,21 @@ describe("RLS policies (integration)", () => {
     });
 
     // Security tables seed
-    await db.insert(identityKeys).values([
-      { userId: USER_A, identityPublicKey: "test-identity-a", signingPublicKey: "test-signing-a" },
-      { userId: USER_B, identityPublicKey: "test-identity-b", signingPublicKey: "test-signing-b" },
+    await db.insert(devices).values([
+      {
+        userId: USER_A,
+        deviceId: 1,
+        registrationId: 11111,
+        identityKeyPublic: "test-identity-a",
+        platform: "web" as const,
+      },
+      {
+        userId: USER_B,
+        deviceId: 1,
+        registrationId: 22222,
+        identityKeyPublic: "test-identity-b",
+        platform: "web" as const,
+      },
     ]);
 
     await db.insert(privateKeyBackups).values({
@@ -552,53 +564,55 @@ describe("RLS policies (integration)", () => {
   });
 
   // -------------------------------------------------------------------------
-  // Identity Keys — any authenticated can read, only own can insert/update
+  // Devices — any authenticated can read, only own can insert/update/delete
   // -------------------------------------------------------------------------
 
-  describe("identityKeys", () => {
-    it("any authenticated user can read all identity keys", async () => {
-      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
-        tx.select().from(identityKeys),
-      );
+  describe("devices", () => {
+    it("any authenticated user can read all devices", async () => {
+      const rows = await createDrizzleSupabaseClient(USER_C).rls((tx) => tx.select().from(devices));
       const ids = rows.map((r) => r.userId);
       expect(ids).toContain(USER_A);
       expect(ids).toContain(USER_B);
     });
 
-    it("user can insert own identity key", async () => {
+    it("user can insert own device", async () => {
       const [row] = await createDrizzleSupabaseClient(USER_C).rls((tx) =>
         tx
-          .insert(identityKeys)
+          .insert(devices)
           .values({
             userId: USER_C,
-            identityPublicKey: "test-identity-c",
-            signingPublicKey: "test-signing-c",
+            deviceId: 1,
+            registrationId: 33333,
+            identityKeyPublic: "test-identity-c",
+            platform: "web",
           })
           .returning(),
       );
       expect(row.userId).toBe(USER_C);
       // Cleanup
-      await db.delete(identityKeys).where(eq(identityKeys.userId, USER_C));
+      await db.delete(devices).where(eq(devices.userId, USER_C));
     });
 
-    it("user cannot insert an identity key for another user", async () => {
+    it("user cannot insert a device for another user", async () => {
       await expect(
         createDrizzleSupabaseClient(USER_B).rls((tx) =>
-          tx.insert(identityKeys).values({
+          tx.insert(devices).values({
             userId: USER_C,
-            identityPublicKey: "fake-identity",
-            signingPublicKey: "fake-signing",
+            deviceId: 1,
+            registrationId: 99999,
+            identityKeyPublic: "fake-identity",
+            platform: "web",
           }),
         ),
       ).rejects.toThrow();
     });
 
-    it("user cannot update another user's identity key", async () => {
+    it("user cannot update another user's device", async () => {
       const result = await createDrizzleSupabaseClient(USER_B).rls((tx) =>
         tx
-          .update(identityKeys)
-          .set({ identityPublicKey: "hacked" })
-          .where(eq(identityKeys.userId, USER_A))
+          .update(devices)
+          .set({ identityKeyPublic: "hacked" })
+          .where(eq(devices.userId, USER_A))
           .returning(),
       );
       expect(result).toHaveLength(0);

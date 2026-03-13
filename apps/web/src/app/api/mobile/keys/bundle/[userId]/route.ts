@@ -6,12 +6,14 @@ import { getPreKeyBundle } from "@/lib/services/key-mutations";
 export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   try {
     await requireApiSession(request);
-    const { userId } = await params;
 
-    const bundle = await getPreKeyBundle(userId);
+    // userId param is now the device UUID
+    const { userId: deviceUuid } = await params;
+
+    const bundle = await getPreKeyBundle(deviceUuid);
 
     if (!bundle) {
-      return apiError("Pre-key bundle not found for this user", 404);
+      return apiError("Pre-key bundle not found for this device", 404);
     }
 
     return apiSuccess(bundle);

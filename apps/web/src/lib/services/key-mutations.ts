@@ -1,100 +1,121 @@
-import type { SenderKeyDistributionEnvelope } from "@openhospi/crypto";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
-  identityKeys,
+  devices,
   oneTimePreKeys,
   privateKeyBackups,
   senderKeyDistributions,
   signedPreKeys,
 } from "@/lib/db/schema";
 
-// ── Identity Keys ──
+// ── Devices ──
 
-export async function upsertIdentityKey(
+export async function registerDevice(
   userId: string,
-  identityPublicKey: string,
-  signingPublicKey: string,
+  data: {
+    deviceId: number;
+    registrationId: number;
+    identityKeyPublic: string;
+    platform: "web" | "ios" | "android";
+    pushToken?: string;
+  },
 ) {
-  await db
-    .insert(identityKeys)
-    .values({ userId, identityPublicKey, signingPublicKey })
+  const [device] = await db
+    .insert(devices)
+    .values({ userId, ...data })
     .onConflictDoUpdate({
-      target: identityKeys.userId,
-      set: { identityPublicKey, signingPublicKey, rotatedAt: new Date() },
-    });
+      target: [devices.userId, devices.deviceId],
+      set: {
+        registrationId: data.registrationId,
+        identityKeyPublic: data.identityKeyPublic,
+        platform: data.platform,
+        pushToken: data.pushToken ?? null,
+        lastSeenAt: new Date(),
+        isActive: true,
+      },
+    })
+    .returning();
+  return device;
 }
 
-export async function getIdentityKeysByUserIds(
-  userId: string,
-  userIds: string[],
-): Promise<{ userId: string; identityPublicKey: string; signingPublicKey: string }[]> {
-  return createDrizzleSupabaseClient(userId).rls((tx) =>
+export async function getDevicesForUser(requestingUserId: string, targetUserId: string) {
+  return createDrizzleSupabaseClient(requestingUserId).rls((tx) =>
     tx
       .select({
-        userId: identityKeys.userId,
-        identityPublicKey: identityKeys.identityPublicKey,
-        signingPublicKey: identityKeys.signingPublicKey,
+        id: devices.id,
+        deviceId: devices.deviceId,
+        registrationId: devices.registrationId,
+        identityKeyPublic: devices.identityKeyPublic,
+        platform: devices.platform,
       })
-      .from(identityKeys)
-      .where(inArray(identityKeys.userId, userIds)),
+      .from(devices)
+      .where(and(eq(devices.userId, targetUserId), eq(devices.isActive, true))),
   );
+}
+
+export async function deactivateDevice(userId: string, deviceUuid: string) {
+  await db
+    .update(devices)
+    .set({ isActive: false })
+    .where(and(eq(devices.id, deviceUuid), eq(devices.userId, userId)));
 }
 
 // ── Signed Pre-Keys ──
 
 export async function insertSignedPreKey(
-  userId: string,
+  deviceUuid: string,
   data: { keyId: number; publicKey: string; signature: string },
 ) {
-  await db.insert(signedPreKeys).values({ userId, ...data });
+  await db.insert(signedPreKeys).values({ deviceId: deviceUuid, ...data });
 }
 
 // ── One-Time Pre-Keys ──
 
 export async function insertOneTimePreKeys(
-  userId: string,
+  deviceUuid: string,
   keys: { keyId: number; publicKey: string }[],
 ) {
   if (keys.length === 0) return;
-  await db.insert(oneTimePreKeys).values(keys.map((k) => ({ userId, ...k })));
+  await db.insert(oneTimePreKeys).values(keys.map((k) => ({ deviceId: deviceUuid, ...k })));
 }
 
-export async function getOneTimePreKeyCount(userId: string): Promise<number> {
+export async function getOneTimePreKeyCount(deviceUuid: string): Promise<number> {
   const [result] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(oneTimePreKeys)
-    .where(eq(oneTimePreKeys.userId, userId));
+    .where(and(eq(oneTimePreKeys.deviceId, deviceUuid), eq(oneTimePreKeys.used, false)));
   return result?.count ?? 0;
 }
 
 /**
- * Fetch a user's pre-key bundle for X3DH session establishment.
- * Atomically consumes one OPK (deletes it after fetching).
+ * Fetch a device's pre-key bundle for X3DH session establishment.
+ * Marks one OPK as used (sets used=true after fetching).
  * Runs with db directly (server-side operation, bypasses RLS).
  */
-export async function getPreKeyBundle(targetUserId: string): Promise<{
-  identityPublicKey: string;
-  signingPublicKey: string;
+export async function getPreKeyBundle(targetDeviceUuid: string): Promise<{
+  deviceId: string;
+  registrationId: number;
+  identityKeyPublic: string;
   signedPreKeyId: number;
   signedPreKeyPublic: string;
   signedPreKeySignature: string;
   oneTimePreKeyId?: number;
   oneTimePreKeyPublic?: string;
 } | null> {
-  // Get identity key
-  const [identity] = await db
+  // Get device info (identity key is on the device)
+  const [device] = await db
     .select({
-      identityPublicKey: identityKeys.identityPublicKey,
-      signingPublicKey: identityKeys.signingPublicKey,
+      id: devices.id,
+      registrationId: devices.registrationId,
+      identityKeyPublic: devices.identityKeyPublic,
     })
-    .from(identityKeys)
-    .where(eq(identityKeys.userId, targetUserId));
+    .from(devices)
+    .where(and(eq(devices.id, targetDeviceUuid), eq(devices.isActive, true)));
 
-  if (!identity) return null;
+  if (!device) return null;
 
-  // Get latest signed pre-key
+  // Get latest signed pre-key for this device
   const [spk] = await db
     .select({
       keyId: signedPreKeys.keyId,
@@ -102,13 +123,13 @@ export async function getPreKeyBundle(targetUserId: string): Promise<{
       signature: signedPreKeys.signature,
     })
     .from(signedPreKeys)
-    .where(eq(signedPreKeys.userId, targetUserId))
+    .where(eq(signedPreKeys.deviceId, targetDeviceUuid))
     .orderBy(sql`${signedPreKeys.createdAt} desc`)
     .limit(1);
 
   if (!spk) return null;
 
-  // Atomically consume one OPK (fetch + delete in transaction)
+  // Atomically consume one OPK (fetch + mark used in transaction)
   let opk: { keyId: number; publicKey: string } | undefined;
   await db.transaction(async (tx) => {
     const [oldest] = await tx
@@ -118,18 +139,20 @@ export async function getPreKeyBundle(targetUserId: string): Promise<{
         publicKey: oneTimePreKeys.publicKey,
       })
       .from(oneTimePreKeys)
-      .where(eq(oneTimePreKeys.userId, targetUserId))
+      .where(and(eq(oneTimePreKeys.deviceId, targetDeviceUuid), eq(oneTimePreKeys.used, false)))
       .orderBy(sql`${oneTimePreKeys.createdAt} asc`)
       .limit(1);
 
     if (oldest) {
-      await tx.delete(oneTimePreKeys).where(eq(oneTimePreKeys.id, oldest.id));
+      await tx.update(oneTimePreKeys).set({ used: true }).where(eq(oneTimePreKeys.id, oldest.id));
       opk = { keyId: oldest.keyId, publicKey: oldest.publicKey };
     }
   });
 
   return {
-    ...identity,
+    deviceId: device.id,
+    registrationId: device.registrationId,
+    identityKeyPublic: device.identityKeyPublic,
     signedPreKeyId: spk.keyId,
     signedPreKeyPublic: spk.publicKey,
     signedPreKeySignature: spk.signature,
@@ -175,95 +198,58 @@ export async function removeKeyBackup(userId: string) {
 
 // ── Sender Key Distributions ──
 
-export async function insertSenderKeyDistributions(
-  distributorUserId: string,
+export async function insertSenderKeyDistribution(
   conversationId: string,
-  distributions: Array<{
-    recipientUserId: string;
-    envelope: SenderKeyDistributionEnvelope;
-  }>,
+  senderUserId: string,
+  senderDeviceId: string,
+  recipientDeviceId: string,
+  ciphertext: string,
 ) {
-  if (distributions.length === 0) return;
-
-  for (const dist of distributions) {
-    await db
-      .insert(senderKeyDistributions)
-      .values({
-        conversationId,
-        distributorUserId,
-        recipientUserId: dist.recipientUserId,
-        encryptedKeyData: dist.envelope.encryptedKeyData,
-        iv: dist.envelope.iv,
-        ephemeralPublicKey: dist.envelope.ephemeralPublicKey,
-        senderIdentityKey: dist.envelope.senderIdentityKey,
-        usedSignedPreKeyId: dist.envelope.usedSignedPreKeyId,
-        usedOneTimePreKeyId: dist.envelope.usedOneTimePreKeyId ?? null,
-      })
-      .onConflictDoUpdate({
-        target: [
-          senderKeyDistributions.conversationId,
-          senderKeyDistributions.distributorUserId,
-          senderKeyDistributions.recipientUserId,
-        ],
-        set: {
-          encryptedKeyData: dist.envelope.encryptedKeyData,
-          iv: dist.envelope.iv,
-          ephemeralPublicKey: dist.envelope.ephemeralPublicKey,
-          senderIdentityKey: dist.envelope.senderIdentityKey,
-          usedSignedPreKeyId: dist.envelope.usedSignedPreKeyId,
-          usedOneTimePreKeyId: dist.envelope.usedOneTimePreKeyId ?? null,
-        },
-      });
-  }
+  await db
+    .insert(senderKeyDistributions)
+    .values({
+      conversationId,
+      senderUserId,
+      senderDeviceId,
+      recipientDeviceId,
+      ciphertext,
+    })
+    .onConflictDoUpdate({
+      target: [
+        senderKeyDistributions.conversationId,
+        senderKeyDistributions.senderDeviceId,
+        senderKeyDistributions.recipientDeviceId,
+      ],
+      set: {
+        ciphertext,
+        status: "pending",
+        createdAt: new Date(),
+        deliveredAt: null,
+      },
+    });
 }
 
-export async function getSenderKeyDistribution(
-  conversationId: string,
-  distributorUserId: string,
-  recipientUserId: string,
-): Promise<SenderKeyDistributionEnvelope | null> {
-  const [row] = await db
+export async function getPendingSenderKeyDistributions(recipientDeviceId: string) {
+  return db
     .select({
-      encryptedKeyData: senderKeyDistributions.encryptedKeyData,
-      iv: senderKeyDistributions.iv,
-      ephemeralPublicKey: senderKeyDistributions.ephemeralPublicKey,
-      senderIdentityKey: senderKeyDistributions.senderIdentityKey,
-      usedSignedPreKeyId: senderKeyDistributions.usedSignedPreKeyId,
-      usedOneTimePreKeyId: senderKeyDistributions.usedOneTimePreKeyId,
+      id: senderKeyDistributions.id,
+      conversationId: senderKeyDistributions.conversationId,
+      senderUserId: senderKeyDistributions.senderUserId,
+      senderDeviceId: senderKeyDistributions.senderDeviceId,
+      ciphertext: senderKeyDistributions.ciphertext,
     })
     .from(senderKeyDistributions)
     .where(
       and(
-        eq(senderKeyDistributions.conversationId, conversationId),
-        eq(senderKeyDistributions.distributorUserId, distributorUserId),
-        eq(senderKeyDistributions.recipientUserId, recipientUserId),
+        eq(senderKeyDistributions.recipientDeviceId, recipientDeviceId),
+        eq(senderKeyDistributions.status, "pending"),
       ),
     );
-
-  if (!row) return null;
-
-  return {
-    encryptedKeyData: row.encryptedKeyData,
-    iv: row.iv,
-    ephemeralPublicKey: row.ephemeralPublicKey,
-    senderIdentityKey: row.senderIdentityKey,
-    usedSignedPreKeyId: row.usedSignedPreKeyId,
-    usedOneTimePreKeyId: row.usedOneTimePreKeyId ?? undefined,
-  };
 }
 
-export async function getDistributionRecipients(
-  conversationId: string,
-  distributorUserId: string,
-): Promise<string[]> {
-  const rows = await db
-    .select({ recipientUserId: senderKeyDistributions.recipientUserId })
-    .from(senderKeyDistributions)
-    .where(
-      and(
-        eq(senderKeyDistributions.conversationId, conversationId),
-        eq(senderKeyDistributions.distributorUserId, distributorUserId),
-      ),
-    );
-  return rows.map((r) => r.recipientUserId);
+export async function markDistributionDelivered(distributionId: string) {
+  await db
+    .update(senderKeyDistributions)
+    .set({ status: "delivered", deliveredAt: new Date() })
+    .where(eq(senderKeyDistributions.id, distributionId));
 }

@@ -36,7 +36,7 @@ import {
   messages,
   profiles,
   profilePhotos,
-  identityKeys,
+  devices,
   reports,
   reviews,
   roomPhotos,
@@ -106,7 +106,7 @@ async function cleanup() {
   );
   for (const id of ALL_USERS) {
     await db.delete(blocks).where(eq(blocks.blockerId, id));
-    await db.delete(identityKeys).where(eq(identityKeys.userId, id));
+    await db.delete(devices).where(eq(devices.userId, id));
   }
   await db.delete(reviews).where(inArray(reviews.roomId, [ROOM_1, ROOM_DRAFT]));
   await db.delete(votes).where(inArray(votes.roomId, [ROOM_1, ROOM_DRAFT]));
@@ -1194,14 +1194,16 @@ describe("E2E workflow tests (integration)", () => {
       }
     });
 
-    it("identity key: insert own, read all, cannot insert for another", async () => {
+    it("devices: insert own, read all, cannot insert for another", async () => {
       await createDrizzleSupabaseClient(SEEKER_2).rls((tx) =>
         tx
-          .insert(identityKeys)
+          .insert(devices)
           .values({
             userId: SEEKER_2,
-            identityPublicKey: "e2e-identity-key",
-            signingPublicKey: "e2e-signing-key",
+            deviceId: 1,
+            registrationId: 12345,
+            identityKeyPublic: "e2e-identity-key",
+            platform: "web",
           })
           .returning(),
       );
@@ -1209,22 +1211,24 @@ describe("E2E workflow tests (integration)", () => {
       try {
         // Any authenticated user can read
         const rows = await createDrizzleSupabaseClient(OUTSIDER).rls((tx) =>
-          tx.select().from(identityKeys),
+          tx.select().from(devices),
         );
         expect(rows.map((r) => r.userId)).toContain(SEEKER_2);
 
         // Cannot insert for another user
         await expect(
           createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
-            tx.insert(identityKeys).values({
+            tx.insert(devices).values({
               userId: OUTSIDER,
-              identityPublicKey: "fake-identity",
-              signingPublicKey: "fake-signing",
+              deviceId: 1,
+              registrationId: 99999,
+              identityKeyPublic: "fake-identity",
+              platform: "web",
             }),
           ),
         ).rejects.toThrow();
       } finally {
-        await db.delete(identityKeys).where(eq(identityKeys.userId, SEEKER_2));
+        await db.delete(devices).where(eq(devices.userId, SEEKER_2));
       }
     });
 

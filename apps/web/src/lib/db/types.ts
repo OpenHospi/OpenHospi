@@ -4,7 +4,7 @@ import { applications, reviews } from "./schema/applications";
 import { account, session, user, verification } from "./schema/auth-schema";
 import { conversationMembers, conversations, messageReceipts, messages } from "./schema/chat";
 import {
-  identityKeys,
+  devices,
   oneTimePreKeys,
   privateKeyBackups,
   signedPreKeys,
@@ -60,7 +60,8 @@ export type Message = InferSelectModel<typeof messages>;
 export type MessageReceipt = InferSelectModel<typeof messageReceipts>;
 
 // Encryption
-export type IdentityKey = InferSelectModel<typeof identityKeys>;
+export type Device = InferSelectModel<typeof devices>;
+export type NewDevice = InferInsertModel<typeof devices>;
 export type SignedPreKey = InferSelectModel<typeof signedPreKeys>;
 export type OneTimePreKey = InferSelectModel<typeof oneTimePreKeys>;
 export type PrivateKeyBackup = InferSelectModel<typeof privateKeyBackups>;

@@ -1,4 +1,4 @@
-import type { SenderKeyDistributionEnvelope } from '@openhospi/crypto';
+import type { MessageEnvelope } from '@openhospi/crypto';
 
 import { api } from '@/lib/api-client';
 
@@ -65,8 +65,8 @@ export async function deleteBackupApi(): Promise<void> {
 export async function fetchSenderKeyDistributionApi(
   conversationId: string,
   senderUserId: string
-): Promise<SenderKeyDistributionEnvelope | null> {
-  return api.get<SenderKeyDistributionEnvelope | null>(
+): Promise<MessageEnvelope | null> {
+  return api.get<MessageEnvelope | null>(
     `/api/mobile/keys/sender-key-distribution?conversationId=${conversationId}&senderUserId=${senderUserId}`
   );
 }
@@ -75,7 +75,7 @@ export async function storeSenderKeyDistributionsApi(
   conversationId: string,
   distributions: {
     recipientUserId: string;
-    envelope: SenderKeyDistributionEnvelope;
+    envelope: MessageEnvelope;
   }[]
 ): Promise<void> {
   await api.post('/api/mobile/keys/sender-key-distribution', {

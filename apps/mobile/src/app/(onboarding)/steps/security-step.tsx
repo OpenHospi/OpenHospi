@@ -8,10 +8,7 @@ import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { useSession } from '@/lib/auth-client';
-import { setupKeysWithPIN } from '@openhospi/crypto';
-
-import { cryptoStore } from '@/lib/crypto/store';
+import { setupKeysWithPIN } from '@/lib/encryption/KeySetup';
 import {
   uploadIdentityKeyApi,
   uploadSignedPreKeyApi,
@@ -22,7 +19,6 @@ import { queryKeys } from '@/services/keys';
 
 export default function SecurityStep() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
-  const { data: session } = useSession();
   const queryClient = useQueryClient();
 
   const [pin, setPin] = useState('');
@@ -43,19 +39,20 @@ export default function SecurityStep() {
       return;
     }
 
-    if (!session?.user?.id) {
-      Alert.alert(t('setup_error'));
-      return;
-    }
-
     setLoading(true);
     try {
-      await setupKeysWithPIN(cryptoStore, session.user.id, value, {
-        uploadIdentityKey: uploadIdentityKeyApi,
-        uploadSignedPreKey: uploadSignedPreKeyApi,
-        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
-        uploadBackup: uploadBackupApi,
+      const result = await setupKeysWithPIN(value);
+
+      // Upload keys to server
+      await uploadIdentityKeyApi(result.identityKeyPublic, result.signingKeyPublic);
+      await uploadSignedPreKeyApi(result.signedPreKey);
+      await uploadOneTimePreKeysApi(result.oneTimePreKeys);
+      await uploadBackupApi({
+        encryptedPrivateKey: result.encryptedBackup.ciphertext,
+        backupIv: result.encryptedBackup.iv,
+        salt: result.encryptedBackup.salt,
       });
+
       await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
     } catch (error) {
       console.error('[SecurityStep] Setup failed:', error);

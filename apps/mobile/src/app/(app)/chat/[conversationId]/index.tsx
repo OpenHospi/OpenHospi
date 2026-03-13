@@ -1,4 +1,3 @@
-import type { GroupCiphertextPayload } from '@openhospi/crypto';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Info, Send } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
@@ -40,28 +39,24 @@ type DecryptedMessage = MessageItem & {
 async function tryDecryptMessage(
   msg: {
     ciphertext: string;
-    iv: string;
-    signature: string;
-    chainIteration: number;
-    chainId: string;
     senderId: string;
+    senderDeviceId?: number;
   },
   conversationId: string,
-  decryptGroupMessage: (
-    conversationId: string,
+  decrypt: (
     senderUserId: string,
-    payload: GroupCiphertextPayload
+    senderDeviceId: number,
+    conversationId: string,
+    serializedPayload: string
   ) => Promise<string>
 ): Promise<{ text: string | null; failed: boolean }> {
   try {
-    const payload: GroupCiphertextPayload = {
-      ciphertext: msg.ciphertext,
-      iv: msg.iv,
-      signature: msg.signature,
-      chainIteration: msg.chainIteration,
-      chainId: msg.chainId,
-    };
-    const plaintext = await decryptGroupMessage(conversationId, msg.senderId, payload);
+    const plaintext = await decrypt(
+      msg.senderId,
+      msg.senderDeviceId ?? 1,
+      conversationId,
+      msg.ciphertext
+    );
     return { text: plaintext, failed: false };
   } catch (error) {
     console.error('[Chat] Decryption failed for message', error);
@@ -128,7 +123,10 @@ export default function ConversationScreen() {
   const { data: initialMessages, isPending: messagesLoading } = useMessages(conversationId);
   const sendMessage = useSendMessage();
   const markRead = useMarkRead(conversationId);
-  const { status, encryptGroupMessage, decryptGroupMessage } = useEncryption(userId);
+
+  // TODO: deviceId should come from device registration (Phase 6)
+  const deviceId = 1;
+  const { status, encrypt, decrypt } = useEncryption(userId, deviceId);
 
   const [messages, setMessages] = useState<DecryptedMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -141,6 +139,9 @@ export default function ConversationScreen() {
   const firstOther = otherMembers[0];
 
   const { hasChanged: keyChanged } = useKeyChangeDetection(firstOther?.userId ?? '');
+
+  const isReady = status?.hasIdentity === true;
+  const needsSetup = status !== null && !status.hasIdentity;
 
   // Set header title
   useEffect(() => {
@@ -161,7 +162,7 @@ export default function ConversationScreen() {
 
   // Decrypt initial messages
   useEffect(() => {
-    if (!initialMessages || status !== 'ready') return;
+    if (!initialMessages || !isReady) return;
 
     let active = true;
     setIsDecrypting(true);
@@ -169,7 +170,7 @@ export default function ConversationScreen() {
     (async () => {
       const decrypted = await Promise.all(
         initialMessages.map(async (msg): Promise<DecryptedMessage> => {
-          if (!msg.ciphertext || !msg.iv || !msg.signature || msg.chainIteration == null) {
+          if (!msg.ciphertext) {
             return { ...msg, decryptedText: null, decryptFailed: false };
           }
 
@@ -182,14 +183,10 @@ export default function ConversationScreen() {
           const result = await tryDecryptMessage(
             {
               ciphertext: msg.ciphertext,
-              iv: msg.iv,
-              signature: msg.signature,
-              chainIteration: msg.chainIteration,
-              chainId: msg.chainId ?? '',
               senderId: msg.senderId,
             },
             conversationId,
-            decryptGroupMessage
+            decrypt
           );
           return { ...msg, decryptedText: result.text, decryptFailed: result.failed };
         })
@@ -204,10 +201,9 @@ export default function ConversationScreen() {
     return () => {
       active = false;
     };
-  }, [initialMessages, status, userId, conversationId, decryptGroupMessage]);
+  }, [initialMessages, isReady, userId, conversationId, decrypt]);
 
   // Mark conversation read on mount
-  // markRead.mutate is stable per React Query — safe to exclude from deps
   useEffect(() => {
     if (conversationId) {
       markRead.mutate();
@@ -217,7 +213,7 @@ export default function ConversationScreen() {
 
   // Realtime subscription
   useEffect(() => {
-    if (status !== 'ready' || !userId) return;
+    if (!isReady || !userId) return;
 
     let active = true;
 
@@ -245,11 +241,8 @@ export default function ConversationScreen() {
           const record = payload.new as {
             message_id: string;
             sender_user_id: string;
+            sender_device_id?: number;
             ciphertext: string;
-            iv: string;
-            signature: string;
-            chain_iteration: number;
-            chain_id: string;
           };
 
           if (!active) return;
@@ -261,14 +254,11 @@ export default function ConversationScreen() {
             const result = await tryDecryptMessage(
               {
                 ciphertext: record.ciphertext,
-                iv: record.iv,
-                signature: record.signature,
-                chainIteration: record.chain_iteration,
-                chainId: record.chain_id ?? '',
                 senderId: record.sender_user_id,
+                senderDeviceId: record.sender_device_id,
               },
               conversationId,
-              decryptGroupMessage
+              decrypt
             );
 
             const newMsg: DecryptedMessage = {
@@ -277,10 +267,10 @@ export default function ConversationScreen() {
               senderFirstName: senderMember?.firstName ?? '',
               senderAvatarUrl: senderMember?.avatarUrl ?? null,
               ciphertext: record.ciphertext,
-              iv: record.iv,
-              signature: record.signature,
-              chainIteration: record.chain_iteration,
-              chainId: record.chain_id ?? '',
+              iv: null,
+              signature: null,
+              chainIteration: null,
+              chainId: null,
               messageType: 'text',
               createdAt: new Date().toISOString(),
               decryptedText: result.text,
@@ -309,7 +299,7 @@ export default function ConversationScreen() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, userId, conversationId, decryptGroupMessage]);
+  }, [isReady, userId, conversationId, decrypt]);
 
   async function handleSend() {
     const text = inputText.trim();
@@ -320,9 +310,14 @@ export default function ConversationScreen() {
 
     try {
       const memberUserIds = detail.members.map((m) => m.userId);
-      const payload = await encryptGroupMessage(conversationId, memberUserIds, text);
+      // TODO: Wire up EncryptionDependencies for session establishment (Phase 6/7)
+      const { serialized } = await encrypt(conversationId, memberUserIds, text, {
+        fetchPreKeyBundle: async () => null,
+        getDeviceIds: async () => [1],
+        sendDistribution: async () => {},
+      });
 
-      const result = await sendMessage.mutateAsync({ conversationId, payload });
+      const result = await sendMessage.mutateAsync({ conversationId, payload: serialized });
       const messageId = result?.messageId ?? `optimistic-${Date.now()}`;
       await sentMessageCache.save(messageId, text);
 
@@ -351,7 +346,7 @@ export default function ConversationScreen() {
     }
   }
 
-  if (status === 'loading') {
+  if (status === null) {
     return (
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
@@ -365,7 +360,7 @@ export default function ConversationScreen() {
     );
   }
 
-  if (status === 'needs-setup' || status === 'needs-recovery') {
+  if (needsSetup) {
     return (
       <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
         <View
@@ -377,23 +372,17 @@ export default function ConversationScreen() {
             padding: 32,
           }}>
           <Text className="text-foreground text-center text-lg font-semibold">
-            {status === 'needs-recovery'
-              ? t('encryption.unlock_title')
-              : t('encryption.setup_title')}
+            {t('encryption.setup_title')}
           </Text>
           <Text variant="muted" className="text-center text-sm">
-            {status === 'needs-recovery'
-              ? t('encryption.unlock_description')
-              : t('encryption.setup_description')}
+            {t('encryption.setup_description')}
           </Text>
           <Pressable
             onPress={() => router.push('/(app)/(modals)/key-recovery' as never)}
             style={{ paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}
             className="bg-primary">
             <Text className="text-primary-foreground font-semibold">
-              {status === 'needs-recovery'
-                ? t('encryption.unlock_pin')
-                : t('encryption.setup_with_pin')}
+              {t('encryption.setup_with_pin')}
             </Text>
           </Pressable>
         </View>

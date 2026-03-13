@@ -1,4 +1,5 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
+import type { EncryptedBackup } from '@openhospi/crypto';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
@@ -9,12 +10,8 @@ import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { useSession } from '@/lib/auth-client';
-import { recoverKeysWithPIN, resetKeys, setupKeysWithPIN } from '@openhospi/crypto';
-
-import { cryptoStore } from '@/lib/crypto/store';
+import { setupKeysWithPIN, recoverKeysWithPIN } from '@/lib/encryption/KeySetup';
 import {
-  deleteBackupApi,
   fetchBackupApi,
   uploadBackupApi,
   uploadIdentityKeyApi,
@@ -25,7 +22,6 @@ import { queryKeys } from '@/services/keys';
 
 export default function KeyRecoveryScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
-  const { data: session } = useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -33,18 +29,19 @@ export default function KeyRecoveryScreen() {
   const [confirmPin, setConfirmPin] = useState('');
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'loading' | 'recover' | 'setup'>('loading');
-  const [backup, setBackup] = useState<{
-    encryptedPrivateKey: string;
-    backupIv: string;
-    salt: string;
-  } | null>(null);
+  const [backup, setBackup] = useState<EncryptedBackup | null>(null);
 
   // Fetch backup on mount to determine mode
   useEffect(() => {
     fetchBackupApi()
       .then((b) => {
         if (b) {
-          setBackup(b);
+          setBackup({
+            version: 1,
+            ciphertext: b.encryptedPrivateKey,
+            iv: b.backupIv,
+            salt: b.salt,
+          });
           setMode('recover');
         } else {
           setMode('setup');
@@ -56,18 +53,18 @@ export default function KeyRecoveryScreen() {
       });
   }, []);
 
-  const userId = session?.user?.id;
-
   async function handleRecoverFilled(value: string) {
-    if (!userId || !backup) return;
+    if (!backup) return;
 
     setLoading(true);
     try {
-      await recoverKeysWithPIN(cryptoStore, userId, value, backup, {
-        uploadIdentityKey: uploadIdentityKeyApi,
-        uploadSignedPreKey: uploadSignedPreKeyApi,
-        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
-      });
+      const result = await recoverKeysWithPIN(backup, value);
+
+      // Upload recovered keys to server
+      await uploadIdentityKeyApi(result.identityKeyPublic, result.signingKeyPublic);
+      await uploadSignedPreKeyApi(result.signedPreKey);
+      await uploadOneTimePreKeysApi(result.oneTimePreKeys);
+
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('recovery_success'));
       router.back();
@@ -81,26 +78,15 @@ export default function KeyRecoveryScreen() {
   }
 
   async function handleStartFresh() {
-    if (!userId) return;
-
     Alert.alert(t('start_fresh'), t('start_fresh_warning'), [
       { text: t('change_pin'), style: 'cancel' },
       {
         text: t('start_fresh_confirm'),
         style: 'destructive',
-        onPress: async () => {
-          setLoading(true);
-          try {
-            await resetKeys(cryptoStore, userId, { deleteBackup: deleteBackupApi });
-            setMode('setup');
-            setPin('');
-            setConfirmPin('');
-          } catch (error) {
-            console.error('[KeyRecovery] Reset failed:', error);
-            Alert.alert(t('setup_error'));
-          } finally {
-            setLoading(false);
-          }
+        onPress: () => {
+          setMode('setup');
+          setPin('');
+          setConfirmPin('');
         },
       },
     ]);
@@ -119,16 +105,20 @@ export default function KeyRecoveryScreen() {
       return;
     }
 
-    if (!userId) return;
-
     setLoading(true);
     try {
-      await setupKeysWithPIN(cryptoStore, userId, value, {
-        uploadIdentityKey: uploadIdentityKeyApi,
-        uploadSignedPreKey: uploadSignedPreKeyApi,
-        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
-        uploadBackup: uploadBackupApi,
+      const result = await setupKeysWithPIN(value);
+
+      // Upload keys to server
+      await uploadIdentityKeyApi(result.identityKeyPublic, result.signingKeyPublic);
+      await uploadSignedPreKeyApi(result.signedPreKey);
+      await uploadOneTimePreKeysApi(result.oneTimePreKeys);
+      await uploadBackupApi({
+        encryptedPrivateKey: result.encryptedBackup.ciphertext,
+        backupIv: result.encryptedBackup.iv,
+        salt: result.encryptedBackup.salt,
       });
+
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('setup_success'));
       router.back();

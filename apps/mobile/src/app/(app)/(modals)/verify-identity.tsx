@@ -55,7 +55,7 @@ export default function VerifyIdentityScreen() {
 
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const { identity } = useEncryptionKey();
+  const { status: encryptionStatus } = useEncryptionKey();
   const { isVerified: alreadyVerified, verifiedAt } = useVerificationStatus(peerUserId);
   const saveVerification = useSaveVerification();
   const [permission, requestPermission] = useCameraPermissions();
@@ -63,23 +63,28 @@ export default function VerifyIdentityScreen() {
   const safetyNumberQuery = useQuery({
     queryKey: queryKeys.verification.identityKeys([peerUserId]),
     queryFn: async () => {
-      if (!userId || !identity) return null;
+      if (!userId || !encryptionStatus) return null;
+
+      const { getMobileSignalStore } = await import('@/lib/crypto/stores');
+      const store = getMobileSignalStore();
+      const identity = await store.getIdentityKeyPair();
+
       const [peerKeys] = await fetchIdentityKeysApi([peerUserId]);
       if (!peerKeys) return null;
       const safetyNumber = await generateSafetyNumber(
         userId,
-        fromBase64(identity.signingPublicKey),
+        identity.signingKeyPair.publicKey,
         peerUserId,
         fromBase64(peerKeys.signingPublicKey)
       );
       const qrPayload = encodeSafetyNumberQR(
         userId,
-        fromBase64(identity.signingPublicKey),
+        identity.signingKeyPair.publicKey,
         safetyNumber
       );
       return { safetyNumber, qrPayload, peerSigningKey: peerKeys.signingPublicKey };
     },
-    enabled: !!userId && !!identity,
+    enabled: !!userId && !!encryptionStatus?.hasIdentity,
   });
 
   function handleBarCodeScanned({ data }: { data: string }) {
@@ -89,7 +94,7 @@ export default function VerifyIdentityScreen() {
     const result = verifySafetyNumberQR(data, safetyNumberQuery.data.safetyNumber);
 
     if (result.valid) {
-      if (result.peerUserId === userId) {
+      if (result.remoteUserId === userId) {
         Alert.alert(t('scan_own_qr'));
         setScanned(false);
         return;
@@ -98,10 +103,10 @@ export default function VerifyIdentityScreen() {
       setScanResult('verified');
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       saveVerification.mutate({
-        peerUserId: result.peerUserId,
-        signingPublicKey: result.peerSigningKey,
+        peerUserId: result.remoteUserId,
+        signingPublicKey: safetyNumberQuery.data.peerSigningKey,
       });
-    } else if (result.reason === 'mismatch') {
+    } else if (result.remoteUserId) {
       setScanResult('mismatch');
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } else {

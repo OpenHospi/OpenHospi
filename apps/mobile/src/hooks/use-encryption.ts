@@ -1,86 +1,96 @@
-import {
-  getKeyStatus,
-  encryptGroupMessage as encryptGroupMessageFn,
-  decryptGroupMessage as decryptGroupMessageFn,
-  getIdentityFingerprint,
-} from '@openhospi/crypto';
-import type { GroupCiphertextPayload, KeyStatus, FingerprintResult } from '@openhospi/crypto';
+/**
+ * React hook for E2EE operations on mobile.
+ * Provides group message encrypt/decrypt and safety number verification.
+ */
+import { setCryptoProvider, generateSafetyNumber, getKeyStatus } from '@openhospi/crypto';
+import { createNativeCryptoProvider } from '@openhospi/crypto/native';
+import type { GroupCiphertextPayload, ProtocolAddress, KeyStatus } from '@openhospi/crypto';
 import { useEffect, useState } from 'react';
 
-import { cryptoStore } from '@/lib/crypto/store';
-import { api } from '@/lib/api-client';
+import { getMobileSignalStore } from '@/lib/crypto/stores';
 import {
-  fetchBackupApi,
-  fetchPreKeyBundleApi,
-  fetchSenderKeyDistributionApi,
-  storeSenderKeyDistributionsApi,
-  getExistingDistributionRecipientsApi,
-} from '@/services/encryption';
+  encryptMessage,
+  deserializePayload,
+  serializePayload,
+} from '@/lib/encryption/MessageEncryptor';
+import type { EncryptionDependencies } from '@/lib/encryption/MessageEncryptor';
+import { decryptMessage } from '@/lib/encryption/MessageDecryptor';
 
-export function useEncryption(userId: string) {
-  const [status, setStatus] = useState<'loading' | KeyStatus>('loading');
+let providerInitialized = false;
+
+function ensureCryptoProvider() {
+  if (!providerInitialized) {
+    setCryptoProvider(createNativeCryptoProvider());
+    providerInitialized = true;
+  }
+}
+
+export function useEncryption(userId: string, deviceId: number) {
+  const [status, setStatus] = useState<KeyStatus | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    ensureCryptoProvider();
+
     (async () => {
-      const keyStatus = await getKeyStatus(cryptoStore, userId, fetchBackupApi);
+      const store = getMobileSignalStore();
+      const keyStatus = await getKeyStatus(store);
       if (!cancelled) setStatus(keyStatus);
     })();
+
     return () => {
       cancelled = true;
     };
   }, [userId]);
 
-  async function encryptGroupMessage(
+  async function encrypt(
     conversationId: string,
     memberUserIds: string[],
-    plaintext: string
-  ): Promise<GroupCiphertextPayload> {
-    return encryptGroupMessageFn(
-      cryptoStore,
+    plaintext: string,
+    deps: EncryptionDependencies
+  ): Promise<{ serialized: string; senderKeyId: number }> {
+    const { payload, senderKeyId } = await encryptMessage(
       userId,
+      deviceId,
       conversationId,
       memberUserIds,
       plaintext,
-      async (targetUserId) => {
-        const bundle = await fetchPreKeyBundleApi(targetUserId);
-        return bundle ?? null;
-      },
-      async (distributions) => {
-        await storeSenderKeyDistributionsApi(conversationId, distributions);
-      },
-      getExistingDistributionRecipientsApi
+      deps
     );
+    return { serialized: serializePayload(payload), senderKeyId };
   }
 
-  async function decryptGroupMessage(
-    conversationId: string,
+  async function decrypt(
     senderUserId: string,
-    payload: GroupCiphertextPayload
+    senderDeviceId: number,
+    conversationId: string,
+    serializedPayload: string
   ): Promise<string> {
-    return decryptGroupMessageFn(
-      cryptoStore,
-      userId,
-      conversationId,
-      senderUserId,
-      payload,
-      fetchSenderKeyDistributionApi
-    );
+    const payload = deserializePayload(serializedPayload);
+    return decryptMessage(senderUserId, senderDeviceId, conversationId, payload);
   }
 
-  async function getFingerprint(otherUserId: string): Promise<FingerprintResult | null> {
-    return getIdentityFingerprint(cryptoStore, userId, otherUserId, async (userIds) => {
-      const keys = await api.post<
-        { userId: string; identityPublicKey: string; signingPublicKey: string }[]
-      >('/api/mobile/keys/identity/batch', { userIds });
-      return keys.map((k) => ({ signingPublicKey: k.signingPublicKey }));
-    });
+  async function getSafetyNumber(
+    remoteUserId: string,
+    remoteSigningPublicKey: Uint8Array
+  ): Promise<string> {
+    ensureCryptoProvider();
+    const store = getMobileSignalStore();
+    const identity = await store.getIdentityKeyPair();
+    return generateSafetyNumber(
+      userId,
+      identity.signingKeyPair.publicKey,
+      remoteUserId,
+      remoteSigningPublicKey
+    );
   }
 
   return {
     status,
-    encryptGroupMessage,
-    decryptGroupMessage,
-    getFingerprint,
+    encrypt,
+    decrypt,
+    getSafetyNumber,
   };
 }
+
+export type { KeyStatus, GroupCiphertextPayload, EncryptionDependencies, ProtocolAddress };

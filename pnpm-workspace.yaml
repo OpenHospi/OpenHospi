@@ -36,6 +36,7 @@ catalog:
   zod: ^4.3.6
   drizzle-orm: 1.0.0-beta.15-859cf75
   drizzle-kit: 1.0.0-beta.15-859cf75
+  drizzle-seed: 1.0.0-beta.15-859cf75
   better-auth: ^1.5.5
   "@better-auth/expo": ^1.5.5
   "@better-auth/drizzle-adapter": ^1.5.5

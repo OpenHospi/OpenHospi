@@ -1,5 +1,4 @@
 import { sql } from "drizzle-orm";
-import type { PgDatabase } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
@@ -29,11 +28,9 @@ type SupabaseToken = {
   role?: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createDrizzle(
-  token: SupabaseToken,
-  { admin, client }: { admin: PgDatabase<any>; client: PgDatabase<any> },
-) {
+type DB = ReturnType<typeof drizzle<typeof schema, typeof relations>>;
+
+function createDrizzle(token: SupabaseToken, { admin, client }: { admin: DB; client: DB }) {
   return {
     admin,
     rls: (async (transaction, ...rest) => {

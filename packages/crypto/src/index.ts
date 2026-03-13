@@ -1,19 +1,25 @@
 /**
- * @openhospi/crypto — Signal Sender Keys E2EE
+ * @openhospi/crypto — Signal Protocol E2EE
  *
- * X3DH key exchange for Sender Key distribution + HMAC chain ratchet with
- * X25519/Ed25519 + AES-256-GCM. Provides forward secrecy and MITM detection
- * via safety numbers.
+ * Full Signal Protocol implementation: X3DH key agreement, Double Ratchet
+ * for 1:1 sessions, Sender Keys for group encryption, safety numbers,
+ * and PIN-based key backup.
  *
  * Usage:
- *   import { setBackend } from "@openhospi/crypto";
- *   import { createWebBackend } from "@openhospi/crypto/web";
- *   setBackend(createWebBackend());
+ *   // Web
+ *   import { setCryptoProvider } from "@openhospi/crypto";
+ *   import { createWebCryptoProvider } from "@openhospi/crypto/web";
+ *   setCryptoProvider(createWebCryptoProvider());
+ *
+ *   // Mobile
+ *   import { setCryptoProvider } from "@openhospi/crypto";
+ *   import { createNativeCryptoProvider } from "@openhospi/crypto/native";
+ *   setCryptoProvider(createNativeCryptoProvider());
  */
 
 // ── Platform ──
-export { setBackend, getBackend } from "./backends/platform";
-export type { CryptoBackend } from "./backends/platform";
+export { setCryptoProvider, getCryptoProvider } from "./primitives/CryptoProvider";
+export type { CryptoProvider } from "./primitives/CryptoProvider";
 
 // ── Types ──
 export type {
@@ -22,44 +28,75 @@ export type {
   SignedPreKey,
   OneTimePreKey,
   PreKeyBundle,
-  ServerPreKeyBundle,
   X3DHResult,
+  ChainState,
+  SessionState,
+  WhisperMessage,
+  PreKeyWhisperMessage,
+  MessageEnvelope,
   SenderKeyState,
-  SerializedSenderKeyState,
-  SenderKeyDistributionData,
+  SenderKeyDistributionMessage,
   GroupCiphertextPayload,
-  SenderKeyDistributionEnvelope,
+  ProtocolAddress,
+  SkippedKey,
+  SerializedSessionState,
+  SerializedSenderKeyState,
 } from "./protocol/types";
 
 // ── Encoding ──
-export { toBase64, fromBase64, concatBytes, bytesEqual } from "./protocol/encoding";
+export {
+  toBase64,
+  fromBase64,
+  concatBytes,
+  bytesEqual,
+  utf8ToBytes,
+  bytesToUtf8,
+} from "./protocol/encoding";
 
 // ── Key Generation ──
 export {
   generateIdentityKeyPair,
+  generateRegistrationId,
   generateSignedPreKey,
-  generateOneTimePreKeys,
   verifySignedPreKey,
+  generateOneTimePreKeys,
 } from "./protocol/keys";
 
 // ── X3DH Key Exchange ──
-export { x3dhInitiate, x3dhRespond } from "./protocol/x3dh";
+export {
+  x3dhInitiate,
+  x3dhRespond,
+  initializeSessionFromX3DH,
+  initializeSessionFromX3DHResponder,
+} from "./protocol/x3dh";
 
-// ── Sender Key Chain ──
-export { senderKeyChainStep, fastForwardChain } from "./protocol/sender-key-chain";
+// ── Double Ratchet ──
+export { ratchetEncrypt, ratchetDecrypt } from "./protocol/double-ratchet";
+
+// ── Session Cipher ──
+export { sessionEncrypt, sessionDecrypt } from "./protocol/session-cipher";
+export type { SessionEncryptResult, SessionDecryptResult } from "./protocol/session-cipher";
+
+// ── Session Builder ──
+export { buildSessionFromPreKeyBundle, processPreKeyMessage } from "./protocol/session-builder";
+export type { SessionFromBundleResult } from "./protocol/session-builder";
 
 // ── Sender Key ──
 export {
   generateSenderKey,
+  createDistributionMessage,
+  processDistributionMessage,
   senderKeyEncrypt,
   senderKeyDecrypt,
   serializeSenderKeyState,
   deserializeSenderKeyState,
+  serializeDistributionMessage,
+  deserializeDistributionMessage,
   StaleSenderKeyError,
 } from "./protocol/sender-key";
 
-// ── Encryption ──
-export { encrypt, decrypt, encodeGroupAad, encodeSignatureData } from "./protocol/encryption";
+// ── Group Cipher ──
+export { groupEncrypt, groupDecrypt } from "./protocol/group-cipher";
 
 // ── Safety Numbers ──
 export {
@@ -73,31 +110,41 @@ export type { QRVerifyResult } from "./protocol/safety-number";
 export { deriveKeyFromPIN, encryptIdentityBackup, decryptIdentityBackup } from "./protocol/backup";
 export type { IdentityBackupData, EncryptedBackup } from "./protocol/backup";
 
-// ── Store ──
+// ── Store Interfaces ──
 export type {
-  CryptoStore,
-  StoredIdentity,
-  StoredSignedPreKey,
-  StoredOneTimePreKey,
-} from "./store/types";
+  IdentityKeyStore,
+  PreKeyStore,
+  SignedPreKeyStore,
+  SessionStore,
+  SenderKeyStore,
+  SkippedKeyStore,
+  SignalProtocolStore,
+} from "./stores/types";
 
-// ── Manager: Key Management ──
+// ── Manager: Key Lifecycle ──
 export {
   getKeyStatus,
   setupKeysWithPIN,
   recoverKeysWithPIN,
-  resetKeys,
   replenishOneTimePreKeys,
-  getOrCreateOwnSenderKey,
-  distributeSenderKey,
-  receiveSenderKeyDistribution,
-} from "./manager/key-management";
-export type { KeyStatus } from "./manager/key-management";
+  rotateSignedPreKey,
+} from "./manager/KeyManager";
+export type { KeyStatus } from "./manager/KeyManager";
 
-// ── Manager: Encryption Operations ──
+// ── Manager: Session Management ──
 export {
+  establishSession,
+  processIncomingPreKeyMessage,
+  encryptForSession,
+  decryptFromSession,
+} from "./manager/SessionManager";
+
+// ── Manager: Group Encryption ──
+export {
+  getOrCreateSenderKey,
+  distributeSenderKeyToDevice,
+  receiveSenderKeyDistribution,
   encryptGroupMessage,
   decryptGroupMessage,
-  getIdentityFingerprint,
-} from "./manager/encryption-ops";
-export type { FingerprintResult } from "./manager/encryption-ops";
+  rotateSenderKey,
+} from "./manager/GroupEncryptionManager";

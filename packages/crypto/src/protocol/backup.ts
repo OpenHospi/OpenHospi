@@ -1,69 +1,67 @@
-/**
- * Identity key backup: encrypt/decrypt identity key material with a PIN-derived key.
- *
- * Uses PBKDF2-SHA256 (600k iterations) + AES-256-GCM.
- * Compatible with the existing privateKeyBackups table.
- */
-import { PBKDF2_ITERATIONS } from "@openhospi/shared/constants";
-
-import type { CryptoBackend } from "../backends/platform";
+import { getCryptoProvider } from "../primitives/CryptoProvider";
 
 import { toBase64, fromBase64 } from "./encoding";
 
-export type IdentityBackupData = {
-  signingPrivateKey: string; // base64
+const PBKDF2_ITERATIONS = 600_000;
+const SALT_LENGTH = 32;
+
+export interface IdentityBackupData {
   signingPublicKey: string; // base64
-  dhPrivateKey: string; // base64
-  dhPublicKey: string; // base64
-};
-
-export type EncryptedBackup = {
-  ciphertext: string; // base64
-  iv: string; // base64
-  salt: string; // base64
-};
-
-/** Derive a 256-bit wrapping key from a PIN using PBKDF2-SHA256 */
-export async function deriveKeyFromPIN(
-  backend: CryptoBackend,
-  pin: string,
-  salt: Uint8Array,
-  iterations = PBKDF2_ITERATIONS,
-): Promise<Uint8Array> {
-  const password = new TextEncoder().encode(pin);
-  return backend.pbkdf2(password, salt, iterations, 32);
+  signingPrivateKey: string; // base64
+  registrationId: number;
 }
 
-/** Encrypt identity key material for server-side backup */
+export interface EncryptedBackup {
+  version: number;
+  salt: string; // base64
+  iv: string; // base64
+  ciphertext: string; // base64 (AES-256-GCM encrypted IdentityBackupData)
+}
+
+/**
+ * Derive a 256-bit encryption key from a PIN using PBKDF2.
+ */
+export async function deriveKeyFromPIN(pin: string, salt: Uint8Array): Promise<Uint8Array> {
+  const crypto = getCryptoProvider();
+  return crypto.pbkdf2(new TextEncoder().encode(pin), salt, PBKDF2_ITERATIONS, 32);
+}
+
+/**
+ * Encrypt identity key material with a PIN-derived key.
+ */
 export async function encryptIdentityBackup(
-  backend: CryptoBackend,
   data: IdentityBackupData,
   pin: string,
 ): Promise<EncryptedBackup> {
-  const salt = backend.randomBytes(32);
-  const wrappingKey = await deriveKeyFromPIN(backend, pin, salt);
+  const crypto = getCryptoProvider();
+  const salt = crypto.randomBytes(SALT_LENGTH);
+  const key = await deriveKeyFromPIN(pin, salt);
+  const iv = crypto.randomBytes(12); // 96-bit IV for GCM
+
   const plaintext = new TextEncoder().encode(JSON.stringify(data));
-  const iv = backend.randomBytes(12);
-  const ciphertext = await backend.aesGcmEncrypt(wrappingKey, plaintext, iv);
+  const ciphertext = await crypto.aesGcmEncrypt(key, plaintext, iv);
 
   return {
-    ciphertext: toBase64(ciphertext),
-    iv: toBase64(iv),
+    version: 1,
     salt: toBase64(salt),
+    iv: toBase64(iv),
+    ciphertext: toBase64(ciphertext),
   };
 }
 
-/** Decrypt identity key material from server-side backup */
+/**
+ * Decrypt identity key material from a backup using the PIN.
+ */
 export async function decryptIdentityBackup(
-  backend: CryptoBackend,
   backup: EncryptedBackup,
   pin: string,
 ): Promise<IdentityBackupData> {
   const salt = fromBase64(backup.salt);
-  const wrappingKey = await deriveKeyFromPIN(backend, pin, salt);
-  const ciphertext = fromBase64(backup.ciphertext);
   const iv = fromBase64(backup.iv);
-  const plaintext = await backend.aesGcmDecrypt(wrappingKey, ciphertext, iv);
+  const ciphertext = fromBase64(backup.ciphertext);
 
-  return JSON.parse(new TextDecoder().decode(plaintext));
+  const key = await deriveKeyFromPIN(pin, salt);
+  const plaintext = await getCryptoProvider().aesGcmDecrypt(key, ciphertext, iv);
+
+  return JSON.parse(new TextDecoder().decode(plaintext)) as IdentityBackupData;
 }

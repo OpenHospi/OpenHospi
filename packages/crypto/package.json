@@ -6,8 +6,10 @@
   "license": "AGPL-3.0-only",
   "exports": {
     ".": "./src/index.ts",
-    "./web": "./src/backends/web.ts",
-    "./native": "./src/backends/native.ts"
+    "./web": "./src/primitives/WebCryptoProvider.ts",
+    "./native": "./src/primitives/NativeCryptoProvider.ts",
+    "./stores": "./src/stores/types.ts",
+    "./stores/indexeddb": "./src/stores/IndexedDbStore.ts"
   },
   "dependencies": {
     "@noble/curves": "^2.0.1",

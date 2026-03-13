@@ -1,127 +1,144 @@
-/**
- * Signal Sender Keys protocol types for E2EE.
- *
- * All keys are raw Uint8Array bytes — no CryptoKey wrappers.
- * Ed25519 for signing, X25519 for Diffie-Hellman.
- */
+// ── Fundamental Key Types ──
 
-/** Raw byte key pair (X25519 or Ed25519) */
-export type KeyPair = {
+export interface KeyPair {
   publicKey: Uint8Array;
   privateKey: Uint8Array;
-};
+}
 
-/** Ed25519 signing pair + derived X25519 DH pair */
-export type IdentityKeyPair = {
-  /** Ed25519 signing key pair */
-  signing: KeyPair;
-  /** X25519 DH key pair (derived from Ed25519) */
-  dh: KeyPair;
-};
+export interface IdentityKeyPair {
+  /** Ed25519 signing key pair (root identity) */
+  signingKeyPair: KeyPair;
+  /** X25519 DH key pair (derived from Ed25519 for key agreement) */
+  dhKeyPair: KeyPair;
+}
 
-/** Signed pre-key: X25519 pair + Ed25519 signature over the public key */
-export type SignedPreKey = {
+export interface SignedPreKey {
   keyId: number;
   keyPair: KeyPair;
-  signature: Uint8Array;
-};
+  signature: Uint8Array; // Ed25519 signature over the X25519 public key
+}
 
-/** One-time pre-key: X25519 pair */
-export type OneTimePreKey = {
+export interface OneTimePreKey {
   keyId: number;
   keyPair: KeyPair;
-};
+}
 
-/** Pre-key bundle fetched from server for X3DH session setup */
-export type PreKeyBundle = {
-  /** Remote user's X25519 identity public key */
-  identityKey: Uint8Array;
-  /** Remote user's Ed25519 signing public key */
-  signingKey: Uint8Array;
-  /** Signed pre-key public key */
-  signedPreKeyPublic: Uint8Array;
-  /** Signed pre-key ID */
+// ── PreKey Bundle (fetched from server for session establishment) ──
+
+export interface PreKeyBundle {
+  registrationId: number;
+  deviceId: number;
+  identityKey: Uint8Array; // X25519 public key
   signedPreKeyId: number;
-  /** Ed25519 signature over signed pre-key public */
-  signedPreKeySignature: Uint8Array;
-  /** One-time pre-key public key (optional — may be exhausted) */
-  oneTimePreKeyPublic?: Uint8Array;
-  /** One-time pre-key ID */
+  signedPreKeyPublic: Uint8Array; // X25519 public key
+  signedPreKeySignature: Uint8Array; // Ed25519 signature
   oneTimePreKeyId?: number;
-};
+  oneTimePreKeyPublic?: Uint8Array; // X25519 public key
+}
 
-/** Server-side pre-key bundle (base64 strings instead of Uint8Array) */
-export type ServerPreKeyBundle = {
-  identityPublicKey: string;
-  signingPublicKey: string;
-  signedPreKeyPublic: string;
-  signedPreKeyId: number;
-  signedPreKeySignature: string;
-  oneTimePreKeyPublic?: string;
-  oneTimePreKeyId?: number;
-};
+// ── X3DH Key Agreement ──
 
-/** Result of X3DH key exchange (initiator side) */
-export type X3DHResult = {
-  /** 32-byte shared secret */
-  sharedSecret: Uint8Array;
-  /** Ephemeral public key to send to responder */
-  ephemeralPublicKey: Uint8Array;
-  /** ID of the signed pre-key used */
-  usedSignedPreKeyId: number;
-  /** ID of the one-time pre-key used (if available) */
+export interface X3DHResult {
+  sharedSecret: Uint8Array; // 32-byte root key material
+  ephemeralKeyPair: KeyPair; // Alice's ephemeral X25519 key pair
   usedOneTimePreKeyId?: number;
-};
+}
+
+// ── Double Ratchet Session State ──
+
+export interface ChainState {
+  chainKey: Uint8Array; // 32 bytes
+  messageCounter: number;
+}
+
+export interface SessionState {
+  rootKey: Uint8Array; // 32 bytes
+  sendingChain: ChainState;
+  receivingChain: ChainState | null;
+  localRatchetKeyPair: KeyPair; // X25519 ratchet key pair
+  remoteRatchetPublicKey: Uint8Array; // X25519 remote ratchet public key
+  previousSendingChainLength: number;
+  localRegistrationId: number;
+  remoteRegistrationId: number;
+}
+
+// ── Wire Messages ──
+
+export interface WhisperMessage {
+  ratchetPublicKey: Uint8Array; // X25519 public key of sender's current ratchet
+  counter: number;
+  previousCounter: number;
+  ciphertext: Uint8Array; // AES-256-CBC encrypted plaintext
+  mac: Uint8Array; // HMAC-SHA256 over the message
+}
+
+export interface PreKeyWhisperMessage {
+  identityKey: Uint8Array; // Sender's X25519 identity public key
+  ephemeralKey: Uint8Array; // Sender's ephemeral X25519 public key
+  signedPreKeyId: number;
+  oneTimePreKeyId?: number;
+  registrationId: number;
+  message: WhisperMessage;
+}
+
+export type MessageEnvelope =
+  | { type: "prekey"; data: PreKeyWhisperMessage }
+  | { type: "whisper"; data: WhisperMessage };
 
 // ── Sender Key Types ──
 
-/** Sender Key state for a single user in a conversation */
-export type SenderKeyState = {
-  /** Unique identifier for this key generation (like Signal's distributionId) */
-  chainId: string;
-  /** Current HMAC chain key (32 bytes) */
-  chainKey: Uint8Array;
-  /** Ed25519 signing key pair for authenticating ciphertexts */
-  signingKeyPair: KeyPair;
-  /** Current chain iteration (incremented per message) */
+export interface SenderKeyState {
+  senderKeyId: number;
+  chainKey: Uint8Array; // 32 bytes
+  signatureKeyPair: KeyPair; // Ed25519 key pair for signing
   iteration: number;
-  /** Cached message keys for out-of-order delivery: iteration → messageKey */
-  skippedMessageKeys: Map<number, Uint8Array>;
-};
+}
 
-/** JSON-safe version of SenderKeyState */
-export type SerializedSenderKeyState = {
-  chainId: string;
-  chainKey: string; // base64
-  signingPublicKey: string; // base64
-  signingPrivateKey?: string; // base64, only present for OWN sender key
+export interface SenderKeyDistributionMessage {
+  senderKeyId: number;
   iteration: number;
-  skippedMessageKeys: Array<{ iteration: number; messageKey: string }>;
-};
+  chainKey: Uint8Array; // 32 bytes
+  signingPublicKey: Uint8Array; // Ed25519 public key
+}
 
-/** Data distributed to group members to enable decryption */
-export type SenderKeyDistributionData = {
-  chainId: string; // unique identifier for this key generation
-  chainKey: string; // base64, initial chain key
-  signingPublicKey: string; // base64, Ed25519 verification key
-  iteration: number; // starting iteration (0 for fresh)
-};
+export interface GroupCiphertextPayload {
+  senderKeyId: number;
+  iteration: number;
+  ciphertext: Uint8Array;
+  signature: Uint8Array; // Ed25519 signature over ciphertext
+}
 
-/** Encrypted group message payload (one per message, shared by all recipients) */
-export type GroupCiphertextPayload = {
-  ciphertext: string; // base64, AES-256-GCM
-  iv: string; // base64, 12 bytes
-  signature: string; // base64, Ed25519 over (ciphertext || iv || iteration || chainId)
-  chainIteration: number; // position in sender's chain
-  chainId: string; // identifies which key generation was used
-};
+// ── Protocol Address ──
 
-/** X3DH-encrypted envelope containing a Sender Key distribution */
-export type SenderKeyDistributionEnvelope = {
-  encryptedKeyData: string; // base64, AES-GCM encrypted SenderKeyDistributionData
-  iv: string; // base64
-  ephemeralPublicKey: string; // base64, X3DH
-  senderIdentityKey: string; // base64, X3DH sender's DH identity pub
-  usedSignedPreKeyId: number;
-  usedOneTimePreKeyId?: number;
-};
+export interface ProtocolAddress {
+  name: string; // user UUID
+  deviceId: number; // per-user device number
+}
+
+// ── Skipped Message Key ──
+
+export interface SkippedKey {
+  ratchetPublicKey: Uint8Array;
+  messageIndex: number;
+  messageKey: Uint8Array;
+}
+
+// ── Serialized Forms (for storage) ──
+
+export interface SerializedSessionState {
+  rootKey: string;
+  sendingChain: { chainKey: string; messageCounter: number };
+  receivingChain: { chainKey: string; messageCounter: number } | null;
+  localRatchetKeyPair: { publicKey: string; privateKey: string };
+  remoteRatchetPublicKey: string;
+  previousSendingChainLength: number;
+  localRegistrationId: number;
+  remoteRegistrationId: number;
+}
+
+export interface SerializedSenderKeyState {
+  senderKeyId: number;
+  chainKey: string;
+  signatureKeyPair: { publicKey: string; privateKey: string };
+  iteration: number;
+}

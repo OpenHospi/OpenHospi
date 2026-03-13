@@ -1,5 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import { houseMembers, houses, rooms } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { houseMembers, houses, rooms } from "@/lib/db/schema";
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, count, eq } from "drizzle-orm";
 
@@ -10,7 +10,7 @@ export type OwnerHouse = {
 };
 
 export async function getUserOwnerHouses(userId: string): Promise<OwnerHouse[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const rows = await tx
       .select({
         id: houses.id,

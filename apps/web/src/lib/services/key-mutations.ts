@@ -1,12 +1,12 @@
 import type { SenderKeyDistributionEnvelope } from "@openhospi/crypto";
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   identityKeys,
   oneTimePreKeys,
   privateKeyBackups,
   senderKeyDistributions,
   signedPreKeys,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
 // ── Identity Keys ──
@@ -29,7 +29,7 @@ export async function getIdentityKeysByUserIds(
   userId: string,
   userIds: string[],
 ): Promise<{ userId: string; identityPublicKey: string; signingPublicKey: string }[]> {
-  return withRLS(userId, (tx) =>
+  return createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({
         userId: identityKeys.userId,
@@ -154,7 +154,7 @@ export async function upsertKeyBackup(
 }
 
 export async function getKeyBackup(userId: string) {
-  const [backup] = await withRLS(userId, (tx) =>
+  const [backup] = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({
         encryptedPrivateKey: privateKeyBackups.encryptedPrivateKey,

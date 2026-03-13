@@ -1,12 +1,7 @@
 "use server";
 
-import { db } from "@openhospi/database";
-import {
-  adminAuditLog,
-  dataRequests,
-  processingRestrictions,
-  profiles,
-} from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { adminAuditLog, dataRequests, processingRestrictions, profiles } from "@/lib/db/schema";
 import { AdminAction, type DataRequestStatus, type DataRequestType } from "@openhospi/shared/enums";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

@@ -1,11 +1,11 @@
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   privateKeyBackups,
   profilePhotos,
   profiles,
   user as userTable,
   verification,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import {
   aboutStepSchema,
   bioStepSchema,
@@ -58,7 +58,7 @@ export type OnboardingStatus = {
 export async function getOnboardingStatus(userId: string): Promise<OnboardingStatus> {
   const emailVerified = await isEmailVerified(userId);
 
-  const [profile] = await withRLS(userId, (tx) =>
+  const [profile] = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({
         firstName: profiles.firstName,
@@ -75,7 +75,7 @@ export async function getOnboardingStatus(userId: string): Promise<OnboardingSta
       .where(eq(profiles.id, userId)),
   );
 
-  const photos = await withRLS(userId, (tx) =>
+  const photos = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({ id: profilePhotos.id })
       .from(profilePhotos)
@@ -83,7 +83,7 @@ export async function getOnboardingStatus(userId: string): Promise<OnboardingSta
       .limit(1),
   );
 
-  const keyBackup = await withRLS(userId, (tx) =>
+  const keyBackup = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({ userId: privateKeyBackups.userId })
       .from(privateKeyBackups)
@@ -135,7 +135,7 @@ export async function submitIdentityStep(userId: string, data: IdentityStepData)
 
   const { firstName, lastName, email } = parsed.data;
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.update(profiles).set({ firstName, lastName, email }).where(eq(profiles.id, userId)),
   );
 
@@ -223,7 +223,7 @@ export async function submitAboutStep(userId: string, data: AboutStepData) {
 
   const { gender, birthDate, studyProgram, studyLevel, preferredCity, vereniging } = parsed.data;
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .update(profiles)
       .set({
@@ -246,7 +246,7 @@ export async function submitBioStep(userId: string, data: BioStepData) {
   const parsed = bioStepSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.update(profiles).set({ bio: parsed.data.bio }).where(eq(profiles.id, userId)),
   );
 
@@ -259,7 +259,7 @@ export async function submitPersonalityStep(userId: string, data: PersonalitySte
   const parsed = personalityStepSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .update(profiles)
       .set({ lifestyleTags: parsed.data.lifestyleTags })
@@ -275,7 +275,7 @@ export async function submitLanguagesStep(userId: string, data: LanguagesStepDat
   const parsed = languagesStepSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.update(profiles).set({ languages: parsed.data.languages }).where(eq(profiles.id, userId)),
   );
 

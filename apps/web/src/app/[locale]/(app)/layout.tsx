@@ -1,5 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import { profiles } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profiles } from "@/lib/db/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 import { AlertTriangle } from "lucide-react";
@@ -40,7 +40,7 @@ export default async function AppLayout({ children, params }: Props) {
   if (session) {
     await requireCompleteProfile(session.user.id);
 
-    const [profile] = await withRLS(session.user.id, (tx) =>
+    const [profile] = await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
       tx
         .select({
           privacyPolicyAcceptedVersion: profiles.privacyPolicyAcceptedVersion,

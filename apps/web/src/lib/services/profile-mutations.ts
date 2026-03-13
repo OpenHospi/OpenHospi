@@ -1,5 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import { profilePhotos, profiles } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profilePhotos, profiles } from "@/lib/db/schema";
 import type { EditProfileData } from "@openhospi/database/validators";
 import { editProfileSchema } from "@openhospi/database/validators";
 import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
@@ -7,7 +7,7 @@ import { and, eq } from "drizzle-orm";
 
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
-type Tx = Parameters<Parameters<typeof withRLS>[1]>[0];
+type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];
 
 async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
   const [slot1] = await tx
@@ -25,7 +25,7 @@ export async function updateProfileForUser(userId: string, data: EditProfileData
   if (!parsed.success) return { error: "invalidData" as const };
 
   const d = parsed.data;
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .update(profiles)
       .set({
@@ -57,7 +57,7 @@ export async function saveProfilePhotoForUser(userId: string, file: File, slot: 
     url = await uploadPhotoToStorage(file, STORAGE_BUCKET_PROFILE_PHOTOS, path);
 
     const photoUrl = url;
-    const [photo] = await withRLS(userId, async (tx) => {
+    const [photo] = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       const [inserted] = await tx
         .insert(profilePhotos)
         .values({ userId, slot, url: photoUrl })
@@ -82,7 +82,7 @@ export async function deleteProfilePhotoForUser(userId: string, slot: number) {
   if (slot < 1 || slot > 5) return { error: "deleteFailed" as const };
 
   try {
-    const [photo] = await withRLS(userId, (tx) =>
+    const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
       tx
         .select({ url: profilePhotos.url })
         .from(profilePhotos)
@@ -93,7 +93,7 @@ export async function deleteProfilePhotoForUser(userId: string, slot: number) {
 
     await deletePhotoFromStorage(photo.url);
 
-    await withRLS(userId, async (tx) => {
+    await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       await tx
         .delete(profilePhotos)
         .where(and(eq(profilePhotos.userId, userId), eq(profilePhotos.slot, slot)));

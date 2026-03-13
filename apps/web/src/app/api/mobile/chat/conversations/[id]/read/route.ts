@@ -1,5 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import { messageReceipts, messages } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { messageReceipts, messages } from "@/lib/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -13,7 +13,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     const userId = session.user.id;
     const { id: conversationId } = await params;
 
-    await withRLS(userId, async (tx) => {
+    await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       const unreadReceipts = await tx
         .select({ messageId: messageReceipts.messageId })
         .from(messageReceipts)

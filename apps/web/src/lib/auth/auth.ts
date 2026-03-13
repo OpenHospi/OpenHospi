@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 
 import { expo } from "@better-auth/expo";
-import { db } from "@openhospi/database";
-import * as schema from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import * as schema from "@/lib/db/schema";
 import { DEFAULT_LOCALE, type Locale } from "@openhospi/i18n";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";

@@ -1,12 +1,12 @@
 import type { GroupCiphertextPayload } from "@openhospi/crypto";
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   blocks,
   conversationMembers,
   messagePayloads,
   messageReceipts,
   messages,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     }
 
     // Insert message metadata via RLS
-    const [message] = await withRLS(userId, async (tx) => {
+    const [message] = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       return tx
         .insert(messages)
         .values({

@@ -1,5 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 
@@ -22,7 +22,7 @@ export type UserInvitation = {
 };
 
 export async function getUserInvitations(userId: string): Promise<UserInvitation[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const rows = await tx
       .select({
         invitationId: hospiInvitations.id,
@@ -56,7 +56,7 @@ export async function getInvitationForApplication(
   applicationId: string,
   userId: string,
 ): Promise<UserInvitation | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [row] = await tx
       .select({
         invitationId: hospiInvitations.id,

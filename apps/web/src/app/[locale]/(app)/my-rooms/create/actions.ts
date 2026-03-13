@@ -1,7 +1,7 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { houseMembers, houses, roomPhotos, rooms } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { houseMembers, houses, roomPhotos, rooms } from "@/lib/db/schema";
 import type {
   RoomBasicInfoData,
   RoomDetailsData,
@@ -42,7 +42,7 @@ export async function createHouseAndContinue(formData: FormData) {
 
   const houseId = crypto.randomUUID();
 
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     await tx.insert(houses).values({
       id: houseId,
       name: name.trim(),
@@ -76,7 +76,7 @@ export async function createDraftRoomForHouse(houseId: string) {
   }
 
   // Verify user owns this house
-  const membership = await withRLS(session.user.id, async (tx) => {
+  const membership = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [row] = await tx
       .select({ houseId: houseMembers.houseId })
       .from(houseMembers)
@@ -125,7 +125,7 @@ export async function saveBasicInfo(roomId: string, data: RoomBasicInfoData) {
     latitude,
     longitude,
   } = parsed.data;
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(rooms)
       .set({
@@ -156,7 +156,7 @@ export async function saveDetails(roomId: string, data: RoomDetailsData) {
   await requireRoomOwnership(roomId, session.user.id);
 
   const d = parsed.data;
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(rooms)
       .set({
@@ -193,7 +193,7 @@ export async function savePreferences(roomId: string, data: RoomPreferencesData)
   await requireRoomOwnership(roomId, session.user.id);
 
   const d = parsed.data;
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(rooms)
       .set({
@@ -219,7 +219,7 @@ export async function publishRoom(roomId: string) {
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  return withRLS(session.user.id, async (tx) => {
+  return createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [photoCount] = await tx
       .select({ count: count() })
       .from(roomPhotos)

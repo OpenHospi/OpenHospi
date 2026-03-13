@@ -1,6 +1,6 @@
-import { withRLS } from "@openhospi/database";
-import { privateKeyBackups, profilePhotos, profiles } from "@openhospi/database/schema";
-import type { Profile, ProfilePhoto } from "@openhospi/database/types";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { privateKeyBackups, profilePhotos, profiles } from "@/lib/db/schema";
+import type { Profile, ProfilePhoto } from "@/lib/db/types";
 import { eq } from "drizzle-orm";
 
 export type { Profile, ProfilePhoto };
@@ -20,7 +20,7 @@ export function isProfileComplete(profile: ProfileWithPhotos): boolean {
 }
 
 export async function getProfile(userId: string): Promise<ProfileWithPhotos | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx.select().from(profiles).where(eq(profiles.id, userId));
 
     if (!profile) return null;
@@ -36,7 +36,7 @@ export async function getProfile(userId: string): Promise<ProfileWithPhotos | nu
 }
 
 export async function hasEncryptionKeyBackup(userId: string): Promise<boolean> {
-  const result = await withRLS(userId, (tx) =>
+  const result = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({ userId: privateKeyBackups.userId })
       .from(privateKeyBackups)
@@ -47,7 +47,7 @@ export async function hasEncryptionKeyBackup(userId: string): Promise<boolean> {
 }
 
 export async function getProfilePhotos(userId: string): Promise<ProfilePhoto[]> {
-  return withRLS(userId, (tx) =>
+  return createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select()
       .from(profilePhotos)

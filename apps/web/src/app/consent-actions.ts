@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@openhospi/database";
-import { activeConsents, consentRecords } from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { activeConsents, consentRecords } from "@/lib/db/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";

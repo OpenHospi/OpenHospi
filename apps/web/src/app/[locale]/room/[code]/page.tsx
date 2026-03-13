@@ -1,5 +1,5 @@
-import { db } from "@openhospi/database";
-import { houseMembers, houses, rooms } from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { houseMembers, houses, rooms } from "@/lib/db/schema";
 import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { count, eq, sql } from "drizzle-orm";

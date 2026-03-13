@@ -1,5 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import { applications, houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, houseMembers, houses, profiles, rooms } from "@/lib/db/schema";
 import type { ApplyToRoomData } from "@openhospi/database/validators";
 import { applyToRoomSchema } from "@openhospi/database/validators";
 import {
@@ -20,7 +20,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
     return { error: "RATE_LIMITED" as const };
   }
 
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx
       .select({ bio: profiles.bio })
       .from(profiles)
@@ -72,7 +72,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
 }
 
 export async function withdrawApplicationForUser(userId: string, applicationId: string) {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [app] = await tx
       .select({ roomId: applications.roomId, status: applications.status })
       .from(applications)

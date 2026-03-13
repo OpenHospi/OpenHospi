@@ -1,13 +1,7 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import {
-  applications,
-  houseMembers,
-  hospiEvents,
-  hospiInvitations,
-  rooms,
-} from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, houseMembers, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { MAX_INVITATIONS_PER_EVENT } from "@openhospi/shared/constants";
 import {
   ApplicationStatus,
@@ -37,7 +31,7 @@ export async function batchInviteApplicants(
   if (applicationIds.length > MAX_INVITATIONS_PER_EVENT)
     return { error: "too_many_invitations" as const };
 
-  const invitedCount = await withRLS(session.user.id, async (tx) => {
+  const invitedCount = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     // Verify event exists and belongs to this room
     const [event] = await tx
       .select({ id: hospiEvents.id, title: hospiEvents.title, roomId: hospiEvents.roomId })
@@ -148,7 +142,7 @@ export async function removeInvitation(invitationId: string, roomId: string) {
 
   await requireHousemate(roomId, session.user.id);
 
-  const deleted = await withRLS(session.user.id, async (tx) => {
+  const deleted = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     // Verify the invitation belongs to an event in this room
     const [invitation] = await tx
       .select({ eventId: hospiInvitations.eventId })

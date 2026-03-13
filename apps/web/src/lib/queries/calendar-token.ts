@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@openhospi/database";
-import { calendarTokens } from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { calendarTokens } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";

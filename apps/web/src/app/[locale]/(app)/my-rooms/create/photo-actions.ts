@@ -1,7 +1,7 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { roomPhotos } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { roomPhotos } from "@/lib/db/schema";
 import { roomPhotoCaptionSchema } from "@openhospi/database/validators";
 import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { and, eq, inArray } from "drizzle-orm";
@@ -34,7 +34,7 @@ export async function saveRoomPhoto(formData: FormData) {
     url = await uploadPhotoToStorage(file, STORAGE_BUCKET_ROOM_PHOTOS, path);
 
     const photoUrl = url;
-    const [photo] = await withRLS(userId, (tx) =>
+    const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
       tx
         .insert(roomPhotos)
         .values({ roomId, slot, url: photoUrl })
@@ -65,7 +65,7 @@ export async function deleteRoomPhoto(roomId: string, slot: number) {
   await requireRoomOwnership(roomId, userId);
 
   try {
-    const [photo] = await withRLS(userId, (tx) =>
+    const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
       tx
         .select({ url: roomPhotos.url })
         .from(roomPhotos)
@@ -76,7 +76,7 @@ export async function deleteRoomPhoto(roomId: string, slot: number) {
 
     await deletePhotoFromStorage(photo.url);
 
-    await withRLS(userId, (tx) =>
+    await createDrizzleSupabaseClient(userId).rls((tx) =>
       tx.delete(roomPhotos).where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
     );
 
@@ -104,7 +104,7 @@ export async function updatePhotoCaption(roomId: string, slot: number, caption: 
   await requireRoomOwnership(roomId, userId);
 
   try {
-    await withRLS(userId, (tx) =>
+    await createDrizzleSupabaseClient(userId).rls((tx) =>
       tx
         .update(roomPhotos)
         .set({ caption })
@@ -136,7 +136,7 @@ export async function reorderRoomPhotos(
   try {
     const ids = swaps.map((s) => s.photoId);
 
-    await withRLS(userId, async (tx) => {
+    await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       const existing = await tx
         .select({ id: roomPhotos.id })
         .from(roomPhotos)

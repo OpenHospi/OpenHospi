@@ -1,12 +1,12 @@
 "use server";
 
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
   consentRecords,
   dataRequests,
   processingRestrictions,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import {
   requestProcessingRestrictionSchema,
   submitDataRequestSchema,
@@ -64,14 +64,14 @@ export async function updateConsent(purpose: ConsentPurpose, granted: boolean) {
 
 export async function getActiveConsents() {
   const session = await requireSession();
-  return withRLS(session.user.id, (tx) =>
+  return createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx.select().from(activeConsents).where(eq(activeConsents.userId, session.user.id)),
   );
 }
 
 export async function getConsentHistory() {
   const session = await requireSession();
-  return withRLS(session.user.id, (tx) =>
+  return createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .select()
       .from(consentRecords)
@@ -86,7 +86,7 @@ export async function submitDataRequest(data: SubmitDataRequestData) {
   const parsed = submitDataRequestSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx.insert(dataRequests).values({
       userId: session.user.id,
       type: parsed.data.type,
@@ -103,7 +103,7 @@ export async function requestProcessingRestriction(data: RequestProcessingRestri
   const parsed = requestProcessingRestrictionSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .insert(processingRestrictions)
       .values({
@@ -144,7 +144,7 @@ export async function liftProcessingRestriction() {
 
 export async function getProcessingRestriction() {
   const session = await requireSession();
-  const [restriction] = await withRLS(session.user.id, (tx) =>
+  const [restriction] = await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .select()
       .from(processingRestrictions)
@@ -161,7 +161,7 @@ export async function getProcessingRestriction() {
 
 export async function getUserDataRequests() {
   const session = await requireSession();
-  return withRLS(session.user.id, (tx) =>
+  return createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .select()
       .from(dataRequests)

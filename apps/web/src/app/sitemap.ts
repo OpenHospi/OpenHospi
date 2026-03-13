@@ -1,5 +1,5 @@
-import { db } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { roomPhotos, rooms } from "@/lib/db/schema";
 import { SUPPORTED_LOCALES } from "@openhospi/i18n";
 import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import { RoomStatus } from "@openhospi/shared/enums";

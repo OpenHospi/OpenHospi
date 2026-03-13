@@ -1,4 +1,4 @@
-import { blocks } from "@openhospi/database/schema";
+import { blocks } from "@/lib/db/schema";
 import { type AnyColumn, eq, sql, type SQL } from "drizzle-orm";
 
 /**

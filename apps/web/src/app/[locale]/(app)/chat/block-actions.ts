@@ -1,7 +1,7 @@
 "use server";
 
-import { db, withRLS } from "@openhospi/database";
-import { applications, blocks, houseMembers, houses, rooms } from "@openhospi/database/schema";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, blocks, houseMembers, houses, rooms } from "@/lib/db/schema";
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -21,7 +21,7 @@ export async function blockUser(blockedId: string) {
 
   if (userId === blockedId) throw new Error("Cannot block yourself");
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx.insert(blocks).values({ blockerId: userId, blockedId }).onConflictDoNothing();
   });
 
@@ -57,7 +57,7 @@ export async function unblockUser(blockedId: string) {
   const session = await requireSession();
   const userId = session.user.id;
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx
       .delete(blocks)
       .where(and(eq(blocks.blockerId, userId), eq(blocks.blockedId, blockedId)));
@@ -71,7 +71,7 @@ export async function getBlockedUsers(): Promise<string[]> {
   const session = await requireSession();
   const userId = session.user.id;
 
-  const result = await withRLS(userId, async (tx) => {
+  const result = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     return tx
       .select({ blockedId: blocks.blockedId })
       .from(blocks)

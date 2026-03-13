@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@openhospi/database";
+import { db } from "@/lib/db";
 import {
   adminAuditLog,
   profilePhotos,
@@ -10,7 +10,7 @@ import {
   rooms,
   session,
   user,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import type { Locale } from "@openhospi/i18n";
 import type { City, ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";

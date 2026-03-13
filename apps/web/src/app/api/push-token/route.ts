@@ -1,5 +1,5 @@
-import { db } from "@openhospi/database";
-import { pushTokens } from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { pushTokens } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";

@@ -1,14 +1,14 @@
 "use server";
 
 import type { GroupCiphertextPayload } from "@openhospi/crypto";
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   blocks,
   conversationMembers,
   messagePayloads,
   messageReceipts,
   messages,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import { and, eq, inArray, or } from "drizzle-orm";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
@@ -49,7 +49,7 @@ export async function sendMessage(conversationId: string, payload: GroupCipherte
   }
 
   // Insert message metadata
-  const [message] = await withRLS(userId, async (tx) => {
+  const [message] = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     return tx
       .insert(messages)
       .values({
@@ -92,7 +92,7 @@ export async function markConversationRead(conversationId: string) {
   const session = await requireSession();
   const userId = session.user.id;
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const unreadReceipts = await tx
       .select({ messageId: messageReceipts.messageId })
       .from(messageReceipts)

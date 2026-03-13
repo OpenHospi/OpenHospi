@@ -1,6 +1,6 @@
-import { db, withRLS } from "@openhospi/database";
-import { processingRestrictions, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
-import type { RoomPhoto } from "@openhospi/database/types";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { processingRestrictions, profiles, roomPhotos, rooms } from "@/lib/db/schema";
+import type { RoomPhoto } from "@/lib/db/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
 import type {
   City,
@@ -194,7 +194,7 @@ export async function getDiscoverRooms(
   sort: DiscoverSort,
   cursor?: DiscoverCursor,
 ): Promise<DiscoverResult> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [userProfile] = await tx
       .select({ vereniging: profiles.vereniging, gender: profiles.gender })
       .from(profiles)

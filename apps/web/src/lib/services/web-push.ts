@@ -1,5 +1,5 @@
-import { db } from "@openhospi/database";
-import { pushSubscriptions } from "@openhospi/database/schema";
+import { db } from "@/lib/db";
+import { pushSubscriptions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendNotification, setVapidDetails } from "web-push";
 

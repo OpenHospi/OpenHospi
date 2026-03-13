@@ -1,11 +1,5 @@
-import { withRLS } from "@openhospi/database";
-import {
-  applications,
-  hospiEvents,
-  hospiInvitations,
-  houseMembers,
-  rooms,
-} from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
 import { rsvpSchema } from "@openhospi/database/validators";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
 import { and, eq, sql } from "drizzle-orm";
@@ -29,7 +23,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const parsed = rsvpSchema.safeParse(data);
     if (!parsed.success) return apiError("Invalid data", 422);
 
-    const result = await withRLS(session.user.id, async (tx) => {
+    const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
       const [invitation] = await tx
         .select({
           id: hospiInvitations.id,

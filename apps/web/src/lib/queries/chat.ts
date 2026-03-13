@@ -1,4 +1,4 @@
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   conversationMembers,
   conversations,
@@ -8,7 +8,7 @@ import {
   profiles,
   roomPhotos,
   rooms,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import { MESSAGES_PER_PAGE } from "@openhospi/shared/constants";
 import { and, count, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm";
 
@@ -51,7 +51,7 @@ export type ConversationListItem = {
 };
 
 export async function getConversations(userId: string): Promise<ConversationListItem[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const convos = await tx
       .select({
         id: conversations.id,
@@ -149,7 +149,7 @@ export async function getMessages(
   conversationId: string,
   cursor?: Date,
 ): Promise<MessageItem[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const conditions = [eq(messages.conversationId, conversationId)];
     if (cursor) {
       conditions.push(lt(messages.createdAt, cursor));
@@ -188,7 +188,7 @@ export async function getConversationMembers(
   userId: string,
   conversationId: string,
 ): Promise<{ userId: string; firstName: string; lastName: string; avatarUrl: string | null }[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     return tx
       .select({
         userId: conversationMembers.userId,
@@ -203,7 +203,7 @@ export async function getConversationMembers(
 }
 
 export async function getUnreadChatCount(userId: string): Promise<number> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [result] = await tx
       .select({ count: count() })
       .from(messages)
@@ -249,7 +249,7 @@ export async function getConversationDetail(
   userId: string,
   conversationId: string,
 ): Promise<ConversationDetail | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [conv] = await tx
       .select({
         id: conversations.id,

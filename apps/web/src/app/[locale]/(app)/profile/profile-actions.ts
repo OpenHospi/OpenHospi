@@ -1,7 +1,7 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { profilePhotos } from "@openhospi/database/schema";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profilePhotos } from "@/lib/db/schema";
 import type { EditProfileData } from "@openhospi/database/validators";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -13,10 +13,10 @@ import {
   updateProfileForUser,
 } from "@/lib/services/profile-mutations";
 
-type Tx = Parameters<Parameters<typeof withRLS>[1]>[0];
+type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];
 
 async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
-  const { profiles } = await import("@openhospi/database/schema");
+  const { profiles } = await import("@/lib/db/schema");
   const [slot1] = await tx
     .select({ url: profilePhotos.url })
     .from(profilePhotos)
@@ -63,7 +63,7 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
   try {
     const ids = swaps.map((s) => s.photoId);
 
-    await withRLS(session.user.id, async (tx) => {
+    await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
       const existing = await tx
         .select({ id: profilePhotos.id })
         .from(profilePhotos)

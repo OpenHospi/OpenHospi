@@ -1,6 +1,6 @@
 "use server";
 
-import { db, withRLS } from "@openhospi/database";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
   applications,
@@ -24,7 +24,7 @@ import {
   rooms,
   user,
   votes,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
@@ -41,7 +41,7 @@ export async function exportData() {
     return { error: "RATE_LIMITED" as const };
   }
 
-  const data = await withRLS(userId, async (tx) => {
+  const data = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx.select().from(profiles).where(eq(profiles.id, userId));
     const photos = await tx.select().from(profilePhotos).where(eq(profilePhotos.userId, userId));
     const userRooms = await tx.select().from(rooms).where(eq(rooms.ownerId, userId));
@@ -216,7 +216,7 @@ export async function updatePreferredLocale(locale: Locale) {
     return { error: "INVALID_LOCALE" as const };
   }
   const session = await requireSession();
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     await tx
       .update(profiles)
       .set({ preferredLocale: locale })
@@ -250,7 +250,7 @@ export async function deleteAccount() {
   const userId = session.user.id;
 
   // Collect all photo URLs to delete from storage
-  const photoUrls = await withRLS(userId, async (tx) => {
+  const photoUrls = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const pPhotos = await tx
       .select({ url: profilePhotos.url })
       .from(profilePhotos)

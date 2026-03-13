@@ -1,4 +1,4 @@
-import { withRLS } from "@openhospi/database";
+import { createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
   applications,
@@ -19,7 +19,7 @@ import {
   roomPhotos,
   rooms,
   votes,
-} from "@openhospi/database/schema";
+} from "@/lib/db/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       return apiError("Rate limited", 429, "RATE_LIMITED");
     }
 
-    const data = await withRLS(userId, async (tx) => {
+    const data = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       const [profile] = await tx.select().from(profiles).where(eq(profiles.id, userId));
       const photos = await tx.select().from(profilePhotos).where(eq(profilePhotos.userId, userId));
       const userRooms = await tx.select().from(rooms).where(eq(rooms.ownerId, userId));

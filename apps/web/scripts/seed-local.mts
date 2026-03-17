@@ -1183,9 +1183,6 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
 
   // --- Conversations & Messages ---
   conversations: {
-    columns: {
-      type: f.default({ defaultValue: "direct" }),
-    },
     with: {
       messages: [
         { weight: 0.4, count: [2, 3] },
@@ -1196,7 +1193,7 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
   messages: {
     columns: {
-      messageType: f.default({ defaultValue: "text" }),
+      messageType: f.default({ defaultValue: "ciphertext" }),
     },
     with: {
       messagePayloads: 1,
@@ -1204,28 +1201,24 @@ await seed(db, schema, { seed: 42 }).refine((f) => ({
   },
   messagePayloads: {
     columns: {
-      ciphertext: f.string(),
-      iv: f.string(),
-      signature: f.string(),
-      chainIteration: f.int({ minValue: 0, maxValue: 100 }),
-      chainId: f.string(),
+      payload: f.string(),
     },
   },
 
   // --- Security (seeded via profiles.with) ---
   devices: {
     columns: {
-      deviceId: f.int({ minValue: 1, maxValue: 3 }),
       registrationId: f.int({ minValue: 10000, maxValue: 99999 }),
       identityKeyPublic: f.string(),
+      signingKeyPublic: f.string(),
       platform: f.valuesFromArray({ values: ["web", "ios", "android"] }),
     },
   },
   privateKeyBackups: {
     columns: {
-      encryptedPrivateKey: f.string(),
-      backupIv: f.string(),
-      backupKey: f.string(),
+      encryptedData: f.string(),
+      iv: f.string(),
+      salt: f.string(),
     },
   },
   // Tables with composite/single-column PKs where drizzle-seed can't guarantee unique

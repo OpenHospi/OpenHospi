@@ -1,3 +1,4 @@
+import { getCryptoProvider } from "../primitives/CryptoProvider";
 import { toBase64 } from "../protocol/encoding";
 import {
   generateIdentityKeyPair,

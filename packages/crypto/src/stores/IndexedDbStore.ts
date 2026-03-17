@@ -143,6 +143,15 @@ export function createIndexedDbStore(): SignalProtocolStore {
       return data;
     },
 
+    async storeIdentityKeyPair(identity: IdentityKeyPair, registrationId: number): Promise<void> {
+      const db = await getDb();
+      await txPut(db, STORES.identity, "identityKeyPair", {
+        signingKeyPair: serializeKeyPair(identity.signingKeyPair),
+        dhKeyPair: serializeKeyPair(identity.dhKeyPair),
+      });
+      await txPut(db, STORES.identity, "registrationId", registrationId);
+    },
+
     async saveIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean> {
       const db = await getDb();
       const key = addressKey(address);

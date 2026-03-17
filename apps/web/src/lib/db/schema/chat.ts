@@ -135,11 +135,13 @@ export const messagePayloads = pgTable(
     senderUserId: uuid("sender_user_id")
       .notNull()
       .references(() => profiles.id, { onDelete: "cascade" }),
+    senderDeviceId: uuid("sender_device_id").references(() => devices.id, {
+      onDelete: "set null",
+    }),
     ciphertext: text("ciphertext").notNull(),
-    iv: text("iv").notNull(),
     signature: text("signature").notNull(),
-    chainIteration: integer("chain_iteration").notNull(),
-    chainId: text("chain_id").notNull(),
+    senderKeyId: integer("sender_key_id").notNull(),
+    iteration: integer("iteration").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

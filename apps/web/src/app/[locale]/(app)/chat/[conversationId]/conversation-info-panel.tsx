@@ -1,6 +1,5 @@
 "use client";
 
-import type { FingerprintResult } from "@openhospi/crypto";
 import { Flag, Lock, Shield, ShieldBan, ShieldCheck, X } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -22,7 +21,7 @@ type Props = {
   blockedUserIds: string[];
   onBlock: (userId: string) => void;
   onUnblock: (userId: string) => void;
-  getFingerprint: (userId: string) => Promise<FingerprintResult | null>;
+  getSafetyNumber: (remoteUserId: string, remoteSigningPublicKey: Uint8Array) => Promise<string>;
 };
 
 function MemberRow({
@@ -31,14 +30,14 @@ function MemberRow({
   isBlocked,
   onBlock,
   onUnblock,
-  getFingerprint,
+  getSafetyNumber,
 }: {
   member: ConversationDetail["members"][number];
   currentUserId: string;
   isBlocked: boolean;
   onBlock: (userId: string) => void;
   onUnblock: (userId: string) => void;
-  getFingerprint: (userId: string) => Promise<FingerprintResult | null>;
+  getSafetyNumber: (remoteUserId: string, remoteSigningPublicKey: Uint8Array) => Promise<string>;
 }) {
   const t = useTranslations("app.chat");
   const [safetyOpen, setSafetyOpen] = useState(false);
@@ -111,7 +110,7 @@ function MemberRow({
         open={safetyOpen}
         onOpenChange={setSafetyOpen}
         otherUserName={member.firstName}
-        getFingerprint={() => getFingerprint(member.userId)}
+        getSafetyNumber={() => getSafetyNumber(member.userId)}
       />
     </div>
   );
@@ -125,7 +124,7 @@ export function ConversationInfoPanel({
   blockedUserIds,
   onBlock,
   onUnblock,
-  getFingerprint,
+  getSafetyNumber,
 }: Props) {
   const t = useTranslations("app.chat");
 
@@ -203,7 +202,7 @@ export function ConversationInfoPanel({
                       isBlocked={blockedUserIds.includes(member.userId)}
                       onBlock={onBlock}
                       onUnblock={onUnblock}
-                      getFingerprint={getFingerprint}
+                      getSafetyNumber={getSafetyNumber}
                     />
                   ))
                 : otherMembers.map((member) => (
@@ -214,7 +213,7 @@ export function ConversationInfoPanel({
                       isBlocked={blockedUserIds.includes(member.userId)}
                       onBlock={onBlock}
                       onUnblock={onUnblock}
-                      getFingerprint={getFingerprint}
+                      getSafetyNumber={getSafetyNumber}
                     />
                   ))}
             </div>

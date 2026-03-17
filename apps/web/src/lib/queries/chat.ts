@@ -133,10 +133,10 @@ export type MessageItem = {
   senderFirstName: string;
   senderAvatarUrl: string | null;
   ciphertext: string | null;
-  iv: string | null;
   signature: string | null;
-  chainIteration: number | null;
-  chainId: string | null;
+  senderKeyId: number | null;
+  iteration: number | null;
+  senderDeviceId: string | null;
   messageType: string;
   createdAt: Date;
 };
@@ -163,10 +163,10 @@ export async function getMessages(
         senderFirstName: profiles.firstName,
         senderAvatarUrl: profiles.avatarUrl,
         ciphertext: messagePayloads.ciphertext,
-        iv: messagePayloads.iv,
         signature: messagePayloads.signature,
-        chainIteration: messagePayloads.chainIteration,
-        chainId: messagePayloads.chainId,
+        senderKeyId: messagePayloads.senderKeyId,
+        iteration: messagePayloads.iteration,
+        senderDeviceId: messagePayloads.senderDeviceId,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
       })

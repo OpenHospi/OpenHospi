@@ -9,26 +9,46 @@ import {
   getPreKeyBundle,
   getPendingSenderKeyDistributions,
   insertOneTimePreKeys,
-  insertSenderKeyDistribution,
   insertSignedPreKey,
+  insertSenderKeyDistribution,
   markDistributionDelivered,
-  registerDevice,
+  registerDevice as registerDeviceMutation,
   removeKeyBackup,
   upsertKeyBackup,
 } from "@/lib/services/key-mutations";
 
-// ── Devices ──
+// ── Device Registration (unified) ──
 
+/**
+ * Register a device with all its keys in one call.
+ * This is the primary entry point for device setup — replaces the old
+ * separate uploadIdentityKey / uploadSignedPreKey / uploadOneTimePreKeys flow.
+ */
 export async function registerUserDevice(data: {
-  deviceId: number;
   registrationId: number;
   identityKeyPublic: string;
   platform: "web" | "ios" | "android";
-  pushToken?: string;
+  signedPreKey: { keyId: number; publicKey: string; signature: string };
+  oneTimePreKeys: { keyId: number; publicKey: string }[];
 }) {
   const session = await requireSession();
-  return registerDevice(session.user.id, data);
+
+  // Register device (server assigns deviceId=1 for now)
+  const device = await registerDeviceMutation(session.user.id, {
+    deviceId: 1,
+    registrationId: data.registrationId,
+    identityKeyPublic: data.identityKeyPublic,
+    platform: data.platform,
+  });
+
+  // Store signed prekey + one-time prekeys for the device
+  await insertSignedPreKey(device.id, data.signedPreKey);
+  await insertOneTimePreKeys(device.id, data.oneTimePreKeys);
+
+  return { id: device.id, deviceId: device.deviceId };
 }
+
+// ── Device Queries ──
 
 export async function fetchDevicesForUser(targetUserId: string) {
   const session = await requireSession();
@@ -40,22 +60,22 @@ export async function deactivateUserDevice(deviceUuid: string) {
   await deactivateDevice(session.user.id, deviceUuid);
 }
 
-// ── Pre-Keys ──
+// ── Pre-Key Management (for rotation/replenishment after initial registration) ──
 
-export async function uploadSignedPreKey(
-  deviceUuid: string,
-  data: { keyId: number; publicKey: string; signature: string },
-) {
-  await requireSession();
-  await insertSignedPreKey(deviceUuid, data);
-}
-
-export async function uploadOneTimePreKeys(
+export async function replenishOneTimePreKeys(
   deviceUuid: string,
   keys: { keyId: number; publicKey: string }[],
 ) {
   await requireSession();
   await insertOneTimePreKeys(deviceUuid, keys);
+}
+
+export async function rotateSignedPreKey(
+  deviceUuid: string,
+  data: { keyId: number; publicKey: string; signature: string },
+) {
+  await requireSession();
+  await insertSignedPreKey(deviceUuid, data);
 }
 
 export async function fetchPreKeyBundle(deviceUuid: string) {

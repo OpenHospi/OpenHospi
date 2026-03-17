@@ -14,6 +14,9 @@ export interface IdentityKeyStore {
   getIdentityKeyPair(): Promise<IdentityKeyPair>;
   getLocalRegistrationId(): Promise<number>;
 
+  /** Persist the local identity key pair and registration ID. */
+  storeIdentityKeyPair(identity: IdentityKeyPair, registrationId: number): Promise<void>;
+
   /** Save a remote identity key. Returns true if the key was updated (changed). */
   saveIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean>;
 
@@ -79,4 +82,7 @@ export interface SignalProtocolStore
     SignedPreKeyStore,
     SessionStore,
     SenderKeyStore,
-    SkippedKeyStore {}
+    SkippedKeyStore {
+  /** Remove all local crypto data (identity, prekeys, sessions, sender keys). */
+  clearAllData(): Promise<void>;
+}

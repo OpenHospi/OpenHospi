@@ -2,7 +2,7 @@ import { PIN_LENGTH } from '@openhospi/shared/constants';
 import type { EncryptedBackup } from '@openhospi/crypto';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -11,10 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { setupKeysWithPIN, recoverKeysWithPIN } from '@/lib/encryption/KeySetup';
+import { registerDeviceApi } from '@/services/devices';
 import {
   fetchBackupApi,
   uploadBackupApi,
-  uploadIdentityKeyApi,
   uploadSignedPreKeyApi,
   uploadOneTimePreKeysApi,
 } from '@/services/encryption';
@@ -60,10 +60,17 @@ export default function KeyRecoveryScreen() {
     try {
       const result = await recoverKeysWithPIN(backup, value);
 
-      // Upload recovered keys to server
-      await uploadIdentityKeyApi(result.identityKeyPublic, result.signingKeyPublic);
-      await uploadSignedPreKeyApi(result.signedPreKey);
-      await uploadOneTimePreKeysApi(result.oneTimePreKeys);
+      // Register device on server — returns device UUID
+      const device = await registerDeviceApi({
+        deviceId: 1,
+        registrationId: result.registrationId,
+        identityKeyPublic: result.identityKeyPublic,
+        platform: Platform.OS === 'ios' ? 'ios' : 'android',
+      });
+
+      // Upload prekeys using device UUID
+      await uploadSignedPreKeyApi(device.id, result.signedPreKey);
+      await uploadOneTimePreKeysApi(device.id, result.oneTimePreKeys);
 
       await queryClient.invalidateQueries({ queryKey: queryKeys.encryption.status() });
       Alert.alert(t('recovery_success'));
@@ -109,10 +116,17 @@ export default function KeyRecoveryScreen() {
     try {
       const result = await setupKeysWithPIN(value);
 
-      // Upload keys to server
-      await uploadIdentityKeyApi(result.identityKeyPublic, result.signingKeyPublic);
-      await uploadSignedPreKeyApi(result.signedPreKey);
-      await uploadOneTimePreKeysApi(result.oneTimePreKeys);
+      // Register device on server — returns device UUID
+      const device = await registerDeviceApi({
+        deviceId: 1,
+        registrationId: result.registrationId,
+        identityKeyPublic: result.identityKeyPublic,
+        platform: Platform.OS === 'ios' ? 'ios' : 'android',
+      });
+
+      // Upload prekeys using device UUID
+      await uploadSignedPreKeyApi(device.id, result.signedPreKey);
+      await uploadOneTimePreKeysApi(device.id, result.oneTimePreKeys);
       await uploadBackupApi({
         encryptedPrivateKey: result.encryptedBackup.ciphertext,
         backupIv: result.encryptedBackup.iv,

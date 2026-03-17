@@ -39,7 +39,7 @@ export function ChatView({
 }: Props) {
   const t = useTranslations("app.chat");
   const [isPending, startTransition] = useTransition();
-  const { status, encryptGroupMessage, decryptGroupMessage, getFingerprint } =
+  const { status, encryptGroupMessage, decryptGroupMessage, getSafetyNumber } =
     useEncryption(currentUserId);
   const addMessageRef = useRef<((msg: DecryptedMessage) => void) | null>(null);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -184,7 +184,7 @@ export function ChatView({
           blockedUserIds={blockedUserIds}
           onBlock={handleBlock}
           onUnblock={handleUnblock}
-          getFingerprint={getFingerprint}
+          getSafetyNumber={getSafetyNumber}
         />
       )}
     </div>

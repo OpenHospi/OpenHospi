@@ -1,6 +1,5 @@
 "use server";
 
-import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { and, eq, inArray, or } from "drizzle-orm";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
@@ -14,9 +13,14 @@ import {
 } from "@/lib/db/schema";
 import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 
-export type { GroupCiphertextPayload } from "@openhospi/crypto";
+type SerializedPayload = {
+  senderKeyId: number;
+  iteration: number;
+  ciphertext: string;
+  signature: string;
+};
 
-export async function sendMessage(conversationId: string, payload: GroupCiphertextPayload) {
+export async function sendMessage(conversationId: string, serializedPayload: string) {
   const session = await requireSession();
   const userId = session.user.id;
 
@@ -60,16 +64,16 @@ export async function sendMessage(conversationId: string, payload: GroupCipherte
       .returning({ id: messages.id });
   });
 
-  // Insert single payload for all recipients
+  // Parse and insert payload
+  const payload = JSON.parse(serializedPayload) as SerializedPayload;
   await db.insert(messagePayloads).values({
     messageId: message.id,
     conversationId,
     senderUserId: userId,
     ciphertext: payload.ciphertext,
-    iv: payload.iv,
     signature: payload.signature,
-    chainIteration: payload.chainIteration,
-    chainId: payload.chainId,
+    senderKeyId: payload.senderKeyId,
+    iteration: payload.iteration,
   });
 
   // Create receipts for all members except sender

@@ -1,3 +1,4 @@
+import { fromBase64 } from '@openhospi/crypto';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Info, Send } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
@@ -29,6 +30,12 @@ import {
   fetchRealtimeToken,
   type MessageItem,
 } from '@/services/chat';
+import {
+  getLocalDeviceId,
+  getDevicesForUserApi,
+  fetchPreKeyBundleForDeviceApi,
+} from '@/services/devices';
+import type { EncryptionDependencies } from '@/lib/encryption/MessageEncryptor';
 import { useKeyChangeDetection } from '@/services/verification';
 
 type DecryptedMessage = MessageItem & {
@@ -110,6 +117,44 @@ function MessageBubble({ message, isOwn }: { message: DecryptedMessage; isOwn: b
   );
 }
 
+/**
+ * Build real EncryptionDependencies that call the server APIs.
+ */
+function createEncryptionDeps(): EncryptionDependencies {
+  return {
+    async fetchPreKeyBundle(userId: string, targetDeviceId: number) {
+      const devices = await getDevicesForUserApi(userId);
+      const device = devices.find((d) => d.deviceId === targetDeviceId);
+      if (!device) return null;
+
+      const bundle = await fetchPreKeyBundleForDeviceApi(device.id);
+      if (!bundle) return null;
+
+      return {
+        registrationId: bundle.registrationId,
+        deviceId: targetDeviceId,
+        identityKey: fromBase64(bundle.identityKeyPublic),
+        signedPreKeyId: bundle.signedPreKeyId,
+        signedPreKeyPublic: fromBase64(bundle.signedPreKeyPublic),
+        signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
+        oneTimePreKeyId: bundle.oneTimePreKeyId,
+        oneTimePreKeyPublic: bundle.oneTimePreKeyPublic
+          ? fromBase64(bundle.oneTimePreKeyPublic)
+          : undefined,
+      };
+    },
+
+    async getDeviceIds(userId: string) {
+      const devices = await getDevicesForUserApi(userId);
+      return devices.map((d) => d.deviceId);
+    },
+
+    async sendDistribution(_conversationId: string, _recipientAddress, _envelope: Uint8Array) {
+      // Sender Key distributions are stored server-side via the encryption layer
+    },
+  };
+}
+
 export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const router = useRouter();
@@ -124,9 +169,14 @@ export default function ConversationScreen() {
   const sendMessage = useSendMessage();
   const markRead = useMarkRead(conversationId);
 
-  // TODO: deviceId should come from device registration (Phase 6)
-  const deviceId = 1;
-  const { status, encrypt, decrypt } = useEncryption(userId, deviceId);
+  const [deviceId, setDeviceId] = useState<number | null>(null);
+
+  // Load device ID from local storage
+  useEffect(() => {
+    getLocalDeviceId().then((id) => setDeviceId(id ?? 1));
+  }, []);
+
+  const { status, encrypt, decrypt } = useEncryption(userId, deviceId ?? 1);
 
   const [messages, setMessages] = useState<DecryptedMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -140,7 +190,7 @@ export default function ConversationScreen() {
 
   const { hasChanged: keyChanged } = useKeyChangeDetection(firstOther?.userId ?? '');
 
-  const isReady = status?.hasIdentity === true;
+  const isReady = status?.hasIdentity === true && deviceId !== null;
   const needsSetup = status !== null && !status.hasIdentity;
 
   // Set header title
@@ -241,8 +291,11 @@ export default function ConversationScreen() {
           const record = payload.new as {
             message_id: string;
             sender_user_id: string;
-            sender_device_id?: number;
+            sender_device_id?: string;
             ciphertext: string;
+            signature: string;
+            sender_key_id: number;
+            iteration: number;
           };
 
           if (!active) return;
@@ -255,7 +308,6 @@ export default function ConversationScreen() {
               {
                 ciphertext: record.ciphertext,
                 senderId: record.sender_user_id,
-                senderDeviceId: record.sender_device_id,
               },
               conversationId,
               decrypt
@@ -267,10 +319,10 @@ export default function ConversationScreen() {
               senderFirstName: senderMember?.firstName ?? '',
               senderAvatarUrl: senderMember?.avatarUrl ?? null,
               ciphertext: record.ciphertext,
-              iv: null,
-              signature: null,
-              chainIteration: null,
-              chainId: null,
+              signature: record.signature,
+              senderKeyId: record.sender_key_id,
+              iteration: record.iteration,
+              senderDeviceId: record.sender_device_id ?? null,
               messageType: 'text',
               createdAt: new Date().toISOString(),
               decryptedText: result.text,
@@ -310,12 +362,8 @@ export default function ConversationScreen() {
 
     try {
       const memberUserIds = detail.members.map((m) => m.userId);
-      // TODO: Wire up EncryptionDependencies for session establishment (Phase 6/7)
-      const { serialized } = await encrypt(conversationId, memberUserIds, text, {
-        fetchPreKeyBundle: async () => null,
-        getDeviceIds: async () => [1],
-        sendDistribution: async () => {},
-      });
+      const deps = createEncryptionDeps();
+      const { serialized } = await encrypt(conversationId, memberUserIds, text, deps);
 
       const result = await sendMessage.mutateAsync({ conversationId, payload: serialized });
       const messageId = result?.messageId ?? `optimistic-${Date.now()}`;
@@ -327,10 +375,10 @@ export default function ConversationScreen() {
         senderFirstName: session?.user?.name ?? '',
         senderAvatarUrl: null,
         ciphertext: null,
-        iv: null,
         signature: null,
-        chainIteration: null,
-        chainId: null,
+        senderKeyId: null,
+        iteration: null,
+        senderDeviceId: null,
         messageType: 'text',
         createdAt: new Date().toISOString(),
         decryptedText: text,
@@ -346,7 +394,7 @@ export default function ConversationScreen() {
     }
   }
 
-  if (status === null) {
+  if (status === null || deviceId === null) {
     return (
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}

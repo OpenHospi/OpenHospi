@@ -1,5 +1,7 @@
 # Signal Protocol E2E Encryption for Group Chats
+
 ## Complete Architecture & Implementation Guide
+
 ### Next.js 16+ / Expo 55+ / Supabase / Drizzle ORM / Better Auth / react-native-quick-crypto
 
 ---
@@ -32,7 +34,6 @@
 
 ---
 
-
 ## 1. Protocol Overview
 
 Signal uses a **layered encryption architecture** for group messaging. It is NOT simply
@@ -62,17 +63,18 @@ sending is O(1).
 ### What the Server Sees
 
 The server sees:
+
 - Who is sending to which group (metadata)
 - The encrypted ciphertext (opaque blob)
 - Timing information
 
 The server CANNOT see:
+
 - Message plaintext
 - Group names, avatars, or membership (in Groups V2)
 - Sender Key material
 
 ---
-
 
 ## 2. The Four Cryptographic Layers
 
@@ -93,11 +95,13 @@ Diffie-Hellman handshake using Bob's prekey bundle fetched from the server. This
 produces a shared secret without Bob needing to be online.
 
 **Bob's PreKey Bundle (uploaded at registration):**
+
 - Identity Key (IK_B) — long-term public key
 - Signed PreKey (SPK_B) — medium-term, signed by IK_B, rotated periodically
 - One-Time PreKey (OPK_B) — ephemeral, used once then deleted from server
 
 **Alice's X3DH Calculation (4 DH operations):**
+
 ```
 DH1 = DH(IK_A, SPK_B)        # Alice identity × Bob signed prekey
 DH2 = DH(EK_A, IK_B)         # Alice ephemeral × Bob identity
@@ -135,6 +139,7 @@ Root Key[n+1], Chain Key = KDF(Root Key[n], DH(ratchet_key_A, ratchet_key_B))
 ```
 
 **Encryption per message:**
+
 ```
 Plaintext → AES-256-CBC(Message Key) → Ciphertext
 Ciphertext → HMAC-SHA256(Message Key) → MAC
@@ -145,10 +150,12 @@ Ciphertext → HMAC-SHA256(Message Key) → MAC
 For group messages, each sender maintains their own Sender Key state:
 
 **Sender Key Components:**
+
 - **Chain Key** (32 bytes, random) — used to derive per-message keys via symmetric ratchet
 - **Signature Key** (Curve25519 key pair) — used to sign ciphertexts for authentication
 
 **Per Group Message:**
+
 ```
 Message Key = HMAC-SHA256(Chain Key, 0x01)
 Chain Key   = HMAC-SHA256(Chain Key, 0x02)       # Ratchet forward
@@ -165,25 +172,23 @@ their copy of the sender's chain key to the correct position.
 
 ---
 
-
 ## 3. Key Types & Lifecycle
 
-| Key Type | Algorithm | Lifetime | Stored On | Purpose |
-|----------|-----------|----------|-----------|---------|
-| Identity Key Pair | Curve25519 | Permanent (per install) | Client (private), Server (public) | Root trust anchor |
-| Registration ID | Random uint32 | Permanent | Client + Server | Device identifier |
-| Signed PreKey | Curve25519 | Rotate every ~7-30 days | Client (private), Server (public) | Medium-term session init |
-| One-Time PreKeys | Curve25519 | Single use, then deleted | Client (private), Server (public) | Ephemeral session init |
-| Root Key | 32 bytes | Evolves per DH ratchet step | Client only | Derives new chain keys |
-| Sending Chain Key | 32 bytes | Evolves per message sent | Client only | Derives message keys |
-| Receiving Chain Key | 32 bytes | Evolves per message received | Client only | Derives message keys |
-| Message Key | 32 bytes | Single use, then deleted | Ephemeral (memory) | Encrypts one message |
-| Sender Key (Chain) | 32 bytes | Until group membership changes | Client only | Group message key derivation |
-| Sender Key (Signature) | Curve25519 | Until group membership changes | Client (private), Members (public) | Group message authentication |
-| Group Master Key | 32 bytes | Permanent per group | Client only (shared with members via E2E) | Encrypts group metadata |
+| Key Type               | Algorithm     | Lifetime                       | Stored On                                 | Purpose                      |
+|------------------------|---------------|--------------------------------|-------------------------------------------|------------------------------|
+| Identity Key Pair      | Curve25519    | Permanent (per install)        | Client (private), Server (public)         | Root trust anchor            |
+| Registration ID        | Random uint32 | Permanent                      | Client + Server                           | Device identifier            |
+| Signed PreKey          | Curve25519    | Rotate every ~7-30 days        | Client (private), Server (public)         | Medium-term session init     |
+| One-Time PreKeys       | Curve25519    | Single use, then deleted       | Client (private), Server (public)         | Ephemeral session init       |
+| Root Key               | 32 bytes      | Evolves per DH ratchet step    | Client only                               | Derives new chain keys       |
+| Sending Chain Key      | 32 bytes      | Evolves per message sent       | Client only                               | Derives message keys         |
+| Receiving Chain Key    | 32 bytes      | Evolves per message received   | Client only                               | Derives message keys         |
+| Message Key            | 32 bytes      | Single use, then deleted       | Ephemeral (memory)                        | Encrypts one message         |
+| Sender Key (Chain)     | 32 bytes      | Until group membership changes | Client only                               | Group message key derivation |
+| Sender Key (Signature) | Curve25519    | Until group membership changes | Client (private), Members (public)        | Group message authentication |
+| Group Master Key       | 32 bytes      | Permanent per group            | Client only (shared with members via E2E) | Encrypts group metadata      |
 
 ---
-
 
 ## 4. 1:1 Session Establishment
 
@@ -257,7 +262,6 @@ BOB (on receiving first message):
 ```
 
 ---
-
 
 ## 5. Group Encryption (Sender Keys)
 
@@ -393,7 +397,6 @@ If exceeded: reject message, request Sender Key re-distribution
 
 ---
 
-
 ## 6. Private Group Management (Groups V2 — Full Zero-Knowledge)
 
 Signal's Groups V2 uses a cryptographic system where the server stores group state
@@ -407,13 +410,13 @@ and implemented in Signal's `zkgroup` library (part of `@signalapp/libsignal-cli
 
 ### Core Cryptographic Primitives Required
 
-| Primitive | Purpose | Library |
-|-----------|---------|---------|
-| Algebraic MAC (MACGGM) | Server issues credentials without seeing attributes | Custom (implement per paper) |
-| Elgamal Encryption | Deterministic encryption of UIDs and ProfileKeys in group entries | Custom over Ristretto255 |
-| Schnorr ZK Proofs (Fiat-Shamir) | Prove credential ownership without revealing identity | Custom (poksho-style) |
-| Ristretto255 Group | Prime-order group for all ZK operations | `@noble/curves` (ristretto255) |
-| HKDF / SHA-256 | Key derivation for GroupSecretParams | `@noble/hashes` or quick-crypto |
+| Primitive                       | Purpose                                                           | Library                         |
+|---------------------------------|-------------------------------------------------------------------|---------------------------------|
+| Algebraic MAC (MACGGM)          | Server issues credentials without seeing attributes               | Custom (implement per paper)    |
+| Elgamal Encryption              | Deterministic encryption of UIDs and ProfileKeys in group entries | Custom over Ristretto255        |
+| Schnorr ZK Proofs (Fiat-Shamir) | Prove credential ownership without revealing identity             | Custom (poksho-style)           |
+| Ristretto255 Group              | Prime-order group for all ZK operations                           | `@noble/curves` (ristretto255)  |
+| HKDF / SHA-256                  | Key derivation for GroupSecretParams                              | `@noble/hashes` or quick-crypto |
 
 ### Key Objects in the System
 
@@ -625,12 +628,14 @@ The server stores ONLY encrypted blobs. A server database dump looks like this:
 ```
 
 The server CANNOT:
+
 - Read group names, avatars, or descriptions
 - Determine which users are in which groups
 - Link an authentication request to a specific member
 - Decrypt any member UID or ProfileKey
 
 The server CAN:
+
 - Enforce version ordering (reject stale updates)
 - Enforce access control based on encrypted role entries
 - Rate-limit requests per group
@@ -650,16 +655,16 @@ on Node.js but NOT in the browser.
 ```typescript
 // SERVER SIDE ONLY — apps/web/lib/zkgroup.ts
 import {
-  ServerSecretParams,
-  ServerZkAuthOperations,
-  ServerZkProfileOperations,
-  GroupSecretParams,
-  GroupMasterKey,
-  ClientZkAuthOperations,
-  ClientZkGroupCipher,
-  ClientZkProfileOperations,
-  AuthCredentialWithPniResponse,
-  ServerPublicParams,
+    ServerSecretParams,
+    ServerZkAuthOperations,
+    ServerZkProfileOperations,
+    GroupSecretParams,
+    GroupMasterKey,
+    ClientZkAuthOperations,
+    ClientZkGroupCipher,
+    ClientZkProfileOperations,
+    AuthCredentialWithPniResponse,
+    ServerPublicParams,
 } from '@signalapp/libsignal-client/zkgroup';
 ```
 
@@ -695,7 +700,6 @@ sessions because the server needs to know which UID to issue credentials for.
 
 ---
 
-
 ## 7. Authentication (Better Auth)
 
 Better Auth handles user authentication. It creates its own tables (user, session,
@@ -705,31 +709,31 @@ account, verification) that coexist with your encryption tables in Supabase.
 
 ```typescript
 // apps/web/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { expo } from "@better-auth/expo";
-import { nextCookies } from "better-auth/next-js";
-import { db } from "@/lib/db";
+import {betterAuth} from "better-auth";
+import {drizzleAdapter} from "better-auth/adapters/drizzle";
+import {expo} from "@better-auth/expo";
+import {nextCookies} from "better-auth/next-js";
+import {db} from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    schema,              // Pass your Drizzle schema for type safety
-  }),
-  emailAndPassword: {
-    enabled: true,
-  },
-  plugins: [
-    expo(),              // Enables Expo deep-link auth flows
-    nextCookies(),       // Auto-sets cookies in Server Actions (MUST be last)
-  ],
-  trustedOrigins: [
-    "myapp://",          // Your Expo app scheme
-    ...(process.env.NODE_ENV === "development" ? [
-      "exp://**",        // Expo dev client
-    ] : []),
-  ],
+    database: drizzleAdapter(db, {
+        provider: "pg",
+        schema,              // Pass your Drizzle schema for type safety
+    }),
+    emailAndPassword: {
+        enabled: true,
+    },
+    plugins: [
+        expo(),              // Enables Expo deep-link auth flows
+        nextCookies(),       // Auto-sets cookies in Server Actions (MUST be last)
+    ],
+    trustedOrigins: [
+        "myapp://",          // Your Expo app scheme
+        ...(process.env.NODE_ENV === "development" ? [
+            "exp://**",        // Expo dev client
+        ] : []),
+    ],
 });
 ```
 
@@ -737,32 +741,32 @@ export const auth = betterAuth({
 
 ```typescript
 // apps/web/app/api/auth/[...all]/route.ts
-import { auth } from "@/lib/auth";
-import { toNextJsHandler } from "better-auth/next-js";
+import {auth} from "@/lib/auth";
+import {toNextJsHandler} from "better-auth/next-js";
 
-export const { GET, POST } = toNextJsHandler(auth);
+export const {GET, POST} = toNextJsHandler(auth);
 ```
 
 ### Next.js 16+ Proxy (replaces middleware)
 
 ```typescript
 // apps/web/proxy.ts
-import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import {NextRequest, NextResponse} from "next/server";
+import {headers} from "next/headers";
+import {auth} from "@/lib/auth";
 
 export async function proxy(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  });
-  if (!session) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
-  }
-  return NextResponse.next();
+    const session = await auth.api.getSession({
+        headers: await headers()
+    });
+    if (!session) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+    return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard", "/chat/:path*"],
+    matcher: ["/dashboard", "/chat/:path*"],
 };
 ```
 
@@ -770,10 +774,10 @@ export const config = {
 
 ```typescript
 // apps/web/lib/auth-client.ts
-import { createAuthClient } from "better-auth/react";
+import {createAuthClient} from "better-auth/react";
 
 export const authClient = createAuthClient({
-  // baseURL defaults to current origin in Next.js
+    // baseURL defaults to current origin in Next.js
 });
 ```
 
@@ -781,19 +785,19 @@ export const authClient = createAuthClient({
 
 ```typescript
 // apps/mobile/lib/auth-client.ts
-import { createAuthClient } from "better-auth/react";
-import { expoClient } from "@better-auth/expo/client";
+import {createAuthClient} from "better-auth/react";
+import {expoClient} from "@better-auth/expo/client";
 import * as SecureStore from "expo-secure-store";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.EXPO_PUBLIC_API_URL!,  // Your Next.js server URL
-  plugins: [
-    expoClient({
-      scheme: "myapp",
-      storagePrefix: "myapp",
-      storage: SecureStore,      // Cookies stored in Keychain/Keystore
-    }),
-  ],
+    baseURL: process.env.EXPO_PUBLIC_API_URL!,  // Your Next.js server URL
+    plugins: [
+        expoClient({
+            scheme: "myapp",
+            storagePrefix: "myapp",
+            storage: SecureStore,      // Cookies stored in Keychain/Keystore
+        }),
+    ],
 });
 ```
 
@@ -804,26 +808,25 @@ Every device registration, prekey upload, and group membership links back to thi
 
 ```typescript
 // Server-side (RSC or Server Action)
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import {auth} from "@/lib/auth";
+import {headers} from "next/headers";
 
 export async function getCurrentUserId(): Promise<string> {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) throw new Error("Not authenticated");
-  return session.user.id;  // This is the user ID used throughout the encryption system
+    const session = await auth.api.getSession({headers: await headers()});
+    if (!session) throw new Error("Not authenticated");
+    return session.user.id;  // This is the user ID used throughout the encryption system
 }
 
 // Client-side (React component — works in both Next.js and Expo)
-import { authClient } from "@/lib/auth-client";
+import {authClient} from "@/lib/auth-client";
 
 function ChatScreen() {
-  const { data: session } = authClient.useSession();
-  const userId = session?.user.id;  // Same ID, used client-side
+    const {data: session} = authClient.useSession();
+    const userId = session?.user.id;  // Same ID, used client-side
 }
 ```
 
 ---
-
 
 ## 8. Server Database Schema — Drizzle + Supabase Postgres
 
@@ -831,28 +834,28 @@ function ChatScreen() {
 
 ```typescript
 // apps/web/lib/db/index.ts
-import { drizzle } from "drizzle-orm/postgres-js";
+import {drizzle} from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
 // Use Supabase connection pooler (Transaction mode)
-const client = postgres(process.env.DATABASE_URL!, { prepare: false });
-export const db = drizzle({ client, schema });
+const client = postgres(process.env.DATABASE_URL!, {prepare: false});
+export const db = drizzle({client, schema});
 ```
 
 ### Drizzle Config
 
 ```typescript
 // apps/web/drizzle.config.ts
-import { defineConfig } from "drizzle-kit";
+import {defineConfig} from "drizzle-kit";
 
 export default defineConfig({
-  schema: "./lib/db/schema/index.ts",
-  out: "./supabase/migrations",
-  dialect: "postgresql",
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
+    schema: "./lib/db/schema/index.ts",
+    out: "./supabase/migrations",
+    dialect: "postgresql",
+    dbCredentials: {
+        url: process.env.DATABASE_URL!,
+    },
 });
 ```
 
@@ -868,52 +871,52 @@ CLI — you generate them with `npx @better-auth/cli generate`.
 // This creates: user, session, account, verification tables
 // DO NOT manually edit — re-run the CLI if you change auth config
 
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import {pgTable, text, timestamp, boolean} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").notNull(),
-  image: text("image"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").notNull(),
+    image: text("image"),
+    createdAt: timestamp("created_at").notNull(),
+    updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const session = pgTable("session", {
-  id: text("id").primaryKey(),
-  expiresAt: timestamp("expires_at").notNull(),
-  token: text("token").notNull().unique(),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
-  ipAddress: text("ip_address"),
-  userAgent: text("user_agent"),
-  userId: text("user_id").notNull().references(() => user.id),
+    id: text("id").primaryKey(),
+    expiresAt: timestamp("expires_at").notNull(),
+    token: text("token").notNull().unique(),
+    createdAt: timestamp("created_at").notNull(),
+    updatedAt: timestamp("updated_at").notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    userId: text("user_id").notNull().references(() => user.id),
 });
 
 export const account = pgTable("account", {
-  id: text("id").primaryKey(),
-  accountId: text("account_id").notNull(),
-  providerId: text("provider_id").notNull(),
-  userId: text("user_id").notNull().references(() => user.id),
-  accessToken: text("access_token"),
-  refreshToken: text("refresh_token"),
-  idToken: text("id_token"),
-  accessTokenExpiresAt: timestamp("access_token_expires_at"),
-  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
-  scope: text("scope"),
-  password: text("password"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+    id: text("id").primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: text("user_id").notNull().references(() => user.id),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: timestamp("created_at").notNull(),
+    updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const verification = pgTable("verification", {
-  id: text("id").primaryKey(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at"),
-  updatedAt: timestamp("updated_at"),
+    id: text("id").primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at"),
+    updatedAt: timestamp("updated_at"),
 });
 ```
 
@@ -921,197 +924,197 @@ export const verification = pgTable("verification", {
 // apps/web/lib/db/schema/encryption-schema.ts
 // YOUR encryption tables — these you write and maintain yourself
 
-import { pgTable, text, integer, boolean, timestamp, bigint, uuid, uniqueIndex } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-import { user } from "./auth-schema";
+import {pgTable, text, integer, boolean, timestamp, bigint, uuid, uniqueIndex} from "drizzle-orm/pg-core";
+import {relations} from "drizzle-orm";
+import {user} from "./auth-schema";
 
 // ── Devices ──────────────────────────────────────────────
 export const devices = pgTable("devices", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  deviceId: integer("device_id").notNull(),
-  registrationId: integer("registration_id").notNull(),
-  identityKeyPublic: text("identity_key_public").notNull(),
-  platform: text("platform"),           // 'web' | 'ios' | 'android'
-  pushToken: text("push_token"),
-  lastSeenAt: timestamp("last_seen_at").defaultNow(),
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").notNull().references(() => user.id, {onDelete: "cascade"}),
+    deviceId: integer("device_id").notNull(),
+    registrationId: integer("registration_id").notNull(),
+    identityKeyPublic: text("identity_key_public").notNull(),
+    platform: text("platform"),           // 'web' | 'ios' | 'android'
+    pushToken: text("push_token"),
+    lastSeenAt: timestamp("last_seen_at").defaultNow(),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
 }, (t) => [
-  uniqueIndex("devices_user_device_idx").on(t.userId, t.deviceId),
+    uniqueIndex("devices_user_device_idx").on(t.userId, t.deviceId),
 ]);
 
 // ── Signed PreKeys ───────────────────────────────────────
 export const signedPrekeys = pgTable("signed_prekeys", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  deviceId: uuid("device_id").notNull().references(() => devices.id, { onDelete: "cascade" }),
-  keyId: integer("key_id").notNull(),
-  publicKey: text("public_key").notNull(),
-  signature: text("signature").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    deviceId: uuid("device_id").notNull().references(() => devices.id, {onDelete: "cascade"}),
+    keyId: integer("key_id").notNull(),
+    publicKey: text("public_key").notNull(),
+    signature: text("signature").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
 }, (t) => [
-  uniqueIndex("spk_device_key_idx").on(t.deviceId, t.keyId),
+    uniqueIndex("spk_device_key_idx").on(t.deviceId, t.keyId),
 ]);
 
 // ── One-Time PreKeys ─────────────────────────────────────
 export const oneTimePrekeys = pgTable("one_time_prekeys", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  deviceId: uuid("device_id").notNull().references(() => devices.id, { onDelete: "cascade" }),
-  keyId: integer("key_id").notNull(),
-  publicKey: text("public_key").notNull(),
-  used: boolean("used").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    deviceId: uuid("device_id").notNull().references(() => devices.id, {onDelete: "cascade"}),
+    keyId: integer("key_id").notNull(),
+    publicKey: text("public_key").notNull(),
+    used: boolean("used").default(false),
+    createdAt: timestamp("created_at").defaultNow(),
 }, (t) => [
-  uniqueIndex("otp_device_key_idx").on(t.deviceId, t.keyId),
+    uniqueIndex("otp_device_key_idx").on(t.deviceId, t.keyId),
 ]);
 
 // ── Groups (server sees ONLY encrypted blobs) ───────────
 export const groups = pgTable("groups", {
-  id: text("id").primaryKey(),               // Derived from GroupSecretParams (public)
-  
-  // ALL metadata is encrypted with GroupSecretParams — server cannot read any of it
-  encryptedTitle: text("encrypted_title"),
-  encryptedAvatar: text("encrypted_avatar"),
-  encryptedDescription: text("encrypted_description"),
-  encryptedDisappearingMessageTimer: text("encrypted_disappearing_timer"),
-  
-  // Version counter — the ONLY plaintext field the server uses for ordering
-  version: integer("version").default(0).notNull(),
-  
-  // Access control (stored as encrypted role ciphertexts, but server can
-  // verify against presentation proofs without decrypting)
-  accessMembers: integer("access_members").default(1),     // 0=ANY, 1=MEMBER, 2=ADMIN
-  accessAttributes: integer("access_attributes").default(1),
-  accessAddFromInviteLink: integer("access_add_from_invite_link").default(0),
-  
-  // Invite link (encrypted)
-  encryptedInviteLinkPassword: text("encrypted_invite_link_password"),
-  
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+    id: text("id").primaryKey(),               // Derived from GroupSecretParams (public)
+
+    // ALL metadata is encrypted with GroupSecretParams — server cannot read any of it
+    encryptedTitle: text("encrypted_title"),
+    encryptedAvatar: text("encrypted_avatar"),
+    encryptedDescription: text("encrypted_description"),
+    encryptedDisappearingMessageTimer: text("encrypted_disappearing_timer"),
+
+    // Version counter — the ONLY plaintext field the server uses for ordering
+    version: integer("version").default(0).notNull(),
+
+    // Access control (stored as encrypted role ciphertexts, but server can
+    // verify against presentation proofs without decrypting)
+    accessMembers: integer("access_members").default(1),     // 0=ANY, 1=MEMBER, 2=ADMIN
+    accessAttributes: integer("access_attributes").default(1),
+    accessAddFromInviteLink: integer("access_add_from_invite_link").default(0),
+
+    // Invite link (encrypted)
+    encryptedInviteLinkPassword: text("encrypted_invite_link_password"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // ── Group Members (encrypted entries — server cannot read UIDs) ──
 // Each member entry contains ENCRYPTED UID + ENCRYPTED ProfileKey.
 // The server CANNOT decrypt these. It can only verify ZK proofs against them.
 export const groupMembers = pgTable("group_members", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  groupId: text("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
-  
-  // ENCRYPTED member identity — server sees only ciphertext
-  uidCiphertext: text("uid_ciphertext").notNull(),            // Elgamal encryption of member UUID
-  profileKeyCiphertext: text("profile_key_ciphertext").notNull(), // Elgamal encryption of ProfileKey
-  
-  // Role (server CAN verify this via ZK proof during access control checks)
-  role: integer("role").default(1).notNull(),   // 0=UNKNOWN, 1=DEFAULT, 2=ADMINISTRATOR
-  
-  // Presentation proof (cached for server-side verification)
-  presentation: text("presentation"),           // ProfileKeyCredentialPresentation that created this entry
-  
-  joinedAtVersion: integer("joined_at_version").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    groupId: text("group_id").notNull().references(() => groups.id, {onDelete: "cascade"}),
+
+    // ENCRYPTED member identity — server sees only ciphertext
+    uidCiphertext: text("uid_ciphertext").notNull(),            // Elgamal encryption of member UUID
+    profileKeyCiphertext: text("profile_key_ciphertext").notNull(), // Elgamal encryption of ProfileKey
+
+    // Role (server CAN verify this via ZK proof during access control checks)
+    role: integer("role").default(1).notNull(),   // 0=UNKNOWN, 1=DEFAULT, 2=ADMINISTRATOR
+
+    // Presentation proof (cached for server-side verification)
+    presentation: text("presentation"),           // ProfileKeyCredentialPresentation that created this entry
+
+    joinedAtVersion: integer("joined_at_version").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
 }, (t) => [
-  uniqueIndex("gm_group_uid_idx").on(t.groupId, t.uidCiphertext),
+    uniqueIndex("gm_group_uid_idx").on(t.groupId, t.uidCiphertext),
 ]);
 
 // ── Group Pending Members (invited but not yet joined) ───
 export const groupPendingMembers = pgTable("group_pending_members", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  groupId: text("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
-  uidCiphertext: text("uid_ciphertext").notNull(),
-  role: integer("role").default(1).notNull(),
-  addedByUidCiphertext: text("added_by_uid_ciphertext").notNull(),
-  addedAtVersion: integer("added_at_version").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    groupId: text("group_id").notNull().references(() => groups.id, {onDelete: "cascade"}),
+    uidCiphertext: text("uid_ciphertext").notNull(),
+    role: integer("role").default(1).notNull(),
+    addedByUidCiphertext: text("added_by_uid_ciphertext").notNull(),
+    addedAtVersion: integer("added_at_version").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
 });
 
 // ── Server ZK Params (one row, generated at deployment) ──
 export const serverZkParams = pgTable("server_zk_params", {
-  id: integer("id").primaryKey().default(1),
-  // ServerSecretParams — NEVER exposed to clients
-  secretParams: text("secret_params").notNull(),          // base64 serialized
-  // ServerPublicParams — distributed to all clients
-  publicParams: text("public_params").notNull(),          // base64 serialized
-  createdAt: timestamp("created_at").defaultNow(),
+    id: integer("id").primaryKey().default(1),
+    // ServerSecretParams — NEVER exposed to clients
+    secretParams: text("secret_params").notNull(),          // base64 serialized
+    // ServerPublicParams — distributed to all clients
+    publicParams: text("public_params").notNull(),          // base64 serialized
+    createdAt: timestamp("created_at").defaultNow(),
 });
 
 // ── Auth Credential Issuance Log (rate limiting + audit) ─
 export const authCredentialRequests = pgTable("auth_credential_requests", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id),
-  redemptionDate: integer("redemption_date").notNull(),   // days since epoch
-  issuedAt: timestamp("issued_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").notNull().references(() => user.id),
+    redemptionDate: integer("redemption_date").notNull(),   // days since epoch
+    issuedAt: timestamp("issued_at").defaultNow(),
 }, (t) => [
-  uniqueIndex("acr_user_date_idx").on(t.userId, t.redemptionDate),
+    uniqueIndex("acr_user_date_idx").on(t.userId, t.redemptionDate),
 ]);
 
 // ── Profile Key Commitments (registered by users) ────────
 export const profileKeyCommitments = pgTable("profile_key_commitments", {
-  userId: text("user_id").primaryKey().references(() => user.id),
-  profileKeyVersion: text("profile_key_version").notNull(),
-  profileKeyCommitment: text("profile_key_commitment").notNull(), // base64 commitment
-  updatedAt: timestamp("updated_at").defaultNow(),
+    userId: text("user_id").primaryKey().references(() => user.id),
+    profileKeyVersion: text("profile_key_version").notNull(),
+    profileKeyCommitment: text("profile_key_commitment").notNull(), // base64 commitment
+    updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // ── Sender Key Distributions ─────────────────────────────
 export const senderKeyDistributions = pgTable("sender_key_distributions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  senderUserId: text("sender_user_id").notNull().references(() => user.id),
-  senderDeviceId: uuid("sender_device_id").notNull().references(() => devices.id),
-  groupId: uuid("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
-  recipientDeviceId: uuid("recipient_device_id").notNull().references(() => devices.id),
-  senderKeyId: integer("sender_key_id").notNull(),
-  distributionId: uuid("distribution_id").notNull(),
-  status: text("status").default("pending"),
-  createdAt: timestamp("created_at").defaultNow(),
-  deliveredAt: timestamp("delivered_at"),
+    id: uuid("id").defaultRandom().primaryKey(),
+    senderUserId: text("sender_user_id").notNull().references(() => user.id),
+    senderDeviceId: uuid("sender_device_id").notNull().references(() => devices.id),
+    groupId: uuid("group_id").notNull().references(() => groups.id, {onDelete: "cascade"}),
+    recipientDeviceId: uuid("recipient_device_id").notNull().references(() => devices.id),
+    senderKeyId: integer("sender_key_id").notNull(),
+    distributionId: uuid("distribution_id").notNull(),
+    status: text("status").default("pending"),
+    createdAt: timestamp("created_at").defaultNow(),
+    deliveredAt: timestamp("delivered_at"),
 });
 
 // ── Messages ─────────────────────────────────────────────
 export const messages = pgTable("messages", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  senderUserId: text("sender_user_id").notNull().references(() => user.id),
-  senderDeviceId: uuid("sender_device_id").notNull().references(() => devices.id),
-  recipientUserId: text("recipient_user_id"),
-  recipientDeviceId: uuid("recipient_device_id"),
-  groupId: uuid("group_id"),
-  messageType: text("message_type").notNull(),
-  ciphertext: text("ciphertext").notNull(),
-  timestamp: bigint("timestamp", { mode: "number" }).notNull(),
-  serverTimestamp: timestamp("server_timestamp").defaultNow(),
-  delivered: boolean("delivered").default(false),
-  read: boolean("read").default(false),
-  senderKeyId: integer("sender_key_id"),
+    id: uuid("id").defaultRandom().primaryKey(),
+    senderUserId: text("sender_user_id").notNull().references(() => user.id),
+    senderDeviceId: uuid("sender_device_id").notNull().references(() => devices.id),
+    recipientUserId: text("recipient_user_id"),
+    recipientDeviceId: uuid("recipient_device_id"),
+    groupId: uuid("group_id"),
+    messageType: text("message_type").notNull(),
+    ciphertext: text("ciphertext").notNull(),
+    timestamp: bigint("timestamp", {mode: "number"}).notNull(),
+    serverTimestamp: timestamp("server_timestamp").defaultNow(),
+    delivered: boolean("delivered").default(false),
+    read: boolean("read").default(false),
+    senderKeyId: integer("sender_key_id"),
 });
 
 // ── Group State Changelog (versioned, all entries encrypted) ──
 export const groupStateChangelog = pgTable("group_state_changelog", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  groupId: text("group_id").notNull().references(() => groups.id, { onDelete: "cascade" }),
-  version: integer("version").notNull(),
-  
-  // WHO made the change — stored as encrypted UID ciphertext, NOT plaintext
-  changedByUidCiphertext: text("changed_by_uid_ciphertext").notNull(),
-  
-  // What changed (serialized GroupChange protobuf, encrypted)
-  changeType: text("change_type").notNull(),
-  encryptedChangeData: text("encrypted_change_data"),
-  
-  createdAt: timestamp("created_at").defaultNow(),
+    id: uuid("id").defaultRandom().primaryKey(),
+    groupId: text("group_id").notNull().references(() => groups.id, {onDelete: "cascade"}),
+    version: integer("version").notNull(),
+
+    // WHO made the change — stored as encrypted UID ciphertext, NOT plaintext
+    changedByUidCiphertext: text("changed_by_uid_ciphertext").notNull(),
+
+    // What changed (serialized GroupChange protobuf, encrypted)
+    changeType: text("change_type").notNull(),
+    encryptedChangeData: text("encrypted_change_data"),
+
+    createdAt: timestamp("created_at").defaultNow(),
 }, (t) => [
-  uniqueIndex("gsc_group_version_idx").on(t.groupId, t.version),
+    uniqueIndex("gsc_group_version_idx").on(t.groupId, t.version),
 ]);
 
 // ── Relations (for Drizzle relational queries) ───────────
-export const devicesRelations = relations(devices, ({ one, many }) => ({
-  user: one(user, { fields: [devices.userId], references: [user.id] }),
-  signedPrekeys: many(signedPrekeys),
-  oneTimePrekeys: many(oneTimePrekeys),
+export const devicesRelations = relations(devices, ({one, many}) => ({
+    user: one(user, {fields: [devices.userId], references: [user.id]}),
+    signedPrekeys: many(signedPrekeys),
+    oneTimePrekeys: many(oneTimePrekeys),
 }));
 
-export const groupMembersRelations = relations(groupMembers, ({ one }) => ({
-  group: one(groups, { fields: [groupMembers.groupId], references: [groups.id] }),
-  // NOTE: No FK to user table — the server cannot resolve uidCiphertext to a user
+export const groupMembersRelations = relations(groupMembers, ({one}) => ({
+    group: one(groups, {fields: [groupMembers.groupId], references: [groups.id]}),
+    // NOTE: No FK to user table — the server cannot resolve uidCiphertext to a user
 }));
 ```
 
@@ -1141,32 +1144,38 @@ npx drizzle-kit push
 
 ---
 
-
 ### Supabase Realtime Channel Setup
 
 ```sql
 -- Enable realtime for message delivery
-ALTER PUBLICATION supabase_realtime ADD TABLE messages;
+ALTER
+PUBLICATION supabase_realtime ADD TABLE messages;
 
 -- Enable realtime for group state changes
-ALTER PUBLICATION supabase_realtime ADD TABLE group_state_changelog;
+ALTER
+PUBLICATION supabase_realtime ADD TABLE group_state_changelog;
 
 -- Enable realtime for sender key distributions
-ALTER PUBLICATION supabase_realtime ADD TABLE sender_key_distributions;
+ALTER
+PUBLICATION supabase_realtime ADD TABLE sender_key_distributions;
 
 -- Row Level Security (server should not expose messages to wrong recipients)
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users receive their own 1:1 messages"
-  ON messages FOR SELECT
-  USING (
+CREATE
+POLICY "Users receive their own 1:1 messages"
+  ON messages FOR
+SELECT
+    USING (
     recipient_user_id = auth.uid()
     OR sender_user_id = auth.uid()
-  );
+    );
 
-CREATE POLICY "Users receive their group messages"
-  ON messages FOR SELECT
-  USING (
+CREATE
+POLICY "Users receive their group messages"
+  ON messages FOR
+SELECT
+    USING (
     -- For group messages, RLS cannot check membership directly because
     -- group_members stores encrypted UIDs, not plaintext.
     -- Instead, group message delivery is handled at the APPLICATION layer:
@@ -1177,14 +1186,13 @@ CREATE POLICY "Users receive their group messages"
     group_id IS NOT NULL
     OR recipient_user_id = auth.uid()
     OR sender_user_id = auth.uid()
-  );
+    );
 
-CREATE POLICY "Users can send messages"
+CREATE
+POLICY "Users can send messages"
   ON messages FOR INSERT
   WITH CHECK (sender_user_id = auth.uid());
 ```
-
-
 
 ## 9. Mobile Local Database — Drizzle + Expo SQLite
 
@@ -1204,27 +1212,27 @@ npm install -D drizzle-kit babel-plugin-inline-import
 
 ```javascript
 module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ["babel-preset-expo"],
-    plugins: [
-      ["inline-import", { extensions: [".sql"] }],       // Drizzle migrations
-      ["module-resolver", {
-        alias: {
-          "crypto": "react-native-quick-crypto",          // Quick Crypto
-          "stream": "readable-stream",
-          "buffer": "react-native-quick-crypto",
-        },
-      }],
-    ],
-  };
+    api.cache(true);
+    return {
+        presets: ["babel-preset-expo"],
+        plugins: [
+            ["inline-import", {extensions: [".sql"]}],       // Drizzle migrations
+            ["module-resolver", {
+                alias: {
+                    "crypto": "react-native-quick-crypto",          // Quick Crypto
+                    "stream": "readable-stream",
+                    "buffer": "react-native-quick-crypto",
+                },
+            }],
+        ],
+    };
 };
 ```
 
 ### metro.config.js (combined: quick-crypto + Drizzle)
 
 ```javascript
-const { getDefaultConfig } = require("expo/metro-config");
+const {getDefaultConfig} = require("expo/metro-config");
 const config = getDefaultConfig(__dirname);
 
 // Drizzle: allow .sql file imports
@@ -1232,10 +1240,10 @@ config.resolver.sourceExts.push("sql");
 
 // Quick Crypto: resolve 'crypto' to native implementation
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (moduleName === "crypto") {
-    return context.resolveRequest(context, "react-native-quick-crypto", platform);
-  }
-  return context.resolveRequest(context, moduleName, platform);
+    if (moduleName === "crypto") {
+        return context.resolveRequest(context, "react-native-quick-crypto", platform);
+    }
+    return context.resolveRequest(context, moduleName, platform);
 };
 
 module.exports = config;
@@ -1245,13 +1253,13 @@ module.exports = config;
 
 ```typescript
 // apps/mobile/drizzle.config.ts
-import { defineConfig } from "drizzle-kit";
+import {defineConfig} from "drizzle-kit";
 
 export default defineConfig({
-  schema: "./lib/db/schema.ts",
-  out: "./drizzle",
-  dialect: "sqlite",
-  driver: "expo",            // CRITICAL: must be "expo" for Expo SQLite
+    schema: "./lib/db/schema.ts",
+    out: "./drizzle",
+    dialect: "sqlite",
+    driver: "expo",            // CRITICAL: must be "expo" for Expo SQLite
 });
 ```
 
@@ -1259,109 +1267,109 @@ export default defineConfig({
 
 ```typescript
 // apps/mobile/lib/db/schema.ts
-import { sqliteTable, text, integer, blob } from "drizzle-orm/sqlite-core";
+import {sqliteTable, text, integer, blob} from "drizzle-orm/sqlite-core";
 
 // ── Identity Keys (one row per device installation) ──────
 export const identityKeys = sqliteTable("identity_keys", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  registrationId: integer("registration_id").notNull(),
-  publicKey: text("public_key").notNull(),      // base64 Curve25519 public
-  privateKey: text("private_key").notNull(),     // base64 Curve25519 private (ENCRYPTED)
-  createdAt: integer("created_at", { mode: "timestamp" }),
+    id: integer("id").primaryKey({autoIncrement: true}),
+    registrationId: integer("registration_id").notNull(),
+    publicKey: text("public_key").notNull(),      // base64 Curve25519 public
+    privateKey: text("private_key").notNull(),     // base64 Curve25519 private (ENCRYPTED)
+    createdAt: integer("created_at", {mode: "timestamp"}),
 });
 
 // ── PreKeys (our unused one-time prekeys) ────────────────
 export const prekeys = sqliteTable("prekeys", {
-  keyId: integer("key_id").primaryKey(),
-  publicKey: text("public_key").notNull(),
-  privateKey: text("private_key").notNull(),     // ENCRYPTED at rest
-  uploaded: integer("uploaded", { mode: "boolean" }).default(false),
+    keyId: integer("key_id").primaryKey(),
+    publicKey: text("public_key").notNull(),
+    privateKey: text("private_key").notNull(),     // ENCRYPTED at rest
+    uploaded: integer("uploaded", {mode: "boolean"}).default(false),
 });
 
 // ── Signed PreKeys ───────────────────────────────────────
 export const signedPrekeys = sqliteTable("signed_prekeys_local", {
-  keyId: integer("key_id").primaryKey(),
-  publicKey: text("public_key").notNull(),
-  privateKey: text("private_key").notNull(),     // ENCRYPTED at rest
-  signature: text("signature").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" }),
+    keyId: integer("key_id").primaryKey(),
+    publicKey: text("public_key").notNull(),
+    privateKey: text("private_key").notNull(),     // ENCRYPTED at rest
+    signature: text("signature").notNull(),
+    createdAt: integer("created_at", {mode: "timestamp"}),
 });
 
 // ── Sessions (Double Ratchet state per remote device) ────
 export const sessions = sqliteTable("sessions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  // Address = remoteUserId + "." + remoteDeviceId
-  address: text("address").notNull().unique(),
-  // Serialized Double Ratchet session state (ENCRYPTED)
-  sessionData: text("session_data").notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }),
+    id: integer("id").primaryKey({autoIncrement: true}),
+    // Address = remoteUserId + "." + remoteDeviceId
+    address: text("address").notNull().unique(),
+    // Serialized Double Ratchet session state (ENCRYPTED)
+    sessionData: text("session_data").notNull(),
+    updatedAt: integer("updated_at", {mode: "timestamp"}),
 });
 
 // ── Sender Keys (our Sender Key per group) ───────────────
 export const senderKeys = sqliteTable("sender_keys", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  // groupId + ":" + senderAddress
-  compositeKey: text("composite_key").notNull().unique(),
-  // Serialized Sender Key state (ENCRYPTED)
-  senderKeyData: text("sender_key_data").notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }),
+    id: integer("id").primaryKey({autoIncrement: true}),
+    // groupId + ":" + senderAddress
+    compositeKey: text("composite_key").notNull().unique(),
+    // Serialized Sender Key state (ENCRYPTED)
+    senderKeyData: text("sender_key_data").notNull(),
+    updatedAt: integer("updated_at", {mode: "timestamp"}),
 });
 
 // ── Local Message Cache ──────────────────────────────────
 export const localMessages = sqliteTable("local_messages", {
-  id: text("id").primaryKey(),               // Same UUID as server
-  groupId: text("group_id"),
-  senderUserId: text("sender_user_id").notNull(),
-  plaintext: text("plaintext").notNull(),    // Decrypted message body
-  timestamp: integer("timestamp").notNull(),
-  status: text("status").default("received"),  // sent | received | read
+    id: text("id").primaryKey(),               // Same UUID as server
+    groupId: text("group_id"),
+    senderUserId: text("sender_user_id").notNull(),
+    plaintext: text("plaintext").notNull(),    // Decrypted message body
+    timestamp: integer("timestamp").notNull(),
+    status: text("status").default("received"),  // sent | received | read
 });
 
 // ── Skipped Message Keys (for out-of-order delivery) ─────
 export const skippedKeys = sqliteTable("skipped_keys", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  address: text("address").notNull(),        // sender address
-  messageIndex: integer("message_index").notNull(),
-  messageKey: text("message_key").notNull(), // ENCRYPTED
-  createdAt: integer("created_at", { mode: "timestamp" }),
+    id: integer("id").primaryKey({autoIncrement: true}),
+    address: text("address").notNull(),        // sender address
+    messageIndex: integer("message_index").notNull(),
+    messageKey: text("message_key").notNull(), // ENCRYPTED
+    createdAt: integer("created_at", {mode: "timestamp"}),
 });
 
 // ── ZK Credentials (Groups V2 anonymous authentication) ──
 export const authCredentials = sqliteTable("auth_credentials", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  redemptionDate: integer("redemption_date").notNull().unique(), // days since epoch
-  credentialData: text("credential_data").notNull(),  // serialized AuthCredentialWithPni
-  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    id: integer("id").primaryKey({autoIncrement: true}),
+    redemptionDate: integer("redemption_date").notNull().unique(), // days since epoch
+    credentialData: text("credential_data").notNull(),  // serialized AuthCredentialWithPni
+    expiresAt: integer("expires_at", {mode: "timestamp"}).notNull(),
 });
 
 export const profileKeyCredentials = sqliteTable("profile_key_credentials", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  // Which user's (UID, ProfileKey) this credential certifies
-  targetUserId: text("target_user_id").notNull().unique(),
-  credentialData: text("credential_data").notNull(),  // serialized ExpiringProfileKeyCredential
-  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    id: integer("id").primaryKey({autoIncrement: true}),
+    // Which user's (UID, ProfileKey) this credential certifies
+    targetUserId: text("target_user_id").notNull().unique(),
+    credentialData: text("credential_data").notNull(),  // serialized ExpiringProfileKeyCredential
+    expiresAt: integer("expires_at", {mode: "timestamp"}).notNull(),
 });
 
 // ── Group Master Keys (for decrypting group state) ───────
 export const groupMasterKeys = sqliteTable("group_master_keys", {
-  groupId: text("group_id").primaryKey(),
-  masterKey: text("master_key").notNull(),    // 32-byte GroupMasterKey (ENCRYPTED at rest)
-  createdAt: integer("created_at", { mode: "timestamp" }),
+    groupId: text("group_id").primaryKey(),
+    masterKey: text("master_key").notNull(),    // 32-byte GroupMasterKey (ENCRYPTED at rest)
+    createdAt: integer("created_at", {mode: "timestamp"}),
 });
 
 // ── Server Public Params (for verifying credentials) ─────
 export const serverParams = sqliteTable("server_params", {
-  id: integer("id").primaryKey().default(1),
-  publicParams: text("public_params").notNull(),  // ServerPublicParams (base64)
-  fetchedAt: integer("fetched_at", { mode: "timestamp" }),
+    id: integer("id").primaryKey().default(1),
+    publicParams: text("public_params").notNull(),  // ServerPublicParams (base64)
+    fetchedAt: integer("fetched_at", {mode: "timestamp"}),
 });
 
 // ── My Profile Key ───────────────────────────────────────
 export const myProfileKey = sqliteTable("my_profile_key", {
-  id: integer("id").primaryKey().default(1),
-  profileKey: text("profile_key").notNull(),       // 32-byte ProfileKey (ENCRYPTED at rest)
-  profileKeyVersion: text("profile_key_version").notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp" }),
+    id: integer("id").primaryKey().default(1),
+    profileKey: text("profile_key").notNull(),       // 32-byte ProfileKey (ENCRYPTED at rest)
+    profileKeyVersion: text("profile_key_version").notNull(),
+    updatedAt: integer("updated_at", {mode: "timestamp"}),
 });
 ```
 
@@ -1369,36 +1377,44 @@ export const myProfileKey = sqliteTable("my_profile_key", {
 
 ```typescript
 // apps/mobile/lib/db/index.ts
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { openDatabaseSync } from "expo-sqlite";
+import {drizzle} from "drizzle-orm/expo-sqlite";
+import {openDatabaseSync} from "expo-sqlite";
 import * as schema from "./schema";
 
 const expoDb = openDatabaseSync("signal_keys.db", {
-  enableChangeListener: true,   // For useLiveQuery reactive queries
+    enableChangeListener: true,   // For useLiveQuery reactive queries
 });
 
-export const localDb = drizzle(expoDb, { schema });
+export const localDb = drizzle(expoDb, {schema});
 ```
 
 ### Running Migrations on App Start
 
 ```typescript
 // apps/mobile/app/_layout.tsx  (or your root layout)
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { openDatabaseSync } from "expo-sqlite";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import {drizzle} from "drizzle-orm/expo-sqlite";
+import {openDatabaseSync} from "expo-sqlite";
+import {useMigrations} from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../drizzle/migrations";
 
 const expoDb = openDatabaseSync("signal_keys.db");
 const db = drizzle(expoDb);
 
 export default function RootLayout() {
-  const { success, error } = useMigrations(db, migrations);
+    const {success, error} = useMigrations(db, migrations);
 
-  if (error) return <Text>Migration error: {error.message}</Text>;
-  if (!success) return <Text>Migrating local database...</Text>;
+    if (error) return <Text>Migration
+    error: {
+        error.message
+    }
+    </Text>;
+    if (!success) return <Text>Migrating
+    local
+    database
+...
+    </Text>;
 
-  return <Slot />;  // Your app renders after migrations complete
+    return <Slot / >;  // Your app renders after migrations complete
 }
 ```
 
@@ -1411,7 +1427,6 @@ npx drizzle-kit generate
 ```
 
 ---
-
 
 ## 10. Client-Side Crypto & Key Storage
 
@@ -1487,7 +1502,8 @@ expo prebuild
 
 ```typescript
 // This MUST be the very first import in your app entry point
-import { install } from 'react-native-quick-crypto';
+import {install} from 'react-native-quick-crypto';
+
 install();  // Overrides global.Buffer and global.crypto
 ```
 
@@ -1495,21 +1511,21 @@ install();  // Overrides global.Buffer and global.crypto
 
 ```javascript
 // metro.config.js
-const { getDefaultConfig } = require('expo/metro-config');
+const {getDefaultConfig} = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (moduleName === 'crypto') {
-    // Redirect all `import crypto` to react-native-quick-crypto
-    return context.resolveRequest(
-      context,
-      'react-native-quick-crypto',
-      platform,
-    );
-  }
-  // Everything else uses standard Metro resolution
-  return context.resolveRequest(context, moduleName, platform);
+    if (moduleName === 'crypto') {
+        // Redirect all `import crypto` to react-native-quick-crypto
+        return context.resolveRequest(
+            context,
+            'react-native-quick-crypto',
+            platform,
+        );
+    }
+    // Everything else uses standard Metro resolution
+    return context.resolveRequest(context, moduleName, platform);
 };
 
 module.exports = config;
@@ -1520,28 +1536,29 @@ module.exports = config;
 ```javascript
 // babel.config.js
 module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-    plugins: [
-      [
-        'module-resolver',
-        {
-          alias: {
-            'crypto': 'react-native-quick-crypto',
-            'stream': 'readable-stream',
-            'buffer': 'react-native-quick-crypto',
-            // react-native-quick-crypto re-exports Buffer from
-            // @craftzdog/react-native-buffer (JSI-accelerated)
-          },
-        },
-      ],
-    ],
-  };
+    api.cache(true);
+    return {
+        presets: ['babel-preset-expo'],
+        plugins: [
+            [
+                'module-resolver',
+                {
+                    alias: {
+                        'crypto': 'react-native-quick-crypto',
+                        'stream': 'readable-stream',
+                        'buffer': 'react-native-quick-crypto',
+                        // react-native-quick-crypto re-exports Buffer from
+                        // @craftzdog/react-native-buffer (JSI-accelerated)
+                    },
+                },
+            ],
+        ],
+    };
 };
 ```
 
 After changing metro.config.js or babel.config.js, restart with:
+
 ```bash
 yarn start --reset-cache
 ```
@@ -1551,20 +1568,20 @@ It does NOT work with Expo Go because it contains native C++ code.
 
 **react-native-quick-crypto API Coverage for Signal Protocol:**
 
-| Signal Needs | quick-crypto API | Status |
-|-------------|-----------------|--------|
-| Secure random bytes | `crypto.randomBytes(32)` | Supported |
-| AES-256-CBC encrypt | `crypto.createCipheriv('aes-256-cbc', key, iv)` | Supported |
-| AES-256-GCM encrypt | `crypto.createCipheriv('aes-256-gcm', key, iv)` | Supported |
-| HMAC-SHA256 | `crypto.createHmac('sha256', key).update(data).digest()` | Supported |
-| SHA-256 hash | `crypto.createHash('sha256').update(data).digest()` | Supported |
-| HKDF | `crypto.hkdfSync('sha256', ikm, salt, info, length)` | Supported |
-| PBKDF2 | `crypto.pbkdf2Sync(password, salt, iterations, keylen, 'sha256')` | Supported |
-| Ed25519 sign | `crypto.createSign('ed25519')` or `crypto.sign('ed25519', data, key)` | Supported |
-| Ed25519 verify | `crypto.createVerify('ed25519')` or `crypto.verify('ed25519', data, key, sig)` | Supported |
-| Key objects | `crypto.createPrivateKey()` / `crypto.createPublicKey()` | Supported |
-| ECDH (x25519) | Not yet supported — use `@noble/curves` for x25519 DH | Use @noble/curves |
-| generateKeyPair | `crypto.generateKeyPairSync('ed25519')` | Supported |
+| Signal Needs        | quick-crypto API                                                               | Status            |
+|---------------------|--------------------------------------------------------------------------------|-------------------|
+| Secure random bytes | `crypto.randomBytes(32)`                                                       | Supported         |
+| AES-256-CBC encrypt | `crypto.createCipheriv('aes-256-cbc', key, iv)`                                | Supported         |
+| AES-256-GCM encrypt | `crypto.createCipheriv('aes-256-gcm', key, iv)`                                | Supported         |
+| HMAC-SHA256         | `crypto.createHmac('sha256', key).update(data).digest()`                       | Supported         |
+| SHA-256 hash        | `crypto.createHash('sha256').update(data).digest()`                            | Supported         |
+| HKDF                | `crypto.hkdfSync('sha256', ikm, salt, info, length)`                           | Supported         |
+| PBKDF2              | `crypto.pbkdf2Sync(password, salt, iterations, keylen, 'sha256')`              | Supported         |
+| Ed25519 sign        | `crypto.createSign('ed25519')` or `crypto.sign('ed25519', data, key)`          | Supported         |
+| Ed25519 verify      | `crypto.createVerify('ed25519')` or `crypto.verify('ed25519', data, key, sig)` | Supported         |
+| Key objects         | `crypto.createPrivateKey()` / `crypto.createPublicKey()`                       | Supported         |
+| ECDH (x25519)       | Not yet supported — use `@noble/curves` for x25519 DH                          | Use @noble/curves |
+| generateKeyPair     | `crypto.generateKeyPairSync('ed25519')`                                        | Supported         |
 
 **Note on Curve25519 DH:** react-native-quick-crypto does not yet implement
 `createECDH` or raw x25519 Diffie-Hellman. For the X3DH and Double Ratchet DH
@@ -1576,7 +1593,7 @@ no native dependencies.
 
 ```typescript
 import crypto from 'react-native-quick-crypto';
-import { x25519 } from '@noble/curves/ed25519';
+import {x25519} from '@noble/curves/ed25519';
 
 // --- Random bytes (for key generation) ---
 const chainKey = crypto.randomBytes(32);       // 32 random bytes
@@ -1584,12 +1601,12 @@ const iv = crypto.randomBytes(16);             // 16-byte IV for AES
 
 // --- HMAC-SHA256 (for KDF chain ratcheting) ---
 const messageKey = crypto.createHmac('sha256', chainKey)
-  .update(Buffer.from([0x01]))
-  .digest();
+    .update(Buffer.from([0x01]))
+    .digest();
 
 const nextChainKey = crypto.createHmac('sha256', chainKey)
-  .update(Buffer.from([0x02]))
-  .digest();
+    .update(Buffer.from([0x02]))
+    .digest();
 
 // --- AES-256-CBC (for message encryption) ---
 const cipher = crypto.createCipheriv('aes-256-cbc', messageKey, iv);
@@ -1602,15 +1619,15 @@ decrypted += decipher.final('utf8');
 
 // --- HKDF (for deriving multiple keys from shared secret) ---
 const derivedKey = crypto.hkdfSync(
-  'sha256',
-  sharedSecret,            // input keying material
-  Buffer.alloc(32, 0),     // salt (32 zero bytes for Signal)
-  'WhisperText',           // info string
-  64                       // output length: 32 bytes root key + 32 bytes chain key
+    'sha256',
+    sharedSecret,            // input keying material
+    Buffer.alloc(32, 0),     // salt (32 zero bytes for Signal)
+    'WhisperText',           // info string
+    64                       // output length: 32 bytes root key + 32 bytes chain key
 );
 
 // --- Ed25519 Signatures (for Sender Key message authentication) ---
-const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+const {publicKey, privateKey} = crypto.generateKeyPairSync('ed25519');
 const signature = crypto.sign(null, ciphertext, privateKey);
 const isValid = crypto.verify(null, ciphertext, publicKey, signature);
 
@@ -1621,7 +1638,6 @@ const sharedSecret = x25519.getSharedSecret(alicePrivate, bobPublicKey);
 ```
 
 ---
-
 
 ## 11. Project Structure
 
@@ -1723,7 +1739,6 @@ monorepo/
 
 ---
 
-
 ## 12. Store Interfaces (Platform-Agnostic)
 
 ### Store Interfaces (Platform-Agnostic)
@@ -1732,51 +1747,58 @@ monorepo/
 // packages/crypto/src/stores/types.ts
 
 interface IdentityKeyStore {
-  getIdentityKeyPair(): Promise<KeyPair>;
-  getLocalRegistrationId(): Promise<number>;
-  saveIdentity(address: ProtocolAddress, identityKey: PublicKey): Promise<boolean>;
-  isTrustedIdentity(address: ProtocolAddress, identityKey: PublicKey): Promise<boolean>;
+    getIdentityKeyPair(): Promise<KeyPair>;
+
+    getLocalRegistrationId(): Promise<number>;
+
+    saveIdentity(address: ProtocolAddress, identityKey: PublicKey): Promise<boolean>;
+
+    isTrustedIdentity(address: ProtocolAddress, identityKey: PublicKey): Promise<boolean>;
 }
 
 interface PreKeyStore {
-  loadPreKey(preKeyId: number): Promise<PreKeyRecord>;
-  storePreKey(preKeyId: number, record: PreKeyRecord): Promise<void>;
-  removePreKey(preKeyId: number): Promise<void>;
-  getAvailablePreKeyCount(): Promise<number>;
+    loadPreKey(preKeyId: number): Promise<PreKeyRecord>;
+
+    storePreKey(preKeyId: number, record: PreKeyRecord): Promise<void>;
+
+    removePreKey(preKeyId: number): Promise<void>;
+
+    getAvailablePreKeyCount(): Promise<number>;
 }
 
 interface SignedPreKeyStore {
-  loadSignedPreKey(signedPreKeyId: number): Promise<SignedPreKeyRecord>;
-  storeSignedPreKey(signedPreKeyId: number, record: SignedPreKeyRecord): Promise<void>;
+    loadSignedPreKey(signedPreKeyId: number): Promise<SignedPreKeyRecord>;
+
+    storeSignedPreKey(signedPreKeyId: number, record: SignedPreKeyRecord): Promise<void>;
 }
 
 interface SessionStore {
-  loadSession(address: ProtocolAddress): Promise<SessionRecord | null>;
-  storeSession(address: ProtocolAddress, record: SessionRecord): Promise<void>;
-  getSubDeviceSessions(name: string): Promise<number[]>;
+    loadSession(address: ProtocolAddress): Promise<SessionRecord | null>;
+
+    storeSession(address: ProtocolAddress, record: SessionRecord): Promise<void>;
+
+    getSubDeviceSessions(name: string): Promise<number[]>;
 }
 
 interface SenderKeyStore {
-  storeSenderKey(
-    sender: ProtocolAddress,
-    distributionId: string,     // UUID identifying this sender key
-    record: SenderKeyRecord
-  ): Promise<void>;
-  
-  loadSenderKey(
-    sender: ProtocolAddress,
-    distributionId: string
-  ): Promise<SenderKeyRecord | null>;
+    storeSenderKey(
+        sender: ProtocolAddress,
+        distributionId: string,     // UUID identifying this sender key
+        record: SenderKeyRecord
+    ): Promise<void>;
+
+    loadSenderKey(
+        sender: ProtocolAddress,
+        distributionId: string
+    ): Promise<SenderKeyRecord | null>;
 }
 
 // Address identifies a specific device of a specific user
 interface ProtocolAddress {
-  name: string;      // user UUID
-  deviceId: number;  // device number
+    name: string;      // user UUID
+    deviceId: number;  // device number
 }
 ```
-
-
 
 ## 13. Sender Key Distribution Flow
 
@@ -1839,11 +1861,11 @@ A Sender Key for a group MUST be regenerated and redistributed when:
 4. **On first message to a group** — If no Sender Key exists yet for this group
 
 A Sender Key does NOT need rotation when:
+
 - A new member is added (they simply receive existing Sender Keys from each member)
 - A message is sent/received normally
 
 ---
-
 
 ## 14. Group Message Send/Receive Flow
 
@@ -1851,60 +1873,60 @@ A Sender Key does NOT need rotation when:
 
 ```typescript
 async function sendGroupMessage(groupId: string, plaintext: string) {
-  // 1. Get all member devices for this group
-  const memberDevices = await fetchGroupMemberDevices(groupId);
-  
-  // 2. Check if we have a Sender Key for this group
-  let senderKeyState = await senderKeyStore.loadSenderKey(
-    myAddress, groupId
-  );
-  
-  // 3. If no Sender Key exists, generate and distribute
-  if (!senderKeyState) {
-    senderKeyState = generateNewSenderKey();
-    
-    // Distribute to each member's device via their 1:1 session
-    for (const device of memberDevices) {
-      if (device.id === myDevice.id) continue; // skip self
-      
-      // Encrypt SenderKeyDistributionMessage with 1:1 session
-      const session = await sessionStore.loadSession(device.address);
-      if (!session) {
-        // Need to establish session first — fetch prekey bundle
-        const bundle = await fetchPreKeyBundle(device);
-        await sessionBuilder.processPreKeyBundle(bundle);
-      }
-      
-      const distributionMessage = createSenderKeyDistribution(senderKeyState);
-      const encrypted = await sessionCipher.encrypt(
-        device.address,
-        distributionMessage.serialize()
-      );
-      
-      await sendToServer({
-        type: 'sender_key_distribution',
-        recipientDeviceId: device.id,
-        ciphertext: encrypted,
-        groupId: groupId
-      });
+    // 1. Get all member devices for this group
+    const memberDevices = await fetchGroupMemberDevices(groupId);
+
+    // 2. Check if we have a Sender Key for this group
+    let senderKeyState = await senderKeyStore.loadSenderKey(
+        myAddress, groupId
+    );
+
+    // 3. If no Sender Key exists, generate and distribute
+    if (!senderKeyState) {
+        senderKeyState = generateNewSenderKey();
+
+        // Distribute to each member's device via their 1:1 session
+        for (const device of memberDevices) {
+            if (device.id === myDevice.id) continue; // skip self
+
+            // Encrypt SenderKeyDistributionMessage with 1:1 session
+            const session = await sessionStore.loadSession(device.address);
+            if (!session) {
+                // Need to establish session first — fetch prekey bundle
+                const bundle = await fetchPreKeyBundle(device);
+                await sessionBuilder.processPreKeyBundle(bundle);
+            }
+
+            const distributionMessage = createSenderKeyDistribution(senderKeyState);
+            const encrypted = await sessionCipher.encrypt(
+                device.address,
+                distributionMessage.serialize()
+            );
+
+            await sendToServer({
+                type: 'sender_key_distribution',
+                recipientDeviceId: device.id,
+                ciphertext: encrypted,
+                groupId: groupId
+            });
+        }
+
+        await senderKeyStore.storeSenderKey(myAddress, groupId, senderKeyState);
     }
-    
-    await senderKeyStore.storeSenderKey(myAddress, groupId, senderKeyState);
-  }
-  
-  // 4. Encrypt group message with Sender Key (ONE encryption for ALL recipients)
-  const groupCiphertext = await groupCipher.encrypt(
-    groupId,
-    Buffer.from(plaintext, 'utf-8')
-  );
-  
-  // 5. Send single ciphertext to server
-  await sendToServer({
-    type: 'sender_key_message',
-    groupId: groupId,
-    ciphertext: groupCiphertext,
-    senderKeyId: senderKeyState.keyId
-  });
+
+    // 4. Encrypt group message with Sender Key (ONE encryption for ALL recipients)
+    const groupCiphertext = await groupCipher.encrypt(
+        groupId,
+        Buffer.from(plaintext, 'utf-8')
+    );
+
+    // 5. Send single ciphertext to server
+    await sendToServer({
+        type: 'sender_key_message',
+        groupId: groupId,
+        ciphertext: groupCiphertext,
+        senderKeyId: senderKeyState.keyId
+    });
 }
 ```
 
@@ -1913,89 +1935,87 @@ async function sendGroupMessage(groupId: string, plaintext: string) {
 ```typescript
 // Listen via Supabase Realtime
 supabase
-  .channel('messages')
-  .on('postgres_changes', {
-    event: 'INSERT',
-    schema: 'public',
-    table: 'messages',
-    filter: `group_id=in.(${myGroupIds.join(',')})`,
-  }, async (payload) => {
-    const message = payload.new;
-    
-    if (message.message_type === 'sender_key_distribution') {
-      // This is a Sender Key being shared with us
-      await handleSenderKeyDistribution(message);
-    } 
-    else if (message.message_type === 'sender_key_message') {
-      // This is an encrypted group message
-      await handleGroupMessage(message);
-    }
-  })
-  .subscribe();
+    .channel('messages')
+    .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `group_id=in.(${myGroupIds.join(',')})`,
+    }, async (payload) => {
+        const message = payload.new;
+
+        if (message.message_type === 'sender_key_distribution') {
+            // This is a Sender Key being shared with us
+            await handleSenderKeyDistribution(message);
+        } else if (message.message_type === 'sender_key_message') {
+            // This is an encrypted group message
+            await handleGroupMessage(message);
+        }
+    })
+    .subscribe();
 
 async function handleSenderKeyDistribution(message) {
-  // 1. Decrypt the distribution message using 1:1 session with sender
-  const senderAddress = {
-    name: message.sender_user_id,
-    deviceId: message.sender_device_id
-  };
-  
-  const decrypted = await sessionCipher.decrypt(
-    senderAddress,
-    message.ciphertext
-  );
-  
-  // 2. Parse the SenderKeyDistributionMessage
-  const distribution = SenderKeyDistributionMessage.deserialize(decrypted);
-  
-  // 3. Store the sender's key for this group
-  await senderKeyStore.storeSenderKey(
-    senderAddress,
-    message.group_id,
-    {
-      chainKey: distribution.chainKey,
-      signaturePublicKey: distribution.signingKey,
-      senderKeyId: distribution.id,
-      iteration: distribution.iteration
-    }
-  );
+    // 1. Decrypt the distribution message using 1:1 session with sender
+    const senderAddress = {
+        name: message.sender_user_id,
+        deviceId: message.sender_device_id
+    };
+
+    const decrypted = await sessionCipher.decrypt(
+        senderAddress,
+        message.ciphertext
+    );
+
+    // 2. Parse the SenderKeyDistributionMessage
+    const distribution = SenderKeyDistributionMessage.deserialize(decrypted);
+
+    // 3. Store the sender's key for this group
+    await senderKeyStore.storeSenderKey(
+        senderAddress,
+        message.group_id,
+        {
+            chainKey: distribution.chainKey,
+            signaturePublicKey: distribution.signingKey,
+            senderKeyId: distribution.id,
+            iteration: distribution.iteration
+        }
+    );
 }
 
 async function handleGroupMessage(message) {
-  const senderAddress = {
-    name: message.sender_user_id,
-    deviceId: message.sender_device_id
-  };
-  
-  // 1. Look up sender's Sender Key for this group
-  const senderKey = await senderKeyStore.loadSenderKey(
-    senderAddress,
-    message.group_id
-  );
-  
-  if (!senderKey) {
-    // We don't have this sender's key yet
-    // Request re-distribution (send a request message to the sender)
-    await requestSenderKeyDistribution(senderAddress, message.group_id);
-    // Queue message for later decryption
-    await queueMessage(message);
-    return;
-  }
-  
-  // 2. Decrypt with GroupCipher
-  const plaintext = await groupCipher.decrypt(
-    senderAddress,
-    message.group_id,
-    message.ciphertext
-  );
-  
-  // 3. Display message
-  displayMessage(message.group_id, senderAddress, plaintext.toString('utf-8'));
+    const senderAddress = {
+        name: message.sender_user_id,
+        deviceId: message.sender_device_id
+    };
+
+    // 1. Look up sender's Sender Key for this group
+    const senderKey = await senderKeyStore.loadSenderKey(
+        senderAddress,
+        message.group_id
+    );
+
+    if (!senderKey) {
+        // We don't have this sender's key yet
+        // Request re-distribution (send a request message to the sender)
+        await requestSenderKeyDistribution(senderAddress, message.group_id);
+        // Queue message for later decryption
+        await queueMessage(message);
+        return;
+    }
+
+    // 2. Decrypt with GroupCipher
+    const plaintext = await groupCipher.decrypt(
+        senderAddress,
+        message.group_id,
+        message.ciphertext
+    );
+
+    // 3. Display message
+    displayMessage(message.group_id, senderAddress, plaintext.toString('utf-8'));
 }
 ```
 
 ---
-
 
 ## 15. Member Add/Remove & Key Rotation
 
@@ -2074,10 +2094,10 @@ Clients must periodically fetch fresh AuthCredentials from the server.
 
 ---
 
-
 ## 16. Multi-Device Support
 
 Each device is treated as a SEPARATE entity with its own:
+
 - Identity Key Pair
 - Session state with every other device
 - Sender Key per group
@@ -2109,108 +2129,106 @@ Alice sends "Hello" from Phone:
 
 ---
 
-
 ## 17. API Routes (Next.js Server)
 
 All encryption API routes authenticate via Better Auth automatically.
 
 ```typescript
 // apps/web/app/api/encryption/register-device/route.ts
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { db } from "@/lib/db";
-import { devices, signedPrekeys, oneTimePrekeys } from "@/lib/db/schema";
+import {auth} from "@/lib/auth";
+import {headers} from "next/headers";
+import {db} from "@/lib/db";
+import {devices, signedPrekeys, oneTimePrekeys} from "@/lib/db/schema";
 
 export async function POST(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+    const session = await auth.api.getSession({headers: await headers()});
+    if (!session) return Response.json({error: "Unauthorized"}, {status: 401});
 
-  const body = await request.json();
+    const body = await request.json();
 
-  // Insert device with user's Better Auth ID
-  const [device] = await db.insert(devices).values({
-    userId: session.user.id,
-    deviceId: body.deviceId,
-    registrationId: body.registrationId,
-    identityKeyPublic: body.identityKeyPublic,
-    platform: body.platform,
-  }).returning();
+    // Insert device with user's Better Auth ID
+    const [device] = await db.insert(devices).values({
+        userId: session.user.id,
+        deviceId: body.deviceId,
+        registrationId: body.registrationId,
+        identityKeyPublic: body.identityKeyPublic,
+        platform: body.platform,
+    }).returning();
 
-  // Insert signed prekey
-  await db.insert(signedPrekeys).values({
-    deviceId: device.id,
-    keyId: body.signedPreKey.keyId,
-    publicKey: body.signedPreKey.publicKey,
-    signature: body.signedPreKey.signature,
-  });
+    // Insert signed prekey
+    await db.insert(signedPrekeys).values({
+        deviceId: device.id,
+        keyId: body.signedPreKey.keyId,
+        publicKey: body.signedPreKey.publicKey,
+        signature: body.signedPreKey.signature,
+    });
 
-  // Insert one-time prekeys (batch)
-  await db.insert(oneTimePrekeys).values(
-    body.oneTimePreKeys.map((pk: any) => ({
-      deviceId: device.id,
-      keyId: pk.keyId,
-      publicKey: pk.publicKey,
-    }))
-  );
+    // Insert one-time prekeys (batch)
+    await db.insert(oneTimePrekeys).values(
+        body.oneTimePreKeys.map((pk: any) => ({
+            deviceId: device.id,
+            keyId: pk.keyId,
+            publicKey: pk.publicKey,
+        }))
+    );
 
-  return Response.json({ deviceId: device.id });
+    return Response.json({deviceId: device.id});
 }
 ```
 
 ```typescript
 // apps/web/app/api/encryption/prekey-bundle/[userId]/route.ts
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { db } from "@/lib/db";
-import { devices, signedPrekeys, oneTimePrekeys } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import {auth} from "@/lib/auth";
+import {headers} from "next/headers";
+import {db} from "@/lib/db";
+import {devices, signedPrekeys, oneTimePrekeys} from "@/lib/db/schema";
+import {eq, and} from "drizzle-orm";
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ userId: string }> }
+    request: Request,
+    {params}: { params: Promise<{ userId: string }> }
 ) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+    const session = await auth.api.getSession({headers: await headers()});
+    if (!session) return Response.json({error: "Unauthorized"}, {status: 401});
 
-  const { userId } = await params;
+    const {userId} = await params;
 
-  // Get all active devices for the target user
-  const userDevices = await db.query.devices.findMany({
-    where: and(eq(devices.userId, userId), eq(devices.isActive, true)),
-    with: {
-      signedPrekeys: true,
-    },
-  });
+    // Get all active devices for the target user
+    const userDevices = await db.query.devices.findMany({
+        where: and(eq(devices.userId, userId), eq(devices.isActive, true)),
+        with: {
+            signedPrekeys: true,
+        },
+    });
 
-  // For each device, pick one unused one-time prekey
-  const bundles = await Promise.all(userDevices.map(async (device) => {
-    const [otp] = await db.select()
-      .from(oneTimePrekeys)
-      .where(and(eq(oneTimePrekeys.deviceId, device.id), eq(oneTimePrekeys.used, false)))
-      .limit(1);
+    // For each device, pick one unused one-time prekey
+    const bundles = await Promise.all(userDevices.map(async (device) => {
+        const [otp] = await db.select()
+            .from(oneTimePrekeys)
+            .where(and(eq(oneTimePrekeys.deviceId, device.id), eq(oneTimePrekeys.used, false)))
+            .limit(1);
 
-    // Mark it as used
-    if (otp) {
-      await db.update(oneTimePrekeys)
-        .set({ used: true })
-        .where(eq(oneTimePrekeys.id, otp.id));
-    }
+        // Mark it as used
+        if (otp) {
+            await db.update(oneTimePrekeys)
+                .set({used: true})
+                .where(eq(oneTimePrekeys.id, otp.id));
+        }
 
-    return {
-      deviceId: device.deviceId,
-      registrationId: device.registrationId,
-      identityKey: device.identityKeyPublic,
-      signedPreKey: device.signedPrekeys[0],
-      oneTimePreKey: otp ?? null,
-    };
-  }));
+        return {
+            deviceId: device.deviceId,
+            registrationId: device.registrationId,
+            identityKey: device.identityKeyPublic,
+            signedPreKey: device.signedPrekeys[0],
+            oneTimePreKey: otp ?? null,
+        };
+    }));
 
-  return Response.json({ bundles });
+    return Response.json({bundles});
 }
 ```
 
 ---
-
 
 ### Making Authenticated Requests from Expo
 
@@ -2218,28 +2236,27 @@ Better Auth stores cookies in SecureStore on Expo. You must attach them manually
 
 ```typescript
 // apps/mobile/lib/api.ts
-import { authClient } from "./auth-client";
+import {authClient} from "./auth-client";
 
 export async function encryptionApi(path: string, options: RequestInit = {}) {
-  const cookies = authClient.getCookie();
-  return fetch(`${process.env.EXPO_PUBLIC_API_URL}${path}`, {
-    ...options,
-    credentials: "omit",   // Don't let fetch manage cookies
-    headers: {
-      ...options.headers,
-      "Content-Type": "application/json",
-      "Cookie": cookies ?? "",  // Attach Better Auth session cookie
-    },
-  });
+    const cookies = authClient.getCookie();
+    return fetch(`${process.env.EXPO_PUBLIC_API_URL}${path}`, {
+        ...options,
+        credentials: "omit",   // Don't let fetch manage cookies
+        headers: {
+            ...options.headers,
+            "Content-Type": "application/json",
+            "Cookie": cookies ?? "",  // Attach Better Auth session cookie
+        },
+    });
 }
 
 // Usage:
 const res = await encryptionApi("/api/encryption/prekey-bundle/usr_abc123");
-const { bundles } = await res.json();
+const {bundles} = await res.json();
 ```
 
 ---
-
 
 ## 18. Auth-to-Encryption Complete Flow
 
@@ -2320,32 +2337,31 @@ The flow from "user logs in" to "user sends encrypted group message":
 
 ---
 
-
 ## 19. Library & Technology Choices
 
 ### For Your Stack (Next.js + Expo + Supabase)
 
 **Cryptographic Primitives:**
 
-| Primitive | Web (Next.js) | Mobile (Expo) |
-|-----------|--------------|---------------|
-| Curve25519 DH (x25519) | `@noble/curves` (x25519) | `@noble/curves` (x25519) — quick-crypto lacks ECDH |
-| Ed25519 Signatures | `@noble/curves` (ed25519) | `react-native-quick-crypto` (`crypto.sign('ed25519')`) or `@noble/curves` |
-| AES-256-CBC/GCM | Web Crypto API (`crypto.subtle`) | `react-native-quick-crypto` (`crypto.createCipheriv`) |
-| HMAC-SHA256 | Web Crypto API | `react-native-quick-crypto` (`crypto.createHmac`) |
-| HKDF | Web Crypto API | `react-native-quick-crypto` (`crypto.hkdfSync`) |
-| SHA-256 | Web Crypto API | `react-native-quick-crypto` (`crypto.createHash`) |
-| PBKDF2 | Web Crypto API | `react-native-quick-crypto` (`crypto.pbkdf2Sync`) |
-| Secure Random | `crypto.getRandomValues()` | `react-native-quick-crypto` (`crypto.randomBytes()`) |
-| Key Storage | IndexedDB + Web Crypto wrapping | `expo-secure-store` (master key) + SQLCipher (bulk) |
+| Primitive              | Web (Next.js)                    | Mobile (Expo)                                                             |
+|------------------------|----------------------------------|---------------------------------------------------------------------------|
+| Curve25519 DH (x25519) | `@noble/curves` (x25519)         | `@noble/curves` (x25519) — quick-crypto lacks ECDH                        |
+| Ed25519 Signatures     | `@noble/curves` (ed25519)        | `react-native-quick-crypto` (`crypto.sign('ed25519')`) or `@noble/curves` |
+| AES-256-CBC/GCM        | Web Crypto API (`crypto.subtle`) | `react-native-quick-crypto` (`crypto.createCipheriv`)                     |
+| HMAC-SHA256            | Web Crypto API                   | `react-native-quick-crypto` (`crypto.createHmac`)                         |
+| HKDF                   | Web Crypto API                   | `react-native-quick-crypto` (`crypto.hkdfSync`)                           |
+| SHA-256                | Web Crypto API                   | `react-native-quick-crypto` (`crypto.createHash`)                         |
+| PBKDF2                 | Web Crypto API                   | `react-native-quick-crypto` (`crypto.pbkdf2Sync`)                         |
+| Secure Random          | `crypto.getRandomValues()`       | `react-native-quick-crypto` (`crypto.randomBytes()`)                      |
+| Key Storage            | IndexedDB + Web Crypto wrapping  | `expo-secure-store` (master key) + SQLCipher (bulk)                       |
 
 **Protocol Implementation Options:**
 
-| Option | Package | Notes |
-|--------|---------|-------|
-| Official (Rust+NAPI) | `@signalapp/libsignal-client` | Full protocol, native binaries, Node.js only (NOT browser). Good for a Next.js server-side component, NOT for client-side web. |
-| TypeScript (Pure JS) | `@privacyresearch/libsignal-protocol-typescript` | Pure TS port, works in browser + React Native. Covers X3DH + Double Ratchet. You'll need to implement Sender Key layer yourself. |
-| Build from primitives | `@noble/curves` + `@noble/hashes` | Maximum control, auditable, no native dependencies. Recommended if you want to truly understand every byte. |
+| Option                | Package                                          | Notes                                                                                                                            |
+|-----------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| Official (Rust+NAPI)  | `@signalapp/libsignal-client`                    | Full protocol, native binaries, Node.js only (NOT browser). Good for a Next.js server-side component, NOT for client-side web.   |
+| TypeScript (Pure JS)  | `@privacyresearch/libsignal-protocol-typescript` | Pure TS port, works in browser + React Native. Covers X3DH + Double Ratchet. You'll need to implement Sender Key layer yourself. |
+| Build from primitives | `@noble/curves` + `@noble/hashes`                | Maximum control, auditable, no native dependencies. Recommended if you want to truly understand every byte.                      |
 
 **Recommended Approach:**
 
@@ -2365,20 +2381,27 @@ the best path is:
 // Shared crypto package (used by both web and mobile)
 {
   "dependencies": {
-    "@noble/curves": "^1.4.0",     // x25519 DH + Ed25519 (works everywhere)
-    "@noble/hashes": "^1.4.0",     // SHA-256, HMAC, HKDF (works everywhere)
-    "@noble/ciphers": "^0.5.0",    // AES-256-CBC/GCM (works everywhere)
+    "@noble/curves": "^1.4.0",
+    // x25519 DH + Ed25519 (works everywhere)
+    "@noble/hashes": "^1.4.0",
+    // SHA-256, HMAC, HKDF (works everywhere)
+    "@noble/ciphers": "^0.5.0",
+    // AES-256-CBC/GCM (works everywhere)
     "@supabase/supabase-js": "^2.x",
-    "protobufjs": "^7.x"           // For Signal protocol message serialization
+    "protobufjs": "^7.x"
+    // For Signal protocol message serialization
   }
 }
 
 // For Expo mobile app:
 {
   "dependencies": {
-    "react-native-quick-crypto": "^1.0.0",  // C++ JSI native crypto (Node.js API)
-    "readable-stream": "^4.x",              // Stream polyfill (quick-crypto dependency)
-    "expo-secure-store": "~13.x"            // Keychain/Keystore for master key ONLY
+    "react-native-quick-crypto": "^1.0.0",
+    // C++ JSI native crypto (Node.js API)
+    "readable-stream": "^4.x",
+    // Stream polyfill (quick-crypto dependency)
+    "expo-secure-store": "~13.x"
+    // Keychain/Keystore for master key ONLY
   }
 }
 // NOTE: Do NOT install expo-crypto — react-native-quick-crypto replaces it entirely
@@ -2404,96 +2427,98 @@ so they work identically in both environments.
 // packages/crypto/src/primitives/CryptoProvider.ts
 
 export interface CryptoProvider {
-  // Random bytes — native on mobile, Web Crypto on web
-  randomBytes(length: number): Uint8Array;
-  
-  // HMAC-SHA256 — native on mobile, Web Crypto on web
-  hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array>;
-  
-  // HKDF — native on mobile, Web Crypto on web
-  hkdf(ikm: Uint8Array, salt: Uint8Array, info: string, length: number): Promise<Uint8Array>;
-  
-  // AES-256-CBC — native on mobile, Web Crypto on web
-  aesCbcEncrypt(key: Uint8Array, iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array>;
-  aesCbcDecrypt(key: Uint8Array, iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array>;
-  
-  // X25519 DH — @noble/curves on BOTH platforms
-  x25519GenerateKeyPair(): { publicKey: Uint8Array; privateKey: Uint8Array };
-  x25519SharedSecret(privateKey: Uint8Array, publicKey: Uint8Array): Uint8Array;
-  
-  // Ed25519 — native on mobile, @noble/curves on web
-  ed25519Sign(privateKey: Uint8Array, message: Uint8Array): Uint8Array;
-  ed25519Verify(publicKey: Uint8Array, message: Uint8Array, signature: Uint8Array): boolean;
+    // Random bytes — native on mobile, Web Crypto on web
+    randomBytes(length: number): Uint8Array;
+
+    // HMAC-SHA256 — native on mobile, Web Crypto on web
+    hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array>;
+
+    // HKDF — native on mobile, Web Crypto on web
+    hkdf(ikm: Uint8Array, salt: Uint8Array, info: string, length: number): Promise<Uint8Array>;
+
+    // AES-256-CBC — native on mobile, Web Crypto on web
+    aesCbcEncrypt(key: Uint8Array, iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array>;
+
+    aesCbcDecrypt(key: Uint8Array, iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array>;
+
+    // X25519 DH — @noble/curves on BOTH platforms
+    x25519GenerateKeyPair(): { publicKey: Uint8Array; privateKey: Uint8Array };
+
+    x25519SharedSecret(privateKey: Uint8Array, publicKey: Uint8Array): Uint8Array;
+
+    // Ed25519 — native on mobile, @noble/curves on web
+    ed25519Sign(privateKey: Uint8Array, message: Uint8Array): Uint8Array;
+
+    ed25519Verify(publicKey: Uint8Array, message: Uint8Array, signature: Uint8Array): boolean;
 }
 ```
 
 ```typescript
 // apps/mobile/lib/crypto/NativeCryptoProvider.ts
 import crypto from 'react-native-quick-crypto';
-import { x25519 } from '@noble/curves/ed25519';
+import {x25519} from '@noble/curves/ed25519';
 
 export class NativeCryptoProvider implements CryptoProvider {
-  randomBytes(length: number): Uint8Array {
-    return new Uint8Array(crypto.randomBytes(length));
-  }
+    randomBytes(length: number): Uint8Array {
+        return new Uint8Array(crypto.randomBytes(length));
+    }
 
-  async hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array> {
-    const hmac = crypto.createHmac('sha256', Buffer.from(key));
-    hmac.update(Buffer.from(data));
-    return new Uint8Array(hmac.digest());
-  }
+    async hmacSha256(key: Uint8Array, data: Uint8Array): Promise<Uint8Array> {
+        const hmac = crypto.createHmac('sha256', Buffer.from(key));
+        hmac.update(Buffer.from(data));
+        return new Uint8Array(hmac.digest());
+    }
 
-  async hkdf(ikm: Uint8Array, salt: Uint8Array, info: string, length: number): Promise<Uint8Array> {
-    const derived = crypto.hkdfSync('sha256', ikm, salt, info, length);
-    return new Uint8Array(derived);
-  }
+    async hkdf(ikm: Uint8Array, salt: Uint8Array, info: string, length: number): Promise<Uint8Array> {
+        const derived = crypto.hkdfSync('sha256', ikm, salt, info, length);
+        return new Uint8Array(derived);
+    }
 
-  async aesCbcEncrypt(key: Uint8Array, iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array> {
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), Buffer.from(iv));
-    const encrypted = Buffer.concat([cipher.update(Buffer.from(plaintext)), cipher.final()]);
-    return new Uint8Array(encrypted);
-  }
+    async aesCbcEncrypt(key: Uint8Array, iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array> {
+        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), Buffer.from(iv));
+        const encrypted = Buffer.concat([cipher.update(Buffer.from(plaintext)), cipher.final()]);
+        return new Uint8Array(encrypted);
+    }
 
-  async aesCbcDecrypt(key: Uint8Array, iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array> {
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), Buffer.from(iv));
-    const decrypted = Buffer.concat([decipher.update(Buffer.from(ciphertext)), decipher.final()]);
-    return new Uint8Array(decrypted);
-  }
+    async aesCbcDecrypt(key: Uint8Array, iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array> {
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), Buffer.from(iv));
+        const decrypted = Buffer.concat([decipher.update(Buffer.from(ciphertext)), decipher.final()]);
+        return new Uint8Array(decrypted);
+    }
 
-  // x25519 DH — uses @noble/curves (quick-crypto doesn't support ECDH yet)
-  x25519GenerateKeyPair() {
-    const privateKey = x25519.utils.randomPrivateKey();
-    const publicKey = x25519.getPublicKey(privateKey);
-    return { publicKey, privateKey };
-  }
+    // x25519 DH — uses @noble/curves (quick-crypto doesn't support ECDH yet)
+    x25519GenerateKeyPair() {
+        const privateKey = x25519.utils.randomPrivateKey();
+        const publicKey = x25519.getPublicKey(privateKey);
+        return {publicKey, privateKey};
+    }
 
-  x25519SharedSecret(privateKey: Uint8Array, publicKey: Uint8Array): Uint8Array {
-    return x25519.getSharedSecret(privateKey, publicKey);
-  }
+    x25519SharedSecret(privateKey: Uint8Array, publicKey: Uint8Array): Uint8Array {
+        return x25519.getSharedSecret(privateKey, publicKey);
+    }
 
-  // Ed25519 — uses native quick-crypto for speed
-  ed25519Sign(privateKey: Uint8Array, message: Uint8Array): Uint8Array {
-    const keyObj = crypto.createPrivateKey({
-      key: Buffer.from(privateKey),
-      format: 'raw',
-      type: 'pkcs8',
-    });
-    return new Uint8Array(crypto.sign(null, Buffer.from(message), keyObj));
-  }
+    // Ed25519 — uses native quick-crypto for speed
+    ed25519Sign(privateKey: Uint8Array, message: Uint8Array): Uint8Array {
+        const keyObj = crypto.createPrivateKey({
+            key: Buffer.from(privateKey),
+            format: 'raw',
+            type: 'pkcs8',
+        });
+        return new Uint8Array(crypto.sign(null, Buffer.from(message), keyObj));
+    }
 
-  ed25519Verify(publicKey: Uint8Array, message: Uint8Array, signature: Uint8Array): boolean {
-    const keyObj = crypto.createPublicKey({
-      key: Buffer.from(publicKey),
-      format: 'raw',
-      type: 'spki',
-    });
-    return crypto.verify(null, Buffer.from(message), keyObj, Buffer.from(signature));
-  }
+    ed25519Verify(publicKey: Uint8Array, message: Uint8Array, signature: Uint8Array): boolean {
+        const keyObj = crypto.createPublicKey({
+            key: Buffer.from(publicKey),
+            format: 'raw',
+            type: 'spki',
+        });
+        return crypto.verify(null, Buffer.from(message), keyObj, Buffer.from(signature));
+    }
 }
 ```
 
 ---
-
 
 ## 20. Security Considerations
 
@@ -2506,9 +2531,9 @@ export class NativeCryptoProvider implements CryptoProvider {
    establishment, it must be removed from the server immediately.
 
 3. **Implement proper key rotation.**
-   - Signed PreKeys: rotate every 7-30 days
-   - Sender Keys: rotate on member removal, periodically
-   - One-Time PreKeys: replenish when count drops below threshold (e.g., 25)
+    - Signed PreKeys: rotate every 7-30 days
+    - Sender Keys: rotate on member removal, periodically
+    - One-Time PreKeys: replenish when count drops below threshold (e.g., 25)
 
 4. **Handle out-of-order messages.** Store skipped message keys (up to a limit)
    for messages that arrive out of order. Delete them after use or after a timeout.
@@ -2543,12 +2568,12 @@ export class NativeCryptoProvider implements CryptoProvider {
 
 ### Forward Secrecy Properties
 
-| Scenario | 1:1 (Double Ratchet) | Group (Sender Keys) |
-|----------|---------------------|---------------------|
-| Forward Secrecy (symmetric) | Yes (KDF chain) | Yes (KDF chain) |
-| Post-Compromise Security | Yes (DH ratchet) | Partial (only on key rotation/member change) |
-| Future Secrecy after member removal | N/A | Yes (full re-key) |
-| Past message protection on join | N/A | Yes (new member doesn't get old keys) |
+| Scenario                            | 1:1 (Double Ratchet) | Group (Sender Keys)                          |
+|-------------------------------------|----------------------|----------------------------------------------|
+| Forward Secrecy (symmetric)         | Yes (KDF chain)      | Yes (KDF chain)                              |
+| Post-Compromise Security            | Yes (DH ratchet)     | Partial (only on key rotation/member change) |
+| Future Secrecy after member removal | N/A                  | Yes (full re-key)                            |
+| Past message protection on join     | N/A                  | Yes (new member doesn't get old keys)        |
 
 The key difference: 1:1 Double Ratchet achieves post-compromise security with EVERY
 message exchange (because DH ratchet keys rotate with each message direction change).
@@ -2556,7 +2581,6 @@ Sender Keys only achieve this when the keys are rotated (member changes, periodi
 This is a known and accepted tradeoff for the O(1) sending efficiency of Sender Keys.
 
 ---
-
 
 ## 21. NPM Dependencies (Complete)
 
@@ -2623,10 +2647,10 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 
 ---
 
-
 ## 22. Implementation Roadmap
 
 ### Phase 1: Foundations (Weeks 1-3)
+
 - [ ] Implement cryptographic primitives wrapper using @noble/*
 - [ ] Implement key generation (identity, prekey, signed prekey)
 - [ ] Build server-side prekey bundle storage API (Supabase)
@@ -2634,6 +2658,7 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 - [ ] Implement prekey bundle upload and retrieval
 
 ### Phase 2: 1:1 Encryption (Weeks 4-6)
+
 - [ ] Implement X3DH key agreement
 - [ ] Implement Double Ratchet
 - [ ] Build SessionCipher (encrypt/decrypt 1:1 messages)
@@ -2642,6 +2667,7 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 - [ ] Test with two devices
 
 ### Phase 3: Sender Keys & Basic Groups (Weeks 7-10)
+
 - [ ] Implement Sender Key generation
 - [ ] Implement SenderKeyDistributionMessage creation and parsing
 - [ ] Implement GroupCipher (encrypt/decrypt group messages)
@@ -2650,6 +2676,7 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 - [ ] Server-side fan-out for group messages via Supabase Realtime
 
 ### Phase 4: Zero-Knowledge Groups V2 — Server Side (Weeks 11-14)
+
 - [ ] Generate and store ServerSecretParams / ServerPublicParams (one-time setup)
 - [ ] Integrate `@signalapp/libsignal-client/zkgroup` on Next.js server
 - [ ] Build AuthCredential issuance endpoint (POST /api/groups/credentials/auth)
@@ -2662,12 +2689,13 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 - [ ] Build group invite link support with encrypted invite password
 
 ### Phase 5: Zero-Knowledge Groups V2 — Client Side (Weeks 15-18)
+
 - [ ] Implement portable Ristretto255 KVAC operations using @noble/curves
-  - [ ] UID encryption / decryption with GroupSecretParams
-  - [ ] ProfileKey encryption / decryption with GroupSecretParams
-  - [ ] Blob encryption / decryption (title, avatar, description)
-  - [ ] GroupMasterKey → GroupSecretParams derivation
-  - [ ] GroupSecretParams → GroupIdentifier derivation
+    - [ ] UID encryption / decryption with GroupSecretParams
+    - [ ] ProfileKey encryption / decryption with GroupSecretParams
+    - [ ] Blob encryption / decryption (title, avatar, description)
+    - [ ] GroupMasterKey → GroupSecretParams derivation
+    - [ ] GroupSecretParams → GroupIdentifier derivation
 - [ ] Implement AuthCredentialPresentation creation (ZK proof construction)
 - [ ] Implement ProfileKeyCredentialPresentation creation
 - [ ] Build credential caching + refresh logic (daily AuthCredential fetch)
@@ -2675,10 +2703,11 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 - [ ] Wire up group fetch: present → download → decrypt locally
 - [ ] Wire up member add/remove: GroupChange + presentation → PATCH
 - [ ] Test cross-platform: verify web (via libsignal-client) and mobile (via @noble)
-      produce compatible ciphertexts and presentations
+  produce compatible ciphertexts and presentations
 - [ ] Integrate Sender Key rotation on member removal via group version bump
 
 ### Phase 6: Hardening (Weeks 19-22)
+
 - [ ] Safety number / fingerprint verification UI
 - [ ] Identity key change detection and notification
 - [ ] Multi-device support (Sesame protocol for session management)
@@ -2691,14 +2720,13 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 - [ ] Group version conflict resolution (concurrent modifications)
 
 ### Phase 7: Production (Weeks 23+)
+
 - [ ] Security audit by external cryptography team (MANDATORY before production)
 - [ ] Sealed Sender implementation (hide sender identity from server)
 - [ ] Performance optimization (batch credential issuance, key caching)
 - [ ] Encrypted backup and recovery (key material + group master keys)
 - [ ] Monitoring and alerting for key exhaustion, failed sessions, credential expiry
 - [ ] Load testing for ZK proof verification throughput on server
-
-
 
 ## 23. Official Documentation Links
 
@@ -2748,7 +2776,8 @@ This is a known and accepted tradeoff for the O(1) sending efficiency of Sender 
 
 ### TypeScript Crypto Libraries
 
-- **@privacyresearch/libsignal-protocol-typescript:** https://github.com/privacyresearchgroup/libsignal-protocol-typescript
+- **@privacyresearch/libsignal-protocol-typescript:
+  ** https://github.com/privacyresearchgroup/libsignal-protocol-typescript
 - **@noble/curves (Curve25519, Ed25519, audited):** https://www.npmjs.com/package/@noble/curves
 - **@noble/hashes (SHA-256, HMAC, HKDF, audited):** https://www.npmjs.com/package/@noble/hashes
 - **@noble/ciphers (AES-256-CBC/GCM, audited):** https://www.npmjs.com/package/@noble/ciphers

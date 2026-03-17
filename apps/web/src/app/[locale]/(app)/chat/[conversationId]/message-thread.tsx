@@ -1,6 +1,5 @@
 "use client";
 
-import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -20,7 +19,7 @@ type Props = {
   decryptGroupMessage: (
     conversationId: string,
     senderUserId: string,
-    payload: GroupCiphertextPayload,
+    serializedPayload: string,
   ) => Promise<string>;
   addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
 };
@@ -57,7 +56,7 @@ export function MessageThread({
 
       const results: DecryptedMessage[] = [];
       for (const msg of msgs) {
-        if (!msg.ciphertext || !msg.iv || !msg.signature || msg.chainIteration == null) continue;
+        if (!msg.ciphertext || !msg.signature || msg.senderKeyId == null) continue;
 
         const baseMsg = {
           id: msg.id,
@@ -79,14 +78,13 @@ export function MessageThread({
         }
 
         try {
-          const payload: GroupCiphertextPayload = {
+          const serialized = JSON.stringify({
+            senderKeyId: msg.senderKeyId,
+            iteration: msg.iteration ?? 0,
             ciphertext: msg.ciphertext,
-            iv: msg.iv,
             signature: msg.signature,
-            chainIteration: msg.chainIteration,
-            chainId: msg.chainId ?? "",
-          };
-          const plaintext = await decryptGroupMessage(conversationId, msg.senderId, payload);
+          });
+          const plaintext = await decryptGroupMessage(conversationId, msg.senderId, serialized);
           results.push({ ...baseMsg, plaintext });
         } catch (error) {
           console.error("[MessageThread] Decryption failed for message", msg.id, error);
@@ -161,10 +159,9 @@ export function MessageThread({
       if (senderUserId === currentUserId) return;
 
       const ciphertext = row.ciphertext as string;
-      const iv = row.iv as string;
       const signature = row.signature as string;
-      const chainIteration = row.chain_iteration as number;
-      const chainId = (row.chain_id as string) ?? "";
+      const senderKeyId = row.sender_key_id as number;
+      const iteration = (row.iteration as number) ?? 0;
       const createdAt = row.created_at ? new Date(row.created_at as string) : new Date();
 
       const member = membersRef.current.find((m) => m.userId === senderUserId);
@@ -177,10 +174,10 @@ export function MessageThread({
             senderFirstName: member?.firstName ?? "",
             senderAvatarUrl: member?.avatarUrl ?? null,
             ciphertext,
-            iv,
             signature,
-            chainIteration,
-            chainId,
+            senderKeyId,
+            iteration,
+            senderDeviceId: null,
             messageType: "text",
             createdAt,
           },

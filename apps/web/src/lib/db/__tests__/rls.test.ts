@@ -209,10 +209,9 @@ describe("RLS policies (integration)", () => {
       conversationId: CONVERSATION_ID,
       senderUserId: USER_A,
       ciphertext: "encrypted-test",
-      iv: "iv-test",
       signature: "test-signature",
-      chainIteration: 0,
-      chainId: "test-chain-id",
+      senderKeyId: 1,
+      iteration: 0,
     });
 
     await db.insert(messageReceipts).values({

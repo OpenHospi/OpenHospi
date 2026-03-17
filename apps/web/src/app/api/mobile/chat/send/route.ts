@@ -1,4 +1,3 @@
-import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { and, eq, inArray, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -12,6 +11,13 @@ import {
   messages,
 } from "@/lib/db/schema";
 
+type SerializedPayload = {
+  senderKeyId: number;
+  iteration: number;
+  ciphertext: string;
+  signature: string;
+};
+
 export async function POST(request: Request) {
   try {
     const session = await requireApiSession(request);
@@ -19,20 +25,30 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as {
       conversationId?: string;
-      payload?: GroupCiphertextPayload;
+      payload?: string;
+      senderDeviceId?: string;
     };
 
+    if (!body.conversationId || !body.payload) {
+      return apiError("conversationId and payload are required", 400);
+    }
+
+    // Parse the serialized payload
+    let parsed: SerializedPayload;
+    try {
+      parsed = JSON.parse(body.payload) as SerializedPayload;
+    } catch {
+      return apiError("payload must be a valid JSON string", 400);
+    }
+
     if (
-      !body.conversationId ||
-      !body.payload ||
-      !body.payload.ciphertext ||
-      !body.payload.iv ||
-      !body.payload.signature ||
-      body.payload.chainIteration == null ||
-      !body.payload.chainId
+      !parsed.ciphertext ||
+      !parsed.signature ||
+      parsed.senderKeyId == null ||
+      parsed.iteration == null
     ) {
       return apiError(
-        "conversationId and payload (ciphertext, iv, signature, chainIteration, chainId) are required",
+        "payload must contain ciphertext, signature, senderKeyId, and iteration",
         400,
       );
     }
@@ -78,16 +94,16 @@ export async function POST(request: Request) {
         .returning({ id: messages.id });
     });
 
-    // Insert single message payload
+    // Insert message payload
     await db.insert(messagePayloads).values({
       messageId: message.id,
       conversationId: body.conversationId!,
       senderUserId: userId,
-      ciphertext: body.payload.ciphertext,
-      iv: body.payload.iv,
-      signature: body.payload.signature,
-      chainIteration: body.payload.chainIteration,
-      chainId: body.payload.chainId,
+      senderDeviceId: body.senderDeviceId ?? null,
+      ciphertext: parsed.ciphertext,
+      signature: parsed.signature,
+      senderKeyId: parsed.senderKeyId,
+      iteration: parsed.iteration,
     });
 
     // Create receipts for other members

@@ -8,12 +8,7 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import {
-  uploadIdentityKey,
-  uploadKeyBackup,
-  uploadOneTimePreKeys,
-  uploadSignedPreKey,
-} from "@/app/[locale]/(app)/chat/key-actions";
+import { registerUserDevice, uploadKeyBackup } from "@/app/[locale]/(app)/chat/key-actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
@@ -27,7 +22,7 @@ type Props = {
   onBack: () => void;
 };
 
-export function SecurityStep({ userId, onBack }: Props) {
+export function SecurityStep({ userId: _userId, onBack }: Props) {
   const tCommon = useTranslations("common.labels");
   const tSecurity = useTranslations("app.onboarding.security");
 
@@ -50,11 +45,23 @@ export function SecurityStep({ userId, onBack }: Props) {
 
     startTransition(async () => {
       try {
-        await setupKeysWithPIN(cryptoStore, userId, pin, {
-          uploadIdentityKey,
-          uploadSignedPreKey,
-          uploadOneTimePreKeys,
-          uploadBackup: uploadKeyBackup,
+        // Generate all keys locally
+        const result = await setupKeysWithPIN(cryptoStore, pin);
+
+        // Register device with all keys in one call
+        await registerUserDevice({
+          registrationId: result.registrationId,
+          identityKeyPublic: result.identityKeyPublic,
+          platform: "web",
+          signedPreKey: result.signedPreKey,
+          oneTimePreKeys: result.oneTimePreKeys,
+        });
+
+        // Upload encrypted backup separately
+        await uploadKeyBackup({
+          encryptedPrivateKey: result.encryptedBackup.ciphertext,
+          backupIv: result.encryptedBackup.iv,
+          salt: result.encryptedBackup.salt,
         });
       } catch (error) {
         console.error("[SecurityStep] Encryption setup failed:", error);

@@ -1,4 +1,5 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
+import { Platform } from 'react-native';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { setupKeysWithPIN } from '@/lib/encryption/KeySetup';
+import { registerDeviceApi } from '@/services/devices';
 import {
-  uploadIdentityKeyApi,
   uploadSignedPreKeyApi,
   uploadOneTimePreKeysApi,
   uploadBackupApi,
@@ -43,10 +44,17 @@ export default function SecurityStep() {
     try {
       const result = await setupKeysWithPIN(value);
 
-      // Upload keys to server
-      await uploadIdentityKeyApi(result.identityKeyPublic, result.signingKeyPublic);
-      await uploadSignedPreKeyApi(result.signedPreKey);
-      await uploadOneTimePreKeysApi(result.oneTimePreKeys);
+      // Register device on server — returns device UUID
+      const device = await registerDeviceApi({
+        deviceId: 1,
+        registrationId: result.registrationId,
+        identityKeyPublic: result.identityKeyPublic,
+        platform: Platform.OS === 'ios' ? 'ios' : 'android',
+      });
+
+      // Upload prekeys using device UUID
+      await uploadSignedPreKeyApi(device.id, result.signedPreKey);
+      await uploadOneTimePreKeysApi(device.id, result.oneTimePreKeys);
       await uploadBackupApi({
         encryptedPrivateKey: result.encryptedBackup.ciphertext,
         backupIv: result.encryptedBackup.iv,

@@ -1,5 +1,3 @@
-import type { MessageEnvelope } from '@openhospi/crypto';
-
 import { api } from '@/lib/api-client';
 
 type BackupData = {
@@ -10,42 +8,29 @@ type BackupData = {
 
 type BackupResponse = BackupData & { createdAt: string };
 
-export async function uploadIdentityKeyApi(
-  identityPublicKey: string,
-  signingPublicKey: string
+export async function uploadSignedPreKeyApi(
+  deviceUuid: string,
+  data: {
+    keyId: number;
+    publicKey: string;
+    signature: string;
+  }
 ): Promise<void> {
-  await api.post('/api/mobile/keys/identity', { identityPublicKey, signingPublicKey });
-}
-
-export async function uploadSignedPreKeyApi(data: {
-  keyId: number;
-  publicKey: string;
-  signature: string;
-}): Promise<void> {
-  await api.post('/api/mobile/keys/signed-prekey', data);
+  await api.post('/api/mobile/keys/signed-prekey', { deviceId: deviceUuid, ...data });
 }
 
 export async function uploadOneTimePreKeysApi(
+  deviceUuid: string,
   keys: { keyId: number; publicKey: string }[]
 ): Promise<void> {
-  await api.post('/api/mobile/keys/one-time-prekeys', { keys });
+  await api.post('/api/mobile/keys/one-time-prekeys', { deviceId: deviceUuid, keys });
 }
 
-export async function getPreKeyCountApi(): Promise<number> {
-  const result = await api.get<{ count: number }>('/api/mobile/keys/one-time-prekeys');
+export async function getPreKeyCountApi(deviceUuid: string): Promise<number> {
+  const result = await api.get<{ count: number }>(
+    `/api/mobile/keys/one-time-prekeys?deviceId=${deviceUuid}`
+  );
   return result.count;
-}
-
-export async function fetchPreKeyBundleApi(userId: string) {
-  return api.get<{
-    identityPublicKey: string;
-    signingPublicKey: string;
-    signedPreKeyId: number;
-    signedPreKeyPublic: string;
-    signedPreKeySignature: string;
-    oneTimePreKeyId?: number;
-    oneTimePreKeyPublic?: string;
-  } | null>(`/api/mobile/keys/bundle/${userId}`);
 }
 
 export async function uploadBackupApi(data: BackupData): Promise<void> {
@@ -58,37 +43,4 @@ export async function fetchBackupApi(): Promise<BackupResponse | null> {
 
 export async function deleteBackupApi(): Promise<void> {
   await api.delete('/api/mobile/keys/backup');
-}
-
-// ── Sender Key Distribution APIs ──
-
-export async function fetchSenderKeyDistributionApi(
-  conversationId: string,
-  senderUserId: string
-): Promise<MessageEnvelope | null> {
-  return api.get<MessageEnvelope | null>(
-    `/api/mobile/keys/sender-key-distribution?conversationId=${conversationId}&senderUserId=${senderUserId}`
-  );
-}
-
-export async function storeSenderKeyDistributionsApi(
-  conversationId: string,
-  distributions: {
-    recipientUserId: string;
-    envelope: MessageEnvelope;
-  }[]
-): Promise<void> {
-  await api.post('/api/mobile/keys/sender-key-distribution', {
-    conversationId,
-    distributions,
-  });
-}
-
-export async function getExistingDistributionRecipientsApi(
-  conversationId: string
-): Promise<string[]> {
-  const result = await api.get<{ recipients: string[] }>(
-    `/api/mobile/keys/sender-key-distribution?conversationId=${conversationId}&listRecipients=true`
-  );
-  return result.recipients;
 }

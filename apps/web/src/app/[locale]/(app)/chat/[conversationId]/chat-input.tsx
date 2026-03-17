@@ -1,6 +1,5 @@
 "use client";
 
-import type { GroupCiphertextPayload } from "@openhospi/crypto";
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
@@ -18,7 +17,7 @@ type Props = {
     conversationId: string,
     memberUserIds: string[],
     plaintext: string,
-  ) => Promise<GroupCiphertextPayload>;
+  ) => Promise<string>;
   onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
 

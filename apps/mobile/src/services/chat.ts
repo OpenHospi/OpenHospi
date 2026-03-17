@@ -39,10 +39,10 @@ export type MessageItem = {
   senderFirstName: string;
   senderAvatarUrl: string | null;
   ciphertext: string | null;
-  iv: string | null;
   signature: string | null;
-  chainIteration: number | null;
-  chainId: string | null;
+  senderKeyId: number | null;
+  iteration: number | null;
+  senderDeviceId: string | null;
   messageType: string;
   createdAt: string;
 };

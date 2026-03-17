@@ -2,18 +2,13 @@ import { getCryptoProvider } from "../primitives/CryptoProvider";
 
 import { concat, encodeUtf8 } from "./encoding";
 import { ed25519Sign, ed25519Verify, generateEd25519KeyPair } from "./keys";
-import type {
-  SenderKeyDistributionMessage,
-  SenderKeyMessageData,
-  SenderKeyRecord,
-  SenderKeyState,
-} from "./types";
+import type { SenderKeyDistributionMessage, SenderKeyMessageData, SenderKeyState } from "./types";
 
 const CHAIN_KEY_SEED = new Uint8Array([0x02]);
 const MESSAGE_KEY_SEED = new Uint8Array([0x01]);
 
 /** Generate a new Sender Key state for a group conversation. */
-export function generateSenderKeyState(distributionId: string): SenderKeyState {
+export function generateSenderKeyState(): SenderKeyState {
   const provider = getCryptoProvider();
   return {
     chainKey: provider.randomBytes(32),
@@ -38,7 +33,6 @@ export function createDistributionMessage(
 /** Serialize a SenderKeyDistributionMessage to bytes. */
 export function serializeDistributionMessage(msg: SenderKeyDistributionMessage): Uint8Array {
   const distIdBytes = encodeUtf8(msg.distributionId);
-  const provider = getCryptoProvider();
 
   // Format: distIdLen(2) + distId + chainKey(32) + iteration(4) + signingKey(32)
   const len = new Uint8Array(2);

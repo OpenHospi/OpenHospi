@@ -1,8 +1,7 @@
-import { toBase64 } from "../protocol/encoding";
 import { groupDecrypt, groupEncrypt, initGroupSenderKey } from "../protocol/group-cipher";
 import { deserializeDistributionMessage } from "../protocol/sender-key";
 import type { ProtocolAddress, SenderKeyMessageData, SenderKeyRecord } from "../protocol/types";
-import type { SenderKeyStore, SignalProtocolStore  } from "../stores/types";
+import type { SenderKeyStore, SignalProtocolStore } from "../stores/types";
 
 import { encrypt1to1 } from "./SessionManager";
 

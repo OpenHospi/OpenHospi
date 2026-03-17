@@ -5,12 +5,7 @@ import {
   senderKeyEncrypt,
   serializeDistributionMessage,
 } from "./sender-key";
-import type {
-  ProtocolAddress,
-  SenderKeyMessageData,
-  SenderKeyRecord,
-  SenderKeyState,
-} from "./types";
+import type { SenderKeyMessageData, SenderKeyRecord } from "./types";
 
 export interface GroupEncryptResult {
   senderKeyRecord: SenderKeyRecord;
@@ -30,7 +25,7 @@ export function initGroupSenderKey(distributionId: string): {
   record: SenderKeyRecord;
   distributionMessageBytes: Uint8Array;
 } {
-  const state = generateSenderKeyState(distributionId);
+  const state = generateSenderKeyState();
   const distMsg = createDistributionMessage(distributionId, state);
   const distributionMessageBytes = serializeDistributionMessage(distMsg);
 

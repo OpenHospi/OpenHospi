@@ -1,4 +1,3 @@
-import { getCryptoProvider } from "../primitives/CryptoProvider";
 import { toBase64 } from "../protocol/encoding";
 import {
   generateIdentityKeyPair,
@@ -6,7 +5,7 @@ import {
   generateRegistrationId,
   generateSignedPreKey,
 } from "../protocol/keys";
-import type { EncryptedBackup, PreKeyRecord, SignedPreKeyRecord } from "../protocol/types";
+import type { EncryptedBackup } from "../protocol/types";
 import type { SignalProtocolStore } from "../stores/types";
 
 export interface DeviceSetupResult {
@@ -34,8 +33,6 @@ export async function setupDevice(
   pin: string,
   preKeyCount = 100,
 ): Promise<DeviceSetupResult> {
-  const provider = getCryptoProvider();
-
   // Generate identity keys
   const { dhKeyPair, signingKeyPair } = generateIdentityKeyPair();
   const registrationId = generateRegistrationId();

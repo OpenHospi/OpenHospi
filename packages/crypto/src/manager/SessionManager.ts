@@ -1,7 +1,6 @@
 import { initSessionAsResponder } from "../protocol/double-ratchet";
 import { buildSessionFromBundle } from "../protocol/session-builder";
 import {
-  createPreKeyMessage,
   deserializePreKeyWhisperMessage,
   isPreKeyWhisperMessage,
   sessionDecrypt,
@@ -21,13 +20,8 @@ export async function establishSession(
   bundle: PreKeyBundle,
 ): Promise<void> {
   const identityKeyPair = await store.getIdentityKeyPair();
-  const registrationId = await store.getLocalRegistrationId();
 
-  const { session, ephemeralPublicKey, usedOneTimePreKeyId } = buildSessionFromBundle(
-    identityKeyPair,
-    identityKeyPair.publicKey,
-    bundle,
-  );
+  const { session } = buildSessionFromBundle(identityKeyPair, identityKeyPair.publicKey, bundle);
 
   // Save the remote identity key
   await store.saveIdentity(address, bundle.identityKey);
@@ -50,7 +44,6 @@ export async function encrypt1to1(
     throw new Error(`No session for ${address.userId}:${address.deviceId}`);
   }
 
-  const registrationId = await store.getLocalRegistrationId();
   const { session: updatedSession, serialised } = sessionEncrypt(session, plaintext);
 
   await store.storeSession(address, updatedSession);

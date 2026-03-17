@@ -2,6 +2,15 @@ import { defineRelations } from "drizzle-orm";
 
 import { applications, applicationStatusHistory, reviews } from "./applications";
 import { account, session, user, verification } from "./auth-schema";
+import {
+  conversationMembers,
+  conversations,
+  messagePayloads,
+  messageReceipts,
+  messages,
+  senderKeyDistributions,
+} from "./chat";
+import { devices, oneTimePreKeys, privateKeyBackups, signedPreKeys } from "./encryption-schema";
 import { hospiEvents, hospiInvitations, votes } from "./events";
 import { houseMembers, houses } from "./houses";
 import { notifications, pushSubscriptions, pushTokens } from "./notifications";
@@ -34,6 +43,18 @@ export const relations = defineRelations(
     hospiEvents,
     hospiInvitations,
     votes,
+    // Chat
+    conversations,
+    conversationMembers,
+    messages,
+    messagePayloads,
+    messageReceipts,
+    senderKeyDistributions,
+    // Encryption
+    devices,
+    signedPreKeys,
+    oneTimePreKeys,
+    privateKeyBackups,
     // Security
     reports,
     blocks,
@@ -118,6 +139,7 @@ export const relations = defineRelations(
       applications: r.many.applications(),
       reviews: r.many.reviews(),
       events: r.many.hospiEvents(),
+      conversations: r.many.conversations(),
     },
     roomPhotos: {
       room: r.one.rooms({
@@ -204,6 +226,112 @@ export const relations = defineRelations(
       }),
     },
 
+    // ── Chat relations ──
+    conversations: {
+      room: r.one.rooms({
+        from: r.conversations.roomId,
+        to: r.rooms.id,
+      }),
+      seeker: r.one.profiles({
+        from: r.conversations.seekerUserId,
+        to: r.profiles.id,
+        alias: "seeker",
+      }),
+      members: r.many.conversationMembers(),
+      messages: r.many.messages(),
+    },
+    conversationMembers: {
+      conversation: r.one.conversations({
+        from: r.conversationMembers.conversationId,
+        to: r.conversations.id,
+      }),
+      user: r.one.profiles({
+        from: r.conversationMembers.userId,
+        to: r.profiles.id,
+      }),
+    },
+    messages: {
+      conversation: r.one.conversations({
+        from: r.messages.conversationId,
+        to: r.conversations.id,
+      }),
+      sender: r.one.profiles({
+        from: r.messages.senderId,
+        to: r.profiles.id,
+      }),
+      payload: r.one.messagePayloads(),
+      receipts: r.many.messageReceipts(),
+    },
+    messagePayloads: {
+      message: r.one.messages({
+        from: r.messagePayloads.messageId,
+        to: r.messages.id,
+      }),
+      conversation: r.one.conversations({
+        from: r.messagePayloads.conversationId,
+        to: r.conversations.id,
+      }),
+    },
+    messageReceipts: {
+      message: r.one.messages({
+        from: r.messageReceipts.messageId,
+        to: r.messages.id,
+      }),
+      user: r.one.profiles({
+        from: r.messageReceipts.userId,
+        to: r.profiles.id,
+      }),
+    },
+    senderKeyDistributions: {
+      conversation: r.one.conversations({
+        from: r.senderKeyDistributions.conversationId,
+        to: r.conversations.id,
+      }),
+      sender: r.one.profiles({
+        from: r.senderKeyDistributions.senderUserId,
+        to: r.profiles.id,
+        alias: "skdSender",
+      }),
+      senderDevice: r.one.devices({
+        from: r.senderKeyDistributions.senderDeviceId,
+        to: r.devices.id,
+        alias: "skdSenderDevice",
+      }),
+      recipientDevice: r.one.devices({
+        from: r.senderKeyDistributions.recipientDeviceId,
+        to: r.devices.id,
+        alias: "skdRecipientDevice",
+      }),
+    },
+
+    // ── Encryption relations ──
+    devices: {
+      user: r.one.user({
+        from: r.devices.userId,
+        to: r.user.id,
+      }),
+      signedPreKeys: r.many.signedPreKeys(),
+      oneTimePreKeys: r.many.oneTimePreKeys(),
+    },
+    signedPreKeys: {
+      device: r.one.devices({
+        from: r.signedPreKeys.deviceId,
+        to: r.devices.id,
+      }),
+    },
+    oneTimePreKeys: {
+      device: r.one.devices({
+        from: r.oneTimePreKeys.deviceId,
+        to: r.devices.id,
+      }),
+    },
+    privateKeyBackups: {
+      user: r.one.profiles({
+        from: r.privateKeyBackups.userId,
+        to: r.profiles.id,
+      }),
+    },
+
     // ── Security relations ──
     reports: {
       reporter: r.one.profiles({
@@ -219,6 +347,10 @@ export const relations = defineRelations(
       reportedRoom: r.one.rooms({
         from: r.reports.reportedRoomId,
         to: r.rooms.id,
+      }),
+      reportedMessage: r.one.messages({
+        from: r.reports.reportedMessageId,
+        to: r.messages.id,
       }),
     },
     blocks: {

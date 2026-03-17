@@ -6,6 +6,7 @@ import {
   ConsentPurpose,
   DataRequestStatus,
   DataRequestType,
+  DeliveryStatus,
   DevicePlatform,
   DiscoverSort,
   Furnishing,
@@ -18,6 +19,7 @@ import {
   LegalBasis,
   LifestyleTag,
   LocationTag,
+  MessageType,
   RentalType,
   ReportReason,
   ReportStatus,
@@ -25,6 +27,7 @@ import {
   ReviewDecision,
   RoomFeature,
   RoomStatus,
+  SenderKeyDistributionStatus,
   StudyLevel,
   UtilitiesIncluded,
   Vereniging,
@@ -60,3 +63,9 @@ export const legalBasisEnum = pgEnum("legal_basis_enum", LegalBasis.values);
 export const dataRequestTypeEnum = pgEnum("data_request_type_enum", DataRequestType.values);
 export const dataRequestStatusEnum = pgEnum("data_request_status_enum", DataRequestStatus.values);
 export const platformEnum = pgEnum("platform_enum", DevicePlatform.values);
+export const messageTypeEnum = pgEnum("message_type_enum", MessageType.values);
+export const deliveryStatusEnum = pgEnum("delivery_status_enum", DeliveryStatus.values);
+export const senderKeyDistributionStatusEnum = pgEnum(
+  "sender_key_distribution_status_enum",
+  SenderKeyDistributionStatus.values,
+);

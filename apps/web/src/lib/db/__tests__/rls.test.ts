@@ -191,7 +191,11 @@ describe("RLS policies (integration)", () => {
       userId: USER_B,
     });
 
-    await db.insert(conversations).values({ id: CONVERSATION_ID, type: "direct" });
+    await db.insert(conversations).values({
+      id: CONVERSATION_ID,
+      roomId: ACTIVE_ROOM,
+      seekerUserId: USER_B,
+    });
     await db.insert(conversationMembers).values([
       { conversationId: CONVERSATION_ID, userId: USER_A },
       { conversationId: CONVERSATION_ID, userId: USER_B },
@@ -201,17 +205,14 @@ describe("RLS policies (integration)", () => {
       id: MESSAGE_ID,
       conversationId: CONVERSATION_ID,
       senderId: USER_A,
-      messageType: "text",
+      messageType: "ciphertext",
     });
 
     await db.insert(messagePayloads).values({
       messageId: MESSAGE_ID,
       conversationId: CONVERSATION_ID,
       senderUserId: USER_A,
-      ciphertext: "encrypted-test",
-      signature: "test-signature",
-      senderKeyId: 1,
-      iteration: 0,
+      payload: "encrypted-test-payload",
     });
 
     await db.insert(messageReceipts).values({
@@ -236,6 +237,7 @@ describe("RLS policies (integration)", () => {
         deviceId: 1,
         registrationId: 11111,
         identityKeyPublic: "test-identity-a",
+        signingKeyPublic: "test-signing-a",
         platform: "web" as const,
       },
       {
@@ -243,14 +245,15 @@ describe("RLS policies (integration)", () => {
         deviceId: 1,
         registrationId: 22222,
         identityKeyPublic: "test-identity-b",
+        signingKeyPublic: "test-signing-b",
         platform: "web" as const,
       },
     ]);
 
     await db.insert(privateKeyBackups).values({
       userId: USER_A,
-      encryptedPrivateKey: "enc-key-a",
-      backupIv: "iv-a",
+      encryptedData: "enc-key-a",
+      iv: "iv-a",
       salt: "salt-a",
     });
 
@@ -504,7 +507,7 @@ describe("RLS policies (integration)", () => {
           .values({
             conversationId: CONVERSATION_ID,
             senderId: USER_A,
-            messageType: "text",
+            messageType: "ciphertext",
           })
           .returning(),
       );
@@ -583,6 +586,7 @@ describe("RLS policies (integration)", () => {
             deviceId: 1,
             registrationId: 33333,
             identityKeyPublic: "test-identity-c",
+            signingKeyPublic: "test-signing-c",
             platform: "web",
           })
           .returning(),
@@ -600,6 +604,7 @@ describe("RLS policies (integration)", () => {
             deviceId: 1,
             registrationId: 99999,
             identityKeyPublic: "fake-identity",
+            signingKeyPublic: "fake-signing",
             platform: "web",
           }),
         ),
@@ -628,7 +633,7 @@ describe("RLS policies (integration)", () => {
         tx.select().from(privateKeyBackups).where(eq(privateKeyBackups.userId, USER_A)),
       );
       expect(rows).toHaveLength(1);
-      expect(rows[0].encryptedPrivateKey).toBe("enc-key-a");
+      expect(rows[0].encryptedData).toBe("enc-key-a");
     });
 
     it("user cannot read another user's backup", async () => {
@@ -644,8 +649,8 @@ describe("RLS policies (integration)", () => {
           .insert(privateKeyBackups)
           .values({
             userId: USER_B,
-            encryptedPrivateKey: "enc-key-b",
-            backupIv: "iv-b",
+            encryptedData: "enc-key-b",
+            iv: "iv-b",
             salt: "salt-b",
           })
           .returning(),
@@ -660,8 +665,8 @@ describe("RLS policies (integration)", () => {
         createDrizzleSupabaseClient(USER_B).rls((tx) =>
           tx.insert(privateKeyBackups).values({
             userId: USER_C,
-            encryptedPrivateKey: "fake",
-            backupIv: "fake",
+            encryptedData: "fake",
+            iv: "fake",
             salt: "fake",
           }),
         ),
@@ -774,7 +779,7 @@ describe("RLS policies (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_C,
-            messageType: "text",
+            messageType: "ciphertext",
           }),
         ),
       ).rejects.toThrow();
@@ -787,7 +792,7 @@ describe("RLS policies (integration)", () => {
           .values({
             conversationId: CONVERSATION_ID,
             senderId: USER_A,
-            messageType: "text",
+            messageType: "ciphertext",
           })
           .returning(),
       );
@@ -802,7 +807,7 @@ describe("RLS policies (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONVERSATION_ID,
             senderId: USER_B,
-            messageType: "text",
+            messageType: "ciphertext",
           }),
         ),
       ).rejects.toThrow();
@@ -832,14 +837,12 @@ describe("RLS policies (integration)", () => {
         id: CONVERSATION_ID2,
         roomId: ACTIVE_ROOM,
         seekerUserId: USER_C,
-        type: "direct",
       });
       try {
         await expect(
           db.insert(conversations).values({
             roomId: ACTIVE_ROOM,
             seekerUserId: USER_C,
-            type: "direct",
           }),
         ).rejects.toThrow();
       } finally {
@@ -876,7 +879,10 @@ describe("RLS policies (integration)", () => {
 
     it("cascade delete: deleting a conversation cascades to members, messages, receipts", async () => {
       // Create a standalone conversation with members, messages, receipts
-      const [conv] = await db.insert(conversations).values({ type: "direct" }).returning();
+      const [conv] = await db
+        .insert(conversations)
+        .values({ roomId: ACTIVE_ROOM, seekerUserId: USER_C })
+        .returning();
       await db.insert(conversationMembers).values([
         { conversationId: conv.id, userId: USER_A },
         { conversationId: conv.id, userId: USER_B },
@@ -886,7 +892,7 @@ describe("RLS policies (integration)", () => {
         .values({
           conversationId: conv.id,
           senderId: USER_A,
-          messageType: "text",
+          messageType: "ciphertext",
         })
         .returning();
       await db.insert(messageReceipts).values({

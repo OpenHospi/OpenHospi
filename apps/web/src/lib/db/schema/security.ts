@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { index, pgPolicy, pgTable, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
+import { messages } from "./chat";
 import { reportReasonEnum, reportStatusEnum, reportTypeEnum } from "./enums";
 import { profiles } from "./profiles";
 import { rooms } from "./rooms";
@@ -18,8 +19,12 @@ export const reports = pgTable(
       onDelete: "set null",
     }),
     reportedRoomId: uuid("reported_room_id").references(() => rooms.id, { onDelete: "set null" }),
+    reportedMessageId: uuid("reported_message_id").references(() => messages.id, {
+      onDelete: "set null",
+    }),
     reason: reportReasonEnum("reason").notNull(),
     description: text("description"),
+    decryptedMessageText: text("decrypted_message_text"),
     status: reportStatusEnum("status").notNull().default("pending"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     resolvedAt: timestamp("resolved_at", { withTimezone: true }),

@@ -1202,6 +1202,7 @@ describe("E2E workflow tests (integration)", () => {
             deviceId: 1,
             registrationId: 12345,
             identityKeyPublic: "e2e-identity-key",
+            signingKeyPublic: "e2e-signing-key",
             platform: "web",
           })
           .returning(),
@@ -1222,6 +1223,7 @@ describe("E2E workflow tests (integration)", () => {
               deviceId: 1,
               registrationId: 99999,
               identityKeyPublic: "fake-identity",
+              signingKeyPublic: "fake-signing",
               platform: "web",
             }),
           ),

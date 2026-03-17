@@ -5,6 +5,8 @@ export * from "./houses";
 export * from "./rooms";
 export * from "./applications";
 export * from "./events";
+export * from "./chat";
+export * from "./encryption-schema";
 export * from "./security";
 export * from "./privacy";
 export * from "./notifications";

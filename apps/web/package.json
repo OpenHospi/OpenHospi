@@ -19,8 +19,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:studio:local": "drizzle-kit studio --config=drizzle.local.config.ts",
-    "db:setup:storage:local": "tsx scripts/setup-storage-policies.mts",
-    "db:seed:local": "tsx scripts/seed-local.mts"
+    "db:setup:storage:local": "tsx scripts/setup-storage-policies.ts",
+    "db:seed:local": "tsx scripts/seed-local.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

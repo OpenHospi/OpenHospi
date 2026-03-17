@@ -7,13 +7,13 @@ export interface KeyPair {
 /** Addresses a specific device of a specific user. */
 export interface ProtocolAddress {
   userId: string;
-  deviceId: number;
+  deviceId: string;
 }
 
 /** Pre-key bundle fetched from the server for X3DH session establishment. */
 export interface PreKeyBundle {
   registrationId: number;
-  deviceId: number;
+  deviceId: string;
   identityKey: Uint8Array;
   signedPreKeyId: number;
   signedPreKey: Uint8Array;

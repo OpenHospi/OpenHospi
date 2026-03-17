@@ -24,7 +24,6 @@ export const devices = pgTable(
     userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    deviceId: integer("device_id").notNull(),
     registrationId: integer("registration_id").notNull(),
     identityKeyPublic: text("identity_key_public").notNull(),
     signingKeyPublic: text("signing_key_public").notNull(),
@@ -35,7 +34,6 @@ export const devices = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    unique("uq_devices_user_device").on(table.userId, table.deviceId),
     index("idx_devices_user_id").on(table.userId),
     // Users can see their own devices and others' public keys
     pgPolicy("devices_select_authenticated", {

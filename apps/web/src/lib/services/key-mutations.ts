@@ -3,7 +3,13 @@
 import { and, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { devices, oneTimePreKeys, privateKeyBackups, signedPreKeys } from "@/lib/db/schema";
+import {
+  devices,
+  oneTimePreKeys,
+  privateKeyBackups,
+  senderKeyDistributions,
+  signedPreKeys,
+} from "@/lib/db/schema";
 
 // ── Device Registration ──
 
@@ -17,35 +23,15 @@ export async function registerDevice(data: {
   oneTimePreKeys: Array<{ keyId: number; publicKey: string }>;
 }) {
   return await db.transaction(async (tx) => {
-    // Find next deviceId for this user
-    const existing = await tx
-      .select({ deviceId: devices.deviceId })
-      .from(devices)
-      .where(eq(devices.userId, data.userId))
-      .orderBy(devices.deviceId);
-
-    const nextDeviceId = existing.length > 0 ? existing[existing.length - 1].deviceId + 1 : 1;
-
-    // Upsert device
+    // Insert device (UUID auto-generated as PK)
     const [device] = await tx
       .insert(devices)
       .values({
         userId: data.userId,
-        deviceId: nextDeviceId,
         registrationId: data.registrationId,
         identityKeyPublic: data.identityKeyPublic,
         signingKeyPublic: data.signingKeyPublic,
         platform: data.platform,
-      })
-      .onConflictDoUpdate({
-        target: [devices.userId, devices.deviceId],
-        set: {
-          registrationId: data.registrationId,
-          identityKeyPublic: data.identityKeyPublic,
-          signingKeyPublic: data.signingKeyPublic,
-          isActive: true,
-          lastSeenAt: new Date(),
-        },
       })
       .returning();
 
@@ -86,20 +72,18 @@ export async function registerDevice(data: {
 
 // ── Pre-Key Bundle ──
 
-export async function fetchPreKeyBundle(targetDeviceUuid: string) {
+export async function fetchPreKeyBundle(targetDeviceId: string) {
   return await db.transaction(async (tx) => {
-    // Fetch device + identity key
     const [device] = await tx
       .select({
         id: devices.id,
         userId: devices.userId,
-        deviceId: devices.deviceId,
         registrationId: devices.registrationId,
         identityKeyPublic: devices.identityKeyPublic,
         signingKeyPublic: devices.signingKeyPublic,
       })
       .from(devices)
-      .where(and(eq(devices.id, targetDeviceUuid), eq(devices.isActive, true)));
+      .where(and(eq(devices.id, targetDeviceId), eq(devices.isActive, true)));
 
     if (!device) return null;
 
@@ -130,9 +114,8 @@ export async function fetchPreKeyBundle(targetDeviceUuid: string) {
       .returning();
 
     return {
-      deviceUuid: device.id,
+      deviceId: device.id,
       userId: device.userId,
-      deviceId: device.deviceId,
       registrationId: device.registrationId,
       identityKeyPublic: device.identityKeyPublic,
       signingKeyPublic: device.signingKeyPublic,
@@ -148,24 +131,24 @@ export async function fetchPreKeyBundle(targetDeviceUuid: string) {
 // ── Pre-Key Replenishment ──
 
 export async function replenishOneTimePreKeys(
-  deviceUuid: string,
+  deviceId: string,
   keys: Array<{ keyId: number; publicKey: string }>,
 ) {
   if (keys.length === 0) return;
   await db
     .insert(oneTimePreKeys)
-    .values(keys.map((pk) => ({ deviceId: deviceUuid, keyId: pk.keyId, publicKey: pk.publicKey })))
+    .values(keys.map((pk) => ({ deviceId, keyId: pk.keyId, publicKey: pk.publicKey })))
     .onConflictDoNothing();
 }
 
 export async function rotateSignedPreKey(
-  deviceUuid: string,
+  deviceId: string,
   data: { keyId: number; publicKey: string; signature: string },
 ) {
   await db
     .insert(signedPreKeys)
     .values({
-      deviceId: deviceUuid,
+      deviceId,
       keyId: data.keyId,
       publicKey: data.publicKey,
       signature: data.signature,
@@ -182,7 +165,6 @@ export async function getDevicesForUser(userId: string) {
   return await db
     .select({
       id: devices.id,
-      deviceId: devices.deviceId,
       registrationId: devices.registrationId,
       identityKeyPublic: devices.identityKeyPublic,
       signingKeyPublic: devices.signingKeyPublic,
@@ -192,11 +174,11 @@ export async function getDevicesForUser(userId: string) {
     .where(and(eq(devices.userId, userId), eq(devices.isActive, true)));
 }
 
-export async function getOneTimePreKeyCount(deviceUuid: string) {
+export async function getOneTimePreKeyCount(deviceId: string) {
   const [result] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(oneTimePreKeys)
-    .where(and(eq(oneTimePreKeys.deviceId, deviceUuid), eq(oneTimePreKeys.used, false)));
+    .where(and(eq(oneTimePreKeys.deviceId, deviceId), eq(oneTimePreKeys.used, false)));
   return result.count;
 }
 
@@ -236,8 +218,6 @@ export async function removeKeyBackup(userId: string) {
 
 // ── Sender Key Distributions ──
 
-import { senderKeyDistributions } from "@/lib/db/schema";
-
 export async function storeSenderKeyDistribution(data: {
   conversationId: string;
   senderUserId: string;
@@ -251,7 +231,16 @@ export async function storeSenderKeyDistribution(data: {
 
 export async function fetchPendingDistributions(recipientDeviceId: string) {
   return await db
-    .select()
+    .select({
+      id: senderKeyDistributions.id,
+      conversationId: senderKeyDistributions.conversationId,
+      senderUserId: senderKeyDistributions.senderUserId,
+      senderDeviceId: senderKeyDistributions.senderDeviceId,
+      recipientDeviceId: senderKeyDistributions.recipientDeviceId,
+      ciphertext: senderKeyDistributions.ciphertext,
+      status: senderKeyDistributions.status,
+      createdAt: senderKeyDistributions.createdAt,
+    })
     .from(senderKeyDistributions)
     .where(
       and(

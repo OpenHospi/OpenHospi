@@ -107,7 +107,7 @@ export function useEncryption(userId: string | undefined) {
         const memberDevices = await fetchDevicesForUser(memberId);
 
         for (const device of memberDevices) {
-          const address: ProtocolAddress = { userId: memberId, deviceId: device.deviceId };
+          const address: ProtocolAddress = { userId: memberId, deviceId: device.id };
           const existingSession = await cryptoStore.loadSession(address);
 
           if (!existingSession) {
@@ -144,14 +144,13 @@ export function useEncryption(userId: string | undefined) {
       // Collect all member device addresses
       const memberAddresses: ProtocolAddress[] = [];
       for (const memberId of memberUserIds) {
-        const devices = await fetchDevicesForUser(memberId);
-        for (const d of devices) {
-          memberAddresses.push({ userId: memberId, deviceId: d.deviceId });
+        const memberDevices = await fetchDevicesForUser(memberId);
+        for (const d of memberDevices) {
+          memberAddresses.push({ userId: memberId, deviceId: d.id });
         }
       }
 
-      const myDeviceId = memberAddresses.find((a) => a.userId === userId)?.deviceId ?? 1;
-      const localAddress: ProtocolAddress = { userId, deviceId: myDeviceId };
+      const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
 
       const { distributions } = await initAndDistributeSenderKey(
         cryptoStore,
@@ -162,17 +161,10 @@ export function useEncryption(userId: string | undefined) {
 
       // Upload encrypted distributions to server
       for (const dist of distributions) {
-        // Find the server device UUID for the recipient
-        const recipientDevices = await fetchDevicesForUser(dist.recipientAddress.userId);
-        const recipientDevice = recipientDevices.find(
-          (d) => d.deviceId === dist.recipientAddress.deviceId,
-        );
-        if (!recipientDevice) continue;
-
         await storeSenderKeyDist({
           conversationId,
           senderDeviceId: deviceUuidRef.current,
-          recipientDeviceId: recipientDevice.id,
+          recipientDeviceId: dist.recipientAddress.deviceId,
           ciphertext: toBase64(dist.encryptedDistribution),
         });
       }
@@ -193,8 +185,8 @@ export function useEncryption(userId: string | undefined) {
       await ensureSessions(memberUserIds);
 
       // Step 2: Check if we have a sender key, if not distribute
-      const myDeviceId = 1; // For now, single device
-      const localAddress: ProtocolAddress = { userId, deviceId: myDeviceId };
+      if (!deviceUuidRef.current) throw new Error("Device not initialized");
+      const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
 
       const existingKey = await cryptoStore.loadSenderKey(localAddress, conversationId);
       if (!existingKey) {
@@ -294,7 +286,7 @@ export function useEncryption(userId: string | undefined) {
           const { decrypt1to1 } = await import("@openhospi/crypto");
           const senderAddress: ProtocolAddress = {
             userId: dist.senderUserId,
-            deviceId: 1, // TODO: resolve from senderDeviceId
+            deviceId: dist.senderDeviceId,
           };
 
           // Decrypt the distribution message via 1:1 session

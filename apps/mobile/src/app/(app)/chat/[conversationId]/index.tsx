@@ -73,11 +73,12 @@ export default function ConversationScreen() {
         if (!msg.payload) continue;
 
         try {
+          if (!msg.senderDeviceId) continue;
           const plaintext = await decryptMessage(
             conversationId,
             {
               userId: msg.senderId,
-              deviceId: 1,
+              deviceId: msg.senderDeviceId,
             },
             msg.payload
           );

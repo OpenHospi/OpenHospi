@@ -69,12 +69,12 @@ export function MessageThread({
 
         // Try to decrypt
         try {
-          const senderDeviceId = msg.senderDeviceId ? 1 : 1; // TODO: resolve device ID
+          if (!msg.senderDeviceId) continue;
           const plaintext = await decryptMessage(
             conversationId,
             {
               userId: msg.senderId,
-              deviceId: senderDeviceId,
+              deviceId: msg.senderDeviceId,
             },
             msg.payload,
           );

@@ -10,7 +10,8 @@ import {
   processDistribution,
   toBase64,
 } from '@openhospi/crypto';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 
 import { api } from '@/lib/api-client';
 import { getMobileSignalStore } from '@/lib/crypto/stores';
@@ -54,6 +55,30 @@ export function useEncryption(userId: string | undefined) {
   const deviceUuidRef = useRef<string | null>(null);
 
   const store = getMobileSignalStore();
+
+  const initDevice = useCallback(async () => {
+    if (!userId || deviceUuidRef.current) return;
+
+    try {
+      setStatus('initializing');
+      const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+      const myDevices = await api.get<DeviceInfo[]>(`/api/mobile/chat/devices?userId=${userId}`);
+      const myDevice = myDevices.find((d) => d.platform === platform);
+
+      if (myDevice) {
+        deviceUuidRef.current = myDevice.id;
+        setStatus('ready');
+      } else {
+        setStatus('uninitialized');
+      }
+    } catch {
+      setStatus('error');
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    initDevice();
+  }, [initDevice]);
 
   const checkStatus = useCallback(async () => {
     try {

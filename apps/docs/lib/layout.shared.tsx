@@ -1,16 +1,30 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import { i18n } from "@/lib/i18n";
+import { defineI18nUI } from "fumadocs-ui/i18n";
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 
-// fill this with your actual GitHub info, for example:
 export const gitConfig = {
-  user: 'fuma-nama',
-  repo: 'fumadocs',
-  branch: 'main',
+  user: "OpenHospi",
+  repo: "OpenHospi",
+  branch: "main",
 };
 
-export function baseOptions(): BaseLayoutProps {
+export const i18nUI = defineI18nUI(i18n, {
+  translations: {
+    nl: {
+      displayName: "Nederlands",
+      search: "Zoek documentatie",
+    },
+    en: {
+      displayName: "English",
+    },
+  },
+});
+
+export function baseOptions(locale: string): BaseLayoutProps {
   return {
+    i18n,
     nav: {
-      title: 'My App',
+      title: "OpenHospi Docs",
     },
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
   };

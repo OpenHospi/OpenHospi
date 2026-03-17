@@ -5,6 +5,7 @@ on:
     branches: [dev, main]
     paths:
       - "apps/web/**"
+      - "apps/docs/**"
       - "packages/**"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
@@ -15,6 +16,7 @@ on:
     branches: [main]
     paths:
       - "apps/web/**"
+      - "apps/docs/**"
       - "packages/**"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"

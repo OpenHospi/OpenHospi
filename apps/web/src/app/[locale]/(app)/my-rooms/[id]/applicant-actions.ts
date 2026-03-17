@@ -19,9 +19,8 @@ import {
   requireSession,
 } from "@/lib/auth/server";
 import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, houseMembers, reviews, rooms } from "@/lib/db/schema";
+import { applications, reviews } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
-import { getOrCreateConversation } from "@/lib/queries/chat";
 
 export async function markApplicationsSeen(roomId: string) {
   const session = await requireSession();
@@ -128,9 +127,9 @@ export async function updateApplicationStatus(
 
   await requireHousePermission(roomId, session.user.id, "application:decide");
 
-  const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
+  return createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [app] = await tx
-      .select({ status: applications.status, userId: applications.userId })
+      .select({ status: applications.status })
       .from(applications)
       .where(and(eq(applications.id, applicationId), eq(applications.roomId, roomId)));
     if (!app) return { error: "not_found" as const };
@@ -147,32 +146,8 @@ export async function updateApplicationStatus(
 
     await logStatusTransition(tx, applicationId, currentStatus, newStatus, session.user.id);
 
-    return { success: true, seekerUserId: app.userId };
+    revalidatePath(`/my-rooms/${roomId}`);
+    revalidatePath("/applications");
+    return { success: true };
   });
-
-  if ("error" in result) return result;
-
-  // When an application is accepted, create a conversation between seeker and house members
-  if (newStatus === ApplicationStatus.accepted && result.seekerUserId) {
-    const [room] = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
-      return tx.select({ houseId: rooms.houseId }).from(rooms).where(eq(rooms.id, roomId));
-    });
-
-    if (room) {
-      const members = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
-        return tx
-          .select({ userId: houseMembers.userId })
-          .from(houseMembers)
-          .where(eq(houseMembers.houseId, room.houseId));
-      });
-
-      const memberUserIds = [...members.map((m) => m.userId), result.seekerUserId];
-      await getOrCreateConversation(roomId, result.seekerUserId, memberUserIds);
-    }
-  }
-
-  revalidatePath(`/my-rooms/${roomId}`);
-  revalidatePath("/applications");
-  revalidatePath("/chat");
-  return { success: true };
 }

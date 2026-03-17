@@ -16,6 +16,8 @@
     "dev:mobile:ios": "pnpm --filter @openhospi/mobile ios",
     "dev:mobile:web": "pnpm --filter @openhospi/mobile web",
     "build": "pnpm --filter @openhospi/web build",
+    "dev:docs": "pnpm --filter @openhospi/docs dev",
+    "build:docs": "pnpm --filter @openhospi/docs build",
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm -r lint --fix",
     "format": "pnpm -r format",

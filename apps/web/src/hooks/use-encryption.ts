@@ -2,6 +2,7 @@
 
 import type { ProtocolAddress } from "@openhospi/crypto";
 import {
+  DecryptionQueue,
   decryptGroupMessage,
   encryptGroupMessage as cryptoEncryptGroup,
   establishSession,
@@ -9,10 +10,13 @@ import {
   generateSafetyNumber,
   initAndDistributeSenderKey,
   processDistribution,
+  replenishPreKeysIfNeeded,
+  rotateSignedPreKeyIfNeeded,
   setupDevice,
+  shouldRotateSenderKey,
   toBase64,
 } from "@openhospi/crypto";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   acknowledgeDist,
@@ -27,11 +31,14 @@ import { cryptoStore, sentMessageCache } from "@/lib/crypto";
 
 type EncryptionStatus = "uninitialized" | "initializing" | "ready" | "error";
 
+const decryptionQueue = new DecryptionQueue();
+
 export function useEncryption(userId: string | undefined) {
   const [status, setStatus] = useState<EncryptionStatus>("uninitialized");
   const [error, setError] = useState<Error | null>(null);
   const initRef = useRef(false);
   const deviceUuidRef = useRef<string | null>(null);
+  const senderKeyCreatedAt = useRef<Map<string, number>>(new Map());
 
   /**
    * Initialize the device — generate keys, register with server.
@@ -87,6 +94,38 @@ export function useEncryption(userId: string | undefined) {
       const hasKeys = await cryptoStore.hasIdentityKey();
       if (hasKeys) {
         setStatus("ready");
+
+        // Run key maintenance in the background
+        if (deviceUuidRef.current) {
+          const deviceId = deviceUuidRef.current;
+          replenishPreKeysIfNeeded(cryptoStore, deviceId, {
+            getPreKeyCount: async () => {
+              const { getOneTimePreKeyCount } = await import("@/lib/services/key-mutations");
+              return getOneTimePreKeyCount(deviceId);
+            },
+            uploadPreKeys: async (id, keys) => {
+              const { replenishPreKeys } = await import("@/app/[locale]/(app)/chat/key-actions");
+              await replenishPreKeys(id, keys);
+            },
+            uploadSignedPreKey: async (id, data) => {
+              const { rotateDeviceSignedPreKey } =
+                await import("@/app/[locale]/(app)/chat/key-actions");
+              await rotateDeviceSignedPreKey(id, data);
+            },
+            getLatestSignedPreKeyTimestamp: async () => null,
+          }).catch(() => {});
+
+          rotateSignedPreKeyIfNeeded(cryptoStore, deviceId, {
+            getPreKeyCount: async () => 0,
+            uploadPreKeys: async () => {},
+            uploadSignedPreKey: async (id, data) => {
+              const { rotateDeviceSignedPreKey } =
+                await import("@/app/[locale]/(app)/chat/key-actions");
+              await rotateDeviceSignedPreKey(id, data);
+            },
+            getLatestSignedPreKeyTimestamp: async () => null,
+          }).catch(() => {});
+        }
       }
     } catch {
       // No keys yet
@@ -184,13 +223,17 @@ export function useEncryption(userId: string | undefined) {
       // Step 1: Ensure 1:1 sessions with all members
       await ensureSessions(memberUserIds);
 
-      // Step 2: Check if we have a sender key, if not distribute
+      // Step 2: Check if we have a sender key, rotate if needed, distribute if missing
       if (!deviceUuidRef.current) throw new Error("Device not initialized");
       const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
 
       const existingKey = await cryptoStore.loadSenderKey(localAddress, conversationId);
-      if (!existingKey) {
+      const createdAt = senderKeyCreatedAt.current.get(conversationId) ?? 0;
+      const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
+
+      if (!existingKey || needsRotation) {
         await distributeSenderKey(conversationId, memberUserIds);
+        senderKeyCreatedAt.current.set(conversationId, Date.now());
       }
 
       // Step 3: Encrypt with sender key (O(1))
@@ -219,6 +262,26 @@ export function useEncryption(userId: string | undefined) {
   const processIncomingDistribution = useCallback(
     async (senderAddress: ProtocolAddress, distributionBytes: Uint8Array) => {
       await processDistribution(cryptoStore, senderAddress, distributionBytes);
+
+      // Retry any queued messages from this sender
+      const queued = decryptionQueue.getForSender("", senderAddress);
+      for (const msg of queued) {
+        try {
+          const { decodeUtf8 } = await import("@openhospi/crypto");
+          const plaintext = await decryptGroupMessage(
+            cryptoStore,
+            msg.senderAddress,
+            msg.conversationId,
+            msg.payload,
+          );
+          decryptionQueue.dequeue(msg.id);
+        } catch {
+          // Still can't decrypt — leave in queue
+        }
+      }
+
+      // Periodic cleanup
+      decryptionQueue.cleanup();
     },
     [],
   );
@@ -228,6 +291,7 @@ export function useEncryption(userId: string | undefined) {
    */
   const decryptMessage = useCallback(
     async (
+      messageId: string,
       conversationId: string,
       senderAddress: ProtocolAddress,
       payloadStr: string,
@@ -235,14 +299,27 @@ export function useEncryption(userId: string | undefined) {
       const payload = JSON.parse(payloadStr);
       const { decodeUtf8 } = await import("@openhospi/crypto");
 
-      const plaintext = await decryptGroupMessage(cryptoStore, senderAddress, conversationId, {
+      const message = {
         distributionId: payload.distributionId,
         chainId: payload.chainId,
         ciphertext: fromBase64(payload.ciphertext),
         signature: fromBase64(payload.signature),
-      });
+      };
 
-      return decodeUtf8(plaintext);
+      try {
+        const plaintext = await decryptGroupMessage(
+          cryptoStore,
+          senderAddress,
+          conversationId,
+          message,
+        );
+        decryptionQueue.dequeue(messageId);
+        return decodeUtf8(plaintext);
+      } catch (err) {
+        // Queue for retry — sender key distribution may not have arrived yet
+        decryptionQueue.enqueue(messageId, conversationId, senderAddress, message);
+        throw err;
+      }
     },
     [],
   );

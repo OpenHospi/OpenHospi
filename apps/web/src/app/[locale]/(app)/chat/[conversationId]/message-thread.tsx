@@ -71,6 +71,7 @@ export function MessageThread({
         try {
           if (!msg.senderDeviceId) continue;
           const plaintext = await decryptMessage(
+            msg.id,
             conversationId,
             {
               userId: msg.senderId,

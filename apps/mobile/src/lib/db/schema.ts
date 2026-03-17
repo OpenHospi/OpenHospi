@@ -123,6 +123,16 @@ export const syncMetadata = sqliteTable('sync_metadata', {
   cursor: text('cursor'),
 });
 
+// ── Trusted Identity Keys (TOFU — trust on first use) ──
+
+export const trustedIdentities = sqliteTable('trusted_identities', {
+  address: text('address').primaryKey(), // format: userId:deviceId
+  identityKey: text('identity_key').notNull(), // base64-encoded public key
+  firstSeenAt: integer('first_seen_at', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 export const keyVerifications = sqliteTable('key_verifications', {
   peerUserId: text('peer_user_id').primaryKey(),
   signingPublicKey: text('signing_public_key').notNull(),

@@ -95,6 +95,21 @@ export {
   decryptGroupMessage,
 } from "./manager/GroupEncryptionManager";
 
+// Key Maintenance (hardening)
+export { replenishPreKeysIfNeeded, rotateSignedPreKeyIfNeeded } from "./manager/KeyMaintenance";
+export type { KeyMaintenanceActions } from "./manager/KeyMaintenance";
+
+// Sender Key Rotation (hardening)
+export {
+  shouldRotateSenderKey,
+  invalidateSenderKey,
+  invalidateRemovedMemberKeys,
+} from "./manager/SenderKeyRotation";
+
+// Decryption Queue (hardening)
+export { DecryptionQueue } from "./manager/DecryptionQueue";
+export type { QueuedMessage } from "./manager/DecryptionQueue";
+
 // Store types
 export type {
   IdentityKeyStore,

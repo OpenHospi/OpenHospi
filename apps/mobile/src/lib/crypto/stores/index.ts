@@ -11,7 +11,14 @@ import { fromBase64, toBase64 } from '@openhospi/crypto';
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/lib/db';
-import { identityKeys, preKeys, senderKeys, sessions, signedPreKeys } from '@/lib/db/schema';
+import {
+  identityKeys,
+  preKeys,
+  senderKeys,
+  sessions,
+  signedPreKeys,
+  trustedIdentities,
+} from '@/lib/db/schema';
 
 function addressKey(addr: ProtocolAddress): string {
   return `${addr.userId}:${addr.deviceId}`;
@@ -66,17 +73,50 @@ class SqliteSignalStore implements SignalProtocolStore {
     return rows[0].registrationId;
   }
 
-  async saveIdentity(_address: ProtocolAddress, _identityKey: Uint8Array): Promise<boolean> {
-    // TOFU — trust on first use, identity change detection in Phase 6
+  async saveIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean> {
+    const key = addressKey(address);
+    const encoded = toBase64(identityKey);
+    const rows = db
+      .select()
+      .from(trustedIdentities)
+      .where(eq(trustedIdentities.address, key))
+      .all();
+
+    if (rows.length > 0) {
+      const changed = rows[0].identityKey !== encoded;
+      if (changed) {
+        db.update(trustedIdentities)
+          .set({ identityKey: encoded })
+          .where(eq(trustedIdentities.address, key))
+          .run();
+      }
+      return changed;
+    }
+
+    db.insert(trustedIdentities).values({ address: key, identityKey: encoded }).run();
     return false;
   }
 
-  async isTrustedIdentity(_address: ProtocolAddress, _identityKey: Uint8Array): Promise<boolean> {
-    return true; // TOFU
+  async isTrustedIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean> {
+    const key = addressKey(address);
+    const rows = db
+      .select()
+      .from(trustedIdentities)
+      .where(eq(trustedIdentities.address, key))
+      .all();
+    if (rows.length === 0) return true; // TOFU
+    return rows[0].identityKey === toBase64(identityKey);
   }
 
-  async getIdentity(_address: ProtocolAddress): Promise<Uint8Array | null> {
-    return null;
+  async getIdentity(address: ProtocolAddress): Promise<Uint8Array | null> {
+    const key = addressKey(address);
+    const rows = db
+      .select()
+      .from(trustedIdentities)
+      .where(eq(trustedIdentities.address, key))
+      .all();
+    if (rows.length === 0) return null;
+    return fromBase64(rows[0].identityKey);
   }
 
   // ── PreKeyStore ──

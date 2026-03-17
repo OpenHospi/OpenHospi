@@ -1,6 +1,6 @@
 import { cbc } from "@noble/ciphers/aes.js";
-import { hmac } from "@noble/hashes/hmac.js";
 import { hkdf } from "@noble/hashes/hkdf.js";
+import { hmac } from "@noble/hashes/hmac.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 
 import type { CryptoProvider } from "./CryptoProvider";

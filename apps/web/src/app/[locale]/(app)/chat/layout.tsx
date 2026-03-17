@@ -1,4 +1,3 @@
-import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -7,7 +6,7 @@ import { routing } from "@/i18n/routing";
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function ChatLayout({ children, params }: Props) {

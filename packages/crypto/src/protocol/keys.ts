@@ -1,7 +1,7 @@
-import { x25519 } from "@noble/curves/ed25519";
-import { ed25519 } from "@noble/curves/ed25519";
+import { x25519, ed25519  } from "@noble/curves/ed25519";
 
 import { getCryptoProvider } from "../primitives/CryptoProvider";
+
 import type { KeyPair, PreKeyRecord, SignedPreKeyRecord } from "./types";
 
 /** Generate an X25519 key pair for Diffie-Hellman key exchange. */

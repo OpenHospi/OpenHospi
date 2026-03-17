@@ -1,4 +1,5 @@
 import { getCryptoProvider } from "../primitives/CryptoProvider";
+
 import { concat, encodeUtf8 } from "./encoding";
 
 const SAFETY_NUMBER_VERSION = new Uint8Array([0x00, 0x00]);

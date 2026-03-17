@@ -1,4 +1,3 @@
-import type { Locale } from "@openhospi/i18n";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -10,7 +9,7 @@ import { getConversationDetail, getMessages } from "@/lib/queries/chat";
 import { ChatView } from "./chat-view";
 
 type Props = {
-  params: Promise<{ locale: Locale; conversationId: string }>;
+  params: Promise<{ locale: string; conversationId: string }>;
 };
 
 export default async function ConversationPage({ params }: Props) {

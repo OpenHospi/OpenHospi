@@ -1,6 +1,6 @@
 import { initSessionAsInitiator } from "./double-ratchet";
-import { x3dhInitiate } from "./x3dh";
 import type { KeyPair, PreKeyBundle, SessionRecord, SessionState } from "./types";
+import { x3dhInitiate } from "./x3dh";
 
 /**
  * Build a new session from a pre-key bundle (initiator side).

@@ -7,8 +7,8 @@ import {
   sessionDecrypt,
   sessionEncrypt,
 } from "../protocol/session-cipher";
-import { x3dhRespond } from "../protocol/x3dh";
 import type { PreKeyBundle, ProtocolAddress, SessionRecord } from "../protocol/types";
+import { x3dhRespond } from "../protocol/x3dh";
 import type { SignalProtocolStore } from "../stores/types";
 
 /**

@@ -1,4 +1,3 @@
-import type { Locale } from "@openhospi/i18n";
 import { MessageSquare } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -13,7 +12,7 @@ import { ConversationList } from "./conversation-list";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
@@ -22,7 +21,7 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function ChatPage({ params }: Props) {

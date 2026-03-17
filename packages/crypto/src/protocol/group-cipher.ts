@@ -1,9 +1,3 @@
-import type {
-  ProtocolAddress,
-  SenderKeyMessageData,
-  SenderKeyRecord,
-  SenderKeyState,
-} from "./types";
 import {
   createDistributionMessage,
   generateSenderKeyState,
@@ -11,6 +5,12 @@ import {
   senderKeyEncrypt,
   serializeDistributionMessage,
 } from "./sender-key";
+import type {
+  ProtocolAddress,
+  SenderKeyMessageData,
+  SenderKeyRecord,
+  SenderKeyState,
+} from "./types";
 
 export interface GroupEncryptResult {
   senderKeyRecord: SenderKeyRecord;

@@ -1,4 +1,4 @@
-import { x25519, ed25519  } from "@noble/curves/ed25519";
+import { x25519, ed25519 } from "@noble/curves/ed25519";
 
 import { getCryptoProvider } from "../primitives/CryptoProvider";
 

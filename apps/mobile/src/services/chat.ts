@@ -14,7 +14,7 @@ type ConversationSummary = {
   createdAt: string;
   unreadCount: number;
   lastMessageAt: string;
-  members: Array<{ userId: string; firstName: string }>;
+  members: { userId: string; firstName: string }[];
   roomPhotoUrl: string | null;
 };
 
@@ -24,7 +24,7 @@ type ConversationDetail = {
   roomTitle: string;
   seekerUserId: string;
   createdAt: string;
-  members: Array<{ userId: string; firstName: string }>;
+  members: { userId: string; firstName: string }[];
 };
 
 type MessageRow = {

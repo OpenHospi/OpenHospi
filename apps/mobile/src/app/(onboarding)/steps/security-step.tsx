@@ -1,8 +1,7 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { setupDevice } from '@openhospi/crypto';
-import { Platform } from 'react-native';
+import { Platform, ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 

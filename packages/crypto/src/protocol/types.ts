@@ -1,144 +1,112 @@
-// ── Fundamental Key Types ──
-
+/** A raw key pair (public + private) as Uint8Arrays. */
 export interface KeyPair {
   publicKey: Uint8Array;
   privateKey: Uint8Array;
 }
 
-export interface IdentityKeyPair {
-  /** Ed25519 signing key pair (root identity) */
-  signingKeyPair: KeyPair;
-  /** X25519 DH key pair (derived from Ed25519 for key agreement) */
-  dhKeyPair: KeyPair;
+/** Addresses a specific device of a specific user. */
+export interface ProtocolAddress {
+  userId: string;
+  deviceId: number;
 }
 
-export interface SignedPreKey {
-  keyId: number;
-  keyPair: KeyPair;
-  signature: Uint8Array; // Ed25519 signature over the X25519 public key
-}
-
-export interface OneTimePreKey {
-  keyId: number;
-  keyPair: KeyPair;
-}
-
-// ── PreKey Bundle (fetched from server for session establishment) ──
-
+/** Pre-key bundle fetched from the server for X3DH session establishment. */
 export interface PreKeyBundle {
   registrationId: number;
   deviceId: number;
-  identityKey: Uint8Array; // X25519 public key
+  identityKey: Uint8Array;
   signedPreKeyId: number;
-  signedPreKeyPublic: Uint8Array; // X25519 public key
-  signedPreKeySignature: Uint8Array; // Ed25519 signature
+  signedPreKey: Uint8Array;
+  signedPreKeySignature: Uint8Array;
   oneTimePreKeyId?: number;
-  oneTimePreKeyPublic?: Uint8Array; // X25519 public key
+  oneTimePreKey?: Uint8Array;
 }
 
-// ── X3DH Key Agreement ──
-
-export interface X3DHResult {
-  sharedSecret: Uint8Array; // 32-byte root key material
-  ephemeralKeyPair: KeyPair; // Alice's ephemeral X25519 key pair
-  usedOneTimePreKeyId?: number;
-}
-
-// ── Double Ratchet Session State ──
-
-export interface ChainState {
-  chainKey: Uint8Array; // 32 bytes
-  messageCounter: number;
-}
-
+/** Persistent state of a Double Ratchet session. */
 export interface SessionState {
-  rootKey: Uint8Array; // 32 bytes
-  sendingChain: ChainState;
-  receivingChain: ChainState | null;
-  localRatchetKeyPair: KeyPair; // X25519 ratchet key pair
-  remoteRatchetPublicKey: Uint8Array; // X25519 remote ratchet public key
-  previousSendingChainLength: number;
-  localRegistrationId: number;
-  remoteRegistrationId: number;
+  rootKey: Uint8Array;
+  sendingChainKey: Uint8Array | null;
+  receivingChainKey: Uint8Array | null;
+  sendingRatchetKey: KeyPair | null;
+  receivingRatchetKey: Uint8Array | null;
+  sendingCounter: number;
+  receivingCounter: number;
+  previousSendingCounter: number;
+  skippedKeys: Map<string, Uint8Array>;
+  remoteIdentityKey: Uint8Array;
+  localIdentityKey: Uint8Array;
 }
 
-// ── Wire Messages ──
+/** Record wrapping a session state for serialisation. */
+export interface SessionRecord {
+  state: SessionState;
+  version: number;
+}
 
+/** A pre-key record (public + private). */
+export interface PreKeyRecord {
+  keyId: number;
+  keyPair: KeyPair;
+}
+
+/** A signed pre-key record. */
+export interface SignedPreKeyRecord {
+  keyId: number;
+  keyPair: KeyPair;
+  signature: Uint8Array;
+  timestamp: number;
+}
+
+/** State for a Sender Key (group encryption). */
+export interface SenderKeyState {
+  chainKey: Uint8Array;
+  iteration: number;
+  signingKeyPair: KeyPair;
+}
+
+/** Record wrapping sender key state for serialisation. */
+export interface SenderKeyRecord {
+  state: SenderKeyState;
+}
+
+/** The initial distribution message for a Sender Key. */
+export interface SenderKeyDistributionMessage {
+  distributionId: string;
+  chainKey: Uint8Array;
+  iteration: number;
+  signingKey: Uint8Array;
+}
+
+/** Wire format for a pre-key whisper message (first message in a session). */
+export interface PreKeyWhisperMessage {
+  registrationId: number;
+  preKeyId?: number;
+  signedPreKeyId: number;
+  baseKey: Uint8Array;
+  identityKey: Uint8Array;
+  message: Uint8Array; // serialised WhisperMessage
+}
+
+/** Wire format for a regular whisper message (after session establishment). */
 export interface WhisperMessage {
-  ratchetPublicKey: Uint8Array; // X25519 public key of sender's current ratchet
+  ratchetKey: Uint8Array;
   counter: number;
   previousCounter: number;
-  ciphertext: Uint8Array; // AES-256-CBC encrypted plaintext
-  mac: Uint8Array; // HMAC-SHA256 over the message
-}
-
-export interface PreKeyWhisperMessage {
-  identityKey: Uint8Array; // Sender's X25519 identity public key
-  ephemeralKey: Uint8Array; // Sender's ephemeral X25519 public key
-  signedPreKeyId: number;
-  oneTimePreKeyId?: number;
-  registrationId: number;
-  message: WhisperMessage;
-}
-
-export type MessageEnvelope =
-  | { type: "prekey"; data: PreKeyWhisperMessage }
-  | { type: "whisper"; data: WhisperMessage };
-
-// ── Sender Key Types ──
-
-export interface SenderKeyState {
-  senderKeyId: number;
-  chainKey: Uint8Array; // 32 bytes
-  signatureKeyPair: KeyPair; // Ed25519 key pair for signing
-  iteration: number;
-}
-
-export interface SenderKeyDistributionMessage {
-  senderKeyId: number;
-  iteration: number;
-  chainKey: Uint8Array; // 32 bytes
-  signingPublicKey: Uint8Array; // Ed25519 public key
-}
-
-export interface GroupCiphertextPayload {
-  senderKeyId: number;
-  iteration: number;
   ciphertext: Uint8Array;
-  signature: Uint8Array; // Ed25519 signature over ciphertext
 }
 
-// ── Protocol Address ──
-
-export interface ProtocolAddress {
-  name: string; // user UUID
-  deviceId: number; // per-user device number
+/** Wire format for a sender key message (group message). */
+export interface SenderKeyMessageData {
+  distributionId: string;
+  chainId: number; // iteration of the chain key used
+  ciphertext: Uint8Array;
+  signature: Uint8Array;
 }
 
-// ── Skipped Message Key ──
-
-export interface SkippedKey {
-  ratchetPublicKey: Uint8Array;
-  messageIndex: number;
-  messageKey: Uint8Array;
-}
-
-// ── Serialized Forms (for storage) ──
-
-export interface SerializedSessionState {
-  rootKey: string;
-  sendingChain: { chainKey: string; messageCounter: number };
-  receivingChain: { chainKey: string; messageCounter: number } | null;
-  localRatchetKeyPair: { publicKey: string; privateKey: string };
-  remoteRatchetPublicKey: string;
-  previousSendingChainLength: number;
-  localRegistrationId: number;
-  remoteRegistrationId: number;
-}
-
-export interface SerializedSenderKeyState {
-  senderKeyId: number;
-  chainKey: string;
-  signatureKeyPair: { publicKey: string; privateKey: string };
-  iteration: number;
+/** Encrypted key backup data. */
+export interface EncryptedBackup {
+  version: number;
+  ciphertext: string;
+  iv: string;
+  salt: string;
 }

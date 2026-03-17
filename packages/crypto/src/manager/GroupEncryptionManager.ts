@@ -1,162 +1,128 @@
-import { bytesToUtf8, utf8ToBytes } from "../protocol/encoding";
-import { groupEncrypt, groupDecrypt, StaleSenderKeyError } from "../protocol/group-cipher";
-import {
-  generateSenderKey,
-  createDistributionMessage,
-  processDistributionMessage,
-  serializeDistributionMessage,
-  deserializeDistributionMessage,
-} from "../protocol/sender-key";
-import type {
-  SenderKeyState,
-  GroupCiphertextPayload,
-  ProtocolAddress,
-  PreKeyWhisperMessage,
-  WhisperMessage,
-  MessageEnvelope,
-} from "../protocol/types";
+import { toBase64 } from "../protocol/encoding";
+import { groupDecrypt, groupEncrypt, initGroupSenderKey } from "../protocol/group-cipher";
+import { deserializeDistributionMessage } from "../protocol/sender-key";
+import type { ProtocolAddress, SenderKeyMessageData, SenderKeyRecord } from "../protocol/types";
+import type { SenderKeyStore } from "../stores/types";
+import { encrypt1to1 } from "./SessionManager";
 import type { SignalProtocolStore } from "../stores/types";
 
-import {
-  encryptForSession,
-  processIncomingPreKeyMessage,
-  decryptFromSession,
-} from "./SessionManager";
-
 /**
- * Get or create the local Sender Key for a conversation.
+ * Initialize a sender key for a conversation and generate distribution messages.
+ * The distribution message must be encrypted via 1:1 session and sent to each member device.
  */
-export async function getOrCreateSenderKey(
+export async function initAndDistributeSenderKey(
   store: SignalProtocolStore,
   localAddress: ProtocolAddress,
   conversationId: string,
-): Promise<{ state: SenderKeyState; isNew: boolean }> {
-  const existing = await store.loadSenderKey(localAddress, conversationId);
-  if (existing) return { state: existing, isNew: false };
+  memberAddresses: ProtocolAddress[],
+): Promise<{
+  distributions: Array<{
+    recipientAddress: ProtocolAddress;
+    encryptedDistribution: Uint8Array;
+  }>;
+}> {
+  // Generate sender key
+  const { record, distributionMessageBytes } = initGroupSenderKey(conversationId);
 
-  const state = generateSenderKey();
-  await store.storeSenderKey(localAddress, conversationId, state);
-  return { state, isNew: true };
-}
+  // Store our own sender key
+  await store.storeSenderKey(localAddress, conversationId, record);
 
-/**
- * Create a Sender Key distribution message to send to a remote device.
- * The distribution is encrypted via the 1:1 session cipher.
- */
-export async function distributeSenderKeyToDevice(
-  store: SignalProtocolStore,
-  localAddress: ProtocolAddress,
-  remoteAddress: ProtocolAddress,
-  conversationId: string,
-  preKeyInfo?: {
-    identityKey: Uint8Array;
-    ephemeralKey: Uint8Array;
-    signedPreKeyId: number;
-    oneTimePreKeyId?: number;
-    registrationId: number;
-  },
-): Promise<MessageEnvelope> {
-  const { state } = await getOrCreateSenderKey(store, localAddress, conversationId);
-  const distribution = createDistributionMessage(state);
-  const serialized = utf8ToBytes(serializeDistributionMessage(distribution));
+  // Encrypt distribution message for each member via their 1:1 session
+  const distributions: Array<{
+    recipientAddress: ProtocolAddress;
+    encryptedDistribution: Uint8Array;
+  }> = [];
 
-  return encryptForSession(store, remoteAddress, serialized, preKeyInfo);
-}
+  for (const memberAddress of memberAddresses) {
+    // Skip ourselves
+    if (
+      memberAddress.userId === localAddress.userId &&
+      memberAddress.deviceId === localAddress.deviceId
+    ) {
+      continue;
+    }
 
-/**
- * Process a received Sender Key distribution message.
- */
-export async function receiveSenderKeyDistribution(
-  store: SignalProtocolStore,
-  senderAddress: ProtocolAddress,
-  conversationId: string,
-  envelope: MessageEnvelope,
-): Promise<void> {
-  let plaintext: Uint8Array;
+    const encryptedDistribution = await encrypt1to1(store, memberAddress, distributionMessageBytes);
 
-  if (envelope.type === "prekey") {
-    plaintext = await processIncomingPreKeyMessage(
-      store,
-      senderAddress,
-      envelope.data as PreKeyWhisperMessage,
-    );
-  } else {
-    plaintext = await decryptFromSession(store, senderAddress, envelope.data as WhisperMessage);
+    distributions.push({
+      recipientAddress: memberAddress,
+      encryptedDistribution,
+    });
   }
 
-  const distribution = deserializeDistributionMessage(bytesToUtf8(plaintext));
-  const senderKeyState = processDistributionMessage(distribution);
-  await store.storeSenderKey(senderAddress, conversationId, senderKeyState);
+  return { distributions };
 }
 
 /**
- * Encrypt a message for a group conversation.
+ * Process a received sender key distribution message.
+ * The ciphertext has been decrypted via the 1:1 session already.
+ */
+export async function processDistribution(
+  store: SenderKeyStore,
+  senderAddress: ProtocolAddress,
+  distributionBytes: Uint8Array,
+): Promise<void> {
+  const distMsg = deserializeDistributionMessage(distributionBytes);
+
+  const record: SenderKeyRecord = {
+    state: {
+      chainKey: distMsg.chainKey,
+      iteration: distMsg.iteration,
+      signingKeyPair: {
+        publicKey: distMsg.signingKey,
+        privateKey: new Uint8Array(0), // We only have the public key for received sender keys
+      },
+    },
+  };
+
+  await store.storeSenderKey(senderAddress, distMsg.distributionId, record);
+}
+
+/**
+ * Encrypt a message for a group conversation using sender keys.
+ * O(1) encryption regardless of group size.
  */
 export async function encryptGroupMessage(
   store: SignalProtocolStore,
   localAddress: ProtocolAddress,
   conversationId: string,
-  plaintext: string,
-  senderUserId: string,
-): Promise<{ payload: GroupCiphertextPayload; senderKeyId: number }> {
-  const { state } = await getOrCreateSenderKey(store, localAddress, conversationId);
-
-  const { payload, updatedState } = await groupEncrypt(
-    state,
-    plaintext,
-    conversationId,
-    senderUserId,
-  );
-
-  await store.storeSenderKey(localAddress, conversationId, updatedState);
-
-  return { payload, senderKeyId: state.senderKeyId };
-}
-
-/**
- * Decrypt a group message using the sender's stored Sender Key.
- */
-export async function decryptGroupMessage(
-  store: SignalProtocolStore,
-  senderAddress: ProtocolAddress,
-  conversationId: string,
-  payload: GroupCiphertextPayload,
-  senderUserId: string,
-): Promise<string> {
-  const state = await store.loadSenderKey(senderAddress, conversationId);
-  if (!state) {
-    throw new StaleSenderKeyError(
-      `No sender key for ${senderAddress.name}.${senderAddress.deviceId} in conversation ${conversationId}`,
+  plaintext: Uint8Array,
+): Promise<SenderKeyMessageData> {
+  const record = await store.loadSenderKey(localAddress, conversationId);
+  if (!record) {
+    throw new Error(
+      `No sender key for conversation ${conversationId}. Call initAndDistributeSenderKey first.`,
     );
   }
 
-  const { plaintext, updatedState } = await groupDecrypt(
-    state,
-    payload,
-    conversationId,
-    senderUserId,
-  );
+  const { senderKeyRecord, message } = groupEncrypt(conversationId, record, plaintext);
 
-  await store.storeSenderKey(senderAddress, conversationId, updatedState);
+  // Update stored state
+  await store.storeSenderKey(localAddress, conversationId, senderKeyRecord);
 
-  return plaintext;
+  return message;
 }
 
 /**
- * Rotate the local Sender Key for a conversation (e.g., after member removal).
- * Returns the new state — caller is responsible for distributing to remaining members.
+ * Decrypt a group message from a specific sender.
  */
-export async function rotateSenderKey(
-  store: SignalProtocolStore,
-  localAddress: ProtocolAddress,
+export async function decryptGroupMessage(
+  store: SenderKeyStore,
+  senderAddress: ProtocolAddress,
   conversationId: string,
-): Promise<SenderKeyState> {
-  // Delete old key
-  await store.deleteSenderKey(localAddress, conversationId);
+  message: SenderKeyMessageData,
+): Promise<Uint8Array> {
+  const record = await store.loadSenderKey(senderAddress, conversationId);
+  if (!record) {
+    throw new Error(
+      `No sender key from ${senderAddress.userId}:${senderAddress.deviceId} for conversation ${conversationId}`,
+    );
+  }
 
-  // Generate new key
-  const state = generateSenderKey();
-  await store.storeSenderKey(localAddress, conversationId, state);
+  const { senderKeyRecord, plaintext } = groupDecrypt(record, message);
 
-  return state;
+  // Update stored state
+  await store.storeSenderKey(senderAddress, conversationId, senderKeyRecord);
+
+  return plaintext;
 }

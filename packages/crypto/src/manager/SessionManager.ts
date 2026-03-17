@@ -1,145 +1,134 @@
-import { buildSessionFromPreKeyBundle, processPreKeyMessage } from "../protocol/session-builder";
-import { sessionEncrypt, sessionDecrypt } from "../protocol/session-cipher";
-import type {
-  PreKeyBundle,
-  PreKeyWhisperMessage,
-  WhisperMessage,
-  MessageEnvelope,
-  ProtocolAddress,
-} from "../protocol/types";
+import { initSessionAsResponder } from "../protocol/double-ratchet";
+import { buildSessionFromBundle } from "../protocol/session-builder";
+import {
+  createPreKeyMessage,
+  deserializePreKeyWhisperMessage,
+  isPreKeyWhisperMessage,
+  sessionDecrypt,
+  sessionEncrypt,
+} from "../protocol/session-cipher";
+import { x3dhRespond } from "../protocol/x3dh";
+import type { PreKeyBundle, ProtocolAddress, SessionRecord } from "../protocol/types";
 import type { SignalProtocolStore } from "../stores/types";
 
 /**
- * Establish a new session with a remote device from their prekey bundle.
- * Stores the session and returns the prekey info needed for the first message.
+ * Establish a new 1:1 session with a remote device using their pre-key bundle.
+ * This is the initiator (Alice) side of X3DH + Double Ratchet.
  */
 export async function establishSession(
   store: SignalProtocolStore,
-  remoteAddress: ProtocolAddress,
-  remoteBundle: PreKeyBundle,
-): Promise<{
-  preKeyInfo: {
-    identityKey: Uint8Array;
-    ephemeralKey: Uint8Array;
-    signedPreKeyId: number;
-    oneTimePreKeyId?: number;
-    registrationId: number;
-  };
-}> {
-  const localIdentity = await store.getIdentityKeyPair();
-  const localRegistrationId = await store.getLocalRegistrationId();
+  address: ProtocolAddress,
+  bundle: PreKeyBundle,
+): Promise<void> {
+  const identityKeyPair = await store.getIdentityKeyPair();
+  const registrationId = await store.getLocalRegistrationId();
 
-  const { session, preKeyInfo } = await buildSessionFromPreKeyBundle(
-    localIdentity,
-    localRegistrationId,
-    remoteBundle,
+  const { session, ephemeralPublicKey, usedOneTimePreKeyId } = buildSessionFromBundle(
+    identityKeyPair,
+    identityKeyPair.publicKey,
+    bundle,
   );
 
-  await store.storeSession(remoteAddress, session);
-  await store.saveIdentity(remoteAddress, remoteBundle.identityKey);
+  // Save the remote identity key
+  await store.saveIdentity(address, bundle.identityKey);
 
-  return { preKeyInfo };
+  // Save the session
+  await store.storeSession(address, session);
 }
 
 /**
- * Process an incoming PreKeyWhisperMessage to establish a session.
- * Decrypts the first message and stores the new session.
+ * Encrypt a message for a 1:1 session.
+ * If no session exists, throws — call establishSession first.
  */
-export async function processIncomingPreKeyMessage(
+export async function encrypt1to1(
   store: SignalProtocolStore,
-  senderAddress: ProtocolAddress,
-  preKeyMessage: PreKeyWhisperMessage,
+  address: ProtocolAddress,
+  plaintext: Uint8Array,
 ): Promise<Uint8Array> {
-  const localIdentity = await store.getIdentityKeyPair();
-  const localRegistrationId = await store.getLocalRegistrationId();
-
-  // Load the signed prekey used in the exchange
-  const signedPreKey = await store.loadSignedPreKey(preKeyMessage.signedPreKeyId);
-
-  // Load one-time prekey if used
-  let oneTimePreKeyPair = null;
-  if (preKeyMessage.oneTimePreKeyId !== undefined) {
-    const otp = await store.loadPreKey(preKeyMessage.oneTimePreKeyId);
-    oneTimePreKeyPair = otp.keyPair;
+  const session = await store.loadSession(address);
+  if (!session) {
+    throw new Error(`No session for ${address.userId}:${address.deviceId}`);
   }
 
-  // Build session from responder side
-  const session = await processPreKeyMessage(
-    localIdentity,
-    localRegistrationId,
-    signedPreKey.keyPair,
-    oneTimePreKeyPair,
-    preKeyMessage,
-  );
+  const registrationId = await store.getLocalRegistrationId();
+  const { session: updatedSession, serialised } = sessionEncrypt(session, plaintext);
 
-  // Decrypt the enclosed whisper message
-  const { plaintext, updatedSession, updatedSkippedKeys } = await sessionDecrypt(
-    session,
-    preKeyMessage.message,
-  );
+  await store.storeSession(address, updatedSession);
 
-  // Store the session
-  await store.storeSession(senderAddress, updatedSession);
-  await store.saveIdentity(senderAddress, preKeyMessage.identityKey);
-  await store.storeSkippedKeys(senderAddress, updatedSkippedKeys);
+  return serialised;
+}
 
-  // Remove used one-time prekey
-  if (preKeyMessage.oneTimePreKeyId !== undefined) {
-    await store.removePreKey(preKeyMessage.oneTimePreKeyId);
+/**
+ * Decrypt a received 1:1 message.
+ * Handles both PreKeyWhisperMessages (first message) and regular WhisperMessages.
+ */
+export async function decrypt1to1(
+  store: SignalProtocolStore,
+  address: ProtocolAddress,
+  data: Uint8Array,
+): Promise<Uint8Array> {
+  if (isPreKeyWhisperMessage(data)) {
+    return decryptPreKeyMessage(store, address, data);
   }
+
+  const session = await store.loadSession(address);
+  if (!session) {
+    throw new Error(`No session for ${address.userId}:${address.deviceId}`);
+  }
+
+  const { session: updatedSession, plaintext } = sessionDecrypt(session, data);
+  await store.storeSession(address, updatedSession);
 
   return plaintext;
 }
 
-/**
- * Encrypt a message for a remote device using their established session.
- * If no session exists, throws an error — establish a session first.
- */
-export async function encryptForSession(
+async function decryptPreKeyMessage(
   store: SignalProtocolStore,
-  remoteAddress: ProtocolAddress,
-  plaintext: Uint8Array,
-  preKeyInfo?: {
-    identityKey: Uint8Array;
-    ephemeralKey: Uint8Array;
-    signedPreKeyId: number;
-    oneTimePreKeyId?: number;
-    registrationId: number;
-  },
-): Promise<MessageEnvelope> {
-  const session = await store.loadSession(remoteAddress);
-  if (!session) {
-    throw new Error(`No session with ${remoteAddress.name}.${remoteAddress.deviceId}`);
-  }
-
-  const { envelope, updatedSession } = await sessionEncrypt(session, plaintext, preKeyInfo);
-  await store.storeSession(remoteAddress, updatedSession);
-
-  return envelope;
-}
-
-/**
- * Decrypt a message from a remote device using their established session.
- */
-export async function decryptFromSession(
-  store: SignalProtocolStore,
-  senderAddress: ProtocolAddress,
-  message: WhisperMessage,
+  address: ProtocolAddress,
+  data: Uint8Array,
 ): Promise<Uint8Array> {
-  const session = await store.loadSession(senderAddress);
-  if (!session) {
-    throw new Error(`No session with ${senderAddress.name}.${senderAddress.deviceId}`);
+  const preKeyMsg = deserializePreKeyWhisperMessage(data);
+
+  // Load our keys
+  const identityKeyPair = await store.getIdentityKeyPair();
+  const signedPreKey = await store.loadSignedPreKey(preKeyMsg.signedPreKeyId);
+
+  let oneTimePreKey = null;
+  if (preKeyMsg.preKeyId !== undefined) {
+    const pk = await store.loadPreKey(preKeyMsg.preKeyId);
+    oneTimePreKey = pk.keyPair;
   }
 
-  const skippedKeys = await store.loadSkippedKeys(senderAddress);
-  const { plaintext, updatedSession, updatedSkippedKeys } = await sessionDecrypt(
-    session,
-    message,
-    skippedKeys,
+  // Perform X3DH as responder
+  const sharedSecret = x3dhRespond(
+    identityKeyPair,
+    signedPreKey.keyPair,
+    oneTimePreKey,
+    preKeyMsg.identityKey,
+    preKeyMsg.baseKey,
   );
 
-  await store.storeSession(senderAddress, updatedSession);
-  await store.storeSkippedKeys(senderAddress, updatedSkippedKeys);
+  // Initialize session as responder
+  const sessionState = initSessionAsResponder(
+    sharedSecret,
+    preKeyMsg.identityKey,
+    identityKeyPair.publicKey,
+    signedPreKey.keyPair,
+  );
+
+  const session: SessionRecord = { state: sessionState, version: 3 };
+
+  // Decrypt the inner WhisperMessage
+  const { session: updatedSession, plaintext } = sessionDecrypt(session, preKeyMsg.message);
+
+  // Save identity and session
+  await store.saveIdentity(address, preKeyMsg.identityKey);
+  await store.storeSession(address, updatedSession);
+
+  // Remove consumed one-time pre-key
+  if (preKeyMsg.preKeyId !== undefined) {
+    await store.removePreKey(preKeyMsg.preKeyId);
+  }
 
   return plaintext;
 }

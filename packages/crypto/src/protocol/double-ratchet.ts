@@ -1,289 +1,241 @@
 import { getCryptoProvider } from "../primitives/CryptoProvider";
+import { concat, encodeUtf8 } from "./encoding";
+import { generateX25519KeyPair, x25519Dh } from "./keys";
+import type { KeyPair, SessionState, WhisperMessage } from "./types";
 
-import { concatBytes, utf8ToBytes } from "./encoding";
-import type { SessionState, WhisperMessage, SkippedKey } from "./types";
-
+const MAX_SKIP = 1000;
+const RATCHET_INFO = encodeUtf8("WhisperRatchet");
 const CHAIN_KEY_SEED = new Uint8Array([0x02]);
 const MESSAGE_KEY_SEED = new Uint8Array([0x01]);
-const RATCHET_INFO = utf8ToBytes("WhisperRatchet");
 
-const MAX_SKIP = 2000;
-
-// ── Chain Ratchet (Symmetric) ──
-
-async function advanceChainKey(chainKey: Uint8Array): Promise<Uint8Array> {
-  const crypto = getCryptoProvider();
-  return crypto.hmacSha256(chainKey, CHAIN_KEY_SEED);
+/** Derive the next chain key from the current chain key. */
+function advanceChainKey(chainKey: Uint8Array): Uint8Array {
+  return getCryptoProvider().hmacSha256(chainKey, CHAIN_KEY_SEED);
 }
 
-async function deriveMessageKey(chainKey: Uint8Array): Promise<Uint8Array> {
-  const crypto = getCryptoProvider();
-  return crypto.hmacSha256(chainKey, MESSAGE_KEY_SEED);
+/** Derive a message key from the current chain key. */
+function deriveMessageKey(chainKey: Uint8Array): Uint8Array {
+  return getCryptoProvider().hmacSha256(chainKey, MESSAGE_KEY_SEED);
 }
 
-// ── DH Ratchet (Asymmetric) ──
-
-async function performDHRatchet(
+/** Perform a DH ratchet step: derive new root key and chain key. */
+function kdfRootKey(
   rootKey: Uint8Array,
-  localPrivateKey: Uint8Array,
-  remotePublicKey: Uint8Array,
-): Promise<{ newRootKey: Uint8Array; newChainKey: Uint8Array }> {
-  const crypto = getCryptoProvider();
-  const dhOutput = crypto.x25519SharedSecret(localPrivateKey, remotePublicKey);
-  const derived = await crypto.hkdf(dhOutput, rootKey, RATCHET_INFO, 64);
+  dhOutput: Uint8Array,
+): { rootKey: Uint8Array; chainKey: Uint8Array } {
+  const provider = getCryptoProvider();
+  const derived = provider.hkdf(dhOutput, rootKey, RATCHET_INFO, 64);
   return {
-    newRootKey: derived.slice(0, 32),
-    newChainKey: derived.slice(32, 64),
+    rootKey: derived.slice(0, 32),
+    chainKey: derived.slice(32, 64),
   };
 }
 
-// ── Message Encryption / Decryption ──
-
-async function encryptMessage(
-  messageKey: Uint8Array,
-  plaintext: Uint8Array,
-): Promise<{ ciphertext: Uint8Array; iv: Uint8Array }> {
-  const crypto = getCryptoProvider();
-  // Derive enc key + IV from message key via HKDF
-  const derived = await crypto.hkdf(
-    messageKey,
-    new Uint8Array(32),
-    utf8ToBytes("WhisperMessageKeys"),
-    80, // 32 enc + 32 mac + 16 iv
-  );
-  const encKey = derived.slice(0, 32);
-  const iv = derived.slice(64, 80);
-  const ciphertext = await crypto.aesCbcEncrypt(encKey, plaintext, iv);
-  return { ciphertext, iv };
+/** Build the key for skipped-message lookup. */
+function skippedKeyId(ratchetKey: Uint8Array, counter: number): string {
+  const keyHex = Array.from(ratchetKey)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return `${keyHex}:${counter}`;
 }
 
-async function decryptMessage(messageKey: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array> {
-  const crypto = getCryptoProvider();
-  const derived = await crypto.hkdf(
+/**
+ * Encrypt a plaintext message using the Double Ratchet algorithm.
+ * Returns the updated session state and the wire message.
+ */
+export function ratchetEncrypt(
+  state: SessionState,
+  plaintext: Uint8Array,
+): { state: SessionState; message: WhisperMessage } {
+  const provider = getCryptoProvider();
+
+  if (!state.sendingChainKey || !state.sendingRatchetKey) {
+    throw new Error("Session not initialized for sending");
+  }
+
+  // Derive message key from sending chain
+  const messageKey = deriveMessageKey(state.sendingChainKey);
+  const nextChainKey = advanceChainKey(state.sendingChainKey);
+
+  // Encrypt: first 32 bytes = AES key, next 16 bytes = IV from message key derivation
+  const encKeys = provider.hkdf(
     messageKey,
     new Uint8Array(32),
-    utf8ToBytes("WhisperMessageKeys"),
+    encodeUtf8("WhisperMessageKeys"),
     80,
   );
-  const encKey = derived.slice(0, 32);
-  const iv = derived.slice(64, 80);
-  return crypto.aesCbcDecrypt(encKey, ciphertext, iv);
-}
+  const aesKey = encKeys.slice(0, 32);
+  const hmacKey = encKeys.slice(32, 64);
+  const iv = encKeys.slice(64, 80);
 
-async function computeMAC(messageKey: Uint8Array, data: Uint8Array): Promise<Uint8Array> {
-  const crypto = getCryptoProvider();
-  const derived = await crypto.hkdf(
-    messageKey,
-    new Uint8Array(32),
-    utf8ToBytes("WhisperMessageKeys"),
-    80,
-  );
-  const macKey = derived.slice(32, 64);
-  const mac = await crypto.hmacSha256(macKey, data);
-  return mac.slice(0, 8); // Signal uses 8-byte truncated MAC
-}
+  const ciphertext = provider.aesCbcEncrypt(aesKey, iv, plaintext);
 
-// ── Ratchet Encrypt ──
-
-export async function ratchetEncrypt(
-  session: SessionState,
-  plaintext: Uint8Array,
-): Promise<{ message: WhisperMessage; updatedSession: SessionState }> {
-  // Derive message key from current sending chain
-  const messageKey = await deriveMessageKey(session.sendingChain.chainKey);
-  const nextChainKey = await advanceChainKey(session.sendingChain.chainKey);
-
-  const { ciphertext } = await encryptMessage(messageKey, plaintext);
+  // HMAC over the message for authentication
+  const macInput = concat(state.sendingRatchetKey.publicKey, ciphertext);
+  const mac = provider.hmacSha256(hmacKey, macInput).slice(0, 8);
 
   const message: WhisperMessage = {
-    ratchetPublicKey: session.localRatchetKeyPair.publicKey,
-    counter: session.sendingChain.messageCounter,
-    previousCounter: session.previousSendingChainLength,
-    ciphertext,
-    mac: new Uint8Array(8), // placeholder, computed below
+    ratchetKey: state.sendingRatchetKey.publicKey,
+    counter: state.sendingCounter,
+    previousCounter: state.previousSendingCounter,
+    ciphertext: concat(ciphertext, mac),
   };
 
-  // Compute MAC over the serialized message content
-  const macData = concatBytes(
-    message.ratchetPublicKey,
-    new Uint8Array([
-      (message.counter >> 24) & 0xff,
-      (message.counter >> 16) & 0xff,
-      (message.counter >> 8) & 0xff,
-      message.counter & 0xff,
-    ]),
-    message.ciphertext,
-  );
-  message.mac = await computeMAC(messageKey, macData);
-
-  const updatedSession: SessionState = {
-    ...session,
-    sendingChain: {
-      chainKey: nextChainKey,
-      messageCounter: session.sendingChain.messageCounter + 1,
+  return {
+    state: {
+      ...state,
+      sendingChainKey: nextChainKey,
+      sendingCounter: state.sendingCounter + 1,
     },
+    message,
   };
-
-  return { message, updatedSession };
 }
 
-// ── Ratchet Decrypt ──
-
-export async function ratchetDecrypt(
-  session: SessionState,
+/**
+ * Decrypt a message using the Double Ratchet algorithm.
+ * Returns the updated session state and the plaintext.
+ */
+export function ratchetDecrypt(
+  state: SessionState,
   message: WhisperMessage,
-  skippedKeys: SkippedKey[],
-): Promise<{
-  plaintext: Uint8Array;
-  updatedSession: SessionState;
-  updatedSkippedKeys: SkippedKey[];
-}> {
-  const crypto = getCryptoProvider();
+): { state: SessionState; plaintext: Uint8Array } {
+  // Check if this is a skipped message
+  const skipId = skippedKeyId(message.ratchetKey, message.counter);
+  const skippedKey = state.skippedKeys.get(skipId);
 
-  // Check skipped keys first
-  for (let i = 0; i < skippedKeys.length; i++) {
-    const sk = skippedKeys[i]!;
-    if (
-      bytesEqualFast(sk.ratchetPublicKey, message.ratchetPublicKey) &&
-      sk.messageIndex === message.counter
-    ) {
-      const plaintext = await decryptMessage(sk.messageKey, message.ciphertext);
-      const updatedSkippedKeys = [...skippedKeys.slice(0, i), ...skippedKeys.slice(i + 1)];
-      return { plaintext, updatedSession: session, updatedSkippedKeys };
-    }
+  if (skippedKey) {
+    const newSkipped = new Map(state.skippedKeys);
+    newSkipped.delete(skipId);
+    const plaintext = decryptWithMessageKey(skippedKey, message);
+    return { state: { ...state, skippedKeys: newSkipped }, plaintext };
   }
 
-  let currentSession = session;
-  let currentSkippedKeys = [...skippedKeys];
+  let currentState = { ...state, skippedKeys: new Map(state.skippedKeys) };
 
-  // If new ratchet key, perform DH ratchet step
-  if (!bytesEqualFast(message.ratchetPublicKey, currentSession.remoteRatchetPublicKey)) {
-    // Skip remaining messages in current receiving chain
-    if (currentSession.receivingChain) {
-      const skipResult = await skipMessageKeys(
-        currentSession,
-        currentSkippedKeys,
+  // If ratchet key changed, do a DH ratchet step
+  if (
+    !currentState.receivingRatchetKey ||
+    !arraysEqual(message.ratchetKey, currentState.receivingRatchetKey)
+  ) {
+    // Skip any missed messages from the old chain
+    if (currentState.receivingChainKey && currentState.receivingRatchetKey) {
+      currentState = skipMessages(
+        currentState,
+        currentState.receivingRatchetKey,
+        currentState.receivingChainKey,
         message.previousCounter,
-        currentSession.remoteRatchetPublicKey,
       );
-      currentSession = skipResult.session;
-      currentSkippedKeys = skipResult.skippedKeys;
     }
 
-    // DH ratchet step: receiving
-    const { newRootKey: rootKey1, newChainKey: recvChainKey } = await performDHRatchet(
-      currentSession.rootKey,
-      currentSession.localRatchetKeyPair.privateKey,
-      message.ratchetPublicKey,
-    );
-
-    // Generate new ratchet key pair
-    const newRatchetKeyPair = crypto.x25519GenerateKeyPair();
-
-    // DH ratchet step: sending
-    const { newRootKey: rootKey2, newChainKey: sendChainKey } = await performDHRatchet(
-      rootKey1,
-      newRatchetKeyPair.privateKey,
-      message.ratchetPublicKey,
-    );
-
-    currentSession = {
-      ...currentSession,
-      rootKey: rootKey2,
-      sendingChain: { chainKey: sendChainKey, messageCounter: 0 },
-      receivingChain: { chainKey: recvChainKey, messageCounter: 0 },
-      previousSendingChainLength: currentSession.sendingChain.messageCounter,
-      localRatchetKeyPair: newRatchetKeyPair,
-      remoteRatchetPublicKey: message.ratchetPublicKey,
-    };
+    // Perform DH ratchet step
+    currentState = dhRatchetStep(currentState, message.ratchetKey);
   }
 
-  // Skip messages in current receiving chain if needed
-  if (currentSession.receivingChain!.messageCounter < message.counter) {
-    const skipResult = await skipMessageKeys(
-      currentSession,
-      currentSkippedKeys,
-      message.counter,
-      message.ratchetPublicKey,
-    );
-    currentSession = skipResult.session;
-    currentSkippedKeys = skipResult.skippedKeys;
+  // Skip any missed messages in the current chain
+  if (!currentState.receivingChainKey) {
+    throw new Error("No receiving chain key available");
   }
+  currentState = skipMessages(
+    currentState,
+    message.ratchetKey,
+    currentState.receivingChainKey,
+    message.counter,
+  );
 
   // Derive message key and decrypt
-  const messageKey = await deriveMessageKey(currentSession.receivingChain!.chainKey);
-  const nextChainKey = await advanceChainKey(currentSession.receivingChain!.chainKey);
-
-  // Verify MAC
-  const macData = concatBytes(
-    message.ratchetPublicKey,
-    new Uint8Array([
-      (message.counter >> 24) & 0xff,
-      (message.counter >> 16) & 0xff,
-      (message.counter >> 8) & 0xff,
-      message.counter & 0xff,
-    ]),
-    message.ciphertext,
-  );
-  const expectedMAC = await computeMAC(messageKey, macData);
-  if (!bytesEqualConstantTime(message.mac, expectedMAC)) {
-    throw new Error("MAC verification failed");
-  }
-
-  const plaintext = await decryptMessage(messageKey, message.ciphertext);
-
-  const updatedSession: SessionState = {
-    ...currentSession,
-    receivingChain: {
-      chainKey: nextChainKey,
-      messageCounter: currentSession.receivingChain!.messageCounter + 1,
-    },
+  const messageKey = deriveMessageKey(currentState.receivingChainKey!);
+  currentState = {
+    ...currentState,
+    receivingChainKey: advanceChainKey(currentState.receivingChainKey!),
+    receivingCounter: currentState.receivingCounter + 1,
   };
 
-  return { plaintext, updatedSession, updatedSkippedKeys: currentSkippedKeys };
+  const plaintext = decryptWithMessageKey(messageKey, message);
+  return { state: currentState, plaintext };
 }
 
-// ── Helper: Skip message keys ──
+function dhRatchetStep(state: SessionState, remoteRatchetKey: Uint8Array): SessionState {
+  // Derive receiving chain
+  const dhReceive = x25519Dh(state.sendingRatchetKey!.privateKey, remoteRatchetKey);
+  const { rootKey: rootKey1, chainKey: receivingChainKey } = kdfRootKey(state.rootKey, dhReceive);
 
-async function skipMessageKeys(
-  session: SessionState,
-  skippedKeys: SkippedKey[],
-  targetCounter: number,
-  ratchetPublicKey: Uint8Array,
-): Promise<{ session: SessionState; skippedKeys: SkippedKey[] }> {
-  if (!session.receivingChain) return { session, skippedKeys };
+  // Generate new sending ratchet key pair
+  const newSendingRatchetKey = generateX25519KeyPair();
+  const dhSend = x25519Dh(newSendingRatchetKey.privateKey, remoteRatchetKey);
+  const { rootKey: rootKey2, chainKey: sendingChainKey } = kdfRootKey(rootKey1, dhSend);
 
-  const toSkip = targetCounter - session.receivingChain.messageCounter;
-  if (toSkip > MAX_SKIP) {
-    throw new Error(`Too many skipped messages (${toSkip}), maximum is ${MAX_SKIP}`);
+  return {
+    ...state,
+    rootKey: rootKey2,
+    sendingChainKey: sendingChainKey,
+    receivingChainKey: receivingChainKey,
+    sendingRatchetKey: newSendingRatchetKey,
+    receivingRatchetKey: remoteRatchetKey,
+    previousSendingCounter: state.sendingCounter,
+    sendingCounter: 0,
+    receivingCounter: 0,
+  };
+}
+
+function skipMessages(
+  state: SessionState,
+  ratchetKey: Uint8Array,
+  chainKey: Uint8Array,
+  until: number,
+): SessionState {
+  if (until - state.receivingCounter > MAX_SKIP) {
+    throw new Error("Too many skipped messages");
   }
 
-  let { chainKey, messageCounter } = session.receivingChain;
-  const newSkippedKeys = [...skippedKeys];
+  const newSkipped = new Map(state.skippedKeys);
+  let currentChainKey = chainKey;
 
-  for (let i = 0; i < toSkip; i++) {
-    const messageKey = await deriveMessageKey(chainKey);
-    newSkippedKeys.push({
-      ratchetPublicKey: new Uint8Array(ratchetPublicKey),
-      messageIndex: messageCounter,
-      messageKey,
-    });
-    chainKey = await advanceChainKey(chainKey);
-    messageCounter++;
+  for (let i = state.receivingCounter; i < until; i++) {
+    const msgKey = deriveMessageKey(currentChainKey);
+    newSkipped.set(skippedKeyId(ratchetKey, i), msgKey);
+    currentChainKey = advanceChainKey(currentChainKey);
   }
 
   return {
-    session: {
-      ...session,
-      receivingChain: { chainKey, messageCounter },
-    },
-    skippedKeys: newSkippedKeys,
+    ...state,
+    receivingChainKey: currentChainKey,
+    skippedKeys: newSkipped,
   };
 }
 
-// ── Utility ──
+function decryptWithMessageKey(messageKey: Uint8Array, message: WhisperMessage): Uint8Array {
+  const provider = getCryptoProvider();
 
-function bytesEqualFast(a: Uint8Array, b: Uint8Array): boolean {
+  const encKeys = provider.hkdf(
+    messageKey,
+    new Uint8Array(32),
+    encodeUtf8("WhisperMessageKeys"),
+    80,
+  );
+  const aesKey = encKeys.slice(0, 32);
+  const hmacKey = encKeys.slice(32, 64);
+  const iv = encKeys.slice(64, 80);
+
+  // Split ciphertext and MAC (last 8 bytes)
+  const ciphertext = message.ciphertext.slice(0, -8);
+  const receivedMac = message.ciphertext.slice(-8);
+
+  // Verify MAC
+  const macInput = concat(message.ratchetKey, ciphertext);
+  const expectedMac = provider.hmacSha256(hmacKey, macInput).slice(0, 8);
+
+  let macMatch = true;
+  for (let i = 0; i < 8; i++) {
+    if (receivedMac[i] !== expectedMac[i]) macMatch = false;
+  }
+  if (!macMatch) {
+    throw new Error("Message authentication failed");
+  }
+
+  return provider.aesCbcDecrypt(aesKey, iv, ciphertext);
+}
+
+function arraysEqual(a: Uint8Array, b: Uint8Array): boolean {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return false;
@@ -291,11 +243,55 @@ function bytesEqualFast(a: Uint8Array, b: Uint8Array): boolean {
   return true;
 }
 
-function bytesEqualConstantTime(a: Uint8Array, b: Uint8Array): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a[i]! ^ b[i]!;
-  }
-  return diff === 0;
+/**
+ * Initialize a session state after X3DH as the initiator (Alice).
+ */
+export function initSessionAsInitiator(
+  sharedSecret: Uint8Array,
+  remoteIdentityKey: Uint8Array,
+  localIdentityKey: Uint8Array,
+  remoteSignedPreKey: Uint8Array,
+): SessionState {
+  // Alice derives the first sending chain
+  const sendingRatchetKey = generateX25519KeyPair();
+  const dhOutput = x25519Dh(sendingRatchetKey.privateKey, remoteSignedPreKey);
+  const { rootKey, chainKey: sendingChainKey } = kdfRootKey(sharedSecret, dhOutput);
+
+  return {
+    rootKey,
+    sendingChainKey,
+    receivingChainKey: null,
+    sendingRatchetKey,
+    receivingRatchetKey: remoteSignedPreKey,
+    sendingCounter: 0,
+    receivingCounter: 0,
+    previousSendingCounter: 0,
+    skippedKeys: new Map(),
+    remoteIdentityKey,
+    localIdentityKey,
+  };
+}
+
+/**
+ * Initialize a session state after X3DH as the responder (Bob).
+ */
+export function initSessionAsResponder(
+  sharedSecret: Uint8Array,
+  remoteIdentityKey: Uint8Array,
+  localIdentityKey: Uint8Array,
+  localSignedPreKey: KeyPair,
+): SessionState {
+  return {
+    rootKey: sharedSecret,
+    sendingChainKey: null,
+    receivingChainKey: null,
+    sendingRatchetKey: localSignedPreKey,
+    receivingRatchetKey: null,
+    sendingCounter: 0,
+    receivingCounter: 0,
+    previousSendingCounter: 0,
+    skippedKeys: new Map(),
+    remoteIdentityKey,
+    localIdentityKey,
+  };
 }

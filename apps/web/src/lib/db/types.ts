@@ -2,13 +2,6 @@ import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 import { applications, reviews } from "./schema/applications";
 import { account, session, user, verification } from "./schema/auth-schema";
-import { conversationMembers, conversations, messageReceipts, messages } from "./schema/chat";
-import {
-  devices,
-  oneTimePreKeys,
-  privateKeyBackups,
-  signedPreKeys,
-} from "./schema/encryption-schema";
 import { hospiEvents, hospiInvitations, votes } from "./schema/events";
 import { houseMembers, houses } from "./schema/houses";
 import { adminAuditLog, notifications, pushTokens } from "./schema/notifications";
@@ -52,19 +45,6 @@ export type HospiEvent = InferSelectModel<typeof hospiEvents>;
 export type NewHospiEvent = InferInsertModel<typeof hospiEvents>;
 export type HospiInvitation = InferSelectModel<typeof hospiInvitations>;
 export type Vote = InferSelectModel<typeof votes>;
-
-// Chat
-export type Conversation = InferSelectModel<typeof conversations>;
-export type ConversationMember = InferSelectModel<typeof conversationMembers>;
-export type Message = InferSelectModel<typeof messages>;
-export type MessageReceipt = InferSelectModel<typeof messageReceipts>;
-
-// Encryption
-export type Device = InferSelectModel<typeof devices>;
-export type NewDevice = InferInsertModel<typeof devices>;
-export type SignedPreKey = InferSelectModel<typeof signedPreKeys>;
-export type OneTimePreKey = InferSelectModel<typeof oneTimePreKeys>;
-export type PrivateKeyBackup = InferSelectModel<typeof privateKeyBackups>;
 
 // Security
 export type Report = InferSelectModel<typeof reports>;

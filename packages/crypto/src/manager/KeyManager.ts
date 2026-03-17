@@ -1,89 +1,66 @@
-import { encryptIdentityBackup, decryptIdentityBackup } from "../protocol/backup";
-import type { EncryptedBackup, IdentityBackupData } from "../protocol/backup";
+import { getCryptoProvider } from "../primitives/CryptoProvider";
 import { toBase64 } from "../protocol/encoding";
 import {
   generateIdentityKeyPair,
+  generatePreKeys,
   generateRegistrationId,
   generateSignedPreKey,
-  generateOneTimePreKeys,
 } from "../protocol/keys";
+import type { EncryptedBackup, PreKeyRecord, SignedPreKeyRecord } from "../protocol/types";
 import type { SignalProtocolStore } from "../stores/types";
 
-const DEFAULT_PREKEY_COUNT = 100;
-const REPLENISH_THRESHOLD = 25;
-
-export interface KeyStatus {
-  hasIdentity: boolean;
-  registrationId: number | null;
-  signedPreKeyId: number | null;
-  availablePreKeys: number;
+export interface DeviceSetupResult {
+  registrationId: number;
+  identityKeyPublic: string;
+  signingKeyPublic: string;
+  signedPreKey: {
+    keyId: number;
+    publicKey: string;
+    signature: string;
+  };
+  oneTimePreKeys: Array<{
+    keyId: number;
+    publicKey: string;
+  }>;
+  encryptedBackup: EncryptedBackup;
 }
 
 /**
- * Get the current key status from the store.
+ * Generate all keys for a new device and persist them to the store.
+ * Returns the public components for server upload.
  */
-export async function getKeyStatus(store: SignalProtocolStore): Promise<KeyStatus> {
-  try {
-    await store.getIdentityKeyPair(); // verify identity exists
-    const registrationId = await store.getLocalRegistrationId();
-    const preKeyCount = await store.getAvailablePreKeyCount();
-    return {
-      hasIdentity: true,
-      registrationId,
-      signedPreKeyId: null, // would need to track separately
-      availablePreKeys: preKeyCount,
-    };
-  } catch {
-    return {
-      hasIdentity: false,
-      registrationId: null,
-      signedPreKeyId: null,
-      availablePreKeys: 0,
-    };
-  }
-}
-
-/**
- * Generate all keys, store locally, and create a PIN-encrypted backup.
- *
- * Returns the public keys + backup to be uploaded to the server.
- */
-export async function setupKeysWithPIN(
+export async function setupDevice(
   store: SignalProtocolStore,
   pin: string,
-): Promise<{
-  registrationId: number;
-  identityKeyPublic: string; // base64 X25519 DH public key
-  signingKeyPublic: string; // base64 Ed25519 signing public key
-  signedPreKey: { keyId: number; publicKey: string; signature: string };
-  oneTimePreKeys: Array<{ keyId: number; publicKey: string }>;
-  encryptedBackup: EncryptedBackup;
-}> {
-  const identity = generateIdentityKeyPair();
+  preKeyCount = 100,
+): Promise<DeviceSetupResult> {
+  const provider = getCryptoProvider();
+
+  // Generate identity keys
+  const { dhKeyPair, signingKeyPair } = generateIdentityKeyPair();
   const registrationId = generateRegistrationId();
-  const signedPreKey = generateSignedPreKey(identity.signingKeyPair.privateKey, 1);
-  const oneTimePreKeys = generateOneTimePreKeys(1, DEFAULT_PREKEY_COUNT);
 
-  // Store locally
-  // Note: the store implementation handles persisting the identity key pair
-  // For IndexedDB, we use the storeIdentityData helper
+  // Generate signed pre-key
+  const signedPreKey = generateSignedPreKey(signingKeyPair.privateKey, 1);
+
+  // Generate one-time pre-keys
+  const oneTimePreKeys = generatePreKeys(1, preKeyCount);
+
+  // Encrypt private key backup with PIN
+  const backup = await encryptBackupWithPIN(pin, dhKeyPair.privateKey, signingKeyPair.privateKey);
+
+  // Store everything locally
+  // Identity keys are stored by the store implementation
+  // Pre-keys
   await store.storeSignedPreKey(signedPreKey.keyId, signedPreKey);
-  for (const preKey of oneTimePreKeys) {
-    await store.storePreKey(preKey.keyId, preKey);
+  for (const pk of oneTimePreKeys) {
+    await store.storePreKey(pk.keyId, pk);
   }
-
-  // Create encrypted backup
-  const backupData: IdentityBackupData = {
-    signingPublicKey: toBase64(identity.signingKeyPair.publicKey),
-    signingPrivateKey: toBase64(identity.signingKeyPair.privateKey),
-    registrationId,
-  };
-  const encryptedBackup = await encryptIdentityBackup(backupData, pin);
 
   return {
     registrationId,
-    identityKeyPublic: toBase64(identity.dhKeyPair.publicKey),
-    signingKeyPublic: toBase64(identity.signingKeyPair.publicKey),
+    identityKeyPublic: toBase64(dhKeyPair.publicKey),
+    signingKeyPublic: toBase64(signingKeyPair.publicKey),
     signedPreKey: {
       keyId: signedPreKey.keyId,
       publicKey: toBase64(signedPreKey.keyPair.publicKey),
@@ -93,57 +70,63 @@ export async function setupKeysWithPIN(
       keyId: pk.keyId,
       publicKey: toBase64(pk.keyPair.publicKey),
     })),
-    encryptedBackup,
+    encryptedBackup: backup,
+  };
+}
+
+async function encryptBackupWithPIN(
+  pin: string,
+  dhPrivateKey: Uint8Array,
+  signingPrivateKey: Uint8Array,
+): Promise<EncryptedBackup> {
+  const provider = getCryptoProvider();
+
+  const salt = provider.randomBytes(16);
+  const iv = provider.randomBytes(16);
+
+  // Derive encryption key from PIN using HKDF (with salt)
+  const pinBytes = new TextEncoder().encode(pin);
+  const derivedKey = provider.hkdf(pinBytes, salt, new TextEncoder().encode("OpenHospiBackup"), 32);
+
+  // Combine both private keys for backup
+  const combined = new Uint8Array(64);
+  combined.set(dhPrivateKey, 0);
+  combined.set(signingPrivateKey, 32);
+
+  const ciphertext = provider.aesCbcEncrypt(derivedKey, iv, combined);
+
+  return {
+    version: 1,
+    ciphertext: toBase64(ciphertext),
+    iv: toBase64(iv),
+    salt: toBase64(salt),
   };
 }
 
 /**
- * Recover keys from an encrypted backup using the PIN.
+ * Recover keys from an encrypted backup using a PIN.
  */
-export async function recoverKeysWithPIN(
+export async function recoverFromBackup(
   backup: EncryptedBackup,
   pin: string,
-): Promise<IdentityBackupData> {
-  return decryptIdentityBackup(backup, pin);
-}
+): Promise<{
+  dhPrivateKey: Uint8Array;
+  signingPrivateKey: Uint8Array;
+}> {
+  const provider = getCryptoProvider();
+  const { fromBase64 } = await import("../protocol/encoding");
 
-/**
- * Generate and store new one-time prekeys if below threshold.
- * Returns the new public keys to upload to the server.
- */
-export async function replenishOneTimePreKeys(
-  store: SignalProtocolStore,
-  currentMaxKeyId: number,
-  count: number = DEFAULT_PREKEY_COUNT,
-): Promise<Array<{ keyId: number; publicKey: string }> | null> {
-  const available = await store.getAvailablePreKeyCount();
-  if (available >= REPLENISH_THRESHOLD) return null;
+  const salt = fromBase64(backup.salt);
+  const iv = fromBase64(backup.iv);
+  const ciphertext = fromBase64(backup.ciphertext);
 
-  const newKeys = generateOneTimePreKeys(currentMaxKeyId + 1, count);
-  for (const key of newKeys) {
-    await store.storePreKey(key.keyId, key);
-  }
+  const pinBytes = new TextEncoder().encode(pin);
+  const derivedKey = provider.hkdf(pinBytes, salt, new TextEncoder().encode("OpenHospiBackup"), 32);
 
-  return newKeys.map((pk) => ({
-    keyId: pk.keyId,
-    publicKey: toBase64(pk.keyPair.publicKey),
-  }));
-}
-
-/**
- * Rotate the signed prekey. Returns the new public key + signature to upload.
- */
-export async function rotateSignedPreKey(
-  store: SignalProtocolStore,
-  newKeyId: number,
-): Promise<{ keyId: number; publicKey: string; signature: string }> {
-  const identity = await store.getIdentityKeyPair();
-  const newSignedPreKey = generateSignedPreKey(identity.signingKeyPair.privateKey, newKeyId);
-  await store.storeSignedPreKey(newSignedPreKey.keyId, newSignedPreKey);
+  const decrypted = provider.aesCbcDecrypt(derivedKey, iv, ciphertext);
 
   return {
-    keyId: newSignedPreKey.keyId,
-    publicKey: toBase64(newSignedPreKey.keyPair.publicKey),
-    signature: toBase64(newSignedPreKey.signature),
+    dhPrivateKey: decrypted.slice(0, 32),
+    signingPrivateKey: decrypted.slice(32, 64),
   };
 }

@@ -1,66 +1,89 @@
+import { x25519 } from "@noble/curves/ed25519";
+import { ed25519 } from "@noble/curves/ed25519";
+
 import { getCryptoProvider } from "../primitives/CryptoProvider";
+import type { KeyPair, PreKeyRecord, SignedPreKeyRecord } from "./types";
 
-import type { IdentityKeyPair, SignedPreKey, OneTimePreKey } from "./types";
-
-/**
- * Generate a new Ed25519 identity key pair with derived X25519 DH keys.
- */
-export function generateIdentityKeyPair(): IdentityKeyPair {
-  const crypto = getCryptoProvider();
-  const signingKeyPair = crypto.ed25519GenerateKeyPair();
-  const dhKeyPair = {
-    publicKey: crypto.edToX25519Public(signingKeyPair.publicKey),
-    privateKey: crypto.edToX25519Private(signingKeyPair.privateKey),
-  };
-  return { signingKeyPair, dhKeyPair };
+/** Generate an X25519 key pair for Diffie-Hellman key exchange. */
+export function generateX25519KeyPair(): KeyPair {
+  const provider = getCryptoProvider();
+  const privateKey = provider.randomBytes(32);
+  const publicKey = x25519.getPublicKey(privateKey);
+  return { publicKey, privateKey };
 }
 
-/**
- * Generate a registration ID (random uint32, used as device identifier).
- */
-export function generateRegistrationId(): number {
-  const crypto = getCryptoProvider();
-  const bytes = crypto.randomBytes(4);
-  return ((bytes[0]! << 24) | (bytes[1]! << 16) | (bytes[2]! << 8) | bytes[3]!) >>> 0;
+/** Generate an Ed25519 key pair for digital signatures. */
+export function generateEd25519KeyPair(): KeyPair {
+  const provider = getCryptoProvider();
+  const privateKey = provider.randomBytes(32);
+  const publicKey = ed25519.getPublicKey(privateKey);
+  return { publicKey, privateKey };
 }
 
-/**
- * Generate a signed prekey. The public X25519 key is signed with the
- * identity Ed25519 signing key for authenticity.
- */
-export function generateSignedPreKey(
-  identitySigningPrivateKey: Uint8Array,
-  keyId: number,
-): SignedPreKey {
-  const crypto = getCryptoProvider();
-  const keyPair = crypto.x25519GenerateKeyPair();
-  const signature = crypto.ed25519Sign(identitySigningPrivateKey, keyPair.publicKey);
-  return { keyId, keyPair, signature };
+/** Perform X25519 Diffie-Hellman key exchange. */
+export function x25519Dh(privateKey: Uint8Array, publicKey: Uint8Array): Uint8Array {
+  return x25519.getSharedSecret(privateKey, publicKey);
 }
 
-/**
- * Verify that a signed prekey's signature is valid.
- */
-export function verifySignedPreKey(
-  identitySigningPublicKey: Uint8Array,
+/** Sign data with Ed25519. */
+export function ed25519Sign(privateKey: Uint8Array, message: Uint8Array): Uint8Array {
+  return ed25519.sign(message, privateKey);
+}
+
+/** Verify an Ed25519 signature. */
+export function ed25519Verify(
   publicKey: Uint8Array,
+  message: Uint8Array,
   signature: Uint8Array,
 ): boolean {
-  const crypto = getCryptoProvider();
-  return crypto.ed25519Verify(identitySigningPublicKey, publicKey, signature);
+  try {
+    return ed25519.verify(signature, message, publicKey);
+  } catch {
+    return false;
+  }
 }
 
-/**
- * Generate a batch of one-time prekeys.
- */
-export function generateOneTimePreKeys(startId: number, count: number): OneTimePreKey[] {
-  const crypto = getCryptoProvider();
-  const keys: OneTimePreKey[] = [];
+/** Generate an identity key pair (X25519 for DH, Ed25519 for signing). */
+export function generateIdentityKeyPair(): {
+  dhKeyPair: KeyPair;
+  signingKeyPair: KeyPair;
+} {
+  return {
+    dhKeyPair: generateX25519KeyPair(),
+    signingKeyPair: generateEd25519KeyPair(),
+  };
+}
+
+/** Generate a registration ID (random 14-bit unsigned integer). */
+export function generateRegistrationId(): number {
+  const provider = getCryptoProvider();
+  const bytes = provider.randomBytes(2);
+  return ((bytes[0] << 8) | bytes[1]) & 0x3fff;
+}
+
+/** Generate a signed pre-key. The SPK is signed with the identity signing key. */
+export function generateSignedPreKey(
+  identitySigningKey: Uint8Array,
+  keyId: number,
+): SignedPreKeyRecord {
+  const keyPair = generateX25519KeyPair();
+  const signature = ed25519Sign(identitySigningKey, keyPair.publicKey);
+  return {
+    keyId,
+    keyPair,
+    signature,
+    timestamp: Date.now(),
+  };
+}
+
+/** Generate a batch of one-time pre-keys. */
+export function generatePreKeys(startId: number, count: number): PreKeyRecord[] {
+  const preKeys: PreKeyRecord[] = [];
   for (let i = 0; i < count; i++) {
-    keys.push({
+    preKeys.push({
       keyId: startId + i,
-      keyPair: crypto.x25519GenerateKeyPair(),
+      keyPair: generateX25519KeyPair(),
     });
   }
-  return keys;
+  return preKeys;
 }

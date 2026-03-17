@@ -2,10 +2,6 @@
 import { install } from 'react-native-quick-crypto';
 install();
 
-import { setCryptoProvider } from '@openhospi/crypto';
-import { createNativeCryptoProvider } from '@openhospi/crypto/native';
-setCryptoProvider(createNativeCryptoProvider());
-
 import '../global.css';
 import { hideSplash } from '@/lib/splash';
 

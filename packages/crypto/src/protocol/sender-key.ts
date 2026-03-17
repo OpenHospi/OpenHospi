@@ -1,271 +1,183 @@
 import { getCryptoProvider } from "../primitives/CryptoProvider";
-
-import { utf8ToBytes, toBase64, fromBase64 } from "./encoding";
+import { concat, encodeUtf8 } from "./encoding";
+import { ed25519Sign, ed25519Verify, generateEd25519KeyPair } from "./keys";
 import type {
-  SenderKeyState,
   SenderKeyDistributionMessage,
-  GroupCiphertextPayload,
-  SerializedSenderKeyState,
+  SenderKeyMessageData,
+  SenderKeyRecord,
+  SenderKeyState,
 } from "./types";
 
-const MAX_FORWARD_JUMPS = 2000;
+const CHAIN_KEY_SEED = new Uint8Array([0x02]);
+const MESSAGE_KEY_SEED = new Uint8Array([0x01]);
 
-export class StaleSenderKeyError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "StaleSenderKeyError";
-  }
-}
-
-// ── Key Generation ──
-
-export function generateSenderKey(): SenderKeyState {
-  const crypto = getCryptoProvider();
-  const chainKey = crypto.randomBytes(32);
-  const signatureKeyPair = crypto.ed25519GenerateKeyPair();
-  const senderKeyId =
-    ((crypto.randomBytes(4)[0]! << 24) |
-      (crypto.randomBytes(4)[1]! << 16) |
-      (crypto.randomBytes(4)[2]! << 8) |
-      crypto.randomBytes(4)[3]!) >>>
-    0;
-
+/** Generate a new Sender Key state for a group conversation. */
+export function generateSenderKeyState(distributionId: string): SenderKeyState {
+  const provider = getCryptoProvider();
   return {
-    senderKeyId,
-    chainKey,
-    signatureKeyPair,
+    chainKey: provider.randomBytes(32),
     iteration: 0,
+    signingKeyPair: generateEd25519KeyPair(),
   };
 }
 
-// ── Distribution Messages ──
-
-export function createDistributionMessage(state: SenderKeyState): SenderKeyDistributionMessage {
+/** Create a distribution message from the current sender key state. */
+export function createDistributionMessage(
+  distributionId: string,
+  state: SenderKeyState,
+): SenderKeyDistributionMessage {
   return {
-    senderKeyId: state.senderKeyId,
+    distributionId,
+    chainKey: state.chainKey,
     iteration: state.iteration,
-    chainKey: new Uint8Array(state.chainKey),
-    signingPublicKey: new Uint8Array(state.signatureKeyPair.publicKey),
+    signingKey: state.signingKeyPair.publicKey,
   };
 }
 
-export function processDistributionMessage(
-  distribution: SenderKeyDistributionMessage,
-): SenderKeyState {
+/** Serialize a SenderKeyDistributionMessage to bytes. */
+export function serializeDistributionMessage(msg: SenderKeyDistributionMessage): Uint8Array {
+  const distIdBytes = encodeUtf8(msg.distributionId);
+  const provider = getCryptoProvider();
+
+  // Format: distIdLen(2) + distId + chainKey(32) + iteration(4) + signingKey(32)
+  const len = new Uint8Array(2);
+  len[0] = (distIdBytes.length >> 8) & 0xff;
+  len[1] = distIdBytes.length & 0xff;
+
+  const iterBytes = new Uint8Array(4);
+  iterBytes[0] = (msg.iteration >>> 24) & 0xff;
+  iterBytes[1] = (msg.iteration >>> 16) & 0xff;
+  iterBytes[2] = (msg.iteration >>> 8) & 0xff;
+  iterBytes[3] = msg.iteration & 0xff;
+
+  return concat(len, distIdBytes, msg.chainKey, iterBytes, msg.signingKey);
+}
+
+/** Deserialize a SenderKeyDistributionMessage from bytes. */
+export function deserializeDistributionMessage(data: Uint8Array): SenderKeyDistributionMessage {
+  const distIdLen = (data[0] << 8) | data[1];
+  const distIdBytes = data.slice(2, 2 + distIdLen);
+  const distributionId = new TextDecoder().decode(distIdBytes);
+
+  let offset = 2 + distIdLen;
+  const chainKey = data.slice(offset, offset + 32);
+  offset += 32;
+
+  const iteration =
+    ((data[offset] << 24) |
+      (data[offset + 1] << 16) |
+      (data[offset + 2] << 8) |
+      data[offset + 3]) >>>
+    0;
+  offset += 4;
+
+  const signingKey = data.slice(offset, offset + 32);
+
+  return { distributionId, chainKey, iteration, signingKey };
+}
+
+/** Advance the chain key for one iteration, returning the message key. */
+function deriveMessageKeyFromChain(chainKey: Uint8Array): {
+  messageKey: Uint8Array;
+  nextChainKey: Uint8Array;
+} {
+  const provider = getCryptoProvider();
   return {
-    senderKeyId: distribution.senderKeyId,
-    chainKey: new Uint8Array(distribution.chainKey),
-    signatureKeyPair: {
-      publicKey: new Uint8Array(distribution.signingPublicKey),
-      privateKey: new Uint8Array(0), // recipients only have the public key
-    },
-    iteration: distribution.iteration,
+    messageKey: provider.hmacSha256(chainKey, MESSAGE_KEY_SEED),
+    nextChainKey: provider.hmacSha256(chainKey, CHAIN_KEY_SEED),
   };
 }
 
-// ── Chain Ratchet ──
-
-async function chainStep(
-  chainKey: Uint8Array,
-): Promise<{ messageKey: Uint8Array; nextChainKey: Uint8Array }> {
-  const crypto = getCryptoProvider();
-  const messageKey = await crypto.hmacSha256(chainKey, new Uint8Array([0x01]));
-  const nextChainKey = await crypto.hmacSha256(chainKey, new Uint8Array([0x02]));
-  return { messageKey, nextChainKey };
-}
-
-async function fastForward(
-  chainKey: Uint8Array,
-  steps: number,
-): Promise<{ messageKey: Uint8Array; chainKey: Uint8Array }> {
-  let current = chainKey;
-  let messageKey: Uint8Array = new Uint8Array(32);
-  for (let i = 0; i < steps; i++) {
-    const result = await chainStep(current);
-    messageKey = result.messageKey;
-    current = result.nextChainKey;
-  }
-  return { messageKey, chainKey: current };
-}
-
-// ── Encryption ──
-
-export async function senderKeyEncrypt(
+/**
+ * Encrypt a message using the Sender Key.
+ * Returns the updated state and the encrypted message data.
+ */
+export function senderKeyEncrypt(
+  distributionId: string,
   state: SenderKeyState,
   plaintext: Uint8Array,
-  conversationId: string,
-  senderUserId: string,
-): Promise<{ payload: GroupCiphertextPayload; updatedState: SenderKeyState }> {
-  const crypto = getCryptoProvider();
+): { state: SenderKeyState; message: SenderKeyMessageData } {
+  const provider = getCryptoProvider();
+  const { messageKey, nextChainKey } = deriveMessageKeyFromChain(state.chainKey);
 
-  const { messageKey, nextChainKey } = await chainStep(state.chainKey);
-
-  // Derive enc key + IV from message key
-  const derived = await crypto.hkdf(
-    messageKey,
-    new Uint8Array(32),
-    utf8ToBytes("WhisperGroup"),
-    48, // 32 enc key + 16 IV
-  );
-  const encKey = derived.slice(0, 32);
+  // Derive AES key + IV from message key
+  const derived = provider.hkdf(messageKey, new Uint8Array(32), encodeUtf8("WhisperGroup"), 48);
+  const aesKey = derived.slice(0, 32);
   const iv = derived.slice(32, 48);
 
-  // AAD binds ciphertext to conversation context
-  const aad = utf8ToBytes(
-    `${conversationId}:${senderUserId}:${state.iteration}:${state.senderKeyId}`,
-  );
+  const ciphertext = provider.aesCbcEncrypt(aesKey, iv, plaintext);
 
-  const ciphertext = await crypto.aesGcmEncrypt(encKey, plaintext, iv, aad);
+  // Sign the ciphertext
+  const signature = ed25519Sign(state.signingKeyPair.privateKey, ciphertext);
 
-  // Sign the ciphertext for authentication
-  const signature = crypto.ed25519Sign(state.signatureKeyPair.privateKey, ciphertext);
-
-  const payload: GroupCiphertextPayload = {
-    senderKeyId: state.senderKeyId,
-    iteration: state.iteration,
+  const message: SenderKeyMessageData = {
+    distributionId,
+    chainId: state.iteration,
     ciphertext,
     signature,
   };
 
-  const updatedState: SenderKeyState = {
-    ...state,
-    chainKey: nextChainKey,
-    iteration: state.iteration + 1,
+  return {
+    state: {
+      ...state,
+      chainKey: nextChainKey,
+      iteration: state.iteration + 1,
+    },
+    message,
   };
-
-  return { payload, updatedState };
 }
 
-// ── Decryption ──
-
-export async function senderKeyDecrypt(
+/**
+ * Decrypt a message using a received Sender Key.
+ * The receiver must have the sender's key state (from a distribution message).
+ */
+export function senderKeyDecrypt(
   state: SenderKeyState,
-  payload: GroupCiphertextPayload,
-  conversationId: string,
-  senderUserId: string,
-): Promise<{ plaintext: Uint8Array; updatedState: SenderKeyState }> {
-  const crypto = getCryptoProvider();
-
-  if (payload.senderKeyId !== state.senderKeyId) {
-    throw new StaleSenderKeyError(
-      `Sender key ID mismatch: expected ${state.senderKeyId}, got ${payload.senderKeyId}`,
-    );
-  }
+  message: SenderKeyMessageData,
+): { state: SenderKeyState; plaintext: Uint8Array } {
+  const provider = getCryptoProvider();
 
   // Verify signature
-  const isValid = crypto.ed25519Verify(
-    state.signatureKeyPair.publicKey,
-    payload.ciphertext,
-    payload.signature,
-  );
-  if (!isValid) {
-    throw new Error("Sender key signature verification failed");
+  if (!ed25519Verify(state.signingKeyPair.publicKey, message.ciphertext, message.signature)) {
+    throw new Error("Sender key message signature verification failed");
   }
 
-  // Calculate steps needed
-  const stepsNeeded = payload.iteration - state.iteration;
-  if (stepsNeeded < 0) {
-    throw new Error(
-      "Message iteration is behind current state (replay or out-of-order not yet decryptable)",
-    );
-  }
-  if (stepsNeeded > MAX_FORWARD_JUMPS) {
-    throw new StaleSenderKeyError(
-      `Too many skipped iterations (${stepsNeeded}), maximum is ${MAX_FORWARD_JUMPS}. Request sender key re-distribution.`,
-    );
+  // Fast-forward chain to the right iteration
+  let currentChainKey = state.chainKey;
+  let currentIteration = state.iteration;
+
+  if (message.chainId < currentIteration) {
+    throw new Error("Sender key message is from a past iteration (replay attack?)");
   }
 
-  // Fast forward chain to the correct iteration
-  let messageKey: Uint8Array;
-  let newChainKey: Uint8Array;
-
-  if (stepsNeeded === 0) {
-    const result = await chainStep(state.chainKey);
-    messageKey = result.messageKey;
-    newChainKey = result.nextChainKey;
-  } else {
-    // Need to skip some iterations
-    const ffResult = await fastForward(state.chainKey, stepsNeeded);
-    // Now do one more step for the current message
-    const result = await chainStep(ffResult.chainKey);
-    messageKey = result.messageKey;
-    newChainKey = result.nextChainKey;
+  const MAX_FORWARD_SKIP = 2000;
+  if (message.chainId - currentIteration > MAX_FORWARD_SKIP) {
+    throw new Error("Too many skipped sender key iterations");
   }
 
-  // Derive enc key + IV
-  const derived = await crypto.hkdf(
-    messageKey,
-    new Uint8Array(32),
-    utf8ToBytes("WhisperGroup"),
-    48,
-  );
-  const encKey = derived.slice(0, 32);
+  // Advance chain to target iteration
+  while (currentIteration < message.chainId) {
+    const { nextChainKey } = deriveMessageKeyFromChain(currentChainKey);
+    currentChainKey = nextChainKey;
+    currentIteration++;
+  }
+
+  // Derive message key at the target iteration
+  const { messageKey, nextChainKey } = deriveMessageKeyFromChain(currentChainKey);
+
+  // Derive AES key + IV
+  const derived = provider.hkdf(messageKey, new Uint8Array(32), encodeUtf8("WhisperGroup"), 48);
+  const aesKey = derived.slice(0, 32);
   const iv = derived.slice(32, 48);
 
-  // AAD
-  const aad = utf8ToBytes(
-    `${conversationId}:${senderUserId}:${payload.iteration}:${payload.senderKeyId}`,
-  );
+  const plaintext = provider.aesCbcDecrypt(aesKey, iv, message.ciphertext);
 
-  const plaintext = await crypto.aesGcmDecrypt(encKey, payload.ciphertext, iv, aad);
-
-  const updatedState: SenderKeyState = {
-    ...state,
-    chainKey: newChainKey,
-    iteration: payload.iteration + 1,
-  };
-
-  return { plaintext, updatedState };
-}
-
-// ── Serialization ──
-
-export function serializeSenderKeyState(state: SenderKeyState): SerializedSenderKeyState {
   return {
-    senderKeyId: state.senderKeyId,
-    chainKey: toBase64(state.chainKey),
-    signatureKeyPair: {
-      publicKey: toBase64(state.signatureKeyPair.publicKey),
-      privateKey: toBase64(state.signatureKeyPair.privateKey),
+    state: {
+      ...state,
+      chainKey: nextChainKey,
+      iteration: currentIteration + 1,
     },
-    iteration: state.iteration,
-  };
-}
-
-export function deserializeSenderKeyState(data: SerializedSenderKeyState): SenderKeyState {
-  return {
-    senderKeyId: data.senderKeyId,
-    chainKey: fromBase64(data.chainKey),
-    signatureKeyPair: {
-      publicKey: fromBase64(data.signatureKeyPair.publicKey),
-      privateKey: fromBase64(data.signatureKeyPair.privateKey),
-    },
-    iteration: data.iteration,
-  };
-}
-
-// ── Distribution Message Serialization ──
-
-export function serializeDistributionMessage(msg: SenderKeyDistributionMessage): string {
-  return JSON.stringify({
-    senderKeyId: msg.senderKeyId,
-    iteration: msg.iteration,
-    chainKey: toBase64(msg.chainKey),
-    signingPublicKey: toBase64(msg.signingPublicKey),
-  });
-}
-
-export function deserializeDistributionMessage(json: string): SenderKeyDistributionMessage {
-  const data = JSON.parse(json) as {
-    senderKeyId: number;
-    iteration: number;
-    chainKey: string;
-    signingPublicKey: string;
-  };
-  return {
-    senderKeyId: data.senderKeyId,
-    iteration: data.iteration,
-    chainKey: fromBase64(data.chainKey),
-    signingPublicKey: fromBase64(data.signingPublicKey),
+    plaintext,
   };
 }

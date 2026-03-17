@@ -176,10 +176,7 @@ export type SenderKeyDistributionStatus = (typeof SenderKeyDistributionStatus.va
 
 // ─── Chat ─────────────────────────────────────────────────────────────────
 
-export const ConversationType = defineEnum(["direct", "house"] as const);
-export type ConversationType = (typeof ConversationType.values)[number];
-
-export const MessageType = defineEnum(["text", "system"] as const);
+export const MessageType = defineEnum(["ciphertext", "sender_key_distribution", "system"] as const);
 export type MessageType = (typeof MessageType.values)[number];
 
 export const DeliveryStatus = defineEnum(["sent", "delivered", "read"] as const);

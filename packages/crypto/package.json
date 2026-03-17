@@ -8,11 +8,12 @@
     ".": "./src/index.ts",
     "./web": "./src/primitives/WebCryptoProvider.ts",
     "./native": "./src/primitives/NativeCryptoProvider.ts",
-    "./stores": "./src/stores/types.ts",
-    "./stores/indexeddb": "./src/stores/IndexedDbStore.ts"
+    "./stores": "./src/stores/types.ts"
   },
   "dependencies": {
+    "@noble/ciphers": "^2.1.1",
     "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^2.0.1",
     "@openhospi/shared": "workspace:*"
   },
   "scripts": {

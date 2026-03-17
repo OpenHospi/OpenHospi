@@ -1,134 +1,94 @@
 import { getCryptoProvider } from "../primitives/CryptoProvider";
+import { concat } from "./encoding";
+import { ed25519Verify, generateX25519KeyPair, x25519Dh } from "./keys";
+import type { KeyPair, PreKeyBundle } from "./types";
 
-import { concatBytes, utf8ToBytes } from "./encoding";
-import type { IdentityKeyPair, PreKeyBundle, X3DHResult, SessionState, KeyPair } from "./types";
+const X3DH_INFO = new TextEncoder().encode("WhisperText");
+const EMPTY_SALT = new Uint8Array(32); // 32 zero bytes
 
-const HKDF_INFO = utf8ToBytes("WhisperText");
-const HKDF_SALT = new Uint8Array(32); // 32 zero bytes per Signal spec
+export interface X3DHResult {
+  sharedSecret: Uint8Array;
+  ephemeralKeyPair: KeyPair;
+  usedOneTimePreKeyId?: number;
+}
 
 /**
- * Alice initiates X3DH with Bob's prekey bundle.
- * Returns the shared secret + session initialization data.
+ * X3DH key agreement — initiator side (Alice).
+ *
+ * Performs 3 or 4 DH operations:
+ *   DH1 = DH(IK_A, SPK_B)
+ *   DH2 = DH(EK_A, IK_B)
+ *   DH3 = DH(EK_A, SPK_B)
+ *   DH4 = DH(EK_A, OPK_B)  // only if OPK available
+ *
+ * Then derives shared secret:
+ *   SK = HKDF(DH1 || DH2 || DH3 [|| DH4], salt=0, info="WhisperText")
+ *
+ * IMPORTANT: Verifies SPK signature before proceeding.
  */
-export async function x3dhInitiate(
-  localIdentity: IdentityKeyPair,
-  remoteBundle: PreKeyBundle,
-): Promise<X3DHResult> {
-  const crypto = getCryptoProvider();
-
-  // Generate ephemeral key pair
-  const ephemeralKeyPair = crypto.x25519GenerateKeyPair();
-
-  // 4 DH operations per Signal spec
-  const dh1 = crypto.x25519SharedSecret(
-    localIdentity.dhKeyPair.privateKey,
-    remoteBundle.signedPreKeyPublic,
-  );
-  const dh2 = crypto.x25519SharedSecret(ephemeralKeyPair.privateKey, remoteBundle.identityKey);
-  const dh3 = crypto.x25519SharedSecret(
-    ephemeralKeyPair.privateKey,
-    remoteBundle.signedPreKeyPublic,
-  );
-
-  let masterSecret: Uint8Array;
-  if (remoteBundle.oneTimePreKeyPublic) {
-    const dh4 = crypto.x25519SharedSecret(
-      ephemeralKeyPair.privateKey,
-      remoteBundle.oneTimePreKeyPublic,
-    );
-    masterSecret = concatBytes(dh1, dh2, dh3, dh4);
-  } else {
-    masterSecret = concatBytes(dh1, dh2, dh3);
+export function x3dhInitiate(identityKeyPair: KeyPair, bundle: PreKeyBundle): X3DHResult {
+  // Verify the signed pre-key signature
+  if (!ed25519Verify(bundle.identityKey, bundle.signedPreKey, bundle.signedPreKeySignature)) {
+    throw new Error("X3DH: Signed pre-key signature verification failed");
   }
 
-  const sharedSecret = await crypto.hkdf(masterSecret, HKDF_SALT, HKDF_INFO, 64);
+  const provider = getCryptoProvider();
+
+  // Generate ephemeral key pair
+  const ephemeralKeyPair = generateX25519KeyPair();
+
+  // Compute DH values
+  const dh1 = x25519Dh(identityKeyPair.privateKey, bundle.signedPreKey);
+  const dh2 = x25519Dh(ephemeralKeyPair.privateKey, bundle.identityKey);
+  const dh3 = x25519Dh(ephemeralKeyPair.privateKey, bundle.signedPreKey);
+
+  let dhConcat: Uint8Array;
+  let usedOneTimePreKeyId: number | undefined;
+
+  if (bundle.oneTimePreKey && bundle.oneTimePreKeyId !== undefined) {
+    const dh4 = x25519Dh(ephemeralKeyPair.privateKey, bundle.oneTimePreKey);
+    dhConcat = concat(dh1, dh2, dh3, dh4);
+    usedOneTimePreKeyId = bundle.oneTimePreKeyId;
+  } else {
+    dhConcat = concat(dh1, dh2, dh3);
+  }
+
+  // Derive shared secret via HKDF
+  const sharedSecret = provider.hkdf(dhConcat, EMPTY_SALT, X3DH_INFO, 32);
 
   return {
     sharedSecret,
     ephemeralKeyPair,
-    usedOneTimePreKeyId: remoteBundle.oneTimePreKeyId,
+    usedOneTimePreKeyId,
   };
 }
 
 /**
- * Bob processes a PreKeyWhisperMessage to complete X3DH.
- * Returns the same shared secret Alice derived.
+ * X3DH key agreement — responder side (Bob).
+ *
+ * Called when receiving a PreKeyWhisperMessage from Alice.
  */
-export async function x3dhRespond(
-  localIdentity: IdentityKeyPair,
-  localSignedPreKey: KeyPair,
-  localOneTimePreKey: KeyPair | null,
+export function x3dhRespond(
+  identityKeyPair: KeyPair,
+  signedPreKey: KeyPair,
+  oneTimePreKey: KeyPair | null,
   remoteIdentityKey: Uint8Array,
   remoteEphemeralKey: Uint8Array,
-): Promise<Uint8Array> {
-  const crypto = getCryptoProvider();
+): Uint8Array {
+  const provider = getCryptoProvider();
 
-  const dh1 = crypto.x25519SharedSecret(localSignedPreKey.privateKey, remoteIdentityKey);
-  const dh2 = crypto.x25519SharedSecret(localIdentity.dhKeyPair.privateKey, remoteEphemeralKey);
-  const dh3 = crypto.x25519SharedSecret(localSignedPreKey.privateKey, remoteEphemeralKey);
+  const dh1 = x25519Dh(signedPreKey.privateKey, remoteIdentityKey);
+  const dh2 = x25519Dh(identityKeyPair.privateKey, remoteEphemeralKey);
+  const dh3 = x25519Dh(signedPreKey.privateKey, remoteEphemeralKey);
 
-  let masterSecret: Uint8Array;
-  if (localOneTimePreKey) {
-    const dh4 = crypto.x25519SharedSecret(localOneTimePreKey.privateKey, remoteEphemeralKey);
-    masterSecret = concatBytes(dh1, dh2, dh3, dh4);
+  let dhConcat: Uint8Array;
+
+  if (oneTimePreKey) {
+    const dh4 = x25519Dh(oneTimePreKey.privateKey, remoteEphemeralKey);
+    dhConcat = concat(dh1, dh2, dh3, dh4);
   } else {
-    masterSecret = concatBytes(dh1, dh2, dh3);
+    dhConcat = concat(dh1, dh2, dh3);
   }
 
-  return crypto.hkdf(masterSecret, HKDF_SALT, HKDF_INFO, 64);
-}
-
-/**
- * Initialize a session state from X3DH output (Alice's side).
- */
-export function initializeSessionFromX3DH(
-  sharedSecret: Uint8Array,
-  localRatchetKeyPair: KeyPair,
-  remoteRatchetPublicKey: Uint8Array,
-  localRegistrationId: number,
-  remoteRegistrationId: number,
-): SessionState {
-  return {
-    rootKey: sharedSecret.slice(0, 32),
-    sendingChain: {
-      chainKey: sharedSecret.slice(32, 64),
-      messageCounter: 0,
-    },
-    receivingChain: null,
-    localRatchetKeyPair,
-    remoteRatchetPublicKey,
-    previousSendingChainLength: 0,
-    localRegistrationId,
-    remoteRegistrationId,
-  };
-}
-
-/**
- * Initialize a session state from X3DH output (Bob's side).
- * Bob's receiving chain is the initial chain key; sending chain
- * will be established on first reply.
- */
-export function initializeSessionFromX3DHResponder(
-  sharedSecret: Uint8Array,
-  localRatchetKeyPair: KeyPair,
-  remoteRatchetPublicKey: Uint8Array,
-  localRegistrationId: number,
-  remoteRegistrationId: number,
-): SessionState {
-  return {
-    rootKey: sharedSecret.slice(0, 32),
-    sendingChain: {
-      chainKey: new Uint8Array(32), // will be set on first DH ratchet step
-      messageCounter: 0,
-    },
-    receivingChain: {
-      chainKey: sharedSecret.slice(32, 64),
-      messageCounter: 0,
-    },
-    localRatchetKeyPair,
-    remoteRatchetPublicKey,
-    previousSendingChainLength: 0,
-    localRegistrationId,
-    remoteRegistrationId,
-  };
+  return provider.hkdf(dhConcat, EMPTY_SALT, X3DH_INFO, 32);
 }

@@ -9,7 +9,6 @@ import { revalidatePath } from "next/cache";
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
-import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function respondToInvitation(invitationId: string, data: RsvpData) {
@@ -115,13 +114,6 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
   });
 
   if ("error" in result) return result;
-
-  if ("roomId" in result && result.roomId) {
-    await getOrCreateHospiConversation(result.roomId, session.user.id, [
-      ...result.memberIds,
-      session.user.id,
-    ]);
-  }
 
   if (result.eventCreatorId) {
     const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/my-rooms`;

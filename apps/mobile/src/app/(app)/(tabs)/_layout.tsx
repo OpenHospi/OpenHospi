@@ -3,16 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import { isTerminalApplicationStatus } from '@openhospi/shared/enums';
 
-import { useConversations } from '@/services/chat';
 import { useApplications } from '@/services/applications';
 
 export default function TabLayout() {
   const { t } = useTranslation('translation', { keyPrefix: 'breadcrumbs' });
 
-  const { data: conversations } = useConversations();
   const { data: applications } = useApplications();
 
-  const unreadCount = (conversations ?? []).reduce((sum, c) => sum + c.unreadCount, 0);
   const activeAppCount = (applications ?? []).filter(
     (a) => !isTerminalApplicationStatus(a.status)
   ).length;
@@ -36,11 +33,6 @@ export default function TabLayout() {
           md="forum"
         />
         <NativeTabs.Trigger.Label>{t('chat')}</NativeTabs.Trigger.Label>
-        {unreadCount > 0 && (
-          <NativeTabs.Trigger.Badge>
-            {unreadCount > 99 ? '99+' : String(unreadCount)}
-          </NativeTabs.Trigger.Badge>
-        )}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="applications">
         <NativeTabs.Trigger.Icon

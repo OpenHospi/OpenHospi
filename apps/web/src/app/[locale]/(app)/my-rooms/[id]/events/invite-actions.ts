@@ -13,7 +13,6 @@ import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/au
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { applications, houseMembers, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
-import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function batchInviteApplicants(
@@ -105,26 +104,6 @@ export async function batchInviteApplicants(
           },
         },
       );
-    }
-
-    // Auto-create chat conversations for each invitee
-    // Get all house member user IDs
-    const [roomData] = await tx
-      .select({ houseId: rooms.houseId })
-      .from(rooms)
-      .where(eq(rooms.id, roomId));
-
-    if (roomData) {
-      const members = await tx
-        .select({ userId: houseMembers.userId })
-        .from(houseMembers)
-        .where(eq(houseMembers.houseId, roomData.houseId));
-
-      const memberIds = members.map((m) => m.userId);
-
-      for (const app of apps) {
-        await getOrCreateHospiConversation(roomId, app.userId, [...memberIds, app.userId]);
-      }
     }
 
     return apps.length;

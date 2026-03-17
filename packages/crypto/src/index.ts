@@ -1,150 +1,106 @@
-/**
- * @openhospi/crypto — Signal Protocol E2EE
- *
- * Full Signal Protocol implementation: X3DH key agreement, Double Ratchet
- * for 1:1 sessions, Sender Keys for group encryption, safety numbers,
- * and PIN-based key backup.
- *
- * Usage:
- *   // Web
- *   import { setCryptoProvider } from "@openhospi/crypto";
- *   import { createWebCryptoProvider } from "@openhospi/crypto/web";
- *   setCryptoProvider(createWebCryptoProvider());
- *
- *   // Mobile
- *   import { setCryptoProvider } from "@openhospi/crypto";
- *   import { createNativeCryptoProvider } from "@openhospi/crypto/native";
- *   setCryptoProvider(createNativeCryptoProvider());
- */
-
-// ── Platform ──
+// Primitives
 export { setCryptoProvider, getCryptoProvider } from "./primitives/CryptoProvider";
 export type { CryptoProvider } from "./primitives/CryptoProvider";
 
-// ── Types ──
+// Protocol types
 export type {
   KeyPair,
-  IdentityKeyPair,
-  SignedPreKey,
-  OneTimePreKey,
-  PreKeyBundle,
-  X3DHResult,
-  ChainState,
-  SessionState,
-  WhisperMessage,
-  PreKeyWhisperMessage,
-  MessageEnvelope,
-  SenderKeyState,
-  SenderKeyDistributionMessage,
-  GroupCiphertextPayload,
   ProtocolAddress,
-  SkippedKey,
-  SerializedSessionState,
-  SerializedSenderKeyState,
+  PreKeyBundle,
+  SessionState,
+  SessionRecord,
+  PreKeyRecord,
+  SignedPreKeyRecord,
+  SenderKeyState,
+  SenderKeyRecord,
+  SenderKeyDistributionMessage,
+  PreKeyWhisperMessage,
+  WhisperMessage,
+  SenderKeyMessageData,
+  EncryptedBackup,
 } from "./protocol/types";
 
-// ── Encoding ──
+// Encoding utilities
 export {
   toBase64,
   fromBase64,
-  concatBytes,
-  bytesEqual,
-  utf8ToBytes,
-  bytesToUtf8,
+  encodeUtf8,
+  decodeUtf8,
+  concat,
+  timingSafeEqual,
 } from "./protocol/encoding";
 
-// ── Key Generation ──
+// Key generation
 export {
   generateIdentityKeyPair,
   generateRegistrationId,
   generateSignedPreKey,
-  verifySignedPreKey,
-  generateOneTimePreKeys,
+  generatePreKeys,
+  generateX25519KeyPair,
+  generateEd25519KeyPair,
+  ed25519Sign,
+  ed25519Verify,
+  x25519Dh,
 } from "./protocol/keys";
 
-// ── X3DH Key Exchange ──
+// X3DH
+export { x3dhInitiate, x3dhRespond } from "./protocol/x3dh";
+export type { X3DHResult } from "./protocol/x3dh";
+
+// Double Ratchet
 export {
-  x3dhInitiate,
-  x3dhRespond,
-  initializeSessionFromX3DH,
-  initializeSessionFromX3DHResponder,
-} from "./protocol/x3dh";
+  ratchetEncrypt,
+  ratchetDecrypt,
+  initSessionAsInitiator,
+  initSessionAsResponder,
+} from "./protocol/double-ratchet";
 
-// ── Double Ratchet ──
-export { ratchetEncrypt, ratchetDecrypt } from "./protocol/double-ratchet";
-
-// ── Session Cipher ──
-export { sessionEncrypt, sessionDecrypt } from "./protocol/session-cipher";
-export type { SessionEncryptResult, SessionDecryptResult } from "./protocol/session-cipher";
-
-// ── Session Builder ──
-export { buildSessionFromPreKeyBundle, processPreKeyMessage } from "./protocol/session-builder";
-export type { SessionFromBundleResult } from "./protocol/session-builder";
-
-// ── Sender Key ──
+// Session
+export { buildSessionFromBundle } from "./protocol/session-builder";
 export {
-  generateSenderKey,
+  sessionEncrypt,
+  sessionDecrypt,
+  createPreKeyMessage,
+  isPreKeyWhisperMessage,
+  deserializePreKeyWhisperMessage,
+  deserializeWhisperMessage,
+} from "./protocol/session-cipher";
+
+// Sender Key / Group
+export {
+  generateSenderKeyState,
   createDistributionMessage,
-  processDistributionMessage,
-  senderKeyEncrypt,
-  senderKeyDecrypt,
-  serializeSenderKeyState,
-  deserializeSenderKeyState,
   serializeDistributionMessage,
   deserializeDistributionMessage,
-  StaleSenderKeyError,
+  senderKeyEncrypt,
+  senderKeyDecrypt,
 } from "./protocol/sender-key";
+export { initGroupSenderKey, groupEncrypt, groupDecrypt } from "./protocol/group-cipher";
 
-// ── Group Cipher ──
-export { groupEncrypt, groupDecrypt } from "./protocol/group-cipher";
-
-// ── Safety Numbers ──
+// Safety Number
 export {
   generateSafetyNumber,
   encodeSafetyNumberQR,
   verifySafetyNumberQR,
 } from "./protocol/safety-number";
-export type { QRVerifyResult } from "./protocol/safety-number";
 
-// ── Backup ──
-export { deriveKeyFromPIN, encryptIdentityBackup, decryptIdentityBackup } from "./protocol/backup";
-export type { IdentityBackupData, EncryptedBackup } from "./protocol/backup";
+// Managers
+export { setupDevice, recoverFromBackup } from "./manager/KeyManager";
+export type { DeviceSetupResult } from "./manager/KeyManager";
+export { establishSession, encrypt1to1, decrypt1to1 } from "./manager/SessionManager";
+export {
+  initAndDistributeSenderKey,
+  processDistribution,
+  encryptGroupMessage,
+  decryptGroupMessage,
+} from "./manager/GroupEncryptionManager";
 
-// ── Store Interfaces ──
+// Store types
 export type {
   IdentityKeyStore,
   PreKeyStore,
   SignedPreKeyStore,
   SessionStore,
   SenderKeyStore,
-  SkippedKeyStore,
   SignalProtocolStore,
 } from "./stores/types";
-
-// ── Manager: Key Lifecycle ──
-export {
-  getKeyStatus,
-  setupKeysWithPIN,
-  recoverKeysWithPIN,
-  replenishOneTimePreKeys,
-  rotateSignedPreKey,
-} from "./manager/KeyManager";
-export type { KeyStatus } from "./manager/KeyManager";
-
-// ── Manager: Session Management ──
-export {
-  establishSession,
-  processIncomingPreKeyMessage,
-  encryptForSession,
-  decryptFromSession,
-} from "./manager/SessionManager";
-
-// ── Manager: Group Encryption ──
-export {
-  getOrCreateSenderKey,
-  distributeSenderKeyToDevice,
-  receiveSenderKeyDistribution,
-  encryptGroupMessage,
-  decryptGroupMessage,
-  rotateSenderKey,
-} from "./manager/GroupEncryptionManager";

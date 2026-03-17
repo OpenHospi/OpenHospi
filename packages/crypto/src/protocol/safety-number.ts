@@ -1,112 +1,88 @@
 import { getCryptoProvider } from "../primitives/CryptoProvider";
+import { concat, encodeUtf8 } from "./encoding";
 
-import { concatBytes, toBase64, fromBase64, utf8ToBytes } from "./encoding";
-
-const ITERATIONS = 5200;
-const VERSION = 1;
-
-export interface QRVerifyResult {
-  valid: boolean;
-  remoteUserId: string;
-}
+const SAFETY_NUMBER_VERSION = new Uint8Array([0x00, 0x00]);
 
 /**
- * Generate a 60-digit safety number from two users' Ed25519 signing public keys.
- * The number is symmetric: both users derive the same result.
+ * Generate a safety number for verifying identity between two users.
+ * Based on the Signal Protocol's numeric fingerprint format.
+ *
+ * The safety number is a 60-digit string (12 groups of 5 digits).
  */
-export async function generateSafetyNumber(
+export function generateSafetyNumber(
   localUserId: string,
-  localSigningPublicKey: Uint8Array,
+  localIdentityKey: Uint8Array,
   remoteUserId: string,
-  remoteSigningPublicKey: Uint8Array,
-): Promise<string> {
-  const localFingerprint = await computeFingerprint(localUserId, localSigningPublicKey);
-  const remoteFingerprint = await computeFingerprint(remoteUserId, remoteSigningPublicKey);
+  remoteIdentityKey: Uint8Array,
+): string {
+  const localFingerprint = computeFingerprint(localUserId, localIdentityKey);
+  const remoteFingerprint = computeFingerprint(remoteUserId, remoteIdentityKey);
 
-  // Sort deterministically so both users get the same number
-  const [first, second] =
-    localUserId < remoteUserId
-      ? [localFingerprint, remoteFingerprint]
-      : [remoteFingerprint, localFingerprint];
+  // The safety number is the sorted concatenation of both fingerprints
+  // so both parties get the same number regardless of who initiates
+  if (localUserId < remoteUserId) {
+    return localFingerprint + remoteFingerprint;
+  }
+  return remoteFingerprint + localFingerprint;
+}
 
-  return formatSafetyNumber(first!) + formatSafetyNumber(second!);
+function computeFingerprint(userId: string, identityKey: Uint8Array): string {
+  const provider = getCryptoProvider();
+
+  // Hash: HMAC(identityKey, version || userId || identityKey), iterated 5200 times
+  let hash = concat(SAFETY_NUMBER_VERSION, encodeUtf8(userId), identityKey);
+
+  for (let i = 0; i < 5200; i++) {
+    hash = provider.hmacSha256(identityKey, concat(hash, identityKey));
+  }
+
+  // Convert first 30 bytes to 30 digits (each byte mod 100000, take 5 digits)
+  let digits = "";
+  for (let i = 0; i < 30; i += 5) {
+    const value =
+      ((hash[i] & 0xff) << 24) |
+      ((hash[i + 1] & 0xff) << 16) |
+      ((hash[i + 2] & 0xff) << 8) |
+      (hash[i + 3] & 0xff);
+    digits += String(Math.abs(value) % 100000).padStart(5, "0");
+  }
+
+  return digits;
 }
 
 /**
- * Encode safety number data into a QR payload for scanning.
+ * Encode a safety number and identity key into a QR code payload.
  */
 export function encodeSafetyNumberQR(
   userId: string,
-  signingPublicKey: Uint8Array,
+  identityKey: Uint8Array,
   safetyNumber: string,
 ): string {
-  return toBase64(
-    utf8ToBytes(
-      JSON.stringify({
-        v: VERSION,
-        uid: userId,
-        spk: toBase64(signingPublicKey),
-        sn: safetyNumber,
-      }),
-    ),
-  );
+  return JSON.stringify({
+    v: 1,
+    uid: userId,
+    ik: Array.from(identityKey),
+    sn: safetyNumber,
+  });
 }
 
 /**
- * Verify a scanned QR code against the locally computed safety number.
+ * Verify a scanned QR code against the expected safety number.
  */
 export function verifySafetyNumberQR(
-  qrPayload: string,
+  qrData: string,
   expectedSafetyNumber: string,
-): QRVerifyResult {
+): { valid: boolean; remoteUserId: string } {
   try {
-    const decoded = JSON.parse(new TextDecoder().decode(fromBase64(qrPayload))) as {
-      v: number;
-      uid: string;
-      spk: string;
-      sn: string;
-    };
-
-    if (decoded.v !== VERSION) {
-      return { valid: false, remoteUserId: decoded.uid };
+    const parsed = JSON.parse(qrData);
+    if (parsed.v !== 1 || !parsed.uid || !parsed.sn) {
+      return { valid: false, remoteUserId: "" };
     }
-
     return {
-      valid: decoded.sn === expectedSafetyNumber,
-      remoteUserId: decoded.uid,
+      valid: parsed.sn === expectedSafetyNumber,
+      remoteUserId: parsed.uid,
     };
   } catch {
     return { valid: false, remoteUserId: "" };
   }
-}
-
-// ── Internal ──
-
-async function computeFingerprint(
-  userId: string,
-  signingPublicKey: Uint8Array,
-): Promise<Uint8Array> {
-  const crypto = getCryptoProvider();
-
-  // Iteratively hash: SHA-512(SHA-512(...(version || publicKey || userId)...))
-  let hash = concatBytes(new Uint8Array([0, VERSION]), signingPublicKey, utf8ToBytes(userId));
-
-  for (let i = 0; i < ITERATIONS; i++) {
-    hash = concatBytes(hash, signingPublicKey);
-    // Use HMAC with the public key as key for iterated hashing
-    hash = await crypto.hmacSha256(signingPublicKey, hash);
-  }
-
-  return hash;
-}
-
-function formatSafetyNumber(fingerprint: Uint8Array): string {
-  // Extract 30 digits (5 groups of 6 digits, but we use 5 groups of 6 = 30 per side)
-  let result = "";
-  for (let i = 0; i < 30 && i < fingerprint.length * 2; i++) {
-    const byteIdx = Math.floor(i / 2);
-    const val = i % 2 === 0 ? fingerprint[byteIdx]! >> 4 : fingerprint[byteIdx]! & 0x0f;
-    result += (val % 10).toString();
-  }
-  return result;
 }

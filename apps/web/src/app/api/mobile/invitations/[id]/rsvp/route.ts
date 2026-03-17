@@ -7,7 +7,6 @@ import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
 import { createDrizzleSupabaseClient } from "@/lib/db";
 import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
-import { getOrCreateHospiConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -116,13 +115,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     if ("error" in result && result.error) return apiError(result.error, 422);
-
-    if ("roomId" in result && result.roomId) {
-      await getOrCreateHospiConversation(result.roomId, session.user.id, [
-        ...result.memberIds,
-        session.user.id,
-      ]);
-    }
 
     if (result.eventCreatorId) {
       const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/my-rooms`;

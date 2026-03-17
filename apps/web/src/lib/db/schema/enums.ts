@@ -4,10 +4,8 @@ import {
   ApplicationStatus,
   City,
   ConsentPurpose,
-  ConversationType,
   DataRequestStatus,
   DataRequestType,
-  DeliveryStatus,
   DevicePlatform,
   DiscoverSort,
   Furnishing,
@@ -20,7 +18,6 @@ import {
   LegalBasis,
   LifestyleTag,
   LocationTag,
-  MessageType,
   RentalType,
   ReportReason,
   ReportStatus,
@@ -28,7 +25,6 @@ import {
   ReviewDecision,
   RoomFeature,
   RoomStatus,
-  SenderKeyDistributionStatus,
   StudyLevel,
   UtilitiesIncluded,
   Vereniging,
@@ -51,9 +47,6 @@ export const applicationStatusEnum = pgEnum("application_status_enum", Applicati
 export const reviewDecisionEnum = pgEnum("review_decision_enum", ReviewDecision.values);
 export const invitationStatusEnum = pgEnum("invitation_status_enum", InvitationStatus.values);
 export const houseMemberRoleEnum = pgEnum("house_member_role_enum", HouseMemberRole.values);
-export const conversationTypeEnum = pgEnum("conversation_type_enum", ConversationType.values);
-export const messageTypeEnum = pgEnum("message_type_enum", MessageType.values);
-export const deliveryStatusEnum = pgEnum("delivery_status_enum", DeliveryStatus.values);
 export const adminActionEnum = pgEnum("admin_action_enum", AdminAction.values);
 export const reportReasonEnum = pgEnum("report_reason_enum", ReportReason.values);
 export const reportStatusEnum = pgEnum("report_status_enum", ReportStatus.values);
@@ -67,7 +60,3 @@ export const legalBasisEnum = pgEnum("legal_basis_enum", LegalBasis.values);
 export const dataRequestTypeEnum = pgEnum("data_request_type_enum", DataRequestType.values);
 export const dataRequestStatusEnum = pgEnum("data_request_status_enum", DataRequestStatus.values);
 export const platformEnum = pgEnum("platform_enum", DevicePlatform.values);
-export const senderKeyDistributionStatusEnum = pgEnum(
-  "sender_key_distribution_status_enum",
-  SenderKeyDistributionStatus.values,
-);

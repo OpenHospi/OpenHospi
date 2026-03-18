@@ -46,6 +46,9 @@ let sharedDeviceUuid: string | null = null;
 let sharedInitDone = false;
 const sharedSenderKeyCreatedAt = new Map<string, number>();
 
+// Mutex to prevent concurrent encrypt calls from reusing the same sender key chain state
+let encryptLock: Promise<void> = Promise.resolve();
+
 export function useEncryption(userId: string | undefined) {
   const [status, setStatus] = useState<EncryptionStatus>("uninitialized");
   const [error, setError] = useState<Error | null>(null);
@@ -290,10 +293,17 @@ export function useEncryption(userId: string | undefined) {
     async (senderAddress: ProtocolAddress, distributionBytes: Uint8Array) => {
       await processDistribution(cryptoStore, senderAddress, distributionBytes);
 
-      // Retry any queued messages from this sender
-      const queued = decryptionQueue.getForSender("", senderAddress);
-      for (const msg of queued) {
+      // Retry any queued messages from this sender (check all conversations)
+      const allQueued = decryptionQueue
+        .getAll()
+        .filter(
+          (msg) =>
+            msg.senderAddress.userId === senderAddress.userId &&
+            msg.senderAddress.deviceId === senderAddress.deviceId,
+        );
+      for (const msg of allQueued) {
         try {
+          const { decodeUtf8 } = await import("@openhospi/crypto");
           await decryptGroupMessage(
             cryptoStore,
             msg.senderAddress,

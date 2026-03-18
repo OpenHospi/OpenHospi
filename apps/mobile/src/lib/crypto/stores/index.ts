@@ -28,18 +28,128 @@ function senderKeyComposite(addr: ProtocolAddress, distId: string): string {
   return `${distId}:${addressKey(addr)}`;
 }
 
-function serializeKeyPair(kp: KeyPair): string {
-  return JSON.stringify({
-    publicKey: toBase64(kp.publicKey),
-    privateKey: toBase64(kp.privateKey),
-  });
+// ── Session serialization (Uint8Array <-> base64 for JSON round-trip) ──
+
+type SerializedKeyPair = { publicKey: string; privateKey: string };
+type SerializedSessionState = {
+  rootKey: string;
+  sendingChainKey: string | null;
+  receivingChainKey: string | null;
+  sendingRatchetKey: SerializedKeyPair | null;
+  receivingRatchetKey: string | null;
+  sendingCounter: number;
+  receivingCounter: number;
+  previousSendingCounter: number;
+  skippedKeys: Record<string, string>;
+  remoteIdentityKey: string;
+  localIdentityKey: string;
+};
+type SerializedSession = {
+  version: number;
+  pendingPreKey?: { signedPreKeyId: number; baseKey: string; preKeyId?: number };
+  state: SerializedSessionState;
+};
+type SerializedSenderKey = {
+  state: {
+    chainKey: string;
+    iteration: number;
+    signingKeyPair: SerializedKeyPair;
+  };
+};
+
+function serializeSessionRecord(record: SessionRecord): string {
+  const s = record.state;
+  const serialized: SerializedSession = {
+    version: record.version,
+    pendingPreKey: record.pendingPreKey
+      ? {
+          signedPreKeyId: record.pendingPreKey.signedPreKeyId,
+          baseKey: toBase64(record.pendingPreKey.baseKey),
+          preKeyId: record.pendingPreKey.preKeyId,
+        }
+      : undefined,
+    state: {
+      rootKey: toBase64(s.rootKey),
+      sendingChainKey: s.sendingChainKey ? toBase64(s.sendingChainKey) : null,
+      receivingChainKey: s.receivingChainKey ? toBase64(s.receivingChainKey) : null,
+      sendingRatchetKey: s.sendingRatchetKey
+        ? {
+            publicKey: toBase64(s.sendingRatchetKey.publicKey),
+            privateKey: toBase64(s.sendingRatchetKey.privateKey),
+          }
+        : null,
+      receivingRatchetKey: s.receivingRatchetKey ? toBase64(s.receivingRatchetKey) : null,
+      sendingCounter: s.sendingCounter,
+      receivingCounter: s.receivingCounter,
+      previousSendingCounter: s.previousSendingCounter,
+      skippedKeys: Object.fromEntries(
+        Array.from(s.skippedKeys.entries()).map(([k, v]) => [k, toBase64(v)])
+      ),
+      remoteIdentityKey: toBase64(s.remoteIdentityKey),
+      localIdentityKey: toBase64(s.localIdentityKey),
+    },
+  };
+  return JSON.stringify(serialized);
 }
 
-function deserializeKeyPair(data: string): KeyPair {
-  const parsed = JSON.parse(data) as { publicKey: string; privateKey: string };
+function deserializeSessionRecord(data: string): SessionRecord {
+  const raw = JSON.parse(data) as SerializedSession;
+  const s = raw.state;
+  const record: SessionRecord = {
+    version: raw.version,
+    state: {
+      rootKey: fromBase64(s.rootKey),
+      sendingChainKey: s.sendingChainKey ? fromBase64(s.sendingChainKey) : null,
+      receivingChainKey: s.receivingChainKey ? fromBase64(s.receivingChainKey) : null,
+      sendingRatchetKey: s.sendingRatchetKey
+        ? {
+            publicKey: fromBase64(s.sendingRatchetKey.publicKey),
+            privateKey: fromBase64(s.sendingRatchetKey.privateKey),
+          }
+        : null,
+      receivingRatchetKey: s.receivingRatchetKey ? fromBase64(s.receivingRatchetKey) : null,
+      sendingCounter: s.sendingCounter,
+      receivingCounter: s.receivingCounter,
+      previousSendingCounter: s.previousSendingCounter,
+      skippedKeys: new Map(Object.entries(s.skippedKeys).map(([k, v]) => [k, fromBase64(v)])),
+      remoteIdentityKey: fromBase64(s.remoteIdentityKey),
+      localIdentityKey: fromBase64(s.localIdentityKey),
+    },
+  };
+  if (raw.pendingPreKey?.baseKey) {
+    record.pendingPreKey = {
+      signedPreKeyId: raw.pendingPreKey.signedPreKeyId,
+      baseKey: fromBase64(raw.pendingPreKey.baseKey),
+      preKeyId: raw.pendingPreKey.preKeyId,
+    };
+  }
+  return record;
+}
+
+function serializeSenderKeyRecord(record: SenderKeyRecord): string {
+  return JSON.stringify({
+    state: {
+      chainKey: toBase64(record.state.chainKey),
+      iteration: record.state.iteration,
+      signingKeyPair: {
+        publicKey: toBase64(record.state.signingKeyPair.publicKey),
+        privateKey: toBase64(record.state.signingKeyPair.privateKey),
+      },
+    },
+  } satisfies SerializedSenderKey);
+}
+
+function deserializeSenderKeyRecord(data: string): SenderKeyRecord {
+  const raw = JSON.parse(data) as SerializedSenderKey;
   return {
-    publicKey: fromBase64(parsed.publicKey),
-    privateKey: fromBase64(parsed.privateKey),
+    state: {
+      chainKey: fromBase64(raw.state.chainKey),
+      iteration: raw.state.iteration,
+      signingKeyPair: {
+        publicKey: fromBase64(raw.state.signingKeyPair.publicKey),
+        privateKey: fromBase64(raw.state.signingKeyPair.privateKey),
+      },
+    },
   };
 }
 
@@ -233,40 +343,12 @@ class SqliteSignalStore implements SignalProtocolStore {
     const key = addressKey(address);
     const rows = db.select().from(sessions).where(eq(sessions.address, key)).all();
     if (rows.length === 0) return null;
-    const raw = JSON.parse(rows[0].sessionData) as {
-      state: SessionRecord['state'];
-      version: number;
-      pendingPreKey?: { signedPreKeyId: number; baseKey: string; preKeyId?: number };
-    };
-    // Restore Uint8Array for pendingPreKey.baseKey (stored as base64)
-    const record: SessionRecord = {
-      state: raw.state,
-      version: raw.version,
-    };
-    if (raw.pendingPreKey?.baseKey) {
-      record.pendingPreKey = {
-        signedPreKeyId: raw.pendingPreKey.signedPreKeyId,
-        baseKey: fromBase64(raw.pendingPreKey.baseKey),
-        preKeyId: raw.pendingPreKey.preKeyId,
-      };
-    }
-    return record;
+    return deserializeSessionRecord(rows[0].sessionData);
   }
 
   async storeSession(address: ProtocolAddress, record: SessionRecord): Promise<void> {
     const key = addressKey(address);
-    // Convert pendingPreKey.baseKey to base64 for JSON serialization
-    const serializable = {
-      ...record,
-      pendingPreKey: record.pendingPreKey
-        ? {
-            signedPreKeyId: record.pendingPreKey.signedPreKeyId,
-            baseKey: toBase64(record.pendingPreKey.baseKey),
-            preKeyId: record.pendingPreKey.preKeyId,
-          }
-        : undefined,
-    };
-    const data = JSON.stringify(serializable);
+    const data = serializeSessionRecord(record);
 
     db.insert(sessions)
       .values({ address: key, sessionData: data })
@@ -293,7 +375,7 @@ class SqliteSignalStore implements SignalProtocolStore {
     record: SenderKeyRecord
   ): Promise<void> {
     const key = senderKeyComposite(sender, distributionId);
-    const data = JSON.stringify(record);
+    const data = serializeSenderKeyRecord(record);
 
     db.insert(senderKeys)
       .values({ compositeKey: key, senderKeyData: data })
@@ -311,7 +393,7 @@ class SqliteSignalStore implements SignalProtocolStore {
     const key = senderKeyComposite(sender, distributionId);
     const rows = db.select().from(senderKeys).where(eq(senderKeys.compositeKey, key)).all();
     if (rows.length === 0) return null;
-    return JSON.parse(rows[0].senderKeyData) as SenderKeyRecord;
+    return deserializeSenderKeyRecord(rows[0].senderKeyData);
   }
 }
 

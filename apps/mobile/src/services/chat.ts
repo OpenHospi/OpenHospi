@@ -85,7 +85,7 @@ export function useSendMessage() {
       conversationId: string;
       payload: string;
       deviceId?: string;
-      distributions?: Array<{ recipientDeviceId: string; ciphertext: string }>;
+      distributions?: { recipientDeviceId: string; ciphertext: string }[];
     }) => api.post<MessageRow>('/api/mobile/chat/send', data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({

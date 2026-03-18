@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import {
@@ -87,12 +87,12 @@ export async function fetchPreKeyBundle(targetDeviceId: string) {
 
     if (!device) return null;
 
-    // Fetch latest signed pre-key
+    // Fetch latest signed pre-key (newest first)
     const [spk] = await tx
       .select()
       .from(signedPreKeys)
       .where(eq(signedPreKeys.deviceId, device.id))
-      .orderBy(signedPreKeys.createdAt)
+      .orderBy(desc(signedPreKeys.createdAt))
       .limit(1);
 
     if (!spk) return null;

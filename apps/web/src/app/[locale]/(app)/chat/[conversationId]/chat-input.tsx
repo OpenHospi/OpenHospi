@@ -1,89 +1,83 @@
 "use client";
 
-import type { EncryptedMessage } from "@openhospi/crypto";
 import { Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { useEncryption } from "@/hooks/use-encryption";
+import { sentMessageCache } from "@/lib/crypto";
 
-import type { CiphertextPayload } from "../chat-actions";
-import { sendMessage } from "../chat-actions";
+import { sendMessageWithDistributions } from "../chat-actions";
 
 type Props = {
   conversationId: string;
-  members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
+  memberUserIds: string[];
   currentUserId: string;
-  encryptMessage: (
-    conversationId: string,
-    recipientUserId: string,
-    plaintext: string,
-  ) => Promise<EncryptedMessage>;
-  onMessageSent: (msg: { id: string; plaintext: string }) => void;
 };
 
-export function ChatInput({
-  conversationId,
-  members,
-  currentUserId,
-  encryptMessage,
-  onMessageSent,
-}: Props) {
+export function ChatInput({ conversationId, memberUserIds, currentUserId }: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { encryptMessage } = useEncryption(currentUserId);
 
   function handleSubmit() {
     const trimmed = text.trim();
     if (!trimmed || isPending) return;
 
+    setText("");
+
     startTransition(async () => {
-      const otherMembers = members.filter((m) => m.userId !== currentUserId);
-      if (otherMembers.length === 0) return;
+      try {
+        const result = await encryptMessage(conversationId, memberUserIds, trimmed);
 
-      // Encrypt for ALL other members (pairwise)
-      const payloads: CiphertextPayload[] = await Promise.all(
-        otherMembers.map(async (member) => {
-          const encrypted = await encryptMessage(conversationId, member.userId, trimmed);
-          return {
-            recipientUserId: member.userId,
-            ciphertext: encrypted.ciphertext,
-            iv: encrypted.iv,
-            ratchetPublicKey: encrypted.header.ratchetPublicKey,
-            messageNumber: encrypted.header.messageNumber,
-            previousChainLength: encrypted.header.previousChainLength,
-          };
-        }),
-      );
+        // Atomic send: distributions + message in one server call
+        const msg = await sendMessageWithDistributions(
+          conversationId,
+          result.payload,
+          result.deviceId,
+          result.distributions,
+        );
 
-      const { messageId } = await sendMessage(conversationId, payloads);
-
-      onMessageSent({ id: messageId, plaintext: trimmed });
-      setText("");
-      inputRef.current?.focus();
+        // Cache plaintext locally for own message display (same as Signal)
+        await sentMessageCache.store(msg.id, trimmed);
+      } catch (err) {
+        console.error("[ChatInput] Send failed:", err);
+        setText(trimmed);
+      }
     });
+
+    inputRef.current?.focus();
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   }
 
   return (
-    <div className="border-t p-4">
+    <div className="border-border border-t p-3">
       <div className="flex items-end gap-2">
-        <Textarea
+        <textarea
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit();
-            }
-          }}
+          onKeyDown={handleKeyDown}
           placeholder={t("message_placeholder")}
           rows={1}
-          className="flex-1 resize-none"
+          className="bg-muted placeholder:text-muted-foreground max-h-32 min-h-10 flex-1 resize-none rounded-xl px-3 py-2 text-sm focus:outline-none"
+          disabled={isPending}
         />
-        <Button onClick={handleSubmit} disabled={!text.trim() || isPending} size="icon">
+        <Button
+          size="icon"
+          onClick={handleSubmit}
+          disabled={!text.trim() || isPending}
+          className="shrink-0"
+        >
           <Send className="h-4 w-4" />
         </Button>
       </div>

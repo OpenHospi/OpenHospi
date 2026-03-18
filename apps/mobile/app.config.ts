@@ -223,6 +223,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-sqlite',
     'expo-secure-store',
     'expo-localization',
+    'expo-web-browser',
     '@react-native-community/datetimepicker',
     'expo-sharing',
     [

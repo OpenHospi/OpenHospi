@@ -12,23 +12,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-type FingerprintResult = {
-  safetyNumber: string;
-  qrPayload: string;
-} | null;
-
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   otherUserName: string;
-  getFingerprint: () => Promise<FingerprintResult>;
+  getSafetyNumber: () => Promise<string>;
 };
 
-function FingerprintDisplay({ promise }: { promise: Promise<FingerprintResult> }) {
+function SafetyNumberDisplay({ promise }: { promise: Promise<string | null> }) {
   const t = useTranslations("app.chat.safety_number");
-  const result = use(promise);
+  const safetyNumber = use(promise);
 
-  if (!result) {
+  if (!safetyNumber) {
     return <p className="text-muted-foreground py-4 text-center text-sm">{t("unavailable")}</p>;
   }
 
@@ -37,7 +32,7 @@ function FingerprintDisplay({ promise }: { promise: Promise<FingerprintResult> }
       <div className="flex justify-center">
         <div className="rounded-xl bg-white p-4 shadow-sm">
           <QRCodeSVG
-            value={result.qrPayload}
+            value={safetyNumber}
             size={200}
             level="M"
             bgColor="#ffffff"
@@ -47,7 +42,7 @@ function FingerprintDisplay({ promise }: { promise: Promise<FingerprintResult> }
       </div>
 
       <div className="bg-muted rounded-lg p-4 font-mono text-center text-lg tracking-wider select-all">
-        {result.safetyNumber}
+        {safetyNumber}
       </div>
 
       <p className="text-muted-foreground text-sm">{t("instructions")}</p>
@@ -55,13 +50,14 @@ function FingerprintDisplay({ promise }: { promise: Promise<FingerprintResult> }
   );
 }
 
-export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getFingerprint }: Props) {
+export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getSafetyNumber }: Props) {
   const t = useTranslations("app.chat.safety_number");
-  const [promise, setPromise] = useState<Promise<FingerprintResult> | null>(null);
+  const [promise, setPromise] = useState<Promise<string | null> | null>(null);
 
   function handleOpenChange(isOpen: boolean) {
     if (isOpen) {
-      setPromise(getFingerprint());
+      // Wrap to catch errors — resolve to null so use() doesn't throw
+      setPromise(getSafetyNumber().catch(() => null));
     } else {
       setPromise(null);
     }
@@ -85,7 +81,7 @@ export function SafetyNumberDialog({ open, onOpenChange, otherUserName, getFinge
                 </div>
               }
             >
-              <FingerprintDisplay promise={promise} />
+              <SafetyNumberDisplay promise={promise} />
             </Suspense>
           ) : null}
         </div>

@@ -1,102 +1,121 @@
-/**
- * @openhospi/crypto — Signal Protocol-inspired E2EE
- *
- * X3DH key exchange + Double Ratchet with X25519/Ed25519 + AES-256-GCM.
- * Provides forward secrecy, break-in recovery, and MITM detection via safety numbers.
- *
- * Usage:
- *   import { setBackend } from "@openhospi/crypto";
- *   import { createWebBackend } from "@openhospi/crypto/web";
- *   setBackend(createWebBackend());
- */
+// Primitives
+export { setCryptoProvider, getCryptoProvider } from "./primitives/CryptoProvider";
+export type { CryptoProvider } from "./primitives/CryptoProvider";
 
-// ── Platform ──
-export { setBackend, getBackend } from "./backends/platform";
-export type { CryptoBackend } from "./backends/platform";
-
-// ── Types ──
+// Protocol types
 export type {
   KeyPair,
-  IdentityKeyPair,
-  SignedPreKey,
-  OneTimePreKey,
+  ProtocolAddress,
   PreKeyBundle,
-  ServerPreKeyBundle,
-  X3DHResult,
-  RatchetState,
-  SkippedKeyEntry,
-  MessageHeader,
-  EncryptedMessage,
   SessionState,
-  SerializedRatchetState,
-  SerializedSkippedKeyEntry,
+  SessionRecord,
+  PreKeyRecord,
+  SignedPreKeyRecord,
+  SenderKeyState,
+  SenderKeyRecord,
+  SenderKeyDistributionMessage,
+  PreKeyWhisperMessage,
+  WhisperMessage,
+  SenderKeyMessageData,
+  EncryptedBackup,
 } from "./protocol/types";
 
-// ── Encoding ──
-export { toBase64, fromBase64, concatBytes, bytesEqual } from "./protocol/encoding";
+// Encoding utilities
+export {
+  toBase64,
+  fromBase64,
+  encodeUtf8,
+  decodeUtf8,
+  concat,
+  timingSafeEqual,
+} from "./protocol/encoding";
 
-// ── Key Generation ──
+// Key generation
 export {
   generateIdentityKeyPair,
+  generateRegistrationId,
   generateSignedPreKey,
-  generateOneTimePreKeys,
-  verifySignedPreKey,
+  generatePreKeys,
+  generateX25519KeyPair,
+  generateEd25519KeyPair,
+  ed25519Sign,
+  ed25519Verify,
+  x25519Dh,
 } from "./protocol/keys";
 
-// ── X3DH Key Exchange ──
+// X3DH
 export { x3dhInitiate, x3dhRespond } from "./protocol/x3dh";
+export type { X3DHResult } from "./protocol/x3dh";
 
-// ── Double Ratchet ──
+// Double Ratchet
 export {
-  initializeSender,
-  initializeReceiver,
   ratchetEncrypt,
   ratchetDecrypt,
-  serializeRatchetState,
-  deserializeRatchetState,
+  initSessionAsInitiator,
+  initSessionAsResponder,
 } from "./protocol/double-ratchet";
 
-// ── KDF Chain ──
-export { kdfChainStep, kdfRootStep } from "./protocol/kdf-chain";
+// Session
+export { buildSessionFromBundle } from "./protocol/session-builder";
+export {
+  sessionEncrypt,
+  sessionDecrypt,
+  createPreKeyMessage,
+  isPreKeyWhisperMessage,
+  deserializePreKeyWhisperMessage,
+  deserializeWhisperMessage,
+} from "./protocol/session-cipher";
 
-// ── Encryption ──
-export { encrypt, decrypt, encodeHeaderAsAad } from "./protocol/encryption";
+// Sender Key / Group
+export {
+  generateSenderKeyState,
+  createDistributionMessage,
+  serializeDistributionMessage,
+  deserializeDistributionMessage,
+  senderKeyEncrypt,
+  senderKeyDecrypt,
+} from "./protocol/sender-key";
+export { initGroupSenderKey, groupEncrypt, groupDecrypt } from "./protocol/group-cipher";
 
-// ── Safety Numbers ──
+// Safety Number
 export {
   generateSafetyNumber,
   encodeSafetyNumberQR,
   verifySafetyNumberQR,
 } from "./protocol/safety-number";
-export type { QRVerifyResult } from "./protocol/safety-number";
 
-// ── Backup ──
-export { deriveKeyFromPIN, encryptIdentityBackup, decryptIdentityBackup } from "./protocol/backup";
-export type { IdentityBackupData, EncryptedBackup } from "./protocol/backup";
+// Managers
+export { setupDevice, recoverFromBackup } from "./manager/KeyManager";
+export type { DeviceSetupResult } from "./manager/KeyManager";
+export { establishSession, encrypt1to1, decrypt1to1 } from "./manager/SessionManager";
+export {
+  initAndDistributeSenderKey,
+  processDistribution,
+  encryptGroupMessage,
+  decryptGroupMessage,
+} from "./manager/GroupEncryptionManager";
 
-// ── Store ──
+// Key Maintenance (hardening)
+export { replenishPreKeysIfNeeded, rotateSignedPreKeyIfNeeded } from "./manager/KeyMaintenance";
+export type { KeyMaintenanceActions } from "./manager/KeyMaintenance";
+
+// Sender Key Rotation (hardening)
+export {
+  shouldRotateSenderKey,
+  invalidateSenderKey,
+  invalidateRemovedMemberKeys,
+} from "./manager/SenderKeyRotation";
+
+// Decryption Queue (hardening)
+export { DecryptionQueue } from "./manager/DecryptionQueue";
+export type { QueuedMessage } from "./manager/DecryptionQueue";
+
+// Store types
 export type {
-  CryptoStore,
-  StoredIdentity,
-  StoredSignedPreKey,
-  StoredOneTimePreKey,
-} from "./store/types";
-
-// ── Manager: Key Management ──
-export {
-  getKeyStatus,
-  setupKeysWithPIN,
-  recoverKeysWithPIN,
-  resetKeys,
-  replenishOneTimePreKeys,
-  getOrCreateSession,
-} from "./manager/key-management";
-export type { KeyStatus } from "./manager/key-management";
-
-// ── Manager: Encryption Operations ──
-export {
-  encryptForRecipient,
-  decryptFromSender,
-  getIdentityFingerprint,
-} from "./manager/encryption-ops";
-export type { CiphertextPayload, FingerprintResult } from "./manager/encryption-ops";
+  IdentityKeyStore,
+  PreKeyStore,
+  SignedPreKeyStore,
+  SessionStore,
+  SenderKeyStore,
+  SignalProtocolStore,
+} from "./stores/types";

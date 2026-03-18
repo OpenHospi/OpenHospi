@@ -1,16 +1,16 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { profiles } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { profiles } from "@/lib/db/schema";
 
 export async function acceptPrivacyPolicy() {
   const session = await requireSession();
 
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(profiles)
       .set({ privacyPolicyAcceptedVersion: PRIVACY_POLICY_VERSION })

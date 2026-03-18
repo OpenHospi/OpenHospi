@@ -1,269 +1,182 @@
 "use client";
 
-import type { EncryptedMessage } from "@openhospi/crypto";
+import { Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { MessageBubble } from "@/components/app/message-bubble";
-import type { MessageItem } from "@/lib/queries/chat";
+import { useEncryption } from "@/hooks/use-encryption";
+import { sentMessageCache } from "@/lib/crypto";
 import { supabase } from "@/lib/supabase/client";
 
-import { getMessageMetadata, markConversationRead } from "../chat-actions";
-import { getRealtimeToken } from "../realtime-token-action";
+import { fetchMessageById } from "../chat-actions";
+
+type MessageRow = {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderDeviceId: string | null;
+  messageType: string;
+  createdAt: Date;
+  payload: string | null;
+  senderFirstName: string | null;
+};
 
 type Props = {
   conversationId: string;
+  initialMessages: MessageRow[];
+  initialCursor: string | null;
   currentUserId: string;
-  initialMessages: MessageItem[];
-  members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
-  decryptMessage: (
-    conversationId: string,
-    senderUserId: string,
-    encrypted: EncryptedMessage,
-  ) => Promise<string>;
-  addMessageRef: React.MutableRefObject<((msg: DecryptedMessage) => void) | null>;
+  memberUserIds: string[];
 };
 
-export type DecryptedMessage = {
-  id: string;
-  senderId: string;
-  senderFirstName: string;
-  senderAvatarUrl: string | null;
-  plaintext: string;
-  messageType: string;
-  createdAt: Date;
-};
-
-export function MessageThread({
-  conversationId,
-  currentUserId,
-  initialMessages,
-  members,
-  decryptMessage,
-  addMessageRef,
-}: Props) {
+export function MessageThread({ conversationId, initialMessages, currentUserId }: Props) {
   const t = useTranslations("app.chat");
-  const [decryptedMessages, setDecryptedMessages] = useState<DecryptedMessage[]>([]);
-  const [isDecrypting, setIsDecrypting] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const seenIdsRef = useRef(new Set<string>());
-
-  const decryptMessages = useCallback(
-    async (msgs: MessageItem[]) => {
-      const results: DecryptedMessage[] = [];
-      for (const msg of msgs) {
-        // Skip messages from ourselves (no ciphertext row)
-        if (msg.senderId === currentUserId) continue;
-
-        // Skip if no ciphertext (sender's own messages on reload)
-        if (
-          !msg.ciphertext ||
-          !msg.iv ||
-          !msg.ratchetPublicKey ||
-          msg.messageNumber == null ||
-          msg.previousChainLength == null
-        )
-          continue;
-
-        try {
-          const encrypted: EncryptedMessage = {
-            header: {
-              ratchetPublicKey: msg.ratchetPublicKey,
-              messageNumber: msg.messageNumber,
-              previousChainLength: msg.previousChainLength,
-            },
-            ciphertext: msg.ciphertext,
-            iv: msg.iv,
-          };
-
-          const plaintext = await decryptMessage(conversationId, msg.senderId, encrypted);
-
-          results.push({
-            id: msg.id,
-            senderId: msg.senderId,
-            senderFirstName: msg.senderFirstName,
-            senderAvatarUrl: msg.senderAvatarUrl,
-            plaintext,
-            messageType: msg.messageType,
-            createdAt: msg.createdAt,
-          });
-        } catch {
-          results.push({
-            id: msg.id,
-            senderId: msg.senderId,
-            senderFirstName: msg.senderFirstName,
-            senderAvatarUrl: msg.senderAvatarUrl,
-            plaintext: t("key_reset_message"),
-            messageType: msg.messageType,
-            createdAt: msg.createdAt,
-          });
-        }
-      }
-      return results;
-    },
-    [conversationId, currentUserId, decryptMessage, t],
-  );
-
-  const decryptMessagesRef = useRef(decryptMessages);
-  useEffect(() => {
-    decryptMessagesRef.current = decryptMessages;
-  }, [decryptMessages]);
-
-  const membersRef = useRef(members);
-  useEffect(() => {
-    membersRef.current = members;
-  }, [members]);
-
-  const initialMessagesRef = useRef(initialMessages);
-  useEffect(() => {
-    initialMessagesRef.current = initialMessages;
-  }, [initialMessages]);
-
-  // Initial decryption
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const decrypted = await decryptMessagesRef.current(initialMessagesRef.current);
-      if (!cancelled) {
-        setDecryptedMessages(decrypted.reverse());
-        for (const msg of decrypted) {
-          seenIdsRef.current.add(msg.id);
-        }
-        setIsDecrypting(false);
-        markConversationRead(conversationId);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [conversationId]);
+  const [messages, setMessages] = useState(initialMessages);
+  const { decryptMessage, processPendingDistributions, deviceId } = useEncryption(currentUserId);
+  const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
+  const processedRef = useRef(false);
 
   // Scroll to bottom on new messages
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [decryptedMessages]);
-
-  // Expose addMessage for optimistic updates from ChatInput
-  useEffect(() => {
-    addMessageRef.current = (msg: DecryptedMessage) => {
-      if (seenIdsRef.current.has(msg.id)) return;
-      seenIdsRef.current.add(msg.id);
-      setDecryptedMessages((prev) => [...prev, msg]);
-    };
-  });
-
-  // Supabase Realtime subscription — subscribe to message_ciphertexts for this user
-  useEffect(() => {
-    let mounted = true;
-
-    async function handleCiphertextInsert(row: Record<string, unknown>) {
-      const messageId = row.message_id as string;
-      if (seenIdsRef.current.has(messageId)) return;
-      seenIdsRef.current.add(messageId);
-
-      // We need the message metadata (senderId, createdAt) — fetch from messages table
-      // The ciphertext row has the crypto data, but not the sender info
-      const ciphertext = row.ciphertext as string;
-      const iv = row.iv as string;
-      const ratchetPublicKey = row.ratchet_public_key as string;
-      const messageNumber = row.message_number as number;
-      const previousChainLength = row.previous_chain_length as number;
-
-      // Fetch message metadata (senderId, createdAt) via server action
-      const metadata = await getMessageMetadata(messageId);
-      if (!metadata) return;
-
-      const member = membersRef.current.find((m) => m.userId === metadata.senderId);
-
-      const msgItem: MessageItem = {
-        id: messageId,
-        senderId: metadata.senderId,
-        senderFirstName: member?.firstName ?? "",
-        senderAvatarUrl: member?.avatarUrl ?? null,
-        ciphertext,
-        iv,
-        ratchetPublicKey,
-        messageNumber,
-        previousChainLength,
-        messageType: "text",
-        createdAt: metadata.createdAt,
-      };
-
-      const decrypted = await decryptMessagesRef.current([msgItem]);
-      if (!mounted) return;
-      setDecryptedMessages((prev) => [...prev, ...decrypted]);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
+  }, [messages]);
 
-    (async () => {
-      const token = await getRealtimeToken();
-      if (!mounted) return;
-      supabase.realtime.setAuth(token);
-
-      supabase
-        .channel(`ciphertexts:${conversationId}:${currentUserId}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "message_ciphertexts",
-            filter: `recipient_user_id=eq.${currentUserId}`,
-          },
-          (payload) => {
-            if (!mounted) return;
-            handleCiphertextInsert(payload.new as Record<string, unknown>);
-          },
-        )
-        .subscribe();
-    })();
-
-    return () => {
-      mounted = false;
-      supabase.removeAllChannels();
-    };
-  }, [conversationId, currentUserId]);
-
-  // Mark as read when tab becomes visible
+  // Process pending distributions on mount (before decrypting)
   useEffect(() => {
-    function handleVisibilityChange() {
-      if (document.visibilityState === "visible") {
-        markConversationRead(conversationId);
+    if (processedRef.current || !deviceId) return;
+    processedRef.current = true;
+    processPendingDistributions(deviceId).catch(() => {});
+  }, [deviceId, processPendingDistributions]);
+
+  // Decrypt a single message
+  const decryptSingle = useCallback(
+    async (msg: MessageRow): Promise<string | null> => {
+      if (msg.messageType === "system") return msg.payload ?? "";
+      if (!msg.payload) return null;
+
+      // Own messages — check local plaintext cache (same as Signal Desktop)
+      if (msg.senderId === currentUserId) {
+        const cached = await sentMessageCache.get(msg.id);
+        if (cached) return cached;
+      }
+
+      if (!msg.senderDeviceId) return null;
+
+      try {
+        return await decryptMessage(
+          msg.id,
+          conversationId,
+          {
+            userId: msg.senderId,
+            deviceId: msg.senderDeviceId,
+          },
+          msg.payload,
+        );
+      } catch {
+        return t("decryption_failed");
+      }
+    },
+    [currentUserId, conversationId, decryptMessage, t],
+  );
+
+  // Decrypt messages on mount and when messages change
+  useEffect(() => {
+    async function decryptAll() {
+      const cache: Record<string, string> = { ...decryptedCache };
+      let changed = false;
+
+      for (const msg of messages) {
+        if (cache[msg.id]) continue;
+
+        const text = await decryptSingle(msg);
+        if (text !== null) {
+          cache[msg.id] = text;
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        setDecryptedCache(cache);
       }
     }
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [conversationId]);
 
-  if (isDecrypting) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <span className="text-muted-foreground text-sm">{t("decrypting")}</span>
-      </div>
-    );
-  }
+    decryptAll();
+  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (decryptedMessages.length === 0) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <span className="text-muted-foreground text-sm">{t("no_messages")}</span>
-      </div>
-    );
-  }
+  // Realtime handlers
+  const handleNewMessage = useCallback(
+    async (messageId: string) => {
+      if (messages.some((m) => m.id === messageId)) return;
+
+      const msg = await fetchMessageById(messageId);
+      if (!msg) return;
+
+      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+
+      const text = await decryptSingle(msg);
+      if (text !== null) {
+        setDecryptedCache((prev) => ({ ...prev, [msg.id]: text }));
+      }
+    },
+    [messages, decryptSingle],
+  );
+
+  // Supabase Realtime subscription
+  useEffect(() => {
+    const channel = supabase.channel(`chat:${conversationId}`);
+
+    channel
+      .on("broadcast", { event: "new_message" }, (payload) => {
+        const { messageId } = payload.payload as { messageId: string };
+        handleNewMessage(messageId);
+      })
+      .on("broadcast", { event: "sender_key_distribution" }, () => {
+        if (deviceId) processPendingDistributions(deviceId);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversationId, deviceId, handleNewMessage, processPendingDistributions]);
 
   return (
-    <div ref={scrollRef} className="flex-1 space-y-2 overflow-y-auto p-4">
-      {decryptedMessages.map((msg) => (
-        <MessageBubble
-          key={msg.id}
-          id={msg.id}
-          isOwn={msg.senderId === currentUserId}
-          senderId={msg.senderId}
-          senderName={msg.senderFirstName}
-          senderAvatar={msg.senderAvatarUrl}
-          plaintext={msg.plaintext}
-          createdAt={msg.createdAt}
-        />
-      ))}
+    <div ref={scrollRef} className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
+      {/* E2EE notice */}
+      <div className="text-muted-foreground mx-auto mb-4 flex items-center gap-1.5 text-xs">
+        <Lock className="h-3 w-3" />
+        <span>{t("encrypted")}</span>
+      </div>
+
+      {/* Messages in chronological order (reversed from query) */}
+      {[...messages].reverse().map((msg) => {
+        const isOwn = msg.senderId === currentUserId;
+        const text = decryptedCache[msg.id];
+
+        return (
+          <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+            <div
+              className={`max-w-[75%] rounded-2xl px-3 py-2 ${
+                isOwn ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+              }`}
+            >
+              {!isOwn && msg.senderFirstName && (
+                <p className="mb-0.5 text-xs font-medium opacity-70">{msg.senderFirstName}</p>
+              )}
+              <p className="text-sm">{text ?? "..."}</p>
+              <p className="mt-0.5 text-right text-[10px] opacity-50">
+                {new Date(msg.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

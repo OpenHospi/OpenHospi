@@ -1,11 +1,11 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { reports, rooms } from "@openhospi/database/schema";
 import type { ReportReason, ReportType } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { reports, rooms } from "@/lib/db/schema";
 
 /**
  * Report a message
@@ -27,7 +27,7 @@ export async function reportMessage(data: {
     throw new Error("Cannot report a message from yourself");
   }
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx.insert(reports).values({
       reportType: "message",
       reporterId: userId,
@@ -57,7 +57,7 @@ export async function reportUser(data: {
     throw new Error("Cannot report yourself");
   }
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx.insert(reports).values({
       reportType: "user",
       reporterId: userId,
@@ -83,7 +83,7 @@ export async function reportRoom(data: {
   const userId = session.user.id;
 
   // Validate room exists
-  const [room] = await withRLS(userId, async (tx) => {
+  const [room] = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     return tx
       .select({ id: rooms.id, ownerId: rooms.ownerId })
       .from(rooms)
@@ -93,7 +93,7 @@ export async function reportRoom(data: {
   if (!room) throw new Error("Room not found");
   if (room.ownerId === userId) throw new Error("Cannot report your own room");
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx.insert(reports).values({
       reportType: "room",
       reporterId: userId,

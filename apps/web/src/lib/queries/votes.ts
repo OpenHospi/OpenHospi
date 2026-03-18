@@ -1,11 +1,12 @@
-import { withRLS } from "@openhospi/database";
-import { applications, profiles, votes } from "@openhospi/database/schema";
 import {
   ApplicationStatus,
   isTerminalApplicationStatus,
   type StudyLevel,
 } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne, sum } from "drizzle-orm";
+
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, profiles, votes } from "@/lib/db/schema";
 
 export type VotableApplicant = {
   applicationId: string;
@@ -35,7 +36,7 @@ export async function getVotableApplicants(
   roomId: string,
   userId: string,
 ): Promise<VotableApplicant[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     return tx
       .select({
         applicationId: applications.id,
@@ -60,7 +61,7 @@ export async function getRoomVotes(
   userId: string,
   round: number = 1,
 ): Promise<VoteBoard> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const applicants = await getVotableApplicantsInTx(tx, roomId);
 
     const allVotes = await tx
@@ -128,7 +129,7 @@ export async function getCloseRoomApplicants(
   roomId: string,
   userId: string,
 ): Promise<CloseRoomApplicant[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     // Get non-terminal applicants
     const rows = await tx
       .select({
@@ -184,7 +185,7 @@ export async function getCloseRoomApplicants(
 }
 
 async function getVotableApplicantsInTx(
-  tx: Parameters<Parameters<typeof withRLS>[1]>[0],
+  tx: Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0],
   roomId: string,
 ): Promise<VotableApplicant[]> {
   return tx

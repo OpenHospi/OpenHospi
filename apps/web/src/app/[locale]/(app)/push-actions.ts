@@ -1,10 +1,10 @@
 "use server";
 
-import { db, withRLS } from "@openhospi/database";
-import { activeConsents, pushSubscriptions } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { activeConsents, pushSubscriptions } from "@/lib/db/schema";
 
 export async function subscribePush(subscription: {
   endpoint: string;
@@ -17,7 +17,7 @@ export async function subscribePush(subscription: {
   if (restricted) throw new Error(restricted.error);
 
   // Verify push_notifications consent (Art. 6)
-  const [consent] = await withRLS(userId, (tx) =>
+  const [consent] = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({ granted: activeConsents.granted })
       .from(activeConsents)

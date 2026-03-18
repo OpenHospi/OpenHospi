@@ -1,57 +1,38 @@
-import type { Locale } from "@openhospi/i18n";
+import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 
-import { SetBreadcrumb } from "@/components/app/breadcrumb-store";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
-import { getConversationDetail, getConversationMembers, getMessages } from "@/lib/queries/chat";
-
-import { getBlockedUsers } from "../block-actions";
+import { getConversationDetail, getMessages } from "@/lib/queries/chat";
 
 import { ChatView } from "./chat-view";
+import { EncryptionGate } from "./encryption-gate";
 
 type Props = {
-  params: Promise<{ locale: Locale; conversationId: string }>;
+  params: Promise<{ locale: string; conversationId: string }>;
 };
-
-export async function generateMetadata({ params }: Props) {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) return {};
-  const t = await getTranslations({ locale, namespace: "app.chat" });
-  return { title: t("conversation") };
-}
 
 export default async function ConversationPage({ params }: Props) {
   const { locale, conversationId } = await params;
-  if (!hasLocale(routing.locales, locale)) return null;
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const { user } = await requireSession();
 
-  const [initialMessages, members, blockedUserIds, conversationDetail] = await Promise.all([
-    getMessages(user.id, conversationId),
-    getConversationMembers(user.id, conversationId),
-    getBlockedUsers(),
-    getConversationDetail(user.id, conversationId),
-  ]);
+  const session = await requireSession();
+  const detail = await getConversationDetail(session.user.id, conversationId);
 
-  const chatLabel =
-    members
-      .filter((m) => m.userId !== user.id)
-      .map((m) => `${m.firstName} ${m.lastName}`)
-      .join(", ") || "Chat";
+  if (!detail) notFound();
+
+  const { messages, nextCursor } = await getMessages(session.user.id, conversationId);
 
   return (
-    <>
-      <SetBreadcrumb uuid={conversationId} label={chatLabel} />
+    <EncryptionGate userId={session.user.id}>
       <ChatView
-        conversationId={conversationId}
-        currentUserId={user.id}
-        initialMessages={initialMessages}
-        members={members}
-        blockedUserIds={blockedUserIds}
-        conversationDetail={conversationDetail}
+        conversation={detail}
+        initialMessages={messages}
+        initialCursor={nextCursor}
+        currentUserId={session.user.id}
       />
-    </>
+    </EncryptionGate>
   );
 }

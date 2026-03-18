@@ -1,10 +1,10 @@
-import { db } from "@openhospi/database";
-import { pushTokens } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth/auth";
+import { db } from "@/lib/db";
+import { pushTokens } from "@/lib/db/schema";
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });

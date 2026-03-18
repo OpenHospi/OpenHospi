@@ -1,14 +1,14 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
-import type { CreateEventData } from "@openhospi/database/validators";
-import { createEventSchema } from "@openhospi/database/validators";
 import { InvitationStatus } from "@openhospi/shared/enums";
+import type { CreateEventData } from "@openhospi/validators";
+import { createEventSchema } from "@openhospi/validators";
 import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function createEvent(roomId: string, data: CreateEventData) {
@@ -21,7 +21,7 @@ export async function createEvent(roomId: string, data: CreateEventData) {
 
   await requireHousemate(roomId, session.user.id);
 
-  const id = await withRLS(session.user.id, async (tx) => {
+  const id = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [event] = await tx
       .insert(hospiEvents)
       .values({
@@ -33,7 +33,7 @@ export async function createEvent(roomId: string, data: CreateEventData) {
         timeStart: parsed.data.timeStart,
         timeEnd: parsed.data.timeEnd || null,
         location: parsed.data.location || null,
-        rsvpDeadline: parsed.data.rsvpDeadline || null,
+        rsvpDeadline: parsed.data.rsvpDeadline ? new Date(parsed.data.rsvpDeadline) : null,
         maxAttendees: parsed.data.maxAttendees || null,
         notes: parsed.data.notes || null,
       })
@@ -55,7 +55,7 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
 
   await requireHousemate(roomId, session.user.id);
 
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     await tx
       .update(hospiEvents)
       .set({
@@ -65,7 +65,7 @@ export async function updateEvent(eventId: string, roomId: string, data: CreateE
         timeStart: parsed.data.timeStart,
         timeEnd: parsed.data.timeEnd || null,
         location: parsed.data.location || null,
-        rsvpDeadline: parsed.data.rsvpDeadline || null,
+        rsvpDeadline: parsed.data.rsvpDeadline ? new Date(parsed.data.rsvpDeadline) : null,
         maxAttendees: parsed.data.maxAttendees || null,
         notes: parsed.data.notes || null,
         sequence: sql`${hospiEvents.sequence} + 1`,
@@ -83,7 +83,7 @@ export async function cancelEvent(eventId: string, roomId: string) {
   const restricted = await requireNotRestricted(session.user.id);
   if (restricted) return restricted;
 
-  const result = await withRLS(session.user.id, async (tx) => {
+  const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [event] = await tx
       .update(hospiEvents)
       .set({ cancelledAt: new Date(), sequence: sql`${hospiEvents.sequence} + 1` })

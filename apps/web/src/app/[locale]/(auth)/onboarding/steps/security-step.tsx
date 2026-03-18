@@ -1,6 +1,5 @@
 "use client";
 
-import { setupKeysWithPIN } from "@openhospi/crypto";
 import { PIN_LENGTH } from "@openhospi/shared/constants";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader2, ShieldCheck } from "lucide-react";
@@ -8,17 +7,11 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import {
-  uploadIdentityKey,
-  uploadKeyBackup,
-  uploadOneTimePreKeys,
-  uploadSignedPreKey,
-} from "@/app/[locale]/(app)/chat/key-actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
-import { cryptoStore } from "@/lib/crypto";
+import { useEncryption } from "@/hooks/use-encryption";
 
 import { finishOnboarding } from "../actions";
 
@@ -35,6 +28,7 @@ export function SecurityStep({ userId, onBack }: Props) {
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [pinError, setPinError] = useState<string | null>(null);
+  const { initializeDevice } = useEncryption(userId);
 
   function handlePinSetup() {
     setPinError(null);
@@ -50,12 +44,7 @@ export function SecurityStep({ userId, onBack }: Props) {
 
     startTransition(async () => {
       try {
-        await setupKeysWithPIN(cryptoStore, userId, pin, {
-          uploadIdentityKey,
-          uploadSignedPreKey,
-          uploadOneTimePreKeys,
-          uploadBackup: uploadKeyBackup,
-        });
+        await initializeDevice(pin);
       } catch (error) {
         console.error("[SecurityStep] Encryption setup failed:", error);
         toast.error(tSecurity("setup_error"));

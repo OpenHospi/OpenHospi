@@ -1,11 +1,11 @@
-import { db, withRLS } from "@openhospi/database";
-import { notifications, profiles } from "@openhospi/database/schema";
 import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import type { Locale } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { notifications, profiles } from "@/lib/db/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 import { sendWebPushToUser } from "@/lib/services/web-push";
 
@@ -101,7 +101,7 @@ function resolveMessageKey(
 }
 
 export async function getUserNotifications(userId: string, page = 1): Promise<NotificationItem[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     return tx
       .select({
         id: notifications.id,
@@ -120,7 +120,7 @@ export async function getUserNotifications(userId: string, page = 1): Promise<No
 }
 
 export async function getUnreadNotificationCount(userId: string): Promise<number> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [result] = await tx
       .select({ count: count() })
       .from(notifications)
@@ -130,7 +130,7 @@ export async function getUnreadNotificationCount(userId: string): Promise<number
 }
 
 export async function markNotificationRead(notificationId: string, userId: string) {
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx
       .update(notifications)
       .set({ readAt: new Date() })
@@ -139,7 +139,7 @@ export async function markNotificationRead(notificationId: string, userId: strin
 }
 
 export async function markAllNotificationsRead(userId: string) {
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx
       .update(notifications)
       .set({ readAt: new Date() })

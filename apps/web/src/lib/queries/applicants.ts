@@ -1,9 +1,10 @@
-import { withRLS } from "@openhospi/database";
-import { applications, profilePhotos, profiles, reviews } from "@openhospi/database/schema";
 import { MAX_APPLICANTS_PER_PAGE } from "@openhospi/shared/constants";
 import type { Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne } from "drizzle-orm";
+
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, profilePhotos, profiles, reviews } from "@/lib/db/schema";
 
 export type ApplicantReview = {
   reviewerId: string;
@@ -34,7 +35,7 @@ export type RoomApplicant = {
 };
 
 export async function getRoomApplicants(roomId: string, userId: string): Promise<RoomApplicant[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const rows = await tx
       .select({
         applicationId: applications.id,

@@ -1,9 +1,5 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
-import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/database/validators";
-import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/database/validators";
 import type { Locale } from "@openhospi/i18n";
 import {
   GenderPreference,
@@ -12,12 +8,16 @@ import {
   RoomStatus,
   UtilitiesIncluded,
 } from "@openhospi/shared/enums";
+import type { EditRoomData, ShareLinkSettingsData } from "@openhospi/validators";
+import { editRoomSchema, shareLinkSettingsSchema } from "@openhospi/validators";
 import { and, count, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { roomPhotos, rooms } from "@/lib/db/schema";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession();
@@ -30,7 +30,7 @@ export async function updateRoom(roomId: string, data: EditRoomData) {
   await requireRoomOwnership(roomId, session.user.id);
 
   const d = parsed.data;
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(rooms)
       .set({
@@ -81,7 +81,7 @@ export async function updateRoomStatus(roomId: string, status: string) {
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  return withRLS(session.user.id, async (tx) => {
+  return createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [room] = await tx
       .select({ status: rooms.status })
       .from(rooms)
@@ -118,7 +118,7 @@ export async function regenerateShareLink(roomId: string) {
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(rooms)
       .set({
@@ -142,7 +142,7 @@ export async function updateShareLinkSettings(roomId: string, data: ShareLinkSet
 
   await requireRoomOwnership(roomId, session.user.id);
 
-  await withRLS(session.user.id, (tx) =>
+  await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx
       .update(rooms)
       .set({
@@ -162,7 +162,7 @@ export async function deleteRoom(roomId: string) {
   const session = await requireSession();
   await requireRoomOwnership(roomId, session.user.id);
 
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [room] = await tx
       .select({ status: rooms.status })
       .from(rooms)

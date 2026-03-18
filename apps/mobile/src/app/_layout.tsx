@@ -2,9 +2,9 @@
 import { install } from 'react-native-quick-crypto';
 install();
 
-import { setBackend } from '@openhospi/crypto';
-import { createNativeBackend } from '@openhospi/crypto/native';
-setBackend(createNativeBackend());
+import { setCryptoProvider } from '@openhospi/crypto';
+import { createNativeCryptoProvider } from '@openhospi/crypto/native';
+setCryptoProvider(createNativeCryptoProvider());
 
 import '../global.css';
 import { hideSplash } from '@/lib/splash';
@@ -21,7 +21,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useUniwind } from 'uniwind';
 
 import { SessionProvider, useAppSession } from '@/context/session';
-import { useRunMigrations } from '@/db/migrations';
+import { useRunMigrations } from '@/lib/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
 import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient } from '@/lib/query-client';

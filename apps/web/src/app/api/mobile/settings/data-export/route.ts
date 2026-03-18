@@ -1,4 +1,9 @@
-import { withRLS } from "@openhospi/database";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
+import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
   applications,
@@ -13,18 +18,13 @@ import {
   processingRestrictions,
   profilePhotos,
   profiles,
-  identityKeys,
+  devices,
   pushSubscriptions,
   reviews,
   roomPhotos,
   rooms,
   votes,
-} from "@openhospi/database/schema";
-import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
-
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+} from "@/lib/db/schema";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function POST(request: Request) {
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       return apiError("Rate limited", 429, "RATE_LIMITED");
     }
 
-    const data = await withRLS(userId, async (tx) => {
+    const data = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       const [profile] = await tx.select().from(profiles).where(eq(profiles.id, userId));
       const photos = await tx.select().from(profilePhotos).where(eq(profilePhotos.userId, userId));
       const userRooms = await tx.select().from(rooms).where(eq(rooms.ownerId, userId));
@@ -72,10 +72,7 @@ export async function POST(request: Request) {
         })
         .from(pushSubscriptions)
         .where(eq(pushSubscriptions.userId, userId));
-      const [userIdentityKey] = await tx
-        .select()
-        .from(identityKeys)
-        .where(eq(identityKeys.userId, userId));
+      const userDevices = await tx.select().from(devices).where(eq(devices.userId, userId));
       const userConsents = await tx
         .select()
         .from(activeConsents)
@@ -126,7 +123,7 @@ export async function POST(request: Request) {
         votes: userVotes,
         notifications: userNotifications,
         pushSubscriptions: userPushSubscriptions,
-        identityKey: userIdentityKey ?? null,
+        devices: userDevices,
         consents: userConsents,
         consentHistory: userConsentHistory,
         dataRequests: userDataRequests,

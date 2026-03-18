@@ -16,10 +16,6 @@ export const queryKeys = {
   onboarding: {
     status: () => ['onboarding', 'status'] as const,
   },
-  encryption: {
-    backup: () => ['encryption', 'backup'] as const,
-    status: () => ['encryption', 'status'] as const,
-  },
   verification: {
     status: (peerUserId: string) => ['verification', 'status', peerUserId] as const,
     identityKeys: (userIds: string[]) => ['identity-keys', ...userIds] as const,

@@ -1,6 +1,7 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
+import { setupDevice } from '@openhospi/crypto';
+import { Platform, ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -8,21 +9,12 @@ import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { useSession } from '@/lib/auth-client';
-import { setupKeysWithPIN } from '@openhospi/crypto';
-
-import { cryptoStore } from '@/lib/crypto/store';
-import {
-  uploadIdentityKeyApi,
-  uploadSignedPreKeyApi,
-  uploadOneTimePreKeysApi,
-  uploadBackupApi,
-} from '@/services/encryption';
+import { getMobileSignalStore } from '@/lib/crypto/stores';
+import { api } from '@/lib/api-client';
 import { queryKeys } from '@/services/keys';
 
 export default function SecurityStep() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
-  const { data: session } = useSession();
   const queryClient = useQueryClient();
 
   const [pin, setPin] = useState('');
@@ -43,21 +35,31 @@ export default function SecurityStep() {
       return;
     }
 
-    if (!session?.user?.id) {
-      Alert.alert(t('setup_error'));
-      return;
-    }
-
     setLoading(true);
     try {
-      await setupKeysWithPIN(cryptoStore, session.user.id, value, {
-        uploadIdentityKey: uploadIdentityKeyApi,
-        uploadSignedPreKey: uploadSignedPreKeyApi,
-        uploadOneTimePreKeys: uploadOneTimePreKeysApi,
-        uploadBackup: uploadBackupApi,
+      const store = getMobileSignalStore();
+      const result = await setupDevice(store, value);
+
+      // Register device on server
+      await api.post<{ id: string }>('/api/mobile/chat/register-device', {
+        registrationId: result.registrationId,
+        identityKeyPublic: result.identityKeyPublic,
+        signingKeyPublic: result.signingKeyPublic,
+        platform: Platform.OS === 'ios' ? 'ios' : 'android',
+        signedPreKey: result.signedPreKey,
+        oneTimePreKeys: result.oneTimePreKeys,
       });
+
+      // Upload encrypted backup
+      await api.post('/api/mobile/chat/backup', {
+        encryptedData: result.encryptedBackup.ciphertext,
+        iv: result.encryptedBackup.iv,
+        salt: result.encryptedBackup.salt,
+      });
+
       await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
-    } catch {
+    } catch (error) {
+      console.error('[SecurityStep] Setup failed:', error);
       Alert.alert(t('setup_error'));
       setConfirmPin('');
       setLoading(false);

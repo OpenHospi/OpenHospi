@@ -11,3 +11,7 @@ files:
     translation: /packages/i18n/messages/%two_letters_code%/web.json
   - source: /packages/i18n/messages/nl/app.json
     translation: /packages/i18n/messages/%two_letters_code%/app.json
+  - source: /apps/docs/content/docs/**/*.mdx
+    translation: /apps/docs/content/docs/**/%file_name%.%locale%.mdx
+    ignore:
+      - /apps/docs/content/docs/**/*.en.mdx

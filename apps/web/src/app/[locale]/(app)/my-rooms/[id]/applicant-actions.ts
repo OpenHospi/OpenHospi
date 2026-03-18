@@ -1,9 +1,5 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { applications, reviews } from "@openhospi/database/schema";
-import type { ReviewData } from "@openhospi/database/validators";
-import { reviewSchema } from "@openhospi/database/validators";
 import {
   ApplicationStatus,
   HouseMemberRole,
@@ -11,6 +7,8 @@ import {
   isValidApplicationTransition,
   REVIEW_DECISION_TO_APPLICATION_STATUS,
 } from "@openhospi/shared/enums";
+import type { ReviewData } from "@openhospi/validators";
+import { reviewSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -20,6 +18,8 @@ import {
   requireNotRestricted,
   requireSession,
 } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, reviews } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 
 export async function markApplicationsSeen(roomId: string) {
@@ -29,7 +29,7 @@ export async function markApplicationsSeen(roomId: string) {
 
   await requireHousemate(roomId, session.user.id);
 
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const sentApps = await tx
       .select({ id: applications.id })
       .from(applications)
@@ -67,7 +67,7 @@ export async function submitReview(roomId: string, applicantUserId: string, data
 
   const role = await requireHousemate(roomId, session.user.id);
 
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     await tx
       .insert(reviews)
       .values({
@@ -127,7 +127,7 @@ export async function updateApplicationStatus(
 
   await requireHousePermission(roomId, session.user.id, "application:decide");
 
-  return withRLS(session.user.id, async (tx) => {
+  return createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [app] = await tx
       .select({ status: applications.status })
       .from(applications)

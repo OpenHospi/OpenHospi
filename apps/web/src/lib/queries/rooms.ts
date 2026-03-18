@@ -1,9 +1,10 @@
-import { withRLS } from "@openhospi/database";
-import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
-import type { Room, RoomPhoto } from "@openhospi/database/types";
 import { City, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { cache } from "react";
+
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, roomPhotos, rooms } from "@/lib/db/schema";
+import type { Room, RoomPhoto } from "@/lib/db/types";
 
 export type { Room, RoomPhoto };
 
@@ -23,7 +24,7 @@ export type RoomSummary = {
 };
 
 export async function getExistingDraft(userId: string, houseId: string): Promise<string | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [row] = await tx
       .select({ id: rooms.id })
       .from(rooms)
@@ -42,7 +43,7 @@ export async function getExistingDraft(userId: string, houseId: string): Promise
 export async function createDraftRoom(userId: string, houseId: string): Promise<string> {
   const roomId = crypto.randomUUID();
 
-  await withRLS(userId, async (tx) => {
+  await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     await tx.insert(rooms).values({
       id: roomId,
       ownerId: userId,
@@ -61,7 +62,7 @@ export const getRoom = cache(async function getRoom(
   roomId: string,
   userId: string,
 ): Promise<RoomWithPhotos | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [room] = await tx
       .select()
       .from(rooms)
@@ -80,7 +81,7 @@ export const getRoom = cache(async function getRoom(
 });
 
 export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const rows = await tx
       .select({
         id: rooms.id,
@@ -119,7 +120,7 @@ export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
 }
 
 export async function getRoomPhotos(roomId: string, userId: string): Promise<RoomPhoto[]> {
-  return withRLS(userId, (tx) =>
+  return createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.select().from(roomPhotos).where(eq(roomPhotos.roomId, roomId)).orderBy(roomPhotos.slot),
   );
 }

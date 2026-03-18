@@ -1,131 +1,123 @@
-import type { CiphertextPayload } from '@openhospi/crypto';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
 
-export type ConversationListItem = {
+import { queryKeys } from './keys';
+
+// ── Types ──
+
+type ConversationSummary = {
   id: string;
-  type: string;
-  roomTitle: string | null;
-  lastMessageAt: string | null;
+  roomId: string;
+  roomTitle: string;
+  seekerUserId: string;
+  createdAt: string;
   unreadCount: number;
-  members: { userId: string; firstName: string; lastName: string; avatarUrl: string | null }[];
+  lastMessageAt: string;
+  members: { userId: string; firstName: string }[];
+  roomPhotoUrl: string | null;
 };
 
-export type ConversationDetail = {
+type ConversationDetail = {
   id: string;
-  roomId: string | null;
-  seekerUserId: string | null;
-  type: string;
-  room: {
-    id: string;
-    title: string;
-    city: string;
-    rentPrice: string;
-    coverPhotoUrl: string | null;
-  } | null;
-  members: {
-    userId: string;
-    firstName: string;
-    lastName: string;
-    avatarUrl: string | null;
-    role: 'seeker' | 'house_member';
-  }[];
+  roomId: string;
+  roomTitle: string;
+  seekerUserId: string;
+  createdAt: string;
+  members: { userId: string; firstName: string }[];
 };
 
-export type MessageItem = {
+type MessageRow = {
   id: string;
+  conversationId: string;
   senderId: string;
-  senderFirstName: string;
-  senderAvatarUrl: string | null;
-  ciphertext: string | null;
-  iv: string | null;
-  ratchetPublicKey: string | null;
-  messageNumber: number | null;
-  previousChainLength: number | null;
+  senderDeviceId: string | null;
   messageType: string;
   createdAt: string;
+  payload: string | null;
+  senderFirstName: string | null;
 };
 
-export type { CiphertextPayload } from '@openhospi/crypto';
-
-export const chatKeys = {
-  conversations: () => ['chat', 'conversations'] as const,
-  conversationDetail: (id: string) => ['chat', 'conversations', id] as const,
-  messages: (conversationId: string) => ['chat', 'messages', conversationId] as const,
+type MessagesPage = {
+  messages: MessageRow[];
+  nextCursor: string | null;
 };
 
-export function fetchConversationDetail(id: string) {
-  return api.get<ConversationDetail>(`/chat/conversations/${id}`);
-}
-
-export function fetchMessages(conversationId: string, cursor?: string) {
-  const params = cursor ? `?cursor=${cursor}` : '';
-  return api.get<MessageItem[]>(`/chat/conversations/${conversationId}/messages${params}`);
-}
-
-export function fetchRealtimeToken() {
-  return api.get<{ token: string }>('/chat/realtime-token');
-}
-
-function fetchConversations() {
-  return api.get<ConversationListItem[]>('/chat/conversations');
-}
-
-function sendMessageApi(conversationId: string, payloads: CiphertextPayload[]) {
-  return api.post<{ messageId: string }>('/chat/send', { conversationId, payloads });
-}
-
-function markReadApi(conversationId: string) {
-  return api.post(`/chat/conversations/${conversationId}/read`);
-}
+// ── Hooks ──
 
 export function useConversations() {
   return useQuery({
-    queryKey: chatKeys.conversations(),
-    queryFn: fetchConversations,
+    queryKey: queryKeys.chat.conversations(),
+    queryFn: () => api.get<ConversationSummary[]>('/api/mobile/chat/conversations'),
   });
 }
 
 export function useConversationDetail(id: string) {
   return useQuery({
-    queryKey: chatKeys.conversationDetail(id),
-    queryFn: () => fetchConversationDetail(id),
+    queryKey: queryKeys.chat.conversationDetail(id),
+    queryFn: () => api.get<ConversationDetail>(`/api/mobile/chat/conversations/${id}`),
     enabled: !!id,
   });
 }
 
 export function useMessages(conversationId: string) {
-  return useQuery({
-    queryKey: chatKeys.messages(conversationId),
-    queryFn: () => fetchMessages(conversationId),
+  return useInfiniteQuery({
+    queryKey: queryKeys.chat.messages(conversationId),
+    queryFn: ({ pageParam }) => {
+      const params = new URLSearchParams();
+      if (pageParam) params.set('cursor', pageParam);
+      const qs = params.toString();
+      return api.get<MessagesPage>(
+        `/api/mobile/chat/conversations/${conversationId}/messages${qs ? `?${qs}` : ''}`
+      );
+    },
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     enabled: !!conversationId,
   });
 }
 
 export function useSendMessage() {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: ({
-      conversationId,
-      payloads,
-    }: {
+    mutationFn: (data: {
       conversationId: string;
-      payloads: CiphertextPayload[];
-    }) => sendMessageApi(conversationId, payloads),
-    onSuccess: (_, { conversationId }) => {
-      queryClient.invalidateQueries({ queryKey: chatKeys.messages(conversationId) });
-      queryClient.invalidateQueries({ queryKey: chatKeys.conversations() });
+      payload: string;
+      deviceId?: string;
+      distributions?: { recipientDeviceId: string; ciphertext: string }[];
+    }) => api.post<MessageRow>('/api/mobile/chat/send', data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.messages(variables.conversationId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.conversations(),
+      });
     },
   });
 }
 
-export function useMarkRead(conversationId: string) {
+export function useMarkConversationRead() {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: () => markReadApi(conversationId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: chatKeys.conversations() });
+    mutationFn: (conversationId: string) =>
+      api.post(`/api/mobile/chat/conversations/${conversationId}/read`),
+    onSuccess: (_data, conversationId) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.conversationDetail(conversationId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.conversations(),
+      });
     },
+  });
+}
+
+export function useOpenConversation() {
+  return useMutation({
+    mutationFn: (data: { roomId: string; seekerUserId: string; memberUserIds: string[] }) =>
+      api.post<{ id: string }>('/api/mobile/chat/conversations/open', data),
   });
 }

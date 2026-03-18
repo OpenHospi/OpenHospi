@@ -1,10 +1,10 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { votes } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { votes } from "@/lib/db/schema";
 
 export async function submitVotes(
   roomId: string,
@@ -17,7 +17,7 @@ export async function submitVotes(
 
   await requireHousemate(roomId, user.id);
 
-  await withRLS(user.id, async (tx) => {
+  await createDrizzleSupabaseClient(user.id).rls(async (tx) => {
     // Delete existing votes for this voter+room+round
     await tx
       .delete(votes)

@@ -1,116 +1,120 @@
-import type { CiphertextPayload } from "@openhospi/crypto";
-import { db, withRLS } from "@openhospi/database";
-import {
-  blocks,
-  conversationMembers,
-  messageCiphertexts,
-  messageReceipts,
-  messages,
-} from "@openhospi/database/schema";
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-import { apiError, apiSuccess, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import {
+  conversationMembers,
+  messagePayloads,
+  messageReceipts,
+  messages,
+  senderKeyDistributions,
+} from "@/lib/db/schema";
+import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   try {
     const session = await requireApiSession(request);
-    const userId = session.user.id;
-
-    const body = (await request.json()) as {
-      conversationId?: string;
-      payloads?: CiphertextPayload[];
+    const body = await request.json();
+    const { conversationId, payload, deviceId, distributions } = body as {
+      conversationId: string;
+      payload: string;
+      deviceId?: string;
+      distributions?: Array<{ recipientDeviceId: string; ciphertext: string }>;
     };
 
-    if (!body.conversationId || !body.payloads || body.payloads.length === 0) {
-      return apiError("conversationId and payloads array are required", 400);
+    if (!conversationId || !payload) {
+      return apiError("Missing required fields", 422);
     }
 
-    // Validate each payload
-    for (const p of body.payloads) {
-      if (
-        !p.recipientUserId ||
-        !p.ciphertext ||
-        !p.iv ||
-        !p.ratchetPublicKey ||
-        p.messageNumber == null ||
-        p.previousChainLength == null
-      ) {
-        return apiError(
-          "Each payload must include recipientUserId, ciphertext, iv, ratchetPublicKey, messageNumber, and previousChainLength",
-          400,
-        );
-      }
-    }
-
-    // Get conversation members
-    const members = await db
-      .select({ userId: conversationMembers.userId })
-      .from(conversationMembers)
-      .where(eq(conversationMembers.conversationId, body.conversationId));
-
-    const otherMemberIds = members.filter((m) => m.userId !== userId).map((m) => m.userId);
-
-    // Check for bidirectional blocks
-    if (otherMemberIds.length > 0) {
-      const blockExists = await db
-        .select({ blockerId: blocks.blockerId })
-        .from(blocks)
+    const msg = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
+      // Verify membership
+      const [member] = await tx
+        .select({ userId: conversationMembers.userId })
+        .from(conversationMembers)
         .where(
-          or(
-            and(eq(blocks.blockerId, userId), inArray(blocks.blockedId, otherMemberIds)),
-            and(inArray(blocks.blockerId, otherMemberIds), eq(blocks.blockedId, userId)),
+          and(
+            eq(conversationMembers.conversationId, conversationId),
+            eq(conversationMembers.userId, session.user.id),
           ),
-        )
-        .limit(1);
+        );
 
-      if (blockExists.length > 0) {
-        return apiError(
-          "Cannot send message — a block exists between you and a conversation member",
-          403,
+      if (!member) throw new Error("Not a member");
+
+      // Step 1: Store sender key distributions atomically (if provided)
+      if (distributions && distributions.length > 0 && deviceId) {
+        await tx.insert(senderKeyDistributions).values(
+          distributions.map((dist) => ({
+            conversationId,
+            senderUserId: session.user.id,
+            senderDeviceId: deviceId,
+            recipientDeviceId: dist.recipientDeviceId,
+            ciphertext: dist.ciphertext,
+          })),
         );
       }
-    }
 
-    // Insert message metadata via RLS
-    const [message] = await withRLS(userId, async (tx) => {
-      return tx
+      // Step 2: Insert message
+      const [msg] = await tx
         .insert(messages)
         .values({
-          conversationId: body.conversationId!,
-          senderId: userId,
-          messageType: "text",
+          conversationId,
+          senderId: session.user.id,
+          senderDeviceId: deviceId ?? null,
+          messageType: "ciphertext",
         })
-        .returning({ id: messages.id });
+        .returning();
+
+      // Step 3: Insert encrypted payload
+      await tx.insert(messagePayloads).values({
+        messageId: msg.id,
+        conversationId,
+        senderUserId: session.user.id,
+        senderDeviceId: deviceId ?? null,
+        payload,
+      });
+
+      // Step 4: Create receipts for all other members
+      const members = await tx
+        .select({ userId: conversationMembers.userId })
+        .from(conversationMembers)
+        .where(eq(conversationMembers.conversationId, conversationId));
+
+      const receiptValues = members
+        .filter((m) => m.userId !== session.user.id)
+        .map((m) => ({
+          messageId: msg.id,
+          userId: m.userId,
+          status: "sent" as const,
+        }));
+
+      if (receiptValues.length > 0) {
+        await tx.insert(messageReceipts).values(receiptValues);
+      }
+
+      return msg;
     });
 
-    // Insert ciphertexts for each recipient
-    await db.insert(messageCiphertexts).values(
-      body.payloads.map((p) => ({
-        messageId: message.id,
-        recipientUserId: p.recipientUserId,
-        ciphertext: p.ciphertext,
-        iv: p.iv,
-        ratchetPublicKey: p.ratchetPublicKey,
-        messageNumber: p.messageNumber,
-        previousChainLength: p.previousChainLength,
-      })),
-    );
-
-    // Create receipts for other members
-    const receipts = members
-      .filter((m) => m.userId !== userId)
-      .map((m) => ({
-        messageId: message.id,
-        userId: m.userId,
-        status: "sent" as const,
-      }));
-
-    if (receipts.length > 0) {
-      await db.insert(messageReceipts).values(receipts);
+    // Broadcast via Supabase Realtime
+    const channel = supabaseAdmin.channel(`chat:${conversationId}`);
+    try {
+      if (distributions && distributions.length > 0) {
+        await channel.send({
+          type: "broadcast",
+          event: "sender_key_distribution",
+          payload: { senderId: session.user.id, senderDeviceId: deviceId },
+        });
+      }
+      await channel.send({
+        type: "broadcast",
+        event: "new_message",
+        payload: { messageId: msg.id, senderId: session.user.id, senderDeviceId: deviceId },
+      });
+    } catch {
+      // Broadcast failure is non-critical
     }
 
-    return apiSuccess({ messageId: message.id });
+    return NextResponse.json(msg);
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;

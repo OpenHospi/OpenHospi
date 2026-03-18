@@ -2,79 +2,91 @@
 
 import { requireSession } from "@/lib/auth/server";
 import {
-  getIdentityKeysByUserIds,
+  fetchPreKeyBundle,
+  getDevicesForUser,
   getKeyBackup,
-  getOneTimePreKeyCount,
-  getPreKeyBundle,
-  insertOneTimePreKeys,
-  insertSignedPreKey,
+  registerDevice,
   removeKeyBackup,
-  upsertIdentityKey,
+  replenishOneTimePreKeys,
+  rotateSignedPreKey,
   upsertKeyBackup,
+  storeSenderKeyDistribution,
+  fetchPendingDistributions,
+  acknowledgeDistribution,
 } from "@/lib/services/key-mutations";
 
-// ── Identity Keys ──
-
-export async function uploadIdentityKey(identityPublicKey: string, signingPublicKey: string) {
-  const session = await requireSession();
-  await upsertIdentityKey(session.user.id, identityPublicKey, signingPublicKey);
-}
-
-export async function fetchIdentityKeys(
-  userIds: string[],
-): Promise<{ userId: string; identityPublicKey: string; signingPublicKey: string }[]> {
-  const session = await requireSession();
-  return getIdentityKeysByUserIds(session.user.id, userIds);
-}
-
-// ── Pre-Keys ──
-
-export async function uploadSignedPreKey(data: {
-  keyId: number;
-  publicKey: string;
-  signature: string;
+export async function registerUserDevice(data: {
+  registrationId: number;
+  identityKeyPublic: string;
+  signingKeyPublic: string;
+  platform: "web" | "ios" | "android";
+  signedPreKey: { keyId: number; publicKey: string; signature: string };
+  oneTimePreKeys: Array<{ keyId: number; publicKey: string }>;
 }) {
   const session = await requireSession();
-  await insertSignedPreKey(session.user.id, data);
+  return registerDevice({ userId: session.user.id, ...data });
 }
 
-export async function uploadOneTimePreKeys(keys: { keyId: number; publicKey: string }[]) {
-  const session = await requireSession();
-  await insertOneTimePreKeys(session.user.id, keys);
-}
-
-export async function fetchPreKeyBundle(userId: string) {
+export async function fetchDevicesForUser(targetUserId: string) {
   await requireSession();
-  return getPreKeyBundle(userId);
+  return getDevicesForUser(targetUserId);
 }
 
-export async function getPreKeyCount(): Promise<number> {
+export async function fetchPreKeyBundleForDevice(targetDeviceUuid: string) {
+  await requireSession();
+  return fetchPreKeyBundle(targetDeviceUuid);
+}
+
+export async function replenishPreKeys(
+  deviceUuid: string,
+  keys: Array<{ keyId: number; publicKey: string }>,
+) {
+  await requireSession();
+  return replenishOneTimePreKeys(deviceUuid, keys);
+}
+
+export async function rotateDeviceSignedPreKey(
+  deviceUuid: string,
+  data: { keyId: number; publicKey: string; signature: string },
+) {
+  await requireSession();
+  return rotateSignedPreKey(deviceUuid, data);
+}
+
+export async function uploadKeyBackup(data: { encryptedData: string; iv: string; salt: string }) {
   const session = await requireSession();
-  return getOneTimePreKeyCount(session.user.id);
+  return upsertKeyBackup({ userId: session.user.id, ...data });
 }
 
-// ── Backup ──
-
-export async function uploadKeyBackup(data: {
-  encryptedPrivateKey: string;
-  backupIv: string;
-  salt: string;
-}) {
-  const session = await requireSession();
-  await upsertKeyBackup(session.user.id, data);
-}
-
-export async function fetchKeyBackup(): Promise<{
-  encryptedPrivateKey: string;
-  backupIv: string;
-  salt: string;
-  createdAt: Date;
-} | null> {
+export async function fetchKeyBackup() {
   const session = await requireSession();
   return getKeyBackup(session.user.id);
 }
 
 export async function deleteKeyBackup() {
   const session = await requireSession();
-  await removeKeyBackup(session.user.id);
+  return removeKeyBackup(session.user.id);
+}
+
+export async function storeSenderKeyDist(data: {
+  conversationId: string;
+  senderDeviceId: string;
+  recipientDeviceId: string;
+  ciphertext: string;
+}) {
+  const session = await requireSession();
+  return storeSenderKeyDistribution({
+    ...data,
+    senderUserId: session.user.id,
+  });
+}
+
+export async function fetchPendingDists(recipientDeviceId: string) {
+  await requireSession();
+  return fetchPendingDistributions(recipientDeviceId);
+}
+
+export async function acknowledgeDist(id: string) {
+  await requireSession();
+  return acknowledgeDistribution(id);
 }

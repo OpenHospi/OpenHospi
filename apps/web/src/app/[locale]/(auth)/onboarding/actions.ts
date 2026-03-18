@@ -1,13 +1,13 @@
 "use server";
 
+import type { Locale } from "@openhospi/i18n";
 import type {
   AboutStepData,
   BioStepData,
   IdentityStepData,
   LanguagesStepData,
   PersonalityStepData,
-} from "@openhospi/database/validators";
-import type { Locale } from "@openhospi/i18n";
+} from "@openhospi/validators";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";

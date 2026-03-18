@@ -1,7 +1,5 @@
 "use client";
 
-import type { EditRoomData } from "@openhospi/database/validators";
-import { editRoomSchema } from "@openhospi/database/validators";
 import {
   City,
   Furnishing,
@@ -14,6 +12,8 @@ import {
   UtilitiesIncluded,
   Vereniging,
 } from "@openhospi/shared/enums";
+import type { EditRoomData } from "@openhospi/validators";
+import { editRoomSchema } from "@openhospi/validators";
 import { Loader2, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";

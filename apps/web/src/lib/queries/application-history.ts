@@ -1,8 +1,11 @@
-import { withRLS } from "@openhospi/database";
-import { applicationStatusHistory } from "@openhospi/database/schema";
 import type { ApplicationStatus } from "@openhospi/shared/enums";
 
-type RLSTransaction = Parameters<Parameters<typeof withRLS>[1]>[0];
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applicationStatusHistory } from "@/lib/db/schema";
+
+type RLSTransaction = Parameters<
+  Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]
+>[0];
 
 export async function logStatusTransition(
   tx: RLSTransaction,

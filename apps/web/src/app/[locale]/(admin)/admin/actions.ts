@@ -1,16 +1,5 @@
 "use server";
 
-import { db } from "@openhospi/database";
-import {
-  adminAuditLog,
-  profilePhotos,
-  profiles,
-  reports,
-  roomPhotos,
-  rooms,
-  session,
-  user,
-} from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import type { City, ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";
@@ -20,6 +9,17 @@ import { revalidatePath } from "next/cache";
 import { parseUUID } from "@/lib/action-result";
 import { auth } from "@/lib/auth/auth";
 import { requireAdmin } from "@/lib/auth/server";
+import { db } from "@/lib/db";
+import {
+  adminAuditLog,
+  profilePhotos,
+  profiles,
+  reports,
+  roomPhotos,
+  rooms,
+  session,
+  user,
+} from "@/lib/db/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 
 export type AggregateStats = {

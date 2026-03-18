@@ -2,33 +2,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ChatLoading() {
   return (
-    <>
-      {/* Mobile-only: conversation list */}
-      <div className="flex flex-1 flex-col md:hidden">
-        <div className="flex h-14 items-center border-b px-4">
-          <Skeleton className="h-5 w-24" />
+    <div className="flex w-full">
+      <div className="border-border flex w-full flex-col border-r md:w-80 lg:w-96">
+        <div className="border-border border-b p-4">
+          <Skeleton className="h-7 w-24" />
         </div>
-        <div className="flex-1 divide-y">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 p-4">
-              {/* Avatar */}
-              <Skeleton className="size-10 shrink-0 rounded-full" />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between">
-                  <Skeleton className="h-4 w-28" />
-                  <Skeleton className="h-3 w-10" />
-                </div>
-                <Skeleton className="mt-1 h-3.5 w-40" />
+        <div className="flex flex-col gap-1 p-2">
+          {Array.from({ length: 5 }, (_, i) => (
+            <div key={i} className="flex items-center gap-3 rounded-lg p-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="flex flex-1 flex-col gap-1">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-48" />
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Desktop: placeholder */}
-      <div className="hidden flex-1 items-center justify-center md:flex">
-        <Skeleton className="h-5 w-48" />
-      </div>
-    </>
+    </div>
   );
 }

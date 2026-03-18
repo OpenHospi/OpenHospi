@@ -1,6 +1,11 @@
 "use server";
 
-import { db, withRLS } from "@openhospi/database";
+import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import { eq } from "drizzle-orm";
+
+import { requireSession } from "@/lib/auth/server";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
   applications,
@@ -16,7 +21,7 @@ import {
   processingRestrictions,
   profilePhotos,
   profiles,
-  identityKeys,
+  devices,
   pushSubscriptions,
   reports,
   reviews,
@@ -24,12 +29,7 @@ import {
   rooms,
   user,
   votes,
-} from "@openhospi/database/schema";
-import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
-import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import { eq } from "drizzle-orm";
-
-import { requireSession } from "@/lib/auth/server";
+} from "@/lib/db/schema";
 import { deletePhotoFromStorage } from "@/lib/services/photos";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
@@ -41,7 +41,7 @@ export async function exportData() {
     return { error: "RATE_LIMITED" as const };
   }
 
-  const data = await withRLS(userId, async (tx) => {
+  const data = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx.select().from(profiles).where(eq(profiles.id, userId));
     const photos = await tx.select().from(profilePhotos).where(eq(profilePhotos.userId, userId));
     const userRooms = await tx.select().from(rooms).where(eq(rooms.ownerId, userId));
@@ -77,10 +77,7 @@ export async function exportData() {
       })
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, userId));
-    const [userIdentityKey] = await tx
-      .select()
-      .from(identityKeys)
-      .where(eq(identityKeys.userId, userId));
+    const userDevices = await tx.select().from(devices).where(eq(devices.userId, userId));
     const userConsents = await tx
       .select()
       .from(activeConsents)
@@ -138,7 +135,7 @@ export async function exportData() {
       votes: userVotes,
       notifications: userNotifications,
       pushSubscriptions: userPushSubscriptions,
-      identityKey: userIdentityKey ?? null,
+      devices: userDevices,
       consents: userConsents,
       consentHistory: userConsentHistory,
       dataRequests: userDataRequests,
@@ -193,7 +190,7 @@ export async function exportDataCSV() {
     ["votes.csv", data.votes],
     ["notifications.csv", data.notifications],
     ["push-subscriptions.csv", data.pushSubscriptions],
-    ["identity-key.csv", data.identityKey ? [data.identityKey] : []],
+    ["devices.csv", data.devices],
     ["consents.csv", data.consents],
     ["consent-history.csv", data.consentHistory],
     ["data-requests.csv", data.dataRequests],
@@ -216,7 +213,7 @@ export async function updatePreferredLocale(locale: Locale) {
     return { error: "INVALID_LOCALE" as const };
   }
   const session = await requireSession();
-  await withRLS(session.user.id, async (tx) => {
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     await tx
       .update(profiles)
       .set({ preferredLocale: locale })
@@ -250,7 +247,7 @@ export async function deleteAccount() {
   const userId = session.user.id;
 
   // Collect all photo URLs to delete from storage
-  const photoUrls = await withRLS(userId, async (tx) => {
+  const photoUrls = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const pPhotos = await tx
       .select({ url: profilePhotos.url })
       .from(profilePhotos)

@@ -1,11 +1,3 @@
-import { withRLS } from "@openhospi/database";
-import {
-  applications,
-  applicationStatusHistory,
-  profiles,
-  roomPhotos,
-  rooms,
-} from "@openhospi/database/schema";
 import type {
   City,
   Furnishing,
@@ -21,6 +13,14 @@ import type {
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
 import { and, asc, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import {
+  applications,
+  applicationStatusHistory,
+  profiles,
+  roomPhotos,
+  rooms,
+} from "@/lib/db/schema";
 import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type UserApplication = {
@@ -98,7 +98,7 @@ export async function getUserApplications(userId: string): Promise<UserApplicati
       "room_photo_count",
     );
 
-  const rows = await withRLS(userId, (tx) =>
+  const rows = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({
         id: applications.id,
@@ -136,7 +136,7 @@ export async function getApplicationDetail(
       "room_photo_count",
     );
 
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [row] = await tx
       .select({
         id: applications.id,
@@ -180,7 +180,7 @@ export async function getApplicationForRoom(
   roomId: string,
   userId: string,
 ): Promise<{ id: string; status: ApplicationStatus } | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [row] = await tx
       .select({ id: applications.id, status: applications.status })
       .from(applications)
@@ -193,7 +193,7 @@ export async function getRoomDetailForApply(
   roomId: string,
   userId: string,
 ): Promise<RoomDetailForApply | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [userProfile] = await tx
       .select({ vereniging: profiles.vereniging })
       .from(profiles)
@@ -296,7 +296,7 @@ export async function getApplicationStatusHistory(
   applicationId: string,
   userId: string,
 ): Promise<StatusHistoryEntry[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     // Verify the user owns this application
     const [app] = await tx
       .select({ id: applications.id })

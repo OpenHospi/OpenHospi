@@ -1,6 +1,7 @@
-import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations, profiles } from "@openhospi/database/schema";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
+
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { hospiEvents, hospiInvitations, profiles } from "@/lib/db/schema";
 
 export type EventSummary = {
   id: string;
@@ -45,7 +46,7 @@ export type EventDetail = {
 };
 
 export async function getRoomEvents(roomId: string, userId: string): Promise<EventSummary[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const events = await tx
       .select({
         id: hospiEvents.id,
@@ -70,7 +71,7 @@ export async function getRoomEvents(roomId: string, userId: string): Promise<Eve
 }
 
 export async function getEventDetail(eventId: string, userId: string): Promise<EventDetail | null> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [event] = await tx.select().from(hospiEvents).where(eq(hospiEvents.id, eventId));
 
     if (!event) return null;
@@ -95,7 +96,7 @@ export async function getEventDetail(eventId: string, userId: string): Promise<E
 }
 
 export async function getActiveRoomEvents(roomId: string, userId: string): Promise<EventSummary[]> {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const events = await tx
       .select({
         id: hospiEvents.id,

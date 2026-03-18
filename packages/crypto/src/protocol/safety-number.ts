@@ -1,174 +1,89 @@
-/**
- * Safety Number generation for key verification (MITM detection).
- *
- * Based on Signal's safety number algorithm:
- * 1. Take both users' Ed25519 signing public keys
- * 2. Sort by user ID (deterministic — both users see the same code)
- * 3. For each: SHA-512(key || userId) iterated 5200 times
- * 4. Concatenate both 32-byte digests
- * 5. Convert to 12 groups of 5 digits (60-digit code)
- */
+import { getCryptoProvider } from "../primitives/CryptoProvider";
 
-import { toBase64 } from "./encoding";
-const SAFETY_NUMBER_ITERATIONS = 5200;
+import { concat, encodeUtf8 } from "./encoding";
+
+const SAFETY_NUMBER_VERSION = new Uint8Array([0x00, 0x00]);
 
 /**
  * Generate a safety number for verifying identity between two users.
- * The result is deterministic — both users will generate the same number.
+ * Based on the Signal Protocol's numeric fingerprint format.
  *
- * @returns 60-digit string formatted as 12 groups of 5 digits
+ * The safety number is a 60-digit string (12 groups of 5 digits).
  */
-export async function generateSafetyNumber(
-  ourUserId: string,
-  ourSigningPublicKey: Uint8Array,
-  theirUserId: string,
-  theirSigningPublicKey: Uint8Array,
-): Promise<string> {
-  // Sort by userId to ensure both sides generate the same number
-  const [firstId, firstKey, secondId, secondKey] =
-    ourUserId < theirUserId
-      ? [ourUserId, ourSigningPublicKey, theirUserId, theirSigningPublicKey]
-      : [theirUserId, theirSigningPublicKey, ourUserId, ourSigningPublicKey];
+export function generateSafetyNumber(
+  localUserId: string,
+  localIdentityKey: Uint8Array,
+  remoteUserId: string,
+  remoteIdentityKey: Uint8Array,
+): string {
+  const localFingerprint = computeFingerprint(localUserId, localIdentityKey);
+  const remoteFingerprint = computeFingerprint(remoteUserId, remoteIdentityKey);
 
-  const firstDigest = await iteratedHash(firstKey, firstId);
-  const secondDigest = await iteratedHash(secondKey, secondId);
-
-  // Concatenate both 32-byte digests → 64 bytes
-  const combined = new Uint8Array(64);
-  combined.set(firstDigest.slice(0, 32));
-  combined.set(secondDigest.slice(0, 32), 32);
-
-  // Convert to 12 groups of 5 digits
-  return digestToCode(combined);
+  // The safety number is the sorted concatenation of both fingerprints
+  // so both parties get the same number regardless of who initiates
+  if (localUserId < remoteUserId) {
+    return localFingerprint + remoteFingerprint;
+  }
+  return remoteFingerprint + localFingerprint;
 }
 
-/**
- * Iteratively hash: SHA-512(key || userId) repeated SAFETY_NUMBER_ITERATIONS times.
- * Each iteration feeds the previous output back as input (with key prepended).
- */
-async function iteratedHash(publicKey: Uint8Array, userId: string): Promise<Uint8Array> {
-  const userIdBytes = new TextEncoder().encode(userId);
-  let hash = concat(publicKey, userIdBytes);
+function computeFingerprint(userId: string, identityKey: Uint8Array): string {
+  const provider = getCryptoProvider();
 
-  for (let i = 0; i < SAFETY_NUMBER_ITERATIONS; i++) {
-    const input = concat(hash, publicKey);
-    const digest = await crypto.subtle.digest("SHA-512", new Uint8Array(input));
-    hash = new Uint8Array(digest);
+  // Hash: HMAC(identityKey, version || userId || identityKey), iterated 5200 times
+  let hash = concat(SAFETY_NUMBER_VERSION, encodeUtf8(userId), identityKey);
+
+  for (let i = 0; i < 5200; i++) {
+    hash = provider.hmacSha256(identityKey, concat(hash, identityKey));
   }
 
-  return hash;
-}
-
-/** Convert 64 bytes into 12 groups of 5 digits */
-function digestToCode(digest: Uint8Array): string {
-  const groups: string[] = [];
-
-  for (let i = 0; i < 12; i++) {
-    // Take 5 bytes (40 bits), interpret as a big number, mod 100000
-    const offset = i * 5;
+  // Convert first 30 bytes to 30 digits (each byte mod 100000, take 5 digits)
+  let digits = "";
+  for (let i = 0; i < 30; i += 5) {
     const value =
-      (digest[offset] * 2 ** 32 +
-        digest[offset + 1] * 2 ** 24 +
-        digest[offset + 2] * 2 ** 16 +
-        digest[offset + 3] * 2 ** 8 +
-        digest[offset + 4]) %
-      100_000;
-    groups.push(value.toString().padStart(5, "0"));
+      ((hash[i] & 0xff) << 24) |
+      ((hash[i + 1] & 0xff) << 16) |
+      ((hash[i + 2] & 0xff) << 8) |
+      (hash[i + 3] & 0xff);
+    digits += String(Math.abs(value) % 100000).padStart(5, "0");
   }
 
-  return groups.join(" ");
+  return digits;
 }
-
-function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
-  const result = new Uint8Array(a.length + b.length);
-  result.set(a);
-  result.set(b, a.length);
-  return result;
-}
-
-// ── QR Payload ──
-
-type SafetyNumberQRPayload = {
-  v: 1;
-  uid: string;
-  spk: string;
-  sn: string;
-};
-
-export type QRVerifySuccess = {
-  valid: true;
-  peerUserId: string;
-  peerSigningKey: string;
-};
-export type QRVerifyFailure = {
-  valid: false;
-  reason: "invalid_format" | "version_unsupported" | "mismatch";
-};
-export type QRVerifyResult = QRVerifySuccess | QRVerifyFailure;
 
 /**
- * Encode identity + safety number into a QR payload string.
- * The displayer shows this as a QR code; the scanner reads and verifies it.
- *
- * Format: base64(JSON({ v, uid, spk, sn }))
+ * Encode a safety number and identity key into a QR code payload.
  */
 export function encodeSafetyNumberQR(
   userId: string,
-  signingPublicKey: Uint8Array,
+  identityKey: Uint8Array,
   safetyNumber: string,
 ): string {
-  const payload: SafetyNumberQRPayload = {
+  return JSON.stringify({
     v: 1,
     uid: userId,
-    spk: toBase64(signingPublicKey),
+    ik: Array.from(identityKey),
     sn: safetyNumber,
-  };
-  return btoa(JSON.stringify(payload));
+  });
 }
 
 /**
- * Decode a scanned QR payload and verify against the locally computed safety number.
- *
- * Returns { valid: true, peerUserId, peerSigningKey } on match,
- * or { valid: false, reason } on failure.
+ * Verify a scanned QR code against the expected safety number.
  */
-export function verifySafetyNumberQR(qrData: string, expectedSafetyNumber: string): QRVerifyResult {
-  let parsed: unknown;
+export function verifySafetyNumberQR(
+  qrData: string,
+  expectedSafetyNumber: string,
+): { valid: boolean; remoteUserId: string } {
   try {
-    const json = atob(qrData);
-    parsed = JSON.parse(json);
+    const parsed = JSON.parse(qrData);
+    if (parsed.v !== 1 || !parsed.uid || !parsed.sn) {
+      return { valid: false, remoteUserId: "" };
+    }
+    return {
+      valid: parsed.sn === expectedSafetyNumber,
+      remoteUserId: parsed.uid,
+    };
   } catch {
-    return { valid: false, reason: "invalid_format" };
+    return { valid: false, remoteUserId: "" };
   }
-
-  if (
-    typeof parsed !== "object" ||
-    parsed === null ||
-    !("v" in parsed) ||
-    !("uid" in parsed) ||
-    !("spk" in parsed) ||
-    !("sn" in parsed)
-  ) {
-    return { valid: false, reason: "invalid_format" };
-  }
-
-  const payload = parsed as SafetyNumberQRPayload;
-
-  if (payload.v !== 1) {
-    return { valid: false, reason: "version_unsupported" };
-  }
-
-  if (
-    typeof payload.uid !== "string" ||
-    typeof payload.spk !== "string" ||
-    typeof payload.sn !== "string"
-  ) {
-    return { valid: false, reason: "invalid_format" };
-  }
-
-  if (payload.sn !== expectedSafetyNumber) {
-    return { valid: false, reason: "mismatch" };
-  }
-
-  return { valid: true, peerUserId: payload.uid, peerSigningKey: payload.spk };
 }

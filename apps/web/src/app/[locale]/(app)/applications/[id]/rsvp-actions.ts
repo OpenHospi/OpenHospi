@@ -1,14 +1,15 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
-import type { RsvpData } from "@openhospi/database/validators";
-import { rsvpSchema } from "@openhospi/database/validators";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
+import type { RsvpData } from "@openhospi/validators";
+import { rsvpSchema } from "@openhospi/validators";
 import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
+import { getOrCreateConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function respondToInvitation(invitationId: string, data: RsvpData) {
@@ -19,7 +20,7 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
   const parsed = rsvpSchema.safeParse(data);
   if (!parsed.success) return { error: "invalid_data" as const };
 
-  const result = await withRLS(session.user.id, async (tx) => {
+  const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [invitation] = await tx
       .select({
         id: hospiInvitations.id,
@@ -81,10 +82,45 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
       })
       .where(eq(hospiInvitations.id, invitationId));
 
+    if (newStatus === InvitationStatus.attending || newStatus === InvitationStatus.maybe) {
+      const [inv] = await tx
+        .select({ applicationId: hospiInvitations.applicationId })
+        .from(hospiInvitations)
+        .where(eq(hospiInvitations.id, invitationId));
+
+      if (inv?.applicationId) {
+        const [app] = await tx
+          .select({ roomId: applications.roomId })
+          .from(applications)
+          .where(eq(applications.id, inv.applicationId));
+        const [room] = await tx
+          .select({ houseId: rooms.houseId })
+          .from(rooms)
+          .where(eq(rooms.id, app.roomId));
+        const members = await tx
+          .select({ userId: houseMembers.userId })
+          .from(houseMembers)
+          .where(eq(houseMembers.houseId, room.houseId));
+
+        return {
+          success: true,
+          eventCreatorId: event.createdBy,
+          roomId: app.roomId,
+          memberIds: members.map((m) => m.userId),
+        };
+      }
+    }
+
     return { success: true, eventCreatorId: event.createdBy };
   });
 
   if ("error" in result) return result;
+
+  // Create a conversation when the seeker RSVPs as attending
+  if (result.roomId && result.memberIds) {
+    const memberUserIds = [...result.memberIds, session.user.id];
+    await getOrCreateConversation(result.roomId, session.user.id, memberUserIds);
+  }
 
   if (result.eventCreatorId) {
     const eventUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/my-rooms`;
@@ -109,5 +145,6 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
   }
 
   revalidatePath("/applications");
+  revalidatePath("/chat");
   return { success: true };
 }

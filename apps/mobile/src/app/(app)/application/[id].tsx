@@ -4,6 +4,7 @@ import { Dot, Euro, Home } from 'lucide-react-native';
 import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { HospiInvitationCard } from '@/components/hospi-invitation-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -188,6 +189,10 @@ export default function ApplicationDetailScreen() {
             </Text>
             <StatusTimeline currentStatus={app.status} />
           </View>
+
+          {app.invitation && (
+            <HospiInvitationCard invitation={app.invitation} applicationId={app.id} />
+          )}
 
           {app.personalMessage && (
             <View>

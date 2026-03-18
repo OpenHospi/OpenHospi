@@ -1,4 +1,11 @@
-import { withRLS } from "@openhospi/database";
+import type { Locale } from "@openhospi/i18n";
+import type { HouseMemberRole } from "@openhospi/shared/enums";
+import { and, eq, inArray, isNull } from "drizzle-orm";
+import { headers } from "next/headers";
+import { getLocale } from "next-intl/server";
+
+import { redirect } from "@/i18n/navigation-app";
+import { createDrizzleSupabaseClient } from "@/lib/db";
 import {
   houseMembers,
   houses,
@@ -7,14 +14,7 @@ import {
   profilePhotos,
   profiles,
   rooms,
-} from "@openhospi/database/schema";
-import type { Locale } from "@openhospi/i18n";
-import type { HouseMemberRole } from "@openhospi/shared/enums";
-import { and, eq, inArray, isNull } from "drizzle-orm";
-import { headers } from "next/headers";
-import { getLocale } from "next-intl/server";
-
-import { redirect } from "@/i18n/navigation-app";
+} from "@/lib/db/schema";
 import type { HousePermission } from "@/lib/permissions";
 import { hasPermission } from "@/lib/permissions";
 
@@ -53,7 +53,7 @@ export async function requireAdmin() {
 }
 
 export async function requireRoomOwnership(roomId: string, userId: string) {
-  const room = await withRLS(userId, async (tx) => {
+  const room = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [r] = await tx
       .select({ id: rooms.id })
       .from(rooms)
@@ -68,7 +68,7 @@ export async function requireHousemate(
   userId: string,
   roles?: string[],
 ): Promise<string> {
-  const row = await withRLS(userId, async (tx) => {
+  const row = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const conditions = [eq(rooms.id, roomId), eq(houseMembers.userId, userId)];
     if (roles) {
       conditions.push(inArray(houseMembers.role, roles as HouseMemberRole[]));
@@ -98,7 +98,7 @@ export async function requireHousePermission(
 }
 
 export async function requireCompleteProfile(userId: string) {
-  const result = await withRLS(userId, async (tx) => {
+  const result = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx
       .select({
         firstName: profiles.firstName,
@@ -152,7 +152,7 @@ export async function requireNotRestricted(userId: string) {
 }
 
 export async function isRestricted(userId: string): Promise<boolean> {
-  const [restriction] = await withRLS(userId, (tx) =>
+  const [restriction] = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select({ id: processingRestrictions.id })
       .from(processingRestrictions)

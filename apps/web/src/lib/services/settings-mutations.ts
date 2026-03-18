@@ -1,4 +1,15 @@
-import { db, withRLS } from "@openhospi/database";
+import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
+import {
+  requestProcessingRestrictionSchema,
+  submitDataRequestSchema,
+  type RequestProcessingRestrictionData,
+  type SubmitDataRequestData,
+} from "@openhospi/validators";
+import { and, desc, eq, isNull } from "drizzle-orm";
+
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
   activeConsents,
   consentRecords,
@@ -6,17 +17,7 @@ import {
   processingRestrictions,
   profiles,
   user,
-} from "@openhospi/database/schema";
-import {
-  requestProcessingRestrictionSchema,
-  submitDataRequestSchema,
-  type RequestProcessingRestrictionData,
-  type SubmitDataRequestData,
-} from "@openhospi/database/validators";
-import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
-import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
-import { and, desc, eq, isNull } from "drizzle-orm";
+} from "@/lib/db/schema";
 
 const PURPOSE_LEGAL_BASIS: Record<ConsentPurpose, LegalBasis> = {
   essential: "contract",
@@ -56,7 +57,7 @@ export async function updateConsentForUser(
 }
 
 export async function getActiveConsentsForUser(userId: string) {
-  return withRLS(userId, (tx) =>
+  return createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.select().from(activeConsents).where(eq(activeConsents.userId, userId)),
   );
 }
@@ -65,7 +66,7 @@ export async function submitDataRequestForUser(userId: string, data: SubmitDataR
   const parsed = submitDataRequestSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.insert(dataRequests).values({
       userId,
       type: parsed.data.type,
@@ -83,7 +84,7 @@ export async function requestProcessingRestrictionForUser(
   const parsed = requestProcessingRestrictionSchema.safeParse(data);
   if (!parsed.success) return { error: "invalidData" as const };
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .insert(processingRestrictions)
       .values({ userId, reason: parsed.data.reason })
@@ -106,7 +107,7 @@ export async function updatePreferredLocaleForUser(userId: string, locale: Local
     return { error: "INVALID_LOCALE" as const };
   }
 
-  await withRLS(userId, (tx) =>
+  await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.update(profiles).set({ preferredLocale: locale }).where(eq(profiles.id, userId)),
   );
 
@@ -114,7 +115,7 @@ export async function updatePreferredLocaleForUser(userId: string, locale: Local
 }
 
 export async function getProcessingRestrictionForUser(userId: string) {
-  const [restriction] = await withRLS(userId, (tx) =>
+  const [restriction] = await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select()
       .from(processingRestrictions)
@@ -127,7 +128,7 @@ export async function getProcessingRestrictionForUser(userId: string) {
 }
 
 export async function getUserDataRequestsForUser(userId: string) {
-  return withRLS(userId, (tx) =>
+  return createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
       .select()
       .from(dataRequests)
@@ -139,10 +140,10 @@ export async function getUserDataRequestsForUser(userId: string) {
 
 export async function deleteAccountForUser(userId: string) {
   const { deletePhotoFromStorage } = await import("@/lib/services/photos");
-  const { profilePhotos, rooms, roomPhotos } = await import("@openhospi/database/schema");
-  const { profiles: profilesTable } = await import("@openhospi/database/schema");
+  const { profilePhotos, rooms, roomPhotos } = await import("@/lib/db/schema");
+  const { profiles: profilesTable } = await import("@/lib/db/schema");
 
-  const photoUrls = await withRLS(userId, async (tx) => {
+  const photoUrls = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const pPhotos = await tx
       .select({ url: profilePhotos.url })
       .from(profilePhotos)

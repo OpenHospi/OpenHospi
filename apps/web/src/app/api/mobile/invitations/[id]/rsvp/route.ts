@@ -1,12 +1,12 @@
-import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
-import { rsvpSchema } from "@openhospi/database/validators";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
+import { rsvpSchema } from "@openhospi/validators";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -22,7 +22,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const parsed = rsvpSchema.safeParse(data);
     if (!parsed.success) return apiError("Invalid data", 422);
 
-    const result = await withRLS(session.user.id, async (tx) => {
+    const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
       const [invitation] = await tx
         .select({
           id: hospiInvitations.id,
@@ -81,6 +81,35 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           declineReason: parsed.data.declineReason || null,
         })
         .where(eq(hospiInvitations.id, invitationId));
+
+      if (newStatus === InvitationStatus.attending || newStatus === InvitationStatus.maybe) {
+        const [inv] = await tx
+          .select({ applicationId: hospiInvitations.applicationId })
+          .from(hospiInvitations)
+          .where(eq(hospiInvitations.id, invitationId));
+
+        if (inv?.applicationId) {
+          const [app] = await tx
+            .select({ roomId: applications.roomId })
+            .from(applications)
+            .where(eq(applications.id, inv.applicationId));
+          const [room] = await tx
+            .select({ houseId: rooms.houseId })
+            .from(rooms)
+            .where(eq(rooms.id, app.roomId));
+          const members = await tx
+            .select({ userId: houseMembers.userId })
+            .from(houseMembers)
+            .where(eq(houseMembers.houseId, room.houseId));
+
+          return {
+            success: true,
+            eventCreatorId: event.createdBy,
+            roomId: app.roomId,
+            memberIds: members.map((m) => m.userId),
+          };
+        }
+      }
 
       return { success: true, eventCreatorId: event.createdBy };
     });

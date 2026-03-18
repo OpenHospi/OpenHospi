@@ -1,15 +1,15 @@
 import { createHash } from "node:crypto";
 
 import { expo } from "@better-auth/expo";
-import { db } from "@openhospi/database";
-import * as schema from "@openhospi/database/schema";
 import { DEFAULT_LOCALE, type Locale } from "@openhospi/i18n";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, genericOAuth, multiSession } from "better-auth/plugins";
+import { admin, bearer, genericOAuth, jwt, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
+import { db } from "@/lib/db";
+import * as schema from "@/lib/db/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 
 function deriveOnboardingEmailCode(token: string): string {
@@ -213,6 +213,8 @@ function createAuth() {
       }),
       multiSession(),
       admin(),
+      jwt(),
+      bearer(),
       expo(),
       nextCookies(),
     ],

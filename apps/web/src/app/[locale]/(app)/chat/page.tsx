@@ -1,15 +1,19 @@
-import type { Locale } from "@openhospi/i18n";
+import { MessageSquare } from "lucide-react";
+import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
 import { getConversations } from "@/lib/queries/chat";
 
 import { ConversationList } from "./conversation-list";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.chat" });
@@ -17,33 +21,35 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 }
 
 type Props = {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function ChatPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
-  const { user } = await requireSession();
 
-  const conversations = await getConversations(user.id);
+  const session = await requireSession();
+  const conversations = await getConversations(session.user.id);
   const t = await getTranslations("app.chat");
 
   return (
-    <>
-      {/* Mobile-only: show list */}
-      <div className="flex flex-1 flex-col md:hidden">
-        <div className="flex h-14 items-center border-b px-4">
-          <h2 className="font-semibold">{t("title")}</h2>
+    <div className="flex w-full">
+      {/* Sidebar: conversation list */}
+      <div className="border-border flex w-full flex-col border-r md:w-80 lg:w-96">
+        <div className="border-border border-b p-4">
+          <h1 className="text-lg font-semibold">{t("title")}</h1>
         </div>
-        <ScrollArea className="flex-1">
-          <ConversationList conversations={conversations} currentUserId={user.id} />
-        </ScrollArea>
+        <ConversationList conversations={conversations} currentUserId={session.user.id} />
       </div>
-      {/* Desktop: placeholder */}
+
+      {/* Main area: empty state on desktop */}
       <div className="hidden flex-1 items-center justify-center md:flex">
-        <p className="text-muted-foreground">{t("selectConversation")}</p>
+        <div className="text-muted-foreground flex flex-col items-center gap-3">
+          <MessageSquare className="h-12 w-12" />
+          <p className="text-sm">{t("selectConversation")}</p>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

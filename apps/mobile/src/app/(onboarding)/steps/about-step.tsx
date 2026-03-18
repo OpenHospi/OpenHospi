@@ -1,87 +1,101 @@
-import { City, Gender, StudyLevel } from '@openhospi/shared/enums';
-import { useState } from 'react';
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { City, Gender, StudyLevel, Vereniging } from '@openhospi/shared/enums';
+import { useImperativeHandle, useState } from 'react';
+import { Alert, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { ChipPicker } from '@/components/chip-picker';
+import { DatePickerSheet } from '@/components/date-picker-sheet';
+import { SelectPickerSheet } from '@/components/select-picker-sheet';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  type Option,
+} from '@/components/ui/select';
 import { Text } from '@/components/ui/text';
 import { useSubmitAbout } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@/services/types';
 
-type Props = { onNext: () => void; profile: ProfileWithPhotos | undefined };
+import type { StepHandle } from '@/components/onboarding-types';
 
-function EnumPicker({
-  values,
-  selected,
-  onSelect,
-  translateKey,
-  t,
-}: {
-  values: readonly string[];
-  selected: string | null;
-  onSelect: (v: string) => void;
-  translateKey: string;
-  t: (key: string) => string;
-}) {
-  return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-      {values.map((v) => (
-        <Pressable key={v} onPress={() => onSelect(v)}>
-          <Badge variant={selected === v ? 'default' : 'outline'} className="rounded-lg px-3 py-2">
-            <Text>{t(`${translateKey}.${v}`)}</Text>
-          </Badge>
-        </Pressable>
-      ))}
-    </View>
-  );
+type Props = {
+  ref?: React.Ref<StepHandle>;
+  onNext: () => void;
+  profile: ProfileWithPhotos | undefined;
+};
+
+function toDateObject(dateStr: string | null | undefined): Date {
+  if (dateStr) {
+    const parsed = new Date(dateStr);
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+  return new Date(2000, 0, 1);
 }
 
-export default function AboutStep({ onNext, profile }: Props) {
+function toISODate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+export default function AboutStep({ ref, onNext, profile }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.fields' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
   });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { t: tCityEnums } = useTranslation('translation', { keyPrefix: 'enums.city' });
+  const { t: tVerenigingEnums } = useTranslation('translation', {
+    keyPrefix: 'enums.vereniging',
+  });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [gender, setGender] = useState<string | null>(profile?.gender ?? null);
-  const [birthDate, setBirthDate] = useState(profile?.birthDate ?? '');
+  const [birthDate, setBirthDate] = useState(() => toDateObject(profile?.birthDate));
   const [studyProgram, setStudyProgram] = useState(profile?.studyProgram ?? '');
-  const [studyLevel, setStudyLevel] = useState<string | null>(profile?.studyLevel ?? null);
+  const [studyLevel, setStudyLevel] = useState<Option | undefined>(
+    profile?.studyLevel
+      ? { value: profile.studyLevel, label: tEnums(`study_level.${profile.studyLevel}`) }
+      : undefined
+  );
   const [preferredCity, setPreferredCity] = useState<string | null>(profile?.preferredCity ?? null);
-  const [vereniging, setVereniging] = useState(profile?.vereniging ?? '');
+  const [vereniging, setVereniging] = useState<string | null>(profile?.vereniging ?? null);
 
   const submitAbout = useSubmitAbout();
 
   function handleSubmit() {
-    if (!gender || !birthDate || !studyProgram.trim() || !preferredCity) {
+    if (!gender || !studyProgram.trim() || !preferredCity) {
       Alert.alert('Please complete all required fields.');
       return;
     }
     submitAbout.mutate(
       {
         gender,
-        birthDate,
+        birthDate: toISODate(birthDate),
         studyProgram: studyProgram.trim(),
-        studyLevel: studyLevel || undefined,
+        studyLevel: studyLevel?.value || undefined,
         preferredCity,
-        vereniging: vereniging.trim() || undefined,
+        vereniging: vereniging || undefined,
       },
       { onSuccess: onNext, onError: () => Alert.alert('Error saving data') }
     );
   }
 
+  useImperativeHandle(ref, () => ({ submit: handleSubmit }));
+
   return (
     <ScrollView
       style={{ flex: 1 }}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ gap: 16, paddingBottom: 32 }}>
+      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingBottom: 32 }}>
       <View style={{ gap: 8 }}>
         <Label>{t('gender')}</Label>
-        <EnumPicker
+        <ChipPicker
           values={Gender.values}
           selected={gender}
           onSelect={setGender}
@@ -92,11 +106,12 @@ export default function AboutStep({ onNext, profile }: Props) {
 
       <View style={{ gap: 8 }}>
         <Label>{t('birthDate')}</Label>
-        <Input
+        <DatePickerSheet
           value={birthDate}
-          onChangeText={setBirthDate}
-          placeholder="YYYY-MM-DD"
-          keyboardType="numbers-and-punctuation"
+          onChange={setBirthDate}
+          title={t('birthDate')}
+          maximumDate={new Date()}
+          minimumDate={new Date(1950, 0, 1)}
         />
       </View>
 
@@ -111,23 +126,30 @@ export default function AboutStep({ onNext, profile }: Props) {
 
       <View style={{ gap: 8 }}>
         <Label>{t('studyLevel')}</Label>
-        <EnumPicker
-          values={StudyLevel.values}
-          selected={studyLevel}
-          onSelect={setStudyLevel}
-          translateKey="study_level"
-          t={tEnums}
-        />
+        <Select value={studyLevel} onValueChange={setStudyLevel}>
+          <SelectTrigger className="rounded-xl">
+            <SelectValue placeholder={tPlaceholders('studyLevel')} />
+          </SelectTrigger>
+          <SelectContent>
+            {StudyLevel.values.map((v) => (
+              <SelectItem key={v} value={v} label={tEnums(`study_level.${v}`)}>
+                {tEnums(`study_level.${v}`)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </View>
 
       <View style={{ gap: 8 }}>
         <Label>{t('preferredCity')}</Label>
-        <EnumPicker
+        <SelectPickerSheet
           values={City.values}
           selected={preferredCity}
           onSelect={setPreferredCity}
-          translateKey="city"
-          t={tEnums}
+          title={t('preferredCity')}
+          placeholder={tPlaceholders('preferredCity')}
+          searchPlaceholder={tPlaceholders('searchCity')}
+          t={tCityEnums}
         />
       </View>
 
@@ -135,16 +157,16 @@ export default function AboutStep({ onNext, profile }: Props) {
         <Label>
           {t('vereniging')} <Text variant="muted">({tCommon('optional')})</Text>
         </Label>
-        <Input
-          value={vereniging}
-          onChangeText={setVereniging}
+        <SelectPickerSheet
+          values={Vereniging.values}
+          selected={vereniging}
+          onSelect={setVereniging}
+          title={t('vereniging')}
           placeholder={tPlaceholders('vereniging')}
+          searchPlaceholder={tPlaceholders('searchVereniging')}
+          t={tVerenigingEnums}
         />
       </View>
-
-      <Button onPress={handleSubmit} disabled={submitAbout.isPending}>
-        <Text>{tCommon('next')}</Text>
-      </Button>
     </ScrollView>
   );
 }

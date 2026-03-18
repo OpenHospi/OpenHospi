@@ -1,83 +1,71 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { formatDistanceToNow } from "date-fns";
+import { Shield } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
-import { Link, usePathname } from "@/i18n/navigation-app";
-import type { ConversationListItem } from "@/lib/queries/chat";
-import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation-app";
+
+type ConversationSummary = {
+  id: string;
+  roomId: string;
+  roomTitle: string;
+  unreadCount: number;
+  lastMessageAt: Date;
+  members: Array<{ userId: string; firstName: string }>;
+  roomPhotoUrl: string | null;
+};
 
 type Props = {
-  conversations: ConversationListItem[];
+  conversations: ConversationSummary[];
   currentUserId: string;
 };
 
 export function ConversationList({ conversations, currentUserId }: Props) {
   const t = useTranslations("app.chat");
-  const format = useFormatter();
-  const pathname = usePathname();
-
-  function formatTime(date: Date): string {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const hours = diff / (1000 * 60 * 60);
-
-    if (hours < 24) {
-      return format.dateTime(date, { hour: "2-digit", minute: "2-digit" });
-    }
-    if (hours < 168) {
-      return format.dateTime(date, { weekday: "short" });
-    }
-    return format.dateTime(date, "short");
-  }
 
   if (conversations.length === 0) {
     return (
-      <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
-        {t("empty")}
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6">
+        <Shield className="text-muted-foreground h-10 w-10" />
+        <p className="text-muted-foreground text-center text-sm">{t("no_conversations")}</p>
       </div>
     );
   }
 
   return (
-    <div className="divide-y">
+    <div className="flex-1 overflow-y-auto">
       {conversations.map((conv) => {
         const otherMembers = conv.members.filter((m) => m.userId !== currentUserId);
         const displayName =
-          conv.roomTitle ?? otherMembers.map((m) => m.firstName).join(", ") ?? t("conversation");
-        const isActive = pathname === `/chat/${conv.id}`;
+          otherMembers.length > 0
+            ? otherMembers.map((m) => m.firstName).join(", ")
+            : conv.roomTitle;
 
         return (
           <Link
             key={conv.id}
             href={`/chat/${conv.id}`}
-            className={cn(
-              "flex items-center gap-3 p-4 transition-colors",
-              isActive ? "bg-muted" : "hover:bg-muted/50",
-            )}
+            className="hover:bg-muted/50 flex items-center gap-3 border-b p-3 transition-colors"
           >
-            <UserAvatar
-              avatarUrl={otherMembers[0]?.avatarUrl ?? null}
-              userName={displayName}
-              size="md"
-            />
-            <div className="min-w-0 flex-1">
+            {/* Avatar placeholder */}
+            <div className="bg-primary/10 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+
+            <div className="flex min-w-0 flex-1 flex-col">
               <div className="flex items-center justify-between">
-                <span className="truncate font-medium">{displayName}</span>
-                {conv.lastMessageAt && (
-                  <span className="text-muted-foreground text-xs">
-                    {formatTime(conv.lastMessageAt)}
-                  </span>
-                )}
+                <span className="truncate text-sm font-medium">{conv.roomTitle}</span>
+                <span className="text-muted-foreground shrink-0 text-xs">
+                  {formatDistanceToNow(conv.lastMessageAt, { addSuffix: true })}
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground truncate text-sm">
-                  {conv.lastMessageAt ? t("encrypted_message") : t("no_messages")}
-                </span>
+                <span className="text-muted-foreground truncate text-xs">{displayName}</span>
                 {conv.unreadCount > 0 && (
-                  <Badge className="ml-2 h-5 min-w-5 justify-center rounded-full px-1.5 font-medium">
-                    {conv.unreadCount}
+                  <Badge variant="default" className="ml-1 shrink-0 text-xs">
+                    {conv.unreadCount > 99 ? "99+" : conv.unreadCount}
                   </Badge>
                 )}
               </div>

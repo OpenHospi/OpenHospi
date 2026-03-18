@@ -130,7 +130,7 @@ still use `style` for layout.
 - `@openhospi/shared` — enums (companion objects), constants (`APP_NAME`, `BRAND_COLOR`), types
 - `@openhospi/i18n` — translation resources, locale config
 - `@openhospi/inacademia` — InAcademia OIDC utilities
-- `@openhospi/database` — Zod validators (`createInsertSchema`), TypeScript types (`InferSelectModel`)
+- `@openhospi/validators` — Standalone Zod validation schemas
 
 ## Don'ts
 

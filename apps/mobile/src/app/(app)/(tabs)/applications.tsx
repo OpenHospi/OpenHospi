@@ -1,19 +1,16 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Dot, Euro, Home } from 'lucide-react-native';
-import { useCallback, useState } from 'react';
+import { Dot, Euro, FileText, Home } from 'lucide-react-native';
 import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
-import { useInvitations } from '@/services/invitations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { UserApplication, UserInvitation } from '@/services/types';
+import type { UserApplication } from '@/services/types';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
@@ -81,66 +78,43 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
   );
 }
 
-function InvitationCard({ item }: { item: UserInvitation }) {
-  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
-
+function EmptyState({ message }: { message: string }) {
   return (
-    <Card style={{ gap: 4, padding: 12, paddingVertical: 12 }}>
-      <Text className="text-card-foreground font-semibold">{item.eventTitle}</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text variant="muted" className="text-sm">
-          {item.eventDate}
-        </Text>
-        <Dot size={14} className="text-muted-foreground" />
-        <Text variant="muted" className="text-sm">
-          {item.timeStart}
-          {item.timeEnd ? ` - ${item.timeEnd}` : ''}
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 32,
+      }}>
+      <View
+        style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
+        className="rounded-lg border border-dashed">
+        <FileText size={32} className="text-muted-foreground" />
+        <Text variant="muted" style={{ marginTop: 16 }} className="text-center">
+          {message}
         </Text>
       </View>
-      <Text variant="muted" className="text-sm">
-        {item.roomTitle}
-      </Text>
-      {item.cancelledAt ? (
-        <Text className="text-destructive text-sm">{t('cancelled')}</Text>
-      ) : (
-        <Badge variant="secondary" style={{ alignSelf: 'flex-start' }} className="rounded-full">
-          <Text>{tEnums(`invitation_status.${item.status}`)}</Text>
-        </Badge>
-      )}
-    </Card>
+    </View>
   );
 }
 
 export default function ApplicationsScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
-  const { t: tInvitations } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const router = useRouter();
 
-  const [tab, setTab] = useState('applications');
-  const { data: applications, isPending: appsPending } = useApplications();
-  const { data: invitations, isPending: invPending } = useInvitations();
+  const { data: applications, isPending, refetch, isRefetching } = useApplications();
 
-  const renderApplication = useCallback(
-    ({ item }: { item: UserApplication }) => (
-      <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
-        <ApplicationCard
-          item={item}
-          onPress={() => router.push(`/(app)/application/${item.id}` as never)}
-        />
-      </View>
-    ),
-    [router]
-  );
-
-  const renderInvitation = useCallback(
-    ({ item }: { item: UserInvitation }) => (
-      <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
-        <InvitationCard item={item} />
-      </View>
-    ),
-    []
-  );
+  if (isPending) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        className="bg-background"
+        edges={['top']}>
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
@@ -148,78 +122,22 @@ export default function ApplicationsScreen() {
         <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
       </View>
 
-      <Tabs value={tab} onValueChange={setTab} style={{ flex: 1 }}>
-        <View style={{ paddingHorizontal: 16 }}>
-          <TabsList style={{ width: '100%' }}>
-            <TabsTrigger value="applications" style={{ flex: 1 }}>
-              <Text>{t('title')}</Text>
-            </TabsTrigger>
-            <TabsTrigger value="invitations" style={{ flex: 1 }}>
-              <Text>{tInvitations('title')}</Text>
-            </TabsTrigger>
-          </TabsList>
-        </View>
-
-        <TabsContent value="applications" style={{ flex: 1, paddingTop: 8 }}>
-          {appsPending ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size="large" />
-            </View>
-          ) : !applications?.length ? (
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 32,
-              }}>
-              <View
-                style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
-                className="rounded-lg border border-dashed">
-                <Text variant="muted" className="text-center">
-                  {t('empty')}
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <FlatList
-              data={applications}
-              renderItem={renderApplication}
-              keyExtractor={(item) => item.id}
+      <FlatList
+        data={applications ?? []}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }: { item: UserApplication }) => (
+          <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
+            <ApplicationCard
+              item={item}
+              onPress={() => router.push(`/(app)/application/${item.id}` as never)}
             />
-          )}
-        </TabsContent>
-
-        <TabsContent value="invitations" style={{ flex: 1, paddingTop: 8 }}>
-          {invPending ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size="large" />
-            </View>
-          ) : !invitations?.length ? (
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 32,
-              }}>
-              <View
-                style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
-                className="rounded-lg border border-dashed">
-                <Text variant="muted" className="text-center">
-                  {tInvitations('empty')}
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <FlatList
-              data={invitations}
-              renderItem={renderInvitation}
-              keyExtractor={(item) => item.invitationId}
-            />
-          )}
-        </TabsContent>
-      </Tabs>
+          </View>
+        )}
+        ListEmptyComponent={<EmptyState message={t('empty')} />}
+        contentContainerStyle={!applications?.length ? { flex: 1 } : { paddingBottom: 16 }}
+        refreshing={isRefetching}
+        onRefresh={refetch}
+      />
     </SafeAreaView>
   );
 }

@@ -1,9 +1,5 @@
-import * as SecureStore from 'expo-secure-store';
-import { getCookie } from '@better-auth/expo/client';
-
-import { API_BASE_URL, STORAGE_PREFIX } from '@/lib/constants';
-
-const COOKIE_STORE_KEY = `${STORAGE_PREFIX}_cookie`;
+import { API_BASE_URL } from '@/lib/constants';
+import { authClient } from '@/lib/auth-client';
 
 export class ApiError extends Error {
   constructor(
@@ -16,16 +12,14 @@ export class ApiError extends Error {
   }
 }
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const raw = await SecureStore.getItemAsync(COOKIE_STORE_KEY);
-  if (!raw) return {};
-  const cookie = getCookie(raw);
-  if (!cookie) return {};
-  return { Cookie: cookie };
+function getAuthHeaders(): Record<string, string> {
+  const cookies = authClient.getCookie();
+  if (!cookies) return {};
+  return { Cookie: cookies };
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const authHeaders = await getAuthHeaders();
+  const authHeaders = getAuthHeaders();
   const headers: Record<string, string> = {
     ...authHeaders,
   };
@@ -37,6 +31,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers,
+    credentials: 'omit',
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 

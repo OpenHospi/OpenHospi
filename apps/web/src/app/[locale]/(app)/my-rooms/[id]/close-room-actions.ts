@@ -1,7 +1,5 @@
 "use server";
 
-import { withRLS } from "@openhospi/database";
-import { applications, rooms } from "@openhospi/database/schema";
 import {
   ApplicationStatus,
   isTerminalApplicationStatus,
@@ -11,6 +9,8 @@ import { and, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, rooms } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 import { notifyUser } from "@/lib/queries/notifications";
 
@@ -21,7 +21,7 @@ export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: 
 
   await requireRoomOwnership(roomId, user.id);
 
-  const roomTitle = await withRLS(user.id, async (tx) => {
+  const roomTitle = await createDrizzleSupabaseClient(user.id).rls(async (tx) => {
     const [room] = await tx
       .select({ title: rooms.title, status: rooms.status })
       .from(rooms)
@@ -86,7 +86,7 @@ export async function closeRoomWithChoice(roomId: string, chosenApplicationId?: 
   });
 
   // Send notifications outside the RLS transaction (uses db directly)
-  const allApps = await withRLS(user.id, async (tx) => {
+  const allApps = await createDrizzleSupabaseClient(user.id).rls(async (tx) => {
     return tx
       .select({ id: applications.id, userId: applications.userId })
       .from(applications)

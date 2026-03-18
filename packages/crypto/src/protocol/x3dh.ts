@@ -1,99 +1,96 @@
-/**
- * X3DH (Extended Triple Diffie-Hellman) key exchange.
- *
- * Establishes a shared secret between two parties for initializing
- * a Double Ratchet session. Supports offline session establishment
- * via pre-key bundles.
- *
- * Based on Signal's X3DH specification:
- * https://signal.org/docs/specifications/x3dh/
- */
-import type { CryptoBackend } from "../backends/platform";
+import { getCryptoProvider } from "../primitives/CryptoProvider";
 
-import { concatBytes } from "./encoding";
-import { verifySignedPreKey } from "./keys";
-import type { IdentityKeyPair, PreKeyBundle, X3DHResult } from "./types";
+import { concat } from "./encoding";
+import { ed25519Verify, generateX25519KeyPair, x25519Dh } from "./keys";
+import type { KeyPair, PreKeyBundle } from "./types";
 
-const X3DH_INFO = new TextEncoder().encode("OpenHospiX3DH");
-const X3DH_SALT = new Uint8Array(32); // zeros
+const X3DH_INFO = new TextEncoder().encode("WhisperText");
+const EMPTY_SALT = new Uint8Array(32); // 32 zero bytes
+
+export interface X3DHResult {
+  sharedSecret: Uint8Array;
+  ephemeralKeyPair: KeyPair;
+  usedOneTimePreKeyId?: number;
+}
 
 /**
- * Initiator side of X3DH (Alice → Bob).
+ * X3DH key agreement — initiator side (Alice).
  *
- * 1. Verifies Bob's signed pre-key signature
- * 2. Generates ephemeral X25519 key pair
- * 3. Computes 3 or 4 DH exchanges
- * 4. Derives shared secret via HKDF
+ * Performs 3 or 4 DH operations:
+ *   DH1 = DH(IK_A, SPK_B)
+ *   DH2 = DH(EK_A, IK_B)
+ *   DH3 = DH(EK_A, SPK_B)
+ *   DH4 = DH(EK_A, OPK_B)  // only if OPK available
+ *
+ * Then derives shared secret:
+ *   SK = HKDF(DH1 || DH2 || DH3 [|| DH4], salt=0, info="WhisperText")
+ *
+ * IMPORTANT: Verifies SPK signature before proceeding.
  */
-export async function x3dhInitiate(
-  backend: CryptoBackend,
-  ourIdentity: IdentityKeyPair,
-  theirBundle: PreKeyBundle,
-): Promise<X3DHResult> {
-  // Verify the signed pre-key was actually signed by their identity
-  const validSig = verifySignedPreKey(
-    backend,
-    theirBundle.signingKey,
-    theirBundle.signedPreKeyPublic,
-    theirBundle.signedPreKeySignature,
-  );
-  if (!validSig) {
-    throw new Error("X3DH: signed pre-key signature verification failed");
+export function x3dhInitiate(identityKeyPair: KeyPair, bundle: PreKeyBundle): X3DHResult {
+  // Verify the signed pre-key signature using the Ed25519 signing key
+  const verifyKey = bundle.signingKey ?? bundle.identityKey;
+  if (!ed25519Verify(verifyKey, bundle.signedPreKey, bundle.signedPreKeySignature)) {
+    throw new Error("X3DH: Signed pre-key signature verification failed");
   }
 
-  // Generate ephemeral X25519 key pair
-  const ephemeral = backend.generateX25519KeyPair();
+  const provider = getCryptoProvider();
+
+  // Generate ephemeral key pair
+  const ephemeralKeyPair = generateX25519KeyPair();
 
   // Compute DH values
-  const dh1 = backend.x25519(ourIdentity.dh.privateKey, theirBundle.signedPreKeyPublic);
-  const dh2 = backend.x25519(ephemeral.privateKey, theirBundle.identityKey);
-  const dh3 = backend.x25519(ephemeral.privateKey, theirBundle.signedPreKeyPublic);
+  const dh1 = x25519Dh(identityKeyPair.privateKey, bundle.signedPreKey);
+  const dh2 = x25519Dh(ephemeralKeyPair.privateKey, bundle.identityKey);
+  const dh3 = x25519Dh(ephemeralKeyPair.privateKey, bundle.signedPreKey);
 
-  let ikm: Uint8Array;
-  if (theirBundle.oneTimePreKeyPublic) {
-    const dh4 = backend.x25519(ephemeral.privateKey, theirBundle.oneTimePreKeyPublic);
-    ikm = concatBytes(dh1, dh2, dh3, dh4);
+  let dhConcat: Uint8Array;
+  let usedOneTimePreKeyId: number | undefined;
+
+  if (bundle.oneTimePreKey && bundle.oneTimePreKeyId !== undefined) {
+    const dh4 = x25519Dh(ephemeralKeyPair.privateKey, bundle.oneTimePreKey);
+    dhConcat = concat(dh1, dh2, dh3, dh4);
+    usedOneTimePreKeyId = bundle.oneTimePreKeyId;
   } else {
-    ikm = concatBytes(dh1, dh2, dh3);
+    dhConcat = concat(dh1, dh2, dh3);
   }
 
-  // Derive 32-byte shared secret
-  const sharedSecret = await backend.hkdf(ikm, X3DH_SALT, X3DH_INFO, 32);
+  // Derive shared secret via HKDF
+  const sharedSecret = provider.hkdf(dhConcat, EMPTY_SALT, X3DH_INFO, 32);
 
   return {
     sharedSecret,
-    ephemeralPublicKey: ephemeral.publicKey,
-    usedSignedPreKeyId: theirBundle.signedPreKeyId,
-    usedOneTimePreKeyId: theirBundle.oneTimePreKeyId,
+    ephemeralKeyPair,
+    usedOneTimePreKeyId,
   };
 }
 
 /**
- * Responder side of X3DH (Bob receives Alice's initial message).
+ * X3DH key agreement — responder side (Bob).
  *
- * Bob uses his own pre-keys + Alice's identity and ephemeral keys
- * to derive the same shared secret.
+ * Called when receiving a PreKeyWhisperMessage from Alice.
  */
-export async function x3dhRespond(
-  backend: CryptoBackend,
-  ourIdentity: IdentityKeyPair,
-  ourSignedPreKeyPrivate: Uint8Array,
-  ourOneTimePreKeyPrivate: Uint8Array | null,
-  theirIdentityKey: Uint8Array,
-  theirEphemeralKey: Uint8Array,
-): Promise<Uint8Array> {
-  // Compute DH values (mirrored from initiator)
-  const dh1 = backend.x25519(ourSignedPreKeyPrivate, theirIdentityKey);
-  const dh2 = backend.x25519(ourIdentity.dh.privateKey, theirEphemeralKey);
-  const dh3 = backend.x25519(ourSignedPreKeyPrivate, theirEphemeralKey);
+export function x3dhRespond(
+  identityKeyPair: KeyPair,
+  signedPreKey: KeyPair,
+  oneTimePreKey: KeyPair | null,
+  remoteIdentityKey: Uint8Array,
+  remoteEphemeralKey: Uint8Array,
+): Uint8Array {
+  const provider = getCryptoProvider();
 
-  let ikm: Uint8Array;
-  if (ourOneTimePreKeyPrivate) {
-    const dh4 = backend.x25519(ourOneTimePreKeyPrivate, theirEphemeralKey);
-    ikm = concatBytes(dh1, dh2, dh3, dh4);
+  const dh1 = x25519Dh(signedPreKey.privateKey, remoteIdentityKey);
+  const dh2 = x25519Dh(identityKeyPair.privateKey, remoteEphemeralKey);
+  const dh3 = x25519Dh(signedPreKey.privateKey, remoteEphemeralKey);
+
+  let dhConcat: Uint8Array;
+
+  if (oneTimePreKey) {
+    const dh4 = x25519Dh(oneTimePreKey.privateKey, remoteEphemeralKey);
+    dhConcat = concat(dh1, dh2, dh3, dh4);
   } else {
-    ikm = concatBytes(dh1, dh2, dh3);
+    dhConcat = concat(dh1, dh2, dh3);
   }
 
-  return backend.hkdf(ikm, X3DH_SALT, X3DH_INFO, 32);
+  return provider.hkdf(dhConcat, EMPTY_SALT, X3DH_INFO, 32);
 }

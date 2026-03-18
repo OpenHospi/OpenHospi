@@ -1,15 +1,15 @@
-import { withRLS } from "@openhospi/database";
-import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import { computeEndDateTime, generateICS } from "@openhospi/shared/calendar";
 import { eq, and } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ eventId: string }> }) {
   const { eventId } = await params;
   const session = await requireSession();
 
-  const result = await withRLS(session.user.id, async (tx) => {
+  const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     // Verify user has an invitation to this event
     const [invitation] = await tx
       .select({ id: hospiInvitations.id })

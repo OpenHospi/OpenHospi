@@ -1,5 +1,3 @@
-import { db } from "@openhospi/database";
-import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
 import { count, eq, sql } from "drizzle-orm";
@@ -13,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
+import { db } from "@/lib/db";
+import { houseMembers, houses, rooms } from "@/lib/db/schema";
 
 async function getRoomByShareLink(code: string) {
   const [room] = await db

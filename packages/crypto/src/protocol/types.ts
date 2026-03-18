@@ -1,161 +1,123 @@
-/**
- * Signal Protocol types for X3DH + Double Ratchet E2EE.
- *
- * All keys are raw Uint8Array bytes — no CryptoKey wrappers.
- * Ed25519 for signing, X25519 for Diffie-Hellman.
- */
-
-/** Raw byte key pair (X25519 or Ed25519) */
-export type KeyPair = {
+/** A raw key pair (public + private) as Uint8Arrays. */
+export interface KeyPair {
   publicKey: Uint8Array;
   privateKey: Uint8Array;
-};
+}
 
-/** Ed25519 signing pair + derived X25519 DH pair */
-export type IdentityKeyPair = {
-  /** Ed25519 signing key pair */
-  signing: KeyPair;
-  /** X25519 DH key pair (derived from Ed25519) */
-  dh: KeyPair;
-};
+/** Addresses a specific device of a specific user. */
+export interface ProtocolAddress {
+  userId: string;
+  deviceId: string;
+}
 
-/** Signed pre-key: X25519 pair + Ed25519 signature over the public key */
-export type SignedPreKey = {
+/** Pre-key bundle fetched from the server for X3DH session establishment. */
+export interface PreKeyBundle {
+  registrationId: number;
+  deviceId: string;
+  identityKey: Uint8Array;
+  signingKey?: Uint8Array;
+  signedPreKeyId: number;
+  signedPreKey: Uint8Array;
+  signedPreKeySignature: Uint8Array;
+  oneTimePreKeyId?: number;
+  oneTimePreKey?: Uint8Array;
+}
+
+/** Persistent state of a Double Ratchet session. */
+export interface SessionState {
+  rootKey: Uint8Array;
+  sendingChainKey: Uint8Array | null;
+  receivingChainKey: Uint8Array | null;
+  sendingRatchetKey: KeyPair | null;
+  receivingRatchetKey: Uint8Array | null;
+  sendingCounter: number;
+  receivingCounter: number;
+  previousSendingCounter: number;
+  skippedKeys: Map<string, Uint8Array>;
+  remoteIdentityKey: Uint8Array;
+  localIdentityKey: Uint8Array;
+}
+
+/** Record wrapping a session state for serialisation. */
+export interface SessionRecord {
+  state: SessionState;
+  version: number;
+  /**
+   * Present only when the session was created by the initiator (Alice) and
+   * the first message hasn't been sent yet. Once the first PreKeyWhisperMessage
+   * is produced, this field is cleared.
+   */
+  pendingPreKey?: {
+    signedPreKeyId: number;
+    baseKey: Uint8Array;
+    preKeyId?: number;
+  };
+}
+
+/** A pre-key record (public + private). */
+export interface PreKeyRecord {
+  keyId: number;
+  keyPair: KeyPair;
+}
+
+/** A signed pre-key record. */
+export interface SignedPreKeyRecord {
   keyId: number;
   keyPair: KeyPair;
   signature: Uint8Array;
-};
+  timestamp: number;
+}
 
-/** One-time pre-key: X25519 pair */
-export type OneTimePreKey = {
-  keyId: number;
-  keyPair: KeyPair;
-};
+/** State for a Sender Key (group encryption). */
+export interface SenderKeyState {
+  chainKey: Uint8Array;
+  iteration: number;
+  signingKeyPair: KeyPair;
+}
 
-/** Pre-key bundle fetched from server for X3DH session setup */
-export type PreKeyBundle = {
-  /** Remote user's X25519 identity public key */
-  identityKey: Uint8Array;
-  /** Remote user's Ed25519 signing public key */
+/** Record wrapping sender key state for serialisation. */
+export interface SenderKeyRecord {
+  state: SenderKeyState;
+}
+
+/** The initial distribution message for a Sender Key. */
+export interface SenderKeyDistributionMessage {
+  distributionId: string;
+  chainKey: Uint8Array;
+  iteration: number;
   signingKey: Uint8Array;
-  /** Signed pre-key public key */
-  signedPreKeyPublic: Uint8Array;
-  /** Signed pre-key ID */
+}
+
+/** Wire format for a pre-key whisper message (first message in a session). */
+export interface PreKeyWhisperMessage {
+  registrationId: number;
+  preKeyId?: number;
   signedPreKeyId: number;
-  /** Ed25519 signature over signed pre-key public */
-  signedPreKeySignature: Uint8Array;
-  /** One-time pre-key public key (optional — may be exhausted) */
-  oneTimePreKeyPublic?: Uint8Array;
-  /** One-time pre-key ID */
-  oneTimePreKeyId?: number;
-};
+  baseKey: Uint8Array;
+  identityKey: Uint8Array;
+  message: Uint8Array; // serialised WhisperMessage
+}
 
-/** Server-side pre-key bundle (base64 strings instead of Uint8Array) */
-export type ServerPreKeyBundle = {
-  identityPublicKey: string;
-  signingPublicKey: string;
-  signedPreKeyPublic: string;
-  signedPreKeyId: number;
-  signedPreKeySignature: string;
-  oneTimePreKeyPublic?: string;
-  oneTimePreKeyId?: number;
-};
+/** Wire format for a regular whisper message (after session establishment). */
+export interface WhisperMessage {
+  ratchetKey: Uint8Array;
+  counter: number;
+  previousCounter: number;
+  ciphertext: Uint8Array;
+}
 
-/** Result of X3DH key exchange (initiator side) */
-export type X3DHResult = {
-  /** 32-byte shared secret */
-  sharedSecret: Uint8Array;
-  /** Ephemeral public key to send to responder */
-  ephemeralPublicKey: Uint8Array;
-  /** ID of the signed pre-key used */
-  usedSignedPreKeyId: number;
-  /** ID of the one-time pre-key used (if available) */
-  usedOneTimePreKeyId?: number;
-};
+/** Wire format for a sender key message (group message). */
+export interface SenderKeyMessageData {
+  distributionId: string;
+  chainId: number; // iteration of the chain key used
+  ciphertext: Uint8Array;
+  signature: Uint8Array;
+}
 
-/** Double Ratchet session state (serializable for persistence) */
-export type RatchetState = {
-  /** 32-byte root key */
-  rootKey: Uint8Array;
-  /** Sending chain key (null before first send after DH step) */
-  sendingChainKey: Uint8Array | null;
-  /** Receiving chain key (null before first receive) */
-  receivingChainKey: Uint8Array | null;
-  /** Our current DH ratchet key pair (X25519) */
-  dhSendingKeyPair: KeyPair;
-  /** Their current DH ratchet public key */
-  dhReceivingPublicKey: Uint8Array | null;
-  /** Number of messages sent in current sending chain */
-  sendingChainLength: number;
-  /** Number of messages received in current receiving chain */
-  receivingChainLength: number;
-  /** Previous sending chain length (for header) */
-  previousSendingChainLength: number;
-  /** Skipped message keys: serialized as array of [key, value] pairs */
-  skippedMessageKeys: SkippedKeyEntry[];
-};
-
-/** Entry for a skipped message key */
-export type SkippedKeyEntry = {
-  /** Base64 of the ratchet public key */
-  ratchetPublicKey: string;
-  /** Message number in that chain */
-  messageNumber: number;
-  /** 32-byte message key */
-  messageKey: Uint8Array;
-};
-
-/** Header sent with each Double Ratchet message */
-export type MessageHeader = {
-  /** Sender's current DH ratchet public key (base64) */
-  ratchetPublicKey: string;
-  /** Message number in current sending chain */
-  messageNumber: number;
-  /** Length of previous sending chain */
-  previousChainLength: number;
-};
-
-/** Encrypted message output from Double Ratchet */
-export type EncryptedMessage = {
-  header: MessageHeader;
-  /** Base64-encoded ciphertext */
+/** Encrypted key backup data. */
+export interface EncryptedBackup {
+  version: number;
   ciphertext: string;
-  /** Base64-encoded IV */
   iv: string;
-};
-
-/** Full serializable session state for IndexedDB/SQLite persistence */
-export type SessionState = {
-  /** Our identity key pair (Ed25519 signing + X25519 DH) */
-  localIdentity: {
-    signingPublicKey: string; // base64
-    dhPublicKey: string; // base64
-  };
-  /** Remote user's identity public keys */
-  remoteIdentity: {
-    signingPublicKey: string; // base64
-    dhPublicKey: string; // base64
-  };
-  /** Serialized ratchet state */
-  ratchet: SerializedRatchetState;
-};
-
-/** JSON-safe version of RatchetState (all Uint8Arrays as base64) */
-export type SerializedRatchetState = {
-  rootKey: string;
-  sendingChainKey: string | null;
-  receivingChainKey: string | null;
-  dhSendingKeyPair: { publicKey: string; privateKey: string };
-  dhReceivingPublicKey: string | null;
-  sendingChainLength: number;
-  receivingChainLength: number;
-  previousSendingChainLength: number;
-  skippedMessageKeys: SerializedSkippedKeyEntry[];
-};
-
-/** JSON-safe skipped key entry */
-export type SerializedSkippedKeyEntry = {
-  ratchetPublicKey: string;
-  messageNumber: number;
-  messageKey: string;
-};
+  salt: string;
+}

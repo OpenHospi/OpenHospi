@@ -166,12 +166,17 @@ export type InvitationStatus = (typeof InvitationStatus.values)[number];
 export const HouseMemberRole = defineEnum(["owner", "member"] as const);
 export type HouseMemberRole = (typeof HouseMemberRole.values)[number];
 
+// ─── Devices / Encryption ─────────────────────────────────────────────────
+
+export const DevicePlatform = defineEnum(["web", "ios", "android"] as const);
+export type DevicePlatform = (typeof DevicePlatform.values)[number];
+
+export const SenderKeyDistributionStatus = defineEnum(["pending", "delivered"] as const);
+export type SenderKeyDistributionStatus = (typeof SenderKeyDistributionStatus.values)[number];
+
 // ─── Chat ─────────────────────────────────────────────────────────────────
 
-export const ConversationType = defineEnum(["direct", "house"] as const);
-export type ConversationType = (typeof ConversationType.values)[number];
-
-export const MessageType = defineEnum(["text", "system"] as const);
+export const MessageType = defineEnum(["ciphertext", "sender_key_distribution", "system"] as const);
 export type MessageType = (typeof MessageType.values)[number];
 
 export const DeliveryStatus = defineEnum(["sent", "delivered", "read"] as const);

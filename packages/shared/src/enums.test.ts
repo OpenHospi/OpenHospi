@@ -17,7 +17,6 @@ import {
   ReviewDecision,
   InvitationStatus,
   HouseMemberRole,
-  ConversationType,
   MessageType,
   DeliveryStatus,
   AdminAction,
@@ -50,7 +49,7 @@ const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
   ReviewDecision,
   InvitationStatus,
   HouseMemberRole,
-  ConversationType,
+
   MessageType,
   DeliveryStatus,
   AdminAction,
@@ -67,8 +66,8 @@ const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
 };
 
 describe("@openhospi/shared — enums", () => {
-  it("exports 30 enum companion objects", () => {
-    expect(Object.keys(ALL_ENUMS)).toHaveLength(30);
+  it("exports 29 enum companion objects", () => {
+    expect(Object.keys(ALL_ENUMS)).toHaveLength(29);
   });
 
   it.each(Object.entries(ALL_ENUMS))("%s has a non-empty values array", (_name, enumObj) => {

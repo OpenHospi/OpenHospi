@@ -1,9 +1,9 @@
 "use client";
 
-import type { EditProfileData } from "@openhospi/database/validators";
-import { aboutStepSchema, bioStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
 import { Gender, StudyLevel } from "@openhospi/shared/enums";
+import type { EditProfileData } from "@openhospi/validators";
+import { aboutStepSchema, bioStepSchema } from "@openhospi/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

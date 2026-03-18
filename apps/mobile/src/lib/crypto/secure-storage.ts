@@ -1,81 +1,19 @@
-import * as SecureStore from 'expo-secure-store';
-import { eq, like } from 'drizzle-orm';
+import * as SecureStoreModule from 'expo-secure-store';
 
-import { db } from '@/db/client';
-import { cryptoStore } from '@/db/schema';
-
-// react-native-quick-crypto is already installed and polyfilled in _layout.tsx
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const QuickCrypto = require('react-native-quick-crypto');
-
-const MASTER_KEY_ID = 'openhospi_master_key';
-
-async function getMasterKey(): Promise<Buffer> {
-  const stored = await SecureStore.getItemAsync(MASTER_KEY_ID);
-  if (stored) return Buffer.from(stored, 'base64');
-
-  const key: Buffer = QuickCrypto.randomBytes(32);
-  await SecureStore.setItemAsync(MASTER_KEY_ID, Buffer.from(key).toString('base64'), {
-    keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-  });
-  return Buffer.from(key);
-}
-
-function encryptData(masterKey: Buffer, plaintext: string): { iv: string; content: string } {
-  const iv: Buffer = QuickCrypto.randomBytes(12);
-  const cipher = QuickCrypto.createCipheriv('aes-256-gcm', masterKey, iv);
-  const encrypted: Buffer = Buffer.concat([
-    cipher.update(Buffer.from(plaintext, 'utf8')),
-    cipher.final(),
-  ]);
-  const tag: Buffer = cipher.getAuthTag();
-  const combined = Buffer.concat([encrypted, tag]);
-  return { iv: Buffer.from(iv).toString('base64'), content: combined.toString('base64') };
-}
-
-function decryptData(masterKey: Buffer, payload: { iv: string; content: string }): string {
-  const iv = Buffer.from(payload.iv, 'base64');
-  const combined = Buffer.from(payload.content, 'base64');
-  const tagStart = combined.length - 16;
-  const data = combined.subarray(0, tagStart);
-  const tag = combined.subarray(tagStart);
-  const decipher = QuickCrypto.createDecipheriv('aes-256-gcm', masterKey, iv);
-  decipher.setAuthTag(tag);
-  const decrypted: Buffer = Buffer.concat([decipher.update(data), decipher.final()]);
-  return decrypted.toString('utf8');
-}
-
+/**
+ * Wrapper around expo-secure-store for storing sensitive data
+ * in the platform keychain (iOS) or keystore (Android).
+ */
 export const SecureStorage = {
-  async set(key: string, value: string): Promise<void> {
-    const masterKey = await getMasterKey();
-    const encrypted = encryptData(masterKey, value);
-    const blob = JSON.stringify(encrypted);
-    await db
-      .insert(cryptoStore)
-      .values({ key, value: blob, updatedAt: new Date() })
-      .onConflictDoUpdate({
-        target: cryptoStore.key,
-        set: { value: blob, updatedAt: new Date() },
-      });
+  async get(key: string): Promise<string | null> {
+    return SecureStoreModule.getItemAsync(key);
   },
 
-  async get(key: string): Promise<string | null> {
-    const [row] = await db.select().from(cryptoStore).where(eq(cryptoStore.key, key));
-    if (!row) return null;
-    const masterKey = await getMasterKey();
-    const payload = JSON.parse(row.value) as { iv: string; content: string };
-    return decryptData(masterKey, payload);
+  async set(key: string, value: string): Promise<void> {
+    await SecureStoreModule.setItemAsync(key, value);
   },
 
   async delete(key: string): Promise<void> {
-    await db.delete(cryptoStore).where(eq(cryptoStore.key, key));
-  },
-
-  async deleteByPrefix(prefix: string): Promise<void> {
-    await db.delete(cryptoStore).where(like(cryptoStore.key, `${prefix}%`));
-  },
-
-  async clear(): Promise<void> {
-    await db.delete(cryptoStore);
+    await SecureStoreModule.deleteItemAsync(key);
   },
 };

@@ -1,8 +1,8 @@
 "use client";
 
-import type { BioStepData } from "@openhospi/database/validators";
-import { bioStepSchema } from "@openhospi/database/validators";
 import { MAX_BIO_LENGTH } from "@openhospi/shared/constants";
+import type { BioStepData } from "@openhospi/validators";
+import { bioStepSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";

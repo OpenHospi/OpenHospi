@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { eq } from 'drizzle-orm';
 
-import { db } from '@/db/client';
-import { keyVerifications } from '@/db/schema';
+import { db } from '@/lib/db';
+import { keyVerifications } from '@/lib/db/schema';
 import { api } from '@/lib/api-client';
 import { queryKeys } from './keys';
 
@@ -82,9 +82,16 @@ export function useSaveVerification() {
   });
 }
 
-export function useKeyChangeDetection(peerUserId: string, currentSigningKey: string | undefined) {
+export function useKeyChangeDetection(peerUserId: string) {
   const { signingPublicKey: verifiedKey, isVerified } = useVerificationStatus(peerUserId);
 
+  const { data: serverKeys } = useQuery({
+    queryKey: queryKeys.verification.identityKeys([peerUserId]),
+    queryFn: () => fetchIdentityKeysApi([peerUserId]),
+    enabled: !!peerUserId && isVerified,
+  });
+
+  const currentSigningKey = serverKeys?.[0]?.signingPublicKey;
   const hasChanged =
     isVerified && !!currentSigningKey && !!verifiedKey && verifiedKey !== currentSigningKey;
 

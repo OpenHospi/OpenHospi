@@ -1,149 +1,257 @@
 "use server";
 
-import type { CiphertextPayload } from "@openhospi/crypto";
-import { db, withRLS } from "@openhospi/database";
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+
+import { requireSession } from "@/lib/auth/server";
+import { db, createDrizzleSupabaseClient } from "@/lib/db";
 import {
-  blocks,
   conversationMembers,
-  messageCiphertexts,
+  messagePayloads,
   messageReceipts,
   messages,
-} from "@openhospi/database/schema";
-import { and, eq, inArray, or } from "drizzle-orm";
+  profiles,
+  senderKeyDistributions,
+} from "@/lib/db/schema";
+import { supabaseAdmin } from "@/lib/supabase/server";
 
-import { requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { getOrCreateHospiConversation } from "@/lib/queries/chat";
-
-export type { CiphertextPayload } from "@openhospi/crypto";
-
-export async function sendMessage(conversationId: string, payloads: CiphertextPayload[]) {
+/**
+ * Send an encrypted message to a conversation (legacy — kept for backward compatibility).
+ */
+export async function sendMessage(
+  conversationId: string,
+  payload: string,
+  deviceId: string | null,
+) {
   const session = await requireSession();
-  const userId = session.user.id;
 
-  const restricted = await requireNotRestricted(userId);
-  if (restricted) throw new Error(restricted.error);
-
-  // Check for bidirectional blocks with any conversation member
-  const members = await db
-    .select({ userId: conversationMembers.userId })
-    .from(conversationMembers)
-    .where(eq(conversationMembers.conversationId, conversationId));
-
-  const otherMemberIds = members.filter((m) => m.userId !== userId).map((m) => m.userId);
-
-  if (otherMemberIds.length > 0) {
-    const blockExists = await db
-      .select({ blockerId: blocks.blockerId })
-      .from(blocks)
-      .where(
-        or(
-          and(eq(blocks.blockerId, userId), inArray(blocks.blockedId, otherMemberIds)),
-          and(inArray(blocks.blockerId, otherMemberIds), eq(blocks.blockedId, userId)),
-        ),
-      )
-      .limit(1);
-
-    if (blockExists.length > 0) {
-      throw new Error("Cannot send message — a block exists between you and a conversation member");
-    }
-  }
-
-  // Insert message metadata
-  const [message] = await withRLS(userId, async (tx) => {
-    return tx
-      .insert(messages)
-      .values({
-        conversationId,
-        senderId: userId,
-        messageType: "text",
-      })
-      .returning({ id: messages.id });
-  });
-
-  // Insert ciphertexts for each recipient
-  if (payloads.length > 0) {
-    await db.insert(messageCiphertexts).values(
-      payloads.map((p) => ({
-        messageId: message.id,
-        recipientUserId: p.recipientUserId,
-        ciphertext: p.ciphertext,
-        iv: p.iv,
-        ratchetPublicKey: p.ratchetPublicKey,
-        messageNumber: p.messageNumber,
-        previousChainLength: p.previousChainLength,
-      })),
-    );
-  }
-
-  // Create receipts for all members except sender
-  const receipts = members
-    .filter((m) => m.userId !== userId)
-    .map((m) => ({
-      messageId: message.id,
-      userId: m.userId,
-      status: "sent" as const,
-    }));
-
-  if (receipts.length > 0) {
-    await db.insert(messageReceipts).values(receipts);
-  }
-
-  return { messageId: message.id };
-}
-
-export async function markConversationRead(conversationId: string) {
-  const session = await requireSession();
-  const userId = session.user.id;
-
-  await withRLS(userId, async (tx) => {
-    const unreadReceipts = await tx
-      .select({ messageId: messageReceipts.messageId })
-      .from(messageReceipts)
-      .innerJoin(messages, eq(messages.id, messageReceipts.messageId))
+  const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
+    const [member] = await tx
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
       .where(
         and(
-          eq(messages.conversationId, conversationId),
-          eq(messageReceipts.userId, userId),
-          eq(messageReceipts.status, "sent"),
+          eq(conversationMembers.conversationId, conversationId),
+          eq(conversationMembers.userId, session.user.id),
         ),
       );
 
-    const unreadIds = unreadReceipts.map((r) => r.messageId);
-    if (unreadIds.length > 0) {
-      await tx
-        .update(messageReceipts)
-        .set({ status: "read", readAt: new Date() })
-        .where(
-          and(inArray(messageReceipts.messageId, unreadIds), eq(messageReceipts.userId, userId)),
-        );
+    if (!member) throw new Error("Not a member of this conversation");
+
+    const [msg] = await tx
+      .insert(messages)
+      .values({
+        conversationId,
+        senderId: session.user.id,
+        senderDeviceId: deviceId,
+        messageType: "ciphertext",
+      })
+      .returning();
+
+    await tx.insert(messagePayloads).values({
+      messageId: msg.id,
+      conversationId,
+      senderUserId: session.user.id,
+      senderDeviceId: deviceId,
+      payload,
+    });
+
+    const members = await tx
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, conversationId));
+
+    const receiptValues = members
+      .filter((m) => m.userId !== session.user.id)
+      .map((m) => ({
+        messageId: msg.id,
+        userId: m.userId,
+        status: "sent" as const,
+      }));
+
+    if (receiptValues.length > 0) {
+      await tx.insert(messageReceipts).values(receiptValues);
     }
+
+    return msg;
   });
+
+  await broadcastNewMessage(conversationId, result.id, session.user.id, deviceId);
+
+  return result;
 }
 
-export async function getMessageMetadata(
-  messageId: string,
-): Promise<{ senderId: string; createdAt: Date } | null> {
+/**
+ * Atomically send distributions + message in a single server call.
+ * Distributions are stored first so they arrive before the message they protect.
+ */
+export async function sendMessageWithDistributions(
+  conversationId: string,
+  payload: string,
+  deviceId: string,
+  distributions: Array<{ recipientDeviceId: string; ciphertext: string }>,
+) {
+  const session = await requireSession();
+
+  const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
+    const [member] = await tx
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.conversationId, conversationId),
+          eq(conversationMembers.userId, session.user.id),
+        ),
+      );
+
+    if (!member) throw new Error("Not a member of this conversation");
+
+    // Step 1: Store sender key distributions (if any)
+    if (distributions.length > 0) {
+      await tx.insert(senderKeyDistributions).values(
+        distributions.map((dist) => ({
+          conversationId,
+          senderUserId: session.user.id,
+          senderDeviceId: deviceId,
+          recipientDeviceId: dist.recipientDeviceId,
+          ciphertext: dist.ciphertext,
+        })),
+      );
+    }
+
+    // Step 2: Insert message
+    const [msg] = await tx
+      .insert(messages)
+      .values({
+        conversationId,
+        senderId: session.user.id,
+        senderDeviceId: deviceId,
+        messageType: "ciphertext",
+      })
+      .returning();
+
+    // Step 3: Insert encrypted payload
+    await tx.insert(messagePayloads).values({
+      messageId: msg.id,
+      conversationId,
+      senderUserId: session.user.id,
+      senderDeviceId: deviceId,
+      payload,
+    });
+
+    // Step 4: Create receipts for all other members
+    const members = await tx
+      .select({ userId: conversationMembers.userId })
+      .from(conversationMembers)
+      .where(eq(conversationMembers.conversationId, conversationId));
+
+    const receiptValues = members
+      .filter((m) => m.userId !== session.user.id)
+      .map((m) => ({
+        messageId: msg.id,
+        userId: m.userId,
+        status: "sent" as const,
+      }));
+
+    if (receiptValues.length > 0) {
+      await tx.insert(messageReceipts).values(receiptValues);
+    }
+
+    return msg;
+  });
+
+  // Broadcast distributions first, then the message
+  if (distributions.length > 0) {
+    await broadcastDistributions(conversationId, session.user.id, deviceId);
+  }
+  await broadcastNewMessage(conversationId, result.id, session.user.id, deviceId);
+
+  return result;
+}
+
+/**
+ * Mark all messages in a conversation as read.
+ */
+export async function markConversationRead(conversationId: string) {
+  const session = await requireSession();
+
+  await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
+    await tx
+      .update(messageReceipts)
+      .set({ status: "read", readAt: new Date() })
+      .where(
+        and(
+          eq(messageReceipts.userId, session.user.id),
+          eq(
+            messageReceipts.messageId,
+            tx
+              .select({ id: messages.id })
+              .from(messages)
+              .where(eq(messages.conversationId, conversationId)),
+          ),
+        ),
+      );
+  });
+
+  revalidatePath("/chat");
+}
+
+/**
+ * Fetch a single message by ID (for realtime message arrival).
+ */
+export async function fetchMessageById(messageId: string) {
   await requireSession();
 
-  const [msg] = await db
-    .select({ senderId: messages.senderId, createdAt: messages.createdAt })
+  const [row] = await db
+    .select({
+      id: messages.id,
+      conversationId: messages.conversationId,
+      senderId: messages.senderId,
+      senderDeviceId: messages.senderDeviceId,
+      messageType: messages.messageType,
+      createdAt: messages.createdAt,
+      payload: messagePayloads.payload,
+      senderFirstName: profiles.firstName,
+    })
     .from(messages)
+    .leftJoin(messagePayloads, eq(messagePayloads.messageId, messages.id))
+    .leftJoin(profiles, eq(profiles.id, messages.senderId))
     .where(eq(messages.id, messageId));
 
-  if (!msg || !msg.senderId) return null;
-  return { senderId: msg.senderId, createdAt: msg.createdAt };
+  return row ?? null;
 }
 
-export async function openChat(roomId: string, seekerUserId: string, memberUserIds: string[]) {
-  const session = await requireSession();
-  const userId = session.user.id;
+// ── Realtime broadcast helpers ──
 
-  if (userId !== seekerUserId && !memberUserIds.includes(userId)) {
-    throw new Error("Not authorized to open this chat");
+async function broadcastNewMessage(
+  conversationId: string,
+  messageId: string,
+  senderId: string,
+  senderDeviceId: string | null,
+) {
+  try {
+    await supabaseAdmin.channel(`chat:${conversationId}`).send({
+      type: "broadcast",
+      event: "new_message",
+      payload: { messageId, senderId, senderDeviceId },
+    });
+  } catch (err) {
+    console.error("[chat-actions] Broadcast new_message failed:", err);
   }
+}
 
-  const allMembers = [...new Set([...memberUserIds, seekerUserId])];
-  const conversationId = await getOrCreateHospiConversation(roomId, seekerUserId, allMembers);
-
-  return { conversationId };
+async function broadcastDistributions(
+  conversationId: string,
+  senderId: string,
+  senderDeviceId: string,
+) {
+  try {
+    await supabaseAdmin.channel(`chat:${conversationId}`).send({
+      type: "broadcast",
+      event: "sender_key_distribution",
+      payload: { senderId, senderDeviceId },
+    });
+  } catch (err) {
+    console.error("[chat-actions] Broadcast sender_key_distribution failed:", err);
+  }
 }

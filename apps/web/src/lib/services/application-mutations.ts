@@ -1,14 +1,14 @@
-import { withRLS } from "@openhospi/database";
-import { applications, houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
-import type { ApplyToRoomData } from "@openhospi/database/validators";
-import { applyToRoomSchema } from "@openhospi/database/validators";
 import {
   ApplicationStatus,
   RoomStatus,
   isValidApplicationTransition,
 } from "@openhospi/shared/enums";
+import type { ApplyToRoomData } from "@openhospi/validators";
+import { applyToRoomSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
 
+import { createDrizzleSupabaseClient } from "@/lib/db";
+import { applications, houseMembers, houses, profiles, rooms } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
@@ -20,7 +20,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
     return { error: "RATE_LIMITED" as const };
   }
 
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx
       .select({ bio: profiles.bio })
       .from(profiles)
@@ -72,7 +72,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
 }
 
 export async function withdrawApplicationForUser(userId: string, applicationId: string) {
-  return withRLS(userId, async (tx) => {
+  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [app] = await tx
       .select({ roomId: applications.roomId, status: applications.status })
       .from(applications)

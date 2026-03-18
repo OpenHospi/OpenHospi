@@ -35,11 +35,11 @@ export const conversations = pgTable(
     unique("uq_conversations_room_seeker").on(table.roomId, table.seekerUserId),
     index("idx_conversations_room_id").on(table.roomId),
     index("idx_conversations_seeker").on(table.seekerUserId),
-    // Users can see conversations they are a member of
+    // Users can see conversations they are a member of (uses RLS view to avoid recursion)
     pgPolicy("conversations_select_member", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members where conversation_members.conversation_id = ${table.id} and conversation_members.user_id = ${authUid})`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.id} and conversation_members_rls.user_id = ${authUid})`,
     }),
     pgPolicy("conversations_insert_authenticated", {
       for: "insert",
@@ -69,7 +69,7 @@ export const conversationMembers = pgTable(
     pgPolicy("conversation_members_select_member", {
       for: "select",
       to: authenticatedRole,
-      using: sql`${table.userId} = ${authUid} or exists(select 1 from conversation_members cm where cm.conversation_id = ${table.conversationId} and cm.user_id = ${authUid})`,
+      using: sql`${table.userId} = ${authUid} or exists(select 1 from conversation_members_rls cm where cm.conversation_id = ${table.conversationId} and cm.user_id = ${authUid})`,
     }),
     pgPolicy("conversation_members_insert_authenticated", {
       for: "insert",
@@ -109,7 +109,7 @@ export const messages = pgTable(
     pgPolicy("messages_select_member", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members where conversation_members.conversation_id = ${table.conversationId} and conversation_members.user_id = ${authUid})`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = ${authUid})`,
     }),
     // Sender must match auth.uid()
     pgPolicy("messages_insert_sender", {
@@ -148,7 +148,7 @@ export const messagePayloads = pgTable(
     pgPolicy("message_payloads_select_member", {
       for: "select",
       to: authenticatedRole,
-      using: sql`exists(select 1 from conversation_members where conversation_members.conversation_id = ${table.conversationId} and conversation_members.user_id = ${authUid})`,
+      using: sql`exists(select 1 from conversation_members_rls where conversation_members_rls.conversation_id = ${table.conversationId} and conversation_members_rls.user_id = ${authUid})`,
     }),
     pgPolicy("message_payloads_insert_sender", {
       for: "insert",

@@ -36,20 +36,14 @@ function createDrizzle(token: SupabaseToken, { admin, client }: { admin: DB; cli
     rls: (async (transaction, ...rest) => {
       return await client.transaction(
         async (tx) => {
-          try {
-            await tx.execute(sql`
-              select set_config('request.jwt.claims', '${sql.raw(JSON.stringify(token))}', TRUE);
-              select set_config('request.jwt.claim.sub', '${sql.raw(token.sub ?? "")}', TRUE);
-              set local role ${sql.raw(token.role ?? "anon")};
-            `);
-            return await transaction(tx);
-          } finally {
-            await tx.execute(sql`
-              select set_config('request.jwt.claims', NULL, TRUE);
-              select set_config('request.jwt.claim.sub', NULL, TRUE);
-              reset role;
-            `);
-          }
+          // set_config with TRUE = transaction-local, auto-reverts on COMMIT/ROLLBACK
+          // SET LOCAL ROLE also auto-reverts — no manual cleanup needed
+          await tx.execute(sql`
+            select set_config('request.jwt.claims', '${sql.raw(JSON.stringify(token))}', TRUE);
+            select set_config('request.jwt.claim.sub', '${sql.raw(token.sub ?? "")}', TRUE);
+            set local role ${sql.raw(token.role ?? "anon")};
+          `);
+          return await transaction(tx);
         },
         ...rest,
       );

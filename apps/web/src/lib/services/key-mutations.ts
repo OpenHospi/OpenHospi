@@ -174,16 +174,23 @@ export async function rotateSignedPreKey(
 // ── Device Queries ──
 
 export async function getDevicesForUser(userId: string) {
-  return await db
-    .select({
-      id: devices.id,
-      registrationId: devices.registrationId,
-      identityKeyPublic: devices.identityKeyPublic,
-      signingKeyPublic: devices.signingKeyPublic,
-      platform: devices.platform,
-    })
-    .from(devices)
-    .where(and(eq(devices.userId, userId), eq(devices.isActive, true)));
+  // Only return the latest active device per platform to handle stale duplicates.
+  // Uses DISTINCT ON (platform) ordered by created_at DESC to pick the newest device.
+  const rows = await db.execute(sql`
+    SELECT DISTINCT ON (platform)
+      id, registration_id, identity_key_public, signing_key_public, platform
+    FROM devices
+    WHERE user_id = ${userId} AND is_active = true
+    ORDER BY platform, created_at DESC
+  `);
+
+  return rows.map((row) => ({
+    id: row.id as string,
+    registrationId: row.registration_id as number,
+    identityKeyPublic: row.identity_key_public as string,
+    signingKeyPublic: row.signing_key_public as string,
+    platform: row.platform as string,
+  }));
 }
 
 export async function getOneTimePreKeyCount(deviceId: string) {

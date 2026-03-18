@@ -81,8 +81,12 @@ export function useSendMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { conversationId: string; payload: string; deviceId?: string }) =>
-      api.post<MessageRow>('/api/mobile/chat/send', data),
+    mutationFn: (data: {
+      conversationId: string;
+      payload: string;
+      deviceId?: string;
+      distributions?: Array<{ recipientDeviceId: string; ciphertext: string }>;
+    }) => api.post<MessageRow>('/api/mobile/chat/send', data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.chat.messages(variables.conversationId),

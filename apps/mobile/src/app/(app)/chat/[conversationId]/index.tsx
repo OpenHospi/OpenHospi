@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { eq } from 'drizzle-orm';
-import { Info, Lock, Send } from 'lucide-react-native';
-import { useEffect, useRef, useState } from 'react';
+import { Lock, Send } from 'lucide-react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -19,12 +19,24 @@ import { useEncryption } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
 import { db as localDb } from '@/lib/db';
 import { localMessages } from '@/lib/db/schema';
+import { supabase } from '@/lib/supabase';
 import {
   useConversationDetail,
   useMessages,
   useMarkConversationRead,
   useSendMessage,
 } from '@/services/chat';
+
+type MessageRow = {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderDeviceId: string | null;
+  messageType: string;
+  createdAt: string;
+  payload: string | null;
+  senderFirstName: string | null;
+};
 
 export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
@@ -39,6 +51,7 @@ export default function ConversationScreen() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refetch: refetchMessages,
   } = useMessages(conversationId);
   const sendMessageMutation = useSendMessage();
   const markRead = useMarkConversationRead();
@@ -66,6 +79,40 @@ export default function ConversationScreen() {
     }
   }, [deviceId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Decrypt a single message
+  const decryptSingle = useCallback(
+    async (msg: MessageRow): Promise<string | null> => {
+      if (msg.messageType === 'system') return msg.payload ?? '';
+      if (!msg.payload) return null;
+
+      // Own messages — check local SQLite cache (same as Signal)
+      if (msg.senderId === userId) {
+        const cached = localDb
+          .select({ plaintext: localMessages.plaintext })
+          .from(localMessages)
+          .where(eq(localMessages.id, msg.id))
+          .all();
+        if (cached.length > 0) return cached[0].plaintext;
+      }
+
+      if (!msg.senderDeviceId) return null;
+
+      try {
+        return await decryptMessage(
+          conversationId,
+          {
+            userId: msg.senderId,
+            deviceId: msg.senderDeviceId,
+          },
+          msg.payload
+        );
+      } catch {
+        return t('decryption_failed');
+      }
+    },
+    [userId, conversationId, decryptMessage, t]
+  );
+
   // Decrypt messages
   useEffect(() => {
     async function decryptAll() {
@@ -77,39 +124,9 @@ export default function ConversationScreen() {
           continue;
         }
 
-        if (msg.messageType === 'system') {
-          cache[msg.id] = msg.payload ?? '';
-          continue;
-        }
-
-        if (!msg.payload) continue;
-
-        // Own messages — check local SQLite cache (same as Signal)
-        if (msg.senderId === userId) {
-          const cached = localDb
-            .select({ plaintext: localMessages.plaintext })
-            .from(localMessages)
-            .where(eq(localMessages.id, msg.id))
-            .all();
-          if (cached.length > 0) {
-            cache[msg.id] = cached[0].plaintext;
-            continue;
-          }
-        }
-
-        try {
-          if (!msg.senderDeviceId) continue;
-          const plaintext = await decryptMessage(
-            conversationId,
-            {
-              userId: msg.senderId,
-              deviceId: msg.senderDeviceId,
-            },
-            msg.payload
-          );
-          cache[msg.id] = plaintext;
-        } catch {
-          cache[msg.id] = t('decryption_failed');
+        const text = await decryptSingle(msg);
+        if (text !== null) {
+          cache[msg.id] = text;
         }
       }
 
@@ -121,6 +138,25 @@ export default function ConversationScreen() {
     }
   }, [allMessages.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Supabase Realtime subscription
+  useEffect(() => {
+    const channel = supabase.channel(`chat:${conversationId}`);
+
+    channel
+      .on('broadcast', { event: 'new_message' }, () => {
+        // Refetch messages via React Query when a new message arrives
+        refetchMessages();
+      })
+      .on('broadcast', { event: 'sender_key_distribution' }, () => {
+        if (deviceId) processPendingDistributions(deviceId);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversationId, deviceId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handleSend() {
     const trimmed = text.trim();
     if (!trimmed || !userId) return;
@@ -129,10 +165,13 @@ export default function ConversationScreen() {
 
     try {
       const result = await encryptMessage(conversationId, memberUserIds, trimmed);
+
+      // Atomic send: distributions + message in one API call
       const msg = await sendMessageMutation.mutateAsync({
         conversationId,
         payload: result.payload,
         deviceId: result.deviceId,
+        distributions: result.distributions,
       });
 
       // Cache plaintext locally for own message display (same as Signal)
@@ -142,7 +181,7 @@ export default function ConversationScreen() {
           .values({
             id: msg.id,
             conversationId,
-            senderUserId: userId!,
+            senderUserId: userId,
             plaintext: trimmed,
             timestamp: new Date(),
           })

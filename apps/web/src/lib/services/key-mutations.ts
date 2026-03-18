@@ -23,7 +23,19 @@ export async function registerDevice(data: {
   oneTimePreKeys: Array<{ keyId: number; publicKey: string }>;
 }) {
   return await db.transaction(async (tx) => {
-    // Insert device (UUID auto-generated as PK)
+    // Deactivate any existing devices for the same user+platform
+    await tx
+      .update(devices)
+      .set({ isActive: false })
+      .where(
+        and(
+          eq(devices.userId, data.userId),
+          eq(devices.platform, data.platform),
+          eq(devices.isActive, true),
+        ),
+      );
+
+    // Insert new device (UUID auto-generated as PK)
     const [device] = await tx
       .insert(devices)
       .values({

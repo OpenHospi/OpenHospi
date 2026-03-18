@@ -166,22 +166,29 @@ export function useEncryption(userId: string | undefined) {
           const existingSession = await cryptoStore.loadSession(address);
 
           if (!existingSession) {
-            const bundle = await fetchPreKeyBundleForDevice(device.id);
-            if (!bundle) continue;
+            try {
+              const bundle = await fetchPreKeyBundleForDevice(device.id);
+              if (!bundle) continue;
 
-            await establishSession(cryptoStore, address, {
-              registrationId: bundle.registrationId,
-              deviceId: bundle.deviceId,
-              identityKey: fromBase64(bundle.identityKeyPublic),
-              signingKey: fromBase64(bundle.signingKeyPublic),
-              signedPreKeyId: bundle.signedPreKeyId,
-              signedPreKey: fromBase64(bundle.signedPreKeyPublic),
-              signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
-              oneTimePreKeyId: bundle.oneTimePreKeyId,
-              oneTimePreKey: bundle.oneTimePreKeyPublic
-                ? fromBase64(bundle.oneTimePreKeyPublic)
-                : undefined,
-            });
+              await establishSession(cryptoStore, address, {
+                registrationId: bundle.registrationId,
+                deviceId: bundle.deviceId,
+                identityKey: fromBase64(bundle.identityKeyPublic),
+                signingKey: fromBase64(bundle.signingKeyPublic),
+                signedPreKeyId: bundle.signedPreKeyId,
+                signedPreKey: fromBase64(bundle.signedPreKeyPublic),
+                signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
+                oneTimePreKeyId: bundle.oneTimePreKeyId,
+                oneTimePreKey: bundle.oneTimePreKeyPublic
+                  ? fromBase64(bundle.oneTimePreKeyPublic)
+                  : undefined,
+              });
+            } catch (err) {
+              console.warn(
+                `[ensureSessions] Failed to establish session with ${memberId}:${device.id}, skipping:`,
+                err,
+              );
+            }
           }
         }
       }

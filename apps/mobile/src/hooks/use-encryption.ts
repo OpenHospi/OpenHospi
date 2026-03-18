@@ -190,24 +190,31 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
           const existing = await store.loadSession(address);
 
           if (!existing) {
-            const bundle = await api.get<PreKeyBundleResponse>(
-              `/api/mobile/chat/bundle/${device.id}`
-            );
-            if (!bundle) continue;
+            try {
+              const bundle = await api.get<PreKeyBundleResponse>(
+                `/api/mobile/chat/bundle/${device.id}`
+              );
+              if (!bundle) continue;
 
-            await establishSession(store, address, {
-              registrationId: bundle.registrationId,
-              deviceId: bundle.deviceId,
-              identityKey: fromBase64(bundle.identityKeyPublic),
-              signingKey: fromBase64(bundle.signingKeyPublic),
-              signedPreKeyId: bundle.signedPreKeyId,
-              signedPreKey: fromBase64(bundle.signedPreKeyPublic),
-              signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
-              oneTimePreKeyId: bundle.oneTimePreKeyId,
-              oneTimePreKey: bundle.oneTimePreKeyPublic
-                ? fromBase64(bundle.oneTimePreKeyPublic)
-                : undefined,
-            });
+              await establishSession(store, address, {
+                registrationId: bundle.registrationId,
+                deviceId: bundle.deviceId,
+                identityKey: fromBase64(bundle.identityKeyPublic),
+                signingKey: fromBase64(bundle.signingKeyPublic),
+                signedPreKeyId: bundle.signedPreKeyId,
+                signedPreKey: fromBase64(bundle.signedPreKeyPublic),
+                signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
+                oneTimePreKeyId: bundle.oneTimePreKeyId,
+                oneTimePreKey: bundle.oneTimePreKeyPublic
+                  ? fromBase64(bundle.oneTimePreKeyPublic)
+                  : undefined,
+              });
+            } catch (err) {
+              console.warn(
+                `[ensureSessions] Failed to establish session with ${memberId}:${device.id}, skipping:`,
+                err
+              );
+            }
           }
         }
       }

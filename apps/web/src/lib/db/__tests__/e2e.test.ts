@@ -277,9 +277,7 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     // Conversation: HOSPI_OWNER + SEEKER_1
-    await db
-      .insert(conversations)
-      .values({ id: CONV_1, roomId: ROOM_1, seekerUserId: SEEKER_1, type: "direct" });
+    await db.insert(conversations).values({ id: CONV_1, roomId: ROOM_1, seekerUserId: SEEKER_1 });
     await db.insert(conversationMembers).values([
       { conversationId: CONV_1, userId: HOSPI_OWNER },
       { conversationId: CONV_1, userId: SEEKER_1 },
@@ -873,7 +871,7 @@ describe("E2E workflow tests (integration)", () => {
           .values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
-            messageType: "text",
+            messageType: "ciphertext",
           })
           .returning(),
       );
@@ -886,15 +884,11 @@ describe("E2E workflow tests (integration)", () => {
               messageId: msg.id,
               conversationId: CONV_1,
               senderUserId: HOSPI_OWNER,
-              ciphertext: "e2e-encrypted-payload",
-              signature: "e2e-signature",
-              senderKeyId: 1,
-              iteration: 0,
+              payload: "e2e-encrypted-payload",
             })
             .returning(),
         );
-        expect(payload.ciphertext).toBe("e2e-encrypted-payload");
-        expect(payload.signature).toBe("e2e-signature");
+        expect(payload.payload).toBe("e2e-encrypted-payload");
       } finally {
         await db.delete(messages).where(eq(messages.id, msg.id));
       }
@@ -906,7 +900,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: CONV_1,
           senderId: HOSPI_OWNER,
-          messageType: "text",
+          messageType: "ciphertext",
         })
         .returning();
 
@@ -934,7 +928,7 @@ describe("E2E workflow tests (integration)", () => {
           tx.insert(messages).values({
             conversationId: CONV_1,
             senderId: HOSPI_OWNER,
-            messageType: "text",
+            messageType: "ciphertext",
           }),
         ),
       ).rejects.toThrow();
@@ -946,7 +940,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: CONV_1,
           senderId: HOSPI_OWNER,
-          messageType: "text",
+          messageType: "ciphertext",
         })
         .returning();
 
@@ -1018,7 +1012,10 @@ describe("E2E workflow tests (integration)", () => {
     });
 
     it("conversation cascade: delete removes members, messages, receipts", async () => {
-      const [conv] = await db.insert(conversations).values({ type: "direct" }).returning();
+      const [conv] = await db
+        .insert(conversations)
+        .values({ roomId: ROOM_1, seekerUserId: SEEKER_2 })
+        .returning();
       await db.insert(conversationMembers).values([
         { conversationId: conv.id, userId: HOSPI_OWNER },
         { conversationId: conv.id, userId: SEEKER_2 },
@@ -1028,7 +1025,7 @@ describe("E2E workflow tests (integration)", () => {
         .values({
           conversationId: conv.id,
           senderId: HOSPI_OWNER,
-          messageType: "text",
+          messageType: "ciphertext",
         })
         .returning();
       await db.insert(messageReceipts).values({
@@ -1199,7 +1196,6 @@ describe("E2E workflow tests (integration)", () => {
           .insert(devices)
           .values({
             userId: SEEKER_2,
-            deviceId: 1,
             registrationId: 12345,
             identityKeyPublic: "e2e-identity-key",
             signingKeyPublic: "e2e-signing-key",
@@ -1220,7 +1216,6 @@ describe("E2E workflow tests (integration)", () => {
           createDrizzleSupabaseClient(SEEKER_1).rls((tx) =>
             tx.insert(devices).values({
               userId: OUTSIDER,
-              deviceId: 1,
               registrationId: 99999,
               identityKeyPublic: "fake-identity",
               signingKeyPublic: "fake-signing",

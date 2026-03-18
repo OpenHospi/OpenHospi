@@ -234,7 +234,6 @@ describe("RLS policies (integration)", () => {
     await db.insert(devices).values([
       {
         userId: USER_A,
-        deviceId: 1,
         registrationId: 11111,
         identityKeyPublic: "test-identity-a",
         signingKeyPublic: "test-signing-a",
@@ -242,7 +241,6 @@ describe("RLS policies (integration)", () => {
       },
       {
         userId: USER_B,
-        deviceId: 1,
         registrationId: 22222,
         identityKeyPublic: "test-identity-b",
         signingKeyPublic: "test-signing-b",
@@ -583,7 +581,6 @@ describe("RLS policies (integration)", () => {
           .insert(devices)
           .values({
             userId: USER_C,
-            deviceId: 1,
             registrationId: 33333,
             identityKeyPublic: "test-identity-c",
             signingKeyPublic: "test-signing-c",
@@ -601,7 +598,6 @@ describe("RLS policies (integration)", () => {
         createDrizzleSupabaseClient(USER_B).rls((tx) =>
           tx.insert(devices).values({
             userId: USER_C,
-            deviceId: 1,
             registrationId: 99999,
             identityKeyPublic: "fake-identity",
             signingKeyPublic: "fake-signing",

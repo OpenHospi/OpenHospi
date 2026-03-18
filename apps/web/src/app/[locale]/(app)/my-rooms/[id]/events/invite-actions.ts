@@ -11,7 +11,7 @@ import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
 import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, houseMembers, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
+import { applications, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 import { notifyUser } from "@/lib/queries/notifications";
 

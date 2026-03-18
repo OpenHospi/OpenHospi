@@ -152,6 +152,7 @@ export function useEncryption(userId: string | undefined) {
    * Ensure 1:1 sessions exist with all member devices.
    */
   const ensureSessions = useCallback(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     async (memberUserIds: string[]) => {
       if (!userId) return;
 
@@ -306,7 +307,6 @@ export function useEncryption(userId: string | undefined) {
         );
       for (const msg of allQueued) {
         try {
-          const { decodeUtf8 } = await import("@openhospi/crypto");
           await decryptGroupMessage(
             cryptoStore,
             msg.senderAddress,

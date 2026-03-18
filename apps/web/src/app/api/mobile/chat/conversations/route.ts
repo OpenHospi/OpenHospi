@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { getConversations } from "@/lib/queries/chat";
 
 export async function GET(request: Request) {

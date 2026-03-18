@@ -5,7 +5,7 @@ import { getOrCreateConversation } from "@/lib/queries/chat";
 
 export async function POST(request: Request) {
   try {
-    const session = await requireApiSession(request);
+    await requireApiSession(request);
     const { roomId, seekerUserId, memberUserIds } = await request.json();
 
     if (!roomId || !seekerUserId || !Array.isArray(memberUserIds)) {

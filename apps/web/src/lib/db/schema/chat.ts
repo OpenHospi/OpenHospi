@@ -15,7 +15,6 @@ import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 import { user } from "./auth-schema";
 import { devices } from "./encryption-schema";
 import { deliveryStatusEnum, messageTypeEnum, senderKeyDistributionStatusEnum } from "./enums";
-import { profiles } from "./profiles";
 import { rooms } from "./rooms";
 
 // ── Conversations ──

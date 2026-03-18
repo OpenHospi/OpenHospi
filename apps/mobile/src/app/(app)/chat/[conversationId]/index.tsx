@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { eq } from 'drizzle-orm';
 import { Lock, Send } from 'lucide-react-native';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -41,7 +41,6 @@ type MessageRow = {
 export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.chat' });
-  å;
   const { data: session } = useSession();
   const userId = session?.user?.id;
 

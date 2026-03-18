@@ -8,7 +8,7 @@ troubleshooting.
 ### Prerequisites
 
 | Tool           | Version | Install                                                                                |
-|----------------|---------|----------------------------------------------------------------------------------------|
+| -------------- | ------- | -------------------------------------------------------------------------------------- |
 | Docker Desktop | Latest  | [docker.com](https://www.docker.com/products/docker-desktop/)                          |
 | Node.js        | 24+     | [nodejs.org](https://nodejs.org/)                                                      |
 | pnpm           | 9+      | [pnpm.io](https://pnpm.io/installation)                                                |
@@ -45,13 +45,13 @@ cp .env.example .env.local
 pnpm supabase:reset
 
 # 5. Start the dev server
-pnpm dev
+pnpm dev:web
 ```
 
 ### Local URLs
 
 | Service                 | URL                    |
-|-------------------------|------------------------|
+| ----------------------- | ---------------------- |
 | App                     | http://localhost:3000  |
 | Supabase Studio         | http://127.0.0.1:54323 |
 | Supabase API            | http://127.0.0.1:54321 |
@@ -62,9 +62,9 @@ pnpm dev
 ### Development
 
 | Script              | Description                    |
-|---------------------|--------------------------------|
-| `pnpm dev`          | Start the Next.js dev server   |
-| `pnpm build`        | Production build               |
+| ------------------- | ------------------------------ |
+| `pnpm dev:web`      | Start the Next.js dev server   |
+| `pnpm build:web`    | Production build               |
 | `pnpm lint`         | Run ESLint across all packages |
 | `pnpm lint:fix`     | Auto-fix lint errors           |
 | `pnpm format:check` | Check Prettier formatting      |
@@ -75,7 +75,7 @@ pnpm dev
 ### Supabase
 
 | Script                 | Description                                   |
-|------------------------|-----------------------------------------------|
+| ---------------------- | --------------------------------------------- |
 | `pnpm supabase:start`  | Start local Supabase (Docker)                 |
 | `pnpm supabase:stop`   | Stop local Supabase                           |
 | `pnpm supabase:status` | Show local URLs and keys                      |
@@ -84,7 +84,7 @@ pnpm dev
 ### Database
 
 | Script                        | Description                            |
-|-------------------------------|----------------------------------------|
+| ----------------------------- | -------------------------------------- |
 | `pnpm db:push`                | Push Drizzle schema to remote Supabase |
 | `pnpm db:push:local`          | Push Drizzle schema to local Supabase  |
 | `pnpm db:studio`              | Open Drizzle Studio (remote)           |
@@ -95,7 +95,7 @@ pnpm dev
 ### Mobile (Expo)
 
 | Script                    | Description             |
-|---------------------------|-------------------------|
+| ------------------------- | ----------------------- |
 | `pnpm dev:mobile`         | Start Expo dev server   |
 | `pnpm dev:mobile:ios`     | Run on iOS simulator    |
 | `pnpm dev:mobile:android` | Run on Android emulator |

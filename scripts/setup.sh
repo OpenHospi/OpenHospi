@@ -111,7 +111,7 @@ ok "Database schema pushed, storage configured, and seed data loaded"
 # ── Done ────────────────────────────────────────────────────────────────────
 
 printf "\n${GREEN}${BOLD}Setup complete!${NC}\n\n"
-printf "  Start the dev server:    ${CYAN}pnpm dev${NC}\n"
+printf "  Start the dev server:    ${CYAN}pnpm dev:web${NC}\n"
 printf "  App:                     ${CYAN}http://localhost:3000${NC}\n"
 printf "  Supabase Studio:         ${CYAN}http://127.0.0.1:54323${NC}\n"
 printf "  Mailpit (email testing): ${CYAN}http://127.0.0.1:54324${NC}\n\n"

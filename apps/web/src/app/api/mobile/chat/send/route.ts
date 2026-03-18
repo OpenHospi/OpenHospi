@@ -99,16 +99,15 @@ export async function POST(request: Request) {
     const channel = supabaseAdmin.channel(`chat:${conversationId}`);
     try {
       if (distributions && distributions.length > 0) {
-        await channel.httpSend({
-          type: "broadcast",
-          event: "sender_key_distribution",
-          payload: { senderId: session.user.id, senderDeviceId: deviceId },
+        await channel.httpSend("sender_key_distribution", {
+          senderId: session.user.id,
+          senderDeviceId: deviceId,
         });
       }
-      await channel.httpSend({
-        type: "broadcast",
-        event: "new_message",
-        payload: { messageId: msg.id, senderId: session.user.id, senderDeviceId: deviceId },
+      await channel.httpSend("new_message", {
+        messageId: msg.id,
+        senderId: session.user.id,
+        senderDeviceId: deviceId,
       });
     } catch {
       // Broadcast failure is non-critical

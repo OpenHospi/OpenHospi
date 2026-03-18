@@ -15,7 +15,7 @@ The Next.js 16 web application for OpenHospi.
 
 ```bash
 # From the monorepo root
-pnpm dev --filter @openhospi/web
+pnpm dev:web
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.

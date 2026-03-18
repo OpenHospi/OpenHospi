@@ -7,20 +7,26 @@ import { useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { useEncryption } from "@/hooks/use-encryption";
 
-import { sendMessage } from "../chat-actions";
+import { sendMessageWithDistributions } from "../chat-actions";
 
 type Props = {
   conversationId: string;
   memberUserIds: string[];
   currentUserId: string;
+  onMessageSent?: (optimistic: {
+    id: string;
+    text: string;
+    senderId: string;
+    createdAt: Date;
+  }) => void;
 };
 
-export function ChatInput({ conversationId, memberUserIds, currentUserId }: Props) {
+export function ChatInput({ conversationId, memberUserIds, currentUserId, onMessageSent }: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const { encryptMessage, sentMessageCache } = useEncryption(currentUserId);
+  const { encryptMessage } = useEncryption(currentUserId);
 
   function handleSubmit() {
     const trimmed = text.trim();
@@ -30,17 +36,28 @@ export function ChatInput({ conversationId, memberUserIds, currentUserId }: Prop
 
     startTransition(async () => {
       try {
-        // Encrypt the message
-        const payload = await encryptMessage(conversationId, memberUserIds, trimmed);
+        const result = await encryptMessage(conversationId, memberUserIds, trimmed);
 
-        // Send to server
-        const msg = await sendMessage(conversationId, payload, null);
+        // Optimistic UI — append immediately
+        const optimisticId = crypto.randomUUID();
+        onMessageSent?.({
+          id: optimisticId,
+          text: trimmed,
+          senderId: currentUserId,
+          createdAt: new Date(),
+        });
 
-        // Cache plaintext for own message display
-        await sentMessageCache.store(msg.id, trimmed);
+        // Atomic send: distributions + message in one server call
+        await sendMessageWithDistributions(
+          conversationId,
+          result.payload,
+          result.deviceId,
+          trimmed,
+          result.distributions,
+        );
       } catch (err) {
         console.error("[ChatInput] Send failed:", err);
-        setText(trimmed); // Restore text on failure
+        setText(trimmed);
       }
     });
 

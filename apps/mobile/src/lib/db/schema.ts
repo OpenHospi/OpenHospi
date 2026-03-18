@@ -7,6 +7,8 @@ export const identityKeys = sqliteTable('identity_keys', {
   registrationId: integer('registration_id').notNull(),
   publicKey: text('public_key').notNull(),
   privateKey: text('private_key').notNull(), // encrypted
+  signingPublicKey: text('signing_public_key'),
+  signingPrivateKey: text('signing_private_key'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .$defaultFn(() => new Date()),

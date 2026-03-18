@@ -48,8 +48,8 @@ export async function setupDevice(
   const backup = await encryptBackupWithPIN(pin, dhKeyPair.privateKey, signingKeyPair.privateKey);
 
   // Store everything locally
-  // Identity keys are stored by the store implementation
-  // Pre-keys
+  await store.setIdentityKeyPair(dhKeyPair, signingKeyPair);
+  await store.setLocalRegistrationId(registrationId);
   await store.storeSignedPreKey(signedPreKey.keyId, signedPreKey);
   for (const pk of oneTimePreKeys) {
     await store.storePreKey(pk.keyId, pk);

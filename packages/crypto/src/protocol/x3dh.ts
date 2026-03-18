@@ -28,8 +28,9 @@ export interface X3DHResult {
  * IMPORTANT: Verifies SPK signature before proceeding.
  */
 export function x3dhInitiate(identityKeyPair: KeyPair, bundle: PreKeyBundle): X3DHResult {
-  // Verify the signed pre-key signature
-  if (!ed25519Verify(bundle.identityKey, bundle.signedPreKey, bundle.signedPreKeySignature)) {
+  // Verify the signed pre-key signature using the Ed25519 signing key
+  const verifyKey = bundle.signingKey ?? bundle.identityKey;
+  if (!ed25519Verify(verifyKey, bundle.signedPreKey, bundle.signedPreKeySignature)) {
     throw new Error("X3DH: Signed pre-key signature verification failed");
   }
 

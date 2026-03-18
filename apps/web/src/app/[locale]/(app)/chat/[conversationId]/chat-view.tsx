@@ -27,6 +27,7 @@ type MessageRow = {
   messageType: string;
   createdAt: Date;
   payload: string | null;
+  senderCopy: string | null;
   senderFirstName: string | null;
 };
 

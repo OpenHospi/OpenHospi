@@ -15,6 +15,7 @@ export interface PreKeyBundle {
   registrationId: number;
   deviceId: string;
   identityKey: Uint8Array;
+  signingKey?: Uint8Array;
   signedPreKeyId: number;
   signedPreKey: Uint8Array;
   signedPreKeySignature: Uint8Array;
@@ -41,6 +42,16 @@ export interface SessionState {
 export interface SessionRecord {
   state: SessionState;
   version: number;
+  /**
+   * Present only when the session was created by the initiator (Alice) and
+   * the first message hasn't been sent yet. Once the first PreKeyWhisperMessage
+   * is produced, this field is cleared.
+   */
+  pendingPreKey?: {
+    signedPreKeyId: number;
+    baseKey: Uint8Array;
+    preKeyId?: number;
+  };
 }
 
 /** A pre-key record (public + private). */

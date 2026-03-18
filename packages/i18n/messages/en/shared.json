@@ -1367,6 +1367,7 @@
       "report_user": "Report {name}",
       "blocked": "You have blocked this user",
       "key_reset_message": "Message cannot be decrypted — encryption key unavailable",
+      "setup_required": "To use chat, you need to set up encryption on this device. Enter the PIN you created during onboarding.",
       "own_message_unavailable": "Message sent from another device",
       "verify_identity": "Verify identity",
       "all_members": "All Members",

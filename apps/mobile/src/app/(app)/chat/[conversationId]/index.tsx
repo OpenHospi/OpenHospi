@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { EncryptionGate } from '@/components/encryption-gate';
 import { Text } from '@/components/ui/text';
 import { useEncryption } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
@@ -38,7 +39,8 @@ export default function ConversationScreen() {
   } = useMessages(conversationId);
   const sendMessageMutation = useSendMessage();
   const markRead = useMarkConversationRead();
-  const { encryptMessage, decryptMessage } = useEncryption(userId);
+  const { encryptMessage, decryptMessage, processPendingDistributions, deviceId } =
+    useEncryption(userId);
 
   const [text, setText] = useState('');
   const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
@@ -53,6 +55,13 @@ export default function ConversationScreen() {
       markRead.mutate(conversationId);
     }
   }, [conversationId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Process pending distributions on mount
+  useEffect(() => {
+    if (deviceId) {
+      processPendingDistributions(deviceId).catch(() => {});
+    }
+  }, [deviceId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Decrypt messages
   useEffect(() => {
@@ -71,6 +80,12 @@ export default function ConversationScreen() {
         }
 
         if (!msg.payload) continue;
+
+        // Own messages — use senderCopy from server if available
+        if (msg.senderId === userId && msg.senderCopy) {
+          cache[msg.id] = msg.senderCopy;
+          continue;
+        }
 
         try {
           if (!msg.senderDeviceId) continue;
@@ -103,10 +118,11 @@ export default function ConversationScreen() {
     setText('');
 
     try {
-      const payload = await encryptMessage(conversationId, memberUserIds, trimmed);
+      const result = await encryptMessage(conversationId, memberUserIds, trimmed);
       await sendMessageMutation.mutateAsync({
         conversationId,
-        payload,
+        payload: result.payload,
+        deviceId: result.deviceId,
       });
     } catch (err) {
       console.error('[Chat] Send failed:', err);
@@ -115,119 +131,121 @@ export default function ConversationScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-      className="bg-background">
-      {/* Messages */}
-      <FlatList
-        data={[...allMessages].reverse()}
-        keyExtractor={(item) => item.id}
-        inverted
-        contentContainerStyle={{ padding: 16, gap: 4 }}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-        }}
-        onEndReachedThreshold={0.3}
-        ListHeaderComponent={
-          <View style={{ alignItems: 'center', paddingVertical: 8 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Lock size={12} className="text-muted-foreground" />
-              <Text variant="muted" className="text-xs">
-                {t('e2e_info')}
-              </Text>
-            </View>
-          </View>
-        }
-        renderItem={({ item: msg }) => {
-          const isOwn = msg.senderId === userId;
-          const plaintext = decryptedCache[msg.id];
-
-          return (
-            <View style={{ alignItems: isOwn ? 'flex-end' : 'flex-start', marginVertical: 2 }}>
-              <View
-                style={{
-                  maxWidth: '75%',
-                  borderRadius: 16,
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                }}
-                className={isOwn ? 'bg-primary' : 'bg-muted'}>
-                {!isOwn && msg.senderFirstName && (
-                  <Text
-                    className={`text-xs font-medium ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}
-                    style={{ opacity: 0.7, marginBottom: 2 }}>
-                    {msg.senderFirstName}
-                  </Text>
-                )}
-                <Text
-                  className={`text-sm ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}>
-                  {plaintext ?? '...'}
-                </Text>
-                <Text
-                  className={`text-right ${isOwn ? 'text-primary-foreground' : 'text-muted-foreground'}`}
-                  style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
-                  {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+    <EncryptionGate>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        className="bg-background">
+        {/* Messages */}
+        <FlatList
+          data={[...allMessages].reverse()}
+          keyExtractor={(item) => item.id}
+          inverted
+          contentContainerStyle={{ padding: 16, gap: 4 }}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+          }}
+          onEndReachedThreshold={0.3}
+          ListHeaderComponent={
+            <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Lock size={12} className="text-muted-foreground" />
+                <Text variant="muted" className="text-xs">
+                  {t('e2e_info')}
                 </Text>
               </View>
             </View>
-          );
-        }}
-      />
+          }
+          renderItem={({ item: msg }) => {
+            const isOwn = msg.senderId === userId;
+            const plaintext = decryptedCache[msg.id];
 
-      {/* Input */}
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: 8,
-          padding: 12,
-          borderTopWidth: 1,
-        }}
-        className="border-border">
-        <TextInput
-          ref={inputRef}
-          value={text}
-          onChangeText={setText}
-          placeholder={t('message_placeholder')}
-          multiline
-          style={{
-            flex: 1,
-            minHeight: 40,
-            maxHeight: 120,
-            borderRadius: 20,
-            paddingHorizontal: 16,
-            paddingVertical: 10,
-            fontSize: 14,
+            return (
+              <View style={{ alignItems: isOwn ? 'flex-end' : 'flex-start', marginVertical: 2 }}>
+                <View
+                  style={{
+                    maxWidth: '75%',
+                    borderRadius: 16,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                  }}
+                  className={isOwn ? 'bg-primary' : 'bg-muted'}>
+                  {!isOwn && msg.senderFirstName && (
+                    <Text
+                      className={`text-xs font-medium ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}
+                      style={{ opacity: 0.7, marginBottom: 2 }}>
+                      {msg.senderFirstName}
+                    </Text>
+                  )}
+                  <Text
+                    className={`text-sm ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}>
+                    {plaintext ?? '...'}
+                  </Text>
+                  <Text
+                    className={`text-right ${isOwn ? 'text-primary-foreground' : 'text-muted-foreground'}`}
+                    style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Text>
+                </View>
+              </View>
+            );
           }}
-          className="bg-muted text-foreground"
-          returnKeyType="send"
-          onSubmitEditing={handleSend}
-          blurOnSubmit={false}
         />
-        <Pressable
-          onPress={handleSend}
-          disabled={!text.trim() || sendMessageMutation.isPending}
+
+        {/* Input */}
+        <View
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            opacity: text.trim() ? 1 : 0.5,
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            gap: 8,
+            padding: 12,
+            borderTopWidth: 1,
           }}
-          className="bg-primary">
-          {sendMessageMutation.isPending ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Send size={18} color="white" />
-          )}
-        </Pressable>
-      </View>
-    </KeyboardAvoidingView>
+          className="border-border">
+          <TextInput
+            ref={inputRef}
+            value={text}
+            onChangeText={setText}
+            placeholder={t('message_placeholder')}
+            multiline
+            style={{
+              flex: 1,
+              minHeight: 40,
+              maxHeight: 120,
+              borderRadius: 20,
+              paddingHorizontal: 16,
+              paddingVertical: 10,
+              fontSize: 14,
+            }}
+            className="bg-muted text-foreground"
+            returnKeyType="send"
+            onSubmitEditing={handleSend}
+            blurOnSubmit={false}
+          />
+          <Pressable
+            onPress={handleSend}
+            disabled={!text.trim() || sendMessageMutation.isPending}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+              opacity: text.trim() ? 1 : 0.5,
+            }}
+            className="bg-primary">
+            {sendMessageMutation.isPending ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Send size={18} color="white" />
+            )}
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </EncryptionGate>
   );
 }

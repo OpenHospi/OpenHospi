@@ -61,16 +61,43 @@ class SqliteSignalStore implements SignalProtocolStore {
   }
 
   async getSigningKeyPair(): Promise<KeyPair> {
-    // Signing key is stored in the same identity row for simplicity
-    // We'll store it as a separate field in a future iteration
-    // For now, return the identity key pair
-    return this.getIdentityKeyPair();
+    const rows = db.select().from(identityKeys).limit(1).all();
+    if (rows.length === 0) throw new Error('Signing key pair not found');
+    const row = rows[0];
+    if (!row.signingPublicKey || !row.signingPrivateKey) {
+      throw new Error('Signing key pair not stored. Re-initialize device.');
+    }
+    return {
+      publicKey: fromBase64(row.signingPublicKey),
+      privateKey: fromBase64(row.signingPrivateKey),
+    };
   }
 
   async getLocalRegistrationId(): Promise<number> {
     const rows = db.select().from(identityKeys).limit(1).all();
     if (rows.length === 0) throw new Error('Registration ID not found');
     return rows[0].registrationId;
+  }
+
+  async setIdentityKeyPair(dhKeyPair: KeyPair, signingKeyPair: KeyPair): Promise<void> {
+    // Clear existing and insert new
+    db.delete(identityKeys).run();
+    db.insert(identityKeys)
+      .values({
+        registrationId: 0, // Will be set via setLocalRegistrationId
+        publicKey: toBase64(dhKeyPair.publicKey),
+        privateKey: toBase64(dhKeyPair.privateKey),
+        signingPublicKey: toBase64(signingKeyPair.publicKey),
+        signingPrivateKey: toBase64(signingKeyPair.privateKey),
+      })
+      .run();
+  }
+
+  async setLocalRegistrationId(id: number): Promise<void> {
+    const rows = db.select().from(identityKeys).limit(1).all();
+    if (rows.length > 0) {
+      db.update(identityKeys).set({ registrationId: id }).run();
+    }
   }
 
   async saveIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean> {
@@ -206,12 +233,40 @@ class SqliteSignalStore implements SignalProtocolStore {
     const key = addressKey(address);
     const rows = db.select().from(sessions).where(eq(sessions.address, key)).all();
     if (rows.length === 0) return null;
-    return JSON.parse(rows[0].sessionData) as SessionRecord;
+    const raw = JSON.parse(rows[0].sessionData) as {
+      state: SessionRecord['state'];
+      version: number;
+      pendingPreKey?: { signedPreKeyId: number; baseKey: string; preKeyId?: number };
+    };
+    // Restore Uint8Array for pendingPreKey.baseKey (stored as base64)
+    const record: SessionRecord = {
+      state: raw.state,
+      version: raw.version,
+    };
+    if (raw.pendingPreKey?.baseKey) {
+      record.pendingPreKey = {
+        signedPreKeyId: raw.pendingPreKey.signedPreKeyId,
+        baseKey: fromBase64(raw.pendingPreKey.baseKey),
+        preKeyId: raw.pendingPreKey.preKeyId,
+      };
+    }
+    return record;
   }
 
   async storeSession(address: ProtocolAddress, record: SessionRecord): Promise<void> {
     const key = addressKey(address);
-    const data = JSON.stringify(record);
+    // Convert pendingPreKey.baseKey to base64 for JSON serialization
+    const serializable = {
+      ...record,
+      pendingPreKey: record.pendingPreKey
+        ? {
+            signedPreKeyId: record.pendingPreKey.signedPreKeyId,
+            baseKey: toBase64(record.pendingPreKey.baseKey),
+            preKeyId: record.pendingPreKey.preKeyId,
+          }
+        : undefined,
+    };
+    const data = JSON.stringify(serializable);
 
     db.insert(sessions)
       .values({ address: key, sessionData: data })

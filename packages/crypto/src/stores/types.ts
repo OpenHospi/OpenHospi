@@ -12,6 +12,8 @@ export interface IdentityKeyStore {
   getIdentityKeyPair(): Promise<KeyPair>;
   getSigningKeyPair(): Promise<KeyPair>;
   getLocalRegistrationId(): Promise<number>;
+  setIdentityKeyPair(dhKeyPair: KeyPair, signingKeyPair: KeyPair): Promise<void>;
+  setLocalRegistrationId(id: number): Promise<void>;
   saveIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean>;
   isTrustedIdentity(address: ProtocolAddress, identityKey: Uint8Array): Promise<boolean>;
   getIdentity(address: ProtocolAddress): Promise<Uint8Array | null>;

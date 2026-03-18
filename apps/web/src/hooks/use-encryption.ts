@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProtocolAddress } from "@openhospi/crypto";
+import type { ProtocolAddress, SenderKeyMessageData } from "@openhospi/crypto";
 import {
   DecryptionQueue,
   decryptGroupMessage,
@@ -16,7 +16,7 @@ import {
   shouldRotateSenderKey,
   toBase64,
 } from "@openhospi/crypto";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 import {
   acknowledgeDist,
@@ -24,39 +24,43 @@ import {
   fetchPendingDists,
   fetchPreKeyBundleForDevice,
   registerUserDevice,
-  storeSenderKeyDist,
   uploadKeyBackup,
 } from "@/app/[locale]/(app)/chat/key-actions";
-import { cryptoStore, sentMessageCache } from "@/lib/crypto";
+import { cryptoStore } from "@/lib/crypto";
 
 type EncryptionStatus = "uninitialized" | "initializing" | "ready" | "error";
 
+export type EncryptResult = {
+  payload: string;
+  deviceId: string;
+  distributions: Array<{
+    recipientDeviceId: string;
+    ciphertext: string;
+  }>;
+};
+
 const decryptionQueue = new DecryptionQueue();
+
+// Shared across all hook instances so EncryptionGate and ChatInput see the same value
+let sharedDeviceUuid: string | null = null;
+let sharedInitDone = false;
+const sharedSenderKeyCreatedAt = new Map<string, number>();
 
 export function useEncryption(userId: string | undefined) {
   const [status, setStatus] = useState<EncryptionStatus>("uninitialized");
   const [error, setError] = useState<Error | null>(null);
-  const initRef = useRef(false);
-  const deviceUuidRef = useRef<string | null>(null);
-  const senderKeyCreatedAt = useRef<Map<string, number>>(new Map());
 
   /**
    * Initialize the device — generate keys, register with server.
-   * Called during onboarding or when no local keys exist.
    */
   const initializeDevice = useCallback(
     async (pin: string) => {
-      if (!userId || initRef.current) return;
-      initRef.current = true;
+      if (!userId || sharedInitDone) return;
+      sharedInitDone = true;
       setStatus("initializing");
 
       try {
         const result = await setupDevice(cryptoStore, pin);
-
-        // Store identity keys in IndexedDB
-        // (setupDevice stores prekeys, but we need to also persist identity + signing)
-        const { generateIdentityKeyPair, generateRegistrationId } =
-          await import("@openhospi/crypto");
 
         // Register device with server
         const device = await registerUserDevice({
@@ -75,12 +79,12 @@ export function useEncryption(userId: string | undefined) {
           salt: result.encryptedBackup.salt,
         });
 
-        deviceUuidRef.current = device.id;
+        sharedDeviceUuid = device.id;
         setStatus("ready");
       } catch (err) {
         setError(err instanceof Error ? err : new Error(String(err)));
         setStatus("error");
-        initRef.current = false;
+        sharedInitDone = false;
       }
     },
     [userId],
@@ -93,11 +97,20 @@ export function useEncryption(userId: string | undefined) {
     try {
       const hasKeys = await cryptoStore.hasIdentityKey();
       if (hasKeys) {
+        // Load device UUID from server if not already set
+        if (!sharedDeviceUuid && userId) {
+          const myDevices = await fetchDevicesForUser(userId);
+          const webDevice = myDevices.find((d) => d.platform === "web");
+          if (webDevice) {
+            sharedDeviceUuid = webDevice.id;
+          }
+        }
+
         setStatus("ready");
 
         // Run key maintenance in the background
-        if (deviceUuidRef.current) {
-          const deviceId = deviceUuidRef.current;
+        if (sharedDeviceUuid) {
+          const deviceId = sharedDeviceUuid;
           replenishPreKeysIfNeeded(cryptoStore, deviceId, {
             getPreKeyCount: async () => {
               const { getOneTimePreKeyCount } = await import("@/lib/services/key-mutations");
@@ -130,11 +143,10 @@ export function useEncryption(userId: string | undefined) {
     } catch {
       // No keys yet
     }
-  }, []);
+  }, [userId]);
 
   /**
    * Ensure 1:1 sessions exist with all member devices.
-   * Fetches pre-key bundles and runs X3DH for any device we don't have a session with.
    */
   const ensureSessions = useCallback(
     async (memberUserIds: string[]) => {
@@ -157,6 +169,7 @@ export function useEncryption(userId: string | undefined) {
               registrationId: bundle.registrationId,
               deviceId: bundle.deviceId,
               identityKey: fromBase64(bundle.identityKeyPublic),
+              signingKey: fromBase64(bundle.signingKeyPublic),
               signedPreKeyId: bundle.signedPreKeyId,
               signedPreKey: fromBase64(bundle.signedPreKeyPublic),
               signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
@@ -174,22 +187,29 @@ export function useEncryption(userId: string | undefined) {
 
   /**
    * Generate and distribute a sender key for a conversation.
-   * Encrypts the distribution message via each member's 1:1 session.
+   * Returns the encrypted distributions for each member device.
    */
   const distributeSenderKey = useCallback(
-    async (conversationId: string, memberUserIds: string[]) => {
-      if (!userId || !deviceUuidRef.current) return;
+    async (
+      conversationId: string,
+      memberUserIds: string[],
+    ): Promise<Array<{ recipientDeviceId: string; ciphertext: string }>> => {
+      if (!userId || !sharedDeviceUuid) return [];
 
-      // Collect all member device addresses
+      // Ensure sessions exist before distributing
+      await ensureSessions(memberUserIds);
+
+      // Collect all member device addresses, excluding our own device
       const memberAddresses: ProtocolAddress[] = [];
       for (const memberId of memberUserIds) {
         const memberDevices = await fetchDevicesForUser(memberId);
         for (const d of memberDevices) {
+          if (memberId === userId && d.id === sharedDeviceUuid) continue;
           memberAddresses.push({ userId: memberId, deviceId: d.id });
         }
       }
 
-      const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
+      const localAddress: ProtocolAddress = { userId, deviceId: sharedDeviceUuid };
 
       const { distributions } = await initAndDistributeSenderKey(
         cryptoStore,
@@ -198,42 +218,43 @@ export function useEncryption(userId: string | undefined) {
         memberAddresses,
       );
 
-      // Upload encrypted distributions to server
-      for (const dist of distributions) {
-        await storeSenderKeyDist({
-          conversationId,
-          senderDeviceId: deviceUuidRef.current,
-          recipientDeviceId: dist.recipientAddress.deviceId,
-          ciphertext: toBase64(dist.encryptedDistribution),
-        });
-      }
+      // Return distributions as base64 for the caller to bundle atomically
+      return distributions.map((dist) => ({
+        recipientDeviceId: dist.recipientAddress.deviceId,
+        ciphertext: toBase64(dist.encryptedDistribution),
+      }));
     },
-    [userId],
+    [userId, ensureSessions],
   );
 
   /**
    * Encrypt a message for a group conversation.
-   * THE CRITICAL FLOW:
-   *   1. ensureSessions → 2. distributeSenderKey → 3. encryptGroupMessage
+   * Returns the payload, device ID, and distributions for atomic sending.
    */
   const encryptMessage = useCallback(
-    async (conversationId: string, memberUserIds: string[], plaintext: string): Promise<string> => {
+    async (
+      conversationId: string,
+      memberUserIds: string[],
+      plaintext: string,
+    ): Promise<EncryptResult> => {
       if (!userId) throw new Error("Not authenticated");
+      if (!sharedDeviceUuid) throw new Error("Device not initialized");
 
       // Step 1: Ensure 1:1 sessions with all members
       await ensureSessions(memberUserIds);
 
-      // Step 2: Check if we have a sender key, rotate if needed, distribute if missing
-      if (!deviceUuidRef.current) throw new Error("Device not initialized");
-      const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
+      const localAddress: ProtocolAddress = { userId, deviceId: sharedDeviceUuid };
 
+      // Step 2: Check if we have a sender key, rotate if needed, distribute if missing
       const existingKey = await cryptoStore.loadSenderKey(localAddress, conversationId);
-      const createdAt = senderKeyCreatedAt.current.get(conversationId) ?? 0;
+      const createdAt = sharedSenderKeyCreatedAt.get(conversationId) ?? 0;
       const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
 
+      let distributions: Array<{ recipientDeviceId: string; ciphertext: string }> = [];
+
       if (!existingKey || needsRotation) {
-        await distributeSenderKey(conversationId, memberUserIds);
-        senderKeyCreatedAt.current.set(conversationId, Date.now());
+        distributions = await distributeSenderKey(conversationId, memberUserIds);
+        sharedSenderKeyCreatedAt.set(conversationId, Date.now());
       }
 
       // Step 3: Encrypt with sender key (O(1))
@@ -245,13 +266,19 @@ export function useEncryption(userId: string | undefined) {
         encodeUtf8(plaintext),
       );
 
-      // Return serialised payload
-      return JSON.stringify({
+      // Return serialised payload + deviceId + distributions
+      const payload = JSON.stringify({
         distributionId: message.distributionId,
         chainId: message.chainId,
         ciphertext: toBase64(message.ciphertext),
         signature: toBase64(message.signature),
       });
+
+      return {
+        payload,
+        deviceId: sharedDeviceUuid,
+        distributions,
+      };
     },
     [userId, ensureSessions, distributeSenderKey],
   );
@@ -267,8 +294,7 @@ export function useEncryption(userId: string | undefined) {
       const queued = decryptionQueue.getForSender("", senderAddress);
       for (const msg of queued) {
         try {
-          const { decodeUtf8 } = await import("@openhospi/crypto");
-          const plaintext = await decryptGroupMessage(
+          await decryptGroupMessage(
             cryptoStore,
             msg.senderAddress,
             msg.conversationId,
@@ -280,7 +306,6 @@ export function useEncryption(userId: string | undefined) {
         }
       }
 
-      // Periodic cleanup
       decryptionQueue.cleanup();
     },
     [],
@@ -299,7 +324,7 @@ export function useEncryption(userId: string | undefined) {
       const payload = JSON.parse(payloadStr);
       const { decodeUtf8 } = await import("@openhospi/crypto");
 
-      const message = {
+      const message: SenderKeyMessageData = {
         distributionId: payload.distributionId,
         chainId: payload.chainId,
         ciphertext: fromBase64(payload.ciphertext),
@@ -316,7 +341,6 @@ export function useEncryption(userId: string | undefined) {
         decryptionQueue.dequeue(messageId);
         return decodeUtf8(plaintext);
       } catch (err) {
-        // Queue for retry — sender key distribution may not have arrived yet
         decryptionQueue.enqueue(messageId, conversationId, senderAddress, message);
         throw err;
       }
@@ -333,7 +357,6 @@ export function useEncryption(userId: string | undefined) {
 
       const localSigningKey = await cryptoStore.getSigningKeyPair();
 
-      // Fetch remote user's signing key
       const remoteDevices = await fetchDevicesForUser(remoteUserId);
       if (remoteDevices.length === 0) throw new Error("Remote user has no devices");
 
@@ -366,17 +389,13 @@ export function useEncryption(userId: string | undefined) {
             deviceId: dist.senderDeviceId,
           };
 
-          // Decrypt the distribution message via 1:1 session
           const distributionBytes = await decrypt1to1(
             cryptoStore,
             senderAddress,
             fromBase64(dist.ciphertext),
           );
 
-          // Process the distribution
           await processDistribution(cryptoStore, senderAddress, distributionBytes);
-
-          // Acknowledge
           await acknowledgeDist(dist.id);
         } catch (err) {
           console.error("[useEncryption] Failed to process distribution:", err);
@@ -389,6 +408,7 @@ export function useEncryption(userId: string | undefined) {
   return {
     status,
     error,
+    deviceId: sharedDeviceUuid,
     initializeDevice,
     checkStatus,
     ensureSessions,
@@ -398,6 +418,5 @@ export function useEncryption(userId: string | undefined) {
     decryptMessage,
     getSafetyNumber,
     processPendingDistributions,
-    sentMessageCache,
   };
 }

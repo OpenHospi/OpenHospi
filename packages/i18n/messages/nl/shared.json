@@ -1366,6 +1366,7 @@
       "report_user": "{name} melden",
       "blocked": "Je hebt deze gebruiker geblokkeerd",
       "key_reset_message": "Bericht kan niet worden ontsleuteld — versleutelingssleutel niet beschikbaar",
+      "setup_required": "Om chat te gebruiken moet je versleuteling instellen op dit apparaat. Voer de pincode in die je hebt aangemaakt tijdens de onboarding.",
       "own_message_unavailable": "Bericht verzonden vanaf een ander apparaat",
       "verify_identity": "Identiteit verifiëren",
       "all_members": "Alle leden",

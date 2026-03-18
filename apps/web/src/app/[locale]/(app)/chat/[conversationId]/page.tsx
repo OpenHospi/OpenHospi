@@ -7,6 +7,7 @@ import { requireSession } from "@/lib/auth/server";
 import { getConversationDetail, getMessages } from "@/lib/queries/chat";
 
 import { ChatView } from "./chat-view";
+import { EncryptionGate } from "./encryption-gate";
 
 type Props = {
   params: Promise<{ locale: string; conversationId: string }>;
@@ -25,11 +26,13 @@ export default async function ConversationPage({ params }: Props) {
   const { messages, nextCursor } = await getMessages(session.user.id, conversationId);
 
   return (
-    <ChatView
-      conversation={detail}
-      initialMessages={messages}
-      initialCursor={nextCursor}
-      currentUserId={session.user.id}
-    />
+    <EncryptionGate userId={session.user.id}>
+      <ChatView
+        conversation={detail}
+        initialMessages={messages}
+        initialCursor={nextCursor}
+        currentUserId={session.user.id}
+      />
+    </EncryptionGate>
   );
 }

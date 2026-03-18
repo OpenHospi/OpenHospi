@@ -30,6 +30,11 @@ export function buildSessionFromBundle(
     session: {
       state: sessionState,
       version: 3,
+      pendingPreKey: {
+        signedPreKeyId: bundle.signedPreKeyId,
+        baseKey: x3dhResult.ephemeralKeyPair.publicKey,
+        preKeyId: x3dhResult.usedOneTimePreKeyId,
+      },
     },
     ephemeralPublicKey: x3dhResult.ephemeralKeyPair.publicKey,
     usedOneTimePreKeyId: x3dhResult.usedOneTimePreKeyId,

@@ -2,9 +2,12 @@
 
 import { Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useEncryption } from "@/hooks/use-encryption";
+import { supabase } from "@/lib/supabase/client";
+
+import { fetchMessageById } from "../chat-actions";
 
 type MessageRow = {
   id: string;
@@ -14,6 +17,7 @@ type MessageRow = {
   messageType: string;
   createdAt: Date;
   payload: string | null;
+  senderCopy: string | null;
   senderFirstName: string | null;
 };
 
@@ -25,18 +29,13 @@ type Props = {
   memberUserIds: string[];
 };
 
-export function MessageThread({
-  conversationId,
-  initialMessages,
-  initialCursor,
-  currentUserId,
-  memberUserIds,
-}: Props) {
+export function MessageThread({ conversationId, initialMessages, currentUserId }: Props) {
   const t = useTranslations("app.chat");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
-  const { decryptMessage, sentMessageCache } = useEncryption(currentUserId);
+  const { decryptMessage, processPendingDistributions, deviceId } = useEncryption(currentUserId);
   const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
+  const processedRef = useRef(false);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -45,51 +44,103 @@ export function MessageThread({
     }
   }, [messages]);
 
-  // Decrypt messages on mount
+  // Process pending distributions on mount (before decrypting)
+  useEffect(() => {
+    if (processedRef.current || !deviceId) return;
+    processedRef.current = true;
+    processPendingDistributions(deviceId).catch(() => {});
+  }, [deviceId, processPendingDistributions]);
+
+  // Decrypt a single message
+  const decryptSingle = useCallback(
+    async (msg: MessageRow): Promise<string | null> => {
+      if (msg.messageType === "system") return msg.payload ?? "";
+      if (!msg.payload) return null;
+
+      // Own messages — use server-stored senderCopy
+      if (msg.senderId === currentUserId && msg.senderCopy) {
+        return msg.senderCopy;
+      }
+
+      if (!msg.senderDeviceId) return null;
+
+      try {
+        return await decryptMessage(
+          msg.id,
+          conversationId,
+          {
+            userId: msg.senderId,
+            deviceId: msg.senderDeviceId,
+          },
+          msg.payload,
+        );
+      } catch {
+        return t("decryption_failed");
+      }
+    },
+    [currentUserId, conversationId, decryptMessage, t],
+  );
+
+  // Decrypt messages on mount and when messages change
   useEffect(() => {
     async function decryptAll() {
-      const cache: Record<string, string> = {};
+      const cache: Record<string, string> = { ...decryptedCache };
+      let changed = false;
 
       for (const msg of messages) {
-        if (msg.messageType === "system") {
-          cache[msg.id] = msg.payload ?? "";
-          continue;
-        }
+        if (cache[msg.id]) continue;
 
-        if (!msg.payload) continue;
-
-        // Check sent message cache first (own messages)
-        if (msg.senderId === currentUserId) {
-          const cached = await sentMessageCache.get(msg.id);
-          if (cached) {
-            cache[msg.id] = cached;
-            continue;
-          }
-        }
-
-        // Try to decrypt
-        try {
-          if (!msg.senderDeviceId) continue;
-          const plaintext = await decryptMessage(
-            msg.id,
-            conversationId,
-            {
-              userId: msg.senderId,
-              deviceId: msg.senderDeviceId,
-            },
-            msg.payload,
-          );
-          cache[msg.id] = plaintext;
-        } catch {
-          cache[msg.id] = t("decryption_failed");
+        const text = await decryptSingle(msg);
+        if (text !== null) {
+          cache[msg.id] = text;
+          changed = true;
         }
       }
 
-      setDecryptedCache(cache);
+      if (changed) {
+        setDecryptedCache(cache);
+      }
     }
 
     decryptAll();
-  }, [messages, currentUserId, conversationId, decryptMessage, sentMessageCache, t]);
+  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Realtime handlers
+  const handleNewMessage = useCallback(
+    async (messageId: string) => {
+      if (messages.some((m) => m.id === messageId)) return;
+
+      const msg = await fetchMessageById(messageId);
+      if (!msg) return;
+
+      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+
+      const text = await decryptSingle(msg);
+      if (text !== null) {
+        setDecryptedCache((prev) => ({ ...prev, [msg.id]: text }));
+      }
+    },
+    [messages, decryptSingle],
+  );
+
+  // Supabase Realtime subscription
+  useEffect(() => {
+    const channel = supabase.channel(`chat:${conversationId}`);
+
+    channel
+      .on("broadcast", { event: "new_message" }, (payload) => {
+        const { messageId } = payload.payload as { messageId: string };
+        handleNewMessage(messageId);
+      })
+      .on("broadcast", { event: "sender_key_distribution" }, () => {
+        if (deviceId) processPendingDistributions(deviceId);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [conversationId, deviceId, handleNewMessage, processPendingDistributions]);
 
   return (
     <div ref={scrollRef} className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">

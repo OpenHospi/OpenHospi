@@ -113,6 +113,13 @@ function serializeSession(record: SessionRecord): unknown {
   const state = record.state;
   return {
     version: record.version,
+    pendingPreKey: record.pendingPreKey
+      ? {
+          signedPreKeyId: record.pendingPreKey.signedPreKeyId,
+          baseKey: Array.from(record.pendingPreKey.baseKey),
+          preKeyId: record.pendingPreKey.preKeyId,
+        }
+      : undefined,
     state: {
       rootKey: Array.from(state.rootKey),
       sendingChainKey: state.sendingChainKey ? Array.from(state.sendingChainKey) : null,
@@ -134,6 +141,11 @@ function serializeSession(record: SessionRecord): unknown {
 function deserializeSession(data: ReturnType<typeof serializeSession>): SessionRecord {
   const raw = data as {
     version: number;
+    pendingPreKey?: {
+      signedPreKeyId: number;
+      baseKey: number[];
+      preKeyId?: number;
+    };
     state: {
       rootKey: number[];
       sendingChainKey: number[] | null;
@@ -151,6 +163,13 @@ function deserializeSession(data: ReturnType<typeof serializeSession>): SessionR
 
   return {
     version: raw.version,
+    pendingPreKey: raw.pendingPreKey
+      ? {
+          signedPreKeyId: raw.pendingPreKey.signedPreKeyId,
+          baseKey: new Uint8Array(raw.pendingPreKey.baseKey),
+          preKeyId: raw.pendingPreKey.preKeyId,
+        }
+      : undefined,
     state: {
       rootKey: new Uint8Array(raw.state.rootKey),
       sendingChainKey: raw.state.sendingChainKey ? new Uint8Array(raw.state.sendingChainKey) : null,

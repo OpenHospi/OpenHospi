@@ -1,6 +1,7 @@
 import { initSessionAsResponder } from "../protocol/double-ratchet";
 import { buildSessionFromBundle } from "../protocol/session-builder";
 import {
+  createPreKeyMessage,
   deserializePreKeyWhisperMessage,
   isPreKeyWhisperMessage,
   sessionDecrypt,
@@ -32,6 +33,8 @@ export async function establishSession(
 
 /**
  * Encrypt a message for a 1:1 session.
+ * If the session has a pendingPreKey (first message from initiator), wraps the
+ * WhisperMessage in a PreKeyWhisperMessage so the recipient can establish the session.
  * If no session exists, throws — call establishSession first.
  */
 export async function encrypt1to1(
@@ -45,6 +48,30 @@ export async function encrypt1to1(
   }
 
   const { session: updatedSession, serialised } = sessionEncrypt(session, plaintext);
+
+  // If this is the first message in a new session, wrap as PreKeyWhisperMessage
+  if (session.pendingPreKey) {
+    const identityKeyPair = await store.getIdentityKeyPair();
+    const registrationId = await store.getLocalRegistrationId();
+
+    const preKeyMessage = createPreKeyMessage(
+      registrationId,
+      session.pendingPreKey.signedPreKeyId,
+      session.pendingPreKey.baseKey,
+      identityKeyPair.publicKey,
+      serialised,
+      session.pendingPreKey.preKeyId,
+    );
+
+    // Clear pendingPreKey now that the PreKeyWhisperMessage has been sent
+    const clearedSession: SessionRecord = {
+      ...updatedSession,
+      pendingPreKey: undefined,
+    };
+    await store.storeSession(address, clearedSession);
+
+    return preKeyMessage;
+  }
 
   await store.storeSession(address, updatedSession);
 

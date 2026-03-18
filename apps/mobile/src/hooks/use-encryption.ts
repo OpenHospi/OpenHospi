@@ -1,4 +1,4 @@
-import type { ProtocolAddress } from '@openhospi/crypto';
+import type { ProtocolAddress, SenderKeyMessageData } from '@openhospi/crypto';
 import {
   decryptGroupMessage,
   encryptGroupMessage as cryptoEncryptGroup,
@@ -8,6 +8,8 @@ import {
   fromBase64,
   initAndDistributeSenderKey,
   processDistribution,
+  setupDevice,
+  shouldRotateSenderKey,
   toBase64,
 } from '@openhospi/crypto';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -49,6 +51,17 @@ type PendingDistribution = {
   status: string;
 };
 
+export type EncryptResult = {
+  payload: string;
+  deviceId: string;
+  distributions: Array<{
+    recipientDeviceId: string;
+    ciphertext: string;
+  }>;
+};
+
+const senderKeyCreatedAt = new Map<string, number>();
+
 export function useEncryption(userId: string | undefined) {
   const [status, setStatus] = useState<EncryptionStatus>('uninitialized');
   const [error, setError] = useState<Error | null>(null);
@@ -79,6 +92,40 @@ export function useEncryption(userId: string | undefined) {
   useEffect(() => {
     initDevice();
   }, [initDevice]);
+
+  const initializeDevice = useCallback(
+    async (pin: string) => {
+      if (!userId) return;
+      setStatus('initializing');
+
+      try {
+        const result = await setupDevice(store, pin);
+        const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+
+        const device = await api.post<{ id: string }>('/api/mobile/chat/register-device', {
+          registrationId: result.registrationId,
+          identityKeyPublic: result.identityKeyPublic,
+          signingKeyPublic: result.signingKeyPublic,
+          platform,
+          signedPreKey: result.signedPreKey,
+          oneTimePreKeys: result.oneTimePreKeys,
+        });
+
+        await api.post('/api/mobile/chat/backup', {
+          encryptedData: result.encryptedBackup.ciphertext,
+          iv: result.encryptedBackup.iv,
+          salt: result.encryptedBackup.salt,
+        });
+
+        deviceUuidRef.current = device.id;
+        setStatus('ready');
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error(String(err)));
+        setStatus('error');
+      }
+    },
+    [userId, store]
+  );
 
   const checkStatus = useCallback(async () => {
     try {
@@ -112,6 +159,7 @@ export function useEncryption(userId: string | undefined) {
               registrationId: bundle.registrationId,
               deviceId: bundle.deviceId,
               identityKey: fromBase64(bundle.identityKeyPublic),
+              signingKey: fromBase64(bundle.signingKeyPublic),
               signedPreKeyId: bundle.signedPreKeyId,
               signedPreKey: fromBase64(bundle.signedPreKeyPublic),
               signedPreKeySignature: fromBase64(bundle.signedPreKeySignature),
@@ -128,13 +176,19 @@ export function useEncryption(userId: string | undefined) {
   );
 
   const distributeSenderKey = useCallback(
-    async (conversationId: string, memberUserIds: string[]) => {
-      if (!userId || !deviceUuidRef.current) return;
+    async (
+      conversationId: string,
+      memberUserIds: string[]
+    ): Promise<Array<{ recipientDeviceId: string; ciphertext: string }>> => {
+      if (!userId || !deviceUuidRef.current) return [];
+
+      await ensureSessions(memberUserIds);
 
       const memberAddresses: ProtocolAddress[] = [];
       for (const memberId of memberUserIds) {
         const devices = await api.get<DeviceInfo[]>(`/api/mobile/chat/devices?userId=${memberId}`);
         for (const d of devices) {
+          if (memberId === userId && d.id === deviceUuidRef.current) continue;
           memberAddresses.push({ userId: memberId, deviceId: d.id });
         }
       }
@@ -148,30 +202,36 @@ export function useEncryption(userId: string | undefined) {
         memberAddresses
       );
 
-      for (const dist of distributions) {
-        await api.post('/api/mobile/chat/sender-key-distribution', {
-          conversationId,
-          senderDeviceId: deviceUuidRef.current,
-          recipientDeviceId: dist.recipientAddress.deviceId,
-          ciphertext: toBase64(dist.encryptedDistribution),
-        });
-      }
+      return distributions.map((dist) => ({
+        recipientDeviceId: dist.recipientAddress.deviceId,
+        ciphertext: toBase64(dist.encryptedDistribution),
+      }));
     },
-    [userId, store]
+    [userId, store, ensureSessions]
   );
 
   const encryptMessage = useCallback(
-    async (conversationId: string, memberUserIds: string[], plaintext: string): Promise<string> => {
+    async (
+      conversationId: string,
+      memberUserIds: string[],
+      plaintext: string
+    ): Promise<EncryptResult> => {
       if (!userId) throw new Error('Not authenticated');
+      if (!deviceUuidRef.current) throw new Error('Device not initialized');
 
       await ensureSessions(memberUserIds);
 
-      if (!deviceUuidRef.current) throw new Error('Device not initialized');
       const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
 
       const existingKey = await store.loadSenderKey(localAddress, conversationId);
-      if (!existingKey) {
-        await distributeSenderKey(conversationId, memberUserIds);
+      const createdAt = senderKeyCreatedAt.get(conversationId) ?? 0;
+      const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
+
+      let distributions: Array<{ recipientDeviceId: string; ciphertext: string }> = [];
+
+      if (!existingKey || needsRotation) {
+        distributions = await distributeSenderKey(conversationId, memberUserIds);
+        senderKeyCreatedAt.set(conversationId, Date.now());
       }
 
       const message = await cryptoEncryptGroup(
@@ -181,12 +241,18 @@ export function useEncryption(userId: string | undefined) {
         encodeUtf8(plaintext)
       );
 
-      return JSON.stringify({
+      const payload = JSON.stringify({
         distributionId: message.distributionId,
         chainId: message.chainId,
         ciphertext: toBase64(message.ciphertext),
         signature: toBase64(message.signature),
       });
+
+      return {
+        payload,
+        deviceId: deviceUuidRef.current,
+        distributions,
+      };
     },
     [userId, store, ensureSessions, distributeSenderKey]
   );
@@ -199,13 +265,14 @@ export function useEncryption(userId: string | undefined) {
     ): Promise<string> => {
       const payload = JSON.parse(payloadStr);
 
-      const plaintext = await decryptGroupMessage(store, senderAddress, conversationId, {
+      const message: SenderKeyMessageData = {
         distributionId: payload.distributionId,
         chainId: payload.chainId,
         ciphertext: fromBase64(payload.ciphertext),
         signature: fromBase64(payload.signature),
-      });
+      };
 
+      const plaintext = await decryptGroupMessage(store, senderAddress, conversationId, message);
       return decodeUtf8(plaintext);
     },
     [store]
@@ -246,6 +313,8 @@ export function useEncryption(userId: string | undefined) {
   return {
     status,
     error,
+    deviceId: deviceUuidRef.current,
+    initializeDevice,
     checkStatus,
     ensureSessions,
     distributeSenderKey,

@@ -141,6 +141,7 @@ export const messagePayloads = pgTable(
       onDelete: "set null",
     }),
     payload: text("payload").notNull(),
+    senderCopy: text("sender_copy"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

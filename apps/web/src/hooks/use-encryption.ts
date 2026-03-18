@@ -203,13 +203,17 @@ export function useEncryption(userId: string | undefined) {
       // Ensure sessions exist before distributing
       await ensureSessions(memberUserIds);
 
-      // Collect all member device addresses, excluding our own device
+      // Collect member device addresses, only including devices with established sessions
       const memberAddresses: ProtocolAddress[] = [];
       for (const memberId of memberUserIds) {
         const memberDevices = await fetchDevicesForUser(memberId);
         for (const d of memberDevices) {
           if (memberId === userId && d.id === sharedDeviceUuid) continue;
-          memberAddresses.push({ userId: memberId, deviceId: d.id });
+          const address: ProtocolAddress = { userId: memberId, deviceId: d.id };
+          const hasSession = await cryptoStore.loadSession(address);
+          if (hasSession) {
+            memberAddresses.push(address);
+          }
         }
       }
 

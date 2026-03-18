@@ -80,8 +80,14 @@ export function useEncryption(userId: string | undefined) {
       const myDevice = myDevices.find((d) => d.platform === platform);
 
       if (myDevice) {
-        deviceUuidRef.current = myDevice.id;
-        setStatus('ready');
+        try {
+          await store.getIdentityKeyPair();
+          deviceUuidRef.current = myDevice.id;
+          setStatus('ready');
+        } catch {
+          // Server device exists but local keys are missing — need re-setup
+          setStatus('uninitialized');
+        }
       } else {
         setStatus('uninitialized');
       }
@@ -190,7 +196,11 @@ export function useEncryption(userId: string | undefined) {
         const devices = await api.get<DeviceInfo[]>(`/api/mobile/chat/devices?userId=${memberId}`);
         for (const d of devices) {
           if (memberId === userId && d.id === deviceUuidRef.current) continue;
-          memberAddresses.push({ userId: memberId, deviceId: d.id });
+          const address: ProtocolAddress = { userId: memberId, deviceId: d.id };
+          const hasSession = await store.loadSession(address);
+          if (hasSession) {
+            memberAddresses.push(address);
+          }
         }
       }
 

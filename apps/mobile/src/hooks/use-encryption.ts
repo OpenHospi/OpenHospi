@@ -12,7 +12,7 @@ import {
   shouldRotateSenderKey,
   toBase64,
 } from '@openhospi/crypto';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { api } from '@/lib/api-client';
@@ -60,18 +60,52 @@ export type EncryptResult = {
   }[];
 };
 
+export type EncryptionContextValue = {
+  status: EncryptionStatus;
+  error: Error | null;
+  deviceId: string | null;
+  initializeDevice: (pin: string) => Promise<void>;
+  checkStatus: () => Promise<void>;
+  ensureSessions: (memberUserIds: string[]) => Promise<void>;
+  distributeSenderKey: (
+    conversationId: string,
+    memberUserIds: string[]
+  ) => Promise<{ recipientDeviceId: string; ciphertext: string }[]>;
+  encryptMessage: (
+    conversationId: string,
+    memberUserIds: string[],
+    plaintext: string
+  ) => Promise<EncryptResult>;
+  decryptMessage: (
+    conversationId: string,
+    senderAddress: ProtocolAddress,
+    payloadStr: string
+  ) => Promise<string>;
+  processPendingDistributions: (recipientDeviceId: string) => Promise<void>;
+};
+
+export const EncryptionContext = createContext<EncryptionContextValue | null>(null);
+
+export function useEncryptionContext(): EncryptionContextValue {
+  const ctx = useContext(EncryptionContext);
+  if (!ctx) {
+    throw new Error('useEncryptionContext must be used within an EncryptionProvider');
+  }
+  return ctx;
+}
+
 const senderKeyCreatedAt = new Map<string, number>();
 let encryptLock: Promise<void> = Promise.resolve();
 
-export function useEncryption(userId: string | undefined) {
+export function useEncryptionProvider(userId: string | undefined): EncryptionContextValue {
   const [status, setStatus] = useState<EncryptionStatus>('uninitialized');
   const [error, setError] = useState<Error | null>(null);
-  const deviceUuidRef = useRef<string | null>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
 
   const store = getMobileSignalStore();
 
   const initDevice = useCallback(async () => {
-    if (!userId || deviceUuidRef.current) return;
+    if (!userId || deviceId) return;
 
     try {
       setStatus('initializing');
@@ -82,10 +116,9 @@ export function useEncryption(userId: string | undefined) {
       if (myDevice) {
         try {
           await store.getIdentityKeyPair();
-          deviceUuidRef.current = myDevice.id;
+          setDeviceId(myDevice.id);
           setStatus('ready');
         } catch {
-          // Server device exists but local keys are missing — need re-setup
           setStatus('uninitialized');
         }
       } else {
@@ -94,7 +127,7 @@ export function useEncryption(userId: string | undefined) {
     } catch {
       setStatus('error');
     }
-  }, [userId]);
+  }, [userId, deviceId, store]);
 
   useEffect(() => {
     initDevice();
@@ -124,7 +157,7 @@ export function useEncryption(userId: string | undefined) {
           salt: result.encryptedBackup.salt,
         });
 
-        deviceUuidRef.current = device.id;
+        setDeviceId(device.id);
         setStatus('ready');
       } catch (err) {
         setError(err instanceof Error ? err : new Error(String(err)));
@@ -187,7 +220,7 @@ export function useEncryption(userId: string | undefined) {
       conversationId: string,
       memberUserIds: string[]
     ): Promise<{ recipientDeviceId: string; ciphertext: string }[]> => {
-      if (!userId || !deviceUuidRef.current) return [];
+      if (!userId || !deviceId) return [];
 
       await ensureSessions(memberUserIds);
 
@@ -195,7 +228,7 @@ export function useEncryption(userId: string | undefined) {
       for (const memberId of memberUserIds) {
         const devices = await api.get<DeviceInfo[]>(`/api/mobile/chat/devices?userId=${memberId}`);
         for (const d of devices) {
-          if (memberId === userId && d.id === deviceUuidRef.current) continue;
+          if (memberId === userId && d.id === deviceId) continue;
           const address: ProtocolAddress = { userId: memberId, deviceId: d.id };
           const hasSession = await store.loadSession(address);
           if (hasSession) {
@@ -204,7 +237,7 @@ export function useEncryption(userId: string | undefined) {
         }
       }
 
-      const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
+      const localAddress: ProtocolAddress = { userId, deviceId };
 
       const { distributions } = await initAndDistributeSenderKey(
         store,
@@ -218,7 +251,7 @@ export function useEncryption(userId: string | undefined) {
         ciphertext: toBase64(dist.encryptedDistribution),
       }));
     },
-    [userId, store, ensureSessions]
+    [userId, deviceId, store, ensureSessions]
   );
 
   const encryptMessage = useCallback(
@@ -229,11 +262,11 @@ export function useEncryption(userId: string | undefined) {
     ): Promise<EncryptResult> => {
       const doEncrypt = async (): Promise<EncryptResult> => {
         if (!userId) throw new Error('Not authenticated');
-        if (!deviceUuidRef.current) throw new Error('Device not initialized');
+        if (!deviceId) throw new Error('Device not initialized');
 
         await ensureSessions(memberUserIds);
 
-        const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
+        const localAddress: ProtocolAddress = { userId, deviceId };
 
         const existingKey = await store.loadSenderKey(localAddress, conversationId);
         const createdAt = senderKeyCreatedAt.get(conversationId) ?? 0;
@@ -260,10 +293,9 @@ export function useEncryption(userId: string | undefined) {
           signature: toBase64(message.signature),
         });
 
-        return { payload, deviceId: deviceUuidRef.current, distributions };
+        return { payload, deviceId, distributions };
       };
 
-      // Serialize through mutex to prevent concurrent key reuse
       const result = encryptLock.then(doEncrypt);
       encryptLock = result.then(
         () => {},
@@ -271,7 +303,7 @@ export function useEncryption(userId: string | undefined) {
       );
       return result;
     },
-    [userId, store, ensureSessions, distributeSenderKey]
+    [userId, deviceId, store, ensureSessions, distributeSenderKey]
   );
 
   const decryptMessage = useCallback(
@@ -330,7 +362,7 @@ export function useEncryption(userId: string | undefined) {
   return {
     status,
     error,
-    deviceId: deviceUuidRef.current,
+    deviceId,
     initializeDevice,
     checkStatus,
     ensureSessions,

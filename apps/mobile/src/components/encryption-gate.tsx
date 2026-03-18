@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { useEncryption } from '@/hooks/use-encryption';
+import { EncryptionContext, useEncryptionProvider } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
 
 type Props = {
@@ -19,7 +19,8 @@ export function EncryptionGate({ children }: Props) {
   const { t: tSecurity } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const { status, initializeDevice } = useEncryption(userId);
+  const encryption = useEncryptionProvider(userId);
+  const { status, initializeDevice } = encryption;
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +35,7 @@ export function EncryptionGate({ children }: Props) {
   }
 
   if (status === 'ready') {
-    return <>{children}</>;
+    return <EncryptionContext.Provider value={encryption}>{children}</EncryptionContext.Provider>;
   }
 
   async function handleSetup(value: string) {

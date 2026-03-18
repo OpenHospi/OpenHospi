@@ -1,6 +1,7 @@
 import { RootProvider } from "fumadocs-ui/provider/next";
-import { i18nUI } from "@/lib/layout.shared";
 import { Inter } from "next/font/google";
+
+import { i18nUI } from "@/lib/layout.shared";
 import "../global.css";
 
 const inter = Inter({

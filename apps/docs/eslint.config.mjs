@@ -1,15 +1,10 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals';
+import base from "@openhospi/eslint-config";
+import react from "@openhospi/eslint-config/react";
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  globalIgnores([
-    '.next/**',
-    'out/**',
-    'build/**',
-    'next-env.d.ts',
-    '.source/**',
-  ]),
-]);
-
-export default eslintConfig;
+export default [
+  ...base,
+  ...react,
+  {
+    ignores: [".next/**", "out/**", "build/**", "next-env.d.ts", ".source/**"],
+  },
+];

@@ -21,7 +21,6 @@ import {
   setCryptoProvider,
   toBase64,
 } from "../index";
-import { createWebCryptoProvider } from "../primitives/WebCryptoProvider";
 import type {
   KeyPair,
   PreKeyBundle,
@@ -32,6 +31,7 @@ import type {
   SignedPreKeyRecord,
   SignalProtocolStore,
 } from "../index";
+import { createWebCryptoProvider } from "../primitives/WebCryptoProvider";
 
 /** In-memory Signal Protocol store for testing. */
 class InMemoryStore implements SignalProtocolStore {

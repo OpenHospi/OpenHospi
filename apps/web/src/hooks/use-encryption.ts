@@ -233,55 +233,58 @@ export function useEncryption(userId: string | undefined) {
   /**
    * Encrypt a message for a group conversation.
    * Returns the payload, device ID, and distributions for atomic sending.
+   * Serialized via mutex to prevent concurrent sends from reusing the same key.
    */
   const encryptMessage = useCallback(
-    async (
+    (
       conversationId: string,
       memberUserIds: string[],
       plaintext: string,
     ): Promise<EncryptResult> => {
-      if (!userId) throw new Error("Not authenticated");
-      if (!sharedDeviceUuid) throw new Error("Device not initialized");
+      const doEncrypt = async (): Promise<EncryptResult> => {
+        if (!userId) throw new Error("Not authenticated");
+        if (!sharedDeviceUuid) throw new Error("Device not initialized");
 
-      // Step 1: Ensure 1:1 sessions with all members
-      await ensureSessions(memberUserIds);
+        await ensureSessions(memberUserIds);
 
-      const localAddress: ProtocolAddress = { userId, deviceId: sharedDeviceUuid };
+        const localAddress: ProtocolAddress = { userId, deviceId: sharedDeviceUuid };
 
-      // Step 2: Check if we have a sender key, rotate if needed, distribute if missing
-      const existingKey = await cryptoStore.loadSenderKey(localAddress, conversationId);
-      const createdAt = sharedSenderKeyCreatedAt.get(conversationId) ?? 0;
-      const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
+        const existingKey = await cryptoStore.loadSenderKey(localAddress, conversationId);
+        const createdAt = sharedSenderKeyCreatedAt.get(conversationId) ?? 0;
+        const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
 
-      let distributions: Array<{ recipientDeviceId: string; ciphertext: string }> = [];
+        let distributions: Array<{ recipientDeviceId: string; ciphertext: string }> = [];
 
-      if (!existingKey || needsRotation) {
-        distributions = await distributeSenderKey(conversationId, memberUserIds);
-        sharedSenderKeyCreatedAt.set(conversationId, Date.now());
-      }
+        if (!existingKey || needsRotation) {
+          distributions = await distributeSenderKey(conversationId, memberUserIds);
+          sharedSenderKeyCreatedAt.set(conversationId, Date.now());
+        }
 
-      // Step 3: Encrypt with sender key (O(1))
-      const { encodeUtf8 } = await import("@openhospi/crypto");
-      const message = await cryptoEncryptGroup(
-        cryptoStore,
-        localAddress,
-        conversationId,
-        encodeUtf8(plaintext),
-      );
+        const { encodeUtf8 } = await import("@openhospi/crypto");
+        const message = await cryptoEncryptGroup(
+          cryptoStore,
+          localAddress,
+          conversationId,
+          encodeUtf8(plaintext),
+        );
 
-      // Return serialised payload + deviceId + distributions
-      const payload = JSON.stringify({
-        distributionId: message.distributionId,
-        chainId: message.chainId,
-        ciphertext: toBase64(message.ciphertext),
-        signature: toBase64(message.signature),
-      });
+        const payload = JSON.stringify({
+          distributionId: message.distributionId,
+          chainId: message.chainId,
+          ciphertext: toBase64(message.ciphertext),
+          signature: toBase64(message.signature),
+        });
 
-      return {
-        payload,
-        deviceId: sharedDeviceUuid,
-        distributions,
+        return { payload, deviceId: sharedDeviceUuid, distributions };
       };
+
+      // Chain through the mutex so concurrent calls are serialized
+      const result = encryptLock.then(doEncrypt);
+      encryptLock = result.then(
+        () => {},
+        () => {},
+      );
+      return result;
     },
     [userId, ensureSessions, distributeSenderKey],
   );

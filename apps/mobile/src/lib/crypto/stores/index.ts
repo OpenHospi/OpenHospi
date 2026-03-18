@@ -297,6 +297,12 @@ class SqliteSignalStore implements SignalProtocolStore {
     return rows.length;
   }
 
+  async getMaxPreKeyId(): Promise<number> {
+    const rows = db.select({ keyId: preKeys.keyId }).from(preKeys).all();
+    if (rows.length === 0) return 0;
+    return Math.max(...rows.map((r) => r.keyId));
+  }
+
   // ── SignedPreKeyStore ──
 
   async loadSignedPreKey(signedPreKeyId: number): Promise<SignedPreKeyRecord> {

@@ -25,6 +25,7 @@ export interface PreKeyStore {
   storePreKey(preKeyId: number, record: PreKeyRecord): Promise<void>;
   removePreKey(preKeyId: number): Promise<void>;
   getAvailablePreKeyCount(): Promise<number>;
+  getMaxPreKeyId(): Promise<number>;
 }
 
 /** Store for signed pre-keys. */

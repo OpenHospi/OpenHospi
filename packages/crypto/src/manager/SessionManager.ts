@@ -109,6 +109,15 @@ async function decryptPreKeyMessage(
 ): Promise<Uint8Array> {
   const preKeyMsg = deserializePreKeyWhisperMessage(data);
 
+  // Verify the sender's identity key is trusted (TOFU or previously seen)
+  const isTrusted = await store.isTrustedIdentity(address, preKeyMsg.identityKey);
+  if (!isTrusted) {
+    throw new Error(
+      `Identity key changed for ${address.userId}:${address.deviceId}. ` +
+        "The remote user's identity key has changed. This could indicate a security issue.",
+    );
+  }
+
   // Load our keys
   const identityKeyPair = await store.getIdentityKeyPair();
   const signedPreKey = await store.loadSignedPreKey(preKeyMsg.signedPreKeyId);

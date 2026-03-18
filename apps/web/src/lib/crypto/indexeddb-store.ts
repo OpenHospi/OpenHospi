@@ -288,6 +288,12 @@ export class IndexedDBSignalStore implements SignalProtocolStore {
     return idbCount(STORES.preKeys);
   }
 
+  async getMaxPreKeyId(): Promise<number> {
+    const allKeys = await idbGetAllKeys(STORES.preKeys);
+    if (allKeys.length === 0) return 0;
+    return Math.max(...allKeys.map(Number));
+  }
+
   // ── SignedPreKeyStore ──
 
   async loadSignedPreKey(signedPreKeyId: number): Promise<SignedPreKeyRecord> {

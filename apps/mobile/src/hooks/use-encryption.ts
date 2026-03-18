@@ -61,6 +61,7 @@ export type EncryptResult = {
 };
 
 const senderKeyCreatedAt = new Map<string, number>();
+let encryptLock: Promise<void> = Promise.resolve();
 
 export function useEncryption(userId: string | undefined) {
   const [status, setStatus] = useState<EncryptionStatus>('uninitialized');
@@ -211,48 +212,54 @@ export function useEncryption(userId: string | undefined) {
   );
 
   const encryptMessage = useCallback(
-    async (
+    (
       conversationId: string,
       memberUserIds: string[],
       plaintext: string
     ): Promise<EncryptResult> => {
-      if (!userId) throw new Error('Not authenticated');
-      if (!deviceUuidRef.current) throw new Error('Device not initialized');
+      const doEncrypt = async (): Promise<EncryptResult> => {
+        if (!userId) throw new Error('Not authenticated');
+        if (!deviceUuidRef.current) throw new Error('Device not initialized');
 
-      await ensureSessions(memberUserIds);
+        await ensureSessions(memberUserIds);
 
-      const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
+        const localAddress: ProtocolAddress = { userId, deviceId: deviceUuidRef.current };
 
-      const existingKey = await store.loadSenderKey(localAddress, conversationId);
-      const createdAt = senderKeyCreatedAt.get(conversationId) ?? 0;
-      const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
+        const existingKey = await store.loadSenderKey(localAddress, conversationId);
+        const createdAt = senderKeyCreatedAt.get(conversationId) ?? 0;
+        const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
 
-      let distributions: { recipientDeviceId: string; ciphertext: string }[] = [];
+        let distributions: { recipientDeviceId: string; ciphertext: string }[] = [];
 
-      if (!existingKey || needsRotation) {
-        distributions = await distributeSenderKey(conversationId, memberUserIds);
-        senderKeyCreatedAt.set(conversationId, Date.now());
-      }
+        if (!existingKey || needsRotation) {
+          distributions = await distributeSenderKey(conversationId, memberUserIds);
+          senderKeyCreatedAt.set(conversationId, Date.now());
+        }
 
-      const message = await cryptoEncryptGroup(
-        store,
-        localAddress,
-        conversationId,
-        encodeUtf8(plaintext)
-      );
+        const message = await cryptoEncryptGroup(
+          store,
+          localAddress,
+          conversationId,
+          encodeUtf8(plaintext)
+        );
 
-      const payload = JSON.stringify({
-        distributionId: message.distributionId,
-        chainId: message.chainId,
-        ciphertext: toBase64(message.ciphertext),
-        signature: toBase64(message.signature),
-      });
+        const payload = JSON.stringify({
+          distributionId: message.distributionId,
+          chainId: message.chainId,
+          ciphertext: toBase64(message.ciphertext),
+          signature: toBase64(message.signature),
+        });
 
-      return {
-        payload,
-        deviceId: deviceUuidRef.current,
-        distributions,
+        return { payload, deviceId: deviceUuidRef.current, distributions };
       };
+
+      // Serialize through mutex to prevent concurrent key reuse
+      const result = encryptLock.then(doEncrypt);
+      encryptLock = result.then(
+        () => {},
+        () => {}
+      );
+      return result;
     },
     [userId, store, ensureSessions, distributeSenderKey]
   );

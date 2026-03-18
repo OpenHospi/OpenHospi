@@ -1,6 +1,6 @@
 import { getCryptoProvider } from "../primitives/CryptoProvider";
 
-import { concat, encodeUtf8 } from "./encoding";
+import { concat, encodeUtf8, timingSafeEqual } from "./encoding";
 import { generateX25519KeyPair, x25519Dh } from "./keys";
 import type { KeyPair, SessionState, WhisperMessage } from "./types";
 
@@ -71,8 +71,17 @@ export function ratchetEncrypt(
 
   const ciphertext = provider.aesCbcEncrypt(aesKey, iv, plaintext);
 
-  // HMAC over the message for authentication
-  const macInput = concat(state.sendingRatchetKey.publicKey, ciphertext);
+  // HMAC covers identity keys + ratchet key + counters + ciphertext (Signal spec compliant)
+  const counterBytes = new Uint8Array(8);
+  new DataView(counterBytes.buffer).setUint32(0, state.sendingCounter);
+  new DataView(counterBytes.buffer).setUint32(4, state.previousSendingCounter);
+  const macInput = concat(
+    state.localIdentityKey,
+    state.remoteIdentityKey,
+    state.sendingRatchetKey.publicKey,
+    counterBytes,
+    ciphertext,
+  );
   const mac = provider.hmacSha256(hmacKey, macInput).slice(0, 8);
 
   const message: WhisperMessage = {
@@ -107,7 +116,12 @@ export function ratchetDecrypt(
   if (skippedKey) {
     const newSkipped = new Map(state.skippedKeys);
     newSkipped.delete(skipId);
-    const plaintext = decryptWithMessageKey(skippedKey, message);
+    const plaintext = decryptWithMessageKey(
+      skippedKey,
+      message,
+      state.remoteIdentityKey,
+      state.localIdentityKey,
+    );
     return { state: { ...state, skippedKeys: newSkipped }, plaintext };
   }
 
@@ -151,7 +165,12 @@ export function ratchetDecrypt(
     receivingCounter: currentState.receivingCounter + 1,
   };
 
-  const plaintext = decryptWithMessageKey(messageKey, message);
+  const plaintext = decryptWithMessageKey(
+    messageKey,
+    message,
+    currentState.remoteIdentityKey,
+    currentState.localIdentityKey,
+  );
   return { state: currentState, plaintext };
 }
 
@@ -204,7 +223,12 @@ function skipMessages(
   };
 }
 
-function decryptWithMessageKey(messageKey: Uint8Array, message: WhisperMessage): Uint8Array {
+function decryptWithMessageKey(
+  messageKey: Uint8Array,
+  message: WhisperMessage,
+  senderIdentityKey: Uint8Array,
+  receiverIdentityKey: Uint8Array,
+): Uint8Array {
   const provider = getCryptoProvider();
 
   const encKeys = provider.hkdf(
@@ -221,15 +245,20 @@ function decryptWithMessageKey(messageKey: Uint8Array, message: WhisperMessage):
   const ciphertext = message.ciphertext.slice(0, -8);
   const receivedMac = message.ciphertext.slice(-8);
 
-  // Verify MAC
-  const macInput = concat(message.ratchetKey, ciphertext);
+  // Verify MAC (must match sender's MAC which covered senderIdentity || receiverIdentity)
+  const counterBytes = new Uint8Array(8);
+  new DataView(counterBytes.buffer).setUint32(0, message.counter);
+  new DataView(counterBytes.buffer).setUint32(4, message.previousCounter);
+  const macInput = concat(
+    senderIdentityKey,
+    receiverIdentityKey,
+    message.ratchetKey,
+    counterBytes,
+    ciphertext,
+  );
   const expectedMac = provider.hmacSha256(hmacKey, macInput).slice(0, 8);
 
-  let macMatch = true;
-  for (let i = 0; i < 8; i++) {
-    if (receivedMac[i] !== expectedMac[i]) macMatch = false;
-  }
-  if (!macMatch) {
+  if (!timingSafeEqual(receivedMac, expectedMac)) {
     throw new Error("Message authentication failed");
   }
 

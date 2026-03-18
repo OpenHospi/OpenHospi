@@ -36,9 +36,9 @@ export async function replenishPreKeysIfNeeded(
     return false;
   }
 
-  // Generate new batch starting after our current local count
-  const localCount = await store.getAvailablePreKeyCount();
-  const startId = localCount + 1;
+  // Generate new batch starting after the highest ID ever used
+  const maxId = await store.getMaxPreKeyId();
+  const startId = maxId + 1;
   const newKeys = generatePreKeys(startId, ONE_TIME_PRE_KEY_BATCH_SIZE);
 
   // Store locally

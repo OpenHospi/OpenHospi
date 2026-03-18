@@ -1,3 +1,5 @@
+import { getCryptoProvider } from "../primitives/CryptoProvider";
+import { toBase64 } from "../protocol/encoding";
 import { groupDecrypt, groupEncrypt, initGroupSenderKey } from "../protocol/group-cipher";
 import { deserializeDistributionMessage } from "../protocol/sender-key";
 import type { ProtocolAddress, SenderKeyMessageData, SenderKeyRecord } from "../protocol/types";
@@ -5,9 +7,16 @@ import type { SenderKeyStore, SignalProtocolStore } from "../stores/types";
 
 import { encrypt1to1 } from "./SessionManager";
 
+/** Generate a random UUID-like distribution ID. */
+function generateDistributionId(): string {
+  const bytes = getCryptoProvider().randomBytes(16);
+  return toBase64(bytes);
+}
+
 /**
  * Initialize a sender key for a conversation and generate distribution messages.
- * The distribution message must be encrypted via 1:1 session and sent to each member device.
+ * Uses a unique distributionId (not conversationId) so that key rotation
+ * doesn't overwrite the old key state for in-flight messages.
  */
 export async function initAndDistributeSenderKey(
   store: SignalProtocolStore,
@@ -20,10 +29,11 @@ export async function initAndDistributeSenderKey(
     encryptedDistribution: Uint8Array;
   }>;
 }> {
-  // Generate sender key
-  const { record, distributionMessageBytes } = initGroupSenderKey(conversationId);
+  // Generate sender key with a unique distributionId
+  const distributionId = generateDistributionId();
+  const { record, distributionMessageBytes } = initGroupSenderKey(distributionId);
 
-  // Store our own sender key
+  // Store under conversationId so the sender can find it to encrypt
   await store.storeSenderKey(localAddress, conversationId, record);
 
   // Encrypt distribution message for each member via their 1:1 session
@@ -104,6 +114,8 @@ export async function encryptGroupMessage(
 
 /**
  * Decrypt a group message from a specific sender.
+ * Looks up the sender key by the message's distributionId (not conversationId)
+ * so that rotated keys don't interfere with in-flight messages.
  */
 export async function decryptGroupMessage(
   store: SenderKeyStore,
@@ -111,7 +123,11 @@ export async function decryptGroupMessage(
   conversationId: string,
   message: SenderKeyMessageData,
 ): Promise<Uint8Array> {
-  const record = await store.loadSenderKey(senderAddress, conversationId);
+  // Try distributionId first (new behavior), fall back to conversationId (backward compat)
+  let record = await store.loadSenderKey(senderAddress, message.distributionId);
+  if (!record) {
+    record = await store.loadSenderKey(senderAddress, conversationId);
+  }
   if (!record) {
     throw new Error(
       `No sender key from ${senderAddress.userId}:${senderAddress.deviceId} for conversation ${conversationId}`,
@@ -120,8 +136,8 @@ export async function decryptGroupMessage(
 
   const { senderKeyRecord, plaintext } = groupDecrypt(record, message);
 
-  // Update stored state
-  await store.storeSenderKey(senderAddress, conversationId, senderKeyRecord);
+  // Update stored state under the distributionId
+  await store.storeSenderKey(senderAddress, message.distributionId, senderKeyRecord);
 
   return plaintext;
 }

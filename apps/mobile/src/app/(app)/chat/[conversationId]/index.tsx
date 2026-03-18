@@ -41,7 +41,7 @@ type MessageRow = {
 export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.chat' });
-  const router = useRouter();
+  å;
   const { data: session } = useSession();
   const userId = session?.user?.id;
 

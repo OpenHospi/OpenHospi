@@ -81,6 +81,10 @@ class InMemoryStore implements SignalProtocolStore {
   async removePreKey(id: number): Promise<void> {
     this.preKeys.delete(id);
   }
+  async getMaxPreKeyId(): Promise<number> {
+    if (this.preKeys.size === 0) return 0;
+    return Math.max(...this.preKeys.keys());
+  }
   async getAvailablePreKeyCount(): Promise<number> {
     return this.preKeys.size;
   }

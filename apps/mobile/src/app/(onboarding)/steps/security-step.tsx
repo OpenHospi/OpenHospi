@@ -41,7 +41,7 @@ export default function SecurityStep() {
       const result = await setupDevice(store, value);
 
       // Register device on server
-      const device = await api.post<{ id: string }>('/api/mobile/chat/register-device', {
+      await api.post<{ id: string }>('/api/mobile/chat/register-device', {
         registrationId: result.registrationId,
         identityKeyPublic: result.identityKeyPublic,
         signingKeyPublic: result.signingKeyPublic,

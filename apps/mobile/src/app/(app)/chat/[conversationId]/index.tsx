@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { eq } from 'drizzle-orm';
 import { Info, Lock, Send } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -16,6 +17,8 @@ import { EncryptionGate } from '@/components/encryption-gate';
 import { Text } from '@/components/ui/text';
 import { useEncryption } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
+import { db as localDb } from '@/lib/db';
+import { localMessages } from '@/lib/db/schema';
 import {
   useConversationDetail,
   useMessages,
@@ -81,10 +84,17 @@ export default function ConversationScreen() {
 
         if (!msg.payload) continue;
 
-        // Own messages — use senderCopy from server if available
-        if (msg.senderId === userId && msg.senderCopy) {
-          cache[msg.id] = msg.senderCopy;
-          continue;
+        // Own messages — check local SQLite cache (same as Signal)
+        if (msg.senderId === userId) {
+          const cached = localDb
+            .select({ plaintext: localMessages.plaintext })
+            .from(localMessages)
+            .where(eq(localMessages.id, msg.id))
+            .all();
+          if (cached.length > 0) {
+            cache[msg.id] = cached[0].plaintext;
+            continue;
+          }
         }
 
         try {
@@ -119,11 +129,26 @@ export default function ConversationScreen() {
 
     try {
       const result = await encryptMessage(conversationId, memberUserIds, trimmed);
-      await sendMessageMutation.mutateAsync({
+      const msg = await sendMessageMutation.mutateAsync({
         conversationId,
         payload: result.payload,
         deviceId: result.deviceId,
       });
+
+      // Cache plaintext locally for own message display (same as Signal)
+      if (msg?.id) {
+        localDb
+          .insert(localMessages)
+          .values({
+            id: msg.id,
+            conversationId,
+            senderUserId: userId!,
+            plaintext: trimmed,
+            timestamp: new Date(),
+          })
+          .onConflictDoNothing()
+          .run();
+      }
     } catch (err) {
       console.error('[Chat] Send failed:', err);
       setText(trimmed);

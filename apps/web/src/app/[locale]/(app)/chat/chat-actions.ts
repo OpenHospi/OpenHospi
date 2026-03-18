@@ -26,7 +26,6 @@ export async function sendMessage(
   const session = await requireSession();
 
   const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
-    // Verify membership
     const [member] = await tx
       .select({ userId: conversationMembers.userId })
       .from(conversationMembers)
@@ -39,7 +38,6 @@ export async function sendMessage(
 
     if (!member) throw new Error("Not a member of this conversation");
 
-    // Insert message
     const [msg] = await tx
       .insert(messages)
       .values({
@@ -50,7 +48,6 @@ export async function sendMessage(
       })
       .returning();
 
-    // Insert payload
     await tx.insert(messagePayloads).values({
       messageId: msg.id,
       conversationId,
@@ -59,7 +56,6 @@ export async function sendMessage(
       payload,
     });
 
-    // Create receipts for all other members
     const members = await tx
       .select({ userId: conversationMembers.userId })
       .from(conversationMembers)
@@ -80,7 +76,6 @@ export async function sendMessage(
     return msg;
   });
 
-  // Broadcast via Supabase Realtime
   await broadcastNewMessage(conversationId, result.id, session.user.id, deviceId);
 
   return result;
@@ -88,19 +83,17 @@ export async function sendMessage(
 
 /**
  * Atomically send distributions + message in a single server call.
- * This ensures distributions arrive before the message they protect.
+ * Distributions are stored first so they arrive before the message they protect.
  */
 export async function sendMessageWithDistributions(
   conversationId: string,
   payload: string,
   deviceId: string,
-  senderCopy: string,
   distributions: Array<{ recipientDeviceId: string; ciphertext: string }>,
 ) {
   const session = await requireSession();
 
   const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
-    // Verify membership
     const [member] = await tx
       .select({ userId: conversationMembers.userId })
       .from(conversationMembers)
@@ -137,14 +130,13 @@ export async function sendMessageWithDistributions(
       })
       .returning();
 
-    // Step 3: Insert payload with senderCopy for own-message decryption
+    // Step 3: Insert encrypted payload
     await tx.insert(messagePayloads).values({
       messageId: msg.id,
       conversationId,
       senderUserId: session.user.id,
       senderDeviceId: deviceId,
       payload,
-      senderCopy,
     });
 
     // Step 4: Create receipts for all other members
@@ -219,7 +211,6 @@ export async function fetchMessageById(messageId: string) {
       messageType: messages.messageType,
       createdAt: messages.createdAt,
       payload: messagePayloads.payload,
-      senderCopy: messagePayloads.senderCopy,
       senderFirstName: profiles.firstName,
     })
     .from(messages)

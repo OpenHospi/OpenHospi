@@ -6,6 +6,7 @@ import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useEncryption } from "@/hooks/use-encryption";
+import { sentMessageCache } from "@/lib/crypto";
 
 import { sendMessageWithDistributions } from "../chat-actions";
 
@@ -13,15 +14,9 @@ type Props = {
   conversationId: string;
   memberUserIds: string[];
   currentUserId: string;
-  onMessageSent?: (optimistic: {
-    id: string;
-    text: string;
-    senderId: string;
-    createdAt: Date;
-  }) => void;
 };
 
-export function ChatInput({ conversationId, memberUserIds, currentUserId, onMessageSent }: Props) {
+export function ChatInput({ conversationId, memberUserIds, currentUserId }: Props) {
   const t = useTranslations("app.chat");
   const [text, setText] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -38,23 +33,16 @@ export function ChatInput({ conversationId, memberUserIds, currentUserId, onMess
       try {
         const result = await encryptMessage(conversationId, memberUserIds, trimmed);
 
-        // Optimistic UI — append immediately
-        const optimisticId = crypto.randomUUID();
-        onMessageSent?.({
-          id: optimisticId,
-          text: trimmed,
-          senderId: currentUserId,
-          createdAt: new Date(),
-        });
-
         // Atomic send: distributions + message in one server call
-        await sendMessageWithDistributions(
+        const msg = await sendMessageWithDistributions(
           conversationId,
           result.payload,
           result.deviceId,
-          trimmed,
           result.distributions,
         );
+
+        // Cache plaintext locally for own message display (same as Signal)
+        await sentMessageCache.store(msg.id, trimmed);
       } catch (err) {
         console.error("[ChatInput] Send failed:", err);
         setText(trimmed);

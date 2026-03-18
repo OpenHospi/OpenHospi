@@ -1,11 +1,8 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import {
-  buildSessionFromBundle,
-  createPreKeyMessage,
   decrypt1to1,
   decryptGroupMessage,
-  deserializePreKeyWhisperMessage,
   encrypt1to1,
   encryptGroupMessage,
   establishSession,
@@ -17,7 +14,6 @@ import {
   initAndDistributeSenderKey,
   isPreKeyWhisperMessage,
   processDistribution,
-  sessionEncrypt,
   setCryptoProvider,
   toBase64,
 } from "../index";
@@ -67,6 +63,8 @@ class InMemoryStore implements SignalProtocolStore {
     return !!existing && toBase64(existing) !== toBase64(key);
   }
   async isTrustedIdentity(_addr: ProtocolAddress, _key: Uint8Array): Promise<boolean> {
+    void _addr;
+    void _key;
     return true;
   }
   async getIdentity(addr: ProtocolAddress): Promise<Uint8Array | null> {
@@ -101,6 +99,7 @@ class InMemoryStore implements SignalProtocolStore {
     this.sessions.set(`${addr.userId}:${addr.deviceId}`, record);
   }
   async getSubDeviceSessions(_userId: string): Promise<number[]> {
+    void _userId;
     return [];
   }
   async storeSenderKey(

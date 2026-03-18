@@ -172,7 +172,6 @@ export async function getMessages(
       messageType: messages.messageType,
       createdAt: messages.createdAt,
       payload: messagePayloads.payload,
-      senderCopy: messagePayloads.senderCopy,
       senderFirstName: profiles.firstName,
     })
     .from(messages)

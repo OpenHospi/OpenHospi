@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useEncryption } from "@/hooks/use-encryption";
+import { sentMessageCache } from "@/lib/crypto";
 import { supabase } from "@/lib/supabase/client";
 
 import { fetchMessageById } from "../chat-actions";
@@ -17,7 +18,6 @@ type MessageRow = {
   messageType: string;
   createdAt: Date;
   payload: string | null;
-  senderCopy: string | null;
   senderFirstName: string | null;
 };
 
@@ -57,9 +57,10 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       if (msg.messageType === "system") return msg.payload ?? "";
       if (!msg.payload) return null;
 
-      // Own messages — use server-stored senderCopy
-      if (msg.senderId === currentUserId && msg.senderCopy) {
-        return msg.senderCopy;
+      // Own messages — check local plaintext cache (same as Signal Desktop)
+      if (msg.senderId === currentUserId) {
+        const cached = await sentMessageCache.get(msg.id);
+        if (cached) return cached;
       }
 
       if (!msg.senderDeviceId) return null;

@@ -54,10 +54,10 @@ type PendingDistribution = {
 export type EncryptResult = {
   payload: string;
   deviceId: string;
-  distributions: Array<{
+  distributions: {
     recipientDeviceId: string;
     ciphertext: string;
-  }>;
+  }[];
 };
 
 const senderKeyCreatedAt = new Map<string, number>();
@@ -179,7 +179,7 @@ export function useEncryption(userId: string | undefined) {
     async (
       conversationId: string,
       memberUserIds: string[]
-    ): Promise<Array<{ recipientDeviceId: string; ciphertext: string }>> => {
+    ): Promise<{ recipientDeviceId: string; ciphertext: string }[]> => {
       if (!userId || !deviceUuidRef.current) return [];
 
       await ensureSessions(memberUserIds);
@@ -227,7 +227,7 @@ export function useEncryption(userId: string | undefined) {
       const createdAt = senderKeyCreatedAt.get(conversationId) ?? 0;
       const needsRotation = existingKey && shouldRotateSenderKey(existingKey, createdAt);
 
-      let distributions: Array<{ recipientDeviceId: string; ciphertext: string }> = [];
+      let distributions: { recipientDeviceId: string; ciphertext: string }[] = [];
 
       if (!existingKey || needsRotation) {
         distributions = await distributeSenderKey(conversationId, memberUserIds);

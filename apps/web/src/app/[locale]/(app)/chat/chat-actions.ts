@@ -230,7 +230,7 @@ async function broadcastNewMessage(
   senderDeviceId: string | null,
 ) {
   try {
-    await supabaseAdmin.channel(`chat:${conversationId}`).send({
+    await supabaseAdmin.channel(`chat:${conversationId}`).httpSend({
       type: "broadcast",
       event: "new_message",
       payload: { messageId, senderId, senderDeviceId },
@@ -246,7 +246,7 @@ async function broadcastDistributions(
   senderDeviceId: string,
 ) {
   try {
-    await supabaseAdmin.channel(`chat:${conversationId}`).send({
+    await supabaseAdmin.channel(`chat:${conversationId}`).httpSend({
       type: "broadcast",
       event: "sender_key_distribution",
       payload: { senderId, senderDeviceId },

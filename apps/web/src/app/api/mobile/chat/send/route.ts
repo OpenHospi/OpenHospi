@@ -99,13 +99,13 @@ export async function POST(request: Request) {
     const channel = supabaseAdmin.channel(`chat:${conversationId}`);
     try {
       if (distributions && distributions.length > 0) {
-        await channel.send({
+        await channel.httpSend({
           type: "broadcast",
           event: "sender_key_distribution",
           payload: { senderId: session.user.id, senderDeviceId: deviceId },
         });
       }
-      await channel.send({
+      await channel.httpSend({
         type: "broadcast",
         event: "new_message",
         payload: { messageId: msg.id, senderId: session.user.id, senderDeviceId: deviceId },

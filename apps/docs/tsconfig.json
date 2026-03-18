@@ -14,6 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    "types": ["node", "react", "react-dom", "mdx"],
     "incremental": true,
     "paths": {
       "@/*": ["./*"],

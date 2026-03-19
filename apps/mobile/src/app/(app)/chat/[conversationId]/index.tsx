@@ -158,7 +158,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
         return t('decryption_failed');
       }
     },
-    [userId, conversationId, decryptMessage, t]
+    [conversationId, decryptMessage, t]
   );
 
   // Stable message ID list for effect deps

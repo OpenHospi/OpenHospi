@@ -183,15 +183,15 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       {/* Messages in chronological order (reversed from query) */}
       {(() => {
         const chronological = [...messages].reverse();
-        let lastDateKey = "";
 
-        return chronological.map((msg) => {
+        return chronological.map((msg, index) => {
           const isOwn = msg.senderId === currentUserId;
           const text = decryptedCache[msg.id];
           const msgDate = new Date(msg.createdAt);
           const dateKey = toDateKey(msgDate);
-          const showDateSeparator = dateKey !== lastDateKey;
-          lastDateKey = dateKey;
+          const prevDateKey =
+            index > 0 ? toDateKey(new Date(chronological[index - 1].createdAt)) : "";
+          const showDateSeparator = dateKey !== prevDateKey;
 
           return (
             <div key={msg.id}>

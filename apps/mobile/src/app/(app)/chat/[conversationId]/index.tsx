@@ -1,19 +1,15 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { eq } from 'drizzle-orm';
-import { Lock, Send } from 'lucide-react-native';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  TextInput,
-  View,
-} from 'react-native';
+import { Lock } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
+import { FlatList, KeyboardAvoidingView, Platform, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { ChatInputBar } from '@/components/chat-input-bar';
+import { DateSeparator } from '@/components/date-separator';
 import { EncryptionGate } from '@/components/encryption-gate';
+import { MessageBubble } from '@/components/message-bubble';
+import { ScrollToBottomFab } from '@/components/scroll-to-bottom-fab';
 import { Text } from '@/components/ui/text';
 import { useEncryptionContext } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
@@ -42,24 +38,6 @@ function toDateKey(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
-function formatDateSeparator(
-  date: Date,
-  locale: string,
-  labels: { today: string; yesterday: string }
-): string {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const msgDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const diffDays = Math.round((today.getTime() - msgDay.getTime()) / 86_400_000);
-
-  if (diffDays === 0) return labels.today;
-  if (diffDays === 1) return labels.yesterday;
-  if (diffDays < 7) {
-    return date.toLocaleDateString(locale, { weekday: 'long' });
-  }
-  return date.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
 export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
@@ -75,6 +53,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
   const dateLabels = { today: t('date_today'), yesterday: t('date_yesterday') };
   const { data: session } = useSession();
   const userId = session?.user?.id;
+  const router = useRouter();
 
   const { data: detail } = useConversationDetail(conversationId);
   const {
@@ -92,7 +71,8 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
   const [text, setText] = useState('');
   const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
   const [distributionVersion, setDistributionVersion] = useState(0);
-  const inputRef = useRef<TextInput>(null);
+  const [showScrollFab, setShowScrollFab] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
 
   const allMessages = messagesData?.pages.flatMap((p) => p.messages) ?? [];
   const memberUserIds = detail?.members.map((m) => m.userId) ?? [];
@@ -112,54 +92,51 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
   }, [deviceId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Decrypt a single message
-  const decryptSingle = useCallback(
-    async (msg: MessageRow): Promise<string | null> => {
-      if (msg.messageType === 'system') return msg.payload ?? '';
-      if (!msg.payload) return null;
+  async function decryptSingle(msg: MessageRow): Promise<string | null> {
+    if (msg.messageType === 'system') return msg.payload ?? '';
+    if (!msg.payload) return null;
 
-      // Check local SQLite cache first (Signal's approach — crypto keys are one-time use)
-      const cached = localDb
-        .select({ plaintext: localMessages.plaintext })
-        .from(localMessages)
-        .where(eq(localMessages.id, msg.id))
-        .all();
-      if (cached.length > 0) return cached[0].plaintext;
+    // Check local SQLite cache first (Signal's approach — crypto keys are one-time use)
+    const cached = localDb
+      .select({ plaintext: localMessages.plaintext })
+      .from(localMessages)
+      .where(eq(localMessages.id, msg.id))
+      .all();
+    if (cached.length > 0) return cached[0].plaintext;
 
-      if (!msg.senderDeviceId) return null;
+    if (!msg.senderDeviceId) return null;
 
-      try {
-        const plaintext = await decryptMessage(
-          msg.id,
-          conversationId,
-          {
-            userId: msg.senderId,
-            deviceId: msg.senderDeviceId,
-          },
-          msg.payload
-        );
+    try {
+      const plaintext = await decryptMessage(
+        msg.id,
+        conversationId,
+        {
+          userId: msg.senderId,
+          deviceId: msg.senderDeviceId,
+        },
+        msg.payload
+      );
 
-        // Cache after successful decryption so we never need to re-decrypt
-        if (plaintext) {
-          localDb
-            .insert(localMessages)
-            .values({
-              id: msg.id,
-              conversationId,
-              senderUserId: msg.senderId,
-              plaintext,
-              timestamp: new Date(msg.createdAt),
-            })
-            .onConflictDoNothing()
-            .run();
-        }
-
-        return plaintext;
-      } catch {
-        return t('decryption_failed');
+      // Cache after successful decryption so we never need to re-decrypt
+      if (plaintext) {
+        localDb
+          .insert(localMessages)
+          .values({
+            id: msg.id,
+            conversationId,
+            senderUserId: msg.senderId,
+            plaintext,
+            timestamp: new Date(msg.createdAt),
+          })
+          .onConflictDoNothing()
+          .run();
       }
-    },
-    [conversationId, decryptMessage, t]
-  );
+
+      return plaintext;
+    } catch {
+      return t('decryption_failed');
+    }
+  }
 
   // Stable message ID list for effect deps
   const messageIds = allMessages.map((m) => m.id).join(',');
@@ -175,9 +152,9 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
           continue;
         }
 
-        const text = await decryptSingle(msg);
-        if (text !== null) {
-          cache[msg.id] = text;
+        const result = await decryptSingle(msg);
+        if (result !== null) {
+          cache[msg.id] = result;
         }
       }
 
@@ -248,23 +225,68 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     }
   }
 
+  // Compute message grouping
+  function getGroupFlags(index: number) {
+    const msg = allMessages[index];
+    const prev = allMessages[index - 1]; // newer (inverted list: index-1 is newer)
+    const next = allMessages[index + 1]; // older
+
+    const FIVE_MIN = 5 * 60_000;
+    const msgTime = new Date(msg.createdAt).getTime();
+
+    const sameAsPrev =
+      prev &&
+      prev.senderId === msg.senderId &&
+      Math.abs(new Date(prev.createdAt).getTime() - msgTime) < FIVE_MIN;
+
+    const sameAsNext =
+      next &&
+      next.senderId === msg.senderId &&
+      Math.abs(new Date(next.createdAt).getTime() - msgTime) < FIVE_MIN;
+
+    // In inverted list: "first in group" = last message visually (bottom), "last in group" = first visually (top)
+    return {
+      isFirstInGroup: !sameAsNext, // no older message from same sender = top of group
+      isLastInGroup: !sameAsPrev, // no newer message from same sender = bottom of group
+      showSender: !sameAsNext, // show name at top of group
+    };
+  }
+
+  const memberCount = detail?.members.length ?? 0;
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       className="bg-background">
-      <FlatList
-        data={allMessages}
-        keyExtractor={(item) => item.id}
-        inverted
-        contentContainerStyle={{ padding: 16, gap: 4 }}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+      <Stack.Screen
+        options={{
+          headerTitle: () => (
+            <Pressable onPress={() => router.push(`/chat/${conversationId}/info`)}>
+              <View style={{ alignItems: 'center' }}>
+                <Text className="text-foreground text-base font-semibold" numberOfLines={1}>
+                  {detail?.roomTitle ?? t('conversation')}
+                </Text>
+                {memberCount > 0 && (
+                  <Text className="text-muted-foreground text-xs">
+                    {t('members_count', { count: memberCount })}
+                  </Text>
+                )}
+              </View>
+            </Pressable>
+          ),
+          headerBackTitle: t('title'),
         }}
-        onEndReachedThreshold={0.3}
-        ListHeaderComponent={
-          <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+      />
+
+      <View style={{ flex: 1 }}>
+        {allMessages.length === 0 ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 }}>
+            <Lock size={32} className="text-muted-foreground" />
+            <Text variant="muted" className="text-center text-sm">
+              {t('say_hello')}
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <Lock size={12} className="text-muted-foreground" />
               <Text variant="muted" className="text-xs">
@@ -272,111 +294,78 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
               </Text>
             </View>
           </View>
-        }
-        renderItem={({ item: msg, index }) => {
-          const isOwn = msg.senderId === userId;
-          const plaintext = decryptedCache[msg.id];
-          const msgDate = new Date(msg.createdAt);
-          const nextMsg = allMessages[index + 1];
-          const showDateSeparator =
-            !nextMsg || toDateKey(msgDate) !== toDateKey(new Date(nextMsg.createdAt));
-
-          return (
-            <View>
-              {showDateSeparator && (
-                <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-                  <View
-                    style={{ borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4 }}
-                    className="bg-muted">
-                    <Text className="text-muted-foreground text-xs">
-                      {formatDateSeparator(msgDate, i18n.language, dateLabels)}
-                    </Text>
-                  </View>
-                </View>
-              )}
-              <View style={{ alignItems: isOwn ? 'flex-end' : 'flex-start', marginVertical: 2 }}>
-                <View
-                  style={{
-                    maxWidth: '75%',
-                    borderRadius: 16,
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                  }}
-                  className={isOwn ? 'bg-primary' : 'bg-muted'}>
-                  {!isOwn && msg.senderFirstName && (
-                    <Text
-                      className={`text-xs font-medium ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}
-                      style={{ opacity: 0.7, marginBottom: 2 }}>
-                      {msg.senderFirstName}
-                    </Text>
-                  )}
-                  <Text
-                    className={`text-sm ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}>
-                    {plaintext ?? '...'}
-                  </Text>
-                  <Text
-                    className={`text-right ${isOwn ? 'text-primary-foreground' : 'text-muted-foreground'}`}
-                    style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
-                    {msgDate.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={allMessages}
+            keyExtractor={(item) => item.id}
+            inverted
+            contentContainerStyle={{ padding: 16 }}
+            onEndReached={() => {
+              if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+            }}
+            onEndReachedThreshold={0.3}
+            onScroll={(e) => {
+              const offsetY = e.nativeEvent.contentOffset.y;
+              setShowScrollFab(offsetY > 300);
+            }}
+            scrollEventThrottle={100}
+            ListHeaderComponent={
+              <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <Lock size={12} className="text-muted-foreground" />
+                  <Text variant="muted" className="text-xs">
+                    {t('e2e_info')}
                   </Text>
                 </View>
               </View>
-            </View>
-          );
-        }}
-      />
+            }
+            renderItem={({ item: msg, index }) => {
+              const isOwn = msg.senderId === userId;
+              const plaintext = decryptedCache[msg.id];
+              const msgDate = new Date(msg.createdAt);
+              const nextMsg = allMessages[index + 1];
+              const showDateSep =
+                !nextMsg || toDateKey(msgDate) !== toDateKey(new Date(nextMsg.createdAt));
 
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: 8,
-          padding: 12,
-          borderTopWidth: 1,
-        }}
-        className="border-border">
-        <TextInput
-          ref={inputRef}
-          value={text}
-          onChangeText={setText}
-          placeholder={t('message_placeholder')}
-          multiline
-          style={{
-            flex: 1,
-            minHeight: 40,
-            maxHeight: 120,
-            borderRadius: 20,
-            paddingHorizontal: 16,
-            paddingVertical: 10,
-            fontSize: 14,
-          }}
-          className="bg-muted text-foreground"
-          returnKeyType="send"
-          onSubmitEditing={handleSend}
-          blurOnSubmit={false}
+              const { isFirstInGroup, isLastInGroup, showSender } = getGroupFlags(index);
+
+              return (
+                <View>
+                  {showDateSep && (
+                    <DateSeparator date={msgDate} locale={i18n.language} labels={dateLabels} />
+                  )}
+                  <MessageBubble
+                    isOwn={isOwn}
+                    text={plaintext ?? '...'}
+                    senderName={msg.senderFirstName}
+                    showSender={showSender}
+                    isFirstInGroup={isFirstInGroup}
+                    isLastInGroup={isLastInGroup}
+                    timestamp={msgDate.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  />
+                </View>
+              );
+            }}
+          />
+        )}
+
+        <ScrollToBottomFab
+          visible={showScrollFab}
+          onPress={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: true })}
         />
-        <Pressable
-          onPress={handleSend}
-          disabled={!text.trim() || sendMessageMutation.isPending}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-            opacity: text.trim() ? 1 : 0.5,
-          }}
-          className="bg-primary">
-          {sendMessageMutation.isPending ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Send size={18} color="white" />
-          )}
-        </Pressable>
       </View>
+
+      <ChatInputBar
+        value={text}
+        onChangeText={setText}
+        onSend={handleSend}
+        isSending={sendMessageMutation.isPending}
+        placeholder={t('message_placeholder')}
+      />
     </KeyboardAvoidingView>
   );
 }

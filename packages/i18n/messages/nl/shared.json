@@ -1388,6 +1388,11 @@
       "you": "jij",
       "date_today": "Vandaag",
       "date_yesterday": "Gisteren",
+      "search_placeholder": "Zoek gesprekken...",
+      "scroll_to_bottom": "Scroll naar beneden",
+      "say_hello": "Begin het gesprek!",
+      "view_listing": "Bekijk advertentie",
+      "room_info": "Kamerinfo",
       "safety_number": {
         "title": "Veiligheidsnummer",
         "description": "Vergelijk dit nummer met {name} om te controleren of je gesprek end-to-end versleuteld is.",

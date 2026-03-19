@@ -81,7 +81,7 @@
       "@react-email/body": "^0.3.0",
       "serialize-javascript": ">=7.0.3",
       "undici": ">=7.24.0",
-      "next": ">=16.1.7",
+      "next": ">=16.2.0",
       "socket.io-parser": ">=4.2.6"
     },
     "ignoredBuiltDependencies": [

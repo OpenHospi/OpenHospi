@@ -16,7 +16,7 @@ catalog:
   typescript-eslint: ^8
 
   # ── Web-only ESLint ──
-  eslint-config-next: 16.1.6
+  eslint-config-next: 16.2.0
   eslint-plugin-jsx-a11y: ^6.10.2
   eslint-plugin-no-secrets: ^2.3.3
   eslint-plugin-sonarjs: ^4.0.2
@@ -40,14 +40,14 @@ catalog:
   better-auth: ^1.5.5
   "@better-auth/expo": ^1.5.5
   "@better-auth/drizzle-adapter": ^1.5.5
-  "@supabase/supabase-js": ^2.99.1
+  "@supabase/supabase-js": ^2.99.2
   next-intl: ^4.8.3
 
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   tailwind-merge: ^3.5.0
-  tailwindcss: ^4.2.1
+  tailwindcss: ^4.2.2
   "@tailwindcss/postcss": ^4
 
   # ── Forms ──

@@ -4,7 +4,7 @@ import type {
   ProtocolAddress,
   SenderKeyRecord,
   SessionRecord,
-  SignalProtocolStore,
+  ProtocolStore,
   SignedPreKeyRecord,
 } from '@openhospi/crypto';
 import { fromBase64, toBase64 } from '@openhospi/crypto';
@@ -54,6 +54,7 @@ type SerializedSenderKey = {
     chainKey: string;
     iteration: number;
     signingKeyPair: SerializedKeyPair;
+    messageKeys?: [number, string][];
   };
 };
 
@@ -135,6 +136,7 @@ function serializeSenderKeyRecord(record: SenderKeyRecord): string {
         publicKey: toBase64(record.state.signingKeyPair.publicKey),
         privateKey: toBase64(record.state.signingKeyPair.privateKey),
       },
+      messageKeys: Array.from(record.state.messageKeys.entries()).map(([k, v]) => [k, toBase64(v)]),
     },
   } satisfies SerializedSenderKey);
 }
@@ -149,6 +151,9 @@ function deserializeSenderKeyRecord(data: string): SenderKeyRecord {
         publicKey: fromBase64(raw.state.signingKeyPair.publicKey),
         privateKey: fromBase64(raw.state.signingKeyPair.privateKey),
       },
+      messageKeys: raw.state.messageKeys
+        ? new Map(raw.state.messageKeys.map(([k, v]) => [k, fromBase64(v)]))
+        : new Map(),
     },
   };
 }
@@ -158,7 +163,7 @@ function deserializeSenderKeyRecord(data: string): SenderKeyRecord {
  * All private key material is base64-encoded in SQLite.
  * For production, consider encrypting with a key from expo-secure-store.
  */
-class SqliteSignalStore implements SignalProtocolStore {
+class SqliteProtocolStore implements ProtocolStore {
   // ── IdentityKeyStore ──
 
   async getIdentityKeyPair(): Promise<KeyPair> {
@@ -403,11 +408,11 @@ class SqliteSignalStore implements SignalProtocolStore {
   }
 }
 
-let _store: SqliteSignalStore | null = null;
+let _store: SqliteProtocolStore | null = null;
 
-export function getMobileSignalStore(): SqliteSignalStore {
+export function getProtocolStore(): SqliteProtocolStore {
   if (!_store) {
-    _store = new SqliteSignalStore();
+    _store = new SqliteProtocolStore();
   }
   return _store;
 }

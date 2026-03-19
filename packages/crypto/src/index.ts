@@ -117,5 +117,5 @@ export type {
   SignedPreKeyStore,
   SessionStore,
   SenderKeyStore,
-  SignalProtocolStore,
+  ProtocolStore,
 } from "./stores/types";

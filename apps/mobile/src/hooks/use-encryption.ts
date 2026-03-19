@@ -1,7 +1,8 @@
 import type { ProtocolAddress, SenderKeyMessageData } from '@openhospi/crypto';
 import {
+  DecryptionQueue,
   decryptGroupMessage,
-  encryptGroupMessage as cryptoEncryptGroup,
+  encryptGroupMessage,
   encodeUtf8,
   decodeUtf8,
   establishSession,
@@ -16,7 +17,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { Platform } from 'react-native';
 
 import { api } from '@/lib/api-client';
-import { getMobileSignalStore } from '@/lib/crypto/stores';
+import { getProtocolStore } from '@/lib/crypto/stores';
 
 type EncryptionStatus = 'uninitialized' | 'initializing' | 'ready' | 'error';
 
@@ -77,10 +78,15 @@ export type EncryptionContextValue = {
     plaintext: string
   ) => Promise<EncryptResult>;
   decryptMessage: (
+    messageId: string,
     conversationId: string,
     senderAddress: ProtocolAddress,
     payloadStr: string
   ) => Promise<string>;
+  processIncomingDistribution: (
+    senderAddress: ProtocolAddress,
+    distributionBytes: Uint8Array
+  ) => Promise<void>;
   processPendingDistributions: (recipientDeviceId: string) => Promise<void>;
 };
 
@@ -95,6 +101,7 @@ export function useEncryptionContext(): EncryptionContextValue {
 }
 
 const senderKeyCreatedAt = new Map<string, number>();
+const decryptionQueue = new DecryptionQueue();
 let encryptLock: Promise<void> = Promise.resolve();
 
 export function useEncryptionProvider(userId: string | undefined): EncryptionContextValue {
@@ -102,7 +109,7 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
   const [error, setError] = useState<Error | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
 
-  const store = getMobileSignalStore();
+  const store = getProtocolStore();
 
   const initDevice = useCallback(async () => {
     if (!userId || deviceId) return;
@@ -286,7 +293,7 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
           senderKeyCreatedAt.set(conversationId, Date.now());
         }
 
-        const message = await cryptoEncryptGroup(
+        const message = await encryptGroupMessage(
           store,
           localAddress,
           conversationId,
@@ -315,6 +322,7 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
 
   const decryptMessage = useCallback(
     async (
+      messageId: string,
       conversationId: string,
       senderAddress: ProtocolAddress,
       payloadStr: string
@@ -328,8 +336,40 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
         signature: fromBase64(payload.signature),
       };
 
-      const plaintext = await decryptGroupMessage(store, senderAddress, conversationId, message);
-      return decodeUtf8(plaintext);
+      try {
+        const plaintext = await decryptGroupMessage(store, senderAddress, conversationId, message);
+        decryptionQueue.dequeue(messageId);
+        return decodeUtf8(plaintext);
+      } catch (err) {
+        decryptionQueue.enqueue(messageId, conversationId, senderAddress, message);
+        throw err;
+      }
+    },
+    [store]
+  );
+
+  const processIncomingDistribution = useCallback(
+    async (senderAddress: ProtocolAddress, distributionBytes: Uint8Array) => {
+      await processDistribution(store, senderAddress, distributionBytes);
+
+      // Retry any queued messages from this sender
+      const allQueued = decryptionQueue
+        .getAll()
+        .filter(
+          (msg) =>
+            msg.senderAddress.userId === senderAddress.userId &&
+            msg.senderAddress.deviceId === senderAddress.deviceId
+        );
+      for (const msg of allQueued) {
+        try {
+          await decryptGroupMessage(store, msg.senderAddress, msg.conversationId, msg.payload);
+          decryptionQueue.dequeue(msg.id);
+        } catch {
+          // Still can't decrypt — leave in queue
+        }
+      }
+
+      decryptionQueue.cleanup();
     },
     [store]
   );
@@ -356,14 +396,16 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
             fromBase64(dist.ciphertext)
           );
 
-          await processDistribution(store, senderAddress, distributionBytes);
+          await processIncomingDistribution(senderAddress, distributionBytes);
           await api.post(`/api/mobile/chat/distributions/${dist.id}/ack`);
-        } catch (err) {
-          console.error('[useEncryption] Failed to process distribution:', err);
+        } catch {
+          // Ratchet already advanced past this distribution (already processed) —
+          // acknowledge to prevent infinite retry on every reload
+          await api.post(`/api/mobile/chat/distributions/${dist.id}/ack`).catch(() => {});
         }
       }
     },
-    [userId, store]
+    [userId, store, processIncomingDistribution]
   );
 
   return {
@@ -376,6 +418,7 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
     distributeSenderKey,
     encryptMessage,
     decryptMessage,
+    processIncomingDistribution,
     processPendingDistributions,
   };
 }

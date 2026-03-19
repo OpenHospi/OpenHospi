@@ -7,6 +7,8 @@ import type { SenderKeyDistributionMessage, SenderKeyMessageData, SenderKeyState
 const CHAIN_KEY_SEED = new Uint8Array([0x02]);
 const MESSAGE_KEY_SEED = new Uint8Array([0x01]);
 
+const MAX_MESSAGE_KEYS = 2000;
+
 /** Generate a new Sender Key state for a group conversation. */
 export function generateSenderKeyState(): SenderKeyState {
   const provider = getCryptoProvider();
@@ -14,6 +16,7 @@ export function generateSenderKeyState(): SenderKeyState {
     chainKey: provider.randomBytes(32),
     iteration: 0,
     signingKeyPair: generateEd25519KeyPair(),
+    messageKeys: new Map(),
   };
 }
 
@@ -125,6 +128,11 @@ export function senderKeyEncrypt(
 /**
  * Decrypt a message using a received Sender Key.
  * The receiver must have the sender's key state (from a distribution message).
+ *
+ * Implements Signal's stored message key pattern:
+ * - Past iterations: look up stored message key (consumed on use)
+ * - Future iterations: fast-forward chain, storing each skipped key
+ * - Duplicate detection: missing stored key for a past iteration = already consumed
  */
 export function senderKeyDecrypt(
   state: SenderKeyState,
@@ -137,34 +145,57 @@ export function senderKeyDecrypt(
     throw new Error("Sender key message signature verification failed");
   }
 
-  // Fast-forward chain to the right iteration
-  let currentChainKey = state.chainKey;
-  let currentIteration = state.iteration;
+  const messageKeys = new Map(state.messageKeys);
 
-  if (message.chainId < currentIteration) {
-    throw new Error("Sender key message is from a past iteration (replay attack?)");
+  if (message.chainId < state.iteration) {
+    // Past iteration — use stored message key
+    const storedKey = messageKeys.get(message.chainId);
+    if (!storedKey) {
+      throw new Error("Message key already consumed or never stored (duplicate message)");
+    }
+    messageKeys.delete(message.chainId);
+
+    const derived = provider.hkdf(storedKey, new Uint8Array(32), encodeUtf8("WhisperGroup"), 48);
+    const aesKey = derived.slice(0, 32);
+    const iv = derived.slice(32, 48);
+    const plaintext = provider.aesCbcDecrypt(aesKey, iv, message.ciphertext);
+
+    return {
+      state: { ...state, messageKeys },
+      plaintext,
+    };
   }
 
-  const MAX_FORWARD_SKIP = 2000;
-  if (message.chainId - currentIteration > MAX_FORWARD_SKIP) {
+  // Current or future iteration — fast-forward, storing skipped keys
+  if (message.chainId - state.iteration > MAX_MESSAGE_KEYS) {
     throw new Error("Too many skipped sender key iterations");
   }
 
-  // Advance chain to target iteration
+  let currentChainKey = state.chainKey;
+  let currentIteration = state.iteration;
+
   while (currentIteration < message.chainId) {
-    const { nextChainKey } = deriveMessageKeyFromChain(currentChainKey);
+    const { messageKey, nextChainKey } = deriveMessageKeyFromChain(currentChainKey);
+    messageKeys.set(currentIteration, messageKey);
     currentChainKey = nextChainKey;
     currentIteration++;
   }
 
-  // Derive message key at the target iteration
+  // Evict oldest stored keys if over the cap
+  if (messageKeys.size > MAX_MESSAGE_KEYS) {
+    const sortedKeys = [...messageKeys.keys()].sort((a, b) => a - b);
+    const excess = messageKeys.size - MAX_MESSAGE_KEYS;
+    for (let i = 0; i < excess; i++) {
+      messageKeys.delete(sortedKeys[i]);
+    }
+  }
+
+  // Derive message key at the target iteration and advance chain
   const { messageKey, nextChainKey } = deriveMessageKeyFromChain(currentChainKey);
 
-  // Derive AES key + IV
   const derived = provider.hkdf(messageKey, new Uint8Array(32), encodeUtf8("WhisperGroup"), 48);
   const aesKey = derived.slice(0, 32);
   const iv = derived.slice(32, 48);
-
   const plaintext = provider.aesCbcDecrypt(aesKey, iv, message.ciphertext);
 
   return {
@@ -172,6 +203,7 @@ export function senderKeyDecrypt(
       ...state,
       chainKey: nextChainKey,
       iteration: currentIteration + 1,
+      messageKeys,
     },
     plaintext,
   };

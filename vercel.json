@@ -1,5 +1,0 @@
-{
-  "buildCommand": "pnpm --filter @openhospi/web build",
-  "outputDirectory": ".next",
-  "framework": "nextjs"
-}

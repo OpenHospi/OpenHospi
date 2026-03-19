@@ -73,6 +73,8 @@ export interface SenderKeyState {
   chainKey: Uint8Array;
   iteration: number;
   signingKeyPair: KeyPair;
+  /** Stored message keys for out-of-order/re-decryption, keyed by iteration number */
+  messageKeys: Map<number, Uint8Array>;
 }
 
 /** Record wrapping sender key state for serialisation. */

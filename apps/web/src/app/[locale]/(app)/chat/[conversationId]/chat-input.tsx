@@ -6,7 +6,7 @@ import { useRef, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useEncryption } from "@/hooks/use-encryption";
-import { sentMessageCache } from "@/lib/crypto";
+import { cryptoStore } from "@/lib/crypto";
 
 import { sendMessageWithDistributions } from "../chat-actions";
 
@@ -42,7 +42,7 @@ export function ChatInput({ conversationId, memberUserIds, currentUserId }: Prop
         );
 
         // Cache plaintext locally for own message display (same as Signal)
-        await sentMessageCache.store(msg.id, trimmed);
+        await cryptoStore.storeMessage(msg.id, trimmed);
       } catch (err) {
         console.error("[ChatInput] Send failed:", err);
         setText(trimmed);

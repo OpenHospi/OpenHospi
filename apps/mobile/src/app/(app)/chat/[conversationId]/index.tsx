@@ -38,6 +38,28 @@ type MessageRow = {
   senderFirstName: string | null;
 };
 
+function toDateKey(date: Date): string {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function formatDateSeparator(
+  date: Date,
+  locale: string,
+  labels: { today: string; yesterday: string }
+): string {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const msgDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round((today.getTime() - msgDay.getTime()) / 86_400_000);
+
+  if (diffDays === 0) return labels.today;
+  if (diffDays === 1) return labels.yesterday;
+  if (diffDays < 7) {
+    return date.toLocaleDateString(locale, { weekday: 'long' });
+  }
+  return date.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 export default function ConversationScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 
@@ -49,7 +71,8 @@ export default function ConversationScreen() {
 }
 
 function ConversationChat({ conversationId }: { conversationId: string }) {
-  const { t } = useTranslation('translation', { keyPrefix: 'app.chat' });
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'app.chat' });
+  const dateLabels = { today: t('date_today'), yesterday: t('date_yesterday') };
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
@@ -68,6 +91,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
 
   const [text, setText] = useState('');
   const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
+  const [distributionVersion, setDistributionVersion] = useState(0);
   const inputRef = useRef<TextInput>(null);
 
   const allMessages = messagesData?.pages.flatMap((p) => p.messages) ?? [];
@@ -93,20 +117,19 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       if (msg.messageType === 'system') return msg.payload ?? '';
       if (!msg.payload) return null;
 
-      // Own messages — check local SQLite cache (same as Signal)
-      if (msg.senderId === userId) {
-        const cached = localDb
-          .select({ plaintext: localMessages.plaintext })
-          .from(localMessages)
-          .where(eq(localMessages.id, msg.id))
-          .all();
-        if (cached.length > 0) return cached[0].plaintext;
-      }
+      // Check local SQLite cache first (Signal's approach — crypto keys are one-time use)
+      const cached = localDb
+        .select({ plaintext: localMessages.plaintext })
+        .from(localMessages)
+        .where(eq(localMessages.id, msg.id))
+        .all();
+      if (cached.length > 0) return cached[0].plaintext;
 
       if (!msg.senderDeviceId) return null;
 
       try {
-        return await decryptMessage(
+        const plaintext = await decryptMessage(
+          msg.id,
           conversationId,
           {
             userId: msg.senderId,
@@ -114,12 +137,32 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
           },
           msg.payload
         );
+
+        // Cache after successful decryption so we never need to re-decrypt
+        if (plaintext) {
+          localDb
+            .insert(localMessages)
+            .values({
+              id: msg.id,
+              conversationId,
+              senderUserId: msg.senderId,
+              plaintext,
+              timestamp: new Date(msg.createdAt),
+            })
+            .onConflictDoNothing()
+            .run();
+        }
+
+        return plaintext;
       } catch {
         return t('decryption_failed');
       }
     },
-    [userId, conversationId, decryptMessage, t]
+    [conversationId, decryptMessage, t]
   );
+
+  // Stable message ID list for effect deps
+  const messageIds = allMessages.map((m) => m.id).join(',');
 
   // Decrypt messages
   useEffect(() => {
@@ -144,18 +187,24 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     if (allMessages.length > 0) {
       decryptAll();
     }
-  }, [allMessages.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [messageIds, distributionVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Supabase Realtime subscription
   useEffect(() => {
     const channel = supabase.channel(`chat:${conversationId}`);
 
     channel
-      .on('broadcast', { event: 'new_message' }, () => {
+      .on('broadcast', { event: 'new_message' }, async () => {
+        if (deviceId) {
+          await processPendingDistributions(deviceId).catch(() => {});
+        }
         refetchMessages();
       })
-      .on('broadcast', { event: 'sender_key_distribution' }, () => {
-        if (deviceId) processPendingDistributions(deviceId);
+      .on('broadcast', { event: 'sender_key_distribution' }, async () => {
+        if (deviceId) {
+          await processPendingDistributions(deviceId).catch(() => {});
+          setDistributionVersion((v) => v + 1);
+        }
       })
       .subscribe();
 
@@ -206,7 +255,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       className="bg-background">
       <FlatList
-        data={[...allMessages].reverse()}
+        data={allMessages}
         keyExtractor={(item) => item.id}
         inverted
         contentContainerStyle={{ padding: 16, gap: 4 }}
@@ -224,39 +273,56 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
             </View>
           </View>
         }
-        renderItem={({ item: msg }) => {
+        renderItem={({ item: msg, index }) => {
           const isOwn = msg.senderId === userId;
           const plaintext = decryptedCache[msg.id];
+          const msgDate = new Date(msg.createdAt);
+          const nextMsg = allMessages[index + 1];
+          const showDateSeparator =
+            !nextMsg || toDateKey(msgDate) !== toDateKey(new Date(nextMsg.createdAt));
 
           return (
-            <View style={{ alignItems: isOwn ? 'flex-end' : 'flex-start', marginVertical: 2 }}>
-              <View
-                style={{
-                  maxWidth: '75%',
-                  borderRadius: 16,
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                }}
-                className={isOwn ? 'bg-primary' : 'bg-muted'}>
-                {!isOwn && msg.senderFirstName && (
+            <View>
+              {showDateSeparator && (
+                <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+                  <View
+                    style={{ borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4 }}
+                    className="bg-muted">
+                    <Text className="text-muted-foreground text-xs">
+                      {formatDateSeparator(msgDate, i18n.language, dateLabels)}
+                    </Text>
+                  </View>
+                </View>
+              )}
+              <View style={{ alignItems: isOwn ? 'flex-end' : 'flex-start', marginVertical: 2 }}>
+                <View
+                  style={{
+                    maxWidth: '75%',
+                    borderRadius: 16,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                  }}
+                  className={isOwn ? 'bg-primary' : 'bg-muted'}>
+                  {!isOwn && msg.senderFirstName && (
+                    <Text
+                      className={`text-xs font-medium ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}
+                      style={{ opacity: 0.7, marginBottom: 2 }}>
+                      {msg.senderFirstName}
+                    </Text>
+                  )}
                   <Text
-                    className={`text-xs font-medium ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}
-                    style={{ opacity: 0.7, marginBottom: 2 }}>
-                    {msg.senderFirstName}
+                    className={`text-sm ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}>
+                    {plaintext ?? '...'}
                   </Text>
-                )}
-                <Text
-                  className={`text-sm ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}>
-                  {plaintext ?? '...'}
-                </Text>
-                <Text
-                  className={`text-right ${isOwn ? 'text-primary-foreground' : 'text-muted-foreground'}`}
-                  style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
-                  {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </Text>
+                  <Text
+                    className={`text-right ${isOwn ? 'text-primary-foreground' : 'text-muted-foreground'}`}
+                    style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
+                    {msgDate.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Text>
+                </View>
               </View>
             </View>
           );

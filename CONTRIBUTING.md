@@ -38,7 +38,7 @@ pnpm supabase:start
 
 # 3. Create .env.local from the template
 cp .env.example .env.local
-# Fill in NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY and SUPABASE_SERVICE_ROLE_KEY
+# Fill in NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY and SUPABASE_SECRET_KEY
 # from the output of: pnpm supabase:status
 
 # 4. Push schema, set up storage, and seed the database

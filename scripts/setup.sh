@@ -79,19 +79,19 @@ printf "\n${BOLD}Setting up environment…${NC}\n\n"
 if [ -f .env.local ]; then
   warn ".env.local already exists — skipping (delete it to regenerate)"
 else
-  # Extract keys from supabase status
-  ANON_KEY=$(supabase status --output json | grep -o '"anon_key":"[^"]*"' | cut -d'"' -f4)
-  SERVICE_ROLE_KEY=$(supabase status --output json | grep -o '"service_role_key":"[^"]*"' | cut -d'"' -f4)
+  # Extract keys from supabase status (new key format: PUBLISHABLE_KEY + SECRET_KEY)
+  STATUS_JSON=$(supabase status --output json)
+  PUBLISHABLE_KEY=$(echo "$STATUS_JSON" | grep -o '"PUBLISHABLE_KEY":"[^"]*"' | cut -d'"' -f4)
+  SECRET_KEY=$(echo "$STATUS_JSON" | grep -o '"SECRET_KEY":"[^"]*"' | cut -d'"' -f4)
 
-  if [ -z "$ANON_KEY" ] || [ -z "$SERVICE_ROLE_KEY" ]; then
+  if [ -z "$PUBLISHABLE_KEY" ] || [ -z "$SECRET_KEY" ]; then
     warn "Could not auto-extract Supabase keys. Copying .env.example — fill in keys manually."
     cp .env.example .env.local
   else
     cp .env.example .env.local
     # Replace placeholder values with actual local keys
-    sed -i.bak "s|<from supabase status or Supabase dashboard>|$ANON_KEY|" .env.local
-    # The service role key placeholder is the same text — replace the second occurrence
-    sed -i.bak "0,/SUPABASE_SERVICE_ROLE_KEY=.*/s|SUPABASE_SERVICE_ROLE_KEY=.*|SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY|" .env.local
+    sed -i.bak "s|NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=.*|NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY|" .env.local
+    sed -i.bak "s|SUPABASE_SECRET_KEY=.*|SUPABASE_SECRET_KEY=$SECRET_KEY|" .env.local
     rm -f .env.local.bak
     ok "Created .env.local with local Supabase keys"
   fi

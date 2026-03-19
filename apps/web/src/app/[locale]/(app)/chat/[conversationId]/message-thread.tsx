@@ -1,11 +1,11 @@
 "use client";
 
 import { Lock } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useEncryption } from "@/hooks/use-encryption";
-import { sentMessageCache } from "@/lib/crypto";
+import { cryptoStore } from "@/lib/crypto";
 import { supabase } from "@/lib/supabase/client";
 
 import { fetchMessageById } from "../chat-actions";
@@ -29,8 +29,32 @@ type Props = {
   memberUserIds: string[];
 };
 
+function toDateKey(date: Date): string {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function formatDateSeparator(
+  date: Date,
+  locale: string,
+  labels: { today: string; yesterday: string },
+): string {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const msgDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round((today.getTime() - msgDay.getTime()) / 86_400_000);
+
+  if (diffDays === 0) return labels.today;
+  if (diffDays === 1) return labels.yesterday;
+  if (diffDays < 7) {
+    return date.toLocaleDateString(locale, { weekday: "long" });
+  }
+  return date.toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
+}
+
 export function MessageThread({ conversationId, initialMessages, currentUserId }: Props) {
   const t = useTranslations("app.chat");
+  const locale = useLocale();
+  const dateLabels = { today: t("date_today"), yesterday: t("date_yesterday") };
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState(initialMessages);
   const { decryptMessage, processPendingDistributions, deviceId } = useEncryption(currentUserId);
@@ -57,16 +81,14 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       if (msg.messageType === "system") return msg.payload ?? "";
       if (!msg.payload) return null;
 
-      // Own messages — check local plaintext cache (same as Signal Desktop)
-      if (msg.senderId === currentUserId) {
-        const cached = await sentMessageCache.get(msg.id);
-        if (cached) return cached;
-      }
+      // Check local plaintext cache first (Signal's approach — crypto keys are one-time use)
+      const cached = await cryptoStore.getMessage(msg.id);
+      if (cached) return cached;
 
       if (!msg.senderDeviceId) return null;
 
       try {
-        return await decryptMessage(
+        const plaintext = await decryptMessage(
           msg.id,
           conversationId,
           {
@@ -75,11 +97,18 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
           },
           msg.payload,
         );
+
+        // Cache after successful decryption so we never need to re-decrypt
+        if (plaintext) {
+          await cryptoStore.storeMessage(msg.id, plaintext);
+        }
+
+        return plaintext;
       } catch {
         return t("decryption_failed");
       }
     },
-    [currentUserId, conversationId, decryptMessage, t],
+    [conversationId, decryptMessage, t],
   );
 
   // Decrypt messages on mount and when messages change
@@ -114,7 +143,7 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       const msg = await fetchMessageById(messageId);
       if (!msg) return;
 
-      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [msg, ...prev]));
 
       const text = await decryptSingle(msg);
       if (text !== null) {
@@ -152,31 +181,49 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       </div>
 
       {/* Messages in chronological order (reversed from query) */}
-      {[...messages].reverse().map((msg) => {
-        const isOwn = msg.senderId === currentUserId;
-        const text = decryptedCache[msg.id];
+      {(() => {
+        const chronological = [...messages].reverse();
 
-        return (
-          <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
-            <div
-              className={`max-w-[75%] rounded-2xl px-3 py-2 ${
-                isOwn ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-              }`}
-            >
-              {!isOwn && msg.senderFirstName && (
-                <p className="mb-0.5 text-xs font-medium opacity-70">{msg.senderFirstName}</p>
+        return chronological.map((msg, index) => {
+          const isOwn = msg.senderId === currentUserId;
+          const text = decryptedCache[msg.id];
+          const msgDate = new Date(msg.createdAt);
+          const dateKey = toDateKey(msgDate);
+          const prevDateKey =
+            index > 0 ? toDateKey(new Date(chronological[index - 1].createdAt)) : "";
+          const showDateSeparator = dateKey !== prevDateKey;
+
+          return (
+            <div key={msg.id}>
+              {showDateSeparator && (
+                <div className="my-3 flex items-center justify-center">
+                  <span className="bg-muted text-muted-foreground rounded-full px-3 py-1 text-xs">
+                    {formatDateSeparator(msgDate, locale, dateLabels)}
+                  </span>
+                </div>
               )}
-              <p className="text-sm">{text ?? "..."}</p>
-              <p className="mt-0.5 text-right text-[10px] opacity-50">
-                {new Date(msg.createdAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+              <div className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[75%] rounded-2xl px-3 py-2 ${
+                    isOwn ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                  }`}
+                >
+                  {!isOwn && msg.senderFirstName && (
+                    <p className="mb-0.5 text-xs font-medium opacity-70">{msg.senderFirstName}</p>
+                  )}
+                  <p className="text-sm">{text ?? "..."}</p>
+                  <p className="mt-0.5 text-right text-[10px] opacity-50">
+                    {msgDate.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        });
+      })()}
     </div>
   );
 }

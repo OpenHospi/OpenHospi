@@ -42,6 +42,7 @@ export async function invalidateSenderKey(
         publicKey: new Uint8Array(0),
         privateKey: new Uint8Array(0),
       },
+      messageKeys: new Map(),
     },
   });
 }
@@ -65,6 +66,7 @@ export async function invalidateRemovedMemberKeys(
           publicKey: new Uint8Array(0),
           privateKey: new Uint8Array(0),
         },
+        messageKeys: new Map(),
       },
     });
   }

@@ -421,8 +421,10 @@ export function useEncryption(userId: string | undefined) {
 
           await processDistribution(cryptoStore, senderAddress, distributionBytes);
           await acknowledgeDist(dist.id);
-        } catch (err) {
-          console.error("[useEncryption] Failed to process distribution:", err);
+        } catch {
+          // Ratchet already advanced past this distribution (already processed) —
+          // acknowledge to prevent infinite retry on every reload
+          await acknowledgeDist(dist.id).catch(() => {});
         }
       }
     },

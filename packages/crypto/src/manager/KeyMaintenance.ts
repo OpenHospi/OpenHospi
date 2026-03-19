@@ -6,7 +6,7 @@ import {
 
 import { toBase64 } from "../protocol/encoding";
 import { generatePreKeys, generateSignedPreKey } from "../protocol/keys";
-import type { SignalProtocolStore } from "../stores/types";
+import type { ProtocolStore } from "../stores/types";
 
 export interface KeyMaintenanceActions {
   getPreKeyCount: (deviceId: string) => Promise<number>;
@@ -26,7 +26,7 @@ export interface KeyMaintenanceActions {
  * Should be called periodically (e.g. on app foreground, after sending a message).
  */
 export async function replenishPreKeysIfNeeded(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   deviceId: string,
   actions: KeyMaintenanceActions,
 ): Promise<boolean> {
@@ -63,7 +63,7 @@ export async function replenishPreKeysIfNeeded(
  * Should be called periodically (e.g. on app foreground).
  */
 export async function rotateSignedPreKeyIfNeeded(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   deviceId: string,
   actions: KeyMaintenanceActions,
 ): Promise<boolean> {

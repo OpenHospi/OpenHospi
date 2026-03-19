@@ -25,12 +25,12 @@ import type {
   SenderKeyRecord,
   SessionRecord,
   SignedPreKeyRecord,
-  SignalProtocolStore,
+  ProtocolStore,
 } from "../index";
 import { createWebCryptoProvider } from "../primitives/WebCryptoProvider";
 
 /** In-memory Signal Protocol store for testing. */
-class InMemoryStore implements SignalProtocolStore {
+class InMemoryStore implements ProtocolStore {
   private dhKeyPair!: KeyPair;
   private signingKeyPair!: KeyPair;
   private regId!: number;

@@ -51,7 +51,7 @@ export async function generateMetadata({
   const tEnums = await getTranslations({ locale, namespace: "enums" });
   const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
-  const title = `${room.title} — ${cityName}`;
+  const title = `${room.title} | ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
   const ogImage = room.photos[0]?.url
     ? getStoragePublicUrl(room.photos[0].url, STORAGE_BUCKET_ROOM_PHOTOS)

@@ -122,7 +122,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <div className="mt-6 space-y-4 text-muted-foreground">
             <p>{t("problem.description1")}</p>
             <p>{t("problem.description2")}</p>
-            <p>{t("problem.description3")}</p>
           </div>
         </div>
       </section>

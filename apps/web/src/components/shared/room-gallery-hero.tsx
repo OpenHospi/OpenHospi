@@ -92,7 +92,7 @@ export function RoomGalleryHero({ photos, roomTitle, bucket = STORAGE_BUCKET_ROO
             >
               <StorageImage
                 src={photo.url}
-                alt={`${roomTitle} — ${i + 1}`}
+                alt={`${roomTitle} - ${i + 1}`}
                 bucket={bucket}
                 fill
                 className="object-cover"
@@ -205,7 +205,7 @@ export function RoomGalleryHero({ photos, roomTitle, bucket = STORAGE_BUCKET_ROO
             >
               <StorageImage
                 src={photo.url}
-                alt={`${roomTitle} — ${i + 2}`}
+                alt={`${roomTitle} - ${i + 2}`}
                 bucket={bucket}
                 fill
                 className="object-cover"

@@ -8,21 +8,8 @@ import { LegalStructuredCards } from "./legal-structured-card";
 export type SectionMode = "prose" | "card" | "risk";
 
 function renderItemText(item: string): ReactNode {
-  // "Label — description" pattern (em-dash)
-  const dashIdx = item.indexOf(" — ");
-  if (dashIdx > 0) {
-    return (
-      <>
-        <strong className="font-medium text-foreground">{item.slice(0, dashIdx)}</strong>
-        {" — "}
-        <AutoLinkedText text={item.slice(dashIdx + 3)} />
-      </>
-    );
-  }
-
-  // "Label: value" pattern (colon within first 30 chars)
   const colonIdx = item.indexOf(": ");
-  if (colonIdx > 0 && colonIdx < 30) {
+  if (colonIdx > 0) {
     return (
       <>
         <strong className="font-medium text-foreground">{item.slice(0, colonIdx + 1)}</strong>{" "}

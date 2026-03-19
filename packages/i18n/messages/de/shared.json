@@ -766,7 +766,7 @@
         },
         "form": {
           "title": "Erstelle dein Haus",
-          "description": "Gib deinem Haus einen erkennbaren Namen — du kannst ihn später ändern.",
+          "description": "Gib deinem Haus einen erkennbaren Namen. Du kannst ihn später ändern.",
           "nameLabel": "Hausname",
           "namePlaceholder": "z.B. Keizersgracht 42",
           "submit": "Haus erstellen & weiter"
@@ -1048,7 +1048,7 @@
     },
     "roomDetail": {
       "location": "Standort",
-      "approximateLocation": "Ungefährer Standort — genaue Adresse nach Bewerbung sichtbar",
+      "approximateLocation": "Ungefährer Standort. Genaue Adresse nach Bewerbung sichtbar.",
       "ageRange": "{min}–{max} Jahre",
       "acceptedLanguages": "Gesprochene Sprachen",
       "rentInclUtilities": "Kaltmiete (inkl. Nebenkosten)",
@@ -1366,7 +1366,7 @@
       "report_message": "Nachricht melden",
       "report_user": "{name} melden",
       "blocked": "Du hast diesen Benutzer blockiert",
-      "key_reset_message": "Nachricht kann nicht entschlüsselt werden — Verschlüsselungsschlüssel nicht verfügbar",
+      "key_reset_message": "Nachricht kann nicht entschlüsselt werden. Verschlüsselungsschlüssel nicht verfügbar.",
       "setup_required": "Um den Chat zu nutzen, musst du die Verschlüsselung auf diesem Gerät einrichten. Gib die PIN ein, die du beim Onboarding erstellt hast.",
       "own_message_unavailable": "Nachricht von einem anderen Gerät gesendet",
       "verify_identity": "Identität verifizieren",
@@ -1472,7 +1472,7 @@
   },
   "emails": {
     "common": {
-      "footer": "OpenHospi — Kostenlose Studentenwohnungsplattform für die Niederlande",
+      "footer": "OpenHospi | Kostenlose Studentenwohnungsplattform für die Niederlande",
       "doNotReply": "Dies ist eine automatische Nachricht. Bitte antworte nicht auf diese E-Mail.",
       "viewInApp": "In der App ansehen"
     },
@@ -1507,13 +1507,13 @@
     "applicationAccepted": {
       "subject": "Herzlichen Glückwunsch! Deine Bewerbung für \"{roomTitle}\" wurde angenommen",
       "heading": "Bewerbung angenommen!",
-      "body": "Gute Nachrichten — du wurdest für das Zimmer \"{roomTitle}\" ausgewählt. Der Eigentümer wird sich bezüglich der nächsten Schritte bei dir melden.",
+      "body": "Gute Nachrichten! Du wurdest für das Zimmer \"{roomTitle}\" ausgewählt. Der Eigentümer wird sich bezüglich der nächsten Schritte bei dir melden.",
       "cta": "Zimmer ansehen"
     },
     "applicationNotChosen": {
       "subject": "Update zu deiner Bewerbung für \"{roomTitle}\"",
       "heading": "Bewerbungsupdate",
-      "body": "Leider ist das Zimmer \"{roomTitle}\" bereits vergeben. Gib nicht auf — es gibt viele andere verfügbare Zimmer!"
+      "body": "Leider ist das Zimmer \"{roomTitle}\" bereits vergeben. Gib nicht auf, es gibt viele andere verfügbare Zimmer!"
     },
     "userBanned": {
       "subject": "Dein OpenHospi-Konto wurde gesperrt",

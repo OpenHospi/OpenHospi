@@ -1,7 +1,7 @@
 import { OG_IMAGE_SIZE } from "@openhospi/shared/constants";
 import { ImageResponse } from "next/og";
 
-export const alt = "OpenHospi — Free student housing for the Netherlands";
+export const alt = "OpenHospi - Free student housing for the Netherlands";
 export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 

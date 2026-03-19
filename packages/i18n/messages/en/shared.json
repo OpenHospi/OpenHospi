@@ -767,7 +767,7 @@
         },
         "form": {
           "title": "Create your house",
-          "description": "Give your house a recognisable name — you can change it later.",
+          "description": "Give your house a recognisable name. You can change it later.",
           "nameLabel": "House name",
           "namePlaceholder": "e.g. Keizersgracht 42",
           "submit": "Create house & continue"
@@ -1049,7 +1049,7 @@
     },
     "roomDetail": {
       "location": "Location",
-      "approximateLocation": "Approximate location — exact address shared after application",
+      "approximateLocation": "Approximate location. Exact address shared after application.",
       "ageRange": "{min}–{max} years",
       "acceptedLanguages": "Spoken languages",
       "rentInclUtilities": "Rent (incl. utilities)",
@@ -1367,7 +1367,7 @@
       "report_message": "Report message",
       "report_user": "Report {name}",
       "blocked": "You have blocked this user",
-      "key_reset_message": "Message cannot be decrypted — encryption key unavailable",
+      "key_reset_message": "Message cannot be decrypted. Encryption key unavailable.",
       "setup_required": "To use chat, you need to set up encryption on this device. Enter the PIN you created during onboarding.",
       "own_message_unavailable": "Message sent from another device",
       "verify_identity": "Verify identity",
@@ -1473,7 +1473,7 @@
   },
   "emails": {
     "common": {
-      "footer": "OpenHospi — Free student housing platform for the Netherlands",
+      "footer": "OpenHospi | Free student housing platform for the Netherlands",
       "doNotReply": "This is an automated message. Please do not reply to this email.",
       "viewInApp": "View in app"
     },
@@ -1508,13 +1508,13 @@
     "applicationAccepted": {
       "subject": "Congratulations! Your application for \"{roomTitle}\" was accepted",
       "heading": "Application accepted!",
-      "body": "Great news — you've been chosen for the room \"{roomTitle}\". The room owner will be in touch with next steps.",
+      "body": "Great news! You've been chosen for the room \"{roomTitle}\". The room owner will be in touch with next steps.",
       "cta": "View room"
     },
     "applicationNotChosen": {
       "subject": "Update on your application for \"{roomTitle}\"",
       "heading": "Application update",
-      "body": "Unfortunately, the room \"{roomTitle}\" has been filled. Don't give up — there are plenty of other rooms available!"
+      "body": "Unfortunately, the room \"{roomTitle}\" has been filled. Don't give up, there are plenty of other rooms available!"
     },
     "userBanned": {
       "subject": "Your OpenHospi account has been suspended",

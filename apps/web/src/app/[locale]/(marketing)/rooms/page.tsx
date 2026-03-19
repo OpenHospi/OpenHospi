@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "public.rooms" });
   return {
-    title: `${t("title")} — ${APP_NAME}`,
+    title: `${t("title")} | ${APP_NAME}`,
     description: t("subtitle"),
     alternates: alternatesForPath(locale, "/rooms"),
   };

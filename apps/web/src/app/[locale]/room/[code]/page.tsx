@@ -81,7 +81,7 @@ export async function generateMetadata({
   if (!room || validateShareLink(room)) return { title: t("title") };
 
   const cityName = tEnums(`city.${room.city}`);
-  return { title: `${room.title} — ${cityName}` };
+  return { title: `${room.title} | ${cityName}` };
 }
 
 type Props = {

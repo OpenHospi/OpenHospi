@@ -15,20 +15,20 @@
         "title": "3. Daten, die wir erheben",
         "content": "Wir erheben die folgenden Kategorien personenbezogener Daten, gemäß dem Grundsatz der Datenminimierung (Art. 5 Abs. 1 lit. c DSGVO):",
         "items": [
-          "Profildaten — Name, E-Mail-Adresse, Geburtsdatum, Geschlecht, Studiengang, Bildungseinrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete, Fotos",
-          "Wohnungsdaten — Zimmeranzeigen mit Adressen, Koordinaten, Mietpreis, Zimmerdetails und Fotos",
-          "Kommunikationsdaten — Ende-zu-Ende verschlüsselte Chatnachrichten (Inhalt ist für OpenHospi nicht lesbar)",
-          "Bewerbungsdaten — persönliche Nachricht und Bewerbungsstatus",
-          "Sitzungsdaten — IP-Adresse und User Agent für Sicherheitszwecke",
-          "Push-Benachrichtigungstoken — für die Zustellung von Benachrichtigungen auf deinem Gerät",
-          "Kalenderabonnement-Token — ein einzigartiger, geheimer Link, der deiner Kalender-App Zugriff auf deinen Hospi-Veranstaltungsplan ermöglicht. Dieser Link erfordert keine Authentifizierung und kann jederzeit in deinen Einstellungen widerrufen werden",
-          "Einwilligungsdatensätze — deine Cookie- und Datenschutzeinstellungen, Zeitstempel und Datenschutzerklärungsversion",
+          "Profildaten: Name, E-Mail-Adresse, Geburtsdatum, Geschlecht, Studiengang, Bildungseinrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete, Fotos",
+          "Wohnungsdaten: Zimmeranzeigen mit Adressen, Koordinaten, Mietpreis, Zimmerdetails und Fotos",
+          "Kommunikationsdaten: Ende-zu-Ende verschlüsselte Chatnachrichten (Inhalt ist für OpenHospi nicht lesbar)",
+          "Bewerbungsdaten: persönliche Nachricht und Bewerbungsstatus",
+          "Sitzungsdaten: IP-Adresse und User Agent für Sicherheitszwecke",
+          "Push-Benachrichtigungstoken: für die Zustellung von Benachrichtigungen auf deinem Gerät",
+          "Kalenderabonnement-Token: ein einzigartiger, geheimer Link, der deiner Kalender-App Zugriff auf deinen Hospi-Veranstaltungsplan ermöglicht. Dieser Link erfordert keine Authentifizierung und kann jederzeit in deinen Einstellungen widerrufen werden",
+          "Einwilligungsdatensätze: deine Cookie- und Datenschutzeinstellungen, Zeitstempel und Datenschutzerklärungsversion",
           "Wir erheben keine besonderen Kategorien personenbezogener Daten im Sinne von Art. 9 Abs. 1 DSGVO (einschließlich Daten, aus denen die rassische oder ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gesundheitsdaten oder Daten zur sexuellen Orientierung hervorgehen). Wenn du solche Daten freiwillig in deinem Profil oder in Nachrichten teilst, verarbeiten wir diese auf Grundlage von Art. 9 Abs. 2 lit. e DSGVO (personenbezogene Daten, die die betroffene Person offensichtlich öffentlich gemacht hat)."
         ]
       },
       {
         "title": "4. InAcademia-Daten",
-        "content": "Wenn du dich über InAcademia anmeldest, erhalten wir eine pseudonymisierte Kennung (sub) und deine Einrichtungsinformationen (Entity-ID). InAcademia wird von GÉANT betrieben, der europäischen Forschungs- und Bildungsnetzwerkorganisation. GÉANT ist ein eigenständig Verantwortlicher für den Authentifizierungsprozess. InAcademia gibt keine Namen oder E-Mail-Adressen an uns weiter — du gibst diese Daten selbst während des Onboardings an. Wir nutzen die empfangenen Daten zur Verifizierung deiner Studierendenidentität und zur Erstellung deines Kontos."
+        "content": "Wenn du dich über InAcademia anmeldest, erhalten wir eine pseudonymisierte Kennung (sub) und deine Einrichtungsinformationen (Entity-ID). InAcademia wird von GÉANT betrieben, der europäischen Forschungs- und Bildungsnetzwerkorganisation. GÉANT ist ein eigenständig Verantwortlicher für den Authentifizierungsprozess. InAcademia gibt keine Namen oder E-Mail-Adressen an uns weiter; diese Daten gibst du selbst während des Onboardings an. Wir nutzen die empfangenen Daten zur Verifizierung deiner Studierendenidentität und zur Erstellung deines Kontos."
       },
       {
         "title": "5. Wie wir deine Daten verwenden",
@@ -42,10 +42,10 @@
         "title": "7. Rechtsgrundlage",
         "content": "Wir verarbeiten deine Daten auf den folgenden Rechtsgrundlagen (Art. 6 DSGVO). Siehe unsere Seite Rechtsgrundlagenübersicht für eine vollständige Aufschlüsselung je Verarbeitungstätigkeit.",
         "items": [
-          "Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) — Profil, Wohnungen, Bewerbungen, Chat; erforderlich für die Erfüllung des Vertrags",
-          "Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) — funktionale Cookies, Push-Benachrichtigungen, Analysen",
-          "Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO) — Sitzungssicherheit (IP-Protokollierung), Plattformsicherheit (Moderationsberichte). Wir haben diese Interessen gegen deine Rechte und Freiheiten abgewogen und festgestellt, dass die Verarbeitung notwendig und verhältnismäßig ist",
-          "Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c DSGVO) — Einwilligungsdatensätze (Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO)",
+          "Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO): Profil, Wohnungen, Bewerbungen, Chat; erforderlich für die Erfüllung des Vertrags",
+          "Einwilligung (Art. 6 Abs. 1 lit. a DSGVO): funktionale Cookies, Push-Benachrichtigungen, Analysen",
+          "Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO): Sitzungssicherheit (IP-Protokollierung), Plattformsicherheit (Moderationsberichte). Wir haben diese Interessen gegen deine Rechte und Freiheiten abgewogen und festgestellt, dass die Verarbeitung notwendig und verhältnismäßig ist",
+          "Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c DSGVO): Einwilligungsdatensätze (Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO)",
           "Du kannst deine Einwilligung jederzeit über Einstellungen > Datenschutz widerrufen. Durch den Widerruf der Einwilligung wird die Rechtmäßigkeit der aufgrund der Einwilligung bis zum Widerruf erfolgten Verarbeitung nicht berührt (Art. 7 Abs. 3 DSGVO)."
         ]
       },
@@ -53,51 +53,51 @@
         "title": "8. Datenweitergabe & Auftragsverarbeiter",
         "content": "Wir geben deine Daten nur an die folgenden Parteien weiter, die alle innerhalb der EU/des EWR ansässig sind. Alle Auftragsverarbeiter arbeiten unter Auftragsverarbeitungsverträgen gemäß Art. 28 DSGVO. Siehe unsere Seite Auftragsverarbeiter für Details.",
         "items": [
-          "Supabase (Dublin, Irland) — Datenbank und Dateispeicher (Auftragsverarbeiter)",
-          "Vercel (Dublin, Irland) — Webhosting und Edge-Funktionen (Auftragsverarbeiter)",
-          "Upstash (Irland) — Ratenbegrenzung über Redis (Auftragsverarbeiter)",
-          "InAcademia / GÉANT (EU) — Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
-          "Sentry (Frankfurt, Deutschland) — Crash-Reporting und Fehlerüberwachung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben",
-          "Expo/EAS (USA) — Mobile App-Builds, Over-the-Air-Updates und Verteilung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben — nur App-Code und Bundles werden verarbeitet"
+          "Supabase (Dublin, Irland): Datenbank und Dateispeicher (Auftragsverarbeiter)",
+          "Vercel (Dublin, Irland): Webhosting und Edge-Funktionen (Auftragsverarbeiter)",
+          "Upstash (Irland): Ratenbegrenzung über Redis (Auftragsverarbeiter)",
+          "InAcademia / GÉANT (EU): Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
+          "Sentry (Frankfurt, Deutschland): Crash-Reporting und Fehlerüberwachung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben",
+          "Expo/EAS (USA): Mobile App-Builds, Over-the-Air-Updates und Verteilung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben, nur App-Code und Bundles werden verarbeitet"
         ]
       },
       {
         "title": "9. Internationale Übermittlungen",
-        "content": "Alle deine Daten werden innerhalb des Europäischen Wirtschaftsraums (EWR) gespeichert und verarbeitet. Wir übermitteln keine personenbezogenen Daten an Drittländer oder internationale Organisationen. Die Bestimmungen über Übermittlungen (Art. 44 bis 49 DSGVO) finden daher keine Anwendung. Alle unsere Infrastrukturanbieter sind in Irland, den Niederlanden oder Deutschland ansässig. Hinweis: Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen — keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden. Dies hat keine Auswirkungen auf die Privatsphäre der Endnutzer, da keine Nutzerdaten betroffen sind."
+        "content": "Alle deine Daten werden innerhalb des Europäischen Wirtschaftsraums (EWR) gespeichert und verarbeitet. Wir übermitteln keine personenbezogenen Daten an Drittländer oder internationale Organisationen. Die Bestimmungen über Übermittlungen (Art. 44 bis 49 DSGVO) finden daher keine Anwendung. Alle unsere Infrastrukturanbieter sind in Irland, den Niederlanden oder Deutschland ansässig. Hinweis: Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen, keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden. Dies hat keine Auswirkungen auf die Privatsphäre der Endnutzer, da keine Nutzerdaten betroffen sind."
       },
       {
         "title": "10. Aufbewahrungsfristen",
         "content": "Wir bewahren deine Daten nicht länger auf als für die Zwecke, für die sie erhoben wurden, erforderlich, gemäß dem Grundsatz der Speicherbegrenzung (Art. 5 Abs. 1 lit. e DSGVO):",
         "items": [
-          "Profildaten, Zimmeranzeigen und Chatnachrichten — aufbewahrt, solange dein Konto aktiv ist",
-          "Sitzungs-IP-Adressen — anonymisiert nach 30 Tagen",
-          "Abgelaufene Sitzungen — gelöscht nach 90 Tagen",
-          "Berichtsnachrichtentexte — entfernt 90 Tage nach Abschluss",
-          "Gelesene Benachrichtigungen — gelöscht nach 180 Tagen",
-          "IP-Adressen in Einwilligungsdatensätzen — anonymisiert nach 365 Tagen",
-          "Kontolöschung — alle Daten dauerhaft durch kaskadierende Löschungen entfernt"
+          "Profildaten, Zimmeranzeigen und Chatnachrichten: aufbewahrt, solange dein Konto aktiv ist",
+          "Sitzungs-IP-Adressen: anonymisiert nach 30 Tagen",
+          "Abgelaufene Sitzungen: gelöscht nach 90 Tagen",
+          "Berichtsnachrichtentexte: entfernt 90 Tage nach Abschluss",
+          "Gelesene Benachrichtigungen: gelöscht nach 180 Tagen",
+          "IP-Adressen in Einwilligungsdatensätzen: anonymisiert nach 365 Tagen",
+          "Kontolöschung: alle Daten dauerhaft durch kaskadierende Löschungen entfernt"
         ]
       },
       {
         "title": "11. Deine Rechte",
         "content": "Gemäß der DSGVO hast du die folgenden Rechte in Bezug auf deine personenbezogenen Daten. Du kannst diese Rechte über Einstellungen > Datenschutz oder per E-Mail an privacy@openhospi.nl ausüben.",
         "items": [
-          "Auskunftsrecht (Art. 15 DSGVO) — du hast das Recht auf eine Kopie deiner personenbezogenen Daten, über Einstellungen > Datenschutz > Datenexport",
-          "Recht auf Berichtigung (Art. 16 DSGVO) — du kannst unrichtige oder unvollständige Daten berichtigen lassen, über dein Profil",
-          "Recht auf Löschung (Art. 17 DSGVO) — du kannst die Löschung deiner Daten verlangen, über Einstellungen > Konto löschen",
-          "Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO) — du kannst die Einschränkung der Verarbeitung unter Beibehaltung deiner Daten verlangen",
-          "Mitteilungspflicht (Art. 19 DSGVO) — wir teilen jedem Empfänger, dem personenbezogene Daten offengelegt wurden, jede Berichtigung, Löschung oder Einschränkung mit, es sei denn, dies erweist sich als unmöglich oder ist mit unverhältnismäßigem Aufwand verbunden",
-          "Recht auf Datenübertragbarkeit (Art. 20 DSGVO) — du kannst deine Daten in einem strukturierten, gängigen und maschinenlesbaren Format erhalten (JSON oder CSV), über Einstellungen > Datenschutz > Datenexport. Der Kalenderabonnement-Feed bietet zudem Datenportabilität für Hospi-Veranstaltungen im standardisierten iCalendar-Format (ICS)",
-          "Widerspruchsrecht (Art. 21 DSGVO) — du kannst der Verarbeitung auf Grundlage berechtigter Interessen widersprechen"
+          "Auskunftsrecht (Art. 15 DSGVO): du hast das Recht auf eine Kopie deiner personenbezogenen Daten, über Einstellungen > Datenschutz > Datenexport",
+          "Recht auf Berichtigung (Art. 16 DSGVO): du kannst unrichtige oder unvollständige Daten berichtigen lassen, über dein Profil",
+          "Recht auf Löschung (Art. 17 DSGVO): du kannst die Löschung deiner Daten verlangen, über Einstellungen > Konto löschen",
+          "Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO): du kannst die Einschränkung der Verarbeitung unter Beibehaltung deiner Daten verlangen",
+          "Mitteilungspflicht (Art. 19 DSGVO): wir teilen jedem Empfänger, dem personenbezogene Daten offengelegt wurden, jede Berichtigung, Löschung oder Einschränkung mit, es sei denn, dies erweist sich als unmöglich oder ist mit unverhältnismäßigem Aufwand verbunden",
+          "Recht auf Datenübertragbarkeit (Art. 20 DSGVO): du kannst deine Daten in einem strukturierten, gängigen und maschinenlesbaren Format erhalten (JSON oder CSV), über Einstellungen > Datenschutz > Datenexport. Der Kalenderabonnement-Feed bietet zudem Datenportabilität für Hospi-Veranstaltungen im standardisierten iCalendar-Format (ICS)",
+          "Widerspruchsrecht (Art. 21 DSGVO): du kannst der Verarbeitung auf Grundlage berechtigter Interessen widersprechen"
         ]
       },
       {
         "title": "12. Beschwerderecht",
         "content": "Wenn du der Meinung bist, dass deine Datenschutzrechte verletzt wurden, hast du das Recht, eine Beschwerde bei der Autoriteit Persoonsgegevens (niederländische Datenschutzbehörde) einzureichen, gemäß Art. 77 DSGVO. Du kannst auch eine Beschwerde bei der Aufsichtsbehörde im EU-Mitgliedstaat deines gewöhnlichen Aufenthaltsorts einreichen.",
         "items": [
-          "Autoriteit Persoonsgegevens — Postbus 93374, 2509 AJ Den Haag",
-          "Telefon — 070 888 85 00",
-          "Website — autoriteitpersoonsgegevens.nl"
+          "Autoriteit Persoonsgegevens: Postbus 93374, 2509 AJ Den Haag",
+          "Telefon: 070 888 85 00",
+          "Website: autoriteitpersoonsgegevens.nl"
         ]
       },
       {
@@ -118,7 +118,7 @@
       },
       {
         "title": "17. Automatisierte Entscheidungen im Einzelfall",
-        "content": "OpenHospi verwendet keine automatisierten Entscheidungen im Einzelfall einschließlich Profiling im Sinne von Art. 22 DSGVO. Die Zimmervermittlung ist vollständig manuell — Nutzer durchsuchen Anzeigen und bewerben sich selbst. Hausmitglieder stimmen in einem manuellen Abstimmungsverfahren über Bewerber ab. Keine Algorithmen bestimmen, wer welche Zimmer sieht oder wer akzeptiert wird."
+        "content": "OpenHospi verwendet keine automatisierten Entscheidungen im Einzelfall einschließlich Profiling im Sinne von Art. 22 DSGVO. Die Zimmervermittlung ist vollständig manuell: Nutzer durchsuchen Anzeigen und bewerben sich selbst. Hausmitglieder stimmen in einem manuellen Abstimmungsverfahren über Bewerber ab. Keine Algorithmen bestimmen, wer welche Zimmer sieht oder wer akzeptiert wird."
       },
       {
         "title": "18. Änderungen dieser Datenschutzerklärung",
@@ -138,15 +138,15 @@
         "title": "Essenzielle Cookies",
         "content": "Diese Cookies sind für das Funktionieren der Plattform unbedingt erforderlich. Hierfür ist keine Einwilligung erforderlich nach Telecommunicatiewet Art. 11.7a, da sie für die Erbringung des von dir angeforderten Dienstes unerlässlich sind.",
         "items": [
-          "better-auth.session_token — authentifiziert deine Anmeldesitzung (Sitzungs-Cookie, wird beim Schließen des Browsers gelöscht)"
+          "better-auth.session_token: authentifiziert deine Anmeldesitzung (Sitzungs-Cookie, wird beim Schließen des Browsers gelöscht)"
         ]
       },
       {
         "title": "Funktionale Cookies und lokaler Speicher",
         "content": "Die folgenden Cookies und lokalen Speichertechnologien verbessern dein Erlebnis, sind aber nicht unbedingt erforderlich. Hierfür bitten wir um deine Einwilligung gemäß Telecommunicatiewet Art. 11.7a.",
         "items": [
-          "sidebar_state — merkt sich, ob die Seitenleiste geöffnet oder geschlossen ist (persistent, localStorage — kein Cookie, sondern lokaler Speicher in deinem Browser)",
-          "NEXT_LOCALE — merkt sich deine Spracheinstellung (Cookie, gültig 1 Jahr)"
+          "sidebar_state: merkt sich, ob die Seitenleiste geöffnet oder geschlossen ist (persistent, localStorage: kein Cookie, sondern lokaler Speicher in deinem Browser)",
+          "NEXT_LOCALE: merkt sich deine Spracheinstellung (Cookie, gültig 1 Jahr)"
         ]
       },
       {
@@ -199,7 +199,7 @@
     "intro": "Diese Seite bietet einen Überblick über die Rechtsgrundlage für jede Verarbeitungstätigkeit bei OpenHospi, gemäß Art. 6 DSGVO.",
     "sections": [
       {
-        "title": "1. Vertragserfüllung — Art. 6 Abs. 1 lit. b DSGVO",
+        "title": "1. Vertragserfüllung: Art. 6 Abs. 1 lit. b DSGVO",
         "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung unseres Vertrags mit dir (Bereitstellung der Studentenwohnungsplattform) erforderlich:",
         "items": [
           "Erstellung und Verwaltung des Nutzerprofils",
@@ -213,36 +213,36 @@
         ]
       },
       {
-        "title": "2. Einwilligung — Art. 6 Abs. 1 lit. a DSGVO",
+        "title": "2. Einwilligung: Art. 6 Abs. 1 lit. a DSGVO",
         "content": "Die folgenden Verarbeitungstätigkeiten basieren auf deiner ausdrücklichen Einwilligung, die du jederzeit über Einstellungen > Datenschutz widerrufen kannst. Durch den Widerruf der Einwilligung wird die Rechtmäßigkeit der aufgrund der Einwilligung bis zum Widerruf erfolgten Verarbeitung nicht berührt (Art. 7 Abs. 3 DSGVO).",
         "items": [
           "Funktionale Cookies und lokaler Speicher (Seitenleistenstatus, Spracheinstellung)",
           "Zustellung von Push-Benachrichtigungen",
-          "Analysen (Vercel Analytics — cookielos, keine personenbezogenen Daten)"
+          "Analysen (Vercel Analytics: cookielos, keine personenbezogenen Daten)"
         ]
       },
       {
-        "title": "3. Berechtigte Interessen — Art. 6 Abs. 1 lit. f DSGVO",
+        "title": "3. Berechtigte Interessen: Art. 6 Abs. 1 lit. f DSGVO",
         "content": "Die folgenden Verarbeitungstätigkeiten basieren auf unserem berechtigten Interesse an Plattformsicherheit und Nutzerschutz. Wir haben diese Interessen gegen deine Rechte und Freiheiten abgewogen und festgestellt, dass die Verarbeitung verhältnismäßig und notwendig ist.",
         "items": [
-          "Sitzungsdaten (IP-Adresse, User Agent) — zur Sicherheitsüberwachung",
-          "Moderationsdaten (Meldungen, Sperrungen) — für die Plattformsicherheit",
-          "Temporär entschlüsselter Nachrichtentext — zur Untersuchung gemeldeter Nachrichten",
-          "Fehler- und Crash-Reporting-Daten — zur Überwachung der App-Stabilität und Fehlerbehebung"
+          "Sitzungsdaten (IP-Adresse, User Agent): zur Sicherheitsüberwachung",
+          "Moderationsdaten (Meldungen, Sperrungen): für die Plattformsicherheit",
+          "Temporär entschlüsselter Nachrichtentext: zur Untersuchung gemeldeter Nachrichten",
+          "Fehler- und Crash-Reporting-Daten: zur Überwachung der App-Stabilität und Fehlerbehebung"
         ]
       },
       {
-        "title": "4. Rechtliche Verpflichtung — Art. 6 Abs. 1 lit. c DSGVO",
+        "title": "4. Rechtliche Verpflichtung: Art. 6 Abs. 1 lit. c DSGVO",
         "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung rechtlicher Verpflichtungen erforderlich:",
         "items": [
-          "Einwilligungsdatensätze (unveränderliches Auditprotokoll) — zum Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO",
-          "Bearbeitung von Datenanfragen — zur Erfüllung der Betroffenenrechte (Art. 15 bis 22 DSGVO)",
-          "Verarbeitungseinschränkungsdatensätze — zur Einhaltung des Rechts auf Einschränkung der Verarbeitung (Art. 18 DSGVO)"
+          "Einwilligungsdatensätze (unveränderliches Auditprotokoll): zum Nachweis einer gültigen Einwilligung gemäß Art. 7 DSGVO",
+          "Bearbeitung von Datenanfragen: zur Erfüllung der Betroffenenrechte (Art. 15 bis 22 DSGVO)",
+          "Verarbeitungseinschränkungsdatensätze: zur Einhaltung des Rechts auf Einschränkung der Verarbeitung (Art. 18 DSGVO)"
         ]
       },
       {
         "title": "5. Keine automatisierten Entscheidungen im Einzelfall",
-        "content": "OpenHospi verwendet keine automatisierten Entscheidungen im Einzelfall einschließlich Profiling im Sinne von Art. 22 DSGVO. Die Zimmervermittlung ist vollständig manuell — Nutzer durchsuchen Anzeigen und reichen Bewerbungen selbst ein. Hausmitglieder stimmen in einem manuellen Abstimmungsverfahren über Bewerber ab. Keine Algorithmen bestimmen, wer eine Wohnung bekommt."
+        "content": "OpenHospi verwendet keine automatisierten Entscheidungen im Einzelfall einschließlich Profiling im Sinne von Art. 22 DSGVO. Die Zimmervermittlung ist vollständig manuell: Nutzer durchsuchen Anzeigen und reichen Bewerbungen selbst ein. Hausmitglieder stimmen in einem manuellen Abstimmungsverfahren über Bewerber ab. Keine Algorithmen bestimmen, wer eine Wohnung bekommt."
       },
       {
         "title": "6. Kontakt",
@@ -258,63 +258,63 @@
       {
         "title": "1. Supabase (Datenbank & Speicher)",
         "items": [
-          "Rolle — Auftragsverarbeiter: Datenbank-Hosting (PostgreSQL) und Dateispeicher (Profilfotos, Zimmerfotos)",
-          "Standort — Dublin, Irland (eu-west-1)",
-          "Verarbeitete Daten — Alle in der Datenbank gespeicherten personenbezogenen Daten, hochgeladene Fotos",
-          "Auftragsverarbeitungsvertrag — Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen (Supabase Data Processing Agreement)",
-          "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung, SOC 2 Typ II zertifiziert"
+          "Rolle: Auftragsverarbeiter: Datenbank-Hosting (PostgreSQL) und Dateispeicher (Profilfotos, Zimmerfotos)",
+          "Standort: Dublin, Irland (eu-west-1)",
+          "Verarbeitete Daten: Alle in der Datenbank gespeicherten personenbezogenen Daten, hochgeladene Fotos",
+          "Auftragsverarbeitungsvertrag: Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen (Supabase Data Processing Agreement)",
+          "Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung, SOC 2 Typ II zertifiziert"
         ]
       },
       {
         "title": "2. Vercel (Webhosting & Edge)",
         "items": [
-          "Rolle — Auftragsverarbeiter: Webanwendungs-Hosting, Serverless Functions, Edge-Netzwerk",
-          "Standort — Dublin, Irland (eu-west-1)",
-          "Verarbeitete Daten — HTTP-Anfragen (IP-Adresse, User Agent) in Serverprotokollen",
-          "Auftragsverarbeitungsvertrag — Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen (Vercel Data Processing Addendum)",
-          "Sicherheit — Automatisches HTTPS, DDoS-Schutz, SOC 2 Typ II zertifiziert"
+          "Rolle: Auftragsverarbeiter: Webanwendungs-Hosting, Serverless Functions, Edge-Netzwerk",
+          "Standort: Dublin, Irland (eu-west-1)",
+          "Verarbeitete Daten: HTTP-Anfragen (IP-Adresse, User Agent) in Serverprotokollen",
+          "Auftragsverarbeitungsvertrag: Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen (Vercel Data Processing Addendum)",
+          "Sicherheit: Automatisches HTTPS, DDoS-Schutz, SOC 2 Typ II zertifiziert"
         ]
       },
       {
-        "title": "3. Upstash (Redis — Ratenbegrenzung)",
+        "title": "3. Upstash (Redis: Ratenbegrenzung)",
         "items": [
-          "Rolle — Auftragsverarbeiter: Redis-Datenbank für Ratenbegrenzung und Missbrauchsprävention",
-          "Standort — Irland (AWS eu-west-1)",
-          "Verarbeitete Daten — Anonymisierte Ratenbegrenzungszähler (Nutzer-ID-Hashes). Keine personenbezogenen Daten gespeichert",
-          "Auftragsverarbeitungsvertrag — Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen (Upstash DPA)",
-          "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung"
+          "Rolle: Auftragsverarbeiter: Redis-Datenbank für Ratenbegrenzung und Missbrauchsprävention",
+          "Standort: Irland (AWS eu-west-1)",
+          "Verarbeitete Daten: Anonymisierte Ratenbegrenzungszähler (Nutzer-ID-Hashes). Keine personenbezogenen Daten gespeichert",
+          "Auftragsverarbeitungsvertrag: Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen (Upstash DPA)",
+          "Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung"
         ]
       },
       {
         "title": "4. InAcademia / GÉANT (OIDC-Anbieter)",
         "items": [
-          "Rolle — Eigenständig Verantwortlicher für den Authentifizierungsprozess (kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
-          "Standort — EU (GÉANT-Infrastruktur)",
-          "Verarbeitete Daten — Pseudonymisierte Kennung (sub), Einrichtungs-Entity-ID (bei der Anmeldung empfangen). Keine Namen oder E-Mail-Adressen",
-          "Auftragsverarbeitungsvertrag — GÉANT ist kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO, sondern ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Die Zusammenarbeit unterliegt den InAcademia-Nutzungsbedingungen und EU-Recht",
-          "Sicherheit — OIDC-Protokoll, Sicherheit auf institutionellem Niveau, verwaltet von GÉANT"
+          "Rolle: Eigenständig Verantwortlicher für den Authentifizierungsprozess (kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
+          "Standort: EU (GÉANT-Infrastruktur)",
+          "Verarbeitete Daten: Pseudonymisierte Kennung (sub), Einrichtungs-Entity-ID (bei der Anmeldung empfangen). Keine Namen oder E-Mail-Adressen",
+          "Auftragsverarbeitungsvertrag: GÉANT ist kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO, sondern ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Die Zusammenarbeit unterliegt den InAcademia-Nutzungsbedingungen und EU-Recht",
+          "Sicherheit: OIDC-Protokoll, Sicherheit auf institutionellem Niveau, verwaltet von GÉANT"
         ]
       },
       {
         "title": "5. Sentry (Crash-Reporting)",
         "items": [
-          "Rolle — Auftragsverarbeiter: Crash-Reporting und Fehlerüberwachung",
-          "Standort — Frankfurt, Deutschland (eu-central-1)",
-          "Verarbeitete Daten — Fehlerereignisse, Stack-Traces, Gerätemodell, Betriebssystemversion, App-Version. Keine personenbezogenen Daten: sendDefaultPii deaktiviert, IP-Stripping aktiviert, kein Session-Replay, kein Nutzer-Tracking",
-          "Auftragsverarbeitungsvertrag — Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen, mit Standardvertragsklauseln (SCCs)",
-          "Aufbewahrung — 90 Tage",
-          "Sicherheit — Verschlüsselung im Ruhezustand und bei der Übertragung. Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen — keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden"
+          "Rolle: Auftragsverarbeiter: Crash-Reporting und Fehlerüberwachung",
+          "Standort: Frankfurt, Deutschland (eu-central-1)",
+          "Verarbeitete Daten: Fehlerereignisse, Stack-Traces, Gerätemodell, Betriebssystemversion, App-Version. Keine personenbezogenen Daten: sendDefaultPii deaktiviert, IP-Stripping aktiviert, kein Session-Replay, kein Nutzer-Tracking",
+          "Auftragsverarbeitungsvertrag: Auftragsverarbeitungsvertrag gem. Art. 28 DSGVO abgeschlossen, mit Standardvertragsklauseln (SCCs)",
+          "Aufbewahrung: 90 Tage",
+          "Sicherheit: Verschlüsselung im Ruhezustand und bei der Übertragung. Die internen organisatorischen Metadaten von Sentry (Entwicklerkonten, Projektkonfigurationen, keine Endnutzerdaten) können gemäß der Infrastruktur von Sentry in die USA repliziert werden"
         ]
       },
       {
         "title": "6. Expo/EAS (Mobile App-Verteilung)",
         "items": [
-          "Rolle — Auftragsverarbeiter: Mobile App-Builds, Over-the-Air (OTA) Updates und App-Verteilung",
-          "Standort — Vereinigte Staaten (Google Cloud Platform). Build-Server verarbeiten ausschließlich App-Quellcode und erzeugen Binaries — keine personenbezogenen Endnutzerdaten sind betroffen",
-          "Verarbeitete Daten — App-Quellcode, JavaScript-Bundles, Build-Metadaten. Keine personenbezogenen Daten von Endnutzern erhoben",
-          "Auftragsverarbeitungsvertrag — Expo Nutzungsbedingungen und Datenschutzrichtlinie gelten. Expo erfüllt das EU-US Data Privacy Framework und verwendet Standardvertragsklauseln (SCCs) für internationale Übermittlungen",
-          "DSGVO-Relevanz — Es werden keine personenbezogenen Endnutzerdaten an EAS-Build-Server übermittelt oder dort verarbeitet. Nur App-Quellcode und Bundles werden verarbeitet. Die internationalen Übermittlungsgarantien von Expo (EU-US DPF, SCCs) bieten zusätzlichen Schutz gemäß Art. 45-46 DSGVO",
-          "Sicherheit — Signierte Updates, ausschließlich HTTPS-Auslieferung, Code-Signierung für OTA-Updates"
+          "Rolle: Auftragsverarbeiter: Mobile App-Builds, Over-the-Air (OTA) Updates und App-Verteilung",
+          "Standort: Vereinigte Staaten (Google Cloud Platform). Build-Server verarbeiten ausschließlich App-Quellcode und erzeugen Binaries. Keine personenbezogenen Endnutzerdaten sind betroffen",
+          "Verarbeitete Daten: App-Quellcode, JavaScript-Bundles, Build-Metadaten. Keine personenbezogenen Daten von Endnutzern erhoben",
+          "Auftragsverarbeitungsvertrag: Expo Nutzungsbedingungen und Datenschutzrichtlinie gelten. Expo erfüllt das EU-US Data Privacy Framework und verwendet Standardvertragsklauseln (SCCs) für internationale Übermittlungen",
+          "DSGVO-Relevanz: Es werden keine personenbezogenen Endnutzerdaten an EAS-Build-Server übermittelt oder dort verarbeitet. Nur App-Quellcode und Bundles werden verarbeitet. Die internationalen Übermittlungsgarantien von Expo (EU-US DPF, SCCs) bieten zusätzlichen Schutz gemäß Art. 45-46 DSGVO",
+          "Sicherheit: Signierte Updates, ausschließlich HTTPS-Auslieferung, Code-Signierung für OTA-Updates"
         ]
       }
     ]
@@ -327,144 +327,144 @@
       {
         "title": "1. Nutzerprofile",
         "items": [
-          "Zweck — Bereitstellung der Studentenwohnungsplattform",
-          "Kategorien betroffener Personen — Registrierte Studierende",
-          "Datenkategorien — Name, E-Mail-Adresse, Geburtsdatum, Geschlecht, Studiengang, Bildungseinrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete",
-          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
-          "Empfänger — Andere Plattformnutzer (eingeschränkte Profilansicht)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Bis zur Kontolöschung",
-          "Sicherheit — Row-Level Security (RLS), verschlüsselter Transport (TLS), rollenbasierte Zugriffskontrolle"
+          "Zweck: Bereitstellung der Studentenwohnungsplattform",
+          "Kategorien betroffener Personen: Registrierte Studierende",
+          "Datenkategorien: Name, E-Mail-Adresse, Geburtsdatum, Geschlecht, Studiengang, Bildungseinrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete",
+          "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
+          "Empfänger: Andere Plattformnutzer (eingeschränkte Profilansicht)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Bis zur Kontolöschung",
+          "Sicherheit: Row-Level Security (RLS), verschlüsselter Transport (TLS), rollenbasierte Zugriffskontrolle"
         ]
       },
       {
         "title": "2. Profilfotos",
         "items": [
-          "Zweck — Profilidentifikation und visuelle Wiedererkennung",
-          "Kategorien betroffener Personen — Registrierte Studierende",
-          "Datenkategorien — bis zu 5 Fotos pro Nutzer",
-          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
-          "Empfänger — Andere Plattformnutzer (authentifiziert)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Bis zur Löschung durch den Nutzer oder Kontolöschung",
-          "Sicherheit — Supabase Storage mit Zugriffsrichtlinien, verschlüsselte Speicherung"
+          "Zweck: Profilidentifikation und visuelle Wiedererkennung",
+          "Kategorien betroffener Personen: Registrierte Studierende",
+          "Datenkategorien: bis zu 5 Fotos pro Nutzer",
+          "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
+          "Empfänger: Andere Plattformnutzer (authentifiziert)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Bis zur Löschung durch den Nutzer oder Kontolöschung",
+          "Sicherheit: Supabase Storage mit Zugriffsrichtlinien, verschlüsselte Speicherung"
         ]
       },
       {
         "title": "3. Zimmeranzeigen",
         "items": [
-          "Zweck — Wohnungsmarktplatz-Funktionalität und geografische Suche",
-          "Kategorien betroffener Personen — Registrierte Studierende (Zimmeranbieter)",
-          "Datenkategorien — Adresse, Stadt, Koordinaten, Mietpreis, Zimmerdetails, Fotos, Verfügbarkeit",
-          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
-          "Empfänger — Alle authentifizierten Nutzer",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Bis zur Löschung durch den Eigentümer oder Kontolöschung",
-          "Sicherheit — RLS-Richtlinien (nur Eigentümer kann bearbeiten), verschlüsselter Transport"
+          "Zweck: Wohnungsmarktplatz-Funktionalität und geografische Suche",
+          "Kategorien betroffener Personen: Registrierte Studierende (Zimmeranbieter)",
+          "Datenkategorien: Adresse, Stadt, Koordinaten, Mietpreis, Zimmerdetails, Fotos, Verfügbarkeit",
+          "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
+          "Empfänger: Alle authentifizierten Nutzer",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Bis zur Löschung durch den Eigentümer oder Kontolöschung",
+          "Sicherheit: RLS-Richtlinien (nur Eigentümer kann bearbeiten), verschlüsselter Transport"
         ]
       },
       {
         "title": "4. Bewerbungen",
         "items": [
-          "Zweck — Vermittlung von Suchenden und Zimmern sowie Verwaltung des Hospiteerprozesses",
-          "Kategorien betroffener Personen — Registrierte Studierende (Zimmersuchende)",
-          "Datenkategorien — persönliche Nachricht, Bewerbungsstatus",
-          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
-          "Empfänger — Zimmereigentümer und Hausmitglieder der betreffenden Wohnung",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Bis zum Zurückziehen durch den Suchenden oder Kontolöschung",
-          "Sicherheit — RLS-Richtlinien beschränkt auf beteiligte Parteien"
+          "Zweck: Vermittlung von Suchenden und Zimmern sowie Verwaltung des Hospiteerprozesses",
+          "Kategorien betroffener Personen: Registrierte Studierende (Zimmersuchende)",
+          "Datenkategorien: persönliche Nachricht, Bewerbungsstatus",
+          "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
+          "Empfänger: Zimmereigentümer und Hausmitglieder der betreffenden Wohnung",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Bis zum Zurückziehen durch den Suchenden oder Kontolöschung",
+          "Sicherheit: RLS-Richtlinien beschränkt auf beteiligte Parteien"
         ]
       },
       {
         "title": "5. Chatnachrichten",
         "items": [
-          "Zweck — Kommunikation zwischen Suchenden und Hausmitgliedern",
-          "Kategorien betroffener Personen — Registrierte Studierende (Gesprächsteilnehmer)",
-          "Datenkategorien — Ende-zu-Ende verschlüsselter Nachrichteninhalt, Zeitstempel, verschlüsselte Sitzungsschlüssel",
-          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
-          "Empfänger — Nur Gesprächsteilnehmer (Inhalt für OpenHospi nicht lesbar)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Bis zur Kontolöschung",
-          "Sicherheit — Ende-zu-Ende-Verschlüsselung (AES-256-GCM mit ECDH-Schlüsselaustausch), nur Teilnehmer können entschlüsseln"
+          "Zweck: Kommunikation zwischen Suchenden und Hausmitgliedern",
+          "Kategorien betroffener Personen: Registrierte Studierende (Gesprächsteilnehmer)",
+          "Datenkategorien: Ende-zu-Ende verschlüsselter Nachrichteninhalt, Zeitstempel, verschlüsselte Sitzungsschlüssel",
+          "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
+          "Empfänger: Nur Gesprächsteilnehmer (Inhalt für OpenHospi nicht lesbar)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Bis zur Kontolöschung",
+          "Sicherheit: Ende-zu-Ende-Verschlüsselung (AES-256-GCM mit ECDH-Schlüsselaustausch), nur Teilnehmer können entschlüsseln"
         ]
       },
       {
         "title": "6. Sitzungsdaten",
         "items": [
-          "Zweck — Authentifizierung und Sicherheitsüberwachung",
-          "Kategorien betroffener Personen — Registrierte Studierende",
-          "Datenkategorien — IP-Adresse, User Agent, Sitzungstoken",
-          "Rechtsgrundlage — Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
-          "Empfänger — Keine (ausschließlich interne Verwendung)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — IP-Adresse anonymisiert 30 Tage nach Sitzungsablauf; Sitzungsdatensatz gelöscht nach 90 Tagen",
-          "Sicherheit — Ausschließlich serverseitige Verarbeitung, verschlüsselte Speicherung"
+          "Zweck: Authentifizierung und Sicherheitsüberwachung",
+          "Kategorien betroffener Personen: Registrierte Studierende",
+          "Datenkategorien: IP-Adresse, User Agent, Sitzungstoken",
+          "Rechtsgrundlage: Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
+          "Empfänger: Keine (ausschließlich interne Verwendung)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: IP-Adresse anonymisiert 30 Tage nach Sitzungsablauf; Sitzungsdatensatz gelöscht nach 90 Tagen",
+          "Sicherheit: Ausschließlich serverseitige Verarbeitung, verschlüsselte Speicherung"
         ]
       },
       {
         "title": "7. Moderationsdaten",
         "items": [
-          "Zweck — Plattformsicherheit und Missbrauchsprävention",
-          "Kategorien betroffener Personen — Registrierte Studierende (Melder und gemeldete Nutzer)",
-          "Datenkategorien — Meldungen, Sperrungen, temporär entschlüsselter Nachrichtentext (durch den Melder bereitgestellt)",
-          "Rechtsgrundlage — Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
-          "Empfänger — Ausschließlich das Admin-Team",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Entschlüsselter Nachrichtentext automatisch gelöscht 90 Tage nach Abschluss",
-          "Sicherheit — Ausschließlich Admin-Zugriff, vollständige Audit-Protokollierung"
+          "Zweck: Plattformsicherheit und Missbrauchsprävention",
+          "Kategorien betroffener Personen: Registrierte Studierende (Melder und gemeldete Nutzer)",
+          "Datenkategorien: Meldungen, Sperrungen, temporär entschlüsselter Nachrichtentext (durch den Melder bereitgestellt)",
+          "Rechtsgrundlage: Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
+          "Empfänger: Ausschließlich das Admin-Team",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Entschlüsselter Nachrichtentext automatisch gelöscht 90 Tage nach Abschluss",
+          "Sicherheit: Ausschließlich Admin-Zugriff, vollständige Audit-Protokollierung"
         ]
       },
       {
         "title": "8. Einwilligungsdatensätze",
         "items": [
-          "Zweck — Nachweis einer gültigen Einwilligung (Art. 7 DSGVO)",
-          "Kategorien betroffener Personen — Registrierte Studierende und Websitebesucher",
-          "Datenkategorien — Einwilligungszweck, erteilt/widerrufen Status, IP-Adresse, User Agent, Datenschutzerklärungsversion, Zeitstempel",
-          "Rechtsgrundlage — Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c DSGVO)",
-          "Empfänger — Keine (ausschließlich interne Auditzwecke)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — IP-Adresse anonymisiert nach 365 Tagen; Einwilligungsdatensätze aufbewahrt, solange für Nachweiszwecke erforderlich",
-          "Sicherheit — Unveränderliches Auditprotokoll, verschlüsselte Speicherung"
+          "Zweck: Nachweis einer gültigen Einwilligung (Art. 7 DSGVO)",
+          "Kategorien betroffener Personen: Registrierte Studierende und Websitebesucher",
+          "Datenkategorien: Einwilligungszweck, erteilt/widerrufen Status, IP-Adresse, User Agent, Datenschutzerklärungsversion, Zeitstempel",
+          "Rechtsgrundlage: Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c DSGVO)",
+          "Empfänger: Keine (ausschließlich interne Auditzwecke)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: IP-Adresse anonymisiert nach 365 Tagen; Einwilligungsdatensätze aufbewahrt, solange für Nachweiszwecke erforderlich",
+          "Sicherheit: Unveränderliches Auditprotokoll, verschlüsselte Speicherung"
         ]
       },
       {
         "title": "9. Push-Benachrichtigungs-Abonnements",
         "items": [
-          "Zweck — Zustellung von Push-Benachrichtigungen an Nutzer",
-          "Kategorien betroffener Personen — Registrierte Studierende, die Push-Benachrichtigungen aktiviert haben",
-          "Datenkategorien — Endpunkt-URL, Verschlüsselungsschlüssel für Push-Dienst",
-          "Rechtsgrundlage — Einwilligung (Art. 6 Abs. 1 lit. a DSGVO)",
-          "Empfänger — Browser-Push-Dienst (technisch für die Zustellung erforderlich)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Bis zur Abmeldung durch den Nutzer oder Kontolöschung",
-          "Sicherheit — Web-Push-Protokoll mit Ende-zu-Ende-Verschlüsselung"
+          "Zweck: Zustellung von Push-Benachrichtigungen an Nutzer",
+          "Kategorien betroffener Personen: Registrierte Studierende, die Push-Benachrichtigungen aktiviert haben",
+          "Datenkategorien: Endpunkt-URL, Verschlüsselungsschlüssel für Push-Dienst",
+          "Rechtsgrundlage: Einwilligung (Art. 6 Abs. 1 lit. a DSGVO)",
+          "Empfänger: Browser-Push-Dienst (technisch für die Zustellung erforderlich)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Bis zur Abmeldung durch den Nutzer oder Kontolöschung",
+          "Sicherheit: Web-Push-Protokoll mit Ende-zu-Ende-Verschlüsselung"
         ]
       },
       {
         "title": "10. Kalenderabonnement-Feed",
         "items": [
-          "Zweck — Synchronisation von Hospi-Veranstaltungen mit der Kalender-App des Nutzers",
-          "Kategorien betroffener Personen — Registrierte Studierende, die das Kalenderabonnement aktiviert haben",
-          "Datenkategorien — Kalender-Token (UUID), Hospi-Veranstaltungstitel, Daten, Zeiten, Orte",
-          "Rechtsgrundlage — Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) — Nutzer aktiviert das Abonnement selbst",
-          "Empfänger — Kalender-App-Anbieter des Nutzers (Google, Apple, Microsoft usw.)",
-          "Übermittlungen außerhalb des EWR — Nein, alle Verarbeitung innerhalb der EU/des EWR",
-          "Aufbewahrung — Token besteht, solange das Konto aktiv ist; wird bei Kontolöschung gelöscht",
-          "Sicherheit — Nicht erratbares UUID-Token, nur HTTPS, durch Nutzer widerrufbar"
+          "Zweck: Synchronisation von Hospi-Veranstaltungen mit der Kalender-App des Nutzers",
+          "Kategorien betroffener Personen: Registrierte Studierende, die das Kalenderabonnement aktiviert haben",
+          "Datenkategorien: Kalender-Token (UUID), Hospi-Veranstaltungstitel, Daten, Zeiten, Orte",
+          "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO): Nutzer aktiviert das Abonnement selbst",
+          "Empfänger: Kalender-App-Anbieter des Nutzers (Google, Apple, Microsoft usw.)",
+          "Übermittlungen außerhalb des EWR: Nein, alle Verarbeitung innerhalb der EU/des EWR",
+          "Aufbewahrung: Token besteht, solange das Konto aktiv ist; wird bei Kontolöschung gelöscht",
+          "Sicherheit: Nicht erratbares UUID-Token, nur HTTPS, durch Nutzer widerrufbar"
         ]
       },
       {
         "title": "11. Fehlerberichterstattung & Crash-Monitoring",
         "items": [
-          "Zweck — Sicherstellung der App-Stabilität, Identifizierung und Behebung technischer Fehler",
-          "Kategorien betroffener Personen — Alle App-Nutzer (anonymisiert — keine Nutzeridentifizierung möglich)",
-          "Datenkategorien — Stack-Traces, Gerätemodell, Betriebssystemversion, App-Version, Fehlerkontext",
-          "Rechtsgrundlage — Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
-          "Empfänger — Sentry (Functional Software Inc.) — Auftragsverarbeitungsvertrag mit SCCs abgeschlossen",
-          "Übermittlungen außerhalb des EWR — Keine Endnutzerdaten übermittelt. Interne organisatorische Metadaten von Sentry können in die USA repliziert werden",
-          "Aufbewahrung — 90 Tage",
-          "Sicherheit — Keine personenbezogenen Daten erhoben, Daten durch Design anonymisiert, EU-Speicherung (Frankfurt)"
+          "Zweck: Sicherstellung der App-Stabilität, Identifizierung und Behebung technischer Fehler",
+          "Kategorien betroffener Personen: Alle App-Nutzer (anonymisiert, keine Nutzeridentifizierung möglich)",
+          "Datenkategorien: Stack-Traces, Gerätemodell, Betriebssystemversion, App-Version, Fehlerkontext",
+          "Rechtsgrundlage: Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)",
+          "Empfänger: Sentry (Functional Software Inc.): Auftragsverarbeitungsvertrag mit SCCs abgeschlossen",
+          "Übermittlungen außerhalb des EWR: Keine Endnutzerdaten übermittelt. Interne organisatorische Metadaten von Sentry können in die USA repliziert werden",
+          "Aufbewahrung: 90 Tage",
+          "Sicherheit: Keine personenbezogenen Daten erhoben, Daten durch Design anonymisiert, EU-Speicherung (Frankfurt)"
         ]
       }
     ]
@@ -492,81 +492,81 @@
       {
         "title": "3. Risiko: Verarbeitung von Profildaten",
         "items": [
-          "Risiko — Unbefugter Zugriff auf persönliche Profile",
-          "Wahrscheinlichkeit — Gering",
-          "Auswirkung — Mittel",
-          "Maßnahmen — Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über InAcademia erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
-          "Restrisiko — Gering"
+          "Risiko: Unbefugter Zugriff auf persönliche Profile",
+          "Wahrscheinlichkeit: Gering",
+          "Auswirkung: Mittel",
+          "Maßnahmen: Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über InAcademia erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
+          "Restrisiko: Gering"
         ]
       },
       {
         "title": "4. Risiko: Standortdaten (Zimmerkoordinaten)",
         "items": [
-          "Risiko — Präzise Standortbestimmung über Zimmerkoordinaten",
-          "Wahrscheinlichkeit — Gering",
-          "Auswirkung — Mittel",
-          "Maßnahmen — Koordinaten werden nur für die Kartenanzeige verwendet. Keine Standortverfolgung von Nutzern. Nur für authentifizierte Nutzer sichtbar",
-          "Restrisiko — Gering"
+          "Risiko: Präzise Standortbestimmung über Zimmerkoordinaten",
+          "Wahrscheinlichkeit: Gering",
+          "Auswirkung: Mittel",
+          "Maßnahmen: Koordinaten werden nur für die Kartenanzeige verwendet. Keine Standortverfolgung von Nutzern. Nur für authentifizierte Nutzer sichtbar",
+          "Restrisiko: Gering"
         ]
       },
       {
         "title": "5. Risiko: Chatnachrichteninhalt",
         "items": [
-          "Risiko — Abfangen oder unbefugtes Lesen von Nachrichten",
-          "Wahrscheinlichkeit — Sehr gering",
-          "Auswirkung — Hoch",
-          "Maßnahmen — Ende-zu-Ende-Verschlüsselung mit AES-256-GCM. Pro-Nachricht-Schlüssel für jeden Empfänger gewrappt. Private Schlüssel in IndexedDB (clientseitig) gespeichert. Server hat nie Zugriff auf Klartext",
-          "Restrisiko — Sehr gering"
+          "Risiko: Abfangen oder unbefugtes Lesen von Nachrichten",
+          "Wahrscheinlichkeit: Sehr gering",
+          "Auswirkung: Hoch",
+          "Maßnahmen: Ende-zu-Ende-Verschlüsselung mit AES-256-GCM. Pro-Nachricht-Schlüssel für jeden Empfänger gewrappt. Private Schlüssel in IndexedDB (clientseitig) gespeichert. Server hat nie Zugriff auf Klartext",
+          "Restrisiko: Sehr gering"
         ]
       },
       {
         "title": "6. Risiko: Fotospeicherung",
         "items": [
-          "Risiko — Unbefugter Zugriff auf Profil- oder Zimmerfotos",
-          "Wahrscheinlichkeit — Gering",
-          "Auswirkung — Mittel",
-          "Maßnahmen — Supabase Storage mit Zugriffsrichtlinien. Fotos nur für authentifizierte Nutzer zugänglich. Löschung kaskadiert bei Kontoentfernung",
-          "Restrisiko — Gering"
+          "Risiko: Unbefugter Zugriff auf Profil- oder Zimmerfotos",
+          "Wahrscheinlichkeit: Gering",
+          "Auswirkung: Mittel",
+          "Maßnahmen: Supabase Storage mit Zugriffsrichtlinien. Fotos nur für authentifizierte Nutzer zugänglich. Löschung kaskadiert bei Kontoentfernung",
+          "Restrisiko: Gering"
         ]
       },
       {
         "title": "7. Risiko: InAcademia-Daten",
         "items": [
-          "Risiko — Übermäßige Datenerhebung vom OIDC-Anbieter",
-          "Wahrscheinlichkeit — Sehr gering",
-          "Auswirkung — Gering",
-          "Maßnahmen — Es werden nur eine pseudonymisierte Kennung und Einrichtungsinformationen von InAcademia empfangen. Keine Namen oder E-Mail-Adressen. InAcademia wird von GÉANT (EU) verwaltet",
-          "Restrisiko — Sehr gering"
+          "Risiko: Übermäßige Datenerhebung vom OIDC-Anbieter",
+          "Wahrscheinlichkeit: Sehr gering",
+          "Auswirkung: Gering",
+          "Maßnahmen: Es werden nur eine pseudonymisierte Kennung und Einrichtungsinformationen von InAcademia empfangen. Keine Namen oder E-Mail-Adressen. InAcademia wird von GÉANT (EU) verwaltet",
+          "Restrisiko: Sehr gering"
         ]
       },
       {
-        "title": "8. Risiko: Moderation — temporär entschlüsselte Nachrichten",
+        "title": "8. Risiko: Moderation, temporär entschlüsselte Nachrichten",
         "items": [
-          "Risiko — Offenlegung privater Nachrichteninhalte während der Moderation",
-          "Wahrscheinlichkeit — Gering (nur bei Nutzermeldung)",
-          "Auswirkung — Mittel",
-          "Maßnahmen — Nur der meldende Nutzer liefert den entschlüsselten Text. Temporäre Speicherung mit automatischer 90-Tage-Löschung. Ausschließlich Admin-Zugriff mit vollständiger Audit-Protokollierung",
-          "Restrisiko — Gering"
+          "Risiko: Offenlegung privater Nachrichteninhalte während der Moderation",
+          "Wahrscheinlichkeit: Gering (nur bei Nutzermeldung)",
+          "Auswirkung: Mittel",
+          "Maßnahmen: Nur der meldende Nutzer liefert den entschlüsselten Text. Temporäre Speicherung mit automatischer 90-Tage-Löschung. Ausschließlich Admin-Zugriff mit vollständiger Audit-Protokollierung",
+          "Restrisiko: Gering"
         ]
       },
       {
         "title": "9. Risiko: Kalender-Feed-URL-Leck",
         "items": [
-          "Risiko — Jemand erhält die Kalenderabonnement-URL und kann Hospi-Veranstaltungsdetails einsehen",
-          "Wahrscheinlichkeit — Gering",
-          "Auswirkung — Mittel (Veranstaltungstitel, Daten, Orte offengelegt — keine Nachrichten oder personenbezogene Daten)",
-          "Maßnahmen — Kalender-Token ist eine 128-Bit nicht erratbare UUID. Nur HTTPS. Token kann jederzeit vom Nutzer über Einstellungen widerrufen werden. Nutzer wird vor dem Teilen der URL gewarnt",
-          "Restrisiko — Akzeptabel"
+          "Risiko: Jemand erhält die Kalenderabonnement-URL und kann Hospi-Veranstaltungsdetails einsehen",
+          "Wahrscheinlichkeit: Gering",
+          "Auswirkung: Mittel (Veranstaltungstitel, Daten, Orte offengelegt, keine Nachrichten oder personenbezogene Daten)",
+          "Maßnahmen: Kalender-Token ist eine 128-Bit nicht erratbare UUID. Nur HTTPS. Token kann jederzeit vom Nutzer über Einstellungen widerrufen werden. Nutzer wird vor dem Teilen der URL gewarnt",
+          "Restrisiko: Akzeptabel"
         ]
       },
       {
         "title": "10. Risiko: Crash-Reporting-Daten",
         "items": [
-          "Risiko — Erhebung personenbezogener Daten durch Fehlerberichte",
-          "Wahrscheinlichkeit — Sehr gering",
-          "Auswirkung — Gering",
-          "Maßnahmen — sendDefaultPii deaktiviert, IP-Adressen vor der Speicherung entfernt, keine Nutzerkennungen im Fehlerkontext, kein Session-Replay. EU-Datenspeicherung (Frankfurt). 90 Tage Aufbewahrung",
-          "Restrisiko — Sehr gering"
+          "Risiko: Erhebung personenbezogener Daten durch Fehlerberichte",
+          "Wahrscheinlichkeit: Sehr gering",
+          "Auswirkung: Gering",
+          "Maßnahmen: sendDefaultPii deaktiviert, IP-Adressen vor der Speicherung entfernt, keine Nutzerkennungen im Fehlerkontext, kein Session-Replay. EU-Datenspeicherung (Frankfurt). 90 Tage Aufbewahrung",
+          "Restrisiko: Sehr gering"
         ]
       },
       {

@@ -1,23 +1,23 @@
 {
   "seo": {
     "home": {
-      "title": "Gratis Studentenhuisvesting — Kamers Zoeken & Aanbieden",
+      "title": "Gratis Studentenhuisvesting | Kamers Zoeken & Aanbieden",
       "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via InAcademia. Geen kosten, geen tussenpersonen."
     },
     "about": {
-      "title": "Over OpenHospi — Onze Missie & Verhaal",
+      "title": "Over OpenHospi | Onze Missie & Verhaal",
       "description": "Lees over de missie van OpenHospi om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken voor elke student."
     },
     "costs": {
-      "title": "Kosten & Transparantie — Hoe We Gratis Blijven",
+      "title": "Kosten & Transparantie | Hoe We Gratis Blijven",
       "description": "OpenHospi is gratis voor alle studenten. Bekijk precies wat het kost om het platform te draaien en waar donaties naartoe gaan."
     },
     "howItWorks": {
-      "title": "Hoe Het Werkt — Kamer Zoeken of Aanbieden",
+      "title": "Hoe Het Werkt | Kamer Zoeken of Aanbieden",
       "description": "Ontdek hoe OpenHospi werkt voor kamerzoekers en kameraanbieders. Gratis, eerlijk en alleen voor geverifieerde studenten."
     },
     "safety": {
-      "title": "Veiligheid & Vertrouwen — Hoe We Je Beschermen",
+      "title": "Veiligheid & Vertrouwen | Hoe We Je Beschermen",
       "description": "InAcademia-verificatie, end-to-end versleutelde chat, AVG-conform en open-source transparantie. Je veiligheid is onze prioriteit."
     },
     "privacy": {
@@ -49,11 +49,11 @@
       "description": "Rechtsgrond per verwerkingsactiviteit bij OpenHospi (art. 6 AVG)."
     },
     "missingAssociation": {
-      "title": "Vereniging Mist? — Laat Het Ons Weten",
+      "title": "Vereniging Mist? | Laat Het Ons Weten",
       "description": "Staat jouw studentenvereniging niet op OpenHospi? Neem contact op en we voegen hem toe."
     },
     "faqPage": {
-      "title": "Veelgestelde Vragen — FAQ",
+      "title": "Veelgestelde Vragen | FAQ",
       "description": "Vind antwoorden op veelgestelde vragen over OpenHospi, het gratis studentenhuisvestingsplatform voor Nederland."
     },
     "rooms": {
@@ -61,11 +61,11 @@
       "description": "Bekijk beschikbare studentenkamers in Nederlandse steden. Gratis, geverifieerd en eerlijk voor elke student."
     },
     "alternatives": {
-      "title": "Alternatieven — Vergelijk Studentenhuisvestingsplatforms",
+      "title": "Alternatieven | Vergelijk Studentenhuisvestingsplatforms",
       "description": "Eerlijke vergelijking van Nederlandse studentenhuisvestingsplatforms. Bekijk hoe OpenHospi zich verhoudt tot Hospi.nl, myHospi, Dingdong, Kamernet en Facebook-groepen."
     },
     "e2eEncryption": {
-      "title": "E2E-encryptie — Hoe We Je Gesprekken Beschermen",
+      "title": "E2E-encryptie | Hoe We Je Gesprekken Beschermen",
       "description": "Ontdek hoe OpenHospi paarsgewijze end-to-end encryptie gebruikt om elk gesprek tussen zoekers en huisgenoten te beschermen. Geïnspireerd door het Signal Protocol, open source en volledig transparant."
     },
     "breadcrumbs": {
@@ -111,7 +111,7 @@
         },
         {
           "question": "Wat gebeurt er als ik mijn apparaat verlies?",
-          "answer": "Je kunt je identiteitssleutels herstellen met je PIN-back-up. Zonder de PIN kunnen oude berichten niet worden ontsleuteld — dit is een beveiligingsfunctie, geen bug."
+          "answer": "Je kunt je identiteitssleutels herstellen met je PIN-back-up. Zonder de PIN kunnen oude berichten niet worden ontsleuteld. Dit is een beveiligingsfunctie, geen bug."
         },
         {
           "question": "Welk protocol gebruikt OpenHospi?",
@@ -135,7 +135,7 @@
     }
   },
   "metadata": {
-    "title": "OpenHospi — Gratis studentenhuisvesting",
+    "title": "OpenHospi | Gratis studentenhuisvesting",
     "description": "Het gratis, open-source platform voor studentenhuisvesting in Nederland."
   },
   "header": {
@@ -178,18 +178,18 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nGratis. Eerlijk.\nAlleen studenten.",
-      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via InAcademia — geen tussenpersonen, geen kosten.",
+      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via InAcademia. Geen tussenpersonen, geen kosten.",
       "cta": "Inloggen met InAcademia"
     },
     "features": {
       "title": "Waarom OpenHospi?",
       "free": {
         "title": "Altijd gratis",
-        "description": "Geen verborgen kosten, geen premium plannen. Niemand kan betalen om voorrang te krijgen. Elke student heeft dezelfde zichtbaarheid — gratis, voor altijd."
+        "description": "Geen verborgen kosten, geen premium plannen. Niemand kan betalen om voorrang te krijgen. Elke student heeft dezelfde zichtbaarheid, gratis, voor altijd."
       },
       "verified": {
         "title": "Geverifieerde studenten",
-        "description": "Elke gebruiker is geverifieerd via InAcademia — alleen echte studenten."
+        "description": "Elke gebruiker is geverifieerd via InAcademia. Alleen echte studenten."
       },
       "encrypted": {
         "title": "E2E versleutelde chat",
@@ -197,7 +197,7 @@
       },
       "fair": {
         "title": "Eerlijk en transparant",
-        "description": "Open source en community-driven. Geen bedrijf dat eraan verdient — gestart door een student, voor alle studenten."
+        "description": "Open source en community-driven. Geen bedrijf dat eraan verdient. Gestart door een student, voor alle studenten."
       }
     },
     "howItWorks": {
@@ -212,28 +212,28 @@
       },
       "step3": {
         "title": "Word gekozen",
-        "description": "Huizen nodigen kandidaten uit — het traditionele Nederlandse hospiteren."
+        "description": "Huizen nodigen kandidaten uit voor het traditionele Nederlandse hospiteren."
       }
     },
     "students": {
       "title": "Alleen echte studenten",
-      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool via InAcademia. Jouw instelling staat achter je profiel — zo weet iedereen dat je een echte student bent. Geen nepprofielen, geen oplichting.",
+      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool via InAcademia. Jouw instelling staat achter je profiel, zodat iedereen weet dat je een echte student bent. Geen nepprofielen, geen oplichting.",
       "badge": "InAcademia geverifieerd"
     },
     "openSource": {
       "title": "Open source",
-      "description": "OpenHospi is volledig open source. Iedereen kan de code bekijken, bijdragen of een eigen instantie draaien. Transparantie is geen feature — het is een principe.",
+      "description": "OpenHospi is volledig open source. Iedereen kan de code bekijken, bijdragen of een eigen instantie draaien. Transparantie is geen feature, het is een principe.",
       "cta": "Bekijk op GitHub"
     },
     "cta": {
       "title": "Sluit je aan",
-      "subtitle": "Wees erbij op het eerlijkste huisvestingsplatform van Nederland — gratis, eerlijk en alleen voor studenten.",
+      "subtitle": "Wees erbij op het eerlijkste huisvestingsplatform van Nederland, gratis, eerlijk en alleen voor studenten.",
       "button": "Inloggen met InAcademia"
     }
   },
   "howItWorks": {
     "title": "Hoe het werkt",
-    "subtitle": "Of je nu een kamer zoekt of een huisgenoot — zo werkt OpenHospi.",
+    "subtitle": "Of je nu een kamer zoekt of een huisgenoot, zo werkt OpenHospi.",
     "seekers": {
       "title": "Voor kamerzoekers",
       "why": {
@@ -253,7 +253,7 @@
           },
           {
             "title": "Eerlijk voor iedereen",
-            "description": "Open source en community-driven. Geen bedrijf dat eraan verdient — gestart door een student, voor alle studenten."
+            "description": "Open source en community-driven. Geen bedrijf dat eraan verdient. Gestart door een student, voor alle studenten."
           }
         ]
       },
@@ -302,7 +302,7 @@
           },
           {
             "title": "Beheer reacties",
-            "description": "Bekijk profielen, lees berichten en nodig kandidaten uit — alles op één plek."
+            "description": "Bekijk profielen, lees berichten en nodig kandidaten uit. Alles op één plek."
           },
           {
             "title": "Deel je advertentie",
@@ -359,7 +359,7 @@
       },
       {
         "title": "End-to-end versleutelde chat",
-        "description": "Alle berichten zijn end-to-end versleuteld — in zowel privé- als groepsgesprekken. Wij kunnen je berichten niet lezen."
+        "description": "Alle berichten zijn end-to-end versleuteld, in zowel privé- als groepsgesprekken. Wij kunnen je berichten niet lezen."
       },
       {
         "title": "Geen trackers",
@@ -383,20 +383,19 @@
   },
   "about": {
     "title": "Over OpenHospi",
-    "subtitle": "Het gratis, open-source studentenhuisvestingsplatform voor Nederland — gebouwd door studenten, voor studenten.",
+    "subtitle": "Het gratis, open-source studentenhuisvestingsplatform voor Nederland, gebouwd door studenten, voor studenten.",
     "mission": {
       "title": "Onze Missie",
       "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant moet zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
     },
     "vision": {
       "title": "Onze Visie",
-      "description": "Een wereld waarin elke student in Nederland gelijke toegang heeft tot huisvesting. Geen betaalde platforms, geen poortwachters — gewoon een eerlijk, transparant proces waarbij je persoonlijkheid meer telt dan je portemonnee."
+      "description": "Een wereld waarin elke student in Nederland gelijke toegang heeft tot huisvesting. Geen betaalde platforms, geen poortwachters. Gewoon een eerlijk, transparant proces waarbij je persoonlijkheid meer telt dan je portemonnee."
     },
     "problem": {
       "title": "Waarom OpenHospi?",
-      "description1": "Studenten zoeken vandaag kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Het systeem werkt voor platforms — niet voor studenten.",
-      "description2": "Wij geloven dat dit fundamenteel oneerlijk is. Huisvesting is een basisbehoefte en studenten zouden niet hoeven te betalen om een woonplek te vinden. Daarom hebben we OpenHospi gebouwd: een platform waar iedereen dezelfde zichtbaarheid, dezelfde tools en dezelfde kansen krijgt — volledig gratis.",
-      "description3": "OpenHospi is ontstaan toen Ruben medestudenten zag worstelen met betaalde platforms en chaotische Facebook-groepen. Hij ervoer het niet zelf, maar zag om zich heen hoe moeilijk het was. De oplossing was duidelijk: iets beters bouwen en het open source maken."
+      "description1": "Studenten zoeken vandaag kamers via Facebook-groepen, Instagram en betaalde platforms. Op commerciële sites betaal je om advertenties te bekijken of voorrang te krijgen. Het systeem werkt voor platforms, niet voor studenten.",
+      "description2": "Wij geloven dat dit fundamenteel oneerlijk is. Huisvesting is een basisbehoefte en studenten zouden niet hoeven te betalen om een woonplek te vinden. Daarom hebben we OpenHospi gebouwd: een platform waar iedereen dezelfde zichtbaarheid, dezelfde tools en dezelfde kansen krijgt. Volledig gratis."
     },
     "team": {
       "title": "Het Bestuur",
@@ -404,7 +403,7 @@
         {
           "name": "Ruben Talstra",
           "role": "Voorzitter",
-          "bio": "BITM-student aan de Hanzehogeschool en autodidact software engineer met meer dan 10 jaar ervaring. Heeft OpenHospi opgericht om elke student een eerlijke kans te geven op huisvesting — zonder kosten, zonder voortrekkerij."
+          "bio": "BITM-student aan de Hanzehogeschool en autodidact software engineer met meer dan 10 jaar ervaring. Heeft OpenHospi opgericht om elke student een eerlijke kans te geven op huisvesting. Zonder kosten, zonder voortrekkerij."
         },
         {
           "name": "Sophie de Klerk",
@@ -420,7 +419,7 @@
     },
     "openSource": {
       "title": "Open Source & Community",
-      "description": "OpenHospi is volledig open source. Iedereen kan de code inspecteren, problemen melden, functies voorstellen of direct bijdragen. Transparantie is geen feature — het is een principe. Wij geloven dat een platform voor studenten eigendom van de community moet zijn.",
+      "description": "OpenHospi is volledig open source. Iedereen kan de code inspecteren, problemen melden, functies voorstellen of direct bijdragen. Transparantie is geen feature, het is een principe. Wij geloven dat een platform voor studenten eigendom van de community moet zijn.",
       "cta": "Bekijk op GitHub"
     }
   },
@@ -429,7 +428,7 @@
     "subtitle": "OpenHospi is gratis voor alle gebruikers. Dit kost het ons om te draaien.",
     "intro": {
       "title": "Wat kost OpenHospi?",
-      "description": "OpenHospi is en blijft altijd gratis voor studenten. Geen verborgen kosten, geen premium plannen, geen advertenties. Hier is een transparant overzicht van onze draaikosten — alle prijzen zijn inclusief 21% BTW."
+      "description": "OpenHospi is en blijft altijd gratis voor studenten. Geen verborgen kosten, geen premium plannen, geen advertenties. Hier is een transparant overzicht van onze draaikosten. Alle prijzen zijn inclusief 21% BTW."
     },
     "breakdown": {
       "title": "Kostenopbouw",
@@ -604,7 +603,7 @@
     },
     "transparency": {
       "title": "Waar gaat het geld naartoe?",
-      "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst — alleen het platform draaiende houden voor studenten.",
+      "description": "100% van de donaties gaat naar infrastructuurkosten. Via Open Collective publiceren we elke transactie openbaar. Geen salarissen, geen winst. Alleen het platform draaiende houden voor studenten.",
       "badge": "OpenHospi op Open Collective"
     }
   },
@@ -651,7 +650,7 @@
   },
   "faq": {
     "title": "Veelgestelde vragen",
-    "subtitle": "Alles wat je moet weten over OpenHospi — het gratis, open-source studentenhuisvestingsplatform.",
+    "subtitle": "Alles wat je moet weten over OpenHospi, het gratis, open-source studentenhuisvestingsplatform.",
     "cta": {
       "title": "Nog vragen?",
       "description": "Kun je het antwoord niet vinden? Neem direct contact met ons op.",
@@ -663,7 +662,7 @@
         "items": [
           {
             "question": "Wat is OpenHospi?",
-            "answer": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Het verbindt studenten die een kamer zoeken met huizen die een nieuwe huisgenoot zoeken — via het traditionele Nederlandse hospiteren."
+            "answer": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Het verbindt studenten die een kamer zoeken met huizen die een nieuwe huisgenoot zoeken, via het traditionele Nederlandse hospiteren."
           },
           {
             "question": "Wie kan OpenHospi gebruiken?",
@@ -684,7 +683,7 @@
         "items": [
           {
             "question": "Hoe maak ik een account aan?",
-            "answer": "Klik op 'Inloggen met InAcademia' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt — geen aparte registratie nodig."
+            "answer": "Klik op 'Inloggen met InAcademia' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt, geen aparte registratie nodig."
           },
           {
             "question": "Waarom kan ik alleen inloggen met InAcademia?",
@@ -709,7 +708,7 @@
           },
           {
             "question": "Wat is hospiteren?",
-            "answer": "Hospiteren is de traditionele Nederlandse manier om huisgenoten te vinden. Het huis nodigt kandidaten uit voor een bezoek — je ontmoet de huidige huisgenoten, ziet de kamer en beide kanten beslissen of het een goede match is."
+            "answer": "Hospiteren is de traditionele Nederlandse manier om huisgenoten te vinden. Het huis nodigt kandidaten uit voor een bezoek. Je ontmoet de huidige huisgenoten, ziet de kamer en beide kanten beslissen of het een goede match is."
           },
           {
             "question": "Kan ik kamers filteren op stad, prijs of andere criteria?",
@@ -717,7 +716,7 @@
           },
           {
             "question": "Krijgen alle studenten dezelfde zichtbaarheid?",
-            "answer": "Ja. Er zijn geen premium plaatsingen of betaalde boosts. Elke aanvraag van een student wordt gelijk behandeld — niemand kan betalen om voorrang te krijgen."
+            "answer": "Ja. Er zijn geen premium plaatsingen of betaalde boosts. Elke aanvraag van een student wordt gelijk behandeld. Niemand kan betalen om voorrang te krijgen."
           }
         ]
       },
@@ -747,7 +746,7 @@
         "items": [
           {
             "question": "Zijn mijn berichten versleuteld?",
-            "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld (E2EE), inclusief groepsgesprekken. Zelfs OpenHospi kan je berichten niet lezen — alleen jij en de andere leden van je gesprek."
+            "answer": "Ja. Alle chatberichten op OpenHospi zijn end-to-end versleuteld (E2EE), inclusief groepsgesprekken. Zelfs OpenHospi kan je berichten niet lezen. Alleen jij en de andere leden van je gesprek."
           },
           {
             "question": "Gebruikt OpenHospi trackers of verkoopt het mijn data?",
@@ -791,7 +790,7 @@
     },
     "pairwiseEncryption": {
       "title": "Paarsgewijze Encryptie",
-      "description": "OpenHospi gebruikt paarsgewijze encryptie — dezelfde aanpak als Signal en WhatsApp. Wanneer je een bericht stuurt, versleutelt je apparaat het apart voor elk lid in het gesprek met hun individuele encryptiesessie. De server slaat één versleutelde kopie per ontvanger op en kan het bericht nooit lezen. Elk lid kan alleen de kopie ontsleutelen die specifiek voor hen is versleuteld.",
+      "description": "OpenHospi gebruikt paarsgewijze encryptie, dezelfde aanpak als Signal en WhatsApp. Wanneer je een bericht stuurt, versleutelt je apparaat het apart voor elk lid in het gesprek met hun individuele encryptiesessie. De server slaat één versleutelde kopie per ontvanger op en kan het bericht nooit lezen. Elk lid kan alleen de kopie ontsleutelen die specifiek voor hen is versleuteld.",
       "perRecipient": {
         "label": "Per-ontvanger encryptie",
         "detail": "Elk bericht wordt apart versleuteld voor elk lid"
@@ -813,7 +812,7 @@
     },
     "keyExchange": {
       "title": "Sleuteluitwisseling (X3DH)",
-      "description": "Wanneer een gesprek start, stelt het Extended Triple Diffie-Hellman (X3DH) protocol een gedeeld geheim vast tussen elk paar leden — zelfs als sommigen offline zijn. Bij een gesprek met drie leden vinden drie aparte X3DH-uitwisselingen plaats (één per paar). Vooraf geüploade sleutels op de server maken dit mogelijk zonder ooit privésleutels prijs te geven."
+      "description": "Wanneer een gesprek start, stelt het Extended Triple Diffie-Hellman (X3DH) protocol een gedeeld geheim vast tussen elk paar leden, zelfs als sommigen offline zijn. Bij een gesprek met drie leden vinden drie aparte X3DH-uitwisselingen plaats (één per paar). Vooraf geüploade sleutels op de server maken dit mogelijk zonder ooit privésleutels prijs te geven."
     },
     "doubleRatchet": {
       "title": "Double Ratchet",
@@ -829,7 +828,7 @@
     },
     "safetyNumbers": {
       "title": "Veiligheidsnummers",
-      "description": "Je kunt elk lid individueel verifiëren door veiligheidsnummers te vergelijken in het gespreksinfo-scherm. Deze 60-cijferige codes zijn afgeleid van de identiteitssleutels van beide gebruikers en zijn uniek per paar — zodat je kunt bevestigen dat niemand zich voordoet als een huisgenoot of zoeker.",
+      "description": "Je kunt elk lid individueel verifiëren door veiligheidsnummers te vergelijken in het gespreksinfo-scherm. Deze 60-cijferige codes zijn afgeleid van de identiteitssleutels van beide gebruikers en zijn uniek per paar, zodat je kunt bevestigen dat niemand zich voordoet als een huisgenoot of zoeker.",
       "example": "60-cijferig veiligheidsnummer (voorbeeld)"
     },
     "serverComparison": {
@@ -850,7 +849,7 @@
   },
   "alternatives": {
     "title": "Alternatieven & Vergelijking",
-    "subtitle": "Een eerlijke blik op het Nederlandse studentenhuisvestingslandschap. Wij geloven in transparantie — ook over onze concurrenten.",
+    "subtitle": "Een eerlijke blik op het Nederlandse studentenhuisvestingslandschap. Wij geloven in transparantie, ook over onze concurrenten.",
     "disclaimer": "Platforms veranderen. Laatst bijgewerkt: maart 2026. Klopt er iets niet? Mail ons via info@openhospi.nl.",
     "table": {
       "title": "Snelle vergelijking",
@@ -930,17 +929,17 @@
           "name": "OpenHospi",
           "type": "Ons platform",
           "url": "#",
-          "pricing": "Gratis — geen premium, geen advertenties, geen betaalmuren",
+          "pricing": "Gratis: geen premium, geen advertenties, geen betaalmuren",
           "strengths": [
             "100% gratis, geen pay-to-win mechanismen",
             "Elke gebruiker geverifieerd via InAcademia (universiteitsverificatie)",
             "End-to-end versleutelde chat",
-            "Volledig open source — iedereen kan de code controleren",
+            "Volledig open source, iedereen kan de code controleren",
             "Geen trackers, privacy-first (AVG)",
             "Mobiele app voor iOS en Android"
           ],
           "weaknesses": [
-            "Nieuw platform — gebruikersbestand en stadsdekking groeien nog",
+            "Nieuw platform: gebruikersbestand en stadsdekking groeien nog",
             "Minder advertenties dan gevestigde platforms"
           ],
           "bestFor": "Studenten die een gratis, eerlijk en privé huisvestingsplatform willen met geverifieerde gebruikers."
@@ -986,7 +985,7 @@
           "url": "https://dingdong-nederland.nl",
           "pricing": "Gratis kern. Premium+ €1,99/week, €3,99/maand, €9,99/3 maanden",
           "strengths": [
-            "Swipe-style matching — modern, app-first ervaring",
+            "Swipe-style matching: modern, app-first ervaring",
             "Hospi-uitnodigingen en kandidatenranking",
             "In-app chat",
             "Laag geprijsde Premium+ tier"
@@ -1005,13 +1004,13 @@
           "url": "https://kamernet.nl",
           "pricing": "Zoekers: €38/4 weken, €75/12 weken, €98/6 maanden. Adverteren is gratis.",
           "strengths": [
-            "Enorm bereik — de grootste Nederlandse kamermarktplaats",
+            "Enorm bereik: de grootste Nederlandse kamermarktplaats",
             "Gedeelde inbox en huisstemfuncties",
             "Huischat voor huisgenotencommunicatie"
           ],
           "weaknesses": [
-            "Zoekers moeten betalen om te berichten — €38+ drempel",
-            "Niet alleen voor studenten — open voor iedereen",
+            "Zoekers moeten betalen om te berichten: €38+ drempel",
+            "Niet alleen voor studenten, open voor iedereen",
             "Marktplaatsmodel, niet hospi-gericht",
             "Niet open source"
           ],
@@ -1023,13 +1022,13 @@
           "url": "https://facebook.com",
           "pricing": "Gratis",
           "strengths": [
-            "Enorm bereik — miljoenen gebruikers",
+            "Enorm bereik: miljoenen gebruikers",
             "Gratis om te posten en te reageren",
             "Makkelijk advertenties te delen in meerdere groepen"
           ],
           "weaknesses": [
             "Geen gestructureerde hospi-workflow",
-            "Geen gebruikersverificatie — oplichting komt voor",
+            "Geen gebruikersverificatie, oplichting komt voor",
             "Moderatie verschilt per groep",
             "Geen speciale huisvestingstools of filters",
             "Privacy afhankelijk van Facebook's beleid"
@@ -1040,11 +1039,11 @@
     },
     "honesty": {
       "title": "Waarom we hier eerlijk over zijn",
-      "description": "We hebben OpenHospi gebouwd omdat we geloven dat studentenhuisvesting gratis en eerlijk moet zijn. Maar eerlijk zijn betekent ook eerlijk zijn over het landschap. Sommige platforms hebben functies die wij nog niet hebben. Sommige hebben meer gebruikers. We zijn hier niet om concurrenten af te kraken — we zijn hier om je het volledige beeld te geven zodat je de beste keuze kunt maken voor jouw situatie. Als een ander platform nu beter voor je werkt, gebruik het. Wij zijn er wanneer je iets gratis, privé en gebouwd voor studenten wilt."
+      "description": "We hebben OpenHospi gebouwd omdat we geloven dat studentenhuisvesting gratis en eerlijk moet zijn. Maar eerlijk zijn betekent ook eerlijk zijn over het landschap. Sommige platforms hebben functies die wij nog niet hebben. Sommige hebben meer gebruikers. We zijn hier niet om concurrenten af te kraken. We zijn hier om je het volledige beeld te geven zodat je de beste keuze kunt maken voor jouw situatie. Als een ander platform nu beter voor je werkt, gebruik het. Wij zijn er wanneer je iets gratis, privé en gebouwd voor studenten wilt."
     },
     "cta": {
       "title": "OpenHospi uitproberen?",
-      "subtitle": "Gratis, eerlijk en geverifieerd — zonder verplichtingen.",
+      "subtitle": "Gratis, eerlijk en geverifieerd. Zonder verplichtingen.",
       "button": "Inloggen met InAcademia"
     }
   }

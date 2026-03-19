@@ -81,7 +81,7 @@ export function RiskLevelBadge({ value }: { value: string }) {
 }
 
 export function isRiskSection(items: string[]): boolean {
-  return items.some((item) => RISK_LABELS.test(item.split(" — ")[0]));
+  return items.some((item) => RISK_LABELS.test(item.split(": ")[0]));
 }
 
 export function LegalRiskAssessment({ items }: { items: string[] }) {
@@ -90,8 +90,8 @@ export function LegalRiskAssessment({ items }: { items: string[] }) {
       <Table>
         <TableBody>
           {items.map((item, i) => {
-            const dashIdx = item.indexOf(" — ");
-            if (dashIdx <= 0) {
+            const colonIdx = item.indexOf(": ");
+            if (colonIdx <= 0) {
               return (
                 <TableRow key={i}>
                   <TableCell colSpan={2} className="text-muted-foreground whitespace-normal">
@@ -101,8 +101,8 @@ export function LegalRiskAssessment({ items }: { items: string[] }) {
               );
             }
 
-            const label = item.slice(0, dashIdx);
-            const value = item.slice(dashIdx + 3);
+            const label = item.slice(0, colonIdx);
+            const value = item.slice(colonIdx + 2);
             const isRiskLabel = RISK_LABELS.test(label);
 
             return (

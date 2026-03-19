@@ -15,20 +15,20 @@
         "title": "3. Gegevens die we verzamelen",
         "content": "Wij verzamelen de volgende categorieën persoonsgegevens, conform het beginsel van dataminimalisatie (art. 5, lid 1, onder c, AVG):",
         "items": [
-          "Profielgegevens — naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur, foto's",
-          "Woninggegevens — kameradvertenties met adressen, coördinaten, huurprijs, kamerdetails en foto's",
-          "Communicatiegegevens — end-to-end versleutelde chatberichten (inhoud is voor OpenHospi onleesbaar)",
-          "Sollicitatiegegevens — persoonlijk bericht en sollicitatiestatus",
-          "Sessiegegevens — IP-adres en user agent voor beveiligingsdoeleinden",
-          "Push-notificatietokens — voor het bezorgen van notificaties op je apparaat",
-          "Kalenderabonnementstoken — een unieke, geheime link waarmee je agenda-applicatie toegang heeft tot je hospi-evenementenplanning. Deze link vereist geen authenticatie en kan op elk moment worden ingetrokken via je instellingen",
-          "Toestemmingsregistratie — je cookie- en privacyvoorkeuren, tijdstempels en privacybeleidversie",
+          "Profielgegevens: naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur, foto's",
+          "Woninggegevens: kameradvertenties met adressen, coördinaten, huurprijs, kamerdetails en foto's",
+          "Communicatiegegevens: end-to-end versleutelde chatberichten (inhoud is voor OpenHospi onleesbaar)",
+          "Sollicitatiegegevens: persoonlijk bericht en sollicitatiestatus",
+          "Sessiegegevens: IP-adres en user agent voor beveiligingsdoeleinden",
+          "Push-notificatietokens: voor het bezorgen van notificaties op je apparaat",
+          "Kalenderabonnementstoken: een unieke, geheime link waarmee je agenda-applicatie toegang heeft tot je hospi-evenementenplanning. Deze link vereist geen authenticatie en kan op elk moment worden ingetrokken via je instellingen",
+          "Toestemmingsregistratie: je cookie- en privacyvoorkeuren, tijdstempels en privacybeleidversie",
           "Wij verzamelen geen bijzondere categorieën persoonsgegevens als bedoeld in art. 9, lid 1, AVG (waaronder gegevens over ras, politieke opvattingen, religie, gezondheid of seksuele gerichtheid). Indien je dergelijke gegevens vrijwillig deelt in je profiel of berichten, verwerken wij deze op grond van art. 9, lid 2, onder e, AVG (kennelijk door jou openbaar gemaakt)."
         ]
       },
       {
         "title": "4. InAcademia-gegevens",
-        "content": "Wanneer je inlogt via InAcademia ontvangen wij een gepseudonimiseerd identificatienummer (sub) en je onderwijsinstelling. InAcademia wordt beheerd door GÉANT, het pan-Europese netwerk voor onderwijs en onderzoek. GÉANT is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. InAcademia deelt geen namen of e-mailadressen — die vragen wij apart op tijdens de onboarding."
+        "content": "Wanneer je inlogt via InAcademia ontvangen wij een gepseudonimiseerd identificatienummer (sub) en je onderwijsinstelling. InAcademia wordt beheerd door GÉANT, het pan-Europese netwerk voor onderwijs en onderzoek. GÉANT is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. InAcademia deelt geen namen of e-mailadressen. Die vragen wij apart op tijdens de onboarding."
       },
       {
         "title": "5. Hoe we je gegevens gebruiken",
@@ -42,10 +42,10 @@
         "title": "7. Rechtsgrond",
         "content": "Wij verwerken je gegevens op basis van de volgende rechtsgronden (art. 6 AVG). Zie onze pagina Rechtsgrondenoverzicht voor een volledig overzicht per verwerkingsactiviteit.",
         "items": [
-          "Overeenkomst (art. 6, lid 1, onder b, AVG) — profiel, woning, sollicitaties, chat; noodzakelijk voor de uitvoering van de overeenkomst",
-          "Toestemming (art. 6, lid 1, onder a, AVG) — functionele cookies, pushnotificaties, analytics",
-          "Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG) — sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten). Wij hebben deze belangen afgewogen tegen jouw rechten en vrijheden en vastgesteld dat de verwerking noodzakelijk en evenredig is",
-          "Wettelijke verplichting (art. 6, lid 1, onder c, AVG) — toestemmingsregistratie (aantonen geldige toestemming conform art. 7 AVG)",
+          "Overeenkomst (art. 6, lid 1, onder b, AVG): profiel, woning, sollicitaties, chat; noodzakelijk voor de uitvoering van de overeenkomst",
+          "Toestemming (art. 6, lid 1, onder a, AVG): functionele cookies, pushnotificaties, analytics",
+          "Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG): sessiebeveiliging (IP-logging), platformveiligheid (moderatierapporten). Wij hebben deze belangen afgewogen tegen jouw rechten en vrijheden en vastgesteld dat de verwerking noodzakelijk en evenredig is",
+          "Wettelijke verplichting (art. 6, lid 1, onder c, AVG): toestemmingsregistratie (aantonen geldige toestemming conform art. 7 AVG)",
           "Je kunt je toestemming op elk moment intrekken via Instellingen > Privacy. Het intrekken van je toestemming laat de rechtmatigheid van de verwerking op basis van toestemming vóór de intrekking onverlet (art. 7, lid 3, AVG)."
         ]
       },
@@ -53,51 +53,51 @@
         "title": "8. Gegevensdeling & verwerkers",
         "content": "Wij delen je gegevens alleen met de volgende partijen, allemaal gevestigd binnen de EU/EER. Alle verwerkers werken onder een verwerkersovereenkomst conform art. 28 AVG. Zie onze pagina Verwerkers voor details.",
         "items": [
-          "Supabase (Dublin, Ierland) — database en bestandsopslag (verwerker)",
-          "Vercel (Dublin, Ierland) — webhosting en edge-functies (verwerker)",
-          "Upstash (Ierland) — snelheidsbeperking via Redis (verwerker)",
-          "InAcademia (GÉANT, Nederland) — studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)",
-          "Sentry (Frankfurt, Duitsland) — crashrapportage en foutmonitoring (verwerker). Geen persoonsgegevens verzameld",
-          "Expo/EAS (VS) — mobiele app-builds, over-the-air updates en distributie (verwerker). Geen persoonsgegevens verzameld — alleen app-code en bundels worden verwerkt"
+          "Supabase (Dublin, Ierland): database en bestandsopslag (verwerker)",
+          "Vercel (Dublin, Ierland): webhosting en edge-functies (verwerker)",
+          "Upstash (Ierland): snelheidsbeperking via Redis (verwerker)",
+          "InAcademia (GÉANT, Nederland): studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)",
+          "Sentry (Frankfurt, Duitsland): crashrapportage en foutmonitoring (verwerker). Geen persoonsgegevens verzameld",
+          "Expo/EAS (VS): mobiele app-builds, over-the-air updates en distributie (verwerker). Geen persoonsgegevens verzameld; alleen app-code en bundels worden verwerkt"
         ]
       },
       {
         "title": "9. Internationale doorgifte",
-        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). Wij geven geen persoonsgegevens door aan derde landen of internationale organisaties. De bepalingen inzake doorgifte (art. 44 tot en met 49 AVG) zijn daarom niet van toepassing. Al onze infrastructuurproviders zijn gevestigd in Ierland, Nederland of Duitsland. Opmerking: De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties — geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry. Dit heeft geen invloed op de privacy van eindgebruikers aangezien er geen gebruikersgegevens bij betrokken zijn."
+        "content": "Al je gegevens worden opgeslagen en verwerkt binnen de Europese Economische Ruimte (EER). Wij geven geen persoonsgegevens door aan derde landen of internationale organisaties. De bepalingen inzake doorgifte (art. 44 tot en met 49 AVG) zijn daarom niet van toepassing. Al onze infrastructuurproviders zijn gevestigd in Ierland, Nederland of Duitsland. Opmerking: De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties, geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry. Dit heeft geen invloed op de privacy van eindgebruikers aangezien er geen gebruikersgegevens bij betrokken zijn."
       },
       {
         "title": "10. Bewaartermijnen",
         "content": "Wij bewaren je gegevens niet langer dan noodzakelijk voor de doeleinden waarvoor zij zijn verzameld, conform het opslagbeperkingsbeginsel (art. 5, lid 1, onder e, AVG):",
         "items": [
-          "Profielgegevens, kameradvertenties en chatberichten — bewaard zolang je account actief is",
-          "Sessie-IP-adressen — geanonimiseerd na 30 dagen",
-          "Verlopen sessies — verwijderd na 90 dagen",
-          "Rapportberichtteksten — verwijderd 90 dagen na afhandeling",
-          "Gelezen meldingen — verwijderd na 180 dagen",
-          "IP-adressen in toestemmingsregistratie — geanonimiseerd na 365 dagen",
-          "Accountverwijdering — alle gegevens permanent verwijderd via cascading deletes"
+          "Profielgegevens, kameradvertenties en chatberichten: bewaard zolang je account actief is",
+          "Sessie-IP-adressen: geanonimiseerd na 30 dagen",
+          "Verlopen sessies: verwijderd na 90 dagen",
+          "Rapportberichtteksten: verwijderd 90 dagen na afhandeling",
+          "Gelezen meldingen: verwijderd na 180 dagen",
+          "IP-adressen in toestemmingsregistratie: geanonimiseerd na 365 dagen",
+          "Accountverwijdering: alle gegevens permanent verwijderd via cascading deletes"
         ]
       },
       {
         "title": "11. Jouw rechten",
         "content": "Op grond van de AVG heb je de volgende rechten met betrekking tot je persoonsgegevens. Je kunt deze rechten uitoefenen via Instellingen > Privacy, of door contact op te nemen met privacy@openhospi.nl.",
         "items": [
-          "Recht van inzage (art. 15 AVG) — je hebt recht op een kopie van je persoonsgegevens, via Instellingen > Privacy > Gegevensexport",
-          "Recht op rectificatie (art. 16 AVG) — je kunt onjuiste of onvolledige gegevens laten corrigeren, via je profiel",
-          "Recht op gegevenswissing (art. 17 AVG) — je kunt verzoeken om verwijdering van je gegevens, via Instellingen > Account verwijderen",
-          "Recht op beperking van de verwerking (art. 18 AVG) — je kunt verzoeken om beperking van de verwerking met behoud van je gegevens",
-          "Kennisgevingsplicht (art. 19 AVG) — wij stellen iedere ontvanger aan wie persoonsgegevens zijn verstrekt in kennis van rectificatie, wissing of beperking, tenzij dit onmogelijk blijkt of onevenredig veel inspanning vergt",
-          "Recht op overdraagbaarheid van gegevens (art. 20 AVG) — je kunt je gegevens in een gestructureerd, gangbaar en machineleesbaar formaat ontvangen (JSON of CSV), via Instellingen > Privacy > Gegevensexport. De kalenderabonnementsfeed biedt ook overdraagbaarheid van hospi-evenementen in standaard iCalendar (ICS) formaat",
-          "Recht van bezwaar (art. 21 AVG) — je kunt bezwaar maken tegen verwerking op grond van gerechtvaardigd belang"
+          "Recht van inzage (art. 15 AVG): je hebt recht op een kopie van je persoonsgegevens, via Instellingen > Privacy > Gegevensexport",
+          "Recht op rectificatie (art. 16 AVG): je kunt onjuiste of onvolledige gegevens laten corrigeren, via je profiel",
+          "Recht op gegevenswissing (art. 17 AVG): je kunt verzoeken om verwijdering van je gegevens, via Instellingen > Account verwijderen",
+          "Recht op beperking van de verwerking (art. 18 AVG): je kunt verzoeken om beperking van de verwerking met behoud van je gegevens",
+          "Kennisgevingsplicht (art. 19 AVG): wij stellen iedere ontvanger aan wie persoonsgegevens zijn verstrekt in kennis van rectificatie, wissing of beperking, tenzij dit onmogelijk blijkt of onevenredig veel inspanning vergt",
+          "Recht op overdraagbaarheid van gegevens (art. 20 AVG): je kunt je gegevens in een gestructureerd, gangbaar en machineleesbaar formaat ontvangen (JSON of CSV), via Instellingen > Privacy > Gegevensexport. De kalenderabonnementsfeed biedt ook overdraagbaarheid van hospi-evenementen in standaard iCalendar (ICS) formaat",
+          "Recht van bezwaar (art. 21 AVG): je kunt bezwaar maken tegen verwerking op grond van gerechtvaardigd belang"
         ]
       },
       {
         "title": "12. Recht op klacht",
         "content": "Als je van mening bent dat je rechten op grond van de AVG zijn geschonden, heb je het recht een klacht in te dienen bij de Autoriteit Persoonsgegevens (art. 77 AVG). Je kunt ook een klacht indienen bij de toezichthoudende autoriteit in de EU-lidstaat van je gewone verblijfplaats.",
         "items": [
-          "Autoriteit Persoonsgegevens — Postbus 93374, 2509 AJ Den Haag",
-          "Telefoon — 070 888 85 00",
-          "Website — autoriteitpersoonsgegevens.nl"
+          "Autoriteit Persoonsgegevens: Postbus 93374, 2509 AJ Den Haag",
+          "Telefoon: 070 888 85 00",
+          "Website: autoriteitpersoonsgegevens.nl"
         ]
       },
       {
@@ -118,7 +118,7 @@
       },
       {
         "title": "17. Geautomatiseerde besluitvorming",
-        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig — gebruikers bladeren door advertenties en melden zich zelf aan. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig. Gebruikers bladeren door advertenties en melden zich zelf aan. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
       },
       {
         "title": "18. Wijzigingen in dit beleid",
@@ -138,15 +138,15 @@
         "title": "Essentiële cookies",
         "content": "Deze cookies zijn strikt noodzakelijk voor het functioneren van het platform. Hiervoor is geen toestemming vereist op grond van art. 11.7a Telecommunicatiewet.",
         "items": [
-          "better-auth.session_token — authenticeert je inlogsessie (sessiecookie, verwijderd bij sluiten van de browser)"
+          "better-auth.session_token: authenticeert je inlogsessie (sessiecookie, verwijderd bij sluiten van de browser)"
         ]
       },
       {
         "title": "Functionele cookies en lokale opslag",
         "content": "De volgende cookies en lokale opslagtechnologieën verbeteren je ervaring maar zijn niet strikt noodzakelijk. Hiervoor vragen wij je toestemming conform art. 11.7a Telecommunicatiewet.",
         "items": [
-          "sidebar_state — onthoudt of de zijbalk open of gesloten is (persistent, localStorage — geen cookie, maar lokale opslag in je browser)",
-          "NEXT_LOCALE — onthoudt je taalvoorkeur (cookie, geldig 1 jaar)"
+          "sidebar_state: onthoudt of de zijbalk open of gesloten is (persistent, localStorage; geen cookie, maar lokale opslag in je browser)",
+          "NEXT_LOCALE: onthoudt je taalvoorkeur (cookie, geldig 1 jaar)"
         ]
       },
       {
@@ -199,7 +199,7 @@
     "intro": "Deze pagina geeft een overzicht van de rechtsgrond voor elke verwerkingsactiviteit bij OpenHospi, conform art. 6 AVG.",
     "sections": [
       {
-        "title": "1. Overeenkomst — art. 6, lid 1, onder b, AVG",
+        "title": "1. Overeenkomst: art. 6, lid 1, onder b, AVG",
         "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk voor de uitvoering van onze overeenkomst met jou (het aanbieden van het studentenhuisvestingsplatform):",
         "items": [
           "Aanmaken en beheren van gebruikersprofiel",
@@ -213,36 +213,36 @@
         ]
       },
       {
-        "title": "2. Toestemming — art. 6, lid 1, onder a, AVG",
+        "title": "2. Toestemming: art. 6, lid 1, onder a, AVG",
         "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op je uitdrukkelijke toestemming, die je op elk moment kunt intrekken via Instellingen > Privacy. Het intrekken van je toestemming laat de rechtmatigheid van de verwerking vóór de intrekking onverlet (art. 7, lid 3, AVG).",
         "items": [
           "Functionele cookies en lokale opslag (zijbalkstatus, taalvoorkeur)",
           "Bezorging van pushnotificaties",
-          "Analytics (Vercel Analytics — cookieloos, geen persoonsgegevens)"
+          "Analytics (Vercel Analytics: cookieloos, geen persoonsgegevens)"
         ]
       },
       {
-        "title": "3. Gerechtvaardigd belang — art. 6, lid 1, onder f, AVG",
+        "title": "3. Gerechtvaardigd belang: art. 6, lid 1, onder f, AVG",
         "content": "De volgende verwerkingsactiviteiten zijn gebaseerd op ons gerechtvaardigd belang bij platformbeveiliging en gebruikersveiligheid. Wij hebben deze belangen afgewogen tegen jouw rechten en vrijheden en vastgesteld dat de verwerking evenredig en noodzakelijk is.",
         "items": [
-          "Sessiegegevens (IP-adres, user agent) — voor beveiligingsmonitoring",
-          "Moderatiegegevens (meldingen, blokkades) — voor platformveiligheid",
-          "Tijdelijk ontsleutelde berichttekst — voor onderzoek van gemelde berichten",
-          "Fout- en crashrapportagegegevens — voor monitoring van app-stabiliteit en foutoplossing"
+          "Sessiegegevens (IP-adres, user agent): voor beveiligingsmonitoring",
+          "Moderatiegegevens (meldingen, blokkades): voor platformveiligheid",
+          "Tijdelijk ontsleutelde berichttekst: voor onderzoek van gemelde berichten",
+          "Fout- en crashrapportagegegevens: voor monitoring van app-stabiliteit en foutoplossing"
         ]
       },
       {
-        "title": "4. Wettelijke verplichting — art. 6, lid 1, onder c, AVG",
+        "title": "4. Wettelijke verplichting: art. 6, lid 1, onder c, AVG",
         "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk om te voldoen aan wettelijke verplichtingen:",
         "items": [
-          "Toestemmingsregistratie (onveranderbaar auditspoor) — om geldige toestemming aan te tonen conform art. 7 AVG",
-          "Verwerking van gegevensverzoeken — om de rechten van betrokkenen te vervullen (art. 15 tot en met 22 AVG)",
-          "Verwerkingsbeperkingsregistratie — om te voldoen aan het recht op beperking van de verwerking (art. 18 AVG)"
+          "Toestemmingsregistratie (onveranderbaar auditspoor): om geldige toestemming aan te tonen conform art. 7 AVG",
+          "Verwerking van gegevensverzoeken: om de rechten van betrokkenen te vervullen (art. 15 tot en met 22 AVG)",
+          "Verwerkingsbeperkingsregistratie: om te voldoen aan het recht op beperking van de verwerking (art. 18 AVG)"
         ]
       },
       {
         "title": "5. Geen geautomatiseerde besluitvorming",
-        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig — gebruikers bekijken advertenties en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie huisvesting krijgt."
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig. Gebruikers bekijken advertenties en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie huisvesting krijgt."
       },
       {
         "title": "6. Contact",
@@ -258,63 +258,63 @@
       {
         "title": "1. Supabase (Database & Opslag)",
         "items": [
-          "Rol — Verwerker: database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's)",
-          "Locatie — Dublin, Ierland (eu-west-1)",
-          "Verwerkte gegevens — Alle persoonsgegevens in de database, geüploade foto's",
-          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten (Supabase Data Processing Agreement)",
-          "Beveiliging — Versleuteling at rest en in transit, SOC 2 Type II gecertificeerd"
+          "Rol: Verwerker: database-hosting (PostgreSQL) en bestandsopslag (profielfoto's, kamerfoto's)",
+          "Locatie: Dublin, Ierland (eu-west-1)",
+          "Verwerkte gegevens: Alle persoonsgegevens in de database, geüploade foto's",
+          "Verwerkersovereenkomst: Verwerkersovereenkomst conform art. 28 AVG afgesloten (Supabase Data Processing Agreement)",
+          "Beveiliging: Versleuteling at rest en in transit, SOC 2 Type II gecertificeerd"
         ]
       },
       {
         "title": "2. Vercel (Webhosting & Edge)",
         "items": [
-          "Rol — Verwerker: webapplicatie-hosting, serverless functies, edge-netwerk",
-          "Locatie — Dublin, Ierland (eu-west-1)",
-          "Verwerkte gegevens — HTTP-verzoeken (IP-adres, user agent) in serverlogs",
-          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten (Vercel Data Processing Addendum)",
-          "Beveiliging — Automatisch HTTPS, DDoS-bescherming, SOC 2 Type II gecertificeerd"
+          "Rol: Verwerker: webapplicatie-hosting, serverless functies, edge-netwerk",
+          "Locatie: Dublin, Ierland (eu-west-1)",
+          "Verwerkte gegevens: HTTP-verzoeken (IP-adres, user agent) in serverlogs",
+          "Verwerkersovereenkomst: Verwerkersovereenkomst conform art. 28 AVG afgesloten (Vercel Data Processing Addendum)",
+          "Beveiliging: Automatisch HTTPS, DDoS-bescherming, SOC 2 Type II gecertificeerd"
         ]
       },
       {
-        "title": "3. Upstash (Redis — Rate Limiting)",
+        "title": "3. Upstash (Redis: Rate Limiting)",
         "items": [
-          "Rol — Verwerker: Redis-database voor rate limiting en misbruikpreventie",
-          "Locatie — Ierland (AWS eu-west-1)",
-          "Verwerkte gegevens — Geanonimiseerde rate limit-tellers (gebruikers-ID hashes). Geen persoonsgegevens opgeslagen",
-          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten (Upstash DPA)",
-          "Beveiliging — Versleuteling at rest en in transit"
+          "Rol: Verwerker: Redis-database voor rate limiting en misbruikpreventie",
+          "Locatie: Ierland (AWS eu-west-1)",
+          "Verwerkte gegevens: Geanonimiseerde rate limit-tellers (gebruikers-ID hashes). Geen persoonsgegevens opgeslagen",
+          "Verwerkersovereenkomst: Verwerkersovereenkomst conform art. 28 AVG afgesloten (Upstash DPA)",
+          "Beveiliging: Versleuteling at rest en in transit"
         ]
       },
       {
         "title": "4. InAcademia (OIDC-provider)",
         "items": [
-          "Rol — Zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces (geen verwerker in de zin van art. 28 AVG)",
-          "Locatie — Nederland/EU (GÉANT-infrastructuur)",
-          "Verwerkte gegevens — Authenticatietokens, naam, e-mailadres, instellingsdomein (ontvangen bij inloggen)",
-          "Verwerkersovereenkomst — GÉANT is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de InAcademia Gebruiksvoorwaarden en Europees recht",
-          "Beveiliging — OIDC-protocollen, institutionele beveiliging, beheerd door GÉANT"
+          "Rol: Zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces (geen verwerker in de zin van art. 28 AVG)",
+          "Locatie: Nederland/EU (GÉANT-infrastructuur)",
+          "Verwerkte gegevens: Authenticatietokens, naam, e-mailadres, instellingsdomein (ontvangen bij inloggen)",
+          "Verwerkersovereenkomst: GÉANT is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de InAcademia Gebruiksvoorwaarden en Europees recht",
+          "Beveiliging: OIDC-protocollen, institutionele beveiliging, beheerd door GÉANT"
         ]
       },
       {
         "title": "5. Sentry (Crashrapportage)",
         "items": [
-          "Rol — Verwerker: crashrapportage en foutmonitoring",
-          "Locatie — Frankfurt, Duitsland (eu-central-1)",
-          "Verwerkte gegevens — Foutgebeurtenissen, stacktraces, apparaatmodel, OS-versie, app-versie. Geen persoonsgegevens: sendDefaultPii uitgeschakeld, IP-stripping ingeschakeld, geen sessiereplay, geen gebruikersvolging",
-          "Verwerkersovereenkomst — Verwerkersovereenkomst conform art. 28 AVG afgesloten, met modelcontractbepalingen (SCCs)",
-          "Bewaartermijn — 90 dagen",
-          "Beveiliging — Versleuteling at rest en in transit. De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties — geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry"
+          "Rol: Verwerker: crashrapportage en foutmonitoring",
+          "Locatie: Frankfurt, Duitsland (eu-central-1)",
+          "Verwerkte gegevens: Foutgebeurtenissen, stacktraces, apparaatmodel, OS-versie, app-versie. Geen persoonsgegevens: sendDefaultPii uitgeschakeld, IP-stripping ingeschakeld, geen sessiereplay, geen gebruikersvolging",
+          "Verwerkersovereenkomst: Verwerkersovereenkomst conform art. 28 AVG afgesloten, met modelcontractbepalingen (SCCs)",
+          "Bewaartermijn: 90 dagen",
+          "Beveiliging: Versleuteling at rest en in transit. De interne organisatorische metadata van Sentry (ontwikkelaarsaccounts, projectconfiguraties, geen eindgebruikersgegevens) kan naar de VS worden gerepliceerd conform de infrastructuur van Sentry"
         ]
       },
       {
         "title": "6. Expo/EAS (Mobiele app-distributie)",
         "items": [
-          "Rol — Verwerker: mobiele app-builds, over-the-air (OTA) updates en app-distributie",
-          "Locatie — Verenigde Staten (Google Cloud Platform). Buildservers verwerken uitsluitend app-broncode en produceren binaries — er zijn geen persoonsgegevens van eindgebruikers bij betrokken",
-          "Verwerkte gegevens — App-broncode, JavaScript-bundels, build-metadata. Geen persoonsgegevens van eindgebruikers verzameld",
-          "Verwerkersovereenkomst — Expo Servicevoorwaarden en Privacybeleid zijn van toepassing. Expo voldoet aan het EU-VS Data Privacy Framework en maakt gebruik van modelcontractbepalingen (SCCs) voor internationale doorgifte",
-          "AVG-relevantie — Er worden geen persoonsgegevens van eindgebruikers overgedragen aan of verwerkt op EAS-buildservers. Alleen app-broncode en bundels worden verwerkt. De internationale doorgifte-waarborgen van Expo (EU-VS DPF, SCCs) bieden aanvullende bescherming conform art. 45-46 AVG",
-          "Beveiliging — Ondertekende updates, alleen HTTPS-levering, code-ondertekening voor OTA-updates"
+          "Rol: Verwerker: mobiele app-builds, over-the-air (OTA) updates en app-distributie",
+          "Locatie: Verenigde Staten (Google Cloud Platform). Buildservers verwerken uitsluitend app-broncode en produceren binaries; er zijn geen persoonsgegevens van eindgebruikers bij betrokken",
+          "Verwerkte gegevens: App-broncode, JavaScript-bundels, build-metadata. Geen persoonsgegevens van eindgebruikers verzameld",
+          "Verwerkersovereenkomst: Expo Servicevoorwaarden en Privacybeleid zijn van toepassing. Expo voldoet aan het EU-VS Data Privacy Framework en maakt gebruik van modelcontractbepalingen (SCCs) voor internationale doorgifte",
+          "AVG-relevantie: Er worden geen persoonsgegevens van eindgebruikers overgedragen aan of verwerkt op EAS-buildservers. Alleen app-broncode en bundels worden verwerkt. De internationale doorgifte-waarborgen van Expo (EU-VS DPF, SCCs) bieden aanvullende bescherming conform art. 45-46 AVG",
+          "Beveiliging: Ondertekende updates, alleen HTTPS-levering, code-ondertekening voor OTA-updates"
         ]
       }
     ]
@@ -327,144 +327,144 @@
       {
         "title": "1. Gebruikersprofielen",
         "items": [
-          "Doel — Het leveren van de studentenhuisvestingsdienst",
-          "Categorieën betrokkenen — Geregistreerde studenten",
-          "Gegevenscategorieën — naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur",
-          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
-          "Ontvangers — Andere platformgebruikers (beperkt profieloverzicht)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Tot accountverwijdering",
-          "Beveiliging — Row-Level Security (RLS), versleuteld transport (TLS), rolgebaseerde toegangscontrole"
+          "Doel: Het leveren van de studentenhuisvestingsdienst",
+          "Categorieën betrokkenen: Geregistreerde studenten",
+          "Gegevenscategorieën: naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur",
+          "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers: Andere platformgebruikers (beperkt profieloverzicht)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Tot accountverwijdering",
+          "Beveiliging: Row-Level Security (RLS), versleuteld transport (TLS), rolgebaseerde toegangscontrole"
         ]
       },
       {
         "title": "2. Profielfoto's",
         "items": [
-          "Doel — Profielidentificatie en visuele herkenning",
-          "Categorieën betrokkenen — Geregistreerde studenten",
-          "Gegevenscategorieën — maximaal 5 foto's per gebruiker",
-          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
-          "Ontvangers — Andere platformgebruikers (geauthenticeerd)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Tot verwijdering door gebruiker of accountverwijdering",
-          "Beveiliging — Supabase Storage met toegangsbeleid, versleutelde opslag"
+          "Doel: Profielidentificatie en visuele herkenning",
+          "Categorieën betrokkenen: Geregistreerde studenten",
+          "Gegevenscategorieën: maximaal 5 foto's per gebruiker",
+          "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers: Andere platformgebruikers (geauthenticeerd)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Tot verwijdering door gebruiker of accountverwijdering",
+          "Beveiliging: Supabase Storage met toegangsbeleid, versleutelde opslag"
         ]
       },
       {
         "title": "3. Kameradvertenties",
         "items": [
-          "Doel — Woningmarktfunctionaliteit en geografisch zoeken",
-          "Categorieën betrokkenen — Geregistreerde studenten (kameraanbieders)",
-          "Gegevenscategorieën — adres, stad, coördinaten, huurprijs, kamerdetails, foto's, beschikbaarheid",
-          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
-          "Ontvangers — Alle geauthenticeerde gebruikers",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Tot verwijdering door eigenaar of accountverwijdering",
-          "Beveiliging — RLS-beleid (alleen eigenaar kan bewerken), versleuteld transport"
+          "Doel: Woningmarktfunctionaliteit en geografisch zoeken",
+          "Categorieën betrokkenen: Geregistreerde studenten (kameraanbieders)",
+          "Gegevenscategorieën: adres, stad, coördinaten, huurprijs, kamerdetails, foto's, beschikbaarheid",
+          "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers: Alle geauthenticeerde gebruikers",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Tot verwijdering door eigenaar of accountverwijdering",
+          "Beveiliging: RLS-beleid (alleen eigenaar kan bewerken), versleuteld transport"
         ]
       },
       {
         "title": "4. Sollicitaties",
         "items": [
-          "Doel — Matching van zoekenden met kamers en beheer van het hospiteerproces",
-          "Categorieën betrokkenen — Geregistreerde studenten (kamerzoekers)",
-          "Gegevenscategorieën — persoonlijk bericht, sollicitatiestatus",
-          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
-          "Ontvangers — Kamereigenaar en huisgenoten van de betreffende woning",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Tot intrekking door zoeker of accountverwijdering",
-          "Beveiliging — RLS-beleid beperkt tot betrokken partijen"
+          "Doel: Matching van zoekenden met kamers en beheer van het hospiteerproces",
+          "Categorieën betrokkenen: Geregistreerde studenten (kamerzoekers)",
+          "Gegevenscategorieën: persoonlijk bericht, sollicitatiestatus",
+          "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers: Kamereigenaar en huisgenoten van de betreffende woning",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Tot intrekking door zoeker of accountverwijdering",
+          "Beveiliging: RLS-beleid beperkt tot betrokken partijen"
         ]
       },
       {
         "title": "5. Chatberichten",
         "items": [
-          "Doel — Communicatie tussen zoekenden en huisgenoten",
-          "Categorieën betrokkenen — Geregistreerde studenten (gespreksdeelnemers)",
-          "Gegevenscategorieën — end-to-end versleutelde berichtinhoud, tijdstempels, versleutelde sessiesleutels",
-          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG)",
-          "Ontvangers — Alleen gespreksdeelnemers (inhoud onleesbaar voor OpenHospi)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Tot accountverwijdering",
-          "Beveiliging — End-to-end encryptie (AES-256-GCM met ECDH-sleuteluitwisseling), alleen deelnemers kunnen ontsleutelen"
+          "Doel: Communicatie tussen zoekenden en huisgenoten",
+          "Categorieën betrokkenen: Geregistreerde studenten (gespreksdeelnemers)",
+          "Gegevenscategorieën: end-to-end versleutelde berichtinhoud, tijdstempels, versleutelde sessiesleutels",
+          "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG)",
+          "Ontvangers: Alleen gespreksdeelnemers (inhoud onleesbaar voor OpenHospi)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Tot accountverwijdering",
+          "Beveiliging: End-to-end encryptie (AES-256-GCM met ECDH-sleuteluitwisseling), alleen deelnemers kunnen ontsleutelen"
         ]
       },
       {
         "title": "6. Sessiegegevens",
         "items": [
-          "Doel — Authenticatie en beveiligingsmonitoring",
-          "Categorieën betrokkenen — Geregistreerde studenten",
-          "Gegevenscategorieën — IP-adres, user agent, sessietoken",
-          "Rechtsgrond — Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
-          "Ontvangers — Geen (uitsluitend intern gebruik)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — IP-adres geanonimiseerd 30 dagen na verlopen sessie; sessierecord verwijderd na 90 dagen",
-          "Beveiliging — Uitsluitend server-side verwerking, versleutelde opslag"
+          "Doel: Authenticatie en beveiligingsmonitoring",
+          "Categorieën betrokkenen: Geregistreerde studenten",
+          "Gegevenscategorieën: IP-adres, user agent, sessietoken",
+          "Rechtsgrond: Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
+          "Ontvangers: Geen (uitsluitend intern gebruik)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: IP-adres geanonimiseerd 30 dagen na verlopen sessie; sessierecord verwijderd na 90 dagen",
+          "Beveiliging: Uitsluitend server-side verwerking, versleutelde opslag"
         ]
       },
       {
         "title": "7. Moderatiegegevens",
         "items": [
-          "Doel — Platformveiligheid en misbruikpreventie",
-          "Categorieën betrokkenen — Geregistreerde studenten (melders en gemelden)",
-          "Gegevenscategorieën — meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst (door melder aangeleverd)",
-          "Rechtsgrond — Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
-          "Ontvangers — Uitsluitend het adminteam",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Ontsleutelde berichttekst automatisch verwijderd 90 dagen na afhandeling",
-          "Beveiliging — Uitsluitend admin-toegang, volledige auditlogging"
+          "Doel: Platformveiligheid en misbruikpreventie",
+          "Categorieën betrokkenen: Geregistreerde studenten (melders en gemelden)",
+          "Gegevenscategorieën: meldingen, blokkeringen, tijdelijk ontsleutelde berichttekst (door melder aangeleverd)",
+          "Rechtsgrond: Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
+          "Ontvangers: Uitsluitend het adminteam",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Ontsleutelde berichttekst automatisch verwijderd 90 dagen na afhandeling",
+          "Beveiliging: Uitsluitend admin-toegang, volledige auditlogging"
         ]
       },
       {
         "title": "8. Toestemmingsregistratie",
         "items": [
-          "Doel — Aantonen van geldige toestemming (art. 7 AVG)",
-          "Categorieën betrokkenen — Geregistreerde studenten en websitebezoekers",
-          "Gegevenscategorieën — toestemmingsdoel, verleend/ingetrokken status, IP-adres, user agent, privacybeleidversie, tijdstempel",
-          "Rechtsgrond — Wettelijke verplichting (art. 6, lid 1, onder c, AVG)",
-          "Ontvangers — Geen (uitsluitend intern voor auditdoeleinden)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — IP-adres geanonimiseerd na 365 dagen; toestemmingsrecords bewaard zolang noodzakelijk voor bewijsdoeleinden",
-          "Beveiliging — Onveranderbaar auditspoor, versleutelde opslag"
+          "Doel: Aantonen van geldige toestemming (art. 7 AVG)",
+          "Categorieën betrokkenen: Geregistreerde studenten en websitebezoekers",
+          "Gegevenscategorieën: toestemmingsdoel, verleend/ingetrokken status, IP-adres, user agent, privacybeleidversie, tijdstempel",
+          "Rechtsgrond: Wettelijke verplichting (art. 6, lid 1, onder c, AVG)",
+          "Ontvangers: Geen (uitsluitend intern voor auditdoeleinden)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: IP-adres geanonimiseerd na 365 dagen; toestemmingsrecords bewaard zolang noodzakelijk voor bewijsdoeleinden",
+          "Beveiliging: Onveranderbaar auditspoor, versleutelde opslag"
         ]
       },
       {
         "title": "9. Pushmeldingsabonnementen",
         "items": [
-          "Doel — Bezorgen van pushmeldingen aan gebruikers",
-          "Categorieën betrokkenen — Geregistreerde studenten die pushnotificaties hebben ingeschakeld",
-          "Gegevenscategorieën — endpoint-URL, encryptiesleutels voor push-service",
-          "Rechtsgrond — Toestemming (art. 6, lid 1, onder a, AVG)",
-          "Ontvangers — Browser push-service (technisch noodzakelijk voor bezorging)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Tot uitschrijving door gebruiker of accountverwijdering",
-          "Beveiliging — Web Push-protocol met end-to-end encryptie"
+          "Doel: Bezorgen van pushmeldingen aan gebruikers",
+          "Categorieën betrokkenen: Geregistreerde studenten die pushnotificaties hebben ingeschakeld",
+          "Gegevenscategorieën: endpoint-URL, encryptiesleutels voor push-service",
+          "Rechtsgrond: Toestemming (art. 6, lid 1, onder a, AVG)",
+          "Ontvangers: Browser push-service (technisch noodzakelijk voor bezorging)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Tot uitschrijving door gebruiker of accountverwijdering",
+          "Beveiliging: Web Push-protocol met end-to-end encryptie"
         ]
       },
       {
         "title": "10. Kalenderabonnementsfeed",
         "items": [
-          "Doel — Synchroniseren van hospi-evenementen met de agenda-applicatie van de gebruiker",
-          "Categorieën betrokkenen — Geregistreerde studenten die het kalenderabonnement hebben geactiveerd",
-          "Gegevenscategorieën — kalendertoken (UUID), hospi-evenementtitels, data, tijden, locaties",
-          "Rechtsgrond — Overeenkomst (art. 6, lid 1, onder b, AVG) — gebruiker activeert het abonnement zelf",
-          "Ontvangers — Kalender-applicatieprovider van de gebruiker (Google, Apple, Microsoft, etc.)",
-          "Doorgifte buiten EER — Nee, alle verwerking binnen de EU/EER",
-          "Bewaartermijn — Token bestaat zolang het account actief is; verwijderd bij accountverwijdering",
-          "Beveiliging — Onraadbaar UUID-token, alleen HTTPS, intrekbaar door gebruiker"
+          "Doel: Synchroniseren van hospi-evenementen met de agenda-applicatie van de gebruiker",
+          "Categorieën betrokkenen: Geregistreerde studenten die het kalenderabonnement hebben geactiveerd",
+          "Gegevenscategorieën: kalendertoken (UUID), hospi-evenementtitels, data, tijden, locaties",
+          "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG); gebruiker activeert het abonnement zelf",
+          "Ontvangers: Kalender-applicatieprovider van de gebruiker (Google, Apple, Microsoft, etc.)",
+          "Doorgifte buiten EER: Nee, alle verwerking binnen de EU/EER",
+          "Bewaartermijn: Token bestaat zolang het account actief is; verwijderd bij accountverwijdering",
+          "Beveiliging: Onraadbaar UUID-token, alleen HTTPS, intrekbaar door gebruiker"
         ]
       },
       {
         "title": "11. Foutrapportage & crashmonitoring",
         "items": [
-          "Doel — Waarborgen van app-stabiliteit, identificeren en oplossen van technische fouten",
-          "Categorieën betrokkenen — Alle app-gebruikers (geanonimiseerd — geen gebruikersidentificatie mogelijk)",
-          "Gegevenscategorieën — Stacktraces, apparaatmodel, OS-versie, app-versie, foutcontext",
-          "Rechtsgrond — Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
-          "Ontvangers — Sentry (Functional Software Inc.) — verwerkersovereenkomst met SCCs afgesloten",
-          "Doorgifte buiten EER — Geen eindgebruikersgegevens doorgegeven. Interne organisatorische metadata van Sentry kan naar de VS worden gerepliceerd",
-          "Bewaartermijn — 90 dagen",
-          "Beveiliging — Geen persoonsgegevens verzameld, gegevens geanonimiseerd door ontwerp, EU-opslag (Frankfurt)"
+          "Doel: Waarborgen van app-stabiliteit, identificeren en oplossen van technische fouten",
+          "Categorieën betrokkenen: Alle app-gebruikers (geanonimiseerd: geen gebruikersidentificatie mogelijk)",
+          "Gegevenscategorieën: Stacktraces, apparaatmodel, OS-versie, app-versie, foutcontext",
+          "Rechtsgrond: Gerechtvaardigd belang (art. 6, lid 1, onder f, AVG)",
+          "Ontvangers: Sentry (Functional Software Inc.); verwerkersovereenkomst met SCCs afgesloten",
+          "Doorgifte buiten EER: Geen eindgebruikersgegevens doorgegeven. Interne organisatorische metadata van Sentry kan naar de VS worden gerepliceerd",
+          "Bewaartermijn: 90 dagen",
+          "Beveiliging: Geen persoonsgegevens verzameld, gegevens geanonimiseerd door ontwerp, EU-opslag (Frankfurt)"
         ]
       }
     ]
@@ -492,81 +492,81 @@
       {
         "title": "3. Risico: Profielgegevensverwerking",
         "items": [
-          "Risico — Ongeautoriseerde toegang tot profielen",
-          "Waarschijnlijkheid — Laag",
-          "Impact — Gemiddeld",
-          "Maatregelen — Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via InAcademia. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
-          "Restrisico — Laag"
+          "Risico: Ongeautoriseerde toegang tot profielen",
+          "Waarschijnlijkheid: Laag",
+          "Impact: Gemiddeld",
+          "Maatregelen: Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via InAcademia. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
+          "Restrisico: Laag"
         ]
       },
       {
         "title": "4. Risico: Locatiegegevens",
         "items": [
-          "Risico — Precieze locatiebepaling via kamercoördinaten",
-          "Waarschijnlijkheid — Laag",
-          "Impact — Gemiddeld",
-          "Maatregelen — Coördinaten alleen voor kaartweergave. Geen locatietracking van gebruikers. Alleen zichtbaar voor geauthenticeerde gebruikers",
-          "Restrisico — Laag"
+          "Risico: Precieze locatiebepaling via kamercoördinaten",
+          "Waarschijnlijkheid: Laag",
+          "Impact: Gemiddeld",
+          "Maatregelen: Coördinaten alleen voor kaartweergave. Geen locatietracking van gebruikers. Alleen zichtbaar voor geauthenticeerde gebruikers",
+          "Restrisico: Laag"
         ]
       },
       {
         "title": "5. Risico: Chatberichtinhoud",
         "items": [
-          "Risico — Onderschepping of ongeautoriseerd lezen van berichten",
-          "Waarschijnlijkheid — Zeer laag",
-          "Impact — Hoog",
-          "Maatregelen — End-to-end encryptie met AES-256-GCM. Per-bericht sleutels gewrapped voor elke ontvanger. Privésleutels in IndexedDB (client-side). Server heeft nooit toegang tot platte tekst",
-          "Restrisico — Zeer laag"
+          "Risico: Onderschepping of ongeautoriseerd lezen van berichten",
+          "Waarschijnlijkheid: Zeer laag",
+          "Impact: Hoog",
+          "Maatregelen: End-to-end encryptie met AES-256-GCM. Per-bericht sleutels gewrapped voor elke ontvanger. Privésleutels in IndexedDB (client-side). Server heeft nooit toegang tot platte tekst",
+          "Restrisico: Zeer laag"
         ]
       },
       {
         "title": "6. Risico: Foto-opslag",
         "items": [
-          "Risico — Ongeautoriseerde toegang tot foto's",
-          "Waarschijnlijkheid — Laag",
-          "Impact — Gemiddeld",
-          "Maatregelen — Supabase Storage met toegangsbeleid. Foto's alleen toegankelijk voor geauthenticeerde gebruikers. Verwijdering cascadeert bij accountverwijdering",
-          "Restrisico — Laag"
+          "Risico: Ongeautoriseerde toegang tot foto's",
+          "Waarschijnlijkheid: Laag",
+          "Impact: Gemiddeld",
+          "Maatregelen: Supabase Storage met toegangsbeleid. Foto's alleen toegankelijk voor geauthenticeerde gebruikers. Verwijdering cascadeert bij accountverwijdering",
+          "Restrisico: Laag"
         ]
       },
       {
         "title": "7. Risico: InAcademia-gegevens",
         "items": [
-          "Risico — Oververzameling van SSO-provider",
-          "Waarschijnlijkheid — Zeer laag",
-          "Impact — Laag",
-          "Maatregelen — Alleen gepseudonimiseerd ID en instellingsinformatie ontvangen van InAcademia. Geen namen of e-mailadressen. InAcademia wordt beheerd door GÉANT (EU)",
-          "Restrisico — Zeer laag"
+          "Risico: Oververzameling van SSO-provider",
+          "Waarschijnlijkheid: Zeer laag",
+          "Impact: Laag",
+          "Maatregelen: Alleen gepseudonimiseerd ID en instellingsinformatie ontvangen van InAcademia. Geen namen of e-mailadressen. InAcademia wordt beheerd door GÉANT (EU)",
+          "Restrisico: Zeer laag"
         ]
       },
       {
-        "title": "8. Risico: Moderatie — tijdelijk ontsleutelde berichten",
+        "title": "8. Risico: Moderatie: tijdelijk ontsleutelde berichten",
         "items": [
-          "Risico — Blootstelling van privéberichtinhoud tijdens moderatie",
-          "Waarschijnlijkheid — Laag (alleen bij melding)",
-          "Impact — Gemiddeld",
-          "Maatregelen — Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Uitsluitend admin-toegang met volledige auditlogging",
-          "Restrisico — Laag"
+          "Risico: Blootstelling van privéberichtinhoud tijdens moderatie",
+          "Waarschijnlijkheid: Laag (alleen bij melding)",
+          "Impact: Gemiddeld",
+          "Maatregelen: Alleen de meldende gebruiker levert ontsleutelde tekst. Tijdelijk opgeslagen met 90-dagen automatische verwijdering. Uitsluitend admin-toegang met volledige auditlogging",
+          "Restrisico: Laag"
         ]
       },
       {
         "title": "9. Risico: Lekkage kalender-feed-URL",
         "items": [
-          "Risico — Iemand verkrijgt de kalenderabonnements-URL en kan hospi-evenementgegevens zien",
-          "Waarschijnlijkheid — Laag",
-          "Impact — Gemiddeld (evenementtitels, data, locaties blootgesteld — geen berichten of persoonsgegevens)",
-          "Maatregelen — Kalendertoken is een 128-bits onraadbare UUID. Alleen HTTPS. Token is op elk moment intrekbaar door de gebruiker via Instellingen. Gebruiker wordt gewaarschuwd over het delen van de URL",
-          "Restrisico — Aanvaardbaar"
+          "Risico: Iemand verkrijgt de kalenderabonnements-URL en kan hospi-evenementgegevens zien",
+          "Waarschijnlijkheid: Laag",
+          "Impact: Gemiddeld (evenementtitels, data, locaties blootgesteld; geen berichten of persoonsgegevens)",
+          "Maatregelen: Kalendertoken is een 128-bits onraadbare UUID. Alleen HTTPS. Token is op elk moment intrekbaar door de gebruiker via Instellingen. Gebruiker wordt gewaarschuwd over het delen van de URL",
+          "Restrisico: Aanvaardbaar"
         ]
       },
       {
         "title": "10. Risico: Crashrapportagegegevens",
         "items": [
-          "Risico — Verzameling van persoonsgegevens via foutrapporten",
-          "Waarschijnlijkheid — Zeer laag",
-          "Impact — Laag",
-          "Maatregelen — sendDefaultPii uitgeschakeld, IP-adressen gestript voor opslag, geen gebruikersidentificatoren in foutcontext, geen sessiereplay. EU-opslag (Frankfurt). 90 dagen bewaartermijn",
-          "Restrisico — Zeer laag"
+          "Risico: Verzameling van persoonsgegevens via foutrapporten",
+          "Waarschijnlijkheid: Zeer laag",
+          "Impact: Laag",
+          "Maatregelen: sendDefaultPii uitgeschakeld, IP-adressen gestript voor opslag, geen gebruikersidentificatoren in foutcontext, geen sessiereplay. EU-opslag (Frankfurt). 90 dagen bewaartermijn",
+          "Restrisico: Zeer laag"
         ]
       },
       {

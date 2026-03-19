@@ -15,20 +15,20 @@
         "title": "3. Data we collect",
         "content": "We collect the following categories of personal data, in accordance with the principle of data minimisation (Art. 5(1)(c) GDPR):",
         "items": [
-          "Profile data — name, email address, date of birth, gender, study programme, educational institution, bio, lifestyle tags, preferred city, available from date, maximum rent, photos",
-          "Housing data — room listings with addresses, coordinates, rent price, room details and photos",
-          "Communication data — end-to-end encrypted chat messages (content is unreadable by OpenHospi)",
-          "Application data — personal message and application status",
-          "Session data — IP address and user agent for security purposes",
-          "Push notification tokens — for delivery of notifications to your device",
-          "Calendar subscription token — a unique, secret link that allows your calendar application to access your hospi event schedule. This link does not require authentication and can be revoked at any time from your settings",
-          "Consent records — your cookie and privacy preferences, timestamps and privacy policy version",
+          "Profile data: name, email address, date of birth, gender, study programme, educational institution, bio, lifestyle tags, preferred city, available from date, maximum rent, photos",
+          "Housing data: room listings with addresses, coordinates, rent price, room details and photos",
+          "Communication data: end-to-end encrypted chat messages (content is unreadable by OpenHospi)",
+          "Application data: personal message and application status",
+          "Session data: IP address and user agent for security purposes",
+          "Push notification tokens: for delivery of notifications to your device",
+          "Calendar subscription token: a unique, secret link that allows your calendar application to access your hospi event schedule. This link does not require authentication and can be revoked at any time from your settings",
+          "Consent records: your cookie and privacy preferences, timestamps and privacy policy version",
           "We do not collect special categories of personal data as referred to in Art. 9(1) GDPR (including data revealing racial or ethnic origin, political opinions, religious beliefs, health or sexual orientation). If you voluntarily share such data in your profile or messages, we process it on the basis of Art. 9(2)(e) GDPR (manifestly made public by the data subject)."
         ]
       },
       {
         "title": "4. InAcademia data",
-        "content": "When you log in via InAcademia, we receive a pseudonymised identifier (sub) and your educational institution. InAcademia is operated by GÉANT, the pan-European network for education and research. GÉANT is an independent controller for the authentication process. InAcademia does not share names or email addresses — we ask for those separately during onboarding."
+        "content": "When you log in via InAcademia, we receive a pseudonymised identifier (sub) and your educational institution. InAcademia is operated by GÉANT, the pan-European network for education and research. GÉANT is an independent controller for the authentication process. InAcademia does not share names or email addresses; we ask for those separately during onboarding."
       },
       {
         "title": "5. How we use your data",
@@ -42,10 +42,10 @@
         "title": "7. Legal basis",
         "content": "We process your data on the following legal grounds (Art. 6 GDPR). See our Legal Basis Overview page for a complete breakdown per processing activity.",
         "items": [
-          "Performance of a contract (Art. 6(1)(b) GDPR) — profile, housing, applications, chat; necessary for the performance of the contract",
-          "Consent (Art. 6(1)(a) GDPR) — functional cookies, push notifications, analytics",
-          "Legitimate interests (Art. 6(1)(f) GDPR) — session security (IP logging), platform safety (moderation reports). We have balanced these interests against your rights and freedoms and determined that the processing is necessary and proportionate",
-          "Legal obligation (Art. 6(1)(c) GDPR) — consent records (demonstrating valid consent in accordance with Art. 7 GDPR)",
+          "Performance of a contract (Art. 6(1)(b) GDPR): profile, housing, applications, chat; necessary for the performance of the contract",
+          "Consent (Art. 6(1)(a) GDPR): functional cookies, push notifications, analytics",
+          "Legitimate interests (Art. 6(1)(f) GDPR): session security (IP logging), platform safety (moderation reports). We have balanced these interests against your rights and freedoms and determined that the processing is necessary and proportionate",
+          "Legal obligation (Art. 6(1)(c) GDPR): consent records (demonstrating valid consent in accordance with Art. 7 GDPR)",
           "You may withdraw your consent at any time via Settings > Privacy. The withdrawal of consent shall not affect the lawfulness of processing based on consent before its withdrawal (Art. 7(3) GDPR)."
         ]
       },
@@ -53,51 +53,51 @@
         "title": "8. Data sharing & processors",
         "content": "We share your data only with the following parties, all located within the EU/EEA. All processors operate under data processing agreements pursuant to Art. 28 GDPR. See our Data Processors page for details.",
         "items": [
-          "Supabase (Dublin, Ireland) — database and file storage (processor)",
-          "Vercel (Dublin, Ireland) — web hosting and edge functions (processor)",
-          "Upstash (Ireland) — rate limiting via Redis (processor)",
-          "InAcademia (GÉANT, Netherlands) — student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)",
-          "Sentry (Frankfurt, Germany) — crash reporting and error monitoring (processor). No personal data collected",
-          "Expo/EAS (US) — mobile app builds, over-the-air updates, and distribution (processor). No personal data collected — only app code and bundles are processed"
+          "Supabase (Dublin, Ireland): database and file storage (processor)",
+          "Vercel (Dublin, Ireland): web hosting and edge functions (processor)",
+          "Upstash (Ireland): rate limiting via Redis (processor)",
+          "InAcademia (GÉANT, Netherlands): student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)",
+          "Sentry (Frankfurt, Germany): crash reporting and error monitoring (processor). No personal data collected",
+          "Expo/EAS (US): mobile app builds, over-the-air updates, and distribution (processor). No personal data collected, only app code and bundles are processed"
         ]
       },
       {
         "title": "9. International transfers",
-        "content": "All your data is stored and processed within the European Economic Area (EEA). We do not transfer personal data to third countries or international organisations. The provisions on transfers (Art. 44 to 49 GDPR) therefore do not apply. All our infrastructure providers are based in Ireland, the Netherlands, or Germany. Note: Sentry's internal organisational metadata (developer accounts, project configurations — no end-user data) may be replicated to the US per Sentry's infrastructure. This does not affect end-user privacy as no user data is involved."
+        "content": "All your data is stored and processed within the European Economic Area (EEA). We do not transfer personal data to third countries or international organisations. The provisions on transfers (Art. 44 to 49 GDPR) therefore do not apply. All our infrastructure providers are based in Ireland, the Netherlands, or Germany. Note: Sentry's internal organisational metadata (developer accounts, project configurations (no end-user data)) may be replicated to the US per Sentry's infrastructure. This does not affect end-user privacy as no user data is involved."
       },
       {
         "title": "10. Data retention",
         "content": "We do not retain your data longer than necessary for the purposes for which it was collected, in accordance with the storage limitation principle (Art. 5(1)(e) GDPR):",
         "items": [
-          "Profile data, housing listings, and chat messages — retained as long as your account is active",
-          "Session IP addresses — anonymised after 30 days",
-          "Expired sessions — deleted after 90 days",
-          "Report message text — removed 90 days after resolution",
-          "Read notifications — deleted after 180 days",
-          "Consent record IP addresses — anonymised after 365 days",
-          "Account deletion — all data permanently removed via cascading deletes"
+          "Profile data, housing listings, and chat messages: retained as long as your account is active",
+          "Session IP addresses: anonymised after 30 days",
+          "Expired sessions: deleted after 90 days",
+          "Report message text: removed 90 days after resolution",
+          "Read notifications: deleted after 180 days",
+          "Consent record IP addresses: anonymised after 365 days",
+          "Account deletion: all data permanently removed via cascading deletes"
         ]
       },
       {
         "title": "11. Your rights",
         "content": "Under GDPR, you have the following rights with regard to your personal data. You can exercise these rights via Settings > Privacy, or by contacting privacy@openhospi.nl.",
         "items": [
-          "Right of access (Art. 15 GDPR) — you have the right to obtain a copy of your personal data, via Settings > Privacy > Data export",
-          "Right to rectification (Art. 16 GDPR) — you can have inaccurate or incomplete data corrected, via your profile",
-          "Right to erasure (Art. 17 GDPR) — you can request erasure of your data, via Settings > Delete account",
-          "Right to restriction of processing (Art. 18 GDPR) — you can request restriction of processing while retaining your data",
-          "Notification obligation (Art. 19 GDPR) — we notify each recipient to whom personal data have been disclosed of any rectification, erasure, or restriction, unless this proves impossible or involves disproportionate effort",
-          "Right to data portability (Art. 20 GDPR) — you can receive your data in a structured, commonly used and machine-readable format (JSON or CSV), via Settings > Privacy > Data export. The calendar subscription feed also provides data portability for hospi events in standard iCalendar (ICS) format",
-          "Right to object (Art. 21 GDPR) — you can object to processing based on legitimate interests"
+          "Right of access (Art. 15 GDPR): you have the right to obtain a copy of your personal data, via Settings > Privacy > Data export",
+          "Right to rectification (Art. 16 GDPR): you can have inaccurate or incomplete data corrected, via your profile",
+          "Right to erasure (Art. 17 GDPR): you can request erasure of your data, via Settings > Delete account",
+          "Right to restriction of processing (Art. 18 GDPR): you can request restriction of processing while retaining your data",
+          "Notification obligation (Art. 19 GDPR): we notify each recipient to whom personal data have been disclosed of any rectification, erasure, or restriction, unless this proves impossible or involves disproportionate effort",
+          "Right to data portability (Art. 20 GDPR): you can receive your data in a structured, commonly used and machine-readable format (JSON or CSV), via Settings > Privacy > Data export. The calendar subscription feed also provides data portability for hospi events in standard iCalendar (ICS) format",
+          "Right to object (Art. 21 GDPR): you can object to processing based on legitimate interests"
         ]
       },
       {
         "title": "12. Right to lodge a complaint",
         "content": "If you believe your data protection rights have been violated, you have the right to lodge a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens) pursuant to Art. 77 GDPR. You may also lodge a complaint with the supervisory authority in your EU member state of habitual residence.",
         "items": [
-          "Autoriteit Persoonsgegevens — Postbus 93374, 2509 AJ Den Haag",
-          "Telephone — 070 888 85 00",
-          "Website — autoriteitpersoonsgegevens.nl"
+          "Autoriteit Persoonsgegevens: Postbus 93374, 2509 AJ Den Haag",
+          "Telephone: 070 888 85 00",
+          "Website: autoriteitpersoonsgegevens.nl"
         ]
       },
       {
@@ -118,7 +118,7 @@
       },
       {
         "title": "17. Automated individual decision-making",
-        "content": "OpenHospi does not use automated individual decision-making, including profiling, as referred to in Art. 22 GDPR. Room matching is entirely manual — users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who sees which rooms or who gets accepted."
+        "content": "OpenHospi does not use automated individual decision-making, including profiling, as referred to in Art. 22 GDPR. Room matching is entirely manual: users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who sees which rooms or who gets accepted."
       },
       {
         "title": "18. Changes to this policy",
@@ -138,15 +138,15 @@
         "title": "Essential cookies",
         "content": "These cookies are strictly necessary for the platform to function. No consent is required under Telecommunicatiewet Art. 11.7a, as they are essential for providing the service you have requested.",
         "items": [
-          "better-auth.session_token — authenticates your login session (session cookie, deleted when you close your browser)"
+          "better-auth.session_token: authenticates your login session (session cookie, deleted when you close your browser)"
         ]
       },
       {
         "title": "Functional cookies and local storage",
         "content": "The following cookies and local storage technologies improve your experience but are not strictly necessary. We request your consent for these in accordance with Telecommunicatiewet Art. 11.7a.",
         "items": [
-          "sidebar_state — remembers whether the sidebar is open or closed (persistent, localStorage — not a cookie, but local storage in your browser)",
-          "NEXT_LOCALE — remembers your language preference (cookie, valid for 1 year)"
+          "sidebar_state: remembers whether the sidebar is open or closed (persistent, localStorage, not a cookie but local storage in your browser)",
+          "NEXT_LOCALE: remembers your language preference (cookie, valid for 1 year)"
         ]
       },
       {
@@ -199,7 +199,7 @@
     "intro": "This page provides an overview of the legal basis for each data processing activity at OpenHospi, in accordance with Art. 6 GDPR.",
     "sections": [
       {
-        "title": "1. Performance of a contract — Art. 6(1)(b) GDPR",
+        "title": "1. Performance of a contract: Art. 6(1)(b) GDPR",
         "content": "The following processing activities are necessary for the performance of our contract with you (providing the student housing platform):",
         "items": [
           "User profile creation and management",
@@ -213,36 +213,36 @@
         ]
       },
       {
-        "title": "2. Consent — Art. 6(1)(a) GDPR",
+        "title": "2. Consent: Art. 6(1)(a) GDPR",
         "content": "The following processing activities are based on your explicit consent, which you can withdraw at any time via Settings > Privacy. The withdrawal of consent shall not affect the lawfulness of processing based on consent before its withdrawal (Art. 7(3) GDPR).",
         "items": [
           "Functional cookies and local storage (sidebar state, language preference)",
           "Push notification delivery",
-          "Analytics (Vercel Analytics — cookieless, no PII)"
+          "Analytics (Vercel Analytics: cookieless, no PII)"
         ]
       },
       {
-        "title": "3. Legitimate interests — Art. 6(1)(f) GDPR",
+        "title": "3. Legitimate interests: Art. 6(1)(f) GDPR",
         "content": "The following processing activities are based on our legitimate interest in platform security and user safety. We have balanced these interests against your rights and freedoms and determined that the processing is proportionate and necessary.",
         "items": [
-          "Session data (IP address, user agent) — for security monitoring",
-          "Moderation data (reports, blocks) — for platform safety",
-          "Temporarily decrypted message text — for investigating reported messages",
-          "Error and crash reporting data — for app stability monitoring and error resolution"
+          "Session data (IP address, user agent): for security monitoring",
+          "Moderation data (reports, blocks): for platform safety",
+          "Temporarily decrypted message text: for investigating reported messages",
+          "Error and crash reporting data: for app stability monitoring and error resolution"
         ]
       },
       {
-        "title": "4. Legal obligation — Art. 6(1)(c) GDPR",
+        "title": "4. Legal obligation: Art. 6(1)(c) GDPR",
         "content": "The following processing activities are necessary to comply with legal obligations:",
         "items": [
-          "Consent records (immutable audit trail) — to demonstrate valid consent in accordance with Art. 7 GDPR",
-          "Data request processing — to fulfil data subject rights (Art. 15 to 22 GDPR)",
-          "Processing restriction records — to comply with the right to restriction of processing (Art. 18 GDPR)"
+          "Consent records (immutable audit trail): to demonstrate valid consent in accordance with Art. 7 GDPR",
+          "Data request processing: to fulfil data subject rights (Art. 15 to 22 GDPR)",
+          "Processing restriction records: to comply with the right to restriction of processing (Art. 18 GDPR)"
         ]
       },
       {
         "title": "5. No automated individual decision-making",
-        "content": "OpenHospi does not use automated individual decision-making, including profiling, as referred to in Art. 22 GDPR. Room matching is entirely manual — users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who gets housing."
+        "content": "OpenHospi does not use automated individual decision-making, including profiling, as referred to in Art. 22 GDPR. Room matching is entirely manual: users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who gets housing."
       },
       {
         "title": "6. Contact",
@@ -258,63 +258,63 @@
       {
         "title": "1. Supabase (Database & Storage)",
         "items": [
-          "Role — Processor: database hosting (PostgreSQL) and file storage (profile photos, room photos)",
-          "Location — Dublin, Ireland (eu-west-1)",
-          "Data processed — All personal data stored in the database, uploaded photos",
-          "Data processing agreement — Data processing agreement pursuant to Art. 28 GDPR in place (Supabase Data Processing Agreement)",
-          "Security — Encryption at rest and in transit, SOC 2 Type II certified"
+          "Role: Processor: database hosting (PostgreSQL) and file storage (profile photos, room photos)",
+          "Location: Dublin, Ireland (eu-west-1)",
+          "Data processed: All personal data stored in the database, uploaded photos",
+          "Data processing agreement: Data processing agreement pursuant to Art. 28 GDPR in place (Supabase Data Processing Agreement)",
+          "Security: Encryption at rest and in transit, SOC 2 Type II certified"
         ]
       },
       {
         "title": "2. Vercel (Web Hosting & Edge)",
         "items": [
-          "Role — Processor: web application hosting, serverless functions, edge network",
-          "Location — Dublin, Ireland (eu-west-1)",
-          "Data processed — HTTP requests (IP address, user agent) in server logs",
-          "Data processing agreement — Data processing agreement pursuant to Art. 28 GDPR in place (Vercel Data Processing Addendum)",
-          "Security — Automatic HTTPS, DDoS protection, SOC 2 Type II certified"
+          "Role: Processor: web application hosting, serverless functions, edge network",
+          "Location: Dublin, Ireland (eu-west-1)",
+          "Data processed: HTTP requests (IP address, user agent) in server logs",
+          "Data processing agreement: Data processing agreement pursuant to Art. 28 GDPR in place (Vercel Data Processing Addendum)",
+          "Security: Automatic HTTPS, DDoS protection, SOC 2 Type II certified"
         ]
       },
       {
-        "title": "3. Upstash (Redis — Rate Limiting)",
+        "title": "3. Upstash (Redis: Rate Limiting)",
         "items": [
-          "Role — Processor: Redis database for rate limiting and abuse prevention",
-          "Location — Ireland (AWS eu-west-1)",
-          "Data processed — Anonymised rate limit counters (user ID hashes). No personal data stored",
-          "Data processing agreement — Data processing agreement pursuant to Art. 28 GDPR in place (Upstash DPA)",
-          "Security — Encryption at rest and in transit"
+          "Role: Processor: Redis database for rate limiting and abuse prevention",
+          "Location: Ireland (AWS eu-west-1)",
+          "Data processed: Anonymised rate limit counters (user ID hashes). No personal data stored",
+          "Data processing agreement: Data processing agreement pursuant to Art. 28 GDPR in place (Upstash DPA)",
+          "Security: Encryption at rest and in transit"
         ]
       },
       {
         "title": "4. InAcademia (OIDC Provider)",
         "items": [
-          "Role — Independent controller for the authentication process (not a processor within the meaning of Art. 28 GDPR)",
-          "Location — Netherlands/EU (GÉANT infrastructure)",
-          "Data processed — Authentication tokens, name, email address, institution domain (received during login)",
-          "Data processing agreement — GÉANT is not a processor within the meaning of Art. 28 GDPR, but an independent controller for the authentication process. The collaboration is governed by the InAcademia Terms of Use and European law",
-          "Security — OIDC protocols, institutional-grade security, managed by GÉANT"
+          "Role: Independent controller for the authentication process (not a processor within the meaning of Art. 28 GDPR)",
+          "Location: Netherlands/EU (GÉANT infrastructure)",
+          "Data processed: Authentication tokens, name, email address, institution domain (received during login)",
+          "Data processing agreement: GÉANT is not a processor within the meaning of Art. 28 GDPR, but an independent controller for the authentication process. The collaboration is governed by the InAcademia Terms of Use and European law",
+          "Security: OIDC protocols, institutional-grade security, managed by GÉANT"
         ]
       },
       {
         "title": "5. Sentry (Crash Reporting)",
         "items": [
-          "Role — Processor: crash reporting and error monitoring",
-          "Location — Frankfurt, Germany (eu-central-1)",
-          "Data processed — Error events, stack traces, device model, OS version, app version. No personal data: sendDefaultPii disabled, IP stripping enabled, no session replay, no user tracking",
-          "Data processing agreement — Data processing agreement pursuant to Art. 28 GDPR in place, with Standard Contractual Clauses (SCCs)",
-          "Retention — 90 days",
-          "Security — Encryption at rest and in transit. Sentry's internal organisational metadata (developer accounts, project configs — no end-user data) may be replicated to the US per Sentry's infrastructure"
+          "Role: Processor: crash reporting and error monitoring",
+          "Location: Frankfurt, Germany (eu-central-1)",
+          "Data processed: Error events, stack traces, device model, OS version, app version. No personal data: sendDefaultPii disabled, IP stripping enabled, no session replay, no user tracking",
+          "Data processing agreement: Data processing agreement pursuant to Art. 28 GDPR in place, with Standard Contractual Clauses (SCCs)",
+          "Retention: 90 days",
+          "Security: Encryption at rest and in transit. Sentry's internal organisational metadata (developer accounts, project configs (no end-user data)) may be replicated to the US per Sentry's infrastructure"
         ]
       },
       {
         "title": "6. Expo/EAS (Mobile App Distribution)",
         "items": [
-          "Role — Processor: mobile app builds, over-the-air (OTA) updates, and app distribution",
-          "Location — United States (Google Cloud Platform). Build servers process only app source code and produce binaries — no personal end-user data is involved",
-          "Data processed — App source code, JavaScript bundles, build metadata. No personal data collected from end users",
-          "Data processing agreement — Expo Terms of Service and Privacy Policy apply. Expo complies with the EU-US Data Privacy Framework and uses Standard Contractual Clauses (SCCs) for international transfers",
-          "GDPR relevance — No personal end-user data is transferred to or processed on EAS build servers. Only app source code and bundles are processed. Expo's international transfer safeguards (EU-US DPF, SCCs) provide additional protection per Art. 45-46 GDPR",
-          "Security — Signed updates, HTTPS-only delivery, code signing for OTA updates"
+          "Role: Processor: mobile app builds, over-the-air (OTA) updates, and app distribution",
+          "Location: United States (Google Cloud Platform). Build servers process only app source code and produce binaries. No personal end-user data is involved",
+          "Data processed: App source code, JavaScript bundles, build metadata. No personal data collected from end users",
+          "Data processing agreement: Expo Terms of Service and Privacy Policy apply. Expo complies with the EU-US Data Privacy Framework and uses Standard Contractual Clauses (SCCs) for international transfers",
+          "GDPR relevance: No personal end-user data is transferred to or processed on EAS build servers. Only app source code and bundles are processed. Expo's international transfer safeguards (EU-US DPF, SCCs) provide additional protection per Art. 45-46 GDPR",
+          "Security: Signed updates, HTTPS-only delivery, code signing for OTA updates"
         ]
       }
     ]
@@ -327,144 +327,144 @@
       {
         "title": "1. User profiles",
         "items": [
-          "Purpose — Providing the student housing platform service",
-          "Categories of data subjects — Registered students",
-          "Data categories — name, email address, date of birth, gender, study programme, educational institution, bio, lifestyle tags, preferred city, available from date, maximum rent",
-          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR)",
-          "Recipients — Other platform users (limited profile view)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Until account deletion",
-          "Security — Row-Level Security (RLS), encrypted transport (TLS), role-based access control"
+          "Purpose: Providing the student housing platform service",
+          "Categories of data subjects: Registered students",
+          "Data categories: name, email address, date of birth, gender, study programme, educational institution, bio, lifestyle tags, preferred city, available from date, maximum rent",
+          "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR)",
+          "Recipients: Other platform users (limited profile view)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Until account deletion",
+          "Security: Row-Level Security (RLS), encrypted transport (TLS), role-based access control"
         ]
       },
       {
         "title": "2. Profile photos",
         "items": [
-          "Purpose — Profile identification and visual recognition",
-          "Categories of data subjects — Registered students",
-          "Data categories — up to 5 photos per user",
-          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR)",
-          "Recipients — Other platform users (authenticated)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Until deletion by user or account deletion",
-          "Security — Supabase Storage with access policies, encrypted storage"
+          "Purpose: Profile identification and visual recognition",
+          "Categories of data subjects: Registered students",
+          "Data categories: up to 5 photos per user",
+          "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR)",
+          "Recipients: Other platform users (authenticated)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Until deletion by user or account deletion",
+          "Security: Supabase Storage with access policies, encrypted storage"
         ]
       },
       {
         "title": "3. Room listings",
         "items": [
-          "Purpose — Housing marketplace functionality and geographic search",
-          "Categories of data subjects — Registered students (room hosts)",
-          "Data categories — address, city, coordinates, rent price, room details, photos, availability",
-          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR)",
-          "Recipients — All authenticated users",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Until deletion by owner or account deletion",
-          "Security — RLS policies (owner-only editing), encrypted transport"
+          "Purpose: Housing marketplace functionality and geographic search",
+          "Categories of data subjects: Registered students (room hosts)",
+          "Data categories: address, city, coordinates, rent price, room details, photos, availability",
+          "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR)",
+          "Recipients: All authenticated users",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Until deletion by owner or account deletion",
+          "Security: RLS policies (owner-only editing), encrypted transport"
         ]
       },
       {
         "title": "4. Applications",
         "items": [
-          "Purpose — Matching seekers with rooms and managing the hospiteren process",
-          "Categories of data subjects — Registered students (room seekers)",
-          "Data categories — personal message, application status",
-          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR)",
-          "Recipients — Room owner and house members of the relevant house",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Until withdrawal by seeker or account deletion",
-          "Security — RLS policies restricting access to involved parties"
+          "Purpose: Matching seekers with rooms and managing the hospiteren process",
+          "Categories of data subjects: Registered students (room seekers)",
+          "Data categories: personal message, application status",
+          "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR)",
+          "Recipients: Room owner and house members of the relevant house",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Until withdrawal by seeker or account deletion",
+          "Security: RLS policies restricting access to involved parties"
         ]
       },
       {
         "title": "5. Chat messages",
         "items": [
-          "Purpose — Communication between seekers and house members",
-          "Categories of data subjects — Registered students (conversation participants)",
-          "Data categories — end-to-end encrypted message content, timestamps, encrypted session keys",
-          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR)",
-          "Recipients — Conversation participants only (content unreadable by OpenHospi)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Until account deletion",
-          "Security — End-to-end encryption (AES-256-GCM with ECDH key exchange), only participants can decrypt"
+          "Purpose: Communication between seekers and house members",
+          "Categories of data subjects: Registered students (conversation participants)",
+          "Data categories: end-to-end encrypted message content, timestamps, encrypted session keys",
+          "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR)",
+          "Recipients: Conversation participants only (content unreadable by OpenHospi)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Until account deletion",
+          "Security: End-to-end encryption (AES-256-GCM with ECDH key exchange), only participants can decrypt"
         ]
       },
       {
         "title": "6. Session data",
         "items": [
-          "Purpose — Authentication and security monitoring",
-          "Categories of data subjects — Registered students",
-          "Data categories — IP address, user agent, session token",
-          "Legal basis — Legitimate interests (Art. 6(1)(f) GDPR)",
-          "Recipients — None (internal use only)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — IP address anonymised 30 days after session expiry; session record deleted after 90 days",
-          "Security — Server-side processing only, encrypted storage"
+          "Purpose: Authentication and security monitoring",
+          "Categories of data subjects: Registered students",
+          "Data categories: IP address, user agent, session token",
+          "Legal basis: Legitimate interests (Art. 6(1)(f) GDPR)",
+          "Recipients: None (internal use only)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: IP address anonymised 30 days after session expiry; session record deleted after 90 days",
+          "Security: Server-side processing only, encrypted storage"
         ]
       },
       {
         "title": "7. Moderation data",
         "items": [
-          "Purpose — Platform safety and abuse prevention",
-          "Categories of data subjects — Registered students (reporters and reported users)",
-          "Data categories — reports, blocks, temporarily decrypted message text (provided by reporter)",
-          "Legal basis — Legitimate interests (Art. 6(1)(f) GDPR)",
-          "Recipients — Admin team only",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Decrypted message text automatically deleted 90 days after resolution",
-          "Security — Admin-only access, full audit logging"
+          "Purpose: Platform safety and abuse prevention",
+          "Categories of data subjects: Registered students (reporters and reported users)",
+          "Data categories: reports, blocks, temporarily decrypted message text (provided by reporter)",
+          "Legal basis: Legitimate interests (Art. 6(1)(f) GDPR)",
+          "Recipients: Admin team only",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Decrypted message text automatically deleted 90 days after resolution",
+          "Security: Admin-only access, full audit logging"
         ]
       },
       {
         "title": "8. Consent records",
         "items": [
-          "Purpose — Demonstrating valid consent (Art. 7 GDPR)",
-          "Categories of data subjects — Registered students and website visitors",
-          "Data categories — consent purpose, granted/revoked status, IP address, user agent, privacy policy version, timestamp",
-          "Legal basis — Legal obligation (Art. 6(1)(c) GDPR)",
-          "Recipients — None (internal audit purposes only)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — IP address anonymised after 365 days; consent records retained as long as necessary for evidentiary purposes",
-          "Security — Immutable audit trail, encrypted storage"
+          "Purpose: Demonstrating valid consent (Art. 7 GDPR)",
+          "Categories of data subjects: Registered students and website visitors",
+          "Data categories: consent purpose, granted/revoked status, IP address, user agent, privacy policy version, timestamp",
+          "Legal basis: Legal obligation (Art. 6(1)(c) GDPR)",
+          "Recipients: None (internal audit purposes only)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: IP address anonymised after 365 days; consent records retained as long as necessary for evidentiary purposes",
+          "Security: Immutable audit trail, encrypted storage"
         ]
       },
       {
         "title": "9. Push notification subscriptions",
         "items": [
-          "Purpose — Delivering push notifications to users",
-          "Categories of data subjects — Registered students who have enabled push notifications",
-          "Data categories — endpoint URL, encryption keys for push service",
-          "Legal basis — Consent (Art. 6(1)(a) GDPR)",
-          "Recipients — Browser push service (technically necessary for delivery)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Until user unsubscribes or account deletion",
-          "Security — Web Push protocol with end-to-end encryption"
+          "Purpose: Delivering push notifications to users",
+          "Categories of data subjects: Registered students who have enabled push notifications",
+          "Data categories: endpoint URL, encryption keys for push service",
+          "Legal basis: Consent (Art. 6(1)(a) GDPR)",
+          "Recipients: Browser push service (technically necessary for delivery)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Until user unsubscribes or account deletion",
+          "Security: Web Push protocol with end-to-end encryption"
         ]
       },
       {
         "title": "10. Calendar subscription feed",
         "items": [
-          "Purpose — Synchronising hospi events with the user's calendar application",
-          "Categories of data subjects — Registered students who have activated the calendar subscription",
-          "Data categories — calendar token (UUID), hospi event titles, dates, times, locations",
-          "Legal basis — Performance of a contract (Art. 6(1)(b) GDPR) — user explicitly activates the subscription",
-          "Recipients — User's calendar application provider (Google, Apple, Microsoft, etc.)",
-          "Transfers outside EEA — No, all processing within the EU/EEA",
-          "Retention — Token exists while account is active; deleted on account deletion",
-          "Security — Unguessable UUID token, HTTPS only, revocable by user"
+          "Purpose: Synchronising hospi events with the user's calendar application",
+          "Categories of data subjects: Registered students who have activated the calendar subscription",
+          "Data categories: calendar token (UUID), hospi event titles, dates, times, locations",
+          "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR): user explicitly activates the subscription",
+          "Recipients: User's calendar application provider (Google, Apple, Microsoft, etc.)",
+          "Transfers outside EEA: No, all processing within the EU/EEA",
+          "Retention: Token exists while account is active; deleted on account deletion",
+          "Security: Unguessable UUID token, HTTPS only, revocable by user"
         ]
       },
       {
         "title": "11. Error reporting & crash monitoring",
         "items": [
-          "Purpose — Ensuring app stability, identifying and resolving technical errors",
-          "Categories of data subjects — All app users (anonymised — no user identification possible)",
-          "Data categories — Stack traces, device model, OS version, app version, error context",
-          "Legal basis — Legitimate interest (Art. 6(1)(f) GDPR)",
-          "Recipients — Sentry (Functional Software Inc.) — DPA with SCCs in place",
-          "Transfers outside EEA — No end-user data transferred. Sentry's internal organisational metadata may be replicated to the US",
-          "Retention — 90 days",
-          "Security — No PII collected, data anonymised by design, EU storage (Frankfurt)"
+          "Purpose: Ensuring app stability, identifying and resolving technical errors",
+          "Categories of data subjects: All app users (anonymised, no user identification possible)",
+          "Data categories: Stack traces, device model, OS version, app version, error context",
+          "Legal basis: Legitimate interest (Art. 6(1)(f) GDPR)",
+          "Recipients: Sentry (Functional Software Inc.): DPA with SCCs in place",
+          "Transfers outside EEA: No end-user data transferred. Sentry's internal organisational metadata may be replicated to the US",
+          "Retention: 90 days",
+          "Security: No PII collected, data anonymised by design, EU storage (Frankfurt)"
         ]
       }
     ]
@@ -492,81 +492,81 @@
       {
         "title": "3. Risk: Profile data processing",
         "items": [
-          "Risk — Unauthorised access to personal profiles",
-          "Likelihood — Low",
-          "Impact — Medium",
-          "Mitigations — Row-Level Security (RLS) on all database tables. Authentication required via InAcademia. Profile visibility limited to authenticated users",
-          "Residual risk — Low"
+          "Risk: Unauthorised access to personal profiles",
+          "Likelihood: Low",
+          "Impact: Medium",
+          "Mitigations: Row-Level Security (RLS) on all database tables. Authentication required via InAcademia. Profile visibility limited to authenticated users",
+          "Residual risk: Low"
         ]
       },
       {
         "title": "4. Risk: Location data (room coordinates)",
         "items": [
-          "Risk — Precise location tracking via room coordinates",
-          "Likelihood — Low",
-          "Impact — Medium",
-          "Mitigations — Coordinates used only for map display. No location tracking of users. Only visible to authenticated users",
-          "Residual risk — Low"
+          "Risk: Precise location tracking via room coordinates",
+          "Likelihood: Low",
+          "Impact: Medium",
+          "Mitigations: Coordinates used only for map display. No location tracking of users. Only visible to authenticated users",
+          "Residual risk: Low"
         ]
       },
       {
         "title": "5. Risk: Chat message content",
         "items": [
-          "Risk — Interception or unauthorised reading of messages",
-          "Likelihood — Very low",
-          "Impact — High",
-          "Mitigations — End-to-end encryption with AES-256-GCM. Per-message keys wrapped for each recipient. Private keys stored in IndexedDB (client-side). Server never has access to plaintext",
-          "Residual risk — Very low"
+          "Risk: Interception or unauthorised reading of messages",
+          "Likelihood: Very low",
+          "Impact: High",
+          "Mitigations: End-to-end encryption with AES-256-GCM. Per-message keys wrapped for each recipient. Private keys stored in IndexedDB (client-side). Server never has access to plaintext",
+          "Residual risk: Very low"
         ]
       },
       {
         "title": "6. Risk: Photo storage",
         "items": [
-          "Risk — Unauthorised access to profile or room photos",
-          "Likelihood — Low",
-          "Impact — Medium",
-          "Mitigations — Supabase Storage with access policies. Photos only accessible to authenticated users. Deletion cascades on account removal",
-          "Residual risk — Low"
+          "Risk: Unauthorised access to profile or room photos",
+          "Likelihood: Low",
+          "Impact: Medium",
+          "Mitigations: Supabase Storage with access policies. Photos only accessible to authenticated users. Deletion cascades on account removal",
+          "Residual risk: Low"
         ]
       },
       {
         "title": "7. Risk: InAcademia data",
         "items": [
-          "Risk — Over-collection from SSO provider",
-          "Likelihood — Very low",
-          "Impact — Low",
-          "Mitigations — Only pseudonymised ID and institution information received from InAcademia. No names or email addresses. InAcademia is managed by GÉANT (EU)",
-          "Residual risk — Very low"
+          "Risk: Over-collection from SSO provider",
+          "Likelihood: Very low",
+          "Impact: Low",
+          "Mitigations: Only pseudonymised ID and institution information received from InAcademia. No names or email addresses. InAcademia is managed by GÉANT (EU)",
+          "Residual risk: Very low"
         ]
       },
       {
-        "title": "8. Risk: Moderation — temporarily decrypted messages",
+        "title": "8. Risk: Moderation, temporarily decrypted messages",
         "items": [
-          "Risk — Exposure of private message content during moderation",
-          "Likelihood — Low (only on user report)",
-          "Impact — Medium",
-          "Mitigations — Only the reporting user provides the decrypted text. Stored temporarily with 90-day auto-deletion. Admin-only access with full audit logging",
-          "Residual risk — Low"
+          "Risk: Exposure of private message content during moderation",
+          "Likelihood: Low (only on user report)",
+          "Impact: Medium",
+          "Mitigations: Only the reporting user provides the decrypted text. Stored temporarily with 90-day auto-deletion. Admin-only access with full audit logging",
+          "Residual risk: Low"
         ]
       },
       {
         "title": "9. Risk: Calendar feed URL leakage",
         "items": [
-          "Risk — Someone obtains the calendar subscription URL and can see hospi event details",
-          "Likelihood — Low",
-          "Impact — Medium (event titles, dates, locations exposed — no messages or personal data)",
-          "Mitigations — Calendar token is a 128-bit unguessable UUID. HTTPS only. Token is revocable by the user at any time via Settings. User is warned about sharing the URL",
-          "Residual risk — Acceptable"
+          "Risk: Someone obtains the calendar subscription URL and can see hospi event details",
+          "Likelihood: Low",
+          "Impact: Medium (event titles, dates, locations exposed, no messages or personal data)",
+          "Mitigations: Calendar token is a 128-bit unguessable UUID. HTTPS only. Token is revocable by the user at any time via Settings. User is warned about sharing the URL",
+          "Residual risk: Acceptable"
         ]
       },
       {
         "title": "10. Risk: Crash reporting data",
         "items": [
-          "Risk — Collection of personal data through error reports",
-          "Likelihood — Very low",
-          "Impact — Low",
-          "Mitigations — sendDefaultPii disabled, IP addresses stripped before storage, no user identifiers in error context, no session replay. EU data storage (Frankfurt). 90-day retention",
-          "Residual risk — Very low"
+          "Risk: Collection of personal data through error reports",
+          "Likelihood: Very low",
+          "Impact: Low",
+          "Mitigations: sendDefaultPii disabled, IP addresses stripped before storage, no user identifiers in error context, no session replay. EU data storage (Frankfurt). 90-day retention",
+          "Residual risk: Very low"
         ]
       },
       {

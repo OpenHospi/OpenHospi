@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
 
-export const alt = "FAQ — OpenHospi";
+export const alt = "FAQ - OpenHospi";
 export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 

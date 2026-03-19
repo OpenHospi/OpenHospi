@@ -8,8 +8,8 @@ export function LegalStructuredCards({ items }: { items: string[] }) {
       <Table>
         <TableBody>
           {items.map((item, i) => {
-            const dashIdx = item.indexOf(" — ");
-            if (dashIdx <= 0) {
+            const colonIdx = item.indexOf(": ");
+            if (colonIdx <= 0) {
               return (
                 <TableRow key={i}>
                   <TableCell colSpan={2} className="text-muted-foreground whitespace-normal">
@@ -19,8 +19,8 @@ export function LegalStructuredCards({ items }: { items: string[] }) {
               );
             }
 
-            const label = item.slice(0, dashIdx);
-            const value = item.slice(dashIdx + 3);
+            const label = item.slice(0, colonIdx);
+            const value = item.slice(colonIdx + 2);
 
             return (
               <TableRow key={i}>

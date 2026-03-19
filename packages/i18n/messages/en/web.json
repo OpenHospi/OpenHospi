@@ -1,23 +1,23 @@
 {
   "seo": {
     "home": {
-      "title": "Free Student Housing Platform — Find & List Rooms",
+      "title": "Free Student Housing Platform | Find & List Rooms",
       "description": "OpenHospi is the free, open-source student housing platform for the Netherlands. Verified students only via InAcademia. No fees, no middlemen."
     },
     "about": {
-      "title": "About OpenHospi — Our Mission & Story",
+      "title": "About OpenHospi | Our Mission & Story",
       "description": "Learn about OpenHospi's mission to make student housing in the Netherlands fair, free, and accessible for every student."
     },
     "costs": {
-      "title": "Costs & Transparency — How We Stay Free",
+      "title": "Costs & Transparency | How We Stay Free",
       "description": "OpenHospi is free for all students. See exactly what it costs to run the platform and where donations go."
     },
     "howItWorks": {
-      "title": "How It Works — Find or List a Student Room",
+      "title": "How It Works | Find or List a Student Room",
       "description": "Learn how OpenHospi works for room seekers and room listers. Free, fair, and only for verified students."
     },
     "safety": {
-      "title": "Safety & Trust — How We Protect You",
+      "title": "Safety & Trust | How We Protect You",
       "description": "InAcademia verification, end-to-end encrypted chat, GDPR compliance, and open-source transparency. Your safety is our priority."
     },
     "privacy": {
@@ -49,11 +49,11 @@
       "description": "Legal basis for each data processing activity at OpenHospi (Art. 6 GDPR)."
     },
     "missingAssociation": {
-      "title": "Association Missing? — Let Us Know",
+      "title": "Association Missing? | Let Us Know",
       "description": "Is your student association not listed on OpenHospi? Contact us and we'll add it."
     },
     "faqPage": {
-      "title": "FAQ — Frequently Asked Questions",
+      "title": "FAQ | Frequently Asked Questions",
       "description": "Find answers to common questions about OpenHospi, the free student housing platform for the Netherlands."
     },
     "rooms": {
@@ -61,11 +61,11 @@
       "description": "Browse available student rooms across Dutch cities. Free, verified, and fair for every student."
     },
     "alternatives": {
-      "title": "Alternatives — Compare Student Housing Platforms",
+      "title": "Alternatives | Compare Student Housing Platforms",
       "description": "Honest comparison of Dutch student housing platforms. See how OpenHospi stacks up against Hospi.nl, myHospi, Dingdong, Kamernet, and Facebook groups."
     },
     "e2eEncryption": {
-      "title": "E2E Encryption — How We Protect Your Conversations",
+      "title": "E2E Encryption | How We Protect Your Conversations",
       "description": "Learn how OpenHospi uses pairwise end-to-end encryption to protect every conversation between seekers and house members. Signal Protocol-inspired, open source, and fully transparent."
     },
     "breadcrumbs": {
@@ -111,7 +111,7 @@
         },
         {
           "question": "What happens if I lose my device?",
-          "answer": "You can recover your identity keys using your PIN backup. Without the PIN, old messages cannot be decrypted — this is a security feature, not a bug."
+          "answer": "You can recover your identity keys using your PIN backup. Without the PIN, old messages cannot be decrypted. This is a security feature, not a bug."
         },
         {
           "question": "What protocol does OpenHospi use?",
@@ -135,8 +135,8 @@
     }
   },
   "metadata": {
-    "title": "OpenHospi — Free Student Housing Platform for the Netherlands",
-    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via InAcademia — no middlemen, no fees."
+    "title": "OpenHospi | Free Student Housing Platform for the Netherlands",
+    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via InAcademia. No middlemen, no fees."
   },
   "header": {
     "nav": {
@@ -178,18 +178,18 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nFree. Fair.\nStudents only.",
-      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via InAcademia — no middlemen, no fees.",
+      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via InAcademia. No middlemen, no fees.",
       "cta": "Log in with InAcademia"
     },
     "features": {
       "title": "Why OpenHospi?",
       "free": {
         "title": "Always free",
-        "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility — free, forever."
+        "description": "No hidden fees, no premium plans. No one can pay to get ahead. Every student gets the same visibility, free, forever."
       },
       "verified": {
         "title": "Verified students",
-        "description": "Every user is verified through InAcademia — only real students."
+        "description": "Every user is verified through InAcademia. Only real students."
       },
       "encrypted": {
         "title": "E2E encrypted chat",
@@ -197,7 +197,7 @@
       },
       "fair": {
         "title": "Fair and transparent",
-        "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
+        "description": "Open source and community-driven. No company profiting from it, started by a student, for all students."
       }
     },
     "howItWorks": {
@@ -212,28 +212,28 @@
       },
       "step3": {
         "title": "Get chosen",
-        "description": "Houses invite candidates — the traditional Dutch hospiteren."
+        "description": "Houses invite candidates for hospiteren, the traditional Dutch way of choosing housemates."
       }
     },
     "students": {
       "title": "Only real students",
-      "description": "On OpenHospi, your university or hogeschool verifies you through InAcademia. Your institution stands behind your profile — so everyone knows you're a real student. No fake profiles, no scams.",
+      "description": "On OpenHospi, your university or hogeschool verifies you through InAcademia. Your institution stands behind your profile, so everyone knows you're a real student. No fake profiles, no scams.",
       "badge": "InAcademia verified"
     },
     "openSource": {
       "title": "Open source",
-      "description": "OpenHospi is fully open source. Anyone can inspect the code, contribute, or run their own instance. Transparency is not a feature — it's a principle.",
+      "description": "OpenHospi is fully open source. Anyone can inspect the code, contribute, or run their own instance. Transparency is not a feature, it's a principle.",
       "cta": "View on GitHub"
     },
     "cta": {
       "title": "Join the community",
-      "subtitle": "Be among the first students on the fairest housing platform in the Netherlands — free, fair, and students only.",
+      "subtitle": "Be among the first students on the fairest housing platform in the Netherlands. Free, fair, and students only.",
       "button": "Log in with InAcademia"
     }
   },
   "howItWorks": {
     "title": "How it works",
-    "subtitle": "Whether you're looking for a room or a new housemate — here's how OpenHospi works.",
+    "subtitle": "Whether you're looking for a room or a new housemate, here's how OpenHospi works.",
     "seekers": {
       "title": "For room seekers",
       "why": {
@@ -253,7 +253,7 @@
           },
           {
             "title": "Fair for everyone",
-            "description": "Open source and community-driven. No company profiting from it — started by a student, for all students."
+            "description": "Open source and community-driven. No company profiting from it, started by a student, for all students."
           }
         ]
       },
@@ -302,7 +302,7 @@
           },
           {
             "title": "Manage responses",
-            "description": "Review profiles, read messages, and invite candidates — all in one place."
+            "description": "Review profiles, read messages, and invite candidates, all in one place."
           },
           {
             "title": "Share your listing",
@@ -359,7 +359,7 @@
       },
       {
         "title": "End-to-end encrypted chat",
-        "description": "All messages are end-to-end encrypted — in both private and group conversations. We cannot read your messages."
+        "description": "All messages are end-to-end encrypted, in both private and group conversations. We cannot read your messages."
       },
       {
         "title": "No trackers",
@@ -383,20 +383,19 @@
   },
   "about": {
     "title": "About OpenHospi",
-    "subtitle": "The free, open-source student housing platform for the Netherlands — built by students, for students.",
+    "subtitle": "The free, open-source student housing platform for the Netherlands, built by students, for students.",
     "mission": {
       "title": "Our Mission",
       "description": "OpenHospi exists to make student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent. OpenHospi will never be freemium or pay-to-win: no one can pay to get more visibility. Every student gets the same chances."
     },
     "vision": {
       "title": "Our Vision",
-      "description": "A world where every student in the Netherlands has equal access to housing. No paid platforms, no gatekeepers — just a fair, transparent process where your personality matters more than your wallet."
+      "description": "A world where every student in the Netherlands has equal access to housing. No paid platforms, no gatekeepers, just a fair, transparent process where your personality matters more than your wallet."
     },
     "problem": {
       "title": "Why OpenHospi?",
-      "description1": "Students today search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority placement. The system works for platforms — not for students.",
-      "description2": "We believe this is fundamentally unfair. Housing is a basic need, and students shouldn't be charged to find a place to live. That's why we built OpenHospi: a platform where everyone gets the same visibility, the same tools, and the same chances — completely free.",
-      "description3": "OpenHospi was born when Ruben saw fellow students struggling with paid platforms and chaotic Facebook groups. He didn't experience it himself, but saw many around him dealing with it. The solution was clear: build something better, and make it open source."
+      "description1": "Students today search for rooms through Facebook groups, Instagram, and paid platforms. On commercial sites, you pay to see listings or get priority placement. The system works for platforms, not for students.",
+      "description2": "We believe this is fundamentally unfair. Housing is a basic need, and students shouldn't be charged to find a place to live. That's why we built OpenHospi: a platform where everyone gets the same visibility, the same tools, and the same chances, completely free."
     },
     "team": {
       "title": "The Board",
@@ -404,7 +403,7 @@
         {
           "name": "Ruben Talstra",
           "role": "Chairman",
-          "bio": "BITM student at Hanze University of Applied Sciences and self-taught software engineer with over 10 years of experience. Started OpenHospi to give every student a fair chance at finding housing — no fees, no favoritism."
+          "bio": "BITM student at Hanze University of Applied Sciences and self-taught software engineer with over 10 years of experience. Started OpenHospi to give every student a fair chance at finding housing. No fees, no favoritism."
         },
         {
           "name": "Sophie de Klerk",
@@ -420,7 +419,7 @@
     },
     "openSource": {
       "title": "Open Source & Community",
-      "description": "OpenHospi is fully open source. Anyone can inspect the code, report issues, suggest features, or contribute directly. Transparency isn't a feature — it's a principle. We believe that a platform for students should be owned by the community.",
+      "description": "OpenHospi is fully open source. Anyone can inspect the code, report issues, suggest features, or contribute directly. Transparency isn't a feature, it's a principle. We believe that a platform for students should be owned by the community.",
       "cta": "View on GitHub"
     }
   },
@@ -429,7 +428,7 @@
     "subtitle": "OpenHospi is free for all users. Here's what it costs us to run.",
     "intro": {
       "title": "What does OpenHospi cost?",
-      "description": "OpenHospi is and will always be free for students. No hidden fees, no premium plans, no ads. Here's a transparent overview of our running costs — all prices include 21% VAT."
+      "description": "OpenHospi is and will always be free for students. No hidden fees, no premium plans, no ads. Here's a transparent overview of our running costs. All prices include 21% VAT."
     },
     "breakdown": {
       "title": "Cost breakdown",
@@ -604,7 +603,7 @@
     },
     "transparency": {
       "title": "Where does the money go?",
-      "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit — just keeping the platform running for students.",
+      "description": "100% of donations go to infrastructure costs. Via Open Collective every transaction is published publicly. No salaries, no profit, just keeping the platform running for students.",
       "badge": "OpenHospi on Open Collective"
     }
   },
@@ -651,7 +650,7 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "subtitle": "Everything you need to know about OpenHospi — the free, open-source student housing platform.",
+    "subtitle": "Everything you need to know about OpenHospi: the free, open-source student housing platform.",
     "cta": {
       "title": "Still have questions?",
       "description": "Can't find the answer you're looking for? Reach out to us directly.",
@@ -663,7 +662,7 @@
         "items": [
           {
             "question": "What is OpenHospi?",
-            "answer": "OpenHospi is a free, open-source student housing platform for the Netherlands. It connects students looking for a room with houses looking for a new housemate — through the traditional Dutch hospiteren process."
+            "answer": "OpenHospi is a free, open-source student housing platform for the Netherlands. It connects students looking for a room with houses looking for a new housemate, through the traditional Dutch hospiteren process."
           },
           {
             "question": "Who can use OpenHospi?",
@@ -684,7 +683,7 @@
         "items": [
           {
             "question": "How do I create an account?",
-            "answer": "Click 'Log in with InAcademia' and sign in with your university or hogeschool account. Your account is created automatically — no separate registration needed."
+            "answer": "Click 'Log in with InAcademia' and sign in with your university or hogeschool account. Your account is created automatically. No separate registration needed."
           },
           {
             "question": "Why can I only log in with InAcademia?",
@@ -709,7 +708,7 @@
           },
           {
             "question": "What is hospiteren?",
-            "answer": "Hospiteren is the traditional Dutch way of finding housemates. The house invites candidates for a visit — you meet the current housemates, see the room, and both sides decide if it's a good match."
+            "answer": "Hospiteren is the traditional Dutch way of finding housemates. The house invites candidates for a visit: you meet the current housemates, see the room, and both sides decide if it's a good match."
           },
           {
             "question": "Can I filter rooms by city, price, or other criteria?",
@@ -717,7 +716,7 @@
           },
           {
             "question": "Do all students get the same visibility?",
-            "answer": "Yes. There are no premium placements or paid boosts. Every student's application is treated equally — no one can pay to get ahead."
+            "answer": "Yes. There are no premium placements or paid boosts. Every student's application is treated equally. No one can pay to get ahead."
           }
         ]
       },
@@ -747,7 +746,7 @@
         "items": [
           {
             "question": "Are my messages encrypted?",
-            "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted (E2EE), including group conversations. Not even OpenHospi can read your messages — only you and the other members of your conversation."
+            "answer": "Yes. All chat messages on OpenHospi are end-to-end encrypted (E2EE), including group conversations. Not even OpenHospi can read your messages, only you and the other members of your conversation."
           },
           {
             "question": "Does OpenHospi use trackers or sell my data?",
@@ -791,7 +790,7 @@
     },
     "pairwiseEncryption": {
       "title": "Pairwise Encryption",
-      "description": "OpenHospi uses pairwise encryption — the same approach used by Signal and WhatsApp. When you send a message, your device encrypts it separately for each member in the conversation using their individual encryption session. The server stores one encrypted copy per recipient and can never see the actual message. Each member can only decrypt the copy that was encrypted specifically for them.",
+      "description": "OpenHospi uses pairwise encryption, the same approach used by Signal and WhatsApp. When you send a message, your device encrypts it separately for each member in the conversation using their individual encryption session. The server stores one encrypted copy per recipient and can never see the actual message. Each member can only decrypt the copy that was encrypted specifically for them.",
       "perRecipient": {
         "label": "Per-recipient encryption",
         "detail": "Each message is encrypted separately for every member"
@@ -813,7 +812,7 @@
     },
     "keyExchange": {
       "title": "Key Exchange (X3DH)",
-      "description": "When a conversation starts, the Extended Triple Diffie-Hellman (X3DH) protocol establishes a shared secret between each pair of members — even if some are offline. For a conversation with three members, three separate X3DH exchanges take place (one for each pair). Pre-uploaded keys on the server make this possible without ever revealing private keys."
+      "description": "When a conversation starts, the Extended Triple Diffie-Hellman (X3DH) protocol establishes a shared secret between each pair of members, even if some are offline. For a conversation with three members, three separate X3DH exchanges take place (one for each pair). Pre-uploaded keys on the server make this possible without ever revealing private keys."
     },
     "doubleRatchet": {
       "title": "Double Ratchet",
@@ -829,7 +828,7 @@
     },
     "safetyNumbers": {
       "title": "Safety Numbers",
-      "description": "You can verify each member individually by comparing safety numbers in the conversation info screen. These 60-digit codes are derived from both users' identity keys and are unique to each pair — so you can confirm that no one is impersonating a house member or seeker.",
+      "description": "You can verify each member individually by comparing safety numbers in the conversation info screen. These 60-digit codes are derived from both users' identity keys and are unique to each pair, so you can confirm that no one is impersonating a house member or seeker.",
       "example": "60-digit safety number (example)"
     },
     "serverComparison": {
@@ -850,7 +849,7 @@
   },
   "alternatives": {
     "title": "Alternatives & Comparison",
-    "subtitle": "An honest look at the Dutch student housing landscape. We believe in transparency — including about our competitors.",
+    "subtitle": "An honest look at the Dutch student housing landscape. We believe in transparency, including about our competitors.",
     "disclaimer": "Platforms change. Last updated: March 2026. See something wrong? Email us at info@openhospi.nl.",
     "table": {
       "title": "Quick comparison",
@@ -930,17 +929,17 @@
           "name": "OpenHospi",
           "type": "Our platform",
           "url": "#",
-          "pricing": "Free — no premium, no ads, no paywalls",
+          "pricing": "Free: no premium, no ads, no paywalls",
           "strengths": [
             "100% free, no pay-to-win mechanics",
             "Every user verified via InAcademia (university-backed)",
             "End-to-end encrypted chat",
-            "Fully open source — anyone can audit the code",
+            "Fully open source: anyone can audit the code",
             "No trackers, GDPR-first privacy",
             "Mobile app for iOS and Android"
           ],
           "weaknesses": [
-            "New platform — still growing user base and city coverage",
+            "New platform: still growing user base and city coverage",
             "Fewer listings than established platforms"
           ],
           "bestFor": "Students who want a free, fair, and private housing platform with verified users."
@@ -986,7 +985,7 @@
           "url": "https://dingdong-nederland.nl",
           "pricing": "Free core. Premium+ €1.99/week, €3.99/month, €9.99/3 months",
           "strengths": [
-            "Swipe-style matching — modern, app-first experience",
+            "Swipe-style matching: modern, app-first experience",
             "Hospi invites and candidate ranking",
             "In-app chat",
             "Low-cost Premium+ tier"
@@ -1005,13 +1004,13 @@
           "url": "https://kamernet.nl",
           "pricing": "Seekers: €38/4 weeks, €75/12 weeks, €98/6 months. Listing is free.",
           "strengths": [
-            "Huge reach — the largest Dutch room marketplace",
+            "Huge reach: the largest Dutch room marketplace",
             "Shared inbox and house voting features",
             "Housechat for housemate communication"
           ],
           "weaknesses": [
-            "Seekers must pay to message — €38+ barrier to entry",
-            "Not student-only — open to anyone",
+            "Seekers must pay to message: €38+ barrier to entry",
+            "Not student-only: open to anyone",
             "Room marketplace model, not hospi-focused",
             "Not open source"
           ],
@@ -1023,13 +1022,13 @@
           "url": "https://facebook.com",
           "pricing": "Free",
           "strengths": [
-            "Massive reach — millions of users",
+            "Massive reach: millions of users",
             "Free to post and respond",
             "Easy to share listings in multiple groups"
           ],
           "weaknesses": [
             "No structured hospi workflow at all",
-            "No user verification — scams are common",
+            "No user verification: scams are common",
             "Moderation varies per group",
             "No dedicated housing tools or filters",
             "Privacy depends on Facebook's policies"
@@ -1040,11 +1039,11 @@
     },
     "honesty": {
       "title": "Why we're honest about this",
-      "description": "We built OpenHospi because we believe student housing should be free and fair. But being fair also means being honest about the landscape. Some platforms have features we don't have yet. Some have more users. We're not here to trash competitors — we're here to give you the full picture so you can make the best choice for your situation. If another platform works better for you right now, use it. We'll be here when you want something free, private, and built for students."
+      "description": "We built OpenHospi because we believe student housing should be free and fair. But being fair also means being honest about the landscape. Some platforms have features we don't have yet. Some have more users. We're not here to trash competitors. We're here to give you the full picture so you can make the best choice for your situation. If another platform works better for you right now, use it. We'll be here when you want something free, private, and built for students."
     },
     "cta": {
       "title": "Want to try OpenHospi?",
-      "subtitle": "Free, fair, and verified — no strings attached.",
+      "subtitle": "Free, fair, and verified. No strings attached.",
       "button": "Log in with InAcademia"
     }
   }

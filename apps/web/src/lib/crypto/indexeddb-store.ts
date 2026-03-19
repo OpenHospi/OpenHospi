@@ -1,14 +1,14 @@
 import type {
+  ProtocolStore,
   KeyPair,
   PreKeyRecord,
   ProtocolAddress,
   SenderKeyRecord,
   SessionRecord,
-  SignalProtocolStore,
   SignedPreKeyRecord,
 } from "@openhospi/crypto";
 
-const DB_NAME = "openhospi-signal";
+const DB_NAME = "openhospi-e2ee";
 const DB_VERSION = 1;
 
 const STORES = {
@@ -18,7 +18,18 @@ const STORES = {
   sessions: "sessions",
   senderKeys: "senderKeys",
   trustedIdentities: "trustedIdentities",
+  messages: "messages",
 } as const;
+
+const LEGACY_DB_NAMES = [
+  "openhospi-signal",
+  "openhospi-message-cache",
+  "openhospi-keys",
+  "openhospi-sent-messages",
+  "openhospi-crypto",
+];
+
+const MIGRATION_FLAG = "openhospi-e2ee-migrated";
 
 function addressKey(addr: ProtocolAddress): string {
   return `${addr.userId}:${addr.deviceId}`;
@@ -28,7 +39,109 @@ function senderKeyId(addr: ProtocolAddress, distId: string): string {
   return `${addressKey(addr)}:${distId}`;
 }
 
+// ── Migration from legacy databases ──
+
+let migrationPromise: Promise<void> | null = null;
+
+async function migrateFromLegacyDBs(newDb: IDBDatabase): Promise<void> {
+  // Check migration flag (wrapped for private browsing)
+  try {
+    if (localStorage.getItem(MIGRATION_FLAG)) return;
+  } catch {
+    // Private browsing may block localStorage — continue with migration anyway
+  }
+
+  // Try migrating crypto data from the old "openhospi-signal" database
+  try {
+    const oldDb = await new Promise<IDBDatabase>((resolve, reject) => {
+      const req = indexedDB.open("openhospi-signal", 1);
+      req.onupgradeneeded = () => {
+        // DB didn't exist — abort, nothing to migrate
+        req.transaction?.abort();
+        reject(new Error("no-legacy-db"));
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+
+    // Copy all 6 crypto stores
+    const storeNames = [
+      "identity",
+      "preKeys",
+      "signedPreKeys",
+      "sessions",
+      "senderKeys",
+      "trustedIdentities",
+    ];
+
+    for (const storeName of storeNames) {
+      if (!oldDb.objectStoreNames.contains(storeName)) continue;
+
+      const entries = await new Promise<Array<{ key: IDBValidKey; value: unknown }>>(
+        (resolve, reject) => {
+          const tx = oldDb.transaction(storeName, "readonly");
+          const os = tx.objectStore(storeName);
+          const results: Array<{ key: IDBValidKey; value: unknown }> = [];
+          const cursor = os.openCursor();
+          cursor.onsuccess = () => {
+            const c = cursor.result;
+            if (c) {
+              results.push({ key: c.key, value: c.value });
+              c.continue();
+            } else {
+              resolve(results);
+            }
+          };
+          cursor.onerror = () => reject(cursor.error);
+        },
+      );
+
+      if (entries.length > 0) {
+        await new Promise<void>((resolve, reject) => {
+          const tx = newDb.transaction(storeName, "readwrite");
+          const os = tx.objectStore(storeName);
+          for (const { key, value } of entries) {
+            os.put(value, key);
+          }
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      }
+    }
+
+    oldDb.close();
+  } catch {
+    // No legacy DB or migration failed — not critical
+  }
+
+  // Set migration flag
+  try {
+    localStorage.setItem(MIGRATION_FLAG, "1");
+  } catch {
+    // Private browsing — migration is idempotent so this is fine
+  }
+
+  // Delete all legacy databases
+  for (const name of LEGACY_DB_NAMES) {
+    try {
+      indexedDB.deleteDatabase(name);
+    } catch {
+      // Best effort
+    }
+  }
+}
+
+// ── Database access ──
+
 function openDB(): Promise<IDBDatabase> {
+  if (!migrationPromise) {
+    migrationPromise = openDBInternal().then((db) => migrateFromLegacyDBs(db));
+  }
+
+  return migrationPromise.then(() => openDBInternal());
+}
+
+function openDBInternal(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
@@ -195,10 +308,11 @@ function deserializeSession(data: ReturnType<typeof serializeSession>): SessionR
 }
 
 /**
- * IndexedDB-backed implementation of the full Signal Protocol store.
- * Used by the web client for local key/session/sender-key persistence.
+ * IndexedDB-backed E2EE store for the web client.
+ * Stores all Signal Protocol key material, sessions, sender keys, and message plaintext cache
+ * in a single "openhospi-e2ee" database.
  */
-export class IndexedDBSignalStore implements SignalProtocolStore {
+export class IndexedDBProtocolStore implements ProtocolStore {
   // ── IdentityKeyStore ──
 
   async getIdentityKeyPair(): Promise<KeyPair> {
@@ -385,6 +499,19 @@ export class IndexedDBSignalStore implements SignalProtocolStore {
           : new Map(),
       },
     };
+  }
+
+  // ── Message plaintext cache ──
+  // Signal Protocol crypto keys are one-time use. After first decryption we cache
+  // the plaintext locally so re-renders don't need to re-decrypt.
+
+  async storeMessage(messageId: string, plaintext: string): Promise<void> {
+    await idbPut(STORES.messages, messageId, { plaintext, timestamp: Date.now() });
+  }
+
+  async getMessage(messageId: string): Promise<string | null> {
+    const data = await idbGet<{ plaintext: string }>(STORES.messages, messageId);
+    return data?.plaintext ?? null;
   }
 
   // ── Utility ──

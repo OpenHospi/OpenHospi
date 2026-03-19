@@ -52,5 +52,5 @@ export interface SenderKeyStore {
 }
 
 /** Combined store interface for convenience. */
-export interface SignalProtocolStore
+export interface ProtocolStore
   extends IdentityKeyStore, PreKeyStore, SignedPreKeyStore, SessionStore, SenderKeyStore {}

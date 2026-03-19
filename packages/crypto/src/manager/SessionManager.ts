@@ -9,14 +9,14 @@ import {
 } from "../protocol/session-cipher";
 import type { PreKeyBundle, ProtocolAddress, SessionRecord } from "../protocol/types";
 import { x3dhRespond } from "../protocol/x3dh";
-import type { SignalProtocolStore } from "../stores/types";
+import type { ProtocolStore } from "../stores/types";
 
 /**
  * Establish a new 1:1 session with a remote device using their pre-key bundle.
  * This is the initiator (Alice) side of X3DH + Double Ratchet.
  */
 export async function establishSession(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   address: ProtocolAddress,
   bundle: PreKeyBundle,
 ): Promise<void> {
@@ -38,7 +38,7 @@ export async function establishSession(
  * If no session exists, throws — call establishSession first.
  */
 export async function encrypt1to1(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   address: ProtocolAddress,
   plaintext: Uint8Array,
 ): Promise<Uint8Array> {
@@ -83,7 +83,7 @@ export async function encrypt1to1(
  * Handles both PreKeyWhisperMessages (first message) and regular WhisperMessages.
  */
 export async function decrypt1to1(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   address: ProtocolAddress,
   data: Uint8Array,
 ): Promise<Uint8Array> {
@@ -103,7 +103,7 @@ export async function decrypt1to1(
 }
 
 async function decryptPreKeyMessage(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   address: ProtocolAddress,
   data: Uint8Array,
 ): Promise<Uint8Array> {

@@ -7,7 +7,7 @@ import {
   generateSignedPreKey,
 } from "../protocol/keys";
 import type { EncryptedBackup } from "../protocol/types";
-import type { SignalProtocolStore } from "../stores/types";
+import type { ProtocolStore } from "../stores/types";
 
 export interface DeviceSetupResult {
   registrationId: number;
@@ -30,7 +30,7 @@ export interface DeviceSetupResult {
  * Returns the public components for server upload.
  */
 export async function setupDevice(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   pin: string,
   preKeyCount = 100,
 ): Promise<DeviceSetupResult> {

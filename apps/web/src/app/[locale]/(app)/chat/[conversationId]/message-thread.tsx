@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useEncryption } from "@/hooks/use-encryption";
-import { messageCache } from "@/lib/crypto";
+import { cryptoStore } from "@/lib/crypto";
 import { supabase } from "@/lib/supabase/client";
 
 import { fetchMessageById } from "../chat-actions";
@@ -82,7 +82,7 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       if (!msg.payload) return null;
 
       // Check local plaintext cache first (Signal's approach — crypto keys are one-time use)
-      const cached = await messageCache.get(msg.id);
+      const cached = await cryptoStore.getMessage(msg.id);
       if (cached) return cached;
 
       if (!msg.senderDeviceId) return null;
@@ -100,7 +100,7 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
 
         // Cache after successful decryption so we never need to re-decrypt
         if (plaintext) {
-          await messageCache.store(msg.id, plaintext);
+          await cryptoStore.storeMessage(msg.id, plaintext);
         }
 
         return plaintext;

@@ -17,7 +17,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { Platform } from 'react-native';
 
 import { api } from '@/lib/api-client';
-import { getMobileSignalStore } from '@/lib/crypto/stores';
+import { getProtocolStore } from '@/lib/crypto/stores';
 
 type EncryptionStatus = 'uninitialized' | 'initializing' | 'ready' | 'error';
 
@@ -109,7 +109,7 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
   const [error, setError] = useState<Error | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
 
-  const store = getMobileSignalStore();
+  const store = getProtocolStore();
 
   const initDevice = useCallback(async () => {
     if (!userId || deviceId) return;

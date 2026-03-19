@@ -1,7 +1,7 @@
 import { groupDecrypt, groupEncrypt, initGroupSenderKey } from "../protocol/group-cipher";
 import { deserializeDistributionMessage } from "../protocol/sender-key";
 import type { ProtocolAddress, SenderKeyMessageData, SenderKeyRecord } from "../protocol/types";
-import type { SenderKeyStore, SignalProtocolStore } from "../stores/types";
+import type { ProtocolStore, SenderKeyStore } from "../stores/types";
 
 import { encrypt1to1 } from "./SessionManager";
 
@@ -10,7 +10,7 @@ import { encrypt1to1 } from "./SessionManager";
  * The distribution message must be encrypted via 1:1 session and sent to each member device.
  */
 export async function initAndDistributeSenderKey(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   localAddress: ProtocolAddress,
   conversationId: string,
   memberAddresses: ProtocolAddress[],
@@ -83,7 +83,7 @@ export async function processDistribution(
  * O(1) encryption regardless of group size.
  */
 export async function encryptGroupMessage(
-  store: SignalProtocolStore,
+  store: ProtocolStore,
   localAddress: ProtocolAddress,
   conversationId: string,
   plaintext: Uint8Array,

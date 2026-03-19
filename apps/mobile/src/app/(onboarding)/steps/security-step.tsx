@@ -9,7 +9,7 @@ import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { getMobileSignalStore } from '@/lib/crypto/stores';
+import { getProtocolStore } from '@/lib/crypto/stores';
 import { api } from '@/lib/api-client';
 import { queryKeys } from '@/services/keys';
 
@@ -37,7 +37,7 @@ export default function SecurityStep() {
 
     setLoading(true);
     try {
-      const store = getMobileSignalStore();
+      const store = getProtocolStore();
       const result = await setupDevice(store, value);
 
       // Register device on server

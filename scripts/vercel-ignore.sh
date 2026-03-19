@@ -12,6 +12,13 @@
 
 set -euo pipefail
 
+# Skip preview deployments for Dependabot branches — only build on merge to main
+BRANCH="${VERCEL_GIT_COMMIT_REF:-}"
+if [[ "$BRANCH" == dependabot/* ]]; then
+  echo "→ Dependabot branch ($BRANCH) — skipping preview build"
+  exit 0
+fi
+
 if [ -z "${VERCEL_GIT_PREVIOUS_SHA:-}" ]; then
   echo "→ No previous deployment found — proceeding with build"
   exit 1
@@ -32,6 +39,16 @@ if [ -z "$DIRS" ]; then
 fi
 
 echo "→ Comparing $VERCEL_GIT_PREVIOUS_SHA..HEAD"
+
+# Always rebuild if lockfile or root config changed (dependency updates, version bumps)
+ROOT_FILES="pnpm-lock.yaml package.json pnpm-workspace.yaml"
+for file in $ROOT_FILES; do
+  if ! git diff --quiet "$VERCEL_GIT_PREVIOUS_SHA" HEAD -- "$file"; then
+    echo "→ $file changed — proceeding with build"
+    exit 1
+  fi
+done
+
 echo "→ Checking for changes in: $DIRS"
 
 for dir in $DIRS; do

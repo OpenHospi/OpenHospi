@@ -2,7 +2,7 @@ import { setCryptoProvider } from "@openhospi/crypto";
 import { createWebCryptoProvider } from "@openhospi/crypto/web";
 
 import { IndexedDBSignalStore } from "./indexeddb-store";
-import { SentMessageCache } from "./sent-message-cache";
+import { MessagePlaintextCache } from "./sent-message-cache";
 
 // Initialize the Web Crypto provider
 setCryptoProvider(createWebCryptoProvider());
@@ -10,5 +10,8 @@ setCryptoProvider(createWebCryptoProvider());
 // Singleton store instance
 export const cryptoStore = new IndexedDBSignalStore();
 
-// Sent message cache (plaintext of own messages — Signal senders can't decrypt their own)
-export const sentMessageCache = new SentMessageCache();
+// Message plaintext cache (all messages — crypto keys are one-time use, cache after first decrypt)
+export const messageCache = new MessagePlaintextCache();
+
+// Backward-compat alias used by chat-input.tsx
+export const sentMessageCache = messageCache;

@@ -117,20 +117,18 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       if (msg.messageType === 'system') return msg.payload ?? '';
       if (!msg.payload) return null;
 
-      // Own messages — check local SQLite cache (same as Signal)
-      if (msg.senderId === userId) {
-        const cached = localDb
-          .select({ plaintext: localMessages.plaintext })
-          .from(localMessages)
-          .where(eq(localMessages.id, msg.id))
-          .all();
-        if (cached.length > 0) return cached[0].plaintext;
-      }
+      // Check local SQLite cache first (Signal's approach — crypto keys are one-time use)
+      const cached = localDb
+        .select({ plaintext: localMessages.plaintext })
+        .from(localMessages)
+        .where(eq(localMessages.id, msg.id))
+        .all();
+      if (cached.length > 0) return cached[0].plaintext;
 
       if (!msg.senderDeviceId) return null;
 
       try {
-        return await decryptMessage(
+        const plaintext = await decryptMessage(
           msg.id,
           conversationId,
           {
@@ -139,6 +137,23 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
           },
           msg.payload
         );
+
+        // Cache after successful decryption so we never need to re-decrypt
+        if (plaintext) {
+          localDb
+            .insert(localMessages)
+            .values({
+              id: msg.id,
+              conversationId,
+              senderUserId: msg.senderId,
+              plaintext,
+              timestamp: new Date(msg.createdAt),
+            })
+            .onConflictDoNothing()
+            .run();
+        }
+
+        return plaintext;
       } catch {
         return t('decryption_failed');
       }

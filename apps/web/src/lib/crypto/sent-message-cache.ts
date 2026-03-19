@@ -1,4 +1,4 @@
-const DB_NAME = "openhospi-sent-messages";
+const DB_NAME = "openhospi-message-cache";
 const DB_VERSION = 1;
 const STORE_NAME = "messages";
 
@@ -17,15 +17,15 @@ function openDB(): Promise<IDBDatabase> {
 }
 
 /**
- * Client-side cache for plaintext of sent messages.
- * In Signal Protocol, the sender encrypts with the group sender key but
- * can't decrypt their own messages (the chain key has ratcheted forward).
- * So we cache the plaintext locally — same approach as Signal Desktop.
+ * Client-side cache for decrypted plaintext of ALL messages (sent + received).
+ * Signal's approach: crypto keys are one-time use, so after first decryption
+ * we store the plaintext locally. On reload, read from cache instead of
+ * re-decrypting (which would fail after the key is consumed).
  *
- * If the user clears browser data, old sent messages become unreadable.
+ * If the user clears browser data, old messages become unreadable.
  * This is the expected tradeoff of true E2E encryption.
  */
-export class SentMessageCache {
+export class MessagePlaintextCache {
   async store(messageId: string, plaintext: string): Promise<void> {
     const db = await openDB();
     return new Promise((resolve, reject) => {

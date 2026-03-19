@@ -17,6 +17,13 @@ if [ -z "${VERCEL_GIT_PREVIOUS_SHA:-}" ]; then
   exit 1
 fi
 
+# Verify the previous SHA actually exists in git history
+# (first deploy of a new project may reference an unknown commit)
+if ! git cat-file -e "$VERCEL_GIT_PREVIOUS_SHA" 2>/dev/null; then
+  echo "→ Previous SHA not found in git history — proceeding with build"
+  exit 1
+fi
+
 DIRS="$@"
 
 if [ -z "$DIRS" ]; then
@@ -24,9 +31,16 @@ if [ -z "$DIRS" ]; then
   exit 1
 fi
 
+echo "→ Comparing $VERCEL_GIT_PREVIOUS_SHA..HEAD"
 echo "→ Checking for changes in: $DIRS"
 
 for dir in $DIRS; do
+  # If the directory didn't exist at the previous SHA, it's new — must build
+  if ! git rev-parse --verify "$VERCEL_GIT_PREVIOUS_SHA:$dir" &>/dev/null; then
+    echo "→ $dir is new (didn't exist at previous deploy) — proceeding with build"
+    exit 1
+  fi
+
   if ! git diff --quiet "$VERCEL_GIT_PREVIOUS_SHA" HEAD -- "$dir"; then
     echo "→ Changes detected in $dir — proceeding with build"
     exit 1

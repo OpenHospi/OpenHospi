@@ -54,6 +54,7 @@ type SerializedSenderKey = {
     chainKey: string;
     iteration: number;
     signingKeyPair: SerializedKeyPair;
+    messageKeys?: [number, string][];
   };
 };
 
@@ -135,6 +136,7 @@ function serializeSenderKeyRecord(record: SenderKeyRecord): string {
         publicKey: toBase64(record.state.signingKeyPair.publicKey),
         privateKey: toBase64(record.state.signingKeyPair.privateKey),
       },
+      messageKeys: Array.from(record.state.messageKeys.entries()).map(([k, v]) => [k, toBase64(v)]),
     },
   } satisfies SerializedSenderKey);
 }
@@ -149,6 +151,9 @@ function deserializeSenderKeyRecord(data: string): SenderKeyRecord {
         publicKey: fromBase64(raw.state.signingKeyPair.publicKey),
         privateKey: fromBase64(raw.state.signingKeyPair.privateKey),
       },
+      messageKeys: raw.state.messageKeys
+        ? new Map(raw.state.messageKeys.map(([k, v]) => [k, fromBase64(v)]))
+        : new Map(),
     },
   };
 }

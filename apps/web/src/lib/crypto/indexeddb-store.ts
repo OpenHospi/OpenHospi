@@ -352,6 +352,10 @@ export class IndexedDBSignalStore implements SignalProtocolStore {
         chainKey: Array.from(record.state.chainKey),
         iteration: record.state.iteration,
         signingKeyPair: serializeKeyPair(record.state.signingKeyPair),
+        messageKeys: Array.from(record.state.messageKeys.entries()).map(([k, v]) => [
+          k,
+          Array.from(v),
+        ]),
       },
     });
   }
@@ -365,6 +369,7 @@ export class IndexedDBSignalStore implements SignalProtocolStore {
         chainKey: number[];
         iteration: number;
         signingKeyPair: { publicKey: number[]; privateKey: number[] };
+        messageKeys?: Array<[number, number[]]>;
       };
     }>(STORES.senderKeys, senderKeyId(sender, distributionId));
 
@@ -375,6 +380,9 @@ export class IndexedDBSignalStore implements SignalProtocolStore {
         chainKey: new Uint8Array(data.state.chainKey),
         iteration: data.state.iteration,
         signingKeyPair: deserializeKeyPair(data.state.signingKeyPair),
+        messageKeys: data.state.messageKeys
+          ? new Map(data.state.messageKeys.map(([k, v]) => [k, new Uint8Array(v)]))
+          : new Map(),
       },
     };
   }

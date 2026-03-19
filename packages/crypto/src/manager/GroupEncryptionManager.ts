@@ -71,6 +71,7 @@ export async function processDistribution(
         publicKey: distMsg.signingKey,
         privateKey: new Uint8Array(0), // We only have the public key for received sender keys
       },
+      messageKeys: new Map(),
     },
   };
 

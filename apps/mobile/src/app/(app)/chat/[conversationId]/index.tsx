@@ -68,6 +68,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
 
   const [text, setText] = useState('');
   const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
+  const [distributionVersion, setDistributionVersion] = useState(0);
   const inputRef = useRef<TextInput>(null);
 
   const allMessages = messagesData?.pages.flatMap((p) => p.messages) ?? [];
@@ -107,6 +108,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
 
       try {
         return await decryptMessage(
+          msg.id,
           conversationId,
           {
             userId: msg.senderId,
@@ -120,6 +122,9 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     },
     [userId, conversationId, decryptMessage, t]
   );
+
+  // Stable message ID list for effect deps
+  const messageIds = allMessages.map((m) => m.id).join(',');
 
   // Decrypt messages
   useEffect(() => {
@@ -144,18 +149,24 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     if (allMessages.length > 0) {
       decryptAll();
     }
-  }, [allMessages.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [messageIds, distributionVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Supabase Realtime subscription
   useEffect(() => {
     const channel = supabase.channel(`chat:${conversationId}`);
 
     channel
-      .on('broadcast', { event: 'new_message' }, () => {
+      .on('broadcast', { event: 'new_message' }, async () => {
+        if (deviceId) {
+          await processPendingDistributions(deviceId).catch(() => {});
+        }
         refetchMessages();
       })
-      .on('broadcast', { event: 'sender_key_distribution' }, () => {
-        if (deviceId) processPendingDistributions(deviceId);
+      .on('broadcast', { event: 'sender_key_distribution' }, async () => {
+        if (deviceId) {
+          await processPendingDistributions(deviceId).catch(() => {});
+          setDistributionVersion((v) => v + 1);
+        }
       })
       .subscribe();
 

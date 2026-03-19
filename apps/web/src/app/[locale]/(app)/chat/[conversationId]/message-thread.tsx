@@ -114,7 +114,7 @@ export function MessageThread({ conversationId, initialMessages, currentUserId }
       const msg = await fetchMessageById(messageId);
       if (!msg) return;
 
-      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+      setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [msg, ...prev]));
 
       const text = await decryptSingle(msg);
       if (text !== null) {

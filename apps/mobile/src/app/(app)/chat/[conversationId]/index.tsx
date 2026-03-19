@@ -217,7 +217,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       className="bg-background">
       <FlatList
-        data={[...allMessages].reverse()}
+        data={allMessages}
         keyExtractor={(item) => item.id}
         inverted
         contentContainerStyle={{ padding: 16, gap: 4 }}

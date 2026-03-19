@@ -1,0 +1,5 @@
+{
+  "title": "Kamer zoeken",
+  "icon": "Search",
+  "pages": ["index", "zoeken-en-filteren", "reageren-op-listings"]
+}

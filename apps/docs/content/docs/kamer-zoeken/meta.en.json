@@ -1,0 +1,5 @@
+{
+  "title": "Finding a Room",
+  "icon": "Search",
+  "pages": ["index", "zoeken-en-filteren", "reageren-op-listings"]
+}

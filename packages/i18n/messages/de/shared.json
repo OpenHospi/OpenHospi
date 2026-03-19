@@ -1388,6 +1388,11 @@
       "you": "du",
       "date_today": "Heute",
       "date_yesterday": "Gestern",
+      "search_placeholder": "Unterhaltungen suchen...",
+      "scroll_to_bottom": "Nach unten scrollen",
+      "say_hello": "Starte das Gesprach!",
+      "view_listing": "Anzeige ansehen",
+      "room_info": "Zimmerinfo",
       "safety_number": {
         "title": "Sicherheitsnummer",
         "description": "Vergleiche diese Nummer mit {name}, um zu \u00fcberpr\u00fcfen, ob euer Gespr\u00e4ch Ende-zu-Ende-verschl\u00fcsselt ist.",
@@ -1410,7 +1415,13 @@
         "grant_camera": "Kamera erlauben",
         "open_settings": "Einstellungen \u00f6ffnen",
         "invalid_qr": "Dieser QR-Code ist keine g\u00fcltige OpenHospi-Sicherheitsnummer",
-        "scan_own_qr": "Du hast deinen eigenen QR-Code gescannt"
+        "scan_own_qr": "Du hast deinen eigenen QR-Code gescannt",
+        "mark_verified": "Als verifiziert markieren",
+        "confirm_title": "{name} verifizieren?",
+        "confirm_description": "Hast du diese Sicherheitsnummern mit {name} pers\u00f6nlich oder \u00fcber einen vertrauensw\u00fcrdigen Kanal verglichen?",
+        "try_again": "Erneut versuchen",
+        "done": "Fertig",
+        "close": "Schlie\u00dfen"
       },
       "encryption": {
         "unlock_title": "Entsperre deine Chats",

@@ -1388,6 +1388,11 @@
       "you": "jij",
       "date_today": "Vandaag",
       "date_yesterday": "Gisteren",
+      "search_placeholder": "Zoek gesprekken...",
+      "scroll_to_bottom": "Scroll naar beneden",
+      "say_hello": "Begin het gesprek!",
+      "view_listing": "Bekijk advertentie",
+      "room_info": "Kamerinfo",
       "safety_number": {
         "title": "Veiligheidsnummer",
         "description": "Vergelijk dit nummer met {name} om te controleren of je gesprek end-to-end versleuteld is.",
@@ -1410,7 +1415,13 @@
         "grant_camera": "Camera toestaan",
         "open_settings": "Open Instellingen",
         "invalid_qr": "Deze QR-code is geen geldig OpenHospi-veiligheidsnummer",
-        "scan_own_qr": "Je hebt je eigen QR-code gescand"
+        "scan_own_qr": "Je hebt je eigen QR-code gescand",
+        "mark_verified": "Markeer als geverifieerd",
+        "confirm_title": "{name} verifi\u00ebren?",
+        "confirm_description": "Heb je deze veiligheidsnummers met {name} persoonlijk of via een vertrouwd kanaal vergeleken?",
+        "try_again": "Opnieuw proberen",
+        "done": "Klaar",
+        "close": "Sluiten"
       },
       "encryption": {
         "unlock_title": "Ontgrendel je chats",

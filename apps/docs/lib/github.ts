@@ -62,7 +62,6 @@ export async function onPageFeedbackAction(feedback: {
   opinion: string;
   message: string;
 }): Promise<ActionResponse> {
-  "use server";
   return createDiscussionThread(
     feedback.url,
     `[${feedback.opinion}] ${feedback.message}\n\n> Doorgestuurd vanuit docs feedback.`,

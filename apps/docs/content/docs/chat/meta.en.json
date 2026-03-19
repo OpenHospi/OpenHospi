@@ -1,0 +1,5 @@
+{
+  "title": "Chat & Messages",
+  "icon": "MessageCircle",
+  "pages": ["index", "berichten"]
+}

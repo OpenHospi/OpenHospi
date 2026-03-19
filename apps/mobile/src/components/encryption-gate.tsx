@@ -1,7 +1,7 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { ShieldCheck } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { InputOTP } from '@/components/input-otp';
@@ -23,13 +23,17 @@ export function EncryptionGate({ children }: Props) {
   const { status, initializeDevice } = encryption;
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (status === 'initializing') {
     return (
       <View
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 }}
         className="bg-background">
-        <ActivityIndicator size="large" />
+        <ShieldCheck size={56} className="text-primary" />
+        <Text variant="muted" className="text-sm">
+          {tSecurity('generating_keys')}
+        </Text>
       </View>
     );
   }
@@ -41,11 +45,12 @@ export function EncryptionGate({ children }: Props) {
   async function handleSetup(value: string) {
     if (value.length !== PIN_LENGTH) return;
     setLoading(true);
+    setError(null);
 
     try {
       await initializeDevice(value);
     } catch {
-      Alert.alert(tSecurity('setup_error'));
+      setError(tSecurity('setup_error'));
       setPin('');
       setLoading(false);
     }
@@ -56,7 +61,7 @@ export function EncryptionGate({ children }: Props) {
       <View
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 }}
         className="bg-background">
-        <ActivityIndicator size="large" />
+        <ShieldCheck size={56} className="text-primary" />
         <Text variant="muted" className="text-sm">
           {tSecurity('generating_keys')}
         </Text>
@@ -72,12 +77,12 @@ export function EncryptionGate({ children }: Props) {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 24,
-        gap: 24,
+        gap: 32,
       }}
       keyboardShouldPersistTaps="handled"
       className="bg-background">
-      <View style={{ alignItems: 'center', gap: 8 }}>
-        <ShieldCheck size={40} className="text-primary" />
+      <View style={{ alignItems: 'center', gap: 12 }}>
+        <ShieldCheck size={56} className="text-primary" />
         <Text className="text-foreground text-lg font-semibold">{tSecurity('e2ee_title')}</Text>
         <Text variant="muted" className="text-sm" style={{ textAlign: 'center' }}>
           {t('setup_required')}
@@ -95,6 +100,11 @@ export function EncryptionGate({ children }: Props) {
           secureTextEntry
           autoFocus
         />
+        {error && (
+          <Text className="text-destructive text-xs" style={{ textAlign: 'center' }}>
+            {error}
+          </Text>
+        )}
         <Text variant="muted" className="text-xs" style={{ textAlign: 'center' }}>
           {tSecurity('pin_hint')}
         </Text>

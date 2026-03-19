@@ -5,5 +5,7 @@ import { i18n } from "@/lib/i18n";
 export default createI18nMiddleware(i18n);
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|llms.txt|llms-full.txt).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|apple-icon|manifest.webmanifest|llms.txt|llms-full.txt).*)",
+  ],
 };

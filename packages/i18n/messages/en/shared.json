@@ -1389,6 +1389,11 @@
       "you": "you",
       "date_today": "Today",
       "date_yesterday": "Yesterday",
+      "search_placeholder": "Search conversations...",
+      "scroll_to_bottom": "Scroll to bottom",
+      "say_hello": "Start the conversation!",
+      "view_listing": "View listing",
+      "room_info": "Room info",
       "safety_number": {
         "title": "Safety number",
         "description": "Compare this number with {name} to verify your conversation is end-to-end encrypted.",
@@ -1411,7 +1416,13 @@
         "grant_camera": "Allow Camera",
         "open_settings": "Open Settings",
         "invalid_qr": "This QR code is not a valid OpenHospi safety number",
-        "scan_own_qr": "You scanned your own QR code"
+        "scan_own_qr": "You scanned your own QR code",
+        "mark_verified": "Mark as Verified",
+        "confirm_title": "Verify {name}?",
+        "confirm_description": "Have you compared these safety numbers with {name} in person or through a trusted channel?",
+        "try_again": "Try Again",
+        "done": "Done",
+        "close": "Close"
       },
       "encryption": {
         "unlock_title": "Unlock your chats",

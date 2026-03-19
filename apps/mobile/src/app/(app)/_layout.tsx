@@ -7,7 +7,6 @@ export default function AppLayout() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
   const { t: tBreadcrumbs } = useTranslation('translation', { keyPrefix: 'breadcrumbs' });
   const { t: tSettings } = useTranslation('translation', { keyPrefix: 'app.settings' });
-  const { t: tChat } = useTranslation('translation', { keyPrefix: 'app.chat' });
 
   return (
     <DiscoverFiltersProvider>
@@ -20,8 +19,6 @@ export default function AppLayout() {
         <Stack.Screen name="room/[id]" options={{ title: '' }} />
         <Stack.Screen name="application/[id]" options={{ title: t('detailTitle') }} />
         <Stack.Screen name="settings" options={{ title: tSettings('title') }} />
-        <Stack.Screen name="chat/[conversationId]/index" options={{ title: '' }} />
-        <Stack.Screen name="chat/[conversationId]/info" options={{ title: tChat('group_info') }} />
       </Stack>
     </DiscoverFiltersProvider>
   );

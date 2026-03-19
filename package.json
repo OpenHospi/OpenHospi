@@ -35,6 +35,7 @@
     "db:migrate": "pnpm --filter @openhospi/database db:migrate",
     "db:studio": "pnpm --filter @openhospi/database db:studio",
     "db:studio:local": "pnpm --filter @openhospi/database db:studio:local",
+    "db:mobile:generate": "pnpm --filter @openhospi/mobile db:generate",
     "db:setup:storage:local": "pnpm --filter @openhospi/web db:setup:storage:local",
     "db:seed:local": "pnpm --filter @openhospi/web db:seed:local",
     "supabase:start": "supabase start",

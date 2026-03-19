@@ -1,15 +1,14 @@
 "use server";
 
-import { and, desc, eq, sql } from "drizzle-orm";
-
-import { db } from "@/lib/db";
+import { db } from "@openhospi/database";
 import {
   devices,
   oneTimePreKeys,
   privateKeyBackups,
   senderKeyDistributions,
   signedPreKeys,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 // ── Device Registration ──
 

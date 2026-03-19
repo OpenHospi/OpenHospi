@@ -8,6 +8,7 @@
     ".": "./src/index.ts",
     "./config": "./src/config.ts",
     "./web": "./src/web.ts",
+    "./admin": "./src/admin.ts",
     "./app": "./src/app.ts",
     "./messages/*": "./messages/*"
   },

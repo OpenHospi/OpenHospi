@@ -1,0 +1,40 @@
+{
+  "name": "@openhospi/database",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "db:push": "drizzle-kit push",
+    "db:push:local": "drizzle-kit push --config=drizzle.local.config.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:studio:local": "drizzle-kit studio --config=drizzle.local.config.ts",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@openhospi/i18n": "workspace:*",
+    "@openhospi/shared": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "postgres": "^3.4.8"
+  },
+  "devDependencies": {
+    "@openhospi/eslint-config": "workspace:*",
+    "dotenv": "^17.3.1",
+    "drizzle-kit": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,3 +1,5 @@
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import { eq } from "drizzle-orm";
 import { hasLocale } from "next-intl";
@@ -7,8 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { houseMembers, houses, profiles, rooms } from "@/lib/db/schema";
 
 type Props = {
   params: Promise<{ locale: Locale }>;

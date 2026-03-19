@@ -1,5 +1,7 @@
 "use server";
 
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, reviews } from "@openhospi/database/schema";
 import {
   ApplicationStatus,
   HouseMemberRole,
@@ -18,8 +20,6 @@ import {
   requireNotRestricted,
   requireSession,
 } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, reviews } from "@/lib/db/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 
 export async function markApplicationsSeen(roomId: string) {

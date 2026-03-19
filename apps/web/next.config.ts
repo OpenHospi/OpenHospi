@@ -46,6 +46,7 @@ const nextConfig: NextConfig = {
     "@openhospi/validators",
     "@openhospi/inacademia",
     "@openhospi/crypto",
+    "@openhospi/database",
     "@openhospi/i18n",
   ],
   async redirects() {

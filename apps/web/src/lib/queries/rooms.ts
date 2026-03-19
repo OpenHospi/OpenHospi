@@ -1,10 +1,9 @@
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
+import type { Room, RoomPhoto } from "@openhospi/database/types";
 import { City, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { cache } from "react";
-
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, roomPhotos, rooms } from "@/lib/db/schema";
-import type { Room, RoomPhoto } from "@/lib/db/types";
 
 export type { Room, RoomPhoto };
 

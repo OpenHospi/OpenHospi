@@ -5,10 +5,10 @@ const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
 const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  // On app/admin subdomains, disallow everything
+  // On app subdomain, disallow everything
   if (ROOT_DOMAIN) {
     const host = (await headers()).get("host")?.split(":")[0]?.toLowerCase() ?? "";
-    if (host === `app.${ROOT_DOMAIN}` || host === `admin.${ROOT_DOMAIN}`) {
+    if (host === `app.${ROOT_DOMAIN}`) {
       return {
         rules: [{ userAgent: "*", disallow: "/" }],
       };
@@ -29,7 +29,6 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
           "/*/settings",
           "/*/onboarding",
           "/*/login",
-          "/*/admin",
         ],
       },
     ],

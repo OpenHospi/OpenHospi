@@ -1,12 +1,12 @@
 "use server";
 
+import { createDrizzleSupabaseClient, db } from "@openhospi/database";
+import { applications, blocks } from "@openhospi/database/schema";
 import { ApplicationStatus } from "@openhospi/shared/enums";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient, db } from "@/lib/db";
-import { applications, blocks } from "@/lib/db/schema";
 
 export async function blockUser(blockedId: string) {
   const session = await requireSession();

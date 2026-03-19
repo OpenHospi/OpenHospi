@@ -1,8 +1,7 @@
+import { db } from "@openhospi/database";
+import { pushTokens } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 import { Expo, ExpoPushMessage } from "expo-server-sdk";
-
-import { db } from "@/lib/db";
-import { pushTokens } from "@/lib/db/schema";
 
 const expo = new Expo();
 

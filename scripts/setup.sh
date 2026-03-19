@@ -76,8 +76,11 @@ ok "Supabase is running"
 
 printf "\n${BOLD}Setting up environment…${NC}\n\n"
 
-if [ -f .env.local ]; then
+if [ -f .env.local ] && [ ! -L .env.local ]; then
   warn ".env.local already exists — skipping (delete it to regenerate)"
+  # Ensure symlinks exist even if .env.local was already there
+  ln -sf ../../.env.local apps/web/.env.local
+  ln -sf ../../.env.local apps/admin/.env.local
 else
   # Extract keys from supabase status (new key format: PUBLISHABLE_KEY + SECRET_KEY)
   STATUS_JSON=$(supabase status --output json)
@@ -96,6 +99,11 @@ else
     ok "Created .env.local with local Supabase keys"
   fi
 
+  # Symlink .env.local into each app so Next.js auto-loads it
+  ln -sf ../../.env.local apps/web/.env.local
+  ln -sf ../../.env.local apps/admin/.env.local
+  ok "Symlinked .env.local into apps/web and apps/admin"
+
   info "Generate remaining secrets:"
   printf "  ${CYAN}BETTER_AUTH_SECRET${NC}:  openssl rand -base64 32\n"
   printf "  ${CYAN}VAPID keys${NC}:          npx web-push generate-vapid-keys\n"
@@ -111,7 +119,7 @@ ok "Database schema pushed, storage configured, and seed data loaded"
 # ── Done ────────────────────────────────────────────────────────────────────
 
 printf "\n${GREEN}${BOLD}Setup complete!${NC}\n\n"
-printf "  Start the dev server:    ${CYAN}pnpm dev:web${NC}\n"
-printf "  App:                     ${CYAN}http://localhost:3000${NC}\n"
+printf "  Start the web app:       ${CYAN}pnpm dev:web${NC}   → ${CYAN}http://localhost:3000${NC}\n"
+printf "  Start the admin panel:   ${CYAN}pnpm dev:admin${NC} → ${CYAN}http://localhost:3001${NC}\n"
 printf "  Supabase Studio:         ${CYAN}http://127.0.0.1:54323${NC}\n"
 printf "  Mailpit (email testing): ${CYAN}http://127.0.0.1:54324${NC}\n\n"

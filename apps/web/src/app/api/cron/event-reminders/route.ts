@@ -1,10 +1,10 @@
 import { timingSafeEqual } from "node:crypto";
 
+import { db } from "@openhospi/database";
+import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import { InvitationStatus } from "@openhospi/shared/enums";
 import { and, eq, isNull, gte, lte, ne, inArray } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
 import { notifyUser } from "@/lib/queries/notifications";
 
 function verifyBearerToken(authHeader: string | null, secret: string | undefined): boolean {

@@ -1,9 +1,9 @@
+import { db } from "@openhospi/database";
+import { messageReceipts, messages } from "@openhospi/database/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { requireApiSession } from "@/app/api/mobile/_lib/auth";
-import { db } from "@/lib/db";
-import { messageReceipts, messages } from "@/lib/db/schema";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

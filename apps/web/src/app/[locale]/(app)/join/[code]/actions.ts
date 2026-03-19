@@ -1,12 +1,12 @@
 "use server";
 
+import { db } from "@openhospi/database";
+import { houseMembers, houses } from "@openhospi/database/schema";
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { houseMembers, houses } from "@/lib/db/schema";
 
 export async function joinHouse(inviteCode: string) {
   const session = await requireSession();

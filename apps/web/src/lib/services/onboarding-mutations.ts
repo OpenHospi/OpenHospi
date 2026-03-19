@@ -1,3 +1,11 @@
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import {
+  privateKeyBackups,
+  profilePhotos,
+  profiles,
+  user as userTable,
+  verification,
+} from "@openhospi/database/schema";
 import { EMAIL_CODE_LENGTH } from "@openhospi/shared/constants";
 import {
   aboutStepSchema,
@@ -14,14 +22,6 @@ import {
 import { and, desc, eq, gt } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/auth";
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
-import {
-  privateKeyBackups,
-  profilePhotos,
-  profiles,
-  user as userTable,
-  verification,
-} from "@/lib/db/schema";
 
 const EMAIL_CODE_IDENTIFIER_PREFIX = "onboarding-email-code:";
 

@@ -1,3 +1,11 @@
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import {
+  applications,
+  applicationStatusHistory,
+  profiles,
+  roomPhotos,
+  rooms,
+} from "@openhospi/database/schema";
 import type {
   City,
   Furnishing,
@@ -13,14 +21,6 @@ import type {
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
 import { and, asc, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import {
-  applications,
-  applicationStatusHistory,
-  profiles,
-  roomPhotos,
-  rooms,
-} from "@/lib/db/schema";
 import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type UserApplication = {

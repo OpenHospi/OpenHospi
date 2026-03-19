@@ -1,10 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-
-import { requireSession } from "@/lib/auth/server";
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   conversationMembers,
   messagePayloads,
@@ -12,7 +8,11 @@ import {
   messages,
   profiles,
   senderKeyDistributions,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+
+import { requireSession } from "@/lib/auth/server";
 import { supabaseAdmin } from "@/lib/supabase/server";
 
 /**

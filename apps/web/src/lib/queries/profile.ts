@@ -1,8 +1,7 @@
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { privateKeyBackups, profilePhotos, profiles } from "@openhospi/database/schema";
+import type { Profile, ProfilePhoto } from "@openhospi/database/types";
 import { eq } from "drizzle-orm";
-
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { privateKeyBackups, profilePhotos, profiles } from "@/lib/db/schema";
-import type { Profile, ProfilePhoto } from "@/lib/db/types";
 
 export type { Profile, ProfilePhoto };
 

@@ -398,8 +398,10 @@ export function useEncryptionProvider(userId: string | undefined): EncryptionCon
 
           await processIncomingDistribution(senderAddress, distributionBytes);
           await api.post(`/api/mobile/chat/distributions/${dist.id}/ack`);
-        } catch (err) {
-          console.error('[useEncryption] Failed to process distribution:', err);
+        } catch {
+          // Ratchet already advanced past this distribution (already processed) —
+          // acknowledge to prevent infinite retry on every reload
+          await api.post(`/api/mobile/chat/distributions/${dist.id}/ack`).catch(() => {});
         }
       }
     },

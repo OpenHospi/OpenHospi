@@ -15,7 +15,7 @@ src/
     transitions.ts            # State machine maps, validators, status categories
   constants/
     index.ts                  # Re-exports all constant modules
-    app.ts                    # APP_NAME, BRAND_COLOR, PRIVACY_POLICY_VERSION, SESSION_COOKIE_NAME
+    app.ts                    # APP_NAME, BRAND_COLOR, PRIVACY_POLICY_VERSION
     validation.ts             # Text length limits (MAX_BIO_LENGTH, MAX_ROOM_TITLE_LENGTH, etc.)
     media.ts                  # Photo counts, file sizes, ALLOWED_IMAGE_TYPES, JPEG_QUALITY
     storage.ts                # STORAGE_BUCKET_*, CONSENT_*, StorageBucket type
@@ -38,26 +38,26 @@ src/
 
 ```ts
 // Everything (enums + constants + calendar)
-import {Gender, APP_NAME} from "@openhospi/shared";
+import { Gender, APP_NAME } from "@openhospi/shared";
 
 // Just enums
-import {RoomStatus, City} from "@openhospi/shared/enums";
+import { RoomStatus, City } from "@openhospi/shared/enums";
 
 // Just constants
-import {MAX_BIO_LENGTH, STORAGE_BUCKET_ROOM_PHOTOS} from "@openhospi/shared/constants";
+import { MAX_BIO_LENGTH, STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 
 // Specific constant module
-import {MAP_DEFAULT_ZOOM} from "@openhospi/shared/constants/map";
+import { MAP_DEFAULT_ZOOM } from "@openhospi/shared/constants/map";
 
 // Calendar utility
-import {generateICS} from "@openhospi/shared/calendar";
+import { generateICS } from "@openhospi/shared/calendar";
 
 // Icons (React components)
-import {LogoIcon} from "@openhospi/shared/icons";
+import { LogoIcon } from "@openhospi/shared/icons";
 
 // Types
-import type {StorageBucket, AllowedImageType} from "@openhospi/shared/constants";
-import type {Gender, RoomStatus} from "@openhospi/shared/enums";
+import type { StorageBucket, AllowedImageType } from "@openhospi/shared/constants";
+import type { Gender, RoomStatus } from "@openhospi/shared/enums";
 ```
 
 ## Naming Conventions
@@ -65,7 +65,7 @@ import type {Gender, RoomStatus} from "@openhospi/shared/enums";
 ### Constants: `SCREAMING_SNAKE_CASE`
 
 | Pattern            | When to use                             | Examples                                     |
-|--------------------|-----------------------------------------|----------------------------------------------|
+| ------------------ | --------------------------------------- | -------------------------------------------- |
 | `MAX_*` / `MIN_*`  | Upper/lower bounds                      | `MAX_BIO_LENGTH`, `MIN_LANGUAGES`            |
 | `*_PER_PAGE`       | Pagination sizes                        | `ROOMS_PER_PAGE`, `MESSAGES_PER_PAGE`        |
 | `RATE_LIMIT_*`     | Rate limits                             | `RATE_LIMIT_APPLY`, `RATE_LIMIT_CREATE_ROOM` |
@@ -111,7 +111,7 @@ import type {Gender, RoomStatus} from "@openhospi/shared/enums";
 `defineEnum()` creates a companion object where each value is also a property:
 
 ```ts
-import {defineEnum} from "./define-enum";
+import { defineEnum } from "./define-enum";
 
 export const RoomStatus = defineEnum(["draft", "active", "paused", "closed"] as const);
 export type RoomStatus = (typeof RoomStatus.values)[number];
@@ -139,14 +139,14 @@ Define valid transitions as a `Record` and provide a guard function:
 
 ```ts
 export const VALID_ROOM_TRANSITIONS: Record<RoomStatus, readonly RoomStatus[]> = {
-    draft: ["active"],
-    active: ["paused", "closed"],
-    paused: ["active", "closed"],
-    closed: [],
+  draft: ["active"],
+  active: ["paused", "closed"],
+  paused: ["active", "closed"],
+  closed: [],
 };
 
 export function isValidRoomTransition(from: RoomStatus, to: RoomStatus): boolean {
-    return VALID_ROOM_TRANSITIONS[from]?.includes(to) ?? false;
+  return VALID_ROOM_TRANSITIONS[from]?.includes(to) ?? false;
 }
 ```
 

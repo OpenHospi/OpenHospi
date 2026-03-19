@@ -20,7 +20,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
-import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth/server";
+import { isRestricted, requireCompleteProfile, requireSession } from "@/lib/auth/server";
 
 type Props = {
   children: React.ReactNode;
@@ -32,37 +32,32 @@ export default async function AppLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await getSession();
-  let restricted = false;
-  let avatarUrl: string | null = null;
-  let email: string | null = null;
+  const session = await requireSession();
 
-  if (session) {
-    await requireCompleteProfile(session.user.id);
+  await requireCompleteProfile(session.user.id);
 
-    const [profile] = await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
-      tx
-        .select({
-          privacyPolicyAcceptedVersion: profiles.privacyPolicyAcceptedVersion,
-          avatarUrl: profiles.avatarUrl,
-          email: profiles.email,
-        })
-        .from(profiles)
-        .where(eq(profiles.id, session.user.id)),
-    );
+  const [profile] = await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
+    tx
+      .select({
+        privacyPolicyAcceptedVersion: profiles.privacyPolicyAcceptedVersion,
+        avatarUrl: profiles.avatarUrl,
+        email: profiles.email,
+      })
+      .from(profiles)
+      .where(eq(profiles.id, session.user.id)),
+  );
 
-    if (profile?.privacyPolicyAcceptedVersion !== PRIVACY_POLICY_VERSION) {
-      redirect({ href: "/privacy-accept", locale });
-    }
-
-    avatarUrl = profile?.avatarUrl ?? null;
-    email = profile?.email ?? null;
-    restricted = await isRestricted(session.user.id);
+  if (profile?.privacyPolicyAcceptedVersion !== PRIVACY_POLICY_VERSION) {
+    redirect({ href: "/privacy-accept", locale });
   }
 
+  const avatarUrl = profile?.avatarUrl ?? null;
+  const email = profile?.email ?? null;
+  const restricted = await isRestricted(session.user.id);
+
   const user = {
-    name: session?.user.name || "User",
-    email: email ?? session?.user.name ?? "",
+    name: session.user.name || "User",
+    email: email ?? session.user.name ?? "",
     avatarUrl,
   };
 
@@ -80,11 +75,9 @@ export default async function AppLayout({ children, params }: Props) {
             <div className="ml-auto flex items-center gap-2 px-4">
               <AppLanguageSwitcher />
               <ThemeToggle />
-              {session && (
-                <Suspense fallback={<Skeleton className="size-9 rounded-md" />}>
-                  <NotificationBell userId={session.user.id} />
-                </Suspense>
-              )}
+              <Suspense fallback={<Skeleton className="size-9 rounded-md" />}>
+                <NotificationBell userId={session.user.id} />
+              </Suspense>
             </div>
           </header>
           {restricted && <RestrictionBanner />}

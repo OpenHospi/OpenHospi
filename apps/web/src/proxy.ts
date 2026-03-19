@@ -1,5 +1,5 @@
 import { localePathPattern } from "@openhospi/i18n";
-import { SESSION_COOKIE_NAME } from "@openhospi/shared/constants";
+import { getSessionCookie } from "better-auth/cookies";
 import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
@@ -23,6 +23,8 @@ const appPaths = [
   "/my-rooms",
   "/my-house",
   "/join",
+  "/chat",
+  "/notifications",
 ];
 const authPaths = ["/login", "/onboarding", "/privacy-accept"];
 
@@ -110,7 +112,7 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   const barePath = getBarePath(pathname);
   const routeType = classifyBarePath(barePath);
 
-  if (routeType === "app" && !request.cookies.get(SESSION_COOKIE_NAME)) {
+  if (routeType === "app" && !getSessionCookie(request)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

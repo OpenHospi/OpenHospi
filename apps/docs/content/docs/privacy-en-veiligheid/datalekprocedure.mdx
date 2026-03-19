@@ -1,0 +1,84 @@
+---
+title: Datalekprocedure
+description: Wat OpenHospi doet als er een datalek optreedt en wat dat voor jou betekent.
+icon: ShieldAlert
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+
+## Wat is een datalek?
+
+Een datalek is een beveiligingsincident waarbij persoonlijke gegevens onbedoeld toegankelijk worden, verloren gaan of worden gewijzigd. Denk bijvoorbeeld aan:
+
+- Ongeautoriseerde toegang tot de database
+- Een bug waardoor gebruikersgegevens zichtbaar worden
+- Verlies van versleutelingssleutels
+- Een gehackt beheerdersaccount
+
+<Callout type="info">
+  Doordat je chatberichten end-to-end versleuteld zijn, kan de inhoud ervan zelfs bij een datalek
+  niet worden gelezen.
+</Callout>
+
+## Wat doen wij bij een datalek?
+
+<Steps>
+  <Step>
+    ### Detectie & beoordeling
+
+    We monitoren onze systemen continu. Zodra we een mogelijke inbreuk detecteren, beoordelen we binnen 24 uur:
+    - Welke gegevens zijn geraakt?
+    - Hoeveel gebruikers zijn betrokken?
+    - Is het lek al gedicht?
+
+  </Step>
+  <Step>
+    ### Indamming
+
+    We nemen direct maatregelen om verdere schade te voorkomen: inloggegevens intrekken, beveiligingspatches uitrollen, en het lek dichten.
+
+  </Step>
+  <Step>
+    ### Melding aan de Autoriteit Persoonsgegevens
+
+    Als het lek een risico vormt voor je rechten, melden we het binnen 72 uur bij de Autoriteit Persoonsgegevens, zoals vereist door de AVG.
+
+  </Step>
+  <Step>
+    ### Melding aan jou
+
+    Als het lek een hoog risico vormt, informeren we je persoonlijk via e-mail en/of een melding in de app. We vertellen:
+    - Wat er is gebeurd
+    - Welke gegevens betrokken zijn
+    - Wat we hebben gedaan
+    - Wat jij kunt doen
+
+  </Step>
+  <Step>
+    ### Evaluatie
+
+    Na afloop voeren we een analyse uit om herhaling te voorkomen en passen we onze beveiligingsmaatregelen aan waar nodig.
+
+  </Step>
+</Steps>
+
+## Wanneer hoef je je geen zorgen te maken?
+
+Niet elk beveiligingsincident is een reden tot zorg. Je hoeft je minder zorgen te maken als:
+
+- De getroffen gegevens versleuteld waren en de sleutels niet zijn gelekt
+- Het incident direct is ingeperkt en er geen gegevens naar buiten zijn gelekt
+- Alleen geanonimiseerde gegevens betrokken waren
+
+## Een vermoedelijk lek melden
+
+Denk je dat er iets mis is met je gegevens, of heb je verdachte activiteit opgemerkt? Neem direct contact op:
+
+- **E-mail**: privacy@openhospi.nl
+- **In de app**: Gebruik de rapporteerfunctie
+
+<Callout type="warn">
+  We nemen elke melding serieus en reageren zo snel mogelijk. Twijfel niet om contact op te nemen,
+  ook als je niet zeker weet of het een lek is.
+</Callout>

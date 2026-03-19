@@ -1,0 +1,5 @@
+{
+  "title": "Aan de slag",
+  "icon": "Rocket",
+  "pages": ["index", "account-aanmaken", "je-profiel"]
+}

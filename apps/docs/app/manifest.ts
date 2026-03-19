@@ -1,0 +1,26 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "OpenHospi Docs",
+    short_name: "OpenHospi Docs",
+    description:
+      "Documentation for OpenHospi — free, open-source student housing platform for the Netherlands",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#f5fafa",
+    theme_color: "#0D9488",
+    icons: [
+      {
+        src: "/icon.svg",
+        sizes: "any",
+        type: "image/svg+xml",
+      },
+      {
+        src: "/apple-icon",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  };
+}

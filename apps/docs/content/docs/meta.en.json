@@ -1,0 +1,17 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "aan-de-slag",
+    "---Rooms---",
+    "kamer-zoeken",
+    "kamer-aanbieden",
+    "---Communication---",
+    "chat",
+    "---Other---",
+    "privacy-en-veiligheid",
+    "veelgestelde-vragen",
+    "sponsors"
+  ]
+}

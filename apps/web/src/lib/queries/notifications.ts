@@ -4,8 +4,8 @@ import { getMessages } from "@openhospi/i18n/web";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
-import { notifications, profiles } from "@/lib/db/schema";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import { notifications, profiles } from "@openhospi/database/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 import { sendWebPushToUser } from "@/lib/services/web-push";
 

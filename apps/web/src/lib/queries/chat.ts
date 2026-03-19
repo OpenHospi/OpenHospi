@@ -1,6 +1,6 @@
 import { and, desc, eq, lt, sql } from "drizzle-orm";
 
-import { db } from "@/lib/db";
+import { db } from "@openhospi/database";
 import {
   blocks,
   conversationMembers,
@@ -11,7 +11,7 @@ import {
   profiles,
   roomPhotos,
   rooms,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 
 /**
  * Get or create a conversation for a room × seeker pair.

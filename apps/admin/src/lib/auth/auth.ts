@@ -3,8 +3,8 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
 
-import { db } from "@/lib/db";
-import * as schema from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import * as schema from "@openhospi/database/schema";
 
 function createAuth() {
   return betterAuth({

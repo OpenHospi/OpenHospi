@@ -5,8 +5,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profilePhotos } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { profilePhotos } from "@openhospi/database/schema";
 import {
   deleteProfilePhotoForUser,
   saveProfilePhotoForUser,
@@ -16,7 +16,7 @@ import {
 type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];
 
 async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
-  const { profiles } = await import("@/lib/db/schema");
+  const { profiles } = await import("@openhospi/database/schema");
   const [slot1] = await tx
     .select({ url: profilePhotos.url })
     .from(profilePhotos)

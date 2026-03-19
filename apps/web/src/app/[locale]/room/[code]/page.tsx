@@ -11,8 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { houseMembers, houses, rooms } from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 
 async function getRoomByShareLink(code: string) {
   const [room] = await db

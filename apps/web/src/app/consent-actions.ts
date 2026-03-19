@@ -6,8 +6,8 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
 import { getSession } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { activeConsents, consentRecords } from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import { activeConsents, consentRecords } from "@openhospi/database/schema";
 
 type ConsentEntry = {
   purpose: ConsentPurpose;

@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@openhospi/database/schema";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {

@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { sendNotification, setVapidDetails } from "web-push";
 
-import { db } from "@/lib/db";
-import { pushSubscriptions } from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import { pushSubscriptions } from "@openhospi/database/schema";
 
 let vapidConfigured = false;
 

@@ -8,8 +8,8 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, bearer, genericOAuth, jwt, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
-import { db } from "@/lib/db";
-import * as schema from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import * as schema from "@openhospi/database/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 
 function deriveOnboardingEmailCode(token: string): string {

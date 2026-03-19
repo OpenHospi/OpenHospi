@@ -5,8 +5,8 @@ import {
 } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne, sum } from "drizzle-orm";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, profiles, votes } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, profiles, votes } from "@openhospi/database/schema";
 
 export type VotableApplicant = {
   applicationId: string;

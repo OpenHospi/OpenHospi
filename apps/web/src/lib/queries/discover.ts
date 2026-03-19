@@ -31,9 +31,9 @@ import {
   type SQL,
 } from "drizzle-orm";
 
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
-import { processingRestrictions, profiles, roomPhotos, rooms } from "@/lib/db/schema";
-import type { RoomPhoto } from "@/lib/db/types";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import { processingRestrictions, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
+import type { RoomPhoto } from "@openhospi/database/types";
 import { notBlockedBy } from "@/lib/queries/block-filter";
 
 export type DiscoverRoom = {

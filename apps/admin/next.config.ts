@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  transpilePackages: ["@openhospi/shared", "@openhospi/i18n", "@openhospi/inacademia"],
+  transpilePackages: ["@openhospi/shared", "@openhospi/database", "@openhospi/i18n", "@openhospi/inacademia"],
   async headers() {
     return [
       {

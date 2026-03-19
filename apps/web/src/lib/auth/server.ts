@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
-import { createDrizzleSupabaseClient } from "@/lib/db";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   houseMembers,
   houses,
@@ -14,7 +14,7 @@ import {
   profilePhotos,
   profiles,
   rooms,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 import type { HousePermission } from "@/lib/permissions";
 import { hasPermission } from "@/lib/permissions";
 

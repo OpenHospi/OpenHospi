@@ -8,8 +8,8 @@ import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
-import { houseMembers, houses } from "@/lib/db/schema";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import { houseMembers, houses } from "@openhospi/database/schema";
 
 export async function createHouse(formData: FormData): Promise<void> {
   const session = await requireSession();

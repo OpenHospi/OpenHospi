@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import { parseUUID } from "@/lib/action-result";
 import { auth } from "@/lib/auth/auth";
 import { requireAdmin } from "@/lib/auth/server";
-import { db } from "@/lib/db";
+import { db } from "@openhospi/database";
 import {
   adminAuditLog,
   profilePhotos,
@@ -19,7 +19,7 @@ import {
   rooms,
   session,
   user,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 
 export type AggregateStats = {

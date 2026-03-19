@@ -7,8 +7,8 @@ import { and, eq, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { hospiEvents, hospiInvitations } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { hospiEvents, hospiInvitations } from "@openhospi/database/schema";
 import { notifyUser } from "@/lib/queries/notifications";
 
 export async function createEvent(roomId: string, data: CreateEventData) {

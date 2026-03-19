@@ -1,8 +1,8 @@
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, count, eq } from "drizzle-orm";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { houseMembers, houses, rooms } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 
 export type OwnerHouse = {
   id: string;

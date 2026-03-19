@@ -3,8 +3,8 @@ import type { Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/sh
 import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
 import { and, asc, eq, inArray, ne } from "drizzle-orm";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, profilePhotos, profiles, reviews } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, profilePhotos, profiles, reviews } from "@openhospi/database/schema";
 
 export type ApplicantReview = {
   reviewerId: string;

@@ -19,8 +19,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link, redirect } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { getSession, isRestricted, requireCompleteProfile } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profiles } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { profiles } from "@openhospi/database/schema";
 
 type Props = {
   children: React.ReactNode;

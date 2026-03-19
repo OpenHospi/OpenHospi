@@ -13,13 +13,13 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { requireSession } from "@/lib/auth/server";
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   activeConsents,
   consentRecords,
   dataRequests,
   processingRestrictions,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 
 const PURPOSE_LEGAL_BASIS: Record<ConsentPurpose, LegalBasis> = {
   essential: "contract",

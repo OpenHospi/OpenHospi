@@ -5,8 +5,8 @@ import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { adminAuditLog, dataRequests, processingRestrictions, profiles } from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import { adminAuditLog, dataRequests, processingRestrictions, profiles } from "@openhospi/database/schema";
 
 export type DataRequestListItem = {
   id: string;

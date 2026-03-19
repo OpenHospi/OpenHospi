@@ -9,7 +9,7 @@ import {
 } from "@openhospi/validators";
 import { and, desc, eq, isNull } from "drizzle-orm";
 
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   activeConsents,
   consentRecords,
@@ -17,7 +17,7 @@ import {
   processingRestrictions,
   profiles,
   user,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 
 const PURPOSE_LEGAL_BASIS: Record<ConsentPurpose, LegalBasis> = {
   essential: "contract",
@@ -140,8 +140,8 @@ export async function getUserDataRequestsForUser(userId: string) {
 
 export async function deleteAccountForUser(userId: string) {
   const { deletePhotoFromStorage } = await import("@/lib/services/photos");
-  const { profilePhotos, rooms, roomPhotos } = await import("@/lib/db/schema");
-  const { profiles: profilesTable } = await import("@/lib/db/schema");
+  const { profilePhotos, rooms, roomPhotos } = await import("@openhospi/database/schema");
+  const { profiles: profilesTable } = await import("@openhospi/database/schema");
 
   const photoUrls = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const pPhotos = await tx

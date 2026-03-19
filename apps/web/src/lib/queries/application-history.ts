@@ -1,7 +1,7 @@
 import type { ApplicationStatus } from "@openhospi/shared/enums";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applicationStatusHistory } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applicationStatusHistory } from "@openhospi/database/schema";
 
 type RLSTransaction = Parameters<
   Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]

@@ -1,0 +1,33 @@
+import { APPLE_ICON_SIZE } from "@openhospi/shared/constants";
+import { ImageResponse } from "next/og";
+
+export const size = APPLE_ICON_SIZE;
+export const contentType = "image/png";
+
+export default function AppleIcon() {
+  return new ImageResponse(
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #f0fafa 0%, #d4f0f0 100%)",
+        borderRadius: "22.5%",
+      }}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="120" height="120">
+        <path
+          d="M14 21V15H10V21M19 9.778V16.2C19 17.88 19 18.72 18.673 19.362C18.385 19.927 17.927 20.385 17.362 20.673C16.72 21 15.88 21 14.2 21H9.8C8.12 21 7.28 21 6.638 20.673C6.074 20.385 5.615 19.927 5.327 19.362C5 18.72 5 17.88 5 16.2V9.778M21 12L15.567 5.964C14.331 4.591 13.713 3.905 12.986 3.652C12.347 3.429 11.651 3.429 11.012 3.652C10.284 3.905 9.667 4.592 8.431 5.965L3 12"
+          stroke="#0D9488"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </div>,
+    { ...size },
+  );
+}

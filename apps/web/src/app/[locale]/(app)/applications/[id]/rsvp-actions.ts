@@ -7,8 +7,8 @@ import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, hospiEvents, hospiInvitations, houseMembers, rooms } from "@openhospi/database/schema";
 import { getOrCreateConversation } from "@/lib/queries/chat";
 import { notifyUser } from "@/lib/queries/notifications";
 

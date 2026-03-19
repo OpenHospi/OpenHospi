@@ -6,8 +6,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { roomPhotos } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { roomPhotos } from "@openhospi/database/schema";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
 export async function saveRoomPhoto(formData: FormData) {

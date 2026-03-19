@@ -9,8 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "@/i18n/navigation-app";
 import { routing } from "@/i18n/routing";
 import { requireSession } from "@/lib/auth/server";
-import { db } from "@/lib/db";
-import { houses } from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import { houses } from "@openhospi/database/schema";
 
 import { JoinHouseButton } from "./join-house-button";
 

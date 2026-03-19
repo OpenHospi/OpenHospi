@@ -4,8 +4,8 @@ import { RoomStatus } from "@openhospi/shared/enums";
 import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { MetadataRoute } from "next";
 
-import { db } from "@/lib/db";
-import { roomPhotos, rooms } from "@/lib/db/schema";
+import { db } from "@openhospi/database";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
 import { getCitiesWithRoomCount } from "@/lib/queries/discover";
 import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 

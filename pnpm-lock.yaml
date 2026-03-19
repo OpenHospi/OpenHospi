@@ -156,6 +156,9 @@ importers:
       '@icons-pack/react-simple-icons':
         specifier: ^13.13.0
         version: 13.13.0(react@19.2.0)
+      '@openhospi/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@openhospi/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -708,6 +711,9 @@ importers:
       '@openhospi/crypto':
         specifier: workspace:*
         version: link:../../packages/crypto
+      '@openhospi/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@openhospi/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -935,6 +941,43 @@ importers:
       '@openhospi/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      eslint:
+        specifier: 'catalog:'
+        version: 9.39.4(jiti@2.6.1)
+      prettier:
+        specifier: 'catalog:'
+        version: 3.8.1
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/database:
+    dependencies:
+      '@openhospi/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@openhospi/shared':
+        specifier: workspace:*
+        version: link:../shared
+      drizzle-orm:
+        specifier: 1.0.0-beta.17-67b1795
+        version: 1.0.0-beta.17-67b1795(@electric-sql/pglite@0.3.15)(@types/better-sqlite3@7.6.13)(@types/mssql@9.1.9(@azure/core-client@1.10.1))(@types/pg@8.18.0)(@upstash/redis@1.37.0)(expo-sqlite@55.0.11(expo@55.0.8)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(mssql@11.0.1(@azure/core-client@1.10.1))(mysql2@3.15.3)(postgres@3.4.8)(valibot@1.2.0(typescript@5.9.3))(zod@4.3.6)
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
+    devDependencies:
+      '@openhospi/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.12.0
+      dotenv:
+        specifier: ^17.3.1
+        version: 17.3.1
+      drizzle-kit:
+        specifier: 'catalog:'
+        version: 1.0.0-beta.17-67b1795
       eslint:
         specifier: 'catalog:'
         version: 9.39.4(jiti@2.6.1)

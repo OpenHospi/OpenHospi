@@ -10,8 +10,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { applications, hospiEvents, hospiInvitations, rooms } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { applications, hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema";
 import { logStatusTransition } from "@/lib/queries/application-history";
 import { notifyUser } from "@/lib/queries/notifications";
 

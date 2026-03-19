@@ -21,8 +21,8 @@ import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { houseMembers, houses, roomPhotos, rooms } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { houseMembers, houses, roomPhotos, rooms } from "@openhospi/database/schema";
 import { createDraftRoom, getExistingDraft } from "@/lib/queries/rooms";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 

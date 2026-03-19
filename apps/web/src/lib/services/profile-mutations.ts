@@ -3,8 +3,8 @@ import type { EditProfileData } from "@openhospi/validators";
 import { editProfileSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
 
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { profilePhotos, profiles } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { profilePhotos, profiles } from "@openhospi/database/schema";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
 type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];

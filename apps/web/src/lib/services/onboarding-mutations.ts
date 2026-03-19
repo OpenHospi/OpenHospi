@@ -14,14 +14,14 @@ import {
 import { and, desc, eq, gt } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/auth";
-import { db, createDrizzleSupabaseClient } from "@/lib/db";
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   privateKeyBackups,
   profilePhotos,
   profiles,
   user as userTable,
   verification,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 
 const EMAIL_CODE_IDENTIFIER_PREFIX = "onboarding-email-code:";
 

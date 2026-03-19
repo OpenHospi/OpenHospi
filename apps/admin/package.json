@@ -16,6 +16,7 @@
   "dependencies": {
     "@base-ui/react": "^1.3.0",
     "@icons-pack/react-simple-icons": "^13.13.0",
+    "@openhospi/database": "workspace:*",
     "@openhospi/email": "workspace:*",
     "@openhospi/i18n": "workspace:*",
     "@openhospi/inacademia": "workspace:*",

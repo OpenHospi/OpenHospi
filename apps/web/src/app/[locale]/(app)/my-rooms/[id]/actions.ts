@@ -16,8 +16,8 @@ import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@/lib/db";
-import { roomPhotos, rooms } from "@/lib/db/schema";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession();

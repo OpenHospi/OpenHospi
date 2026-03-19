@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
-import { createDrizzleSupabaseClient } from "@/lib/db";
+import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   activeConsents,
   applications,
@@ -24,7 +24,7 @@ import {
   roomPhotos,
   rooms,
   votes,
-} from "@/lib/db/schema";
+} from "@openhospi/database/schema";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function POST(request: Request) {

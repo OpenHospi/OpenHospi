@@ -8,7 +8,7 @@ import {
   senderKeyDistributions,
   signedPreKeys,
 } from "@openhospi/database/schema";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 
 // ── Device Registration ──
 
@@ -232,6 +232,26 @@ export async function getKeyBackup(userId: string) {
 
 export async function removeKeyBackup(userId: string) {
   await db.delete(privateKeyBackups).where(eq(privateKeyBackups.userId, userId));
+}
+
+// ── Identity Key Queries ──
+
+export async function getIdentityKeysForUsers(userIds: string[]) {
+  if (userIds.length === 0) return [];
+
+  // Query one device per user — latest active device, matching getDevicesForUser pattern.
+  // Use subquery approach since Drizzle query builder doesn't support DISTINCT ON.
+  const results = await db
+    .selectDistinctOn([devices.userId], {
+      userId: devices.userId,
+      identityPublicKey: devices.identityKeyPublic,
+      signingPublicKey: devices.signingKeyPublic,
+    })
+    .from(devices)
+    .where(and(inArray(devices.userId, userIds), eq(devices.isActive, true)))
+    .orderBy(devices.userId, desc(devices.createdAt));
+
+  return results;
 }
 
 // ── Sender Key Distributions ──

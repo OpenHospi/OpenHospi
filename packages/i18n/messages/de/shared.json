@@ -1415,7 +1415,13 @@
         "grant_camera": "Kamera erlauben",
         "open_settings": "Einstellungen \u00f6ffnen",
         "invalid_qr": "Dieser QR-Code ist keine g\u00fcltige OpenHospi-Sicherheitsnummer",
-        "scan_own_qr": "Du hast deinen eigenen QR-Code gescannt"
+        "scan_own_qr": "Du hast deinen eigenen QR-Code gescannt",
+        "mark_verified": "Als verifiziert markieren",
+        "confirm_title": "{name} verifizieren?",
+        "confirm_description": "Hast du diese Sicherheitsnummern mit {name} pers\u00f6nlich oder \u00fcber einen vertrauensw\u00fcrdigen Kanal verglichen?",
+        "try_again": "Erneut versuchen",
+        "done": "Fertig",
+        "close": "Schlie\u00dfen"
       },
       "encryption": {
         "unlock_title": "Entsperre deine Chats",

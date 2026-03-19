@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { Text } from '@/components/ui/text';
 
 type Props = {
+  conversationId: string;
   peerUserId: string;
   peerName: string;
   hasChanged: boolean;
 };
 
-export function KeyChangeBanner({ peerUserId, peerName, hasChanged }: Props) {
+export function KeyChangeBanner({ conversationId, peerUserId, peerName, hasChanged }: Props) {
   const { t } = useTranslation('translation', {
     keyPrefix: 'app.chat.safety_number',
   });
@@ -21,12 +22,7 @@ export function KeyChangeBanner({ peerUserId, peerName, hasChanged }: Props) {
 
   return (
     <Pressable
-      onPress={() =>
-        router.push({
-          pathname: '/(app)/(modals)/verify-identity',
-          params: { peerUserId, peerName },
-        })
-      }
+      onPress={() => router.push(`/chat/${conversationId}/verify/${peerUserId}`)}
       style={{
         flexDirection: 'row',
         alignItems: 'center',

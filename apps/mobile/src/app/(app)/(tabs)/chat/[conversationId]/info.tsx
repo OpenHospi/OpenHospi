@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ban, BellOff, Flag, Shield } from 'lucide-react-native';
+import { Ban, BellOff, ChevronRight, Flag, Shield } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,9 @@ export default function ConversationInfoScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.chat' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tSafetyNumber } = useTranslation('translation', {
+    keyPrefix: 'app.chat.safety_number',
+  });
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const { data: detail } = useConversationDetail(conversationId);
@@ -99,26 +102,48 @@ export default function ConversationInfoScreen() {
         <Text className="text-muted-foreground text-xs font-medium uppercase">
           {t('members')} ({detail.members.length})
         </Text>
-        {detail.members.map((member) => (
-          <View key={member.userId} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <Avatar alt={member.firstName} style={{ width: 32, height: 32 }}>
-              <AvatarFallback>
-                <Text className="text-muted-foreground text-xs font-medium">
-                  {member.firstName.charAt(0).toUpperCase()}
+        {detail.members.map((member) => {
+          const isCurrentUser = member.userId === userId;
+
+          const row = (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <Avatar alt={member.firstName} style={{ width: 32, height: 32 }}>
+                <AvatarFallback>
+                  <Text className="text-muted-foreground text-xs font-medium">
+                    {member.firstName.charAt(0).toUpperCase()}
+                  </Text>
+                </AvatarFallback>
+              </Avatar>
+              <View style={{ flex: 1 }}>
+                <Text className="text-foreground text-sm">
+                  {member.firstName}
+                  {isCurrentUser && (
+                    <Text variant="muted" className="text-xs">
+                      {' '}
+                      ({t('you')})
+                    </Text>
+                  )}
                 </Text>
-              </AvatarFallback>
-            </Avatar>
-            <Text className="text-foreground text-sm">
-              {member.firstName}
-              {member.userId === userId && (
-                <Text variant="muted" className="text-xs">
-                  {' '}
-                  ({t('you')})
-                </Text>
-              )}
-            </Text>
-          </View>
-        ))}
+                {!isCurrentUser && (
+                  <Text variant="muted" className="text-xs">
+                    {tSafetyNumber('title')}
+                  </Text>
+                )}
+              </View>
+              {!isCurrentUser && <ChevronRight size={16} className="text-muted-foreground" />}
+            </View>
+          );
+
+          if (isCurrentUser) return <View key={member.userId}>{row}</View>;
+
+          return (
+            <Pressable
+              key={member.userId}
+              onPress={() => router.push(`/chat/${conversationId}/verify/${member.userId}`)}>
+              {row}
+            </Pressable>
+          );
+        })}
       </View>
 
       {/* Actions */}

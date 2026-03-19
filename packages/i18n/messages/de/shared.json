@@ -57,7 +57,8 @@
       "previous": "Vorherige",
       "delete": "Löschen",
       "skip": "Überspringen",
-      "notSet": "Nicht festgelegt"
+      "notSet": "Nicht festgelegt",
+      "email": "E-Mail"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",

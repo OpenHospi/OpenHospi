@@ -57,7 +57,8 @@
       "previous": "Vorige",
       "delete": "Verwijderen",
       "skip": "Overslaan",
-      "notSet": "Niet ingesteld"
+      "notSet": "Niet ingesteld",
+      "email": "E-mail"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",

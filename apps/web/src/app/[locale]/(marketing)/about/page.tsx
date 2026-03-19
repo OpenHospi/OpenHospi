@@ -1,14 +1,16 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { Locale } from "@openhospi/i18n";
-import { Eye, Target } from "lucide-react";
+import { Eye, Linkedin, Mail, Target } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
 
@@ -33,7 +35,30 @@ interface TeamMember {
   bio: string;
 }
 
-const teamPhotos = ["/team/ruben.webp", "/team/placeholder.svg", "/team/placeholder.svg"];
+interface Social {
+  type: "linkedin" | "github" | "email";
+  url: string;
+}
+
+const teamData: { photo: string; initials: string; socials: Social[] }[] = [
+  {
+    photo: "/team/ruben.webp",
+    initials: "RT",
+    socials: [
+      { type: "linkedin", url: "https://www.linkedin.com/in/rubentalstra/" },
+      { type: "github", url: "https://github.com/rubentalstra" },
+      { type: "email", url: "mailto:ruben@openhospi.nl" },
+    ],
+  },
+  { photo: "/team/placeholder.svg", initials: "SK", socials: [] },
+  { photo: "/team/placeholder.svg", initials: "HB", socials: [] },
+];
+
+const socialIcons = {
+  linkedin: { icon: Linkedin, label: "LinkedIn" },
+  github: { icon: SiGithub, label: "GitHub" },
+  email: { icon: Mail, label: null },
+} as const;
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -41,6 +66,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "about" });
+  const tCommon = await getTranslations({ locale, namespace: "common.labels" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
 
   // Safe: all content from our i18n translations, not user input
@@ -108,26 +134,57 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             {t("team.title")}
           </h2>
           <div className="mx-auto mt-12 grid max-w-4xl gap-8 sm:grid-cols-3">
-            {members.map((member, i) => (
-              <Card key={member.name} className="overflow-hidden p-0">
-                <div className="relative aspect-square">
-                  <Image
-                    src={teamPhotos[i]}
-                    alt={member.name}
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-bold">{member.name}</h3>
-                  <Badge variant="secondary" className="mt-1">
-                    {member.role}
-                  </Badge>
-                  <p className="mt-2 text-sm text-muted-foreground">{member.bio}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {members.map((member, i) => {
+              const data = teamData[i];
+              return (
+                <Card key={member.name} className="text-center">
+                  <CardContent className="flex flex-col items-center gap-4 pt-6">
+                    <Avatar className="size-24">
+                      <AvatarImage src={data.photo} alt={member.name} />
+                      <AvatarFallback className="text-lg">{data.initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-bold">{member.name}</h3>
+                      <Badge variant="secondary">{member.role}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{member.bio}</p>
+                    {data.socials.length > 0 && (
+                      <>
+                        <Separator />
+                        <TooltipProvider>
+                          <div className="flex gap-1">
+                            {data.socials.map((social) => {
+                              const { icon: Icon, label: staticLabel } = socialIcons[social.type];
+                              const label = staticLabel ?? tCommon("email");
+                              const isEmail = social.type === "email";
+                              return (
+                                <Tooltip key={social.type}>
+                                  <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="size-9" asChild>
+                                      <a
+                                        href={social.url}
+                                        aria-label={label}
+                                        {...(!isEmail && {
+                                          target: "_blank",
+                                          rel: "noopener noreferrer",
+                                        })}
+                                      >
+                                        <Icon className="size-4" />
+                                      </a>
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>{label}</TooltipContent>
+                                </Tooltip>
+                              );
+                            })}
+                          </div>
+                        </TooltipProvider>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>

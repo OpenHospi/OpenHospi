@@ -1,5 +1,6 @@
 {
   "buildCommand": "next build",
+  "ignoreCommand": "bash ../../scripts/vercel-ignore.sh apps/web packages/database packages/shared packages/i18n packages/validators packages/crypto packages/inacademia packages/email",
   "crons": [
     {
       "path": "/api/cron/event-reminders",

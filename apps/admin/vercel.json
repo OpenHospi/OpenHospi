@@ -1,3 +1,4 @@
 {
-  "buildCommand": "next build"
+  "buildCommand": "next build",
+  "ignoreCommand": "bash ../../scripts/vercel-ignore.sh apps/admin packages/database packages/shared packages/i18n packages/inacademia packages/email"
 }

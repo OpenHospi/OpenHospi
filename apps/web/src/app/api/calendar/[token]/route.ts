@@ -1,9 +1,9 @@
+import { db } from "@openhospi/database";
+import { calendarTokens, hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema";
 import { computeEndDateTime, generateICSFeed } from "@openhospi/shared/calendar";
 import type { CalendarEvent } from "@openhospi/shared/calendar";
 import { eq, sql } from "drizzle-orm";
 
-import { db } from "@openhospi/database";
-import { calendarTokens, hospiEvents, hospiInvitations, rooms } from "@openhospi/database/schema";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {

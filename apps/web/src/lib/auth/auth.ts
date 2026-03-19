@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 
 import { expo } from "@better-auth/expo";
+import { db } from "@openhospi/database";
+import * as schema from "@openhospi/database/schema";
 import { DEFAULT_LOCALE, type Locale } from "@openhospi/i18n";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -8,8 +10,6 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, bearer, genericOAuth, jwt, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
-import { db } from "@openhospi/database";
-import * as schema from "@openhospi/database/schema";
 import { sendTemplatedEmail } from "@/lib/services/email";
 
 function deriveOnboardingEmailCode(token: string): string {
@@ -36,9 +36,6 @@ function parseVerificationToken(url: string, token?: string): string | null {
 }
 
 function createAuth() {
-  // baseURL is intentionally omitted — derived per-request from
-  // X-Forwarded-Host/Proto (Vercel), falling back to request origin (localhost).
-  // BETTER_AUTH_URL must also be unset on Vercel for this to work.
   return betterAuth({
     secret: process.env.BETTER_AUTH_SECRET ?? "build-placeholder-secret-not-for-production-use",
     database: drizzleAdapter(db, {
@@ -56,7 +53,13 @@ function createAuth() {
       "https://op.srv.inacademia.org",
       "openhospi://",
       ...(process.env.NODE_ENV === "development"
-        ? ["http://localhost:3000", "exp+openhospi://", "exp://", "exp://**"]
+        ? [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "exp+openhospi://",
+            "exp://",
+            "exp://**",
+          ]
         : []),
     ],
     emailVerification: {
@@ -82,7 +85,6 @@ function createAuth() {
           expiresAt: onboardingCodeExpiresAt(),
         });
 
-        // Determine user locale from profile (fall back to nl)
         let locale: Locale = DEFAULT_LOCALE;
         try {
           const [profile] = await db
@@ -93,7 +95,7 @@ function createAuth() {
             locale = profile.preferredLocale;
           }
         } catch {
-          // Profile may not exist yet during onboarding — use default
+          // Profile may not exist yet during onboarding
         }
 
         void sendTemplatedEmail(user.email, "verificationCode", { code }, locale);
@@ -101,7 +103,6 @@ function createAuth() {
       autoSignInAfterVerification: true,
       expiresIn: 3600,
     },
-    accountLinking: { enabled: true, trustedProviders: ["github"] },
     socialProviders: {
       github: {
         clientId: process.env.GITHUB_CLIENT_ID!,
@@ -109,12 +110,11 @@ function createAuth() {
         disableSignUp: process.env.GITHUB_DISABLE_SIGNUP !== "false",
       },
     },
+    accountLinking: { enabled: true, trustedProviders: ["github"] },
     databaseHooks: {
       user: {
         create: {
           before: async (user) => {
-            // Keep real email in dev (GitHub login) or during admin bootstrap.
-            // Normal operation: always replace with placeholder.
             const keepRealEmail =
               process.env.GITHUB_DISABLE_SIGNUP === "false" ||
               process.env.NODE_ENV === "development";
@@ -134,7 +134,6 @@ function createAuth() {
             if (existing) return;
 
             if (process.env.NODE_ENV === "development") {
-              // Dev path: create profile from GitHub data
               const nameParts = (user.name ?? "Dev User").split(" ");
               await db
                 .insert(schema.profiles)
@@ -150,7 +149,6 @@ function createAuth() {
               return;
             }
 
-            // Production path: extract idp_hint from account's ID token
             let entityId = "";
             try {
               const [account] = await db
@@ -164,7 +162,7 @@ function createAuth() {
                 entityId = (payload.idp_hint as string) ?? "";
               }
             } catch {
-              // ID token decode failed — proceed with empty entity ID
+              // ID token decode failed
             }
 
             await db

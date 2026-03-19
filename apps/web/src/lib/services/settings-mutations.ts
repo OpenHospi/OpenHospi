@@ -1,3 +1,12 @@
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import {
+  activeConsents,
+  consentRecords,
+  dataRequests,
+  processingRestrictions,
+  profiles,
+  user,
+} from "@openhospi/database/schema";
 import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
@@ -8,16 +17,6 @@ import {
   type SubmitDataRequestData,
 } from "@openhospi/validators";
 import { and, desc, eq, isNull } from "drizzle-orm";
-
-import { db, createDrizzleSupabaseClient } from "@openhospi/database";
-import {
-  activeConsents,
-  consentRecords,
-  dataRequests,
-  processingRestrictions,
-  profiles,
-  user,
-} from "@openhospi/database/schema";
 
 const PURPOSE_LEGAL_BASIS: Record<ConsentPurpose, LegalBasis> = {
   essential: "contract",

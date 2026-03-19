@@ -1,13 +1,13 @@
 "use server";
 
+import { db } from "@openhospi/database";
+import { activeConsents, consentRecords } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
 import { getSession } from "@/lib/auth/server";
-import { db } from "@openhospi/database";
-import { activeConsents, consentRecords } from "@openhospi/database/schema";
 
 type ConsentEntry = {
   purpose: ConsentPurpose;

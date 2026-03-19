@@ -1,7 +1,3 @@
-import { and, eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
-
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   conversationMembers,
@@ -10,6 +6,10 @@ import {
   messages,
   senderKeyDistributions,
 } from "@openhospi/database/schema";
+import { and, eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
+import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {

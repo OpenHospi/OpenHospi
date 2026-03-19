@@ -1,8 +1,3 @@
-import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
-
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   activeConsents,
@@ -25,6 +20,11 @@ import {
   rooms,
   votes,
 } from "@openhospi/database/schema";
+import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
+import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function POST(request: Request) {

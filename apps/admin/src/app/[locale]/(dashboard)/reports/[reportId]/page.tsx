@@ -8,11 +8,11 @@ import { getFormatter, getTranslations, setRequestLocale } from "next-intl/serve
 
 import { Main } from "@/components/main";
 import { StorageImage } from "@/components/storage-image";
-import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { UserAvatar } from "@/components/user-avatar";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 

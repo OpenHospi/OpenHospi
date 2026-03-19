@@ -1,10 +1,9 @@
+import { db } from "@openhospi/database";
+import * as schema from "@openhospi/database/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
-
-import { db } from "@openhospi/database";
-import * as schema from "@openhospi/database/schema";
 
 function createAuth() {
   return betterAuth({

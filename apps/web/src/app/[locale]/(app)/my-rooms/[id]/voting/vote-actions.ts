@@ -1,10 +1,10 @@
 "use server";
 
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { votes } from "@openhospi/database/schema";
 import { and, eq } from "drizzle-orm";
 
 import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@openhospi/database";
-import { votes } from "@openhospi/database/schema";
 
 export async function submitVotes(
   roomId: string,

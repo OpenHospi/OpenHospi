@@ -1,6 +1,5 @@
-import { type AnyColumn, eq, sql, type SQL } from "drizzle-orm";
-
 import { blocks } from "@openhospi/database/schema";
+import { type AnyColumn, eq, sql, type SQL } from "drizzle-orm";
 
 /**
  * Returns a SQL subquery that selects all user IDs blocked by or blocking the current user.

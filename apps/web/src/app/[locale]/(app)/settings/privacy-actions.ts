@@ -1,5 +1,12 @@
 "use server";
 
+import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import {
+  activeConsents,
+  consentRecords,
+  dataRequests,
+  processingRestrictions,
+} from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
 import {
@@ -13,13 +20,6 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { requireSession } from "@/lib/auth/server";
-import { db, createDrizzleSupabaseClient } from "@openhospi/database";
-import {
-  activeConsents,
-  consentRecords,
-  dataRequests,
-  processingRestrictions,
-} from "@openhospi/database/schema";
 
 const PURPOSE_LEGAL_BASIS: Record<ConsentPurpose, LegalBasis> = {
   essential: "contract",

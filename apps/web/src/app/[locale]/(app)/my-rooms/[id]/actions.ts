@@ -1,5 +1,7 @@
 "use server";
 
+import { createDrizzleSupabaseClient } from "@openhospi/database";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import {
   GenderPreference,
@@ -16,8 +18,6 @@ import { getLocale } from "next-intl/server";
 
 import { redirect } from "@/i18n/navigation-app";
 import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
-import { createDrizzleSupabaseClient } from "@openhospi/database";
-import { roomPhotos, rooms } from "@openhospi/database/schema";
 
 export async function updateRoom(roomId: string, data: EditRoomData) {
   const session = await requireSession();

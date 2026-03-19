@@ -11,10 +11,9 @@ const appMiddleware = createMiddleware(appRouting);
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
 const MARKETING_URL = process.env.NEXT_PUBLIC_MARKETING_URL;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
-const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL;
 
-type Subdomain = "www" | "app" | "admin";
-type RouteType = "app" | "auth" | "admin" | "marketing";
+type Subdomain = "www" | "app";
+type RouteType = "app" | "auth" | "marketing";
 
 const appPaths = [
   "/discover",
@@ -26,14 +25,12 @@ const appPaths = [
   "/join",
 ];
 const authPaths = ["/login", "/onboarding", "/privacy-accept"];
-const adminPaths = ["/admin"];
 
 function getSubdomain(host: string): Subdomain | null {
   if (!ROOT_DOMAIN) return null;
   const lower = host.split(":")[0].toLowerCase();
   if (lower === ROOT_DOMAIN || lower === `www.${ROOT_DOMAIN}`) return "www";
   if (lower === `app.${ROOT_DOMAIN}`) return "app";
-  if (lower === `admin.${ROOT_DOMAIN}`) return "admin";
   return null;
 }
 
@@ -56,35 +53,21 @@ function matchesPaths(path: string, paths: string[]): boolean {
 function classifyBarePath(barePath: string): RouteType {
   if (matchesPaths(barePath, appPaths)) return "app";
   if (matchesPaths(barePath, authPaths)) return "auth";
-  if (matchesPaths(barePath, adminPaths)) return "admin";
   return "marketing";
 }
 
 function isAppRoute(routeType: RouteType): boolean {
-  return routeType === "app" || routeType === "auth" || routeType === "admin";
+  return routeType === "app" || routeType === "auth";
 }
 
-// Maps each subdomain to which route types should redirect, and where
 const redirectMap: Record<Subdomain, Partial<Record<RouteType, string | undefined>>> = {
   www: {
     app: APP_URL,
     auth: APP_URL,
-    admin: ADMIN_URL,
   },
   app: {
     marketing: MARKETING_URL,
-    admin: ADMIN_URL,
   },
-  admin: {
-    app: APP_URL,
-    marketing: MARKETING_URL,
-  },
-};
-
-// Default landing paths for subdomains that shouldn't serve root
-const rootRedirects: Partial<Record<Subdomain, string>> = {
-  app: "/discover",
-  admin: "/admin",
 };
 
 function enforceSubdomain(
@@ -95,9 +78,9 @@ function enforceSubdomain(
   const barePath = getBarePath(pathname);
   const locale = getLocaleFromPath(pathname);
 
-  // Redirect root path on app/admin subdomains to their landing page
-  if ((barePath === "/" || barePath === "") && rootRedirects[subdomain]) {
-    return NextResponse.redirect(new URL(rootRedirects[subdomain]!, requestUrl));
+  // Redirect root on app subdomain to /discover
+  if (subdomain === "app" && (barePath === "/" || barePath === "")) {
+    return NextResponse.redirect(new URL("/discover", requestUrl));
   }
 
   // Redirect mismatched route types to the correct subdomain
@@ -105,10 +88,8 @@ function enforceSubdomain(
   const targetUrl = redirectMap[subdomain][routeType];
   if (targetUrl) {
     if (isAppRoute(routeType)) {
-      // App routes: no locale prefix
       return NextResponse.redirect(new URL(barePath, targetUrl));
     }
-    // Marketing routes: keep locale prefix
     const prefixedPath = locale ? `/${locale}${barePath}` : barePath;
     return NextResponse.redirect(new URL(prefixedPath, targetUrl));
   }
@@ -121,15 +102,7 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   const host = request.headers.get("host") ?? "";
   const subdomain = getSubdomain(host);
 
-  // Subdomain enforcement (production only)
   if (subdomain) {
-    // Rewrite /login on admin subdomain to serve the admin login page (GitHub)
-    // instead of the default auth login page (InAcademia)
-    if (subdomain === "admin" && getBarePath(pathname) === "/login") {
-      request.nextUrl.pathname = "/admin/login";
-      return appMiddleware(request);
-    }
-
     const redirect = enforceSubdomain(subdomain, pathname, request.url);
     if (redirect) return redirect;
   }
@@ -137,7 +110,6 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   const barePath = getBarePath(pathname);
   const routeType = classifyBarePath(barePath);
 
-  // Auth check: protected app routes require session cookie
   if (routeType === "app" && !request.cookies.get(SESSION_COOKIE_NAME)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -150,10 +122,6 @@ export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
 }
 
 export const config = {
-  // Match all pathnames except:
-  // - /api, /trpc, /_next, /_vercel
-  // - files with extensions (e.g. favicon.ico, icon.svg)
-  // - metadata routes (apple-icon, opengraph-image, sitemap, robots, manifest)
   matcher:
     "/((?!api|trpc|_next|_vercel|apple-icon|opengraph-image|sitemap|robots|manifest|.*\\..*).*)",
 };

@@ -24,10 +24,15 @@ if [ -z "${VERCEL_GIT_PREVIOUS_SHA:-}" ]; then
   exit 1
 fi
 
-# Verify the previous SHA actually exists in git history
-# (first deploy of a new project may reference an unknown commit)
+# Vercel uses shallow clones — fetch enough history to compare
+# If the previous SHA isn't reachable, deepen until it is (max 100 commits)
 if ! git cat-file -e "$VERCEL_GIT_PREVIOUS_SHA" 2>/dev/null; then
-  echo "→ Previous SHA not found in git history — proceeding with build"
+  echo "→ Fetching git history to reach previous deployment..."
+  git fetch --deepen=100 2>/dev/null || true
+fi
+
+if ! git cat-file -e "$VERCEL_GIT_PREVIOUS_SHA" 2>/dev/null; then
+  echo "→ Previous SHA $VERCEL_GIT_PREVIOUS_SHA not reachable — proceeding with build"
   exit 1
 fi
 
@@ -39,6 +44,15 @@ if [ -z "$DIRS" ]; then
 fi
 
 echo "→ Comparing $VERCEL_GIT_PREVIOUS_SHA..HEAD"
+
+# Count total changed files between the two SHAs to sanity-check the diff works
+TOTAL_CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" HEAD 2>/dev/null | wc -l | tr -d ' ')
+echo "→ Total files changed since last deploy: $TOTAL_CHANGED"
+
+if [ "$TOTAL_CHANGED" = "0" ]; then
+  echo "→ No files changed at all — skipping build"
+  exit 0
+fi
 
 # Always rebuild if lockfile or root config changed (dependency updates, version bumps)
 ROOT_FILES="pnpm-lock.yaml package.json pnpm-workspace.yaml"
@@ -52,14 +66,9 @@ done
 echo "→ Checking for changes in: $DIRS"
 
 for dir in $DIRS; do
-  # If the directory didn't exist at the previous SHA, it's new — must build
-  if ! git rev-parse --verify "$VERCEL_GIT_PREVIOUS_SHA:$dir" &>/dev/null; then
-    echo "→ $dir is new (didn't exist at previous deploy) — proceeding with build"
-    exit 1
-  fi
-
-  if ! git diff --quiet "$VERCEL_GIT_PREVIOUS_SHA" HEAD -- "$dir"; then
-    echo "→ Changes detected in $dir — proceeding with build"
+  CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" HEAD -- "$dir" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$CHANGED" != "0" ]; then
+    echo "→ $CHANGED file(s) changed in $dir — proceeding with build"
     exit 1
   fi
 done

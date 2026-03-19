@@ -40,14 +40,14 @@ catalog:
   better-auth: ^1.5.5
   "@better-auth/expo": ^1.5.5
   "@better-auth/drizzle-adapter": ^1.5.5
-  "@supabase/supabase-js": ^2.99.1
+  "@supabase/supabase-js": ^2.99.3
   next-intl: ^4.8.3
 
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   tailwind-merge: ^3.5.0
-  tailwindcss: ^4.2.1
+  tailwindcss: ^4.2.2
   "@tailwindcss/postcss": ^4
 
   # ── Forms ──

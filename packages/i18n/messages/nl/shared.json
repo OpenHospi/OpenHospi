@@ -1385,6 +1385,8 @@
       "unmute_conversation": "Gesprek ontdempen",
       "verified": "Geverifieerd",
       "you": "jij",
+      "date_today": "Vandaag",
+      "date_yesterday": "Gisteren",
       "safety_number": {
         "title": "Veiligheidsnummer",
         "description": "Vergelijk dit nummer met {name} om te controleren of je gesprek end-to-end versleuteld is.",

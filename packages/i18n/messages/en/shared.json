@@ -1386,6 +1386,8 @@
       "unmute_conversation": "Unmute Conversation",
       "verified": "Verified",
       "you": "you",
+      "date_today": "Today",
+      "date_yesterday": "Yesterday",
       "safety_number": {
         "title": "Safety number",
         "description": "Compare this number with {name} to verify your conversation is end-to-end encrypted.",

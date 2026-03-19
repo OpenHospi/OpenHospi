@@ -1385,6 +1385,8 @@
       "unmute_conversation": "Unterhaltung entstummschalten",
       "verified": "Verifiziert",
       "you": "du",
+      "date_today": "Heute",
+      "date_yesterday": "Gestern",
       "safety_number": {
         "title": "Sicherheitsnummer",
         "description": "Vergleiche diese Nummer mit {name}, um zu \u00fcberpr\u00fcfen, ob euer Gespr\u00e4ch Ende-zu-Ende-verschl\u00fcsselt ist.",

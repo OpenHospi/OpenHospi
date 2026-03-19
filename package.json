@@ -16,6 +16,8 @@
     "dev:mobile:ios": "pnpm --filter @openhospi/mobile ios",
     "dev:mobile:web": "pnpm --filter @openhospi/mobile web",
     "build:web": "pnpm --filter @openhospi/web build",
+    "dev:admin": "pnpm --filter @openhospi/admin dev",
+    "build:admin": "pnpm --filter @openhospi/admin build",
     "dev:docs": "pnpm --filter @openhospi/docs dev",
     "build:docs": "pnpm --filter @openhospi/docs build",
     "lint": "pnpm -r lint",

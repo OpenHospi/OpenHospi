@@ -1,0 +1,34 @@
+"use client";
+
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useTransition } from "react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth/client";
+
+export function LoginButton() {
+  const t = useTranslations("admin.login");
+  const [isPending, startTransition] = useTransition();
+
+  function handleLogin() {
+    startTransition(async () => {
+      const result = await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+      if (result.error) {
+        toast.error(t("error"));
+      }
+    });
+  }
+
+  return (
+    <Button onClick={handleLogin} disabled={isPending} className="w-full" size="lg">
+      {isPending ? <Loader2 className="animate-spin" /> : <SiGithub color="currentColor" />}
+      {t("githubButton")}
+    </Button>
+  );
+}

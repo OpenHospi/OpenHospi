@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@openhospi/eslint-config": "workspace:*",
-    "@react-email/preview-server": "5.2.9",
+    "@react-email/preview-server": "5.2.10",
     "@types/react": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",

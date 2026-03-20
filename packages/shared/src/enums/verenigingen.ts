@@ -1,4 +1,4 @@
-import { defineEnum } from "./define-enum";
+import { defineEnum } from "./utils/define-enum";
 
 // ─── Verenigingen (proper nouns — stay as-is) ─────────────────────────────
 

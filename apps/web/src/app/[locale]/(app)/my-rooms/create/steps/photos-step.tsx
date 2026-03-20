@@ -6,6 +6,7 @@ import {
   ROOM_PHOTO_SLOTS,
   STORAGE_BUCKET_ROOM_PHOTOS,
 } from "@openhospi/shared/constants";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useTransition } from "react";
@@ -60,7 +61,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
       formData.set("slot", String(slot));
       const result = await saveRoomPhoto(formData);
       if (result.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tErrors("processingRestricted"));
         } else {
           toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
@@ -76,7 +77,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
     async (slot: number): Promise<boolean> => {
       const result = await deleteRoomPhoto(roomId, slot);
       if (result?.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tErrors("processingRestricted"));
         } else {
           toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
@@ -133,7 +134,7 @@ export function PhotosStep({ roomId, photos, onPhotosChange, onBack, onPublished
     startTransition(async () => {
       const result = await publishRoom(roomId);
       if (result?.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tErrors("processingRestricted"));
         } else {
           toast.error(t(`status.${result.error}` as Parameters<typeof t>[0]));

@@ -2,46 +2,14 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 
 import { api } from '@/lib/api-client';
 
+import type {
+  ConversationDetail,
+  ConversationSummary,
+  MessageRow,
+  MessagesPage,
+} from '@openhospi/shared/api-types';
+
 import { queryKeys } from './keys';
-
-// ── Types ──
-
-type ConversationSummary = {
-  id: string;
-  roomId: string;
-  roomTitle: string;
-  seekerUserId: string;
-  createdAt: string;
-  unreadCount: number;
-  lastMessageAt: string;
-  members: { userId: string; firstName: string }[];
-  roomPhotoUrl: string | null;
-};
-
-type ConversationDetail = {
-  id: string;
-  roomId: string;
-  roomTitle: string;
-  seekerUserId: string;
-  createdAt: string;
-  members: { userId: string; firstName: string }[];
-};
-
-type MessageRow = {
-  id: string;
-  conversationId: string;
-  senderId: string;
-  senderDeviceId: string | null;
-  messageType: string;
-  createdAt: string;
-  payload: string | null;
-  senderFirstName: string | null;
-};
-
-type MessagesPage = {
-  messages: MessageRow[];
-  nextCursor: string | null;
-};
 
 // ── Hooks ──
 

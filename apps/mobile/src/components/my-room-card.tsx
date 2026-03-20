@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { MyRoomSummary } from '@/services/types';
+import type { MyRoomSummary } from '@openhospi/shared/api-types';
 
 const STATUS_BADGE_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   [RoomStatus.active]: 'default',

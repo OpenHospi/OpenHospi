@@ -8,7 +8,7 @@ import { Text } from '@/components/ui/text';
 import { RoomCard } from '@/components/room-card';
 import { useDiscoverFilters } from '@/context/discover-filters';
 import { useRooms } from '@/services/rooms';
-import type { DiscoverRoom } from '@/services/types';
+import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
 function DiscoverHeader({
   searchPlaceholder,

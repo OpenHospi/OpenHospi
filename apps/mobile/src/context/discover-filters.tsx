@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-import type { DiscoverFilters } from '@/services/types';
+import type { DiscoverFilters } from '@openhospi/shared/api-types';
 
 type DiscoverFiltersContextValue = {
   filters: DiscoverFilters;

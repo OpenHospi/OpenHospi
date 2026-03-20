@@ -9,6 +9,7 @@ import {
 } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
+import { CommonError } from "@openhospi/shared/error-codes";
 import {
   requestProcessingRestrictionSchema,
   submitDataRequestSchema,
@@ -84,7 +85,7 @@ export async function getConsentHistory() {
 export async function submitDataRequest(data: SubmitDataRequestData) {
   const session = await requireSession();
   const parsed = submitDataRequestSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx.insert(dataRequests).values({
@@ -101,7 +102,7 @@ export async function submitDataRequest(data: SubmitDataRequestData) {
 export async function requestProcessingRestriction(data: RequestProcessingRestrictionData) {
   const session = await requireSession();
   const parsed = requestProcessingRestrictionSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(session.user.id).rls((tx) =>
     tx

@@ -3,16 +3,9 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/lib/db';
 import { keyVerifications } from '@/lib/db/schema';
+import type { IdentityKeyResult } from '@openhospi/shared/api-types';
 import { api } from '@/lib/api-client';
 import { queryKeys } from './keys';
-
-// ── Types ──
-
-type IdentityKeyResult = {
-  userId: string;
-  identityPublicKey: string;
-  signingPublicKey: string;
-};
 
 // ── SQLite operations ──
 

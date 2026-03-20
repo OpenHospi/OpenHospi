@@ -1,3 +1,4 @@
+import { CommonError } from "@openhospi/shared/error-codes";
 import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
@@ -11,7 +12,7 @@ export async function POST(
   try {
     const session = await requireApiSession(request);
     if (await isRestricted(session.user.id)) {
-      return apiError("Processing restricted", 403, "PROCESSING_RESTRICTED");
+      return apiError("Processing restricted", 403, CommonError.processing_restricted);
     }
 
     const { id, applicantUserId } = await params;

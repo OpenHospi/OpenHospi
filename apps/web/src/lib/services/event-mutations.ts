@@ -7,6 +7,7 @@ import {
   INVITABLE_APPLICATION_STATUSES,
   isValidApplicationTransition,
 } from "@openhospi/shared/enums";
+import { CommonError, EventError } from "@openhospi/shared/error-codes";
 import type { CreateEventData } from "@openhospi/validators";
 import { createEventSchema } from "@openhospi/validators";
 import { and, eq, inArray, ne, sql } from "drizzle-orm";
@@ -17,7 +18,7 @@ import { notifyUser } from "@/lib/queries/notifications";
 
 export async function createEventForUser(userId: string, roomId: string, data: CreateEventData) {
   const parsed = createEventSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireHousemate(roomId, userId);
 
@@ -51,7 +52,7 @@ export async function updateEventForUser(
   data: CreateEventData,
 ) {
   const parsed = createEventSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireHousemate(roomId, userId);
 
@@ -127,9 +128,9 @@ export async function batchInviteApplicantsForUser(
 ) {
   await requireHousemate(roomId, userId);
 
-  if (applicationIds.length === 0) return { error: "no_applications" as const };
+  if (applicationIds.length === 0) return { error: EventError.no_applications };
   if (applicationIds.length > MAX_INVITATIONS_PER_EVENT)
-    return { error: "too_many_invitations" as const };
+    return { error: EventError.too_many_invitations };
 
   const invitedCount = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [event] = await tx
@@ -220,7 +221,7 @@ export async function removeInvitationForUser(
     return true;
   });
 
-  if (!deleted) return { error: "not_found" as const };
+  if (!deleted) return { error: CommonError.not_found };
 
   return { success: true };
 }

@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Text } from '@/components/ui/text';
 import { useSubmitAbout } from '@/services/onboarding';
-import type { ProfileWithPhotos } from '@/services/types';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 import type { StepHandle } from '@/components/onboarding-types';
 

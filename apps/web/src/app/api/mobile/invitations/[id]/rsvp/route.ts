@@ -1,3 +1,4 @@
+import { CommonError } from "@openhospi/shared/error-codes";
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   applications,
@@ -19,7 +20,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   try {
     const session = await requireApiSession(request);
     if (await isRestricted(session.user.id)) {
-      return apiError("Processing restricted", 403, "PROCESSING_RESTRICTED");
+      return apiError("Processing restricted", 403, CommonError.processing_restricted);
     }
 
     const { id: invitationId } = await params;

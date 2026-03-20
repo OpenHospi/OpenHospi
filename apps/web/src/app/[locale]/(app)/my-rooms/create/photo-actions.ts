@@ -1,5 +1,6 @@
 "use server";
 
+import { CommonError } from "@openhospi/shared/error-codes";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
@@ -20,7 +21,7 @@ export async function saveRoomPhoto(formData: FormData) {
   const roomId = formData.get("roomId") as string | null;
   const slot = Number(formData.get("slot"));
 
-  if (!file || !roomId) return { error: "uploadFailed" as const };
+  if (!file || !roomId) return { error: CommonError.upload_failed };
 
   const result = await saveRoomPhotoForUser(userId, file, roomId, slot);
   if ("photo" in result) revalidatePath(`/my-rooms/${roomId}`);

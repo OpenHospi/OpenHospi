@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useCancelEvent, useEventDetail } from '@/services/my-rooms';
-import type { MobileEventInvitee } from '@/services/types';
+import type { EventInvitee } from '@openhospi/shared/api-types';
 
 const RSVP_BADGE_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   attending: 'default',
@@ -52,7 +52,7 @@ export default function EventDetailScreen() {
     ]);
   };
 
-  const renderInvitee = ({ item }: { item: MobileEventInvitee }) => {
+  const renderInvitee = ({ item }: { item: EventInvitee }) => {
     const avatarUri = item.avatarUrl
       ? getStoragePublicUrl(item.avatarUrl, 'profile-photos')
       : undefined;

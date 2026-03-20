@@ -10,7 +10,7 @@ import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { UserApplication } from '@/services/types';
+import type { UserApplication } from '@openhospi/shared/api-types';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });

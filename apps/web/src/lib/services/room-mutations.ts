@@ -9,6 +9,7 @@ import {
   RoomStatus,
   UtilitiesIncluded,
 } from "@openhospi/shared/enums";
+import { CommonError, RoomError } from "@openhospi/shared/error-codes";
 import type {
   EditRoomData,
   RoomBasicInfoData,
@@ -35,11 +36,11 @@ import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function createHouseAndDraft(userId: string, name: string) {
   if (!(await checkRateLimit(rateLimiters.createRoom, userId))) {
-    return { error: "RATE_LIMITED" as const };
+    return { error: CommonError.rate_limited };
   }
 
   if (!name || name.trim().length < 2) {
-    return { error: "INVALID_NAME" as const };
+    return { error: RoomError.invalid_name };
   }
 
   const houseId = crypto.randomUUID();
@@ -63,13 +64,13 @@ export async function createHouseAndDraft(userId: string, name: string) {
     return { id: roomId };
   } catch (e: unknown) {
     console.error(e);
-    return { error: "createFailed" as const };
+    return { error: RoomError.create_failed };
   }
 }
 
 export async function createDraftForHouse(userId: string, houseId: string) {
   if (!(await checkRateLimit(rateLimiters.createRoom, userId))) {
-    return { error: "RATE_LIMITED" as const };
+    return { error: CommonError.rate_limited };
   }
 
   const membership = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
@@ -87,7 +88,7 @@ export async function createDraftForHouse(userId: string, houseId: string) {
   });
 
   if (!membership) {
-    return { error: "NO_HOUSE" as const };
+    return { error: RoomError.no_house };
   }
 
   try {
@@ -96,7 +97,7 @@ export async function createDraftForHouse(userId: string, houseId: string) {
     return { id: roomId };
   } catch (e: unknown) {
     console.error(e);
-    return { error: "createFailed" as const };
+    return { error: RoomError.create_failed };
   }
 }
 
@@ -104,7 +105,7 @@ export async function createDraftForHouse(userId: string, houseId: string) {
 
 export async function saveRoomBasicInfo(userId: string, roomId: string, data: RoomBasicInfoData) {
   const parsed = roomBasicInfoSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -142,7 +143,7 @@ export async function saveRoomBasicInfo(userId: string, roomId: string, data: Ro
 
 export async function saveRoomDetails(userId: string, roomId: string, data: RoomDetailsData) {
   const parsed = roomDetailsSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -179,7 +180,7 @@ export async function saveRoomPreferences(
   data: RoomPreferencesData,
 ) {
   const parsed = roomPreferencesSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -211,7 +212,7 @@ export async function publishRoomForUser(userId: string, roomId: string) {
       .from(roomPhotos)
       .where(eq(roomPhotos.roomId, roomId));
     if (photoCount.count === 0) {
-      return { error: "publishError" as const };
+      return { error: RoomError.publish_error };
     }
 
     await tx
@@ -227,7 +228,7 @@ export async function publishRoomForUser(userId: string, roomId: string) {
 
 export async function updateRoomForUser(userId: string, roomId: string, data: EditRoomData) {
   const parsed = editRoomSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -285,7 +286,7 @@ export async function updateRoomStatusForUser(userId: string, roomId: string, st
     const current = room?.status as RoomStatus;
 
     if (!isValidRoomTransition(current, status as RoomStatus)) {
-      return { error: "invalidTransition" as const };
+      return { error: CommonError.invalid_transition };
     }
 
     if (current === RoomStatus.draft && status === RoomStatus.active) {
@@ -293,7 +294,7 @@ export async function updateRoomStatusForUser(userId: string, roomId: string, st
         .select({ count: count() })
         .from(roomPhotos)
         .where(eq(roomPhotos.roomId, roomId));
-      if (photoCount.count === 0) return { error: "publishError" as const };
+      if (photoCount.count === 0) return { error: RoomError.publish_error };
     }
 
     await tx
@@ -346,7 +347,7 @@ export async function updateShareLinkSettingsForUser(
   data: ShareLinkSettingsData,
 ) {
   const parsed = shareLinkSettingsSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -373,8 +374,8 @@ export async function saveRoomPhotoForUser(
   roomId: string,
   slot: number,
 ) {
-  if (!file) return { error: "uploadFailed" as const };
-  if (slot < 1 || slot > 10) return { error: "uploadFailed" as const };
+  if (!file) return { error: CommonError.upload_failed };
+  if (slot < 1 || slot > 10) return { error: CommonError.upload_failed };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -401,12 +402,12 @@ export async function saveRoomPhotoForUser(
   } catch (e: unknown) {
     if (url) await deletePhotoFromStorage(url).catch(() => {});
     console.error(e);
-    return { error: "uploadFailed" as const };
+    return { error: CommonError.upload_failed };
   }
 }
 
 export async function deleteRoomPhotoForUser(userId: string, roomId: string, slot: number) {
-  if (slot < 1 || slot > 10) return { error: "deleteFailed" as const };
+  if (slot < 1 || slot > 10) return { error: CommonError.delete_failed };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -418,7 +419,7 @@ export async function deleteRoomPhotoForUser(userId: string, roomId: string, slo
         .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
     );
 
-    if (!photo) return { error: "deleteFailed" as const };
+    if (!photo) return { error: CommonError.delete_failed };
 
     await deletePhotoFromStorage(photo.url);
 
@@ -429,7 +430,7 @@ export async function deleteRoomPhotoForUser(userId: string, roomId: string, slo
     return { success: true };
   } catch (e: unknown) {
     console.error(e);
-    return { error: "deleteFailed" as const };
+    return { error: CommonError.delete_failed };
   }
 }
 
@@ -439,11 +440,11 @@ export async function updatePhotoCaptionForUser(
   slot: number,
   caption: string | null,
 ) {
-  if (slot < 1 || slot > 10) return { error: "invalidData" as const };
+  if (slot < 1 || slot > 10) return { error: CommonError.invalid_data };
 
   if (caption !== null) {
     const parsed = roomPhotoCaptionSchema.safeParse({ caption });
-    if (!parsed.success) return { error: "invalidData" as const };
+    if (!parsed.success) return { error: CommonError.invalid_data };
   }
 
   await requireRoomOwnership(roomId, userId);
@@ -459,7 +460,7 @@ export async function updatePhotoCaptionForUser(
     return { success: true };
   } catch (e: unknown) {
     console.error(e);
-    return { error: "uploadFailed" as const };
+    return { error: CommonError.upload_failed };
   }
 }
 
@@ -469,7 +470,8 @@ export async function reorderRoomPhotosForUser(
   swaps: { photoId: string; newSlot: number }[],
 ) {
   if (swaps.length === 0) return { success: true };
-  if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 10)) return { error: "uploadFailed" as const };
+  if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 10))
+    return { error: CommonError.upload_failed };
 
   await requireRoomOwnership(roomId, userId);
 
@@ -502,6 +504,6 @@ export async function reorderRoomPhotosForUser(
     return { success: true };
   } catch (e: unknown) {
     console.error(e);
-    return { error: "uploadFailed" as const };
+    return { error: CommonError.upload_failed };
   }
 }

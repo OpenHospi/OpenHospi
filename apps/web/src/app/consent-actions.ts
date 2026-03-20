@@ -4,6 +4,7 @@ import { db } from "@openhospi/database";
 import { activeConsents, consentRecords } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
@@ -17,7 +18,7 @@ type ConsentEntry = {
 
 export async function recordConsent(consents: ConsentEntry[]) {
   const session = await getSession();
-  if (!session) return { error: "notAuthenticated" as const };
+  if (!session) return { error: CommonError.not_authenticated };
 
   const h = await headers();
   const ipAddress = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;

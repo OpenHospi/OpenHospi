@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 import { useSession } from '@/lib/auth-client';
 import { useOnboardingStatus } from '@/services/onboarding';
-import type { OnboardingStatus } from '@/services/types';
+import type { OnboardingStatus } from '@openhospi/shared/api-types';
 
 type SessionContextValue = {
   session: ReturnType<typeof useSession>['data'];

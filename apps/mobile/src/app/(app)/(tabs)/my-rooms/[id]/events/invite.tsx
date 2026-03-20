@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useBatchInvite, useRoomApplicants } from '@/services/my-rooms';
-import type { MobileRoomApplicant } from '@/services/types';
+import type { RoomApplicant } from '@openhospi/shared/api-types';
 
 export default function InviteApplicantsScreen() {
   const { id, eventId } = useLocalSearchParams<{ id: string; eventId: string }>();
@@ -76,7 +76,7 @@ export default function InviteApplicantsScreen() {
     );
   }
 
-  const renderApplicant = ({ item }: { item: MobileRoomApplicant }) => {
+  const renderApplicant = ({ item }: { item: RoomApplicant }) => {
     const avatarUri = item.avatarUrl
       ? getStoragePublicUrl(item.avatarUrl, 'profile-photos')
       : undefined;

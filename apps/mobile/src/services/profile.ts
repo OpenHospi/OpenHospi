@@ -6,7 +6,7 @@ import { api, ApiError } from '@/lib/api-client';
 import { API_BASE_URL, STORAGE_PREFIX } from '@/lib/constants';
 
 import { queryKeys } from './keys';
-import type { ProfileWithPhotos } from './types';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 const COOKIE_STORE_KEY = `${STORAGE_PREFIX}_cookie`;
 

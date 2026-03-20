@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useMarkApplicationsSeen, useRoomApplicants } from '@/services/my-rooms';
-import type { MobileRoomApplicant } from '@/services/types';
+import type { RoomApplicant } from '@openhospi/shared/api-types';
 
 const STATUS_BADGE_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   sent: 'outline',
@@ -60,7 +60,7 @@ export default function ApplicantsScreen() {
     );
   }
 
-  const renderApplicant = ({ item }: { item: MobileRoomApplicant }) => {
+  const renderApplicant = ({ item }: { item: RoomApplicant }) => {
     const avatarUri = item.avatarUrl
       ? getStoragePublicUrl(item.avatarUrl, 'profile-photos')
       : undefined;

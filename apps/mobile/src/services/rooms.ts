@@ -3,7 +3,11 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import { api } from '@/lib/api-client';
 
 import { queryKeys } from './keys';
-import type { DiscoverFilters, DiscoverResult, RoomDetailResponse } from './types';
+import type {
+  DiscoverFilters,
+  DiscoverResult,
+  RoomDetailResponse,
+} from '@openhospi/shared/api-types';
 
 function buildRoomQueryString(
   filters: DiscoverFilters,

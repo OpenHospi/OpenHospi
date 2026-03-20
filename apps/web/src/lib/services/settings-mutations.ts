@@ -1,4 +1,4 @@
-import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import { createDrizzleSupabaseClient, db } from "@openhospi/database";
 import {
   activeConsents,
   consentRecords,
@@ -10,6 +10,7 @@ import {
 import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
 import type { ConsentPurpose, LegalBasis } from "@openhospi/shared/enums";
+import { CommonError, SettingsError } from "@openhospi/shared/error-codes";
 import {
   requestProcessingRestrictionSchema,
   submitDataRequestSchema,
@@ -63,7 +64,7 @@ export async function getActiveConsentsForUser(userId: string) {
 
 export async function submitDataRequestForUser(userId: string, data: SubmitDataRequestData) {
   const parsed = submitDataRequestSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.insert(dataRequests).values({
@@ -81,7 +82,7 @@ export async function requestProcessingRestrictionForUser(
   data: RequestProcessingRestrictionData,
 ) {
   const parsed = requestProcessingRestrictionSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
@@ -103,7 +104,7 @@ export async function requestProcessingRestrictionForUser(
 
 export async function updatePreferredLocaleForUser(userId: string, locale: Locale) {
   if (!SUPPORTED_LOCALES.includes(locale)) {
-    return { error: "INVALID_LOCALE" as const };
+    return { error: SettingsError.invalid_locale };
   }
 
   await createDrizzleSupabaseClient(userId).rls((tx) =>

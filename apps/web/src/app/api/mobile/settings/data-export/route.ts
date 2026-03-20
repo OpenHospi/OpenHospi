@@ -1,3 +1,4 @@
+import { CommonError } from "@openhospi/shared/error-codes";
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   activeConsents,
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     const userId = session.user.id;
 
     if (!(await checkRateLimit(rateLimiters.exportData, userId))) {
-      return apiError("Rate limited", 429, "RATE_LIMITED");
+      return apiError("Rate limited", 429, CommonError.rate_limited);
     }
 
     const data = await createDrizzleSupabaseClient(userId).rls(async (tx) => {

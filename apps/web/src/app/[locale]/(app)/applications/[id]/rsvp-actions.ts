@@ -9,6 +9,7 @@ import {
   rooms,
 } from "@openhospi/database/schema";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
+import { CommonError, EventError } from "@openhospi/shared/error-codes";
 import type { RsvpData } from "@openhospi/validators";
 import { rsvpSchema } from "@openhospi/validators";
 import { and, eq, sql } from "drizzle-orm";
@@ -24,7 +25,7 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
   if (restricted) return restricted;
 
   const parsed = rsvpSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
     const [invitation] = await tx
@@ -39,14 +40,14 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
       .for("update");
 
     if (!invitation || invitation.userId !== session.user.id) {
-      return { error: "not_found" as const };
+      return { error: CommonError.not_found };
     }
 
     const currentStatus = invitation.status as InvitationStatus;
     const newStatus = parsed.data.status as InvitationStatus;
 
     if (!isValidInvitationTransition(currentStatus, newStatus)) {
-      return { error: "invalid_transition" as const };
+      return { error: CommonError.invalid_transition };
     }
 
     const [event] = await tx
@@ -60,9 +61,9 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
       .from(hospiEvents)
       .where(eq(hospiEvents.id, invitation.eventId));
 
-    if (!event || event.cancelledAt) return { error: "event_cancelled" as const };
+    if (!event || event.cancelledAt) return { error: EventError.event_cancelled };
     if (event.rsvpDeadline && new Date() > event.rsvpDeadline)
-      return { error: "deadline_passed" as const };
+      return { error: EventError.deadline_passed };
 
     // Check capacity
     if (newStatus === InvitationStatus.attending && event.maxAttendees) {
@@ -75,7 +76,7 @@ export async function respondToInvitation(invitationId: string, data: RsvpData) 
             eq(hospiInvitations.status, InvitationStatus.attending),
           ),
         );
-      if (attendingCount >= event.maxAttendees) return { error: "event_full" as const };
+      if (attendingCount >= event.maxAttendees) return { error: EventError.event_full };
     }
 
     // Update invitation only — don't touch application status

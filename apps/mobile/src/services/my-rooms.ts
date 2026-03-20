@@ -4,17 +4,17 @@ import { api } from '@/lib/api-client';
 
 import { queryKeys } from './keys';
 import type {
-  MobileCloseRoomApplicant,
-  MobileEventDetail,
-  MobileEventSummary,
-  MobileRoomApplicant,
-  MobileVoteBoard,
-  MobileVotableApplicant,
+  CloseRoomApplicant,
+  EventDetail,
+  EventSummary,
   MyRoomDetail,
   MyRoomSummary,
   OwnerHouse,
+  RoomApplicant,
   RoomDetailPhoto,
-} from './types';
+  VotableApplicant,
+  VoteBoard,
+} from '@openhospi/shared/api-types';
 
 // ── Queries ─────────────────────────────────────────────────
 
@@ -210,7 +210,7 @@ export function useRoomApplicants(roomId: string) {
     queryKey: queryKeys.myRooms.applicants(roomId),
     queryFn: () =>
       api
-        .get<{ applicants: MobileRoomApplicant[] }>(`/api/mobile/my-rooms/${roomId}/applicants`)
+        .get<{ applicants: RoomApplicant[] }>(`/api/mobile/my-rooms/${roomId}/applicants`)
         .then((r) => r.applicants),
     enabled: !!roomId,
   });
@@ -271,7 +271,7 @@ export function useRoomEvents(roomId: string) {
     queryKey: queryKeys.myRooms.events(roomId),
     queryFn: () =>
       api
-        .get<{ events: MobileEventSummary[] }>(`/api/mobile/my-rooms/${roomId}/events`)
+        .get<{ events: EventSummary[] }>(`/api/mobile/my-rooms/${roomId}/events`)
         .then((r) => r.events),
     enabled: !!roomId,
   });
@@ -282,7 +282,7 @@ export function useEventDetail(roomId: string, eventId: string) {
     queryKey: queryKeys.myRooms.eventDetail(roomId, eventId),
     queryFn: () =>
       api
-        .get<{ event: MobileEventDetail }>(`/api/mobile/my-rooms/${roomId}/events/${eventId}`)
+        .get<{ event: EventDetail }>(`/api/mobile/my-rooms/${roomId}/events/${eventId}`)
         .then((r) => r.event),
     enabled: !!roomId && !!eventId,
   });
@@ -365,7 +365,7 @@ export function useVotableApplicants(roomId: string) {
     queryFn: () =>
       api
         .get<{
-          applicants: MobileVotableApplicant[];
+          applicants: VotableApplicant[];
         }>(`/api/mobile/my-rooms/${roomId}/voting/applicants`)
         .then((r) => r.applicants),
     enabled: !!roomId,
@@ -377,7 +377,7 @@ export function useVoteBoard(roomId: string) {
     queryKey: queryKeys.myRooms.voteBoard(roomId),
     queryFn: () =>
       api
-        .get<{ board: MobileVoteBoard }>(`/api/mobile/my-rooms/${roomId}/voting/board`)
+        .get<{ board: VoteBoard }>(`/api/mobile/my-rooms/${roomId}/voting/board`)
         .then((r) => r.board),
     enabled: !!roomId,
   });
@@ -409,7 +409,7 @@ export function useCloseRoomApplicants(roomId: string) {
     queryFn: () =>
       api
         .get<{
-          applicants: MobileCloseRoomApplicant[];
+          applicants: CloseRoomApplicant[];
         }>(`/api/mobile/my-rooms/${roomId}/close/applicants`)
         .then((r) => r.applicants),
     enabled: !!roomId,

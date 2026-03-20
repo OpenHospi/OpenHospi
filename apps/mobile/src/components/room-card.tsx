@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { DiscoverRoom } from '@/services/types';
+import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
 type Props = {
   room: DiscoverRoom;

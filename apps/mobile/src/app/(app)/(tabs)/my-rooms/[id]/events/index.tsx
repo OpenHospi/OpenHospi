@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRoomEvents } from '@/services/my-rooms';
-import type { MobileEventSummary } from '@/services/types';
+import type { EventSummary } from '@openhospi/shared/api-types';
 
 export default function EventsListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,8 +19,8 @@ export default function EventsListScreen() {
   const today = new Date().toISOString().split('T')[0];
   const { upcoming, past } = useMemo(() => {
     if (!events) return { upcoming: [], past: [] };
-    const up: MobileEventSummary[] = [];
-    const pa: MobileEventSummary[] = [];
+    const up: EventSummary[] = [];
+    const pa: EventSummary[] = [];
     for (const event of events) {
       if (event.eventDate >= today) {
         up.push(event);
@@ -62,7 +62,7 @@ export default function EventsListScreen() {
     );
   }
 
-  const renderEvent = ({ item }: { item: MobileEventSummary }) => {
+  const renderEvent = ({ item }: { item: EventSummary }) => {
     const isCancelled = !!item.cancelledAt;
 
     return (

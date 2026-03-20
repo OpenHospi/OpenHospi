@@ -774,9 +774,9 @@
           "submit": "Huis aanmaken & doorgaan"
         },
         "errors": {
-          "INVALID_NAME": "Naam moet minstens 2 tekens bevatten.",
-          "RATE_LIMITED": "Te veel verzoeken. Probeer het later opnieuw.",
-          "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
+          "invalid_name": "Naam moet minstens 2 tekens bevatten.",
+          "rate_limited": "Te veel verzoeken. Probeer het later opnieuw.",
+          "create_failed": "Aanmaken mislukt. Probeer het opnieuw."
         }
       },
       "housePicker": {
@@ -920,19 +920,19 @@
       "status": {
         "confirmClose": "Weet je zeker dat je deze advertentie wilt sluiten? Dit kan niet ongedaan worden.",
         "confirmCloseTitle": "Advertentie sluiten",
-        "publishError": "Upload minstens 1 foto voordat je publiceert.",
+        "publish_error": "Upload minstens 1 foto voordat je publiceert.",
         "published": "Kamer gepubliceerd!",
         "paused": "Kamer gepauzeerd",
         "activated": "Kamer geactiveerd",
         "closed": "Kamer gesloten",
         "updated": "Kamer bijgewerkt",
         "draftSaved": "Concept opgeslagen",
-        "RATE_LIMITED": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw.",
+        "rate_limited": "Te veel kamers aangemaakt vandaag. Probeer het later opnieuw.",
         "confirmDeleteTitle": "Concept verwijderen?",
         "confirmDelete": "Dit concept wordt permanent verwijderd.",
-        "invalidTransition": "Ongeldige statusovergang.",
-        "NO_HOUSE": "Geen huis gevonden.",
-        "createFailed": "Aanmaken mislukt. Probeer het opnieuw."
+        "invalid_transition": "Ongeldige statusovergang.",
+        "no_house": "Geen huis gevonden.",
+        "create_failed": "Aanmaken mislukt. Probeer het opnieuw."
       },
       "manage": {
         "title": "Kamerbeheer",
@@ -1097,7 +1097,7 @@
         "room_not_active": "Deze kamer accepteert geen aanmeldingen meer.",
         "is_housemate": "Je bent al huisgenoot van deze kamer.",
         "already_applied": "Je hebt je al aangemeld voor deze kamer.",
-        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw.",
+        "rate_limited": "Te veel pogingen. Probeer het later opnieuw.",
         "bio_required": "Voeg eerst een bio toe aan je profiel voordat je je aanmeldt. Dit helpt huisgenoten om je te leren kennen."
       },
       "goToProfile": "Ga naar profiel"
@@ -1298,13 +1298,13 @@
       "joinButton": "Word huisgenoot",
       "success": "Je bent toegevoegd aan het huis!",
       "errors": {
-        "INVALID_LINK": "Deze deellink is ongeldig of de kamer bestaat niet meer.",
-        "LINK_EXPIRED": "Deze deellink is verlopen.",
-        "LINK_MAX_USED": "Deze deellink heeft het maximale aantal keren bereikt.",
-        "ALREADY_MEMBER": "Je bent al lid van dit huis.",
-        "IS_OWNER": "Je bent de eigenaar van deze kamer.",
-        "ROOM_NOT_ACTIVE": "Deze kamer is niet meer actief.",
-        "RATE_LIMITED": "Te veel pogingen. Probeer het later opnieuw."
+        "invalid_link": "Deze deellink is ongeldig of de kamer bestaat niet meer.",
+        "link_expired": "Deze deellink is verlopen.",
+        "link_max_used": "Deze deellink heeft het maximale aantal keren bereikt.",
+        "already_member": "Je bent al lid van dit huis.",
+        "is_owner": "Je bent de eigenaar van deze kamer.",
+        "room_not_active": "Deze kamer is niet meer actief.",
+        "rate_limited": "Te veel pogingen. Probeer het later opnieuw."
       }
     },
     "house": {
@@ -1334,8 +1334,8 @@
       "joinButton": "Word lid",
       "success": "Je bent toegevoegd aan het huis!",
       "errors": {
-        "INVALID_LINK": "Deze uitnodigingslink is ongeldig.",
-        "ALREADY_MEMBER": "Je bent al lid van dit huis."
+        "invalid_link": "Deze uitnodigingslink is ongeldig.",
+        "already_member": "Je bent al lid van dit huis."
       }
     },
     "notifications": {

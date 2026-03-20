@@ -27,6 +27,7 @@ import {
 } from "@openhospi/database/schema";
 import { SUPPORTED_LOCALES, type Locale } from "@openhospi/i18n";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import { CommonError, SettingsError } from "@openhospi/shared/error-codes";
 import { eq } from "drizzle-orm";
 
 import { requireSession } from "@/lib/auth/server";
@@ -38,7 +39,7 @@ export async function exportData() {
   const userId = session.user.id;
 
   if (!(await checkRateLimit(rateLimiters.exportData, userId))) {
-    return { error: "RATE_LIMITED" as const };
+    return { error: CommonError.rate_limited };
   }
 
   const data = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
@@ -175,7 +176,7 @@ export async function exportDataCSV() {
   if ("error" in result) return result;
 
   const { data } = result;
-  if (!data) return { error: "NO_DATA" as const };
+  if (!data) return { error: SettingsError.no_data };
 
   const categories: [string, Record<string, unknown>[]][] = [
     ["profile.csv", data.profile ? [data.profile] : []],
@@ -210,7 +211,7 @@ export async function exportDataCSV() {
 
 export async function updatePreferredLocale(locale: Locale) {
   if (!SUPPORTED_LOCALES.includes(locale)) {
-    return { error: "INVALID_LOCALE" as const };
+    return { error: SettingsError.invalid_locale };
   }
   const session = await requireSession();
   await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {

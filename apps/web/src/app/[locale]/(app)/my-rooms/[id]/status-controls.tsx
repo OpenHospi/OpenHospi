@@ -1,6 +1,7 @@
 "use client";
 
 import { RoomStatus } from "@openhospi/shared/enums";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { Loader2, Pause, Play, Rocket, Trash2, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -43,7 +44,7 @@ export function StatusControls({ room, closeApplicants = [] }: Props) {
     startTransition(async () => {
       const result = await updateRoomStatus(room.id, status);
       if (result?.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tCommonErrors("processingRestricted"));
         } else {
           toast.error(t(`status.${result.error}`));

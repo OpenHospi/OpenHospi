@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useSubmitVotes, useVotableApplicants, useVoteBoard } from '@/services/my-rooms';
-import type { MobileVotableApplicant } from '@/services/types';
+import type { VotableApplicant } from '@openhospi/shared/api-types';
 
 export default function VotingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,7 +19,7 @@ export default function VotingScreen() {
   const { data: board, isLoading: loadingBoard } = useVoteBoard(id);
   const submitVotes = useSubmitVotes();
 
-  const [rankings, setRankings] = useState<MobileVotableApplicant[]>([]);
+  const [rankings, setRankings] = useState<VotableApplicant[]>([]);
   const [initialized, setInitialized] = useState(false);
   const [showBoard, setShowBoard] = useState(false);
 

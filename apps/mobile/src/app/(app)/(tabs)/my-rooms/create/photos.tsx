@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useDeleteRoomPhoto, useMyRoom, useUploadRoomPhoto } from '@/services/my-rooms';
-import type { RoomDetailPhoto } from '@/services/types';
+import type { RoomDetailPhoto } from '@openhospi/shared/api-types';
 
 const MAX_SLOTS = 10;
 

@@ -7,6 +7,7 @@ import {
   isValidApplicationTransition,
   REVIEW_DECISION_TO_APPLICATION_STATUS,
 } from "@openhospi/shared/enums";
+import { CommonError } from "@openhospi/shared/error-codes";
 import type { ReviewData } from "@openhospi/validators";
 import { reviewSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
@@ -45,7 +46,7 @@ export async function submitReviewForUser(
   data: ReviewData,
 ) {
   const parsed = reviewSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   const role = await requireHousemate(roomId, userId);
 
@@ -110,11 +111,11 @@ export async function updateApplicationStatusForUser(
       .select({ status: applications.status })
       .from(applications)
       .where(and(eq(applications.id, applicationId), eq(applications.roomId, roomId)));
-    if (!app) return { error: "not_found" as const };
+    if (!app) return { error: CommonError.not_found };
 
     const currentStatus = app.status as ApplicationStatus;
     if (!isValidApplicationTransition(currentStatus, newStatus)) {
-      return { error: "invalid_transition" as const };
+      return { error: CommonError.invalid_transition };
     }
 
     await tx

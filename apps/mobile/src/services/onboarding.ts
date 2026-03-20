@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 
 import { queryKeys } from './keys';
-import type { OnboardingStatus } from './types';
+import type { OnboardingStatus } from '@openhospi/shared/api-types';
 
 export function useOnboardingStatus(options?: { enabled?: boolean }) {
   return useQuery({

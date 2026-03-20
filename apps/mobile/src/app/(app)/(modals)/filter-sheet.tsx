@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/select';
 import { Text } from '@/components/ui/text';
 import { useDiscoverFilters } from '@/context/discover-filters';
-import type { DiscoverFilters } from '@/services/types';
+import type { DiscoverFilters } from '@openhospi/shared/api-types';
 
 function MultiChipSelect({
   values,

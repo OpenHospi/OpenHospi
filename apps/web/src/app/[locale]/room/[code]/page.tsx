@@ -2,6 +2,7 @@ import { db } from "@openhospi/database";
 import { houseMembers, houses, rooms } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import { RoomStatus } from "@openhospi/shared/enums";
+import { JoinError } from "@openhospi/shared/error-codes";
 import { count, eq, sql } from "drizzle-orm";
 import { Home, MapPin, Users } from "lucide-react";
 import type { Metadata } from "next";
@@ -42,19 +43,17 @@ async function getRoomByShareLink(code: string) {
   return { ...room, housemateCount: result?.count ?? 0 };
 }
 
-type ShareLinkError = "INVALID_LINK" | "LINK_EXPIRED" | "LINK_MAX_USED" | "ROOM_NOT_ACTIVE";
-
 function validateShareLink(
   room: NonNullable<Awaited<ReturnType<typeof getRoomByShareLink>>>,
-): ShareLinkError | null {
-  if (room.status !== RoomStatus.active) return "ROOM_NOT_ACTIVE";
+): string | null {
+  if (room.status !== RoomStatus.active) return "room_not_active";
 
   if (room.shareLinkExpiresAt && new Date(room.shareLinkExpiresAt) < new Date()) {
-    return "LINK_EXPIRED";
+    return JoinError.link_expired;
   }
 
   if (room.shareLinkMaxUses && (room.shareLinkUseCount ?? 0) >= room.shareLinkMaxUses) {
-    return "LINK_MAX_USED";
+    return JoinError.link_max_used;
   }
 
   return null;
@@ -106,7 +105,7 @@ export default async function JoinRoomPage({ params }: Props) {
         <Card className="w-full max-w-lg text-center">
           <CardHeader>
             <CardTitle>{t("title")}</CardTitle>
-            <CardDescription>{t("errors.INVALID_LINK")}</CardDescription>
+            <CardDescription>{t("errors.invalid_link")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline">

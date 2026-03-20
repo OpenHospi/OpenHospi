@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 
 import { queryKeys } from './keys';
-import type { ApplicationDetail, UserApplication } from './types';
+import type { ApplicationDetail, UserApplication } from '@openhospi/shared/api-types';
 
 export function useApplications() {
   return useQuery({

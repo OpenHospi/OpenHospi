@@ -3,6 +3,7 @@
 import { db } from "@openhospi/database";
 import { houseMembers, houses } from "@openhospi/database/schema";
 import { HouseMemberRole } from "@openhospi/shared/enums";
+import { JoinError } from "@openhospi/shared/error-codes";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -23,14 +24,14 @@ export async function joinHouse(inviteCode: string) {
       .from(houses)
       .where(eq(houses.inviteCode, inviteCode));
 
-    if (!house) return { error: "INVALID_LINK" as const };
+    if (!house) return { error: JoinError.invalid_link };
 
     const [existing] = await tx
       .select({ id: houseMembers.id })
       .from(houseMembers)
       .where(and(eq(houseMembers.houseId, house.id), eq(houseMembers.userId, userId)));
 
-    if (existing) return { error: "ALREADY_MEMBER" as const };
+    if (existing) return { error: JoinError.already_member };
 
     await tx.insert(houseMembers).values({
       houseId: house.id,

@@ -156,6 +156,44 @@ export default function MyRoomDetailScreen() {
             </Card>
           )}
 
+          {/* Management Buttons */}
+          {status !== RoomStatus.draft && (
+            <View style={{ gap: 8 }}>
+              <Button
+                variant="outline"
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/(tabs)/my-rooms/[id]/applicants',
+                    params: { id },
+                  })
+                }>
+                <Text>{t('manage.tabs.applicants')}</Text>
+              </Button>
+
+              <Button
+                variant="outline"
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/(tabs)/my-rooms/[id]/events',
+                    params: { id },
+                  })
+                }>
+                <Text>{t('events.title')}</Text>
+              </Button>
+
+              <Button
+                variant="outline"
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/(tabs)/my-rooms/[id]/voting',
+                    params: { id },
+                  })
+                }>
+                <Text>{t('voting.title')}</Text>
+              </Button>
+            </View>
+          )}
+
           {/* Action Buttons */}
           <View style={{ gap: 8 }}>
             <Button
@@ -206,7 +244,14 @@ export default function MyRoomDetailScreen() {
               </Button>
             </View>
             <View style={{ flex: 1 }}>
-              <Button variant="destructive" onPress={() => handleStatusChange(RoomStatus.closed)}>
+              <Button
+                variant="destructive"
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/(tabs)/my-rooms/[id]/close-room',
+                    params: { id },
+                  })
+                }>
                 <Text>{t('actions.close')}</Text>
               </Button>
             </View>
@@ -220,7 +265,14 @@ export default function MyRoomDetailScreen() {
               </Button>
             </View>
             <View style={{ flex: 1 }}>
-              <Button variant="destructive" onPress={() => handleStatusChange(RoomStatus.closed)}>
+              <Button
+                variant="destructive"
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/(tabs)/my-rooms/[id]/close-room',
+                    params: { id },
+                  })
+                }>
                 <Text>{t('actions.close')}</Text>
               </Button>
             </View>

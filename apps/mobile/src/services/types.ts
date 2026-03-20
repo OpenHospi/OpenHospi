@@ -8,6 +8,7 @@ import type {
   Language,
   LocationTag,
   RentalType,
+  ReviewDecision,
   RoomFeature,
   RoomStatus,
   StudyLevel,
@@ -273,4 +274,107 @@ export type MyRoomDetail = {
   shareLinkUseCount: number;
   photos: RoomDetailPhoto[];
   createdAt: string;
+};
+
+// ── Applicants (owner view) ────────────────────────────────
+
+export type ApplicantReview = {
+  reviewerId: string;
+  reviewerName: string;
+  decision: ReviewDecision;
+  notes: string | null;
+};
+
+export type MobileRoomApplicant = {
+  applicationId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+  gender: string | null;
+  birthDate: string | null;
+  studyProgram: string | null;
+  studyLevel: StudyLevel | null;
+  bio: string | null;
+  lifestyleTags: string[];
+  vereniging: string | null;
+  institutionDomain: string;
+  personalMessage: string | null;
+  status: ApplicationStatus;
+  appliedAt: string;
+  photos: { id: string; slot: number; url: string; caption: string | null }[];
+  reviews: ApplicantReview[];
+};
+
+// ── Events ─────────────────────────────────────────────────
+
+export type MobileEventSummary = {
+  id: string;
+  title: string;
+  eventDate: string;
+  timeStart: string;
+  timeEnd: string | null;
+  location: string | null;
+  cancelledAt: string | null;
+  createdAt: string;
+  invitedCount: number;
+  attendingCount: number;
+};
+
+export type MobileEventInvitee = {
+  invitationId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+  status: string | null;
+  respondedAt: string | null;
+  declineReason: string | null;
+};
+
+export type MobileEventDetail = MobileEventSummary & {
+  roomId: string;
+  createdBy: string;
+  description: string | null;
+  rsvpDeadline: string | null;
+  maxAttendees: number | null;
+  notes: string | null;
+  invitees: MobileEventInvitee[];
+};
+
+// ── Voting ─────────────────────────────────────────────────
+
+export type MobileVotableApplicant = {
+  applicationId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+  status: string;
+  studyProgram: string | null;
+  studyLevel: StudyLevel | null;
+  birthDate: string | null;
+};
+
+export type MobileVoteBallot = {
+  voterId: string;
+  voterName: string;
+  rankings: { applicantId: string; rank: number }[];
+};
+
+export type MobileVoteBoard = {
+  applicants: MobileVotableApplicant[];
+  ballots: MobileVoteBallot[];
+  aggregated: { applicantId: string; totalRank: number; voteCount: number }[];
+};
+
+// ── Close Room ─────────────────────────────────────────────
+
+export type MobileCloseRoomApplicant = {
+  applicationId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
+  totalRank: number | null;
 };

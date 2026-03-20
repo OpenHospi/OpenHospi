@@ -10,6 +10,13 @@ export const queryKeys = {
     list: () => ['myRooms'] as const,
     detail: (id: string) => ['myRooms', id] as const,
     houses: () => ['myRooms', 'houses'] as const,
+    applicants: (roomId: string) => ['myRooms', roomId, 'applicants'] as const,
+    events: (roomId: string) => ['myRooms', roomId, 'events'] as const,
+    eventDetail: (roomId: string, eventId: string) =>
+      ['myRooms', roomId, 'events', eventId] as const,
+    votableApplicants: (roomId: string) => ['myRooms', roomId, 'votableApplicants'] as const,
+    voteBoard: (roomId: string) => ['myRooms', roomId, 'voteBoard'] as const,
+    closeApplicants: (roomId: string) => ['myRooms', roomId, 'closeApplicants'] as const,
   },
   applications: {
     list: () => ['applications'] as const,

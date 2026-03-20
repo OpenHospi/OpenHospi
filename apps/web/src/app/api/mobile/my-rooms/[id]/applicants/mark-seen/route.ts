@@ -1,0 +1,21 @@
+import { NextResponse } from "next/server";
+
+import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { isRestricted } from "@/lib/auth/server";
+import { markApplicationsSeenForUser } from "@/lib/services/applicant-owner-mutations";
+
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const session = await requireApiSession(request);
+    if (await isRestricted(session.user.id)) {
+      return apiError("Processing restricted", 403, "PROCESSING_RESTRICTED");
+    }
+
+    const { id } = await params;
+    const result = await markApplicationsSeenForUser(session.user.id, id);
+    return NextResponse.json(result);
+  } catch (e) {
+    if (e instanceof NextResponse) return e;
+    return apiError("Internal server error", 500);
+  }
+}

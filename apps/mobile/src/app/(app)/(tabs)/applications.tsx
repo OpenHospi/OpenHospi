@@ -129,7 +129,12 @@ export default function ApplicationsScreen() {
           <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
             <ApplicationCard
               item={item}
-              onPress={() => router.push(`/(app)/application/${item.id}` as never)}
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/application/[id]',
+                  params: { id: item.id },
+                })
+              }
             />
           </View>
         )}

@@ -1,6 +1,7 @@
 # CLAUDE.md — Mobile App (`apps/mobile`)
 
-See root `CLAUDE.md` for project-wide conventions (coding philosophy, git, enums, i18n zero-duplication rule). This file covers mobile-specific details.
+See root `CLAUDE.md` for project-wide conventions (coding philosophy, git, enums, i18n zero-duplication rule). This file
+covers mobile-specific details.
 
 ## Skills
 
@@ -23,7 +24,7 @@ When working on the mobile app, use these skills for up-to-date guidance:
 ## Stack
 
 | Layer      | Technology                                                                          |
-| ---------- | ----------------------------------------------------------------------------------- |
+|------------|-------------------------------------------------------------------------------------|
 | Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                                      |
 | Styling    | **Uniwind v1.6** (Tailwind CSS v4 for RN) — NOT NativeWind                          |
 | UI         | @rn-primitives/\* (accordion, dialog, tabs, etc.) + custom components               |
@@ -48,12 +49,12 @@ Uniwind's `className` does NOT reliably handle layout properties on all componen
 ```tsx
 // CORRECT
 <View
-  style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
-  className="bg-background"
+    style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24}}
+    className="bg-background"
 >
 
-// WRONG — layout via className breaks on SafeAreaView, Animated.View, etc.
-<View className="flex-1 items-center justify-center px-6 bg-background">
+    // WRONG — layout via className breaks on SafeAreaView, Animated.View, etc.
+    <View className="flex-1 items-center justify-center px-6 bg-background">
 ```
 
 **Use `style` for:** `flex`, `flexDirection`, `justifyContent`, `alignItems`, `gap`, `padding*`, `margin*`, `width`,
@@ -68,23 +69,24 @@ For props that are NOT `style` (e.g. `tintColor`, `color`, `placeholderTextColor
 
 ```tsx
 // CORRECT — accent- prefix for non-style color props
-<ActivityIndicator className="accent-primary" />
-<TextInput className="accent-muted-foreground" placeholder="Search..." />
+<ActivityIndicator className="accent-primary"/>
+<TextInput className="accent-muted-foreground" placeholder="Search..."/>
 
 // WRONG — tintColor/color are not style properties
-<ActivityIndicator className="text-primary" />
+<ActivityIndicator className="text-primary"/>
 ```
 
 ### `withUniwind` only for third-party components
 
-Only use `withUniwind()` to add className support to third-party components that don't have it. Never use it on RN core components or Expo components (they already support className).
+Only use `withUniwind()` to add className support to third-party components that don't have it. Never use it on RN core
+components or Expo components (they already support className).
 
 ### `cn()` for class deduplication
 
 Always use `cn()` (from `src/lib/utils.ts`) when merging conditional classes to avoid duplicate/conflicting styles:
 
 ```tsx
-<View className={cn('bg-card rounded-xl', isActive && 'bg-primary')} />
+<View className={cn('bg-card rounded-xl', isActive && 'bg-primary')}/>
 ```
 
 ### Do NOT use NativeWind APIs
@@ -109,8 +111,8 @@ Uniwind does NOT support dynamic string interpolation in classNames:
 // WRONG — class is not compiled
 <Text className={`text-${color}`}>
 
-// CORRECT — use conditional or style
-<Text className={color === 'red' ? 'text-red-500' : 'text-blue-500'}>
+    // CORRECT — use conditional or style
+    <Text className={color === 'red' ? 'text-red-500' : 'text-blue-500'}>
 ```
 
 ### Don't rely on Card's TextClassContext
@@ -129,14 +131,56 @@ still use `style` for layout.
 - **Expo Router v4** with file-based routing in `src/app/`
 - **NativeTabs** from `expo-router/unstable-native-tabs` for the main tab bar (NOT `@react-navigation/bottom-tabs`)
 - Route groups:
-  - `(auth)/` — Login screen
-  - `(onboarding)/` — Onboarding flow (separate route group, NOT inside `(auth)/`)
-  - `(app)/` — Authenticated app shell
-    - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
-    - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
-    - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
+    - `(auth)/` — Login screen
+    - `(onboarding)/` — Onboarding flow (separate route group, NOT inside `(auth)/`)
+    - `(app)/` — Authenticated app shell
+        - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
+        - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
+        - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
 - Icons: SF Symbols via `expo-symbols` (iOS), `lucide-react-native` + `@expo/vector-icons` fallback (Android)
 - Typed routes enabled (`experiments.typedRoutes: true`)
+
+### Typed Routes
+
+Route types are auto-generated in `.expo/types/router.d.ts` when the dev server starts.
+
+**`router.push/replace` — object form for dynamic routes:**
+
+```tsx
+// CORRECT — typed pathname + params
+router.push({pathname: '/(app)/room/[id]', params: {id}});
+router.push({
+    pathname: '/(app)/(tabs)/chat/[conversationId]/info',
+    params: {conversationId},
+});
+
+// CORRECT — string form for static routes (no dynamic segments)
+router.push('/(app)/(modals)/filter-sheet');
+router.replace('/(app)/(tabs)/my-rooms');
+
+// WRONG — string interpolation bypasses type checking
+router.push(`/(app)/room/${id}`);
+router.push(`/(app)/room/${id}` as never);
+```
+
+**`<Link>` — same rules apply:**
+
+```tsx
+// CORRECT
+<Link href="/"/>
+<Link href={{pathname: '/(app)/room/[id]', params: {id}}}/>
+
+// WRONG
+<Link href={'/' as never}/>
+```
+
+**`useLocalSearchParams` — manual type generic is fine:**
+
+```tsx
+// Preferred — explicit, readable
+const {id} = useLocalSearchParams<{ id: string }>();
+const {conversationId} = useLocalSearchParams<{ conversationId: string }>();
+```
 
 ## Data Fetching & Services
 
@@ -159,7 +203,7 @@ REST wrapper in `src/lib/api-client.ts`:
 Centralized in `src/services/keys.ts`:
 
 ```tsx
-import { queryKeys } from '@/services/keys';
+import {queryKeys} from '@/services/keys';
 
 // Usage in hooks
 queryKey: queryKeys.rooms.list(filters);
@@ -201,7 +245,8 @@ Each file in `src/services/` exports React Query hooks:
 
 ### Crypto Stack
 
-- **`@openhospi/crypto`** (workspace package) — Signal Protocol implementation (ECDH P-256, HKDF, AES-256-GCM, Sender Keys)
+- **`@openhospi/crypto`** (workspace package) — Signal Protocol implementation (ECDH P-256, HKDF, AES-256-GCM, Sender
+  Keys)
 - **`react-native-quick-crypto`** — Native crypto polyfill (installed as Metro resolver alias for `crypto`)
 - Polyfill installed in root `_layout.tsx` via `createNativeCryptoProvider()`
 
@@ -233,11 +278,11 @@ Each file in `src/services/` exports React Query hooks:
 - `expo-sqlite` provides the SQLite driver
 - Drizzle ORM for type-safe queries
 - Schema in `src/lib/db/schema.ts` — 12 tables for E2EE protocol state and local caching:
-  - `identityKeys`, `preKeys`, `signedPreKeys` — Device key material
-  - `sessions`, `senderKeys`, `skippedKeys` — Signal Protocol state
-  - `localMessages` — Decrypted plaintext message cache
-  - `trustedIdentities`, `keyVerifications` — TOFU & manual key verification
-  - `preferences`, `cachedProfiles`, `messageDrafts`, `syncMetadata` — App state
+    - `identityKeys`, `preKeys`, `signedPreKeys` — Device key material
+    - `sessions`, `senderKeys`, `skippedKeys` — Signal Protocol state
+    - `localMessages` — Decrypted plaintext message cache
+    - `trustedIdentities`, `keyVerifications` — TOFU & manual key verification
+    - `preferences`, `cachedProfiles`, `messageDrafts`, `syncMetadata` — App state
 - Database setup in `src/lib/db/index.ts`
 - Migration gate in root `_layout.tsx` — app waits for `useRunMigrations()` before rendering
 - Drizzle config (`drizzle.config.ts`): dialect `sqlite`, driver `expo`, output `./drizzle`
@@ -247,7 +292,8 @@ Each file in `src/services/` exports React Query hooks:
 
 ## Components
 
-- **UI primitives:** `src/components/ui/` — exclusively for @rn-primitives components. Do not place custom components here.
+- **UI primitives:** `src/components/ui/` — exclusively for @rn-primitives components. Do not place custom components
+  here.
 - **Custom components:** `src/components/` — room-card, logo, message-bubble, encryption-gate, etc.
 - Use `class-variance-authority` (`cva`) for component variants
 - Use `cn()` utility for class merging
@@ -266,7 +312,7 @@ Each file in `src/services/` exports React Query hooks:
 All client-exposed variables use `EXPO_PUBLIC_` prefix:
 
 | Variable                   | Description                         | Default                |
-| -------------------------- | ----------------------------------- | ---------------------- |
+|----------------------------|-------------------------------------|------------------------|
 | `EXPO_PUBLIC_API_URL`      | Next.js backend URL                 | `https://openhospi.nl` |
 | `EXPO_PUBLIC_SUPABASE_URL` | Supabase project URL (Realtime)     | —                      |
 | `EXPO_PUBLIC_SUPABASE_KEY` | Supabase publishable key            | —                      |
@@ -288,6 +334,9 @@ Defined in `src/lib/constants.ts`. For local dev, set in `.env.local`.
 - **TODO comments** — fix it now or create an issue
 - **Direct Supabase data queries** — all data goes through Next.js REST API; Supabase client is Realtime-only
 - **`withUniwind()` on RN/Expo components** — only for third-party components without className support
+- **`as never` on route paths** — use proper typed pathnames; `as never` bypasses all route validation
+- **String-interpolated dynamic routes** — ``router.push(`/room/${id}`)`` bypasses type checking; use object form with
+  `pathname` + `params`
 
 ## Project Structure
 

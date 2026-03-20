@@ -23,7 +23,8 @@ export function RoomCard({ room }: Props) {
     : null;
 
   return (
-    <Pressable onPress={() => router.push(`/(app)/room/${room.id}`)}>
+    <Pressable
+      onPress={() => router.push({ pathname: '/(app)/room/[id]', params: { id: room.id } })}>
       <Card style={{ padding: 0, gap: 0, paddingVertical: 0 }} className="overflow-hidden">
         {coverUrl ? (
           <Image

@@ -85,7 +85,9 @@ export default function ConversationInfoScreen() {
           {detail.roomTitle}
         </Text>
         <Pressable
-          onPress={() => router.push(`/room/${detail.roomId}`)}
+          onPress={() =>
+            router.push({ pathname: '/(app)/room/[id]', params: { id: detail.roomId } })
+          }
           style={{
             borderRadius: 8,
             paddingVertical: 10,
@@ -139,7 +141,12 @@ export default function ConversationInfoScreen() {
           return (
             <Pressable
               key={member.userId}
-              onPress={() => router.push(`/chat/${conversationId}/verify/${member.userId}`)}>
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/(tabs)/chat/[conversationId]/verify/[userId]',
+                  params: { conversationId, userId: member.userId },
+                })
+              }>
               {row}
             </Pressable>
           );

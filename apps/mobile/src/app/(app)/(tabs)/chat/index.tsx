@@ -115,7 +115,12 @@ export default function ChatTab() {
               lastMessageAt={item.lastMessageAt}
               unreadCount={item.unreadCount}
               locale={i18n.language}
-              onPress={() => router.push(`/chat/${item.id}`)}
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/(tabs)/chat/[conversationId]',
+                  params: { conversationId: item.id },
+                })
+              }
             />
           );
         }}

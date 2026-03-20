@@ -207,7 +207,11 @@ export default function ApplicationDetailScreen() {
             </View>
           )}
 
-          <Button variant="outline" onPress={() => router.push(`/(app)/room/${app.roomId}`)}>
+          <Button
+            variant="outline"
+            onPress={() =>
+              router.push({ pathname: '/(app)/room/[id]', params: { id: app.roomId } })
+            }>
             <Text>{t('viewRoom')}</Text>
           </Button>
         </View>

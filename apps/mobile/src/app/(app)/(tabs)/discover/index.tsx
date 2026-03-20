@@ -63,7 +63,7 @@ export default function DiscoverScreen() {
         <DiscoverHeader
           searchPlaceholder={tCommon('search')}
           onSearchChange={setSearchText}
-          onFilterPress={() => router.push('/(app)/filter-sheet' as never)}
+          onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
         />
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator size="large" />
@@ -77,7 +77,7 @@ export default function DiscoverScreen() {
       <DiscoverHeader
         searchPlaceholder={tCommon('search')}
         onSearchChange={setSearchText}
-        onFilterPress={() => router.push('/(app)/filter-sheet' as never)}
+        onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
       />
       <FlatList
         data={filteredRooms}

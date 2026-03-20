@@ -17,7 +17,7 @@ export default function NotFoundScreen() {
           style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
           className="rounded-lg border border-dashed">
           <Text className="text-foreground text-lg font-semibold">Page not found</Text>
-          <Link href={'/' as never} style={{ marginTop: 16 }}>
+          <Link href="/" style={{ marginTop: 16 }}>
             <Text className="text-primary underline">{tCommon('back')}</Text>
           </Link>
         </View>

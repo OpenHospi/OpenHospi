@@ -8,6 +8,7 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
+    "audit": "pnpm audit",
     "setup": "bash scripts/setup.sh",
     "dev:web": "pnpm --filter @openhospi/web dev",
     "dev:mobile": "pnpm --filter @openhospi/mobile start",
@@ -47,7 +48,9 @@
     "expo:install": "pnpm --filter @openhospi/mobile exec expo install",
     "expo:install:check": "pnpm --filter @openhospi/mobile exec expo install --check",
     "expo:install:fix": "pnpm --filter @openhospi/mobile exec expo install --fix",
-    "email:dev": "pnpm --filter @openhospi/email dev",
+    "dev:email": "pnpm --filter @openhospi/email dev",
+    "catalog:check": "pnpm dlx pnpm-catalog-updates check",
+    "catalog:update": "pnpm dlx pnpm-catalog-updates update --no-ai --no-install",
     "clean": "rm -rf **/node_modules **/.next **/.turbo **/dist **/.expo"
   },
   "pnpm": {
@@ -62,10 +65,8 @@
       "unrs-resolver"
     ],
     "overrides": {
-      "react": "catalog:",
-      "react-dom": "catalog:",
-      "@types/react": "catalog:",
-      "@types/react-dom": "catalog:",
+      "react": "19.2.0",
+      "react-dom": "19.2.0",
       "drizzle-orm": "catalog:",
       "rollup": ">=4.59.0",
       "hono": ">=4.12.7",
@@ -74,16 +75,15 @@
       "minimatch@9": "9.0.7",
       "minimatch@10": "10.2.3",
       "ajv@6": "6.14.0",
-      "esbuild": "0.25.10",
       "lodash": ">=4.17.23",
       "express-rate-limit": ">=8.2.2",
       "lightningcss": "1.30.1",
       "@react-email/body": "^0.3.0",
       "serialize-javascript": ">=7.0.3",
       "undici": ">=7.24.0",
-      "next": ">=16.2.0",
       "socket.io-parser": ">=4.2.6",
-      "flatted": ">=3.4.2"
+      "flatted": ">=3.4.2",
+      "kysely": ">=0.28.12"
     },
     "ignoredBuiltDependencies": [
       "@prisma/engines",

@@ -3,15 +3,15 @@ import { getMessages } from "@openhospi/i18n/web";
 import { render } from "@react-email/render";
 import { createElement } from "react";
 
-import { ApplicationAccepted } from "./templates/application-accepted";
-import { ApplicationNotChosen } from "./templates/application-not-chosen";
-import { EventCancelled } from "./templates/event-cancelled";
-import { EventInvitation } from "./templates/event-invitation";
-import { EventReminder } from "./templates/event-reminder";
-import { ListingRemoved } from "./templates/listing-removed";
-import { RsvpReceived } from "./templates/rsvp-received";
-import { UserBanned } from "./templates/user-banned";
-import { VerificationCode } from "./templates/verification-code";
+import { ApplicationAccepted } from "../emails/application-accepted";
+import { ApplicationNotChosen } from "../emails/application-not-chosen";
+import { EventCancelled } from "../emails/event-cancelled";
+import { EventInvitation } from "../emails/event-invitation";
+import { EventReminder } from "../emails/event-reminder";
+import { ListingRemoved } from "../emails/listing-removed";
+import { RsvpReceived } from "../emails/rsvp-received";
+import { UserBanned } from "../emails/user-banned";
+import { VerificationCode } from "../emails/verification-code";
 
 export type EmailTemplateName =
   | "verificationCode"

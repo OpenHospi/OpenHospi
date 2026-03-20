@@ -1,8 +1,8 @@
 import { Text } from "@react-email/components";
 import { createTranslator } from "next-intl";
 
-import { BaseLayout } from "../components/base-layout";
-import type { BaseEmailProps } from "../types";
+import { BaseLayout } from "./_components/base-layout";
+import type { BaseEmailProps } from "./_types";
 
 type RsvpReceivedProps = BaseEmailProps & {
   name: string;

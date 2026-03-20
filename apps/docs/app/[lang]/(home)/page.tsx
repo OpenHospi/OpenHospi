@@ -2,8 +2,8 @@ import { Cards, Card } from "fumadocs-ui/components/card";
 import {
   BookOpen,
   Heart,
-  HelpCircle,
-  Home,
+  CircleHelp,
+  House,
   MessageCircle,
   Rocket,
   Search,
@@ -32,37 +32,37 @@ export default function HomePage() {
           OpenHospi Documentatie
         </h1>
         <p className="mx-auto mb-12 max-w-2xl text-lg text-fd-muted-foreground">
-          Alles wat je moet weten over het vinden of aanbieden van een studentenkamer — gratis,
+          Alles wat je moet weten over het vinden of aanbieden van een studentenkamer. Gratis,
           veilig en alleen voor studenten.
         </p>
 
         <Cards>
-          <Card icon={<Rocket />} href="/docs/aan-de-slag" title="Aan de slag">
+          <Card icon={<Rocket />} href="docs/aan-de-slag" title="Aan de slag">
             Account aanmaken, profiel instellen en direct beginnen.
           </Card>
-          <Card icon={<Search />} href="/docs/kamer-zoeken" title="Kamer zoeken">
+          <Card icon={<Search />} href="docs/kamer-zoeken" title="Kamer zoeken">
             Zoek, filter en reageer op beschikbare kamers.
           </Card>
-          <Card icon={<Home />} href="/docs/kamer-aanbieden" title="Kamer aanbieden">
+          <Card icon={<House />} href="docs/kamer-aanbieden" title="Kamer aanbieden">
             Plaats een listing en beheer je kameraanbod.
           </Card>
-          <Card icon={<MessageCircle />} href="/docs/chat" title="Chat & Berichten">
+          <Card icon={<MessageCircle />} href="docs/chat" title="Chat & Berichten">
             Communiceer veilig met end-to-end encryptie.
           </Card>
-          <Card icon={<Shield />} href="/docs/privacy-en-veiligheid" title="Privacy & Veiligheid">
+          <Card icon={<Shield />} href="docs/privacy-en-veiligheid" title="Privacy & Veiligheid">
             Hoe we je gegevens beschermen en veiligheidstips.
           </Card>
-          <Card icon={<HelpCircle />} href="/docs/veelgestelde-vragen" title="Veelgestelde vragen">
+          <Card icon={<CircleHelp />} href="docs/veelgestelde-vragen" title="Veelgestelde vragen">
             Antwoorden op de meest gestelde vragen.
           </Card>
-          <Card icon={<Heart />} href="/docs/sponsors" title="Sponsors & Partners">
+          <Card icon={<Heart />} href="docs/sponsors" title="Sponsors & Partners">
             Hoe OpenHospi gratis kan blijven.
           </Card>
         </Cards>
 
         <div className="mt-12">
           <Link
-            href="/docs"
+            href="docs"
             className="inline-flex items-center gap-2 rounded-md bg-fd-primary px-5 py-2.5 text-sm font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
           >
             <BookOpen className="size-4" />

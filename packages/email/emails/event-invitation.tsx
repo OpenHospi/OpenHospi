@@ -1,38 +1,38 @@
 import { Text } from "@react-email/components";
 import { createTranslator } from "next-intl";
 
-import { BaseLayout } from "../components/base-layout";
-import { CtaButton } from "../components/cta-button";
-import type { BaseEmailProps } from "../types";
+import { BaseLayout } from "./_components/base-layout";
+import { CtaButton } from "./_components/cta-button";
+import type { BaseEmailProps } from "./_types";
 
-type EventReminderProps = BaseEmailProps & {
+type EventInvitationProps = BaseEmailProps & {
   eventTitle: string;
-  time: string;
+  roomTitle: string;
   eventUrl: string;
 };
 
-export function EventReminder({
+export function EventInvitation({
   eventTitle,
-  time,
+  roomTitle,
   eventUrl,
   locale,
   baseUrl,
   messages,
-}: EventReminderProps) {
-  const t = createTranslator({ locale, messages, namespace: "emails.eventReminder" });
+}: EventInvitationProps) {
+  const t = createTranslator({ locale, messages, namespace: "emails.eventInvitation" });
 
   return (
     <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
       <Text style={heading}>{t("heading")}</Text>
-      <Text style={text}>{t("body", { eventTitle, time })}</Text>
+      <Text style={text}>{t("body", { eventTitle, roomTitle })}</Text>
       <CtaButton href={eventUrl}>{t("cta")}</CtaButton>
     </BaseLayout>
   );
 }
 
-EventReminder.PreviewProps = {
+EventInvitation.PreviewProps = {
   eventTitle: "Movie Night",
-  time: "19:00",
+  roomTitle: "Cosy room in Amsterdam",
   eventUrl: "http://localhost:3000/applications",
   baseUrl: "http://localhost:3000",
   locale: "en",
@@ -42,16 +42,16 @@ EventReminder.PreviewProps = {
         footer: "OpenHospi — Free student housing platform for the Netherlands",
         doNotReply: "This is an automated message. Please do not reply to this email.",
       },
-      eventReminder: {
-        heading: "Event reminder",
-        body: 'Just a reminder that "{eventTitle}" starts at {time}.',
-        cta: "View event",
+      eventInvitation: {
+        heading: "You're invited!",
+        body: 'You\'ve been invited to the hospi event "{eventTitle}" for the room "{roomTitle}".',
+        cta: "View invitation",
       },
     },
   },
 };
 
-export default EventReminder;
+export default EventInvitation;
 
 const heading = {
   fontSize: "24px",

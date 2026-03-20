@@ -8,47 +8,28 @@ catalog:
   eslint: ^9.39.4
   prettier: ^3.8.1
 
-  # ── ESLint plugins (library packages) ──
+  # ── ESLint plugins (shared via @openhospi/eslint-config) ──
   eslint-config-prettier: ^10.1.8
   eslint-import-resolver-typescript: ^4.4.4
   eslint-plugin-import-x: ^4.16.2
   eslint-plugin-security: ^4.0.0
   typescript-eslint: ^8
 
-  # ── Web-only ESLint ──
-  eslint-config-next: 16.2.0
-  eslint-plugin-jsx-a11y: ^6.10.2
-  eslint-plugin-no-secrets: ^2.3.3
-  eslint-plugin-sonarjs: ^4.0.2
-  eslint-plugin-unicorn: ^63.0.0
-
-  # ── Mobile-only ESLint ──
-  eslint-config-expo: ~55.0.0
-  eslint-plugin-prettier: ^5.5.5
-
-  # ── React (pinned to 19.2.0 — Expo SDK 55 requirement, web is compatible) ──
-  react: 19.2.0
-  react-dom: 19.2.0
-  "@types/react": ^19.2.14
-  "@types/react-dom": ^19.2.3
-
   # ── Core shared deps ──
   zod: ^4.3.6
-  drizzle-orm: 1.0.0-beta.17-67b1795
-  drizzle-kit: 1.0.0-beta.17-67b1795
-  drizzle-seed: 1.0.0-beta.17-67b1795
+  drizzle-orm: 1.0.0-beta.18-7eb39f0
+  drizzle-kit: 1.0.0-beta.18-7eb39f0
+  drizzle-seed: 1.0.0-beta.18-7eb39f0
   better-auth: ^1.5.5
   "@better-auth/expo": ^1.5.5
   "@better-auth/drizzle-adapter": ^1.5.5
-  "@supabase/supabase-js": ^2.99.1
-  next-intl: ^4.8.3
+  "@supabase/supabase-js": ^2.99.3
 
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   tailwind-merge: ^3.5.0
-  tailwindcss: ^4.2.1
-  "@tailwindcss/postcss": ^4
+  tailwindcss: ^4.2.2
 
   # ── Forms ──
   react-hook-form: ^7.71.2
@@ -56,6 +37,3 @@ catalog:
 
   # ── Types ──
   "@types/node": ^24.11.0
-
-  # ── Testing ──
-  "@playwright/test": ^1.58.2

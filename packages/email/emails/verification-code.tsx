@@ -2,8 +2,8 @@ import { BRAND_COLOR } from "@openhospi/shared/constants";
 import { Text } from "@react-email/components";
 import { createTranslator } from "next-intl";
 
-import { BaseLayout } from "../components/base-layout";
-import type { BaseEmailProps } from "../types";
+import { BaseLayout } from "./_components/base-layout";
+import type { BaseEmailProps } from "./_types";
 
 type VerificationCodeProps = BaseEmailProps & {
   code: string;

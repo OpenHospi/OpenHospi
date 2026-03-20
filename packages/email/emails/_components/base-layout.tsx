@@ -15,7 +15,7 @@ import {
 import { createTranslator } from "next-intl";
 import type { ReactNode } from "react";
 
-import type { EmailMessages } from "../types";
+import type { EmailMessages } from "../_types";
 
 type BaseLayoutProps = {
   children: ReactNode;

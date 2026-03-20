@@ -1,26 +1,31 @@
 import { Text } from "@react-email/components";
 import { createTranslator } from "next-intl";
 
-import { BaseLayout } from "../components/base-layout";
-import type { BaseEmailProps } from "../types";
+import { BaseLayout } from "./_components/base-layout";
+import type { BaseEmailProps } from "./_types";
 
-type EventCancelledProps = BaseEmailProps & {
-  eventTitle: string;
+type ApplicationNotChosenProps = BaseEmailProps & {
+  roomTitle: string;
 };
 
-export function EventCancelled({ eventTitle, locale, baseUrl, messages }: EventCancelledProps) {
-  const t = createTranslator({ locale, messages, namespace: "emails.eventCancelled" });
+export function ApplicationNotChosen({
+  roomTitle,
+  locale,
+  baseUrl,
+  messages,
+}: ApplicationNotChosenProps) {
+  const t = createTranslator({ locale, messages, namespace: "emails.applicationNotChosen" });
 
   return (
     <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
       <Text style={heading}>{t("heading")}</Text>
-      <Text style={text}>{t("body", { eventTitle })}</Text>
+      <Text style={text}>{t("body", { roomTitle })}</Text>
     </BaseLayout>
   );
 }
 
-EventCancelled.PreviewProps = {
-  eventTitle: "Movie Night",
+ApplicationNotChosen.PreviewProps = {
+  roomTitle: "Cosy room in Amsterdam",
   baseUrl: "http://localhost:3000",
   locale: "en",
   messages: {
@@ -29,15 +34,15 @@ EventCancelled.PreviewProps = {
         footer: "OpenHospi — Free student housing platform for the Netherlands",
         doNotReply: "This is an automated message. Please do not reply to this email.",
       },
-      eventCancelled: {
-        heading: "Event cancelled",
-        body: 'The hospi event "{eventTitle}" has been cancelled by the organiser.',
+      applicationNotChosen: {
+        heading: "Application update",
+        body: 'Unfortunately, the room "{roomTitle}" has been filled. Don\'t give up — there are plenty of other rooms available!',
       },
     },
   },
 };
 
-export default EventCancelled;
+export default ApplicationNotChosen;
 
 const heading = {
   fontSize: "24px",

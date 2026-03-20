@@ -8,26 +8,27 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "email dev -p 3001 --dir src/templates",
+    "dev": "email dev -p 3080",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
+    "format": "prettier --write \"{src,emails}/**/*.{ts,tsx,json}\"",
+    "format:check": "prettier --check \"{src,emails}/**/*.{ts,tsx,json}\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
-    "next-intl": "catalog:",
+    "next-intl": "^4.8.3",
     "@react-email/components": "^1.0.10",
     "@react-email/render": "^2.0.4",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "next": "16.1.7",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@openhospi/eslint-config": "workspace:*",
     "@react-email/preview-server": "5.2.10",
-    "@types/react": "catalog:",
+    "@types/react": "^19.2.14",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "react-email": "^5.2.10",

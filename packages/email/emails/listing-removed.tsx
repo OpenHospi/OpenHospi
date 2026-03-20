@@ -1,15 +1,15 @@
 import { Text } from "@react-email/components";
 import { createTranslator } from "next-intl";
 
-import { BaseLayout } from "../components/base-layout";
-import type { BaseEmailProps } from "../types";
+import { BaseLayout } from "./_components/base-layout";
+import type { BaseEmailProps } from "./_types";
 
-type UserBannedProps = BaseEmailProps & {
+type ListingRemovedProps = BaseEmailProps & {
   reason: string;
 };
 
-export function UserBanned({ reason, locale, baseUrl, messages }: UserBannedProps) {
-  const t = createTranslator({ locale, messages, namespace: "emails.userBanned" });
+export function ListingRemoved({ reason, locale, baseUrl, messages }: ListingRemovedProps) {
+  const t = createTranslator({ locale, messages, namespace: "emails.listingRemoved" });
 
   return (
     <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
@@ -20,8 +20,8 @@ export function UserBanned({ reason, locale, baseUrl, messages }: UserBannedProp
   );
 }
 
-UserBanned.PreviewProps = {
-  reason: "Repeated harassment of other users",
+ListingRemoved.PreviewProps = {
+  reason: "Listing contains misleading information",
   baseUrl: "http://localhost:3000",
   locale: "en",
   messages: {
@@ -30,16 +30,16 @@ UserBanned.PreviewProps = {
         footer: "OpenHospi — Free student housing platform for the Netherlands",
         doNotReply: "This is an automated message. Please do not reply to this email.",
       },
-      userBanned: {
-        heading: "Account suspended",
-        body: "Your account has been suspended for the following reason: {reason}.",
+      listingRemoved: {
+        heading: "Listing removed",
+        body: "Your listing has been removed for the following reason: {reason}.",
         contact: "If you believe this is a mistake, please contact us at support@openhospi.nl.",
       },
     },
   },
 };
 
-export default UserBanned;
+export default ListingRemoved;
 
 const heading = {
   fontSize: "24px",

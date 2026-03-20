@@ -1,20 +1,43 @@
 # CLAUDE.md — Mobile App (`apps/mobile`)
 
+See root `CLAUDE.md` for project-wide conventions (coding philosophy, git, enums, i18n zero-duplication rule). This file covers mobile-specific details.
+
+## Skills
+
+When working on the mobile app, use these skills for up-to-date guidance:
+
+- `uniwind` — Tailwind CSS v4 for RN: styling, theming, className, `cn()`, `accent-` prefix
+- `building-native-ui` — Expo Router navigation, animations, patterns, NativeTabs
+- `native-data-fetching` — API calls, React Query, caching, offline, auth tokens
+- `expo-dev-client` — Dev builds, TestFlight distribution
+- `use-dom` — Web-only libraries in webview on native
+- `upgrading-expo` — SDK upgrades, breaking changes
+- `expo-deployment` — EAS builds, App Store, Play Store
+- `expo-cicd-workflows` — EAS workflow YAML, CI/CD pipelines
+- `better-auth-best-practices` — Auth server/client, sessions, plugins
+- `better-auth-security-best-practices` — Rate limiting, CSRF, secrets
+- `i18n-conventions` — Translation keys, namespaces, zero-duplication rule
+- `drizzle-rls` — Server-side DB schema, RLS policies (when touching shared schema)
+- `shadcn` — rn-primitives UI components
+
 ## Stack
 
-| Layer      | Technology                                                            |
-| ---------- | --------------------------------------------------------------------- |
-| Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                        |
-| Styling    | **Uniwind v1.5** (Tailwind CSS v4 for RN) — NOT NativeWind            |
-| UI         | @rn-primitives/\* (accordion, dialog, tabs, etc.) + custom components |
-| Animations | react-native-reanimated v4                                            |
-| i18n       | react-i18next + i18next-icu — NOT next-intl                           |
-| Auth       | Better Auth Expo client (`@better-auth/expo`)                         |
-| Data       | React Query (`@tanstack/react-query`) + REST to Next.js backend       |
-| Local DB   | expo-sqlite + Drizzle ORM (cache layer)                               |
-| Backend    | **Next.js API** (apps/web) — NOT Expo API routes                      |
-| Monitoring | Sentry (`@sentry/react-native`)                                       |
-| Compiler   | React Compiler (enabled via `experiments.reactCompiler`)              |
+| Layer      | Technology                                                                          |
+| ---------- | ----------------------------------------------------------------------------------- |
+| Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                                      |
+| Styling    | **Uniwind v1.6** (Tailwind CSS v4 for RN) — NOT NativeWind                          |
+| UI         | @rn-primitives/\* (accordion, dialog, tabs, etc.) + custom components               |
+| Animations | react-native-reanimated v4                                                          |
+| Icons      | `lucide-react-native` + SF Symbols (`expo-symbols`) + `@expo/vector-icons` fallback |
+| i18n       | react-i18next + i18next-icu — NOT next-intl                                         |
+| Auth       | Better Auth Expo client (`@better-auth/expo`)                                       |
+| Data       | React Query (`@tanstack/react-query` v5) + REST to Next.js backend                  |
+| Local DB   | expo-sqlite + Drizzle ORM (cache + E2EE protocol state)                             |
+| E2EE       | `@openhospi/crypto` + `react-native-quick-crypto` (Signal Protocol)                 |
+| Realtime   | Supabase Broadcast (WebSocket) — chat only                                          |
+| Backend    | **Next.js API** (apps/web) — NOT Expo API routes                                    |
+| Monitoring | Sentry (`@sentry/react-native`)                                                     |
+| Compiler   | React Compiler (enabled via `experiments.reactCompiler`)                            |
 
 ## Styling Rules (Uniwind)
 
@@ -25,12 +48,12 @@ Uniwind's `className` does NOT reliably handle layout properties on all componen
 ```tsx
 // CORRECT
 <View
-    style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24}}
-    className="bg-background"
+  style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
+  className="bg-background"
 >
 
-    // WRONG — layout via className breaks on SafeAreaView, Animated.View, etc.
-    <View className="flex-1 items-center justify-center px-6 bg-background">
+// WRONG — layout via className breaks on SafeAreaView, Animated.View, etc.
+<View className="flex-1 items-center justify-center px-6 bg-background">
 ```
 
 **Use `style` for:** `flex`, `flexDirection`, `justifyContent`, `alignItems`, `gap`, `padding*`, `margin*`, `width`,
@@ -38,6 +61,31 @@ Uniwind's `className` does NOT reliably handle layout properties on all componen
 
 **Use `className` for:** colors (`bg-*`, `text-*`, `border-*`), typography (`text-xl`, `font-semibold`,
 `tracking-tight`), borders (`rounded-xl`, `border`), shadows (`shadow-sm`), opacity
+
+### `accent-` prefix for non-style color props
+
+For props that are NOT `style` (e.g. `tintColor`, `color`, `placeholderTextColor`), use the `accent-` prefix:
+
+```tsx
+// CORRECT — accent- prefix for non-style color props
+<ActivityIndicator className="accent-primary" />
+<TextInput className="accent-muted-foreground" placeholder="Search..." />
+
+// WRONG — tintColor/color are not style properties
+<ActivityIndicator className="text-primary" />
+```
+
+### `withUniwind` only for third-party components
+
+Only use `withUniwind()` to add className support to third-party components that don't have it. Never use it on RN core components or Expo components (they already support className).
+
+### `cn()` for class deduplication
+
+Always use `cn()` (from `src/lib/utils.ts`) when merging conditional classes to avoid duplicate/conflicting styles:
+
+```tsx
+<View className={cn('bg-card rounded-xl', isActive && 'bg-primary')} />
+```
 
 ### Do NOT use NativeWind APIs
 
@@ -61,8 +109,8 @@ Uniwind does NOT support dynamic string interpolation in classNames:
 // WRONG — class is not compiled
 <Text className={`text-${color}`}>
 
-    // CORRECT — use conditional or style
-    <Text className={color === 'red' ? 'text-red-500' : 'text-blue-500'}>
+// CORRECT — use conditional or style
+<Text className={color === 'red' ? 'text-red-500' : 'text-blue-500'}>
 ```
 
 ### Don't rely on Card's TextClassContext
@@ -79,58 +127,153 @@ still use `style` for layout.
 ## Navigation
 
 - **Expo Router v4** with file-based routing in `src/app/`
-- **NativeTabs** (`@react-navigation/bottom-tabs`) for the main tab bar
-- Route groups: `(auth)/` for login/onboarding, `(app)/` for authenticated, `(modals)/` for modal screens
-- Icons: SF Symbols via `expo-symbols` (iOS), MaterialCommunityIcons fallback (Android)
+- **NativeTabs** from `expo-router/unstable-native-tabs` for the main tab bar (NOT `@react-navigation/bottom-tabs`)
+- Route groups:
+  - `(auth)/` — Login screen
+  - `(onboarding)/` — Onboarding flow (separate route group, NOT inside `(auth)/`)
+  - `(app)/` — Authenticated app shell
+    - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
+    - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
+    - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
+- Icons: SF Symbols via `expo-symbols` (iOS), `lucide-react-native` + `@expo/vector-icons` fallback (Android)
 - Typed routes enabled (`experiments.typedRoutes: true`)
 
-## Data Fetching
+## Data Fetching & Services
 
-- **React Query** for all server state — queries, mutations, optimistic updates
-- **REST API** calls to the Next.js backend (apps/web) — NOT Expo API routes
-- Service layer in `src/services/` — each file exports query/mutation functions
-- Query key conventions: `['entity', id]` or `['entity', 'list', filters]`
+### API Client
+
+REST wrapper in `src/lib/api-client.ts`:
+
+- Thin `fetch` wrapper with `ApiError` class
+- Auto-includes `Cookie` header from Better Auth client
+- Methods: `api.get()`, `api.post()`, `api.patch()`, `api.delete()`
+- All requests go to Next.js backend (`API_BASE_URL` from constants)
+
+### React Query
+
+- All server state managed via React Query (`@tanstack/react-query` v5)
+- Query client config in `src/lib/query-client.ts` (stale: 5min, GC: 30min, retry: 2)
+
+### Query Key Factory
+
+Centralized in `src/services/keys.ts`:
+
+```tsx
+import { queryKeys } from '@/services/keys';
+
+// Usage in hooks
+queryKey: queryKeys.rooms.list(filters);
+queryKey: queryKeys.chat.messages(conversationId);
+```
+
+### Service Layer
+
+Each file in `src/services/` exports React Query hooks:
+
+- `chat.ts` — `useConversations()`, `useMessages()`, `useSendMessage()`
+- `rooms.ts` — `useRooms()`, `useRoom()`, `useApplyToRoom()`
+- `profile.ts` — `useProfile()`, `useUpdateProfile()`, `useUploadProfilePhoto()`
+- `applications.ts` — `useApplications()`, `useApplicationDetail()`
+- `onboarding.ts` — `useOnboardingStatus()`
+- `invitations.ts` — `useInvitations()`
+- `settings.ts` — `useSettings()`, `useConsentMutations()`, `useSessions()`
+- `verification.ts` — `useVerificationStatus()`, `useIdentityKeys()`
 
 ## Auth
 
-- **Better Auth Expo** client via `@better-auth/expo`
+- **Better Auth Expo** client via `@better-auth/expo` in `src/lib/auth-client.ts`
 - Token storage: `expo-secure-store`
 - Login: InAcademia OIDC (SURFconext) via `expo-web-browser`
-- Auth guard in root `_layout.tsx` — redirects unauthenticated users to `(auth)/login`
+- Session context in `src/context/session.tsx` — provides `useSession`, handles auth + onboarding state
+- Auth guard in root `_layout.tsx` — routes to `(app)`, `(onboarding)`, or `(auth)` based on session + onboarding status
 
 ## i18n
 
 - **react-i18next** with `i18next-icu` plugin — NOT next-intl (that's web-only)
+- Setup in `src/i18n/index.ts`
 - Resources loaded from `@openhospi/i18n/app` (merges `shared.json` + `app.json`)
+- Type definitions in `src/@types/i18next.d.ts`
 - Use `useTranslation('translation', { keyPrefix: 'feature.section' })` pattern
 - Shared labels live in `common.labels` — use `keyPrefix: 'common.labels'`
 - Translation files: `packages/i18n/messages/{nl,en,de}/shared.json` and `app.json`
 
+## E2EE Chat
+
+### Crypto Stack
+
+- **`@openhospi/crypto`** (workspace package) — Signal Protocol implementation (ECDH P-256, HKDF, AES-256-GCM, Sender Keys)
+- **`react-native-quick-crypto`** — Native crypto polyfill (installed as Metro resolver alias for `crypto`)
+- Polyfill installed in root `_layout.tsx` via `createNativeCryptoProvider()`
+
+### Key Storage
+
+- **Identity keys**: SQLite (`identityKeys` table) + backup encrypted in SecureStore
+- **Session state**: SQLite tables (`sessions`, `preKeys`, `signedPreKeys`, `senderKeys`, `skippedKeys`)
+- **Protocol store**: `src/lib/crypto/stores/index.ts` — `SqliteProtocolStore` implements the `ProtocolStore` interface
+- **Secure storage**: `src/lib/crypto/secure-storage.ts` — wrapper around `expo-secure-store`
+
+### Encryption Context
+
+`src/hooks/use-encryption.ts` provides:
+
+- `initializeDevice(pin)` — Generates device keys, registers with server, backs up encrypted identity key
+- `ensureSessions(memberUserIds)` — Downloads prekey bundles, establishes Signal sessions
+- `encryptMessage(conversationId, members, plaintext)` — Sender Key ratchet encryption
+- `decryptMessage(messageId, conversationId, senderAddress, payload)` — Decryption via Sender Key
+- `distributeSenderKey()` / `processIncomingDistribution()` — Key distribution management
+
+### Realtime
+
+- Supabase client in `src/lib/supabase.ts` — configured for **Realtime only** (`persistSession: false`)
+- Chat screens subscribe to `chat:${conversationId}` Broadcast channel for live message updates
+- All data queries go through the Next.js REST API, NOT through Supabase directly
+
 ## Local Database (SQLite + Drizzle)
 
 - `expo-sqlite` provides the SQLite driver
-- Drizzle ORM for type-safe queries and migrations
-- Schema in `src/db/`
+- Drizzle ORM for type-safe queries
+- Schema in `src/lib/db/schema.ts` — 12 tables for E2EE protocol state and local caching:
+  - `identityKeys`, `preKeys`, `signedPreKeys` — Device key material
+  - `sessions`, `senderKeys`, `skippedKeys` — Signal Protocol state
+  - `localMessages` — Decrypted plaintext message cache
+  - `trustedIdentities`, `keyVerifications` — TOFU & manual key verification
+  - `preferences`, `cachedProfiles`, `messageDrafts`, `syncMetadata` — App state
+- Database setup in `src/lib/db/index.ts`
+- Migration gate in root `_layout.tsx` — app waits for `useRunMigrations()` before rendering
+- Drizzle config (`drizzle.config.ts`): dialect `sqlite`, driver `expo`, output `./drizzle`
 - **`babel.config.js` MUST stay** — `babel-plugin-inline-import` is required by Drizzle's SQLite migrator to import
   `.sql` migration files as strings at build time
-- Migration gate in root `_layout.tsx` — app waits for migrations before rendering
-- **NEVER create migration files manually** — always use `pnpm drizzle-kit generate` to generate migrations from the schema. Migration files in `drizzle/` and `drizzle/migrations.js` are auto-generated and must not be hand-edited.
+- **NEVER create migration files manually** — always use `pnpm db:mobile:generate` from repo root
 
 ## Components
 
-- **UI primitives:** `src/components/ui/` — exclusively for downloaded/third-party primitives (`@rn-primitives/*`). Do
-  not place custom components here.
-- **Custom components:** `src/components/` — room-card, logo, language-picker, input-otp, etc. All custom project
-  components go here, not in `ui/`.
+- **UI primitives:** `src/components/ui/` — exclusively for @rn-primitives components. Do not place custom components here.
+- **Custom components:** `src/components/` — room-card, logo, message-bubble, encryption-gate, etc.
 - Use `class-variance-authority` (`cva`) for component variants
-- Use `tailwind-merge` (`cn` utility) for class merging
+- Use `cn()` utility for class merging
+- Icons: `lucide-react-native` for custom icons, SF Symbols via `expo-symbols` for iOS system icons
 
 ## Shared Packages
 
-- `@openhospi/shared` — enums (companion objects), constants (`APP_NAME`, `BRAND_COLOR`), types
-- `@openhospi/i18n` — translation resources, locale config
+- `@openhospi/shared` — Enums (companion objects), constants (`APP_NAME`, `BRAND_COLOR`), types
+- `@openhospi/i18n` — Translation resources, locale config
+- `@openhospi/crypto` — E2EE Signal Protocol implementation (imports `@openhospi/crypto/native` for RN-specific exports)
 - `@openhospi/inacademia` — InAcademia OIDC utilities
 - `@openhospi/validators` — Standalone Zod validation schemas
+
+## Environment Variables
+
+All client-exposed variables use `EXPO_PUBLIC_` prefix:
+
+| Variable                   | Description                         | Default                |
+| -------------------------- | ----------------------------------- | ---------------------- |
+| `EXPO_PUBLIC_API_URL`      | Next.js backend URL                 | `https://openhospi.nl` |
+| `EXPO_PUBLIC_SUPABASE_URL` | Supabase project URL (Realtime)     | —                      |
+| `EXPO_PUBLIC_SUPABASE_KEY` | Supabase publishable key            | —                      |
+| `EXPO_PUBLIC_SENTRY_DSN`   | Sentry error tracking DSN           | —                      |
+| `SENTRY_AUTH_TOKEN`        | Sentry auth token (private, builds) | —                      |
+
+Defined in `src/lib/constants.ts`. For local dev, set in `.env.local`.
 
 ## Don'ts
 
@@ -143,34 +286,75 @@ still use `style` for layout.
 - **Hardcoded enum strings** — use companion objects from `@openhospi/shared/enums`
 - **next-intl imports** — mobile uses react-i18next, not next-intl
 - **TODO comments** — fix it now or create an issue
+- **Direct Supabase data queries** — all data goes through Next.js REST API; Supabase client is Realtime-only
+- **`withUniwind()` on RN/Expo components** — only for third-party components without className support
 
 ## Project Structure
 
 ```
 src/
+  @types/
+    i18next.d.ts             # i18next type augmentation
   app/
-    _layout.tsx          # Root: Sentry, i18n, theme, migrations, auth guard
-    index.tsx            # Session check, redirect to (app) or (auth)
+    _layout.tsx              # Root: Sentry, crypto polyfill, i18n, theme, migrations, auth guard
+    index.tsx                # Session check, redirect to (app), (onboarding), or (auth)
+    +not-found.tsx           # 404 handler
     (auth)/
-      _layout.tsx        # Stack with headerShown: false
-      login.tsx          # Login screen
-      onboarding/        # Onboarding flow (steps/)
+      _layout.tsx            # Stack with headerShown: false
+      login.tsx              # InAcademia OIDC login
+    (onboarding)/
+      _layout.tsx            # Onboarding layout
+      index.tsx              # Onboarding entry
+      steps/                 # about, bio, identity, languages, personality, photos, security
     (app)/
-      _layout.tsx        # App shell
-      (tabs)/            # Tab navigator (discover, my-rooms, chat, applications, profile)
-      (modals)/          # Modal screens (edit-*, filter-sheet, apply-sheet)
-      room/[id].tsx      # Room detail
+      _layout.tsx            # App shell
+      (tabs)/
+        _layout.tsx          # NativeTabs (discover, my-rooms, chat, applications, profile)
+        discover/            # Room discovery with search
+        my-rooms.tsx
+        chat/                # Conversation list + [conversationId]/ thread
+        applications.tsx
+        profile.tsx
+      (modals)/              # Modal screens (edit-*, filter-sheet, apply-sheet, key-recovery)
+      room/[id].tsx
       application/[id].tsx
       settings.tsx
   components/
-    ui/                  # Reusable UI primitives (button, card, text, separator, etc.)
-    language-picker.tsx
-    logo.tsx
-    room-card.tsx
-  db/                    # Local SQLite + Drizzle
-  i18n/                  # i18next setup
-  lib/                   # Auth client, constants, query client, theme, utils
-  services/              # API service layer
+    ui/                      # @rn-primitives UI components (button, card, text, dialog, etc.)
+    room-card.tsx            # Custom components (message-bubble, encryption-gate, etc.)
+  context/
+    session.tsx              # Auth + onboarding state provider
+    discover-filters.tsx     # Discovery filter state
+  hooks/
+    use-encryption.ts        # E2EE encryption/decryption context
+  i18n/
+    index.ts                 # react-i18next + i18next-icu setup
+  lib/
+    auth-client.ts           # Better Auth Expo client
+    api-client.ts            # REST API wrapper
+    supabase.ts              # Supabase client (Realtime only)
+    constants.ts             # Environment variables, query config
+    query-client.ts          # React Query config
+    theme.ts                 # Navigation theme
+    utils.ts                 # cn() utility
+    crypto/
+      secure-storage.ts      # expo-secure-store wrapper
+      stores/index.ts        # SQLiteProtocolStore (Signal Protocol)
+    db/
+      index.ts               # Drizzle + expo-sqlite setup
+      schema.ts              # 12 SQLite tables (E2EE + cache)
+      migrations.ts          # useRunMigrations hook
+  services/
+    keys.ts                  # Query key factory
+    types.ts                 # API response types
+    chat.ts                  # Chat queries/mutations
+    rooms.ts                 # Room queries/mutations
+    profile.ts               # Profile queries/mutations
+    applications.ts          # Application queries/mutations
+    onboarding.ts            # Onboarding status
+    invitations.ts           # Invitation queries
+    settings.ts              # Settings queries/mutations
+    verification.ts          # Key verification queries
 ```
 
 ## Taking Screenshots from the iOS Simulator

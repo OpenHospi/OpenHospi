@@ -6,6 +6,11 @@ export const queryKeys = {
     list: (filters: Record<string, unknown>) => ['rooms', 'list', filters] as const,
     detail: (id: string) => ['rooms', 'detail', id] as const,
   },
+  myRooms: {
+    list: () => ['myRooms'] as const,
+    detail: (id: string) => ['myRooms', id] as const,
+    houses: () => ['myRooms', 'houses'] as const,
+  },
   applications: {
     list: () => ['applications'] as const,
     detail: (id: string) => ['applications', id] as const,

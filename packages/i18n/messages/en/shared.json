@@ -58,7 +58,9 @@
       "delete": "Delete",
       "skip": "Skip",
       "notSet": "Not set",
-      "email": "Email"
+      "email": "Email",
+      "total": "Total",
+      "confirm": "Confirm"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",

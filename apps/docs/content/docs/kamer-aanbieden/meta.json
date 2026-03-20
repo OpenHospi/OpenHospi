@@ -1,5 +1,5 @@
 {
   "title": "Kamer aanbieden",
-  "icon": "Home",
+  "icon": "House",
   "pages": ["index", "listing-aanmaken", "listing-beheren"]
 }

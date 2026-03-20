@@ -19,24 +19,30 @@ OpenHospi is a free, open-source student housing/roommate platform for the Nethe
 ## Coding Philosophy
 
 ### Quality over speed
+
 IMPORTANT: This is a greenfield project. We do it right the first time. No quick fixes, no hacks, no "we'll clean this up later." If something isn't right, rewrite it properly. When fixing a bug or implementing a feature, understand the full context and rewrite the affected code properly. Don't patch around the problem with minimal changes. If a file or function needs changes in multiple places, rewrite it as a whole rather than making scattered minimal edits.
 
 ### No premature optimization
+
 Write clear, straightforward code first. Don't create abstractions "just in case." Don't split into helper functions unless there's actual reuse. Three similar lines are better than a premature abstraction. Optimize only when there's a measured problem.
 
 ### Keep it simple and maintainable
+
 - Prefer flat, readable code over clever patterns
 - Avoid deep function-to-function chains — they make debugging hard
 - Don't over-abstract. If a function is only called once and isn't complex, inline it
 - Every file should be understandable on its own without jumping through 5 layers of indirection
 
 ### Write code for humans
+
 - Clear variable and function names over comments
 - Only add comments when the "why" isn't obvious from the code
 - Prefer explicit over implicit — make intent clear
 
 ### Investigate before fixing
+
 IMPORTANT: Read the full file before making changes. Understand the complete flow, not just the line that errors.
+
 - When something fails, understand WHY it fails before attempting a fix
 - Check official documentation for the tools/libraries involved
 - Study existing codebase patterns to understand how similar problems were already solved
@@ -46,6 +52,7 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 ## Project Conventions
 
 ### Next.js 16
+
 - `proxy.ts` (not `middleware.ts`) — Next.js 16 renamed middleware to proxy, export named `proxy`
 - Locale constants from `@openhospi/i18n`: `SUPPORTED_LOCALES`, `DEFAULT_LOCALE`, `LOCALE_CONFIG`, `localePathPattern`, type `Locale`
 - App constants from `@openhospi/shared/constants`: `APP_NAME`, `BRAND_COLOR`, etc.
@@ -53,18 +60,21 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 - Tailwind v4 with `@theme inline` block, oklch color space
 
 ### Enums & shared types
+
 - All enums live in `packages/shared/src/enums.ts` — arrays (`ROOM_STATUSES`) + types (`RoomStatus`) + companion objects (`RoomStatus.active`)
 - Always use companion objects for enum values — never hardcode string literals (e.g. use `RoomStatus.active` not `"active"`)
 - In RLS policies, use `sql.raw(RoomStatus.active)` to inline enum values into raw SQL
 - Config constants (limits, lengths, page sizes) belong in `constants.ts` — enum values do NOT
 
 ### File structure (apps/web)
+
 - `src/components/ui/` — shadcn/ui components (don't modify unless necessary)
 - `src/components/marketing/` — custom marketing components
 - `src/i18n/` — internationalization config
 - `src/messages/` — translation JSON files (see i18n section below)
 
 ### i18n (next-intl)
+
 - Translation files: `packages/i18n/messages/{nl,en,de}/{shared,web,admin,app}.json`
 - `shared.json` — Keys used by BOTH web and mobile: common, enums, notifications, auth, app screens
 - `web.json` — Web-only: marketing pages (home, about, safety, costs, etc.) and public SEO pages
@@ -77,17 +87,20 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 - Before adding a new translation key, check if the same label already exists in `common.labels` or another namespace
 
 ### Linting & Formatting
+
 - ESLint 9 flat config with strict a11y, import ordering, security, and code quality plugins
 - Prettier for formatting (separate from ESLint)
 - Run `pnpm lint` and `pnpm format:check` before committing
 
 ### Database & Drizzle ORM
+
 - Schema: `packages/database/src/schema/` — camelCase JS keys, snake_case DB columns
 - Validators: Derived from Drizzle tables via `createInsertSchema` from `drizzle-orm/zod`
 - Types: `InferSelectModel`/`InferInsertModel` — single source of truth
 - Connection: Lazy proxy in `packages/database/src/db.ts` (defers until first use — required for Next.js build)
 
 #### RLS (Row-Level Security) policies
+
 - Use `authUid`, `authenticatedRole`, `anonRole` from `drizzle-orm/supabase` with explicit `pgPolicy()` calls (no `crudPolicy()`)
 - `authUid` is a raw SQL fragment — use it as `` sql`${column} = ${authUid}` `` in policy expressions
 - Use `pgPolicy` with raw `sql` for complex conditions (subqueries, joins, multi-table checks)
@@ -97,16 +110,19 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 - Better Auth provisioning and admin operations use `db` directly (postgres role, bypasses RLS)
 
 #### Schema commands
+
 - Run pnpm scripts from the **repo root**: `pnpm db:push`
 - `db:push` is the standard workflow — pushes schema directly to the database (no migration files)
 - `drizzle.config.ts` has `schemaFilter: ["public"]` and `entities.roles.provider: "supabase"`
 
 ### Git
+
 - Branch from `dev`, PR into `dev`, merge `dev` into `main` for releases
 - Write clear, descriptive commit messages
 - **NEVER auto-commit or auto-push.** All code is reviewed and committed manually by the developer. AI tools must never run `git commit`, `git push`, or create PRs without explicit instruction.
 
 ### Verification
+
 - After code changes: `pnpm lint && pnpm format:check`
 - After schema changes: `pnpm db:push`
 - After adding dependencies: `pnpm install` from repo root
@@ -124,3 +140,4 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 - Don't use hardcoded enum string literals — use companion objects from `@openhospi/shared/enums`
 - Don't duplicate translation keys — reusable labels go in `common.labels` in `shared.json`, not repeated per namespace
 - Don't replace ORM features with raw SQL workarounds — investigate the root cause instead
+- Don't use em dashes ("—") in Dutch or English content. In Dutch this punctuation is unnatural and reads as AI-generated. Use colons (:), commas, periods, or rewrite as separate sentences. Match the style of existing translations and legal pages: direct, short sentences, fragment sentences for emphasis ("Geen verborgen kosten."), and "en"/"of" to join clauses

@@ -1,0 +1,3 @@
+# xmlbuilder is a transitive dep of @expo/config-plugins that gets hoisted
+# differently in monorepo (root node_modules) vs EAS, causing fingerprint mismatch
+../../node_modules/xmlbuilder/**

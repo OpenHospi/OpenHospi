@@ -96,6 +96,11 @@ overrides:
 
 pnpmfileChecksum: sha256-nVOmFZ6JT8FxIhcN+S5sJXuP1DtIhTre5ZGvjJU+4tk=
 
+patchedDependencies:
+  react-native-leaflet-view@1.1.2:
+    hash: a1e87c4cbd5d267456cd36d28e9540b1bbd81f9fa36b2a1447158ae0bd057c6c
+    path: patches/react-native-leaflet-view@1.1.2.patch
+
 importers:
 
   .:
@@ -581,7 +586,7 @@ importers:
         version: 2.30.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react-native-leaflet-view:
         specifier: ^1.1.2
-        version: 1.1.2(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+        version: 1.1.2(patch_hash=a1e87c4cbd5d267456cd36d28e9540b1bbd81f9fa36b2a1447158ae0bd057c6c)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react-native-qrcode-svg:
         specifier: ^6.3.21
         version: 6.3.21(react-native-svg@15.15.3(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -27345,7 +27350,7 @@ snapshots:
       react: 19.2.0
       react-native: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
 
-  react-native-leaflet-view@1.1.2(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
+  react-native-leaflet-view@1.1.2(patch_hash=a1e87c4cbd5d267456cd36d28e9540b1bbd81f9fa36b2a1447158ae0bd057c6c)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
       react: 19.2.0
       react-native: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)

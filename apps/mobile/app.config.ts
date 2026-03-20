@@ -26,7 +26,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: './assets/openhospi.icon',
     supportsTablet: true,
     bundleIdentifier: IS_PRODUCTION ? 'nl.openhospi.app' : 'nl.openhospi.app.dev',
-    buildNumber: '1',
     associatedDomains: ['applinks:openhospi.nl', 'webcredentials:openhospi.nl'],
     splash: {
       image: './assets/images/splash-icon.png',
@@ -39,6 +38,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     },
     infoPlist: {
+      ITSAppUsesNonExemptEncryption: true,
+      // ITSEncryptionExportComplianceCode: '<your-code-here>',
       CFBundleAllowMixedLocalizations: true,
       CFBundleDevelopmentRegion: 'nl',
       CFBundleLocalizations: ['nl', 'en', 'de'],
@@ -88,7 +89,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     package: IS_PRODUCTION ? 'nl.openhospi.app' : 'nl.openhospi.app.dev',
-    versionCode: 1,
     softwareKeyboardLayoutMode: 'resize',
     permissions: [
       'CAMERA',

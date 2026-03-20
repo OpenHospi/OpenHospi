@@ -60,7 +60,6 @@
       "@swc/core",
       "esbuild",
       "msw",
-      "sharp",
       "lightningcss",
       "unrs-resolver"
     ],
@@ -100,6 +99,9 @@
     },
     "configDependencies": {
       "@pnpm/plugin-types-fixer": "0.1.0+sha512-bLww63gRHi7siYTqFJb5qNdcXadU0jv20Et6z5AryMZ7FlLolbEJOrXLpg8+amQZNHHNW1dfFUBGVw/9ezQbFg=="
+    },
+    "patchedDependencies": {
+      "react-native-leaflet-view@1.1.2": "patches/react-native-leaflet-view@1.1.2.patch"
     }
   },
   "devDependencies": {

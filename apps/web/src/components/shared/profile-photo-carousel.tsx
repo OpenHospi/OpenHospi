@@ -66,6 +66,7 @@ export function ProfilePhotoCarousel({ photos, userName }: Props) {
             alt={userName}
             bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
           />
         </button>
@@ -98,6 +99,7 @@ export function ProfilePhotoCarousel({ photos, userName }: Props) {
                       alt={photo.caption ?? userName}
                       bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
                     />
                   </button>

@@ -39,6 +39,7 @@ export function RoomDetailDialog({ room, children }: Props) {
                 src={room.coverPhotoUrl}
                 alt={room.title}
                 fill
+                sizes="(max-width: 640px) 100vw, 448px"
                 className="object-cover"
                 bucket={STORAGE_BUCKET_ROOM_PHOTOS}
               />

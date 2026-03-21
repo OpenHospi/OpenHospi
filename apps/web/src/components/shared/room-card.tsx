@@ -39,6 +39,7 @@ export async function RoomCard({ room }: Props) {
             alt={room.title}
             bucket={STORAGE_BUCKET_ROOM_PHOTOS}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
           />
         ) : (

@@ -39,6 +39,7 @@ export function UserAvatar({ avatarUrl, userName, size = "md", className }: User
         alt={userName}
         bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
         fill
+        sizes="64px"
         className="object-cover"
       />
     </div>

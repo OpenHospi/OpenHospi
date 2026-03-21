@@ -1,7 +1,7 @@
 import { CommonError } from "@openhospi/shared/error-codes";
 import { NextResponse } from "next/server";
 
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { apiError, hasError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
 import { getUserOwnerHouses } from "@/lib/queries/houses";
 import { createHouseAndDraft } from "@/lib/services/room-mutations";
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const { name } = (await request.json()) as { name: string };
     const result = await createHouseAndDraft(session.user.id, name);
-    if ("error" in result) {
+    if (hasError(result)) {
       const status = result.error === CommonError.rate_limited ? 429 : 422;
       return apiError(result.error, status);
     }

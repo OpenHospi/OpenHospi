@@ -20,6 +20,12 @@ export function apiError(message: string, status: number, code?: string): NextRe
   return NextResponse.json({ error: message, ...(code ? { code } : {}) }, { status });
 }
 
+export function hasError<T extends Record<string, unknown>>(
+  result: T,
+): result is T & { error: string } {
+  return "error" in result && typeof result.error === "string";
+}
+
 export function apiSuccess<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(data, { status });
 }

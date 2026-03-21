@@ -1,7 +1,7 @@
 import { CommonError } from "@openhospi/shared/error-codes";
 import { NextResponse } from "next/server";
 
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { apiError, hasError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
 import { getRoom } from "@/lib/queries/rooms";
 import { deleteRoomForUser, updateRoomForUser } from "@/lib/services/room-mutations";
@@ -41,7 +41,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const { id } = await params;
     const data = await request.json();
     const result = await updateRoomForUser(session.user.id, id, data);
-    if ("error" in result) return apiError(result.error, 422);
+    if (hasError(result)) return apiError(result.error, 422);
     return NextResponse.json(result);
   } catch (e) {
     if (e instanceof NextResponse) return e;

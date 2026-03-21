@@ -18,7 +18,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ s
 
     const result = await deleteProfilePhotoForUser(session.user.id, slotNum);
     if ("error" in result && result.error) return apiError(result.error, 422);
-    return NextResponse.json(result);
+    return NextResponse.json<{ success: true }>(result as { success: true });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;

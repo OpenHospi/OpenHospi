@@ -1,7 +1,7 @@
 import { CommonError } from "@openhospi/shared/error-codes";
 import { NextResponse } from "next/server";
 
-import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
+import { apiError, hasError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
 import { batchInviteApplicantsForUser } from "@/lib/services/event-mutations";
 
@@ -18,7 +18,7 @@ export async function POST(
     const { id, eventId } = await params;
     const { applicationIds } = (await request.json()) as { applicationIds: string[] };
     const result = await batchInviteApplicantsForUser(session.user.id, eventId, id, applicationIds);
-    if ("error" in result) return apiError(result.error, 422);
+    if (hasError(result)) return apiError(result.error, 422);
     return NextResponse.json(result);
   } catch (e) {
     if (e instanceof NextResponse) return e;

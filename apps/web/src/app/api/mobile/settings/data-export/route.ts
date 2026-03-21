@@ -1,4 +1,3 @@
-import { CommonError } from "@openhospi/shared/error-codes";
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   activeConsents,
@@ -22,6 +21,7 @@ import {
   votes,
 } from "@openhospi/database/schema";
 import { PRIVACY_POLICY_VERSION } from "@openhospi/shared/constants";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 

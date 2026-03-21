@@ -45,7 +45,7 @@ async function getRoomByShareLink(code: string) {
 
 function validateShareLink(
   room: NonNullable<Awaited<ReturnType<typeof getRoomByShareLink>>>,
-): string | null {
+): "link_expired" | "link_max_used" | "room_not_active" | null {
   if (room.status !== RoomStatus.active) return "room_not_active";
 
   if (room.shareLinkExpiresAt && new Date(room.shareLinkExpiresAt) < new Date()) {

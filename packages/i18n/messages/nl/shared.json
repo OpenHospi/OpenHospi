@@ -652,11 +652,11 @@
         "resendIn": "Opnieuw sturen over {seconds}s",
         "codeHint": "De code verloopt na 60 minuten.",
         "verified": "E-mailadres geverifieerd. Je kunt doorgaan.",
-        "invalidData": "Vul alle velden correct in.",
-        "invalidCode": "Ongeldige code. Probeer opnieuw.",
-        "codeExpired": "Deze code is verlopen. Vraag een nieuwe aan.",
-        "emailMismatch": "Deze code hoort bij een ander e-mailadres.",
-        "emailNotVerified": "Verifieer je e-mailadres voordat je doorgaat."
+        "invalid_data": "Vul alle velden correct in.",
+        "invalid_code": "Ongeldige code. Probeer opnieuw.",
+        "code_expired": "Deze code is verlopen. Vraag een nieuwe aan.",
+        "email_mismatch": "Deze code hoort bij een ander e-mailadres.",
+        "email_not_verified": "Verifieer je e-mailadres voordat je doorgaat."
       },
       "fields": {
         "gender": "Geslacht",

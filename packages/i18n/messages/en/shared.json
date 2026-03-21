@@ -653,11 +653,11 @@
         "resendIn": "Resend in {seconds}s",
         "codeHint": "The code expires after 60 minutes.",
         "verified": "Email verified. You can continue.",
-        "invalidData": "Please complete all fields correctly.",
-        "invalidCode": "Invalid code. Please try again.",
-        "codeExpired": "This code expired. Request a new one.",
-        "emailMismatch": "This code is for a different email address.",
-        "emailNotVerified": "Verify your email before continuing."
+        "invalid_data": "Please complete all fields correctly.",
+        "invalid_code": "Invalid code. Please try again.",
+        "code_expired": "This code expired. Request a new one.",
+        "email_mismatch": "This code is for a different email address.",
+        "email_not_verified": "Verify your email before continuing."
       },
       "fields": {
         "gender": "Gender",

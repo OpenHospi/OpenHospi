@@ -43,7 +43,7 @@ export default async function JoinHousePage({ params }: Props) {
         <Card className="w-full max-w-lg text-center">
           <CardHeader>
             <CardTitle>{t("title")}</CardTitle>
-            <CardDescription>{t("errors.INVALID_LINK")}</CardDescription>
+            <CardDescription>{t("errors.invalid_link")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline">

@@ -652,11 +652,11 @@
         "resendIn": "Erneut senden in {seconds}s",
         "codeHint": "Der Code läuft nach 60 Minuten ab.",
         "verified": "E-Mail bestätigt. Du kannst fortfahren.",
-        "invalidData": "Bitte fülle alle Felder korrekt aus.",
-        "invalidCode": "Ungültiger Code. Bitte versuche es erneut.",
-        "codeExpired": "Dieser Code ist abgelaufen. Fordere einen neuen an.",
-        "emailMismatch": "Dieser Code gehört zu einer anderen E-Mail-Adresse.",
-        "emailNotVerified": "Bestätige deine E-Mail, bevor du fortfährst."
+        "invalid_data": "Bitte fülle alle Felder korrekt aus.",
+        "invalid_code": "Ungültiger Code. Bitte versuche es erneut.",
+        "code_expired": "Dieser Code ist abgelaufen. Fordere einen neuen an.",
+        "email_mismatch": "Dieser Code gehört zu einer anderen E-Mail-Adresse.",
+        "email_not_verified": "Bestätige deine E-Mail, bevor du fortfährst."
       },
       "fields": {
         "gender": "Geschlecht",

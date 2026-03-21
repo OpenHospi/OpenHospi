@@ -82,7 +82,9 @@
       "undici": ">=7.24.0",
       "socket.io-parser": ">=4.2.6",
       "flatted": ">=3.4.2",
-      "kysely": ">=0.28.12"
+      "kysely": ">=0.28.14",
+      "effect": ">=3.20.0",
+      "h3": ">=1.15.9"
     },
     "ignoredBuiltDependencies": [
       "@prisma/engines",

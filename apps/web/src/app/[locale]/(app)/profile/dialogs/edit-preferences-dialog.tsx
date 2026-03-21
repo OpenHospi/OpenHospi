@@ -15,7 +15,13 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@/lib/form-utils";
 
@@ -67,6 +73,7 @@ export function PreferencesCard({ profile }: CardProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("editPreferences")}</DialogTitle>
+          <DialogDescription className="sr-only">{t("editPreferences")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submit)} className="space-y-4">

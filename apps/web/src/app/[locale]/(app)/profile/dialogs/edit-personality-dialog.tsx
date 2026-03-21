@@ -8,7 +8,13 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@/lib/form-utils";
 import { cn } from "@/lib/utils";
@@ -66,6 +72,7 @@ export function LifestyleCard({ profile }: CardProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("editLifestyle")}</DialogTitle>
+          <DialogDescription className="sr-only">{t("editLifestyle")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submit)} className="space-y-4">

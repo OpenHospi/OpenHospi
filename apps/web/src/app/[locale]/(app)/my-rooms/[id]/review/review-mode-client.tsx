@@ -113,6 +113,7 @@ export function ReviewModeClient({ applicants, roomId, currentUserId }: Props) {
                 alt={photo.caption ?? applicant.firstName}
                 bucket={STORAGE_BUCKET_PROFILE_PHOTOS}
                 fill
+                sizes="(max-width: 640px) 50vw, 25vw"
                 className="object-cover"
               />
             </div>

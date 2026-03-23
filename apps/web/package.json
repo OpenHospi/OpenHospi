@@ -80,7 +80,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/web-push": "^3.6.4",
     "eslint": "catalog:",
-    "eslint-config-next": "16.2.0",
+    "eslint-config-next": "16.2.1",
     "eslint-config-prettier": "catalog:",
     "eslint-import-resolver-typescript": "catalog:",
     "eslint-plugin-import-x": "catalog:",

@@ -36,6 +36,6 @@
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "@openhospi/eslint-config": "workspace:*",
-    "eslint": "^9.39.4"
+    "eslint": "^10.1.0"
   }
 }

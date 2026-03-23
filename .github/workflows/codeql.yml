@@ -3,8 +3,22 @@ name: CodeQL
 on:
   pull_request:
     branches: [dev, main]
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - "supabase/functions/**"
+      - "*.config.*"
+      - ".github/workflows/codeql.yml"
+      - ".github/codeql-config.yml"
   push:
     branches: [main]
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - "supabase/functions/**"
+      - "*.config.*"
+      - ".github/workflows/codeql.yml"
+      - ".github/codeql-config.yml"
   schedule:
     - cron: "0 6 * * 1" # Monday 06:00 UTC
 

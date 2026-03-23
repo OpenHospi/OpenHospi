@@ -56,6 +56,11 @@
       "sourceType": "github",
       "computedHash": "6c14e4efb34a9c4759e8b959f82dec328f87dd89a022957c6737086984b9b106"
     },
+    "next-browser": {
+      "source": "vercel-labs/next-browser",
+      "sourceType": "github",
+      "computedHash": "30e14b4b0b1c498a2ed217ebbe1ffc89dabd2a5b7d06c6ce96e2d15d914b9a8a"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",

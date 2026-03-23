@@ -20,9 +20,9 @@ catalog:
   drizzle-orm: 1.0.0-beta.18-7eb39f0
   drizzle-kit: 1.0.0-beta.18-7eb39f0
   drizzle-seed: 1.0.0-beta.18-7eb39f0
-  better-auth: ^1.5.5
-  "@better-auth/expo": ^1.5.5
-  "@better-auth/drizzle-adapter": ^1.5.5
+  better-auth: ^1.5.6
+  "@better-auth/expo": ^1.5.6
+  "@better-auth/drizzle-adapter": ^1.5.6
   "@supabase/supabase-js": ^2.99.3
 
   # ── UI shared deps ──
@@ -32,7 +32,7 @@ catalog:
   tailwindcss: ^4.2.2
 
   # ── Forms ──
-  react-hook-form: ^7.71.2
+  react-hook-form: ^7.72.0
   "@hookform/resolvers": ^5.2.2
 
   # ── Types ──

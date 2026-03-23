@@ -13,7 +13,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       getInvitationForApplication(id, session.user.id),
     ]);
     if (!detail) return apiError("Application not found", 404);
-    return NextResponse.json({ ...detail, invitation: invitation ?? null });
+    return NextResponse.json({
+      ...detail,
+      invitation: invitation ?? null,
+    });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;

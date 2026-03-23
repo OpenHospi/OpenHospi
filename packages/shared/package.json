@@ -9,6 +9,8 @@
     "./enums": "./src/enums/index.ts",
     "./constants": "./src/constants/index.ts",
     "./constants/*": "./src/constants/*.ts",
+    "./error-codes": "./src/error-codes.ts",
+    "./api-types": "./src/api-types/index.ts",
     "./calendar": "./src/calendar.ts",
     "./icons": "./src/icons/index.tsx",
     "./assets/*": "./assets/*"

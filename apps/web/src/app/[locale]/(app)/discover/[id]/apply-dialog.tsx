@@ -4,6 +4,7 @@ import {
   MAX_PERSONAL_MESSAGE_LENGTH,
   MIN_PERSONAL_MESSAGE_LENGTH,
 } from "@openhospi/shared/constants";
+import { ApplicationError, CommonError } from "@openhospi/shared/error-codes";
 import type { ApplyToRoomData } from "@openhospi/validators";
 import { applyToRoomSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
@@ -58,11 +59,11 @@ export function ApplyDialog({ roomId }: Props) {
     startTransition(async () => {
       const result = await applyToRoom(roomId, data);
       if (result?.error) {
-        if (result.error === "bio_required") {
+        if (result.error === ApplicationError.bio_required) {
           setBioRequired(true);
           return;
         }
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tCommonErrors("processingRestricted"));
         } else {
           toast.error(t(`errors.${result.error}`));

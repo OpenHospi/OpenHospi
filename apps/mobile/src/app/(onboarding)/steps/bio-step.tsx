@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
 import { useSubmitBio } from '@/services/onboarding';
-import type { ProfileWithPhotos } from '@/services/types';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 import type { StepHandle } from '@/components/onboarding-types';
 

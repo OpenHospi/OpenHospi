@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';
-import type { OnboardingStatus, ProfileWithPhotos } from '@/services/types';
+import type { OnboardingStatus, ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 type Props = {
   onNext: () => void;

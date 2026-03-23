@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { DiscoverRoom } from '@/services/types';
+import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
 type Props = {
   room: DiscoverRoom;
@@ -23,7 +23,8 @@ export function RoomCard({ room }: Props) {
     : null;
 
   return (
-    <Pressable onPress={() => router.push(`/(app)/room/${room.id}`)}>
+    <Pressable
+      onPress={() => router.push({ pathname: '/(app)/room/[id]', params: { id: room.id } })}>
       <Card style={{ padding: 0, gap: 0, paddingVertical: 0 }} className="overflow-hidden">
         {coverUrl ? (
           <Image

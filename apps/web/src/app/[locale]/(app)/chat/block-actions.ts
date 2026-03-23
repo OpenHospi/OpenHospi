@@ -3,6 +3,7 @@
 import { createDrizzleSupabaseClient, db } from "@openhospi/database";
 import { applications, blocks } from "@openhospi/database/schema";
 import { ApplicationStatus } from "@openhospi/shared/enums";
+import { ChatError } from "@openhospi/shared/error-codes";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -10,7 +11,7 @@ import { requireSession } from "@/lib/auth/server";
 
 export async function blockUser(blockedId: string) {
   const session = await requireSession();
-  if (session.user.id === blockedId) return { error: "cannot_block_self" as const };
+  if (session.user.id === blockedId) return { error: ChatError.cannot_block_self };
 
   await db.insert(blocks).values({ blockerId: session.user.id, blockedId }).onConflictDoNothing();
 

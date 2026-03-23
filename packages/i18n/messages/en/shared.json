@@ -58,7 +58,9 @@
       "delete": "Delete",
       "skip": "Skip",
       "notSet": "Not set",
-      "email": "Email"
+      "email": "Email",
+      "total": "Total",
+      "confirm": "Confirm"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -651,11 +653,11 @@
         "resendIn": "Resend in {seconds}s",
         "codeHint": "The code expires after 60 minutes.",
         "verified": "Email verified. You can continue.",
-        "invalidData": "Please complete all fields correctly.",
-        "invalidCode": "Invalid code. Please try again.",
-        "codeExpired": "This code expired. Request a new one.",
-        "emailMismatch": "This code is for a different email address.",
-        "emailNotVerified": "Verify your email before continuing."
+        "invalid_data": "Please complete all fields correctly.",
+        "invalid_code": "Invalid code. Please try again.",
+        "code_expired": "This code expired. Request a new one.",
+        "email_mismatch": "This code is for a different email address.",
+        "email_not_verified": "Verify your email before continuing."
       },
       "fields": {
         "gender": "Gender",
@@ -773,9 +775,9 @@
           "submit": "Create house & continue"
         },
         "errors": {
-          "INVALID_NAME": "Name must be at least 2 characters.",
-          "RATE_LIMITED": "Too many requests. Please try again later.",
-          "createFailed": "Creation failed. Please try again."
+          "invalid_name": "Name must be at least 2 characters.",
+          "rate_limited": "Too many requests. Please try again later.",
+          "create_failed": "Creation failed. Please try again."
         }
       },
       "housePicker": {
@@ -919,19 +921,19 @@
       "status": {
         "confirmClose": "Are you sure you want to close this listing? This cannot be undone.",
         "confirmCloseTitle": "Close listing",
-        "publishError": "Upload at least 1 photo before publishing.",
+        "publish_error": "Upload at least 1 photo before publishing.",
         "published": "Room published!",
         "paused": "Room paused",
         "activated": "Room activated",
         "closed": "Room closed",
         "updated": "Room updated",
         "draftSaved": "Draft saved",
-        "RATE_LIMITED": "Too many rooms created today. Please try again later.",
+        "rate_limited": "Too many rooms created today. Please try again later.",
         "confirmDeleteTitle": "Delete draft?",
         "confirmDelete": "This will permanently delete this draft room.",
-        "invalidTransition": "Invalid status transition.",
-        "NO_HOUSE": "No house found.",
-        "createFailed": "Creation failed. Please try again."
+        "invalid_transition": "Invalid status transition.",
+        "no_house": "No house found.",
+        "create_failed": "Creation failed. Please try again."
       },
       "manage": {
         "title": "Room management",
@@ -1096,7 +1098,7 @@
         "room_not_active": "This room is no longer accepting applications.",
         "is_housemate": "You are already a housemate of this room.",
         "already_applied": "You have already applied to this room.",
-        "RATE_LIMITED": "Too many attempts. Please try again later.",
+        "rate_limited": "Too many attempts. Please try again later.",
         "bio_required": "Please add a bio to your profile before applying. This helps housemates get to know you."
       },
       "goToProfile": "Go to profile"
@@ -1297,13 +1299,13 @@
       "joinButton": "Join this house",
       "success": "You've joined the house!",
       "errors": {
-        "INVALID_LINK": "This share link is invalid or the room no longer exists.",
-        "LINK_EXPIRED": "This share link has expired.",
-        "LINK_MAX_USED": "This share link has reached its maximum number of uses.",
-        "ALREADY_MEMBER": "You are already a member of this house.",
-        "IS_OWNER": "You are the owner of this room.",
-        "ROOM_NOT_ACTIVE": "This room is no longer active.",
-        "RATE_LIMITED": "Too many attempts. Please try again later."
+        "invalid_link": "This share link is invalid or the room no longer exists.",
+        "link_expired": "This share link has expired.",
+        "link_max_used": "This share link has reached its maximum number of uses.",
+        "already_member": "You are already a member of this house.",
+        "is_owner": "You are the owner of this room.",
+        "room_not_active": "This room is no longer active.",
+        "rate_limited": "Too many attempts. Please try again later."
       }
     },
     "house": {
@@ -1333,8 +1335,8 @@
       "joinButton": "Join",
       "success": "You've joined the house!",
       "errors": {
-        "INVALID_LINK": "This invite link is invalid.",
-        "ALREADY_MEMBER": "You are already a member of this house."
+        "invalid_link": "This invite link is invalid.",
+        "already_member": "You are already a member of this house."
       }
     },
     "notifications": {

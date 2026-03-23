@@ -1,3 +1,4 @@
+import { CommonError } from "@openhospi/shared/error-codes";
 import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
@@ -8,7 +9,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ s
   try {
     const session = await requireApiSession(request);
     if (await isRestricted(session.user.id)) {
-      return apiError("Processing restricted", 403, "PROCESSING_RESTRICTED");
+      return apiError("Processing restricted", 403, CommonError.processing_restricted);
     }
 
     const { slot } = await params;
@@ -17,7 +18,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ s
 
     const result = await deleteProfilePhotoForUser(session.user.id, slotNum);
     if ("error" in result && result.error) return apiError(result.error, 422);
-    return NextResponse.json(result);
+    return NextResponse.json<{ success: true }>(result as { success: true });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;

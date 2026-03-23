@@ -8,7 +8,13 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -56,6 +62,7 @@ export function BioCard({ profile }: CardProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("editBio")}</DialogTitle>
+          <DialogDescription className="sr-only">{t("editBio")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submit)} className="space-y-4">
@@ -141,6 +148,7 @@ export function AboutCard({ profile }: CardProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("editAbout")}</DialogTitle>
+          <DialogDescription className="sr-only">{t("editAbout")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submit)} className="space-y-4">

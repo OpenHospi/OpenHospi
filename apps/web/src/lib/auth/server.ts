@@ -10,6 +10,7 @@ import {
 } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import type { HouseMemberRole } from "@openhospi/shared/enums";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
@@ -136,7 +137,7 @@ export async function requireCompleteProfile(userId: string) {
 
 export async function requireNotRestricted(userId: string) {
   if (await isRestricted(userId)) {
-    return { error: "PROCESSING_RESTRICTED" as const };
+    return { error: CommonError.processing_restricted };
   }
   return null;
 }

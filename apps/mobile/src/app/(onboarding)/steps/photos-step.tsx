@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
-import type { ProfileWithPhotos } from '@/services/types';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 import type { StepHandle } from '@/components/onboarding-types';
 

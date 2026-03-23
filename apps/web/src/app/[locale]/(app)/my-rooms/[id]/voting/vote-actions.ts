@@ -1,10 +1,7 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@openhospi/database";
-import { votes } from "@openhospi/database/schema";
-import { and, eq } from "drizzle-orm";
-
-import { requireHousemate, requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import { submitVotesForUser } from "@/lib/services/vote-mutations";
 
 export async function submitVotes(
   roomId: string,
@@ -15,25 +12,5 @@ export async function submitVotes(
   const restricted = await requireNotRestricted(user.id);
   if (restricted) throw new Error(restricted.error);
 
-  await requireHousemate(roomId, user.id);
-
-  await createDrizzleSupabaseClient(user.id).rls(async (tx) => {
-    // Delete existing votes for this voter+room+round
-    await tx
-      .delete(votes)
-      .where(and(eq(votes.roomId, roomId), eq(votes.voterId, user.id), eq(votes.round, round)));
-
-    // Insert new votes
-    if (rankings.length > 0) {
-      await tx.insert(votes).values(
-        rankings.map((r) => ({
-          roomId,
-          voterId: user.id,
-          applicantId: r.applicantId,
-          rank: r.rank,
-          round,
-        })),
-      );
-    }
-  });
+  await submitVotesForUser(user.id, roomId, rankings, round);
 }

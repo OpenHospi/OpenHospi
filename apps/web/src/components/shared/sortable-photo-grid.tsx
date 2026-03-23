@@ -196,6 +196,7 @@ function PhotoSlot({
             alt={getSlotLabel(slot)}
             bucket={bucket}
             fill
+            sizes="(max-width: 640px) 50vw, 33vw"
             className="object-cover"
           />
           {renderPhotoOverlay?.(photo, slot)}
@@ -445,6 +446,7 @@ export function SortablePhotoGrid({
                   alt=""
                   bucket={bucket}
                   fill
+                  sizes="33vw"
                   className="object-cover"
                 />
               </div>

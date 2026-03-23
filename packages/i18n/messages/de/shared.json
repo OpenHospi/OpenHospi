@@ -58,7 +58,9 @@
       "delete": "Löschen",
       "skip": "Überspringen",
       "notSet": "Nicht festgelegt",
-      "email": "E-Mail"
+      "email": "E-Mail",
+      "total": "Gesamt",
+      "confirm": "Bestätigen"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -650,11 +652,11 @@
         "resendIn": "Erneut senden in {seconds}s",
         "codeHint": "Der Code läuft nach 60 Minuten ab.",
         "verified": "E-Mail bestätigt. Du kannst fortfahren.",
-        "invalidData": "Bitte fülle alle Felder korrekt aus.",
-        "invalidCode": "Ungültiger Code. Bitte versuche es erneut.",
-        "codeExpired": "Dieser Code ist abgelaufen. Fordere einen neuen an.",
-        "emailMismatch": "Dieser Code gehört zu einer anderen E-Mail-Adresse.",
-        "emailNotVerified": "Bestätige deine E-Mail, bevor du fortfährst."
+        "invalid_data": "Bitte fülle alle Felder korrekt aus.",
+        "invalid_code": "Ungültiger Code. Bitte versuche es erneut.",
+        "code_expired": "Dieser Code ist abgelaufen. Fordere einen neuen an.",
+        "email_mismatch": "Dieser Code gehört zu einer anderen E-Mail-Adresse.",
+        "email_not_verified": "Bestätige deine E-Mail, bevor du fortfährst."
       },
       "fields": {
         "gender": "Geschlecht",
@@ -772,9 +774,9 @@
           "submit": "Haus erstellen & weiter"
         },
         "errors": {
-          "INVALID_NAME": "Der Name muss mindestens 2 Zeichen lang sein.",
-          "RATE_LIMITED": "Zu viele Anfragen. Bitte versuche es später erneut.",
-          "createFailed": "Erstellung fehlgeschlagen. Bitte versuche es erneut."
+          "invalid_name": "Der Name muss mindestens 2 Zeichen lang sein.",
+          "rate_limited": "Zu viele Anfragen. Bitte versuche es später erneut.",
+          "create_failed": "Erstellung fehlgeschlagen. Bitte versuche es erneut."
         }
       },
       "housePicker": {
@@ -918,19 +920,19 @@
       "status": {
         "confirmClose": "Bist du sicher, dass du diese Anzeige schließen möchtest? Dies kann nicht rückgängig gemacht werden.",
         "confirmCloseTitle": "Anzeige schließen",
-        "publishError": "Lade mindestens 1 Foto hoch, bevor du veröffentlichst.",
+        "publish_error": "Lade mindestens 1 Foto hoch, bevor du veröffentlichst.",
         "published": "Zimmer veröffentlicht!",
         "paused": "Zimmer pausiert",
         "activated": "Zimmer aktiviert",
         "closed": "Zimmer geschlossen",
         "updated": "Zimmer aktualisiert",
         "draftSaved": "Entwurf gespeichert",
-        "RATE_LIMITED": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut.",
+        "rate_limited": "Zu viele Zimmer heute erstellt. Bitte versuche es später erneut.",
         "confirmDeleteTitle": "Entwurf löschen?",
         "confirmDelete": "Dieser Entwurf wird dauerhaft gelöscht.",
-        "invalidTransition": "Ungültiger Statuswechsel.",
-        "NO_HOUSE": "Kein Haus gefunden.",
-        "createFailed": "Erstellung fehlgeschlagen. Bitte versuche es erneut."
+        "invalid_transition": "Ungültiger Statuswechsel.",
+        "no_house": "Kein Haus gefunden.",
+        "create_failed": "Erstellung fehlgeschlagen. Bitte versuche es erneut."
       },
       "manage": {
         "title": "Zimmerverwaltung",
@@ -1095,7 +1097,7 @@
         "room_not_active": "Dieses Zimmer nimmt keine Bewerbungen mehr an.",
         "is_housemate": "Du bist bereits Mitbewohner dieses Zimmers.",
         "already_applied": "Du hast dich bereits für dieses Zimmer beworben.",
-        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut.",
+        "rate_limited": "Zu viele Versuche. Bitte versuche es später erneut.",
         "bio_required": "Bitte füge zuerst eine Bio zu deinem Profil hinzu, bevor du dich bewirbst. Das hilft Mitbewohnern, dich kennenzulernen."
       },
       "goToProfile": "Zum Profil"
@@ -1296,13 +1298,13 @@
       "joinButton": "Diesem Haus beitreten",
       "success": "Du bist dem Haus beigetreten!",
       "errors": {
-        "INVALID_LINK": "Dieser Einladungslink ist ungültig oder das Zimmer existiert nicht mehr.",
-        "LINK_EXPIRED": "Dieser Einladungslink ist abgelaufen.",
-        "LINK_MAX_USED": "Dieser Einladungslink hat die maximale Anzahl von Nutzungen erreicht.",
-        "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses.",
-        "IS_OWNER": "Du bist der Eigentümer dieses Zimmers.",
-        "ROOM_NOT_ACTIVE": "Dieses Zimmer ist nicht mehr aktiv.",
-        "RATE_LIMITED": "Zu viele Versuche. Bitte versuche es später erneut."
+        "invalid_link": "Dieser Einladungslink ist ungültig oder das Zimmer existiert nicht mehr.",
+        "link_expired": "Dieser Einladungslink ist abgelaufen.",
+        "link_max_used": "Dieser Einladungslink hat die maximale Anzahl von Nutzungen erreicht.",
+        "already_member": "Du bist bereits Mitglied dieses Hauses.",
+        "is_owner": "Du bist der Eigentümer dieses Zimmers.",
+        "room_not_active": "Dieses Zimmer ist nicht mehr aktiv.",
+        "rate_limited": "Zu viele Versuche. Bitte versuche es später erneut."
       }
     },
     "house": {
@@ -1332,8 +1334,8 @@
       "joinButton": "Beitreten",
       "success": "Du bist dem Haus beigetreten!",
       "errors": {
-        "INVALID_LINK": "Dieser Einladungslink ist ungültig.",
-        "ALREADY_MEMBER": "Du bist bereits Mitglied dieses Hauses."
+        "invalid_link": "Dieser Einladungslink ist ungültig.",
+        "already_member": "Du bist bereits Mitglied dieses Hauses."
       }
     },
     "notifications": {

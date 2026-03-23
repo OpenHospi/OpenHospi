@@ -1,10 +1,6 @@
-import type {
-  ApplicationStatus,
-  InvitationStatus,
-  ReportStatus,
-  ReviewDecision,
-  RoomStatus,
-} from ".";
+import type { ReportStatus } from "./admin";
+import type { ApplicationStatus, InvitationStatus, ReviewDecision } from "./applications";
+import type { RoomStatus } from "./housing";
 
 // ─── Transition maps ──────────────────────────────────────────────────────
 

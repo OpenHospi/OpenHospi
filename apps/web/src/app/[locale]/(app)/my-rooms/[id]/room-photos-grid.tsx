@@ -5,6 +5,7 @@ import {
   ROOM_PHOTO_SLOTS,
   STORAGE_BUCKET_ROOM_PHOTOS,
 } from "@openhospi/shared/constants";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -43,7 +44,7 @@ export function RoomPhotosGrid({ roomId, photos }: Props) {
       formData.set("slot", String(slot));
       const result = await saveRoomPhoto(formData);
       if (result.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tErrors("processingRestricted"));
         } else {
           toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));
@@ -59,7 +60,7 @@ export function RoomPhotosGrid({ roomId, photos }: Props) {
     async (slot: number): Promise<boolean> => {
       const result = await deleteRoomPhoto(roomId, slot);
       if (result?.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tErrors("processingRestricted"));
         } else {
           toast.error(tErrors(result.error as Parameters<typeof tErrors>[0]));

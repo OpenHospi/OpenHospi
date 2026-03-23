@@ -301,7 +301,12 @@ export default function RoomDetailScreen() {
             size="lg"
             style={{ height: 48 }}
             className="rounded-xl"
-            onPress={() => router.push(`/(app)/application/${application.id}` as never)}>
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/application/[id]',
+                params: { id: application.id },
+              })
+            }>
             <Text className="text-base font-semibold">{t('viewApplication')}</Text>
           </Button>
         ) : (
@@ -310,7 +315,10 @@ export default function RoomDetailScreen() {
             style={{ height: 48 }}
             className="rounded-xl"
             onPress={() =>
-              router.push({ pathname: '/(app)/apply-sheet' as never, params: { roomId: id } })
+              router.push({
+                pathname: '/(app)/(modals)/apply-sheet',
+                params: { roomId: id },
+              })
             }>
             <Text className="text-base font-semibold">{t('apply')}</Text>
           </Button>

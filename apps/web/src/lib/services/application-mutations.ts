@@ -5,6 +5,7 @@ import {
   RoomStatus,
   isValidApplicationTransition,
 } from "@openhospi/shared/enums";
+import { ApplicationError, CommonError } from "@openhospi/shared/error-codes";
 import type { ApplyToRoomData } from "@openhospi/validators";
 import { applyToRoomSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
@@ -14,10 +15,10 @@ import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
 
 export async function applyToRoomForUser(userId: string, roomId: string, data: ApplyToRoomData) {
   const parsed = applyToRoomSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalid_data" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   if (!(await checkRateLimit(rateLimiters.apply, userId))) {
-    return { error: "RATE_LIMITED" as const };
+    return { error: CommonError.rate_limited };
   }
 
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
@@ -26,7 +27,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
       .from(profiles)
       .where(eq(profiles.id, userId));
     if (!profile?.bio) {
-      return { error: "bio_required" as const };
+      return { error: ApplicationError.bio_required };
     }
 
     const [room] = await tx
@@ -34,7 +35,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
       .from(rooms)
       .where(eq(rooms.id, roomId));
     if (!room || room.status !== RoomStatus.active) {
-      return { error: "room_not_active" as const };
+      return { error: ApplicationError.room_not_active };
     }
 
     const [member] = await tx
@@ -43,7 +44,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
       .innerJoin(houses, eq(houseMembers.houseId, houses.id))
       .where(and(eq(houseMembers.houseId, room.houseId), eq(houseMembers.userId, userId)));
     if (member) {
-      return { error: "is_housemate" as const };
+      return { error: ApplicationError.is_housemate };
     }
 
     try {
@@ -62,7 +63,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
         e instanceof Error &&
         e.message.includes("duplicate key value violates unique constraint")
       ) {
-        return { error: "already_applied" as const };
+        return { error: ApplicationError.already_applied };
       }
       throw e;
     }
@@ -77,12 +78,12 @@ export async function withdrawApplicationForUser(userId: string, applicationId: 
       .select({ roomId: applications.roomId, status: applications.status })
       .from(applications)
       .where(and(eq(applications.id, applicationId), eq(applications.userId, userId)));
-    if (!app) return { error: "not_found" as const };
+    if (!app) return { error: CommonError.not_found };
 
     if (
       !isValidApplicationTransition(app.status as ApplicationStatus, ApplicationStatus.withdrawn)
     ) {
-      return { error: "cannot_withdraw" as const };
+      return { error: ApplicationError.cannot_withdraw };
     }
 
     await tx

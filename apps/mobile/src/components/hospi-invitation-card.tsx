@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRespondToInvitation } from '@/services/invitations';
-import type { UserInvitation } from '@/services/types';
+import type { UserInvitation } from '@openhospi/shared/api-types';
 
 type Props = {
   invitation: UserInvitation;

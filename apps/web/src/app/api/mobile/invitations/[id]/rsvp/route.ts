@@ -7,6 +7,7 @@ import {
   rooms,
 } from "@openhospi/database/schema";
 import { InvitationStatus, isValidInvitationTransition } from "@openhospi/shared/enums";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { rsvpSchema } from "@openhospi/validators";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -19,7 +20,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   try {
     const session = await requireApiSession(request);
     if (await isRestricted(session.user.id)) {
-      return apiError("Processing restricted", 403, "PROCESSING_RESTRICTED");
+      return apiError("Processing restricted", 403, CommonError.processing_restricted);
     }
 
     const { id: invitationId } = await params;
@@ -144,7 +145,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json<{ success: true }>({ success: true });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     throw e;

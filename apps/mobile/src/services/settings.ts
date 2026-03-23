@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 
 import { queryKeys } from './keys';
-import type { ActiveConsent, SessionInfo } from './types';
+import type { ActiveConsent, SessionInfo } from '@openhospi/shared/api-types';
 
 export function useConsent() {
   return useQuery({

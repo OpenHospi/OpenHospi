@@ -4,6 +4,7 @@ import { db, createDrizzleSupabaseClient } from "@openhospi/database";
 import { houseMembers, houses } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
 import { HouseMemberRole } from "@openhospi/shared/enums";
+import { RoomError } from "@openhospi/shared/error-codes";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
@@ -19,7 +20,7 @@ export async function createHouse(formData: FormData): Promise<void> {
   const name = formData.get("name") as string;
 
   if (!name || name.trim().length < 2) {
-    throw new Error("invalid_name");
+    throw new Error(RoomError.invalid_name);
   }
 
   const houseId = crypto.randomUUID();

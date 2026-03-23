@@ -1,14 +1,15 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@openhospi/database";
-import { roomPhotos } from "@openhospi/database/schema";
-import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
-import { roomPhotoCaptionSchema } from "@openhospi/validators";
-import { and, eq, inArray } from "drizzle-orm";
+import { CommonError } from "@openhospi/shared/error-codes";
 import { revalidatePath } from "next/cache";
 
-import { requireNotRestricted, requireRoomOwnership, requireSession } from "@/lib/auth/server";
-import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
+import { requireNotRestricted, requireSession } from "@/lib/auth/server";
+import {
+  deleteRoomPhotoForUser,
+  reorderRoomPhotosForUser,
+  saveRoomPhotoForUser,
+  updatePhotoCaptionForUser,
+} from "@/lib/services/room-mutations";
 
 export async function saveRoomPhoto(formData: FormData) {
   const session = await requireSession();
@@ -20,38 +21,11 @@ export async function saveRoomPhoto(formData: FormData) {
   const roomId = formData.get("roomId") as string | null;
   const slot = Number(formData.get("slot"));
 
-  if (!file) return { error: "uploadFailed" as const };
-  if (!roomId) return { error: "uploadFailed" as const };
-  if (slot < 1 || slot > 10) return { error: "uploadFailed" as const };
+  if (!file || !roomId) return { error: CommonError.upload_failed };
 
-  await requireRoomOwnership(roomId, userId);
-
-  let url: string | undefined;
-
-  try {
-    const ext = file.name.split(".").pop() || "jpg";
-    const path = `${roomId}/slot-${slot}.${ext}`;
-    url = await uploadPhotoToStorage(file, STORAGE_BUCKET_ROOM_PHOTOS, path);
-
-    const photoUrl = url;
-    const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
-      tx
-        .insert(roomPhotos)
-        .values({ roomId, slot, url: photoUrl })
-        .onConflictDoUpdate({
-          target: [roomPhotos.roomId, roomPhotos.slot],
-          set: { url: photoUrl, uploadedAt: new Date() },
-        })
-        .returning(),
-    );
-
-    revalidatePath(`/my-rooms/${roomId}`);
-    return { photo };
-  } catch (e: unknown) {
-    if (url) await deletePhotoFromStorage(url).catch(() => {});
-    console.error(e);
-    return { error: "uploadFailed" as const };
-  }
+  const result = await saveRoomPhotoForUser(userId, file, roomId, slot);
+  if ("photo" in result) revalidatePath(`/my-rooms/${roomId}`);
+  return result;
 }
 
 export async function deleteRoomPhoto(roomId: string, slot: number) {
@@ -60,32 +34,9 @@ export async function deleteRoomPhoto(roomId: string, slot: number) {
   const restricted = await requireNotRestricted(userId);
   if (restricted) return restricted;
 
-  if (slot < 1 || slot > 10) return { error: "deleteFailed" as const };
-
-  await requireRoomOwnership(roomId, userId);
-
-  try {
-    const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
-      tx
-        .select({ url: roomPhotos.url })
-        .from(roomPhotos)
-        .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
-    );
-
-    if (!photo) return { error: "deleteFailed" as const };
-
-    await deletePhotoFromStorage(photo.url);
-
-    await createDrizzleSupabaseClient(userId).rls((tx) =>
-      tx.delete(roomPhotos).where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
-    );
-
-    revalidatePath(`/my-rooms/${roomId}`);
-    return {};
-  } catch (e: unknown) {
-    console.error(e);
-    return { error: "deleteFailed" as const };
-  }
+  const result = await deleteRoomPhotoForUser(userId, roomId, slot);
+  if ("success" in result) revalidatePath(`/my-rooms/${roomId}`);
+  return result;
 }
 
 export async function updatePhotoCaption(roomId: string, slot: number, caption: string | null) {
@@ -94,29 +45,9 @@ export async function updatePhotoCaption(roomId: string, slot: number, caption: 
   const restricted = await requireNotRestricted(userId);
   if (restricted) return restricted;
 
-  if (slot < 1 || slot > 10) return { error: "invalidData" as const };
-
-  if (caption !== null) {
-    const parsed = roomPhotoCaptionSchema.safeParse({ caption });
-    if (!parsed.success) return { error: "invalidData" as const };
-  }
-
-  await requireRoomOwnership(roomId, userId);
-
-  try {
-    await createDrizzleSupabaseClient(userId).rls((tx) =>
-      tx
-        .update(roomPhotos)
-        .set({ caption })
-        .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.slot, slot))),
-    );
-
-    revalidatePath(`/my-rooms/${roomId}`);
-    return {};
-  } catch (e: unknown) {
-    console.error(e);
-    return { error: "uploadFailed" as const };
-  }
+  const result = await updatePhotoCaptionForUser(userId, roomId, slot, caption);
+  if ("success" in result) revalidatePath(`/my-rooms/${roomId}`);
+  return result;
 }
 
 export async function reorderRoomPhotos(
@@ -128,43 +59,7 @@ export async function reorderRoomPhotos(
   const restricted = await requireNotRestricted(userId);
   if (restricted) return restricted;
 
-  if (swaps.length === 0) return {};
-  if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 10)) return { error: "uploadFailed" as const };
-
-  await requireRoomOwnership(roomId, userId);
-
-  try {
-    const ids = swaps.map((s) => s.photoId);
-
-    await createDrizzleSupabaseClient(userId).rls(async (tx) => {
-      const existing = await tx
-        .select({ id: roomPhotos.id })
-        .from(roomPhotos)
-        .where(and(eq(roomPhotos.roomId, roomId), inArray(roomPhotos.id, ids)));
-
-      if (existing.length !== swaps.length) throw new Error("Photo not found");
-
-      // Phase 1: set to negative temp values to avoid unique constraint
-      for (const swap of swaps) {
-        await tx
-          .update(roomPhotos)
-          .set({ slot: -swap.newSlot })
-          .where(eq(roomPhotos.id, swap.photoId));
-      }
-
-      // Phase 2: set to final positive values
-      for (const swap of swaps) {
-        await tx
-          .update(roomPhotos)
-          .set({ slot: swap.newSlot })
-          .where(eq(roomPhotos.id, swap.photoId));
-      }
-    });
-
-    revalidatePath(`/my-rooms/${roomId}`);
-    return {};
-  } catch (e: unknown) {
-    console.error(e);
-    return { error: "uploadFailed" as const };
-  }
+  const result = await reorderRoomPhotosForUser(userId, roomId, swaps);
+  if ("success" in result) revalidatePath(`/my-rooms/${roomId}`);
+  return result;
 }

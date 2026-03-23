@@ -166,6 +166,7 @@ export default async function ReportDetailPage({ params }: Props) {
                               alt={roomDetail.title}
                               bucket={STORAGE_BUCKET_ROOM_PHOTOS}
                               fill
+                              sizes="40px"
                               className="object-cover"
                             />
                           </div>

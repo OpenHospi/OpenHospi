@@ -73,7 +73,7 @@ export default function ProfileScreen() {
           paddingBottom: 8,
         }}>
         <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
-        <Pressable onPress={() => router.push('/(app)/settings' as never)}>
+        <Pressable onPress={() => router.push('/(app)/settings')}>
           <Settings size={24} className="text-muted-foreground" />
         </Pressable>
       </View>
@@ -125,7 +125,7 @@ export default function ProfileScreen() {
         <View style={{ gap: 16 }}>
           <ProfileSectionCard
             title={t('title')}
-            onEdit={() => router.push('/(app)/edit-photos' as never)}>
+            onEdit={() => router.push('/(app)/(modals)/edit-photos')}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 {profile.photos.map((photo) => (
@@ -148,55 +148,55 @@ export default function ProfileScreen() {
                 label={t('gender')}
                 value={profile.gender ? tEnums(`gender.${profile.gender}`) : null}
                 placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/edit-gender' as never)}
+                onPress={() => router.push('/(app)/(modals)/edit-gender')}
               />
               <Separator />
               <ProfileFieldRow
                 label={t('birthDate')}
                 value={profile.birthDate ? new Date(profile.birthDate).toLocaleDateString() : null}
                 placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/edit-birth-date' as never)}
+                onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
               />
               <Separator />
               <ProfileFieldRow
                 label={t('studyProgram')}
                 value={profile.studyProgram || null}
                 placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/edit-study-program' as never)}
+                onPress={() => router.push('/(app)/(modals)/edit-study-program')}
               />
               <Separator />
               <ProfileFieldRow
                 label={t('studyLevel')}
                 value={profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : null}
                 placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/edit-study-level' as never)}
+                onPress={() => router.push('/(app)/(modals)/edit-study-level')}
               />
               <Separator />
               <ProfileFieldRow
                 label={t('preferredCity')}
                 value={profile.preferredCity ? tEnums(`city.${profile.preferredCity}`) : null}
                 placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/edit-preferred-city' as never)}
+                onPress={() => router.push('/(app)/(modals)/edit-preferred-city')}
               />
               <Separator />
               <ProfileFieldRow
                 label={t('vereniging')}
                 value={profile.vereniging || null}
                 placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/edit-vereniging' as never)}
+                onPress={() => router.push('/(app)/(modals)/edit-vereniging')}
               />
             </View>
           </ProfileSectionCard>
 
           <ProfileSectionCard
             title={t('bio')}
-            onEdit={() => router.push('/(app)/edit-bio' as never)}>
+            onEdit={() => router.push('/(app)/(modals)/edit-bio')}>
             <Text className="text-card-foreground text-sm">{profile.bio || '-'}</Text>
           </ProfileSectionCard>
 
           <ProfileSectionCard
             title={t('languages')}
-            onEdit={() => router.push('/(app)/edit-languages' as never)}>
+            onEdit={() => router.push('/(app)/(modals)/edit-languages')}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {(profile.languages ?? []).map((lang) => (
                 <Badge key={lang} variant="secondary" className="rounded-lg">
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
 
           <ProfileSectionCard
             title={t('lifestyleTags')}
-            onEdit={() => router.push('/(app)/edit-lifestyle' as never)}>
+            onEdit={() => router.push('/(app)/(modals)/edit-lifestyle')}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {(profile.lifestyleTags ?? []).map((tag) => (
                 <Badge key={tag} variant="secondary" className="rounded-lg">

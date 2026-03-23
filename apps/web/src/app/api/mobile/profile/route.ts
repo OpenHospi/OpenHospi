@@ -1,3 +1,4 @@
+import { CommonError } from "@openhospi/shared/error-codes";
 import { NextResponse } from "next/server";
 
 import { apiError, requireApiSession } from "@/app/api/mobile/_lib/auth";
@@ -21,7 +22,7 @@ export async function PATCH(request: Request) {
   try {
     const session = await requireApiSession(request);
     if (await isRestricted(session.user.id)) {
-      return apiError("Processing restricted", 403, "PROCESSING_RESTRICTED");
+      return apiError("Processing restricted", 403, CommonError.processing_restricted);
     }
     const data = await request.json();
     const result = await updateProfileForUser(session.user.id, data);

@@ -10,7 +10,7 @@ import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
 import { useApplications } from '@/services/applications';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import type { UserApplication } from '@/services/types';
+import type { UserApplication } from '@openhospi/shared/api-types';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
@@ -129,7 +129,12 @@ export default function ApplicationsScreen() {
           <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
             <ApplicationCard
               item={item}
-              onPress={() => router.push(`/(app)/application/${item.id}` as never)}
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/application/[id]',
+                  params: { id: item.id },
+                })
+              }
             />
           </View>
         )}

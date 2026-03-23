@@ -263,7 +263,13 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       <Stack.Screen
         options={{
           headerTitle: () => (
-            <Pressable onPress={() => router.push(`/chat/${conversationId}/info`)}>
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/(tabs)/chat/[conversationId]/info',
+                  params: { conversationId },
+                })
+              }>
               <View style={{ alignItems: 'center' }}>
                 <Text className="text-foreground text-base font-semibold" numberOfLines={1}>
                   {detail?.roomTitle ?? t('conversation')}

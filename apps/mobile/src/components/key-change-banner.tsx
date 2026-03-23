@@ -22,7 +22,12 @@ export function KeyChangeBanner({ conversationId, peerUserId, peerName, hasChang
 
   return (
     <Pressable
-      onPress={() => router.push(`/chat/${conversationId}/verify/${peerUserId}`)}
+      onPress={() =>
+        router.push({
+          pathname: '/(app)/(tabs)/chat/[conversationId]/verify/[userId]',
+          params: { conversationId, userId: peerUserId },
+        })
+      }
       style={{
         flexDirection: 'row',
         alignItems: 'center',

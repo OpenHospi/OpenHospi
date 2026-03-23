@@ -1,5 +1,6 @@
 "use client";
 
+import { CommonError } from "@openhospi/shared/error-codes";
 import { Building2, Home, Loader2, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -32,7 +33,7 @@ function useCreateHouseHandler() {
   return async (formData: FormData) => {
     const result = await createHouseAndContinue(formData);
     if (result.error) {
-      if (result.error === "PROCESSING_RESTRICTED") {
+      if (result.error === CommonError.processing_restricted) {
         toast.error(tCommonErrors("processingRestricted"));
       } else {
         toast.error(t(`houseSetup.errors.${result.error}`));
@@ -145,7 +146,7 @@ function HousePicker({ houses }: { houses: OwnerHouse[] }) {
     startTransition(async () => {
       const result = await createDraftRoomForHouse(selectedId);
       if (result.error) {
-        if (result.error === "PROCESSING_RESTRICTED") {
+        if (result.error === CommonError.processing_restricted) {
           toast.error(tCommonErrors("processingRestricted"));
         } else {
           toast.error(t(`status.${result.error}`));

@@ -1,4 +1,4 @@
-import { defineEnum } from "./define-enum";
+import { defineEnum } from "./utils/define-enum";
 
 // ─── Cities (proper nouns — stay as-is) ───────────────────────────────────
 

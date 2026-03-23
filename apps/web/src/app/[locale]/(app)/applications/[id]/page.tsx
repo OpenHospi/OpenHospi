@@ -75,6 +75,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
                 alt={application.roomTitle}
                 bucket={STORAGE_BUCKET_ROOM_PHOTOS}
                 fill
+                sizes="(max-width: 640px) 100vw, 192px"
                 className="object-cover sm:rounded-l-lg"
               />
             ) : (

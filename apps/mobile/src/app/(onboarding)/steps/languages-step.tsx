@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { useSubmitLanguages } from '@/services/onboarding';
-import type { ProfileWithPhotos } from '@/services/types';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 import type { StepHandle } from '@/components/onboarding-types';
 

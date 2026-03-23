@@ -1,6 +1,7 @@
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import { profilePhotos, profiles } from "@openhospi/database/schema";
 import { STORAGE_BUCKET_PROFILE_PHOTOS } from "@openhospi/shared/constants";
+import { CommonError } from "@openhospi/shared/error-codes";
 import type { EditProfileData } from "@openhospi/validators";
 import { editProfileSchema } from "@openhospi/validators";
 import { and, eq } from "drizzle-orm";
@@ -22,7 +23,7 @@ async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
 
 export async function updateProfileForUser(userId: string, data: EditProfileData) {
   const parsed = editProfileSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   const d = parsed.data;
   await createDrizzleSupabaseClient(userId).rls((tx) =>
@@ -46,8 +47,8 @@ export async function updateProfileForUser(userId: string, data: EditProfileData
 }
 
 export async function saveProfilePhotoForUser(userId: string, file: File, slot: number) {
-  if (!file) return { error: "uploadFailed" as const };
-  if (slot < 1 || slot > 5) return { error: "uploadFailed" as const };
+  if (!file) return { error: CommonError.upload_failed };
+  if (slot < 1 || slot > 5) return { error: CommonError.upload_failed };
 
   let url: string | undefined;
 
@@ -74,12 +75,12 @@ export async function saveProfilePhotoForUser(userId: string, file: File, slot: 
   } catch (e: unknown) {
     if (url) await deletePhotoFromStorage(url).catch(() => {});
     console.error(e);
-    return { error: "uploadFailed" as const };
+    return { error: CommonError.upload_failed };
   }
 }
 
 export async function deleteProfilePhotoForUser(userId: string, slot: number) {
-  if (slot < 1 || slot > 5) return { error: "deleteFailed" as const };
+  if (slot < 1 || slot > 5) return { error: CommonError.delete_failed };
 
   try {
     const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
@@ -89,7 +90,7 @@ export async function deleteProfilePhotoForUser(userId: string, slot: number) {
         .where(and(eq(profilePhotos.userId, userId), eq(profilePhotos.slot, slot))),
     );
 
-    if (!photo) return { error: "deleteFailed" as const };
+    if (!photo) return { error: CommonError.delete_failed };
 
     await deletePhotoFromStorage(photo.url);
 
@@ -103,6 +104,6 @@ export async function deleteProfilePhotoForUser(userId: string, slot: number) {
     return { success: true };
   } catch (e: unknown) {
     console.error(e);
-    return { error: "deleteFailed" as const };
+    return { error: CommonError.delete_failed };
   }
 }

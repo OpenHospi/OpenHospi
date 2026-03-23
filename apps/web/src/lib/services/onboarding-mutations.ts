@@ -1,4 +1,4 @@
-import { db, createDrizzleSupabaseClient } from "@openhospi/database";
+import { createDrizzleSupabaseClient, db } from "@openhospi/database";
 import {
   privateKeyBackups,
   profilePhotos,
@@ -7,6 +7,7 @@ import {
   verification,
 } from "@openhospi/database/schema";
 import { EMAIL_CODE_LENGTH } from "@openhospi/shared/constants";
+import { CommonError, OnboardingError } from "@openhospi/shared/error-codes";
 import {
   aboutStepSchema,
   bioStepSchema,
@@ -131,7 +132,7 @@ export async function getOnboardingStatus(userId: string): Promise<OnboardingSta
 
 export async function submitIdentityStep(userId: string, data: IdentityStepData) {
   const parsed = identityStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   const { firstName, lastName, email } = parsed.data;
 
@@ -156,7 +157,7 @@ export async function verifyEmailCodeForUser(
   const code = normalizeCode(input.code);
 
   if (!email || code.length !== EMAIL_CODE_LENGTH) {
-    return { error: "invalidCode" as const };
+    return { error: OnboardingError.invalid_code };
   }
 
   const [latestCode] = await db
@@ -172,22 +173,22 @@ export async function verifyEmailCodeForUser(
     .limit(1);
 
   if (!latestCode) {
-    return { error: "codeExpired" as const };
+    return { error: OnboardingError.code_expired };
   }
 
   let payload: { token?: string; code?: string; email?: string } = {};
   try {
     payload = JSON.parse(latestCode.value) as { token?: string; code?: string; email?: string };
   } catch {
-    return { error: "invalidCode" as const };
+    return { error: OnboardingError.invalid_code };
   }
 
   if (payload.email !== email) {
-    return { error: "emailMismatch" as const };
+    return { error: OnboardingError.email_mismatch };
   }
 
   if (!payload.token || payload.code !== code) {
-    return { error: "invalidCode" as const };
+    return { error: OnboardingError.invalid_code };
   }
 
   await auth.api.verifyEmail({ query: { token: payload.token } });
@@ -197,7 +198,7 @@ export async function verifyEmailCodeForUser(
 
 export async function resendEmailCodeForUser(userId: string, input: { email: string }) {
   const email = input.email.trim();
-  if (!email) return { error: "invalidData" as const };
+  if (!email) return { error: CommonError.invalid_data };
 
   const [authUser] = await db
     .select({ email: userTable.email })
@@ -205,7 +206,7 @@ export async function resendEmailCodeForUser(userId: string, input: { email: str
     .where(eq(userTable.id, userId));
 
   if (!authUser || authUser.email !== email) {
-    return { error: "emailMismatch" as const };
+    return { error: OnboardingError.email_mismatch };
   }
 
   await auth.api.sendVerificationEmail({
@@ -216,10 +217,10 @@ export async function resendEmailCodeForUser(userId: string, input: { email: str
 }
 
 export async function submitAboutStep(userId: string, data: AboutStepData) {
-  if (!(await isEmailVerified(userId))) return { error: "emailNotVerified" as const };
+  if (!(await isEmailVerified(userId))) return { error: OnboardingError.email_not_verified };
 
   const parsed = aboutStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   const { gender, birthDate, studyProgram, studyLevel, preferredCity, vereniging } = parsed.data;
 
@@ -241,10 +242,10 @@ export async function submitAboutStep(userId: string, data: AboutStepData) {
 }
 
 export async function submitBioStep(userId: string, data: BioStepData) {
-  if (!(await isEmailVerified(userId))) return { error: "emailNotVerified" as const };
+  if (!(await isEmailVerified(userId))) return { error: OnboardingError.email_not_verified };
 
   const parsed = bioStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.update(profiles).set({ bio: parsed.data.bio }).where(eq(profiles.id, userId)),
@@ -254,10 +255,10 @@ export async function submitBioStep(userId: string, data: BioStepData) {
 }
 
 export async function submitPersonalityStep(userId: string, data: PersonalityStepData) {
-  if (!(await isEmailVerified(userId))) return { error: "emailNotVerified" as const };
+  if (!(await isEmailVerified(userId))) return { error: OnboardingError.email_not_verified };
 
   const parsed = personalityStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx
@@ -270,10 +271,10 @@ export async function submitPersonalityStep(userId: string, data: PersonalitySte
 }
 
 export async function submitLanguagesStep(userId: string, data: LanguagesStepData) {
-  if (!(await isEmailVerified(userId))) return { error: "emailNotVerified" as const };
+  if (!(await isEmailVerified(userId))) return { error: OnboardingError.email_not_verified };
 
   const parsed = languagesStepSchema.safeParse(data);
-  if (!parsed.success) return { error: "invalidData" as const };
+  if (!parsed.success) return { error: CommonError.invalid_data };
 
   await createDrizzleSupabaseClient(userId).rls((tx) =>
     tx.update(profiles).set({ languages: parsed.data.languages }).where(eq(profiles.id, userId)),

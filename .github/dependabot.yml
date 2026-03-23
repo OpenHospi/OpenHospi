@@ -2,7 +2,6 @@ version: 2
 
 updates:
   - package-ecosystem: npm
-    directory: /
     target-branch: main
     schedule:
       interval: weekly
@@ -24,6 +23,10 @@ updates:
       - dependency-name: "drizzle-orm"
       - dependency-name: "drizzle-kit"
       - dependency-name: "drizzle-seed"
+    directories:
+      - "/"
+      - "/apps/*"
+      - "/packages/*"
 
   - package-ecosystem: github-actions
     directory: /

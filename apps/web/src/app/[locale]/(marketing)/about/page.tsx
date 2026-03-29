@@ -1,6 +1,7 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { Locale } from "@openhospi/i18n";
-import { Eye, Linkedin, Mail, Target } from "lucide-react";
+import { LinkedinIcon } from "@openhospi/shared/icons";
+import { Eye, Mail, Target } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -55,7 +56,7 @@ const teamData: { photo: string; initials: string; socials: Social[] }[] = [
 ];
 
 const socialIcons = {
-  linkedin: { icon: Linkedin, label: "LinkedIn" },
+  linkedin: { icon: LinkedinIcon, label: "LinkedIn" },
   github: { icon: SiGithub, label: "GitHub" },
   email: { icon: Mail, label: null },
 } as const;

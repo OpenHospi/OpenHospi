@@ -3,7 +3,7 @@
 import { SiGithub, SiInstagram, SiOpencollective } from "@icons-pack/react-simple-icons";
 import logo from "@openhospi/shared/assets/logo.svg";
 import { APP_NAME } from "@openhospi/shared/constants";
-import { Linkedin } from "lucide-react";
+import { LinkedinIcon } from "@openhospi/shared/icons";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -90,7 +90,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="size-5" color="currentColor" />
+                <LinkedinIcon className="size-5" />
               </a>
               <a
                 href="https://opencollective.com/openhospi"

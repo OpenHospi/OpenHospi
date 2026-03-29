@@ -66,7 +66,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 href="https://github.com/OpenHospi/OpenHospi"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-[#181717] dark:hover:text-white"
                 aria-label="GitHub"
               >
                 <SiGithub className="size-5" color="currentColor" />
@@ -78,7 +78,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 href="https://www.instagram.com/openhospi"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-[#FF0069]"
                 aria-label="Instagram"
               >
                 <SiInstagram className="size-5" color="currentColor" />
@@ -87,7 +87,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 href="https://www.linkedin.com/company/openhospi"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-[#0A66C2]"
                 aria-label="LinkedIn"
               >
                 <LinkedinIcon className="size-5" />
@@ -96,7 +96,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                 href="https://opencollective.com/openhospi"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-[#7FADF2]"
                 aria-label="Open Collective"
               >
                 <SiOpencollective className="size-5" color="currentColor" />

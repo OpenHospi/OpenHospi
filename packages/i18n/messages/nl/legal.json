@@ -586,7 +586,14 @@
     "sections": [
       {
         "title": "1. Gegevens van de instelling",
-        "content": "Naam: Stichting OpenHospi\nRSIN/fiscaal nummer: 869356148\nKVK-nummer: 42025113\nVestigingsadres: Jullensstraat 63, 9721BK Groningen\nE-mailadres: info@openhospi.nl\nOprichtingsdatum: 31 maart 2026"
+        "items": [
+          "Naam: Stichting OpenHospi",
+          "RSIN/fiscaal nummer: 869356148",
+          "KVK-nummer: 42025113",
+          "Vestigingsadres: Jullensstraat 63, 9721BK Groningen",
+          "E-mailadres: info@openhospi.nl",
+          "Oprichtingsdatum: 31 maart 2026"
+        ]
       },
       {
         "title": "2. Doelstelling",

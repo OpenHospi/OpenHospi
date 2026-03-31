@@ -61,6 +61,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
               <Image src={logo} alt="" width={24} height={24} className="size-6" />
               <p className="text-xl font-bold text-primary">{APP_NAME}</p>
             </div>
+            <p className="mt-1 text-xs text-muted-foreground">{t("foundation")}</p>
             <p className="mt-2 text-sm text-muted-foreground">{t("tagline")}</p>
             <div className="mt-4 flex items-center gap-3">
               <a
@@ -129,14 +130,13 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
 
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex flex-col items-center gap-1 sm:items-start">
-            <p className="text-sm font-medium text-muted-foreground">{t("foundation")}</p>
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
+              &copy; {new Date().getFullYear()} {t("foundation")}. {t("rights")}
             </p>
-            <p className="text-sm text-muted-foreground">{t("kvk")}</p>
+            <p className="text-xs text-muted-foreground">{t("kvk")}</p>
             <a
               href="mailto:info@openhospi.nl"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               info@openhospi.nl
             </a>

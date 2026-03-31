@@ -586,7 +586,14 @@
     "sections": [
       {
         "title": "1. Angaben zur Organisation",
-        "content": "Name: Stichting OpenHospi\nRSIN/Steuernummer: 869356148\nHandelskammer (KVK) Nummer: 42025113\nAdresse: Jullensstraat 63, 9721BK Groningen, Niederlande\nE-Mail: info@openhospi.nl\nGr\u00fcndungsdatum: 31. M\u00e4rz 2026"
+        "items": [
+          "Name: Stichting OpenHospi",
+          "RSIN/Steuernummer: 869356148",
+          "Handelskammer (KVK) Nummer: 42025113",
+          "Adresse: Jullensstraat 63, 9721BK Groningen, Niederlande",
+          "E-Mail: info@openhospi.nl",
+          "Gr\u00fcndungsdatum: 31. M\u00e4rz 2026"
+        ]
       },
       {
         "title": "2. Zielsetzung",

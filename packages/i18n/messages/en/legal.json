@@ -610,13 +610,13 @@
       {
         "title": "3. Policy plan",
         "content": "The full policy plan of Stichting OpenHospi describes the objectives, mission, planned activities, target group, income, spending policy and asset management of the foundation. Below is a summary of the main points.",
+        "downloadLabel": "Download the full policy plan (PDF, Dutch)",
         "items": [
           "Mission: provide a fair alternative to commercial student housing platforms. Completely free, verified students only, privacy first.",
           "Target group: students enrolled at Dutch educational institutions connected to the InAcademia Affiliation Validation Service by G\u00c9ANT.",
           "Income: donations (via Open Collective), subsidies from educational institutions and governments, gifts and bequests.",
           "Expenditure: hosting and infrastructure, platform development and maintenance, administrative costs (bookkeeping, bank fees, Chamber of Commerce). No profit distribution takes place.",
-          "Asset management: the foundation does not hold more assets than reasonably necessary for the continuity of its activities.",
-          "Download the full policy plan (PDF, Dutch): /documents/beleidsplan-stichting-openhospi.pdf"
+          "Asset management: the foundation does not hold more assets than reasonably necessary for the continuity of its activities."
         ]
       },
       {

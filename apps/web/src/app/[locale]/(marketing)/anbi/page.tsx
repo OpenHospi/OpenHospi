@@ -1,4 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
+import { FileDown } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -6,6 +7,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LegalPageContent } from "@/components/marketing/legal-page-content";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
+
+const BELEIDSPLAN_PDF = "/documents/beleidsplan-stichting-openhospi.pdf";
 
 export async function generateMetadata({
   params,
@@ -36,10 +39,23 @@ export default async function AnbiPage({ params }: { params: Promise<{ locale: L
     { name: t("title"), path: "/anbi" },
   ]);
 
+  const downloadLabel = t.raw("sections.2.downloadLabel") as string;
+
   return (
     <section className="py-24">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
       <LegalPageContent locale={locale} namespace="anbi" hasIntro />
+      <div className="mx-auto mt-6 max-w-3xl px-4 sm:px-6 lg:px-8">
+        <a
+          href={BELEIDSPLAN_PDF}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-primary underline underline-offset-2 hover:text-primary/80"
+        >
+          <FileDown className="size-4" />
+          {downloadLabel}
+        </a>
+      </div>
     </section>
   );
 }

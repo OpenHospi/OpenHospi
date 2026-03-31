@@ -68,6 +68,10 @@
       "title": "E2E Encryption | How We Protect Your Conversations",
       "description": "Learn how OpenHospi uses pairwise end-to-end encryption to protect every conversation between seekers and house members. Signal Protocol-inspired, open source, and fully transparent."
     },
+    "anbi": {
+      "title": "ANBI | Stichting OpenHospi",
+      "description": "Stichting OpenHospi is a Dutch public benefit organisation (ANBI). View our objectives, board composition, remuneration policy and financial accountability."
+    },
     "breadcrumbs": {
       "home": "Home",
       "rooms": "Student Rooms",
@@ -169,11 +173,14 @@
       "legalBasis": "Legal basis",
       "dataProcessors": "Data processors",
       "dpia": "DPIA",
-      "e2eEncryption": "E2E Encryption"
+      "e2eEncryption": "E2E Encryption",
+      "anbi": "ANBI"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
     "openSource": "Open source",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "foundation": "Stichting OpenHospi",
+    "kvk": "KVK: 42025113"
   },
   "home": {
     "hero": {

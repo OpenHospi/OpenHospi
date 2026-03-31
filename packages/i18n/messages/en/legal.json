@@ -578,5 +578,61 @@
         "content": "The processing activities of OpenHospi present acceptable residual risks after implementation of mitigations. The platform implements data protection by design and by default (Art. 25 GDPR) through end-to-end encryption, Row-Level Security, data minimisation, automated retention rules, and transparent processing. No high residual risks remain that would require prior consultation with the Autoriteit Persoonsgegevens under Art. 36 GDPR."
       }
     ]
+  },
+  "anbi": {
+    "title": "ANBI",
+    "lastUpdated": "Last updated: March 2026",
+    "intro": "Stichting OpenHospi is a Dutch public benefit organisation (ANBI). On this page we publish the information required by Dutch ANBI regulations.",
+    "sections": [
+      {
+        "title": "1. Organisation details",
+        "content": "Name: Stichting OpenHospi\nRSIN/tax number: 869356148\nChamber of Commerce (KVK) number: 42025113\nAddress: Jullensstraat 63, 9721BK Groningen, the Netherlands\nEmail: info@openhospi.nl\nDate of incorporation: 31 March 2026"
+      },
+      {
+        "title": "2. Objectives",
+        "content": "Stichting OpenHospi aims to promote accessible and fair student housing in the Netherlands, by developing, managing and providing a free, open-source digital platform where students can offer and search for rooms. The foundation does not aim to make a profit. The foundation pursues its objectives by:",
+        "items": [
+          "Developing, managing and maintaining a free, open-source digital platform where students can offer and search for rooms.",
+          "Verifying users so that only students at Dutch educational institutions have access to the platform.",
+          "Protecting user privacy through end-to-end encrypted communication and minimal data collection.",
+          "Promoting collaboration with educational institutions.",
+          "Maintaining a multilingual platform (Dutch, English, German) to serve international students.",
+          "Supporting an active community around open-source development, where students can contribute to the code."
+        ]
+      },
+      {
+        "title": "3. Policy plan",
+        "content": "The full policy plan of Stichting OpenHospi describes the objectives, mission, planned activities, target group, income, spending policy and asset management of the foundation. Below is a summary of the main points.",
+        "items": [
+          "Mission: provide a fair alternative to commercial student housing platforms. Completely free, verified students only, privacy first.",
+          "Target group: students enrolled at Dutch educational institutions connected to the InAcademia Affiliation Validation Service by G\u00c9ANT.",
+          "Income: donations (via Open Collective), subsidies from educational institutions and governments, gifts and bequests.",
+          "Expenditure: hosting and infrastructure, platform development and maintenance, administrative costs (bookkeeping, bank fees, Chamber of Commerce). No profit distribution takes place.",
+          "Asset management: the foundation does not hold more assets than reasonably necessary for the continuity of its activities.",
+          "Download the full policy plan (PDF, Dutch): /documents/beleidsplan-stichting-openhospi.pdf"
+        ]
+      },
+      {
+        "title": "4. Board composition",
+        "content": "The board consists of at least three and at most seven members. All board members are jointly authorised to represent the foundation.",
+        "items": [
+          "Ruben Talstra, chairman (since 31 March 2026)",
+          "Sophie de Klerk, secretary (since 31 March 2026)",
+          "Heino Bosma, treasurer (since 31 March 2026)"
+        ]
+      },
+      {
+        "title": "5. Remuneration policy",
+        "content": "Board members receive no remuneration (article 7, paragraph 5 of the articles of association). Only documented expenses may be reimbursed upon presentation of receipts. The foundation has no employees. Volunteers receive no compensation other than expense reimbursement within the statutory volunteer allowance."
+      },
+      {
+        "title": "6. Activity report",
+        "content": "Stichting OpenHospi was incorporated on 31 March 2026 and is currently in its start-up phase. The first activity report will be published after the end of the first financial year (calendar year 2026)."
+      },
+      {
+        "title": "7. Financial accountability",
+        "content": "The financial year of the foundation is equal to the calendar year. The first annual accounts (balance sheet and statement of income and expenditure with notes) will be published within six months after the end of the first financial year (calendar year 2026)."
+      }
+    ]
   }
 }

@@ -578,5 +578,61 @@
         "content": "De verwerkingsactiviteiten van OpenHospi presenteren aanvaardbare restrisico's na implementatie van maatregelen. Het platform implementeert gegevensbescherming door ontwerp en door standaardinstellingen (art. 25 AVG) door middel van end-to-end encryptie, Row-Level Security, dataminimalisatie, geautomatiseerde retentieregels en transparante verwerking. Er blijven geen hoge restrisico's over die voorafgaande raadpleging van de Autoriteit Persoonsgegevens vereisen op grond van art. 36 AVG."
       }
     ]
+  },
+  "anbi": {
+    "title": "ANBI",
+    "lastUpdated": "Laatst bijgewerkt: maart 2026",
+    "intro": "Stichting OpenHospi is een Algemeen Nut Beogende Instelling (ANBI). Op deze pagina publiceren wij de wettelijk vereiste gegevens conform de ANBI-publicatieplicht.",
+    "sections": [
+      {
+        "title": "1. Gegevens van de instelling",
+        "content": "Naam: Stichting OpenHospi\nRSIN/fiscaal nummer: 869356148\nKVK-nummer: 42025113\nVestigingsadres: Jullensstraat 63, 9721BK Groningen\nE-mailadres: info@openhospi.nl\nOprichtingsdatum: 31 maart 2026"
+      },
+      {
+        "title": "2. Doelstelling",
+        "content": "Stichting OpenHospi heeft ten doel het bevorderen van toegankelijke en eerlijke studentenhuisvesting in Nederland, onder meer door het ontwikkelen, beheren en beschikbaar stellen van een gratis, open-source digitaal platform waarop studenten kamers kunnen aanbieden en zoeken. De stichting heeft niet ten doel het maken van winst. De stichting tracht haar doel onder meer te bereiken door:",
+        "items": [
+          "Het ontwikkelen, beheren en onderhouden van een gratis, open-source digitaal platform waarop studenten kamers kunnen aanbieden en zoeken.",
+          "Het verifi\u00ebren van gebruikers zodat uitsluitend studenten aan Nederlandse onderwijsinstellingen toegang hebben tot het platform.",
+          "Het beschermen van de privacy van gebruikers door end-to-end versleutelde communicatie en minimale gegevensverzameling.",
+          "Het bevorderen van samenwerking met onderwijsinstellingen.",
+          "Het onderhouden van een meertalig platform (Nederlands, Engels, Duits) om internationale studenten te bedienen.",
+          "Het ondersteunen van een actieve community rond open-source ontwikkeling, waarbij studenten kunnen bijdragen aan de code."
+        ]
+      },
+      {
+        "title": "3. Beleidsplan",
+        "content": "Het volledige beleidsplan van Stichting OpenHospi beschrijft de doelstelling, missie, voorgenomen activiteiten, doelgroep, inkomsten, bestedingsbeleid en vermogensbeheer van de stichting. Hieronder een samenvatting van de hoofdlijnen.",
+        "items": [
+          "Missie: een eerlijk alternatief bieden voor commerci\u00eble studentenhuisvestingsplatforms. Volledig gratis, alleen geverifieerde studenten, privacy centraal.",
+          "Doelgroep: studenten ingeschreven bij Nederlandse onderwijsinstellingen die zijn aangesloten op de InAcademia Affiliation Validation Service van G\u00c9ANT.",
+          "Inkomsten: donaties (via Open Collective), subsidies van onderwijsinstellingen en overheden, schenkingen en legaten.",
+          "Bestedingen: hosting en infrastructuur, platformontwikkeling en -onderhoud, administratieve kosten (boekhouding, bankkosten, KVK). Er vindt geen winstuitkering plaats.",
+          "Vermogensbeheer: de stichting houdt niet meer vermogen aan dan redelijkerwijs nodig is voor de continu\u00efteit van haar activiteiten.",
+          "Download het volledige beleidsplan (PDF): /documents/beleidsplan-stichting-openhospi.pdf"
+        ]
+      },
+      {
+        "title": "4. Bestuurssamenstelling",
+        "content": "Het bestuur bestaat uit ten minste drie en maximaal zeven leden. Alle bestuurders zijn gezamenlijk bevoegd de stichting te vertegenwoordigen.",
+        "items": [
+          "Ruben Talstra, voorzitter (sinds 31 maart 2026)",
+          "Sophie de Klerk, secretaris (sinds 31 maart 2026)",
+          "Heino Bosma, penningmeester (sinds 31 maart 2026)"
+        ]
+      },
+      {
+        "title": "5. Beloningsbeleid",
+        "content": "Aan de bestuurders kan geen beloning worden toegekend (artikel 7 lid 5 van de statuten). Uitsluitend gemaakte en aantoonbare onkosten kunnen op vertoon van de bewijsstukken worden vergoed. De stichting heeft geen personeel in dienst. Eventuele vrijwilligers ontvangen geen vergoeding anders dan een onkostenvergoeding binnen de wettelijke vrijwilligersregeling."
+      },
+      {
+        "title": "6. Activiteitenverslag",
+        "content": "Stichting OpenHospi is opgericht op 31 maart 2026 en bevindt zich in de opstartfase. Het eerste activiteitenverslag wordt gepubliceerd na afloop van het eerste boekjaar (kalenderjaar 2026)."
+      },
+      {
+        "title": "7. Financi\u00eble verantwoording",
+        "content": "Het boekjaar van de stichting is gelijk aan het kalenderjaar. De eerste jaarrekening (balans en staat van baten en lasten met toelichting) wordt gepubliceerd binnen zes maanden na afloop van het eerste boekjaar (kalenderjaar 2026)."
+      }
+    ]
   }
 }

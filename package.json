@@ -15,7 +15,6 @@
     "dev:mobile:prebuild": "pnpm --filter @openhospi/mobile prebuild",
     "dev:mobile:android": "pnpm --filter @openhospi/mobile android",
     "dev:mobile:ios": "pnpm --filter @openhospi/mobile ios",
-    "dev:mobile:web": "pnpm --filter @openhospi/mobile web",
     "build:web": "pnpm --filter @openhospi/web build",
     "dev:admin": "pnpm --filter @openhospi/admin dev",
     "build:admin": "pnpm --filter @openhospi/admin build",

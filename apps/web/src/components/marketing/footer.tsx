@@ -36,6 +36,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
         { href: "/legal-basis", label: t("links.legalBasis") },
         { href: "/data-processors", label: t("links.dataProcessors") },
         { href: "/dpia", label: t("links.dpia") },
+        { href: "/anbi", label: t("links.anbi") },
       ],
     },
     {
@@ -128,9 +129,11 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
 
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex flex-col items-center gap-1 sm:items-start">
+            <p className="text-sm font-medium text-muted-foreground">{t("foundation")}</p>
             <p className="text-sm text-muted-foreground">
               &copy; {new Date().getFullYear()} {APP_NAME}. {t("rights")}
             </p>
+            <p className="text-sm text-muted-foreground">{t("kvk")}</p>
             <a
               href="mailto:info@openhospi.nl"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"

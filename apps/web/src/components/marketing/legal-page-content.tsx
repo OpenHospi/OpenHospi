@@ -14,7 +14,8 @@ type LegalNamespace =
   | "legalBasis"
   | "dataProcessors"
   | "processingRegister"
-  | "dpia";
+  | "dpia"
+  | "anbi";
 
 interface LegalPageContentProps {
   locale: Locale;

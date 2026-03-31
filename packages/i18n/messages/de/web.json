@@ -68,6 +68,10 @@
       "title": "E2E-Verschlüsselung | Wie Wir Deine Unterhaltungen Schützen",
       "description": "Erfahre, wie OpenHospi paarweise Ende-zu-Ende-Verschlüsselung einsetzt, um jede Unterhaltung zwischen Suchenden und Hausmitgliedern zu schützen. Inspiriert vom Signal Protocol, Open Source und vollständig transparent."
     },
+    "anbi": {
+      "title": "ANBI | Stichting OpenHospi",
+      "description": "Stichting OpenHospi ist eine niederländische gemeinnützige Organisation (ANBI). Sehen Sie unsere Zielsetzung, Vorstandszusammensetzung, Vergütungspolitik und finanzielle Rechenschaftspflicht."
+    },
     "breadcrumbs": {
       "home": "Startseite",
       "rooms": "Studentenzimmer",
@@ -169,11 +173,14 @@
       "alternatives": "Alternativen",
       "faq": "FAQ",
       "missingAssociation": "Vereinigung fehlt?",
-      "e2eEncryption": "E2E-Verschlüsselung"
+      "e2eEncryption": "E2E-Verschlüsselung",
+      "anbi": "ANBI"
     },
     "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
     "openSource": "Open Source",
-    "rights": "Alle Rechte vorbehalten."
+    "rights": "Alle Rechte vorbehalten.",
+    "foundation": "Stichting OpenHospi",
+    "kvk": "KVK: 42025113"
   },
   "home": {
     "hero": {

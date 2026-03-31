@@ -578,5 +578,61 @@
         "content": "Die Verarbeitungstätigkeiten von OpenHospi weisen nach Umsetzung der Maßnahmen akzeptable Restrisiken auf. Die Plattform setzt Datenschutz durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen (Art. 25 DSGVO) um, durch Ende-zu-Ende-Verschlüsselung, Row-Level Security, Datenminimierung, automatisierte Aufbewahrungsregeln und transparente Verarbeitung. Es verbleiben keine hohen Restrisiken, die eine vorherige Konsultation der Autoriteit Persoonsgegevens gemäß Art. 36 DSGVO erfordern würden."
       }
     ]
+  },
+  "anbi": {
+    "title": "ANBI",
+    "lastUpdated": "Zuletzt aktualisiert: M\u00e4rz 2026",
+    "intro": "Stichting OpenHospi ist eine niederl\u00e4ndische gemeinn\u00fctzige Organisation (ANBI). Auf dieser Seite ver\u00f6ffentlichen wir die gesetzlich vorgeschriebenen Informationen gem\u00e4\u00df der ANBI-Publizit\u00e4tspflicht.",
+    "sections": [
+      {
+        "title": "1. Angaben zur Organisation",
+        "content": "Name: Stichting OpenHospi\nRSIN/Steuernummer: 869356148\nHandelskammer (KVK) Nummer: 42025113\nAdresse: Jullensstraat 63, 9721BK Groningen, Niederlande\nE-Mail: info@openhospi.nl\nGr\u00fcndungsdatum: 31. M\u00e4rz 2026"
+      },
+      {
+        "title": "2. Zielsetzung",
+        "content": "Stichting OpenHospi hat zum Ziel, zug\u00e4nglichen und fairen Studentenwohnraum in den Niederlanden zu f\u00f6rdern, unter anderem durch die Entwicklung, Verwaltung und Bereitstellung einer kostenlosen, quelloffenen digitalen Plattform, auf der Studierende Zimmer anbieten und suchen k\u00f6nnen. Die Stiftung strebt keinen Gewinn an. Die Stiftung verfolgt ihre Ziele unter anderem durch:",
+        "items": [
+          "Entwicklung, Verwaltung und Wartung einer kostenlosen, quelloffenen digitalen Plattform, auf der Studierende Zimmer anbieten und suchen k\u00f6nnen.",
+          "Verifizierung der Nutzer, sodass ausschlie\u00dflich Studierende an niederl\u00e4ndischen Bildungseinrichtungen Zugang zur Plattform haben.",
+          "Schutz der Privatsph\u00e4re der Nutzer durch Ende-zu-Ende-verschl\u00fcsselte Kommunikation und minimale Datenerhebung.",
+          "F\u00f6rderung der Zusammenarbeit mit Bildungseinrichtungen.",
+          "Betrieb einer mehrsprachigen Plattform (Niederl\u00e4ndisch, Englisch, Deutsch) f\u00fcr internationale Studierende.",
+          "Unterst\u00fctzung einer aktiven Community rund um Open-Source-Entwicklung, bei der Studierende zum Code beitragen k\u00f6nnen."
+        ]
+      },
+      {
+        "title": "3. Strategieplan",
+        "content": "Der vollst\u00e4ndige Strategieplan der Stichting OpenHospi beschreibt die Zielsetzung, Mission, geplante Aktivit\u00e4ten, Zielgruppe, Einnahmen, Ausgabenpolitik und Verm\u00f6gensverwaltung der Stiftung. Nachfolgend eine Zusammenfassung der Hauptpunkte.",
+        "items": [
+          "Mission: eine faire Alternative zu kommerziellen Studentenwohnungsplattformen bieten. Komplett kostenlos, nur verifizierte Studierende, Datenschutz im Mittelpunkt.",
+          "Zielgruppe: Studierende an niederl\u00e4ndischen Bildungseinrichtungen, die an den InAcademia Affiliation Validation Service von G\u00c9ANT angeschlossen sind.",
+          "Einnahmen: Spenden (\u00fcber Open Collective), Zusch\u00fcsse von Bildungseinrichtungen und Beh\u00f6rden, Schenkungen und Verm\u00e4chtnisse.",
+          "Ausgaben: Hosting und Infrastruktur, Plattformentwicklung und -wartung, Verwaltungskosten (Buchhaltung, Bankgeb\u00fchren, Handelskammer). Es erfolgt keine Gewinnaussch\u00fcttung.",
+          "Verm\u00f6gensverwaltung: die Stiftung h\u00e4lt nicht mehr Verm\u00f6gen als f\u00fcr die Kontinuit\u00e4t ihrer Aktivit\u00e4ten vern\u00fcnftigerweise erforderlich.",
+          "Vollst\u00e4ndigen Strategieplan herunterladen (PDF, Niederl\u00e4ndisch): /documents/beleidsplan-stichting-openhospi.pdf"
+        ]
+      },
+      {
+        "title": "4. Vorstandszusammensetzung",
+        "content": "Der Vorstand besteht aus mindestens drei und h\u00f6chstens sieben Mitgliedern. Alle Vorstandsmitglieder sind gemeinsam zur Vertretung der Stiftung befugt.",
+        "items": [
+          "Ruben Talstra, Vorsitzender (seit 31. M\u00e4rz 2026)",
+          "Sophie de Klerk, Sekret\u00e4rin (seit 31. M\u00e4rz 2026)",
+          "Heino Bosma, Schatzmeister (seit 31. M\u00e4rz 2026)"
+        ]
+      },
+      {
+        "title": "5. Verg\u00fctungspolitik",
+        "content": "Die Vorstandsmitglieder erhalten keine Verg\u00fctung (Artikel 7, Absatz 5 der Satzung). Nur nachgewiesene Auslagen k\u00f6nnen gegen Vorlage von Belegen erstattet werden. Die Stiftung hat keine Angestellten. Freiwillige erhalten keine Verg\u00fctung au\u00dfer einer Aufwandsentsch\u00e4digung im Rahmen der gesetzlichen Freiwilligenregelung."
+      },
+      {
+        "title": "6. T\u00e4tigkeitsbericht",
+        "content": "Stichting OpenHospi wurde am 31. M\u00e4rz 2026 gegr\u00fcndet und befindet sich derzeit in der Aufbauphase. Der erste T\u00e4tigkeitsbericht wird nach Ablauf des ersten Gesch\u00e4ftsjahres (Kalenderjahr 2026) ver\u00f6ffentlicht."
+      },
+      {
+        "title": "7. Finanzielle Rechenschaftspflicht",
+        "content": "Das Gesch\u00e4ftsjahr der Stiftung entspricht dem Kalenderjahr. Der erste Jahresabschluss (Bilanz und Gewinn- und Verlustrechnung mit Erl\u00e4uterungen) wird innerhalb von sechs Monaten nach Ablauf des ersten Gesch\u00e4ftsjahres (Kalenderjahr 2026) ver\u00f6ffentlicht."
+      }
+    ]
   }
 }

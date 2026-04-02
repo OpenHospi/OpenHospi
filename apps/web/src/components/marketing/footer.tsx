@@ -2,13 +2,19 @@
 
 import { SiGithub, SiInstagram, SiOpencollective } from "@icons-pack/react-simple-icons";
 import logo from "@openhospi/shared/assets/logo.svg";
-import { APP_NAME } from "@openhospi/shared/constants";
+import {
+  APP_NAME,
+  FOUNDATION_ADDRESS,
+  FOUNDATION_EMAIL,
+  FOUNDATION_NAME,
+  KVK_NUMBER,
+  RSIN_NUMBER,
+} from "@openhospi/shared/constants";
 import { LinkedinIcon } from "@openhospi/shared/icons";
+import { Dot, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Link } from "@/i18n/navigation";
 
 import { LanguageSwitcher } from "./language-switcher";
@@ -19,11 +25,12 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
 
   const linkGroups = [
     {
-      title: t("product"),
+      title: t("platform"),
       links: [
         { href: "/how-it-works", label: t("links.howItWorks") },
         { href: "/rooms", label: t("links.browseRooms") },
         { href: "/safety", label: t("links.safety") },
+        { href: "/costs", label: t("links.costs") },
       ],
     },
     {
@@ -32,20 +39,24 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
         { href: "/privacy", label: t("links.privacy") },
         { href: "/cookies", label: t("links.cookies") },
         { href: "/terms", label: t("links.terms") },
+        { href: "/anbi", label: t("links.anbi") },
+      ],
+    },
+    {
+      title: t("dataPrivacy"),
+      links: [
         { href: "/processing-register", label: t("links.processingRegister") },
         { href: "/legal-basis", label: t("links.legalBasis") },
         { href: "/data-processors", label: t("links.dataProcessors") },
         { href: "/dpia", label: t("links.dpia") },
-        { href: "/anbi", label: t("links.anbi") },
       ],
     },
     {
       title: t("community"),
       links: [
         { href: "/about", label: t("links.about") },
-        { href: "/alternatives", label: t("links.alternatives") },
-        { href: "/costs", label: t("links.costs") },
         { href: "/faq", label: t("links.faq") },
+        { href: "/alternatives", label: t("links.alternatives") },
         { href: "/missing-association", label: t("links.missingAssociation") },
       ],
     },
@@ -53,23 +64,43 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
 
   return (
     <footer className="border-t bg-muted/30">
+      {/* Band A: Main content */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {/* Branding */}
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-6">
+          {/* Branding column */}
+          <div className="md:col-span-2">
             <div className="flex items-center gap-2">
               <Image src={logo} alt="" width={24} height={24} className="size-6" />
               <p className="text-xl font-bold text-primary">{APP_NAME}</p>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">{t("foundation")}</p>
-            <p className="text-xs text-muted-foreground">{t("kvk")}</p>
-            <a
-              href="mailto:info@openhospi.nl"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              info@openhospi.nl
-            </a>
-            <p className="mt-2 text-sm text-muted-foreground">{t("tagline")}</p>
+
+            <p className="mt-2 text-sm text-muted-foreground">{FOUNDATION_NAME}</p>
+
+            {/* TODO: Uncomment when ANBI status is officially granted
+            <div className="mt-1 flex items-center gap-1.5 text-sm font-medium text-primary">
+              <ShieldCheck className="size-4" />
+              <span>{t("anbiStatus")}</span>
+            </div>
+            */}
+
+            <div className="mt-2 space-y-0.5 text-xs text-muted-foreground">
+              <p className="flex items-center">
+                KVK: {KVK_NUMBER}
+                <Dot className="size-4" />
+                RSIN: {RSIN_NUMBER}
+              </p>
+              <p>{FOUNDATION_ADDRESS}</p>
+              <a
+                href={`mailto:${FOUNDATION_EMAIL}`}
+                className="transition-colors hover:text-foreground"
+              >
+                {FOUNDATION_EMAIL}
+              </a>
+            </div>
+
+            <p className="mt-4 text-sm text-muted-foreground">{t("tagline")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("license")}</p>
+
             <div className="mt-4 flex items-center gap-3">
               <a
                 href="https://github.com/OpenHospi/OpenHospi"
@@ -80,9 +111,6 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
               >
                 <SiGithub className="size-5" color="currentColor" />
               </a>
-              <Badge variant="outline" className="text-xs">
-                {t("openSource")}
-              </Badge>
               <a
                 href="https://www.instagram.com/openhospi"
                 target="_blank"
@@ -122,7 +150,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.label}
                     </Link>
@@ -132,15 +160,14 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
             </div>
           ))}
         </div>
+      </div>
 
-        <Separator className="my-8" />
-
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex flex-col items-center gap-1 sm:items-start">
-            <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} {t("foundation")}. {t("rights")}
-            </p>
-          </div>
+      {/* Band B: Bottom bar */}
+      <div className="border-t">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 sm:flex-row sm:px-6 lg:px-8">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} {FOUNDATION_NAME}. {t("rights")}
+          </p>
           <div className="flex items-center gap-4">
             <TrustpilotWidget score={trustpilotScore} />
             <LanguageSwitcher />

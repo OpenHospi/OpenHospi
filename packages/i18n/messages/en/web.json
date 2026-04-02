@@ -154,8 +154,9 @@
     "menuOpen": "Open menu"
   },
   "footer": {
-    "product": "Product",
+    "platform": "Platform",
     "legal": "Legal",
+    "dataPrivacy": "Data & Privacy",
     "community": "Community",
     "links": {
       "howItWorks": "How it works",
@@ -177,10 +178,9 @@
       "anbi": "ANBI"
     },
     "tagline": "Free, open-source student housing for the Netherlands.",
-    "openSource": "Open source",
-    "rights": "All rights reserved.",
-    "foundation": "Stichting OpenHospi",
-    "kvk": "KVK: 42025113"
+    "anbiStatus": "Recognized ANBI institution",
+    "license": "Licensed under AGPL-3.0",
+    "rights": "All rights reserved."
   },
   "home": {
     "hero": {

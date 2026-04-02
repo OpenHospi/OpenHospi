@@ -28,7 +28,8 @@
       },
       {
         "title": "4. InAcademia-Daten",
-        "content": "Wenn du dich über InAcademia anmeldest, erhalten wir eine pseudonymisierte Kennung (sub) und deine Einrichtungsinformationen (Entity-ID). InAcademia wird von GÉANT betrieben, der europäischen Forschungs- und Bildungsnetzwerkorganisation. GÉANT ist ein eigenständig Verantwortlicher für den Authentifizierungsprozess. InAcademia gibt keine Namen oder E-Mail-Adressen an uns weiter; diese Daten gibst du selbst während des Onboardings an. Wir nutzen die empfangenen Daten zur Verifizierung deiner Studierendenidentität und zur Erstellung deines Kontos."
+        "content": "Wenn du dich über InAcademia anmeldest, erhalten wir eine pseudonymisierte Kennung (sub) und deine Einrichtungsinformationen (Entity-ID). InAcademia wird von GÉANT betrieben, der europäischen Forschungs- und Bildungsnetzwerkorganisation. GÉANT ist ein eigenständig Verantwortlicher für den Authentifizierungsprozess. InAcademia gibt keine Namen oder E-Mail-Adressen an uns weiter; diese Daten gibst du selbst während des Onboardings an. Wir nutzen die empfangenen Daten zur Verifizierung deiner Studierendenidentität und zur Erstellung deines Kontos.",
+        "hidden": true
       },
       {
         "title": "5. Wie wir deine Daten verwenden",
@@ -56,7 +57,7 @@
           "Supabase (Dublin, Irland): Datenbank und Dateispeicher (Auftragsverarbeiter)",
           "Vercel (Dublin, Irland): Webhosting und Edge-Funktionen (Auftragsverarbeiter)",
           "Upstash (Irland): Ratenbegrenzung über Redis (Auftragsverarbeiter)",
-          "InAcademia / GÉANT (EU): Authentifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
+          "Institutioneller SSO-Anbieter (GÉANT, Niederlande): Studierendenverifizierung (eigenständig Verantwortlicher, kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO)",
           "Sentry (Frankfurt, Deutschland): Crash-Reporting und Fehlerüberwachung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben",
           "Expo/EAS (USA): Mobile App-Builds, Over-the-Air-Updates und Verteilung (Auftragsverarbeiter). Keine personenbezogenen Daten erhoben, nur App-Code und Bundles werden verarbeitet"
         ]
@@ -114,7 +115,7 @@
       },
       {
         "title": "16. Daten von Kindern",
-        "content": "OpenHospi ist ausschließlich über InAcademia zugänglich, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Das bedeutet, dass alle Nutzer Studierende ab 16 Jahren sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO, der den Mitgliedstaaten erlaubt, die Altersgrenze auf mindestens 16 Jahre festzulegen). Wir erheben wissentlich keine personenbezogenen Daten von Kindern unter 16 Jahren."
+        "content": "OpenHospi ist ausschließlich über institutionelle SSO zugänglich, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Das bedeutet, dass alle Nutzer Studierende ab 16 Jahren sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO, der den Mitgliedstaaten erlaubt, die Altersgrenze auf mindestens 16 Jahre festzulegen). Wir erheben wissentlich keine personenbezogenen Daten von Kindern unter 16 Jahren."
       },
       {
         "title": "17. Automatisierte Entscheidungen im Einzelfall",
@@ -165,7 +166,7 @@
     "sections": [
       {
         "title": "Berechtigung",
-        "content": "OpenHospi steht Studierenden niederländischer Bildungseinrichtungen zur Verfügung, die über InAcademia verifiziert werden können."
+        "content": "OpenHospi steht Studierenden niederländischer Bildungseinrichtungen mit institutioneller SSO-Verifizierung zur Verfügung."
       },
       {
         "title": "Kontoverantwortung",
@@ -293,7 +294,8 @@
           "Verarbeitete Daten: Pseudonymisierte Kennung (sub), Einrichtungs-Entity-ID (bei der Anmeldung empfangen). Keine Namen oder E-Mail-Adressen",
           "Auftragsverarbeitungsvertrag: GÉANT ist kein Auftragsverarbeiter im Sinne von Art. 28 DSGVO, sondern ein eigenständig Verantwortlicher für den Authentifizierungsprozess. Die Zusammenarbeit unterliegt den InAcademia-Nutzungsbedingungen und EU-Recht",
           "Sicherheit: OIDC-Protokoll, Sicherheit auf institutionellem Niveau, verwaltet von GÉANT"
-        ]
+        ],
+        "hidden": true
       },
       {
         "title": "5. Sentry (Crash-Reporting)",
@@ -476,7 +478,7 @@
     "sections": [
       {
         "title": "1. Beschreibung der Verarbeitung",
-        "content": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Nutzer authentifizieren sich über InAcademia (datenschutzfreundliche Studierendenvalidierung), erstellen Profile, inserieren Zimmer, durchsuchen Anzeigen, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen. Die Verarbeitung umfasst Profildaten, Wohnungsdaten, Kommunikationsdaten, Bewerbungsdaten, Sitzungsdaten, Push-Benachrichtigungstoken und Einwilligungsdatensätze."
+        "content": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Nutzer authentifizieren sich über institutionelle SSO, erstellen Profile, inserieren Zimmer, durchsuchen Angebote, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen. Die Verarbeitung umfasst Profildaten, Wohnungsdaten, Kommunikationsdaten, Bewerbungsdaten, Sitzungsdaten, Push-Benachrichtigungs-Tokens und Einwilligungsdatensätze."
       },
       {
         "title": "2. Notwendigkeit und Verhältnismäßigkeit",
@@ -495,7 +497,7 @@
           "Risiko: Unbefugter Zugriff auf persönliche Profile",
           "Wahrscheinlichkeit: Gering",
           "Auswirkung: Mittel",
-          "Maßnahmen: Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über InAcademia erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
+          "Maßnahmen: Row-Level Security (RLS) auf allen Datenbanktabellen. Authentifizierung über institutionelle SSO erforderlich. Profilsichtbarkeit auf authentifizierte Nutzer beschränkt",
           "Restrisiko: Gering"
         ]
       },
@@ -537,7 +539,8 @@
           "Auswirkung: Gering",
           "Maßnahmen: Es werden nur eine pseudonymisierte Kennung und Einrichtungsinformationen von InAcademia empfangen. Keine Namen oder E-Mail-Adressen. InAcademia wird von GÉANT (EU) verwaltet",
           "Restrisiko: Sehr gering"
-        ]
+        ],
+        "hidden": true
       },
       {
         "title": "8. Risiko: Moderation, temporär entschlüsselte Nachrichten",
@@ -571,7 +574,7 @@
       },
       {
         "title": "11. Kinder (Art. 8 DSGVO)",
-        "content": "Alle Nutzer authentifizieren sich über InAcademia, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt wirksam sicher, dass alle Nutzer 16 Jahre oder älter sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO). Eine separate Altersverifikation ist daher nicht erforderlich."
+        "content": "Alle Nutzer authentifizieren sich über institutionelle SSO, was eine Einschreibung an einer akkreditierten niederländischen Bildungseinrichtung erfordert. Dies stellt wirksam sicher, dass alle Nutzer 16 Jahre oder älter sind, gemäß Art. 5 UAVG (in Umsetzung von Art. 8 Abs. 1 DSGVO). Eine separate Altersverifikation ist daher nicht erforderlich."
       },
       {
         "title": "12. Fazit",
@@ -581,8 +584,8 @@
   },
   "anbi": {
     "title": "ANBI",
-    "lastUpdated": "Zuletzt aktualisiert: M\u00e4rz 2026",
-    "intro": "Stichting OpenHospi ist eine niederl\u00e4ndische gemeinn\u00fctzige Organisation (ANBI). Auf dieser Seite ver\u00f6ffentlichen wir die gesetzlich vorgeschriebenen Informationen gem\u00e4\u00df der ANBI-Publizit\u00e4tspflicht.",
+    "lastUpdated": "Zuletzt aktualisiert: März 2026",
+    "intro": "Stichting OpenHospi ist eine niederländische gemeinnützige Organisation (ANBI). Auf dieser Seite veröffentlichen wir die gesetzlich vorgeschriebenen Informationen gemäß der ANBI-Publizitätspflicht.",
     "sections": [
       {
         "title": "1. Angaben zur Organisation",
@@ -592,53 +595,53 @@
           "Handelskammer (KVK) Nummer: 42025113",
           "Adresse: Jullensstraat 63, 9721BK Groningen, Niederlande",
           "E-Mail: info@openhospi.nl",
-          "Gr\u00fcndungsdatum: 31. M\u00e4rz 2026"
+          "Gründungsdatum: 31. März 2026"
         ]
       },
       {
         "title": "2. Zielsetzung",
-        "content": "Stichting OpenHospi hat zum Ziel, zug\u00e4nglichen und fairen Studentenwohnraum in den Niederlanden zu f\u00f6rdern, unter anderem durch die Entwicklung, Verwaltung und Bereitstellung einer kostenlosen, quelloffenen digitalen Plattform, auf der Studierende Zimmer anbieten und suchen k\u00f6nnen. Die Stiftung strebt keinen Gewinn an. Die Stiftung verfolgt ihre Ziele unter anderem durch:",
+        "content": "Stichting OpenHospi hat zum Ziel, zugänglichen und fairen Studentenwohnraum in den Niederlanden zu fördern, unter anderem durch die Entwicklung, Verwaltung und Bereitstellung einer kostenlosen, quelloffenen digitalen Plattform, auf der Studierende Zimmer anbieten und suchen können. Die Stiftung strebt keinen Gewinn an. Die Stiftung verfolgt ihre Ziele unter anderem durch:",
         "items": [
-          "Entwicklung, Verwaltung und Wartung einer kostenlosen, quelloffenen digitalen Plattform, auf der Studierende Zimmer anbieten und suchen k\u00f6nnen.",
-          "Verifizierung der Nutzer, sodass ausschlie\u00dflich Studierende an niederl\u00e4ndischen Bildungseinrichtungen Zugang zur Plattform haben.",
-          "Schutz der Privatsph\u00e4re der Nutzer durch Ende-zu-Ende-verschl\u00fcsselte Kommunikation und minimale Datenerhebung.",
-          "F\u00f6rderung der Zusammenarbeit mit Bildungseinrichtungen.",
-          "Betrieb einer mehrsprachigen Plattform (Niederl\u00e4ndisch, Englisch, Deutsch) f\u00fcr internationale Studierende.",
-          "Unterst\u00fctzung einer aktiven Community rund um Open-Source-Entwicklung, bei der Studierende zum Code beitragen k\u00f6nnen."
+          "Entwicklung, Verwaltung und Wartung einer kostenlosen, quelloffenen digitalen Plattform, auf der Studierende Zimmer anbieten und suchen können.",
+          "Verifizierung der Nutzer, sodass ausschließlich Studierende an niederländischen Bildungseinrichtungen Zugang zur Plattform haben.",
+          "Schutz der Privatsphäre der Nutzer durch Ende-zu-Ende-verschlüsselte Kommunikation und minimale Datenerhebung.",
+          "Förderung der Zusammenarbeit mit Bildungseinrichtungen.",
+          "Betrieb einer mehrsprachigen Plattform (Niederländisch, Englisch, Deutsch) für internationale Studierende.",
+          "Unterstützung einer aktiven Community rund um Open-Source-Entwicklung, bei der Studierende zum Code beitragen können."
         ]
       },
       {
         "title": "3. Strategieplan",
-        "content": "Der vollst\u00e4ndige Strategieplan der Stichting OpenHospi beschreibt die Zielsetzung, Mission, geplante Aktivit\u00e4ten, Zielgruppe, Einnahmen, Ausgabenpolitik und Verm\u00f6gensverwaltung der Stiftung. Nachfolgend eine Zusammenfassung der Hauptpunkte.",
-        "downloadLabel": "Vollst\u00e4ndigen Strategieplan herunterladen (PDF, Niederl\u00e4ndisch)",
+        "content": "Der vollständige Strategieplan der Stichting OpenHospi beschreibt die Zielsetzung, Mission, geplante Aktivitäten, Zielgruppe, Einnahmen, Ausgabenpolitik und Vermögensverwaltung der Stiftung. Nachfolgend eine Zusammenfassung der Hauptpunkte.",
+        "downloadLabel": "Vollständigen Strategieplan herunterladen (PDF, Niederländisch)",
         "items": [
           "Mission: eine faire Alternative zu kommerziellen Studentenwohnungsplattformen bieten. Komplett kostenlos, nur verifizierte Studierende, Datenschutz im Mittelpunkt.",
-          "Zielgruppe: Studierende an niederl\u00e4ndischen Bildungseinrichtungen, die an den InAcademia Affiliation Validation Service von G\u00c9ANT angeschlossen sind.",
-          "Einnahmen: Spenden (\u00fcber Open Collective), Zusch\u00fcsse von Bildungseinrichtungen und Beh\u00f6rden, Schenkungen und Verm\u00e4chtnisse.",
-          "Ausgaben: Hosting und Infrastruktur, Plattformentwicklung und -wartung, Verwaltungskosten (Buchhaltung, Bankgeb\u00fchren, Handelskammer). Es erfolgt keine Gewinnaussch\u00fcttung.",
-          "Verm\u00f6gensverwaltung: die Stiftung h\u00e4lt nicht mehr Verm\u00f6gen als f\u00fcr die Kontinuit\u00e4t ihrer Aktivit\u00e4ten vern\u00fcnftigerweise erforderlich."
+          "Zielgruppe: Studierende an niederländischen Bildungseinrichtungen mit institutioneller SSO-Verifizierung.",
+          "Einnahmen: Spenden (über Open Collective), Zuschüsse von Bildungseinrichtungen und Behörden, Schenkungen und Vermächtnisse.",
+          "Ausgaben: Hosting und Infrastruktur, Plattformentwicklung und -wartung, Verwaltungskosten (Buchhaltung, Bankgebühren, Handelskammer). Es erfolgt keine Gewinnausschüttung.",
+          "Vermögensverwaltung: die Stiftung hält nicht mehr Vermögen als für die Kontinuität ihrer Aktivitäten vernünftigerweise erforderlich."
         ]
       },
       {
         "title": "4. Vorstandszusammensetzung",
-        "content": "Der Vorstand besteht aus mindestens drei und h\u00f6chstens sieben Mitgliedern. Alle Vorstandsmitglieder sind gemeinsam zur Vertretung der Stiftung befugt.",
+        "content": "Der Vorstand besteht aus mindestens drei und höchstens sieben Mitgliedern. Alle Vorstandsmitglieder sind gemeinsam zur Vertretung der Stiftung befugt.",
         "items": [
-          "Ruben Talstra, Vorsitzender (seit 31. M\u00e4rz 2026)",
-          "Sophie de Klerk, Sekret\u00e4rin (seit 31. M\u00e4rz 2026)",
-          "Heino Bosma, Schatzmeister (seit 31. M\u00e4rz 2026)"
+          "Ruben Talstra, Vorsitzender (seit 31. März 2026)",
+          "Sophie de Klerk, Sekretärin (seit 31. März 2026)",
+          "Heino Bosma, Schatzmeister (seit 31. März 2026)"
         ]
       },
       {
-        "title": "5. Verg\u00fctungspolitik",
-        "content": "Die Vorstandsmitglieder erhalten keine Verg\u00fctung (Artikel 7, Absatz 5 der Satzung). Nur nachgewiesene Auslagen k\u00f6nnen gegen Vorlage von Belegen erstattet werden. Die Stiftung hat keine Angestellten. Freiwillige erhalten keine Verg\u00fctung au\u00dfer einer Aufwandsentsch\u00e4digung im Rahmen der gesetzlichen Freiwilligenregelung."
+        "title": "5. Vergütungspolitik",
+        "content": "Die Vorstandsmitglieder erhalten keine Vergütung (Artikel 7, Absatz 5 der Satzung). Nur nachgewiesene Auslagen können gegen Vorlage von Belegen erstattet werden. Die Stiftung hat keine Angestellten. Freiwillige erhalten keine Vergütung außer einer Aufwandsentschädigung im Rahmen der gesetzlichen Freiwilligenregelung."
       },
       {
-        "title": "6. T\u00e4tigkeitsbericht",
-        "content": "Stichting OpenHospi wurde am 31. M\u00e4rz 2026 gegr\u00fcndet und befindet sich derzeit in der Aufbauphase. Der erste T\u00e4tigkeitsbericht wird nach Ablauf des ersten Gesch\u00e4ftsjahres (Kalenderjahr 2026) ver\u00f6ffentlicht."
+        "title": "6. Tätigkeitsbericht",
+        "content": "Stichting OpenHospi wurde am 31. März 2026 gegründet und befindet sich derzeit in der Aufbauphase. Der erste Tätigkeitsbericht wird nach Ablauf des ersten Geschäftsjahres (Kalenderjahr 2026) veröffentlicht."
       },
       {
         "title": "7. Finanzielle Rechenschaftspflicht",
-        "content": "Das Gesch\u00e4ftsjahr der Stiftung entspricht dem Kalenderjahr. Der erste Jahresabschluss (Bilanz und Gewinn- und Verlustrechnung mit Erl\u00e4uterungen) wird innerhalb von sechs Monaten nach Ablauf des ersten Gesch\u00e4ftsjahres (Kalenderjahr 2026) ver\u00f6ffentlicht."
+        "content": "Das Geschäftsjahr der Stiftung entspricht dem Kalenderjahr. Der erste Jahresabschluss (Bilanz und Gewinn- und Verlustrechnung mit Erläuterungen) wird innerhalb von sechs Monaten nach Ablauf des ersten Geschäftsjahres (Kalenderjahr 2026) veröffentlicht."
       }
     ]
   }

@@ -2,7 +2,7 @@
   "seo": {
     "home": {
       "title": "Gratis Studentenhuisvesting | Kamers Zoeken & Aanbieden",
-      "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via InAcademia. Geen kosten, geen tussenpersonen."
+      "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via je instelling. Geen kosten, geen tussenpersonen."
     },
     "about": {
       "title": "Over OpenHospi | Onze Missie & Verhaal",
@@ -18,7 +18,7 @@
     },
     "safety": {
       "title": "Veiligheid & Vertrouwen | Hoe We Je Beschermen",
-      "description": "InAcademia-verificatie, end-to-end versleutelde chat, AVG-conform en open-source transparantie. Je veiligheid is onze prioriteit."
+      "description": "Instellingsverificatie, end-to-end versleutelde chat, AVG-conform en open-source transparantie. Je veiligheid is onze prioriteit."
     },
     "privacy": {
       "title": "Privacybeleid",
@@ -97,7 +97,7 @@
       "safety": [
         {
           "question": "Hoe worden gebruikers geverifieerd op OpenHospi?",
-          "answer": "Elke gebruiker logt in via InAcademia, beheerd door hun eigen universiteit of hogeschool. Dit betekent dat alleen echte studenten van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
+          "answer": "Elke gebruiker logt in via zijn of haar universiteit of hogeschool. Dit betekent dat alleen echte studenten van Nederlandse onderwijsinstellingen het platform kunnen gebruiken."
         },
         {
           "question": "Zijn mijn berichten privé?",
@@ -129,7 +129,7 @@
       "howItWorks": [
         {
           "question": "Hoe vind ik een kamer op OpenHospi?",
-          "answer": "Log in met je InAcademia-account, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt."
+          "answer": "Log in met je instellingsaccount, maak je profiel compleet, blader door beschikbare kamers op stad en prijs, en stuur een persoonlijk bericht naar huizen die je leuk vindt."
         },
         {
           "question": "Wat is hospiteren?",
@@ -150,7 +150,7 @@
       "about": "Over ons",
       "browseRooms": "Kamers bekijken"
     },
-    "login": "Inloggen met InAcademia",
+    "login": "Inloggen met je instelling",
     "menuOpen": "Menu openen"
   },
   "footer": {
@@ -185,8 +185,8 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nGratis. Eerlijk.\nAlleen studenten.",
-      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via InAcademia. Geen tussenpersonen, geen kosten.",
-      "cta": "Inloggen met InAcademia"
+      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via je instelling. Geen tussenpersonen, geen kosten.",
+      "cta": "Inloggen met je instelling"
     },
     "features": {
       "title": "Waarom OpenHospi?",
@@ -196,7 +196,7 @@
       },
       "verified": {
         "title": "Geverifieerde studenten",
-        "description": "Elke gebruiker is geverifieerd via InAcademia. Alleen echte studenten."
+        "description": "Elke gebruiker is geverifieerd via je instelling. Alleen echte studenten."
       },
       "encrypted": {
         "title": "E2E versleutelde chat",
@@ -211,7 +211,7 @@
       "title": "Hoe het werkt",
       "step1": {
         "title": "Log in",
-        "description": "Log in met je universiteitsaccount via InAcademia."
+        "description": "Log in met je universiteitsaccount."
       },
       "step2": {
         "title": "Zoek",
@@ -224,8 +224,8 @@
     },
     "students": {
       "title": "Alleen echte studenten",
-      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool via InAcademia. Jouw instelling staat achter je profiel, zodat iedereen weet dat je een echte student bent. Geen nepprofielen, geen oplichting.",
-      "badge": "InAcademia geverifieerd"
+      "description": "Op OpenHospi word je geverifieerd door je eigen universiteit of hogeschool. Jouw instelling staat achter je profiel, zodat iedereen weet dat je een echte student bent. Geen nepprofielen, geen oplichting.",
+      "badge": "Geverifieerd door je instelling"
     },
     "openSource": {
       "title": "Open source",
@@ -235,7 +235,7 @@
     "cta": {
       "title": "Sluit je aan",
       "subtitle": "Wees erbij op het eerlijkste huisvestingsplatform van Nederland, gratis, eerlijk en alleen voor studenten.",
-      "button": "Inloggen met InAcademia"
+      "button": "Inloggen met je instelling"
     }
   },
   "howItWorks": {
@@ -248,7 +248,7 @@
         "items": [
           {
             "title": "Geverifieerde studenten",
-            "description": "Elke gebruiker is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via InAcademia. Geen nepprofielen."
+            "description": "Elke gebruiker is een echte student, geverifieerd door zijn of haar universiteit of hogeschool. Geen nepprofielen."
           },
           {
             "title": "Volledig gratis",
@@ -268,7 +268,7 @@
         "title": "Hoe vind je een kamer?",
         "items": [
           {
-            "title": "Log in met InAcademia",
+            "title": "Log in met je instelling",
             "description": "Gebruik je universiteitsaccount om je identiteit te verifiëren."
           },
           {
@@ -301,7 +301,7 @@
         "items": [
           {
             "title": "Geverifieerde kandidaten",
-            "description": "Elke kandidaat is een echte student, geverifieerd door zijn of haar universiteit of hogeschool via InAcademia."
+            "description": "Elke kandidaat is een echte student, geverifieerd door zijn of haar universiteit of hogeschool."
           },
           {
             "title": "Volledig gratis",
@@ -321,7 +321,7 @@
         "title": "Hoe bied je een kamer aan?",
         "items": [
           {
-            "title": "Log in met InAcademia",
+            "title": "Log in met je instelling",
             "description": "Alle bewoners verifiëren via hun universiteitsaccount."
           },
           {
@@ -353,7 +353,7 @@
     },
     "cta": {
       "title": "Klaar om te beginnen?",
-      "button": "Inloggen met InAcademia"
+      "button": "Inloggen met je instelling"
     }
   },
   "safety": {
@@ -361,8 +361,8 @@
     "subtitle": "Je veiligheid is onze topprioriteit. Zo beschermen we je.",
     "features": [
       {
-        "title": "InAcademia-verificatie",
-        "description": "Elke gebruiker wordt geverifieerd door zijn of haar eigen universiteit of hogeschool via InAcademia. Jouw instelling staat achter je profiel. Geen nepprofielen."
+        "title": "Instellingsverificatie",
+        "description": "Elke gebruiker wordt geverifieerd door zijn of haar eigen universiteit of hogeschool. Jouw instelling staat achter je profiel. Geen nepprofielen."
       },
       {
         "title": "End-to-end versleutelde chat",
@@ -457,7 +457,7 @@
               "atScale": "~€23/mnd (Pro)"
             },
             {
-              "name": "InAcademia",
+              "name": "Instellingslogin",
               "description": "Studentenverificatie",
               "current": "Gratis",
               "atScale": "Gratis"
@@ -533,7 +533,7 @@
           "atScale": "~€276"
         },
         {
-          "name": "InAcademia",
+          "name": "Instellingslogin",
           "current": "€0",
           "atScale": "€0"
         },
@@ -630,7 +630,7 @@
       "browseOtherCities": "Bekijk andere steden"
     },
     "room": {
-      "loginToApply": "Log in met InAcademia om te reageren",
+      "loginToApply": "Log in met je instelling om te reageren",
       "goToApp": "Bekijk in app",
       "notFoundDescription": "Deze kamer is mogelijk verwijderd of niet meer beschikbaar.",
       "roomSize": "{size} m²",
@@ -673,11 +673,11 @@
           },
           {
             "question": "Wie kan OpenHospi gebruiken?",
-            "answer": "Alleen geverifieerde studenten aan Nederlandse universiteiten en hogescholen. Je logt in met je instellingsaccount via InAcademia, dus elke gebruiker is een echte student."
+            "answer": "Alleen geverifieerde studenten aan Nederlandse universiteiten en hogescholen. Je logt in met je instellingsaccount, dus elke gebruiker is een echte student."
           },
           {
             "question": "Is OpenHospi beschikbaar buiten Nederland?",
-            "answer": "Op dit moment is OpenHospi alleen beschikbaar voor studenten aan Nederlandse onderwijsinstellingen die aangesloten zijn bij InAcademia. In de toekomst breiden we mogelijk uit."
+            "answer": "Op dit moment is OpenHospi alleen beschikbaar voor studenten aan Nederlandse onderwijsinstellingen die met instellingslogin. In de toekomst breiden we mogelijk uit."
           },
           {
             "question": "Is OpenHospi verbonden aan een universiteit of bedrijf?",
@@ -690,15 +690,15 @@
         "items": [
           {
             "question": "Hoe maak ik een account aan?",
-            "answer": "Klik op 'Inloggen met InAcademia' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt, geen aparte registratie nodig."
+            "answer": "Klik op 'Inloggen met je instelling' en log in met je universiteits- of hogeschoolaccount. Je account wordt automatisch aangemaakt, geen aparte registratie nodig."
           },
           {
-            "question": "Waarom kan ik alleen inloggen met InAcademia?",
-            "answer": "InAcademia zorgt ervoor dat elke gebruiker een echte, geverifieerde student is. Dit voorkomt nepprofielen, oplichting en niet-studenten op het platform."
+            "question": "Waarom kan ik alleen inloggen met mijn instelling?",
+            "answer": "Instellingsverificatie zorgt ervoor dat elke gebruiker een echte, geverifieerde student is. Dit voorkomt nepprofielen, oplichting en niet-studenten op het platform."
           },
           {
             "question": "Wat gebeurt er als ik afstudeer?",
-            "answer": "Wanneer je instelling je InAcademia-account deactiveert, kun je niet meer inloggen. Eventuele actieve kameradvertenties worden automatisch gepauzeerd."
+            "answer": "Wanneer je instelling je account deactiveert, kun je niet meer inloggen. Eventuele actieve kameradvertenties worden automatisch gepauzeerd."
           },
           {
             "question": "Kan ik mijn account verwijderen?",
@@ -765,7 +765,7 @@
           },
           {
             "question": "Hoe beschermt OpenHospi tegen oplichting?",
-            "answer": "Elke gebruiker is geverifieerd via InAcademia, dus je weet altijd dat je met een echte student te maken hebt. In combinatie met E2E versleutelde chat en eenvoudig melden maken we het heel moeilijk voor kwaadwillenden."
+            "answer": "Elke gebruiker is geverifieerd door zijn of haar instelling, dus je weet altijd dat je met een echte student te maken hebt. In combinatie met E2E versleutelde chat en eenvoudig melden maken we het heel moeilijk voor kwaadwillenden."
           }
         ]
       },
@@ -890,7 +890,7 @@
         },
         {
           "feature": "Geverifieerde studenten",
-          "openhospi": { "label": "InAcademia", "tone": "positive" },
+          "openhospi": { "label": "Instellingslogin", "tone": "positive" },
           "hospi": { "label": "Nee", "tone": "negative" },
           "myhospi": { "label": "Nee", "tone": "negative" },
           "dingdong": { "label": "Nee", "tone": "negative" },
@@ -939,7 +939,7 @@
           "pricing": "Gratis: geen premium, geen advertenties, geen betaalmuren",
           "strengths": [
             "100% gratis, geen pay-to-win mechanismen",
-            "Elke gebruiker geverifieerd via InAcademia (universiteitsverificatie)",
+            "Elke gebruiker geverifieerd door hun instelling (universiteitsverificatie)",
             "End-to-end versleutelde chat",
             "Volledig open source, iedereen kan de code controleren",
             "Geen trackers, privacy-first (AVG)",
@@ -1051,7 +1051,7 @@
     "cta": {
       "title": "OpenHospi uitproberen?",
       "subtitle": "Gratis, eerlijk en geverifieerd. Zonder verplichtingen.",
-      "button": "Inloggen met InAcademia"
+      "button": "Inloggen met je instelling"
     }
   }
 }

@@ -28,7 +28,8 @@
       },
       {
         "title": "4. InAcademia-gegevens",
-        "content": "Wanneer je inlogt via InAcademia ontvangen wij een gepseudonimiseerd identificatienummer (sub) en je onderwijsinstelling. InAcademia wordt beheerd door GÉANT, het pan-Europese netwerk voor onderwijs en onderzoek. GÉANT is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. InAcademia deelt geen namen of e-mailadressen. Die vragen wij apart op tijdens de onboarding."
+        "content": "Wanneer je inlogt via InAcademia ontvangen wij een gepseudonimiseerd identificatienummer (sub) en je onderwijsinstelling. InAcademia wordt beheerd door GÉANT, het pan-Europese netwerk voor onderwijs en onderzoek. GÉANT is een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. InAcademia deelt geen namen of e-mailadressen. Die vragen wij apart op tijdens de onboarding.",
+        "hidden": true
       },
       {
         "title": "5. Hoe we je gegevens gebruiken",
@@ -56,7 +57,7 @@
           "Supabase (Dublin, Ierland): database en bestandsopslag (verwerker)",
           "Vercel (Dublin, Ierland): webhosting en edge-functies (verwerker)",
           "Upstash (Ierland): snelheidsbeperking via Redis (verwerker)",
-          "InAcademia (GÉANT, Nederland): studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)",
+          "Institutionele SSO-provider (GÉANT, Nederland): studentverificatie (zelfstandig verwerkingsverantwoordelijke, geen verwerker in de zin van art. 28 AVG)",
           "Sentry (Frankfurt, Duitsland): crashrapportage en foutmonitoring (verwerker). Geen persoonsgegevens verzameld",
           "Expo/EAS (VS): mobiele app-builds, over-the-air updates en distributie (verwerker). Geen persoonsgegevens verzameld; alleen app-code en bundels worden verwerkt"
         ]
@@ -114,7 +115,7 @@
       },
       {
         "title": "16. Gegevens van kinderen",
-        "content": "OpenHospi is uitsluitend toegankelijk via InAcademia, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG, dat lidstaten toestaat de leeftijdsgrens op minimaal 16 jaar te stellen). Wij verzamelen niet bewust persoonsgegevens van kinderen jonger dan 16 jaar."
+        "content": "OpenHospi is uitsluitend toegankelijk via institutionele SSO, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit betekent dat alle gebruikers studenten zijn van 16 jaar of ouder, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG, dat lidstaten toestaat de leeftijdsgrens op minimaal 16 jaar te stellen). Wij verzamelen niet bewust persoonsgegevens van kinderen jonger dan 16 jaar."
       },
       {
         "title": "17. Geautomatiseerde besluitvorming",
@@ -165,7 +166,7 @@
     "sections": [
       {
         "title": "Geschiktheid",
-        "content": "OpenHospi is beschikbaar voor studenten van Nederlandse onderwijsinstellingen die zijn aangesloten bij InAcademia."
+        "content": "OpenHospi is beschikbaar voor studenten van Nederlandse onderwijsinstellingen met institutionele SSO-verificatie."
       },
       {
         "title": "Accountverantwoordelijkheden",
@@ -293,7 +294,8 @@
           "Verwerkte gegevens: Authenticatietokens, naam, e-mailadres, instellingsdomein (ontvangen bij inloggen)",
           "Verwerkersovereenkomst: GÉANT is geen verwerker in de zin van art. 28 AVG, maar een zelfstandig verwerkingsverantwoordelijke voor het authenticatieproces. De samenwerking valt onder de InAcademia Gebruiksvoorwaarden en Europees recht",
           "Beveiliging: OIDC-protocollen, institutionele beveiliging, beheerd door GÉANT"
-        ]
+        ],
+        "hidden": true
       },
       {
         "title": "5. Sentry (Crashrapportage)",
@@ -476,7 +478,7 @@
     "sections": [
       {
         "title": "1. Beschrijving van de verwerking",
-        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via InAcademia (institutionele SSO), maken profielen aan, plaatsen kamers, bekijken advertenties, solliciteren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, woninggegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistratie."
+        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via institutionele SSO, maken profielen aan, plaatsen kamers, bekijken aanbod, reageren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, huisvestingsgegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistraties."
       },
       {
         "title": "2. Noodzaak en evenredigheid",
@@ -495,7 +497,7 @@
           "Risico: Ongeautoriseerde toegang tot profielen",
           "Waarschijnlijkheid: Laag",
           "Impact: Gemiddeld",
-          "Maatregelen: Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via InAcademia. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
+          "Maatregelen: Row-Level Security (RLS) op alle tabellen. Authenticatie vereist via institutionele SSO. Profielzichtbaarheid beperkt tot geauthenticeerde gebruikers",
           "Restrisico: Laag"
         ]
       },
@@ -537,7 +539,8 @@
           "Impact: Laag",
           "Maatregelen: Alleen gepseudonimiseerd ID en instellingsinformatie ontvangen van InAcademia. Geen namen of e-mailadressen. InAcademia wordt beheerd door GÉANT (EU)",
           "Restrisico: Zeer laag"
-        ]
+        ],
+        "hidden": true
       },
       {
         "title": "8. Risico: Moderatie: tijdelijk ontsleutelde berichten",
@@ -571,7 +574,7 @@
       },
       {
         "title": "11. Kinderen (art. 8 AVG)",
-        "content": "Alle gebruikers authenticeren via InAcademia, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
+        "content": "Alle gebruikers authenticeren via institutionele SSO, waarvoor inschrijving bij een geaccrediteerde Nederlandse onderwijsinstelling vereist is. Dit waarborgt effectief dat alle gebruikers 16 jaar of ouder zijn, conform art. 5 UAVG (ter uitvoering van art. 8, lid 1, AVG). Hierdoor is geen aparte leeftijdsverificatie nodig."
       },
       {
         "title": "12. Conclusie",
@@ -600,7 +603,7 @@
         "content": "Stichting OpenHospi heeft ten doel het bevorderen van toegankelijke en eerlijke studentenhuisvesting in Nederland, onder meer door het ontwikkelen, beheren en beschikbaar stellen van een gratis, open-source digitaal platform waarop studenten kamers kunnen aanbieden en zoeken. De stichting heeft niet ten doel het maken van winst. De stichting tracht haar doel onder meer te bereiken door:",
         "items": [
           "Het ontwikkelen, beheren en onderhouden van een gratis, open-source digitaal platform waarop studenten kamers kunnen aanbieden en zoeken.",
-          "Het verifi\u00ebren van gebruikers zodat uitsluitend studenten aan Nederlandse onderwijsinstellingen toegang hebben tot het platform.",
+          "Het verifiëren van gebruikers zodat uitsluitend studenten aan Nederlandse onderwijsinstellingen toegang hebben tot het platform.",
           "Het beschermen van de privacy van gebruikers door end-to-end versleutelde communicatie en minimale gegevensverzameling.",
           "Het bevorderen van samenwerking met onderwijsinstellingen.",
           "Het onderhouden van een meertalig platform (Nederlands, Engels, Duits) om internationale studenten te bedienen.",
@@ -612,11 +615,11 @@
         "content": "Het volledige beleidsplan van Stichting OpenHospi beschrijft de doelstelling, missie, voorgenomen activiteiten, doelgroep, inkomsten, bestedingsbeleid en vermogensbeheer van de stichting. Hieronder een samenvatting van de hoofdlijnen.",
         "downloadLabel": "Download het volledige beleidsplan (PDF)",
         "items": [
-          "Missie: een eerlijk alternatief bieden voor commerci\u00eble studentenhuisvestingsplatforms. Volledig gratis, alleen geverifieerde studenten, privacy centraal.",
-          "Doelgroep: studenten ingeschreven bij Nederlandse onderwijsinstellingen die zijn aangesloten op de InAcademia Affiliation Validation Service van G\u00c9ANT.",
+          "Missie: een eerlijk alternatief bieden voor commerciële studentenhuisvestingsplatforms. Volledig gratis, alleen geverifieerde studenten, privacy centraal.",
+          "Doelgroep: studenten ingeschreven bij Nederlandse onderwijsinstellingen met institutionele SSO-verificatie.",
           "Inkomsten: donaties (via Open Collective), subsidies van onderwijsinstellingen en overheden, schenkingen en legaten.",
           "Bestedingen: hosting en infrastructuur, platformontwikkeling en -onderhoud, administratieve kosten (boekhouding, bankkosten, KVK). Er vindt geen winstuitkering plaats.",
-          "Vermogensbeheer: de stichting houdt niet meer vermogen aan dan redelijkerwijs nodig is voor de continu\u00efteit van haar activiteiten."
+          "Vermogensbeheer: de stichting houdt niet meer vermogen aan dan redelijkerwijs nodig is voor de continuïteit van haar activiteiten."
         ]
       },
       {
@@ -637,7 +640,7 @@
         "content": "Stichting OpenHospi is opgericht op 31 maart 2026 en bevindt zich in de opstartfase. Het eerste activiteitenverslag wordt gepubliceerd na afloop van het eerste boekjaar (kalenderjaar 2026)."
       },
       {
-        "title": "7. Financi\u00eble verantwoording",
+        "title": "7. Financiële verantwoording",
         "content": "Het boekjaar van de stichting is gelijk aan het kalenderjaar. De eerste jaarrekening (balans en staat van baten en lasten met toelichting) wordt gepubliceerd binnen zes maanden na afloop van het eerste boekjaar (kalenderjaar 2026)."
       }
     ]

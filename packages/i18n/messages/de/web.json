@@ -2,7 +2,7 @@
   "seo": {
     "home": {
       "title": "Kostenlose Studentenwohnungen | Zimmer Finden & Anbieten",
-      "description": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Nur verifizierte Studierende über InAcademia. Keine Gebühren, keine Vermittler."
+      "description": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Nur verifizierte Studierende über ihre Hochschule. Keine Gebühren, keine Vermittler."
     },
     "about": {
       "title": "Über OpenHospi | Unsere Mission & Geschichte",
@@ -18,7 +18,7 @@
     },
     "safety": {
       "title": "Sicherheit & Vertrauen | Wie Wir Dich Schützen",
-      "description": "InAcademia-Verifizierung, Ende-zu-Ende verschlüsselter Chat, DSGVO-Konformität und Open-Source-Transparenz. Deine Sicherheit hat Priorität."
+      "description": "Institutionelle Verifizierung, Ende-zu-Ende verschlüsselter Chat, DSGVO-Konformität und Open-Source-Transparenz. Deine Sicherheit hat Priorität."
     },
     "privacy": {
       "title": "Datenschutzerklärung",
@@ -97,7 +97,7 @@
       "safety": [
         {
           "question": "Wie werden Nutzer auf OpenHospi verifiziert?",
-          "answer": "Jeder Nutzer meldet sich über InAcademia an, das von der eigenen Universität oder Hochschule verwaltet wird. Das bedeutet, dass nur echte Studierende niederländischer Bildungseinrichtungen die Plattform nutzen können."
+          "answer": "Jeder Nutzer meldet sich über die eigene Universität oder Hochschule an. Das bedeutet, dass nur echte Studierende niederländischer Bildungseinrichtungen die Plattform nutzen können."
         },
         {
           "question": "Sind meine Nachrichten privat?",
@@ -129,7 +129,7 @@
       "howItWorks": [
         {
           "question": "Wie finde ich ein Zimmer auf OpenHospi?",
-          "answer": "Melde dich mit deinem InAcademia-Konto an, vervollständige dein Profil, durchsuche verfügbare Zimmer nach Stadt und Preis und sende eine persönliche Nachricht an WGs, die dir gefallen."
+          "answer": "Melde dich mit deinem Hochschulkonto an, vervollständige dein Profil, durchsuche verfügbare Zimmer nach Stadt und Preis und sende eine persönliche Nachricht an WGs, die dir gefallen."
         },
         {
           "question": "Was ist Hospiteren?",
@@ -150,7 +150,7 @@
       "about": "Über uns",
       "browseRooms": "Zimmer durchsuchen"
     },
-    "login": "Mit InAcademia anmelden",
+    "login": "Mit deiner Hochschule anmelden",
     "menuOpen": "Menü öffnen"
   },
   "footer": {
@@ -185,8 +185,8 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nKostenlos. Fair.\nNur Studierende.",
-      "subtitle": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Verifiziert über InAcademia. Keine Vermittler, keine Gebühren.",
-      "cta": "Mit InAcademia anmelden"
+      "subtitle": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Verifiziert über deine Hochschule. Keine Vermittler, keine Gebühren.",
+      "cta": "Mit deiner Hochschule anmelden"
     },
     "features": {
       "title": "Warum OpenHospi?",
@@ -196,7 +196,7 @@
       },
       "verified": {
         "title": "Verifizierte Studierende",
-        "description": "Jeder Nutzer wird über InAcademia verifiziert. Nur echte Studierende."
+        "description": "Jeder Nutzer wird über Institutionell verifiziert. Nur echte Studierende."
       },
       "encrypted": {
         "title": "E2E-verschlüsselter Chat",
@@ -211,7 +211,7 @@
       "title": "So funktioniert's",
       "step1": {
         "title": "Anmelden",
-        "description": "Melde dich mit deinem Uni-Account über InAcademia an."
+        "description": "Melde dich mit deinem Uni-Account an."
       },
       "step2": {
         "title": "Suchen",
@@ -224,8 +224,8 @@
     },
     "students": {
       "title": "Nur echte Studierende",
-      "description": "Bei OpenHospi wirst du von deiner eigenen Universität oder Hochschule über InAcademia verifiziert. Deine Einrichtung steht hinter deinem Profil, so weiß jeder, dass du ein echter Studierender bist. Keine Fake-Profile, kein Betrug.",
-      "badge": "InAcademia verifiziert"
+      "description": "Bei OpenHospi wirst du von deiner eigenen Universität oder Hochschule über Institutionell verifiziert. Deine Einrichtung steht hinter deinem Profil, so weiß jeder, dass du ein echter Studierender bist. Keine Fake-Profile, kein Betrug.",
+      "badge": "Institutionell verifiziert"
     },
     "openSource": {
       "title": "Open Source",
@@ -235,7 +235,7 @@
     "cta": {
       "title": "Werde Teil der Community",
       "subtitle": "Sei dabei auf der fairsten Wohnungsplattform der Niederlande, kostenlos, fair und nur für Studierende.",
-      "button": "Mit InAcademia anmelden"
+      "button": "Mit deiner Hochschule anmelden"
     }
   },
   "howItWorks": {
@@ -248,7 +248,7 @@
         "items": [
           {
             "title": "Verifizierte Studierende",
-            "description": "Jeder Nutzer ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über InAcademia. Keine Fake-Profile."
+            "description": "Jeder Nutzer ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule. Keine Fake-Profile."
           },
           {
             "title": "Komplett kostenlos",
@@ -268,7 +268,7 @@
         "title": "So findest du ein Zimmer",
         "items": [
           {
-            "title": "Mit InAcademia anmelden",
+            "title": "Mit deiner Hochschule anmelden",
             "description": "Nutze deinen Uni-Account, um deine Identität zu verifizieren."
           },
           {
@@ -301,7 +301,7 @@
         "items": [
           {
             "title": "Verifizierte Kandidaten",
-            "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule über InAcademia."
+            "description": "Jeder Kandidat ist ein echter Studierender, verifiziert durch seine Universität oder Hochschule."
           },
           {
             "title": "Komplett kostenlos",
@@ -321,7 +321,7 @@
         "title": "So bietest du ein Zimmer an",
         "items": [
           {
-            "title": "Mit InAcademia anmelden",
+            "title": "Mit deiner Hochschule anmelden",
             "description": "Alle Bewohner verifizieren sich über ihren Uni-Account."
           },
           {
@@ -353,7 +353,7 @@
     },
     "cta": {
       "title": "Bereit loszulegen?",
-      "button": "Mit InAcademia anmelden"
+      "button": "Mit deiner Hochschule anmelden"
     }
   },
   "safety": {
@@ -361,8 +361,8 @@
     "subtitle": "Deine Sicherheit hat für uns höchste Priorität. So schützen wir dich.",
     "features": [
       {
-        "title": "InAcademia-Verifizierung",
-        "description": "Jeder Nutzer wird von seiner eigenen Universität oder Hochschule über InAcademia verifiziert. Deine Einrichtung steht hinter deinem Profil. Keine Fake-Profile."
+        "title": "Institutionelle Verifizierung",
+        "description": "Jeder Nutzer wird von seiner eigenen Universität oder Hochschule über Institutionell verifiziert. Deine Einrichtung steht hinter deinem Profil. Keine Fake-Profile."
       },
       {
         "title": "Ende-zu-Ende verschlüsselter Chat",
@@ -457,7 +457,7 @@
               "atScale": "~€23/Mo (Pro)"
             },
             {
-              "name": "InAcademia",
+              "name": "Institutionelles Login",
               "description": "Studierendenverifizierung",
               "current": "Kostenlos",
               "atScale": "Kostenlos"
@@ -533,7 +533,7 @@
           "atScale": "~€276"
         },
         {
-          "name": "InAcademia",
+          "name": "Institutionelles Login",
           "current": "€0",
           "atScale": "€0"
         },
@@ -630,7 +630,7 @@
       "browseOtherCities": "Andere Städte durchsuchen"
     },
     "room": {
-      "loginToApply": "Mit InAcademia anmelden um sich zu bewerben",
+      "loginToApply": "Mit deiner Hochschule anmelden um sich zu bewerben",
       "goToApp": "In App ansehen",
       "notFoundDescription": "Dieses Zimmer wurde möglicherweise entfernt oder ist nicht mehr verfügbar.",
       "roomSize": "{size} m²",
@@ -673,11 +673,11 @@
           },
           {
             "question": "Wer kann OpenHospi nutzen?",
-            "answer": "Nur verifizierte Studierende an niederländischen Universitäten und Hochschulen. Du meldest dich mit deinem Hochschulaccount über InAcademia an, sodass jeder Nutzer ein echter Studierender ist."
+            "answer": "Nur verifizierte Studierende an niederländischen Universitäten und Hochschulen. Du meldest dich mit deinem Hochschulaccount an, sodass jeder Nutzer ein echter Studierender ist."
           },
           {
             "question": "Ist OpenHospi außerhalb der Niederlande verfügbar?",
-            "answer": "Derzeit ist OpenHospi nur für Studierende an niederländischen Bildungseinrichtungen verfügbar, die an InAcademia angeschlossen sind. Eine Erweiterung ist für die Zukunft möglich."
+            "answer": "Derzeit ist OpenHospi nur für Studierende an niederländischen Bildungseinrichtungen verfügbar, die mit institutionellem Login sind. Eine Erweiterung ist für die Zukunft möglich."
           },
           {
             "question": "Ist OpenHospi mit einer Universität oder einem Unternehmen verbunden?",
@@ -690,15 +690,15 @@
         "items": [
           {
             "question": "Wie erstelle ich ein Konto?",
-            "answer": "Klicke auf 'Mit InAcademia anmelden' und melde dich mit deinem Hochschulaccount an. Dein Konto wird automatisch erstellt, keine separate Registrierung nötig."
+            "answer": "Klicke auf 'Mit deiner Hochschule anmelden' und melde dich mit deinem Hochschulaccount an. Dein Konto wird automatisch erstellt, keine separate Registrierung nötig."
           },
           {
-            "question": "Warum kann ich mich nur mit InAcademia anmelden?",
-            "answer": "InAcademia stellt sicher, dass jeder Nutzer ein echter, verifizierter Studierender ist. Dies verhindert Fake-Profile, Betrug und Nicht-Studierende auf der Plattform."
+            "question": "Warum kann ich mich nur mit meiner Hochschule anmelden?",
+            "answer": "Die institutionelle Verifizierung stellt sicher, dass jeder Nutzer ein echter, verifizierter Studierender ist. Dies verhindert Fake-Profile, Betrug und Nicht-Studierende auf der Plattform."
           },
           {
             "question": "Was passiert, wenn ich meinen Abschluss mache?",
-            "answer": "Wenn deine Einrichtung dein InAcademia-Konto deaktiviert, kannst du dich nicht mehr anmelden. Aktive Zimmeranzeigen werden automatisch pausiert."
+            "answer": "Wenn deine Einrichtung dein Hochschulkonto deaktiviert, kannst du dich nicht mehr anmelden. Aktive Zimmeranzeigen werden automatisch pausiert."
           },
           {
             "question": "Kann ich mein Konto löschen?",
@@ -765,7 +765,7 @@
           },
           {
             "question": "Wie schützt OpenHospi vor Betrug?",
-            "answer": "Jeder Nutzer wird über InAcademia verifiziert, sodass du immer weißt, dass du es mit einem echten Studierenden zu tun hast. Kombiniert mit E2E-verschlüsseltem Chat und einfachem Melden machen wir es Betrügern sehr schwer."
+            "answer": "Jeder Nutzer wird über Institutionell verifiziert, sodass du immer weißt, dass du es mit einem echten Studierenden zu tun hast. Kombiniert mit E2E-verschlüsseltem Chat und einfachem Melden machen wir es Betrügern sehr schwer."
           }
         ]
       },
@@ -890,7 +890,7 @@
         },
         {
           "feature": "Verifizierte Studierende",
-          "openhospi": { "label": "InAcademia", "tone": "positive" },
+          "openhospi": { "label": "Institutionelles Login", "tone": "positive" },
           "hospi": { "label": "Nein", "tone": "negative" },
           "myhospi": { "label": "Nein", "tone": "negative" },
           "dingdong": { "label": "Nein", "tone": "negative" },
@@ -939,7 +939,7 @@
           "pricing": "Kostenlos: kein Premium, keine Werbung, keine Paywalls",
           "strengths": [
             "100% kostenlos, keine Pay-to-Win-Mechanismen",
-            "Jeder Nutzer verifiziert über InAcademia (Universitätsverifizierung)",
+            "Jeder Nutzer verifiziert durch die eigene Hochschule (Universitätsverifizierung)",
             "Ende-zu-Ende verschlüsselter Chat",
             "Vollständig Open Source, jeder kann den Code prüfen",
             "Keine Tracker, DSGVO-first Datenschutz",
@@ -1051,7 +1051,7 @@
     "cta": {
       "title": "OpenHospi ausprobieren?",
       "subtitle": "Kostenlos, fair und verifiziert. Ohne Bedingungen.",
-      "button": "Mit InAcademia anmelden"
+      "button": "Mit deiner Hochschule anmelden"
     }
   }
 }

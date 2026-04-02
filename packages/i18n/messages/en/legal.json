@@ -28,7 +28,8 @@
       },
       {
         "title": "4. InAcademia data",
-        "content": "When you log in via InAcademia, we receive a pseudonymised identifier (sub) and your educational institution. InAcademia is operated by GÉANT, the pan-European network for education and research. GÉANT is an independent controller for the authentication process. InAcademia does not share names or email addresses; we ask for those separately during onboarding."
+        "content": "When you log in via InAcademia, we receive a pseudonymised identifier (sub) and your educational institution. InAcademia is operated by GÉANT, the pan-European network for education and research. GÉANT is an independent controller for the authentication process. InAcademia does not share names or email addresses; we ask for those separately during onboarding.",
+        "hidden": true
       },
       {
         "title": "5. How we use your data",
@@ -56,7 +57,7 @@
           "Supabase (Dublin, Ireland): database and file storage (processor)",
           "Vercel (Dublin, Ireland): web hosting and edge functions (processor)",
           "Upstash (Ireland): rate limiting via Redis (processor)",
-          "InAcademia (GÉANT, Netherlands): student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)",
+          "Institutional SSO provider (GÉANT, Netherlands): student verification (independent controller, not a processor within the meaning of Art. 28 GDPR)",
           "Sentry (Frankfurt, Germany): crash reporting and error monitoring (processor). No personal data collected",
           "Expo/EAS (US): mobile app builds, over-the-air updates, and distribution (processor). No personal data collected, only app code and bundles are processed"
         ]
@@ -114,7 +115,7 @@
       },
       {
         "title": "16. Children's data",
-        "content": "OpenHospi is exclusively accessible via InAcademia, which requires enrollment at an accredited Dutch educational institution. This means all users are students aged 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR, which allows member states to set the age threshold at a minimum of 16). We do not knowingly collect personal data from children under 16."
+        "content": "OpenHospi is exclusively accessible via institutional SSO, which requires enrollment at an accredited Dutch educational institution. This means all users are students aged 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR, which allows member states to set the age threshold at a minimum of 16). We do not knowingly collect personal data from children under 16."
       },
       {
         "title": "17. Automated individual decision-making",
@@ -165,7 +166,7 @@
     "sections": [
       {
         "title": "Eligibility",
-        "content": "OpenHospi is available to students of Dutch educational institutions that are connected to InAcademia."
+        "content": "OpenHospi is available to students of Dutch educational institutions with institutional SSO verification."
       },
       {
         "title": "Account responsibilities",
@@ -293,7 +294,8 @@
           "Data processed: Authentication tokens, name, email address, institution domain (received during login)",
           "Data processing agreement: GÉANT is not a processor within the meaning of Art. 28 GDPR, but an independent controller for the authentication process. The collaboration is governed by the InAcademia Terms of Use and European law",
           "Security: OIDC protocols, institutional-grade security, managed by GÉANT"
-        ]
+        ],
+        "hidden": true
       },
       {
         "title": "5. Sentry (Crash Reporting)",
@@ -476,7 +478,7 @@
     "sections": [
       {
         "title": "1. Description of processing",
-        "content": "OpenHospi is a free, open-source student housing platform for the Netherlands. Users authenticate via InAcademia (institutional SSO), create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions. The processing comprises profile data, housing data, communication data, application data, session data, push notification tokens, and consent records."
+        "content": "OpenHospi is a free, open-source student housing platform for the Netherlands. Users authenticate via institutional SSO, create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions. The processing comprises profile data, housing data, communication data, application data, session data, push notification tokens, and consent records."
       },
       {
         "title": "2. Necessity and proportionality",
@@ -495,7 +497,7 @@
           "Risk: Unauthorised access to personal profiles",
           "Likelihood: Low",
           "Impact: Medium",
-          "Mitigations: Row-Level Security (RLS) on all database tables. Authentication required via InAcademia. Profile visibility limited to authenticated users",
+          "Mitigations: Row-Level Security (RLS) on all database tables. Authentication required via institutional SSO. Profile visibility limited to authenticated users",
           "Residual risk: Low"
         ]
       },
@@ -537,7 +539,8 @@
           "Impact: Low",
           "Mitigations: Only pseudonymised ID and institution information received from InAcademia. No names or email addresses. InAcademia is managed by GÉANT (EU)",
           "Residual risk: Very low"
-        ]
+        ],
+        "hidden": true
       },
       {
         "title": "8. Risk: Moderation, temporarily decrypted messages",
@@ -571,7 +574,7 @@
       },
       {
         "title": "11. Children (Art. 8 GDPR)",
-        "content": "All users authenticate via InAcademia, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR). No separate age verification is needed."
+        "content": "All users authenticate via institutional SSO, which requires enrollment at an accredited Dutch educational institution. This effectively ensures all users are 16 or older, in accordance with Art. 5 UAVG (implementing Art. 8(1) GDPR). No separate age verification is needed."
       },
       {
         "title": "12. Conclusion",
@@ -613,7 +616,7 @@
         "downloadLabel": "Download the full policy plan (PDF, Dutch)",
         "items": [
           "Mission: provide a fair alternative to commercial student housing platforms. Completely free, verified students only, privacy first.",
-          "Target group: students enrolled at Dutch educational institutions connected to the InAcademia Affiliation Validation Service by G\u00c9ANT.",
+          "Target group: students enrolled at Dutch educational institutions with institutional SSO verification.",
           "Income: donations (via Open Collective), subsidies from educational institutions and governments, gifts and bequests.",
           "Expenditure: hosting and infrastructure, platform development and maintenance, administrative costs (bookkeeping, bank fees, Chamber of Commerce). No profit distribution takes place.",
           "Asset management: the foundation does not hold more assets than reasonably necessary for the continuity of its activities."

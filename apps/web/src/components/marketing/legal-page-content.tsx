@@ -39,8 +39,17 @@ export async function LegalPageContent({ locale, namespace, hasIntro }: LegalPag
   });
   const sections = t.raw("sections") as unknown[];
 
-  // Build section data
-  const sectionData = sections.map((_, i) => {
+  // Build section data, skipping hidden sections
+  const sectionData = sections.flatMap((raw, i) => {
+    if (
+      typeof raw === "object" &&
+      raw !== null &&
+      "hidden" in raw &&
+      (raw as Record<string, unknown>).hidden === true
+    ) {
+      return [];
+    }
+
     const titleKey = `sections.${i}.title` as Parameters<typeof t>[0];
     const contentKey = `sections.${i}.content` as Parameters<typeof t>[0];
     const itemsKey = `sections.${i}.items` as Parameters<typeof t.raw>[0];

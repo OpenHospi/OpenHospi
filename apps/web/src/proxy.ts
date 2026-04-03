@@ -102,6 +102,15 @@ function enforceSubdomain(
 export function proxy(request: Parameters<typeof marketingMiddleware>[0]) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host") ?? "";
+
+  // MTA-STS subdomain: only allow the policy file, block everything else
+  if (ROOT_DOMAIN && host.split(":")[0].toLowerCase() === `mta-sts.${ROOT_DOMAIN}`) {
+    if (pathname === "/.well-known/mta-sts.txt") {
+      return NextResponse.next();
+    }
+    return new NextResponse(null, { status: 404 });
+  }
+
   const subdomain = getSubdomain(host);
 
   if (subdomain) {

@@ -11,7 +11,7 @@ import {
   RSIN_NUMBER,
 } from "@openhospi/shared/constants";
 import { LinkedinIcon } from "@openhospi/shared/icons";
-import { Dot, ShieldCheck } from "lucide-react";
+import { Dot } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -76,7 +76,7 @@ export function MarketingFooter({ trustpilotScore = 0 }: { trustpilotScore?: num
 
             <p className="mt-2 text-sm text-muted-foreground">{FOUNDATION_NAME}</p>
 
-            {/* TODO: Uncomment when ANBI status is officially granted
+            {/* Uncomment when ANBI status is officially granted
             <div className="mt-1 flex items-center gap-1.5 text-sm font-medium text-primary">
               <ShieldCheck className="size-4" />
               <span>{t("anbiStatus")}</span>

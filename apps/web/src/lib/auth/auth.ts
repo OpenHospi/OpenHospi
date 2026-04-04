@@ -48,6 +48,10 @@ function createAuth() {
         generateId: "uuid",
       },
     },
+    session: {
+      expiresIn: 60 * 60 * 24 * 30, // 30 days
+      updateAge: 60 * 60 * 24, // Extend session if last refresh was > 1 day ago
+    },
     trustedOrigins: [
       "https://*.openhospi.nl",
       "https://op.srv.inacademia.org",

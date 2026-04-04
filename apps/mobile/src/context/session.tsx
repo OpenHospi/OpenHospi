@@ -1,6 +1,8 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
+import { router } from 'expo-router';
 
 import { useSession } from '@/lib/auth-client';
+import { onSessionExpired } from '@/lib/api-client';
 import { useOnboardingStatus } from '@/services/onboarding';
 import type { OnboardingStatus } from '@openhospi/shared/api-types';
 
@@ -29,6 +31,15 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const isLoading = sessionPending || (!!session && onboardingPending);
   const isAuthenticated = !!session && (onboardingStatus?.isComplete ?? false);
   const needsOnboarding = !!session && !(onboardingStatus?.isComplete ?? false);
+
+  // Listen for session-expired events from the 401 interceptor
+  // in api-client.ts. When a session refresh fails after a 401,
+  // navigate the user back to the login screen.
+  useEffect(() => {
+    return onSessionExpired(() => {
+      router.replace('/(auth)/login');
+    });
+  }, []);
 
   return (
     <SessionContext.Provider

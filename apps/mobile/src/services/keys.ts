@@ -41,4 +41,12 @@ export const queryKeys = {
     conversationDetail: (id: string) => ['chat', 'conversations', id] as const,
     messages: (conversationId: string) => ['chat', 'messages', conversationId] as const,
   },
+  notifications: {
+    list: () => ['notifications', 'list'] as const,
+    unreadCount: () => ['notifications', 'unreadCount'] as const,
+  },
+  house: {
+    detail: () => ['house', 'detail'] as const,
+    joinPreview: (code: string) => ['house', 'joinPreview', code] as const,
+  },
 };

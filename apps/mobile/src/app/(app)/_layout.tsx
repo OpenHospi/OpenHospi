@@ -23,6 +23,8 @@ export default function AppLayout() {
           <Stack.Screen name="room/[id]" options={{ title: '' }} />
           <Stack.Screen name="application/[id]" options={{ title: t('detailTitle') }} />
           <Stack.Screen name="settings" options={{ title: tSettings('title') }} />
+          <Stack.Screen name="my-house" />
+          <Stack.Screen name="join/[code]" />
         </Stack>
       </View>
     </DiscoverFiltersProvider>

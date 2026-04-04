@@ -199,6 +199,33 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ],
         category: ['BROWSABLE', 'DEFAULT'],
       },
+      {
+        action: 'VIEW',
+        autoVerify: true,
+        data: [
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/join/',
+          },
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/nl/join/',
+          },
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/en/join/',
+          },
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/de/join/',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
     ],
   },
   androidStatusBar: {
@@ -259,6 +286,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ios: {
           deploymentTarget: '16.1',
         },
+      },
+    ],
+    [
+      'expo-calendar',
+      {
+        calendarPermission: 'OpenHospi needs access to your calendar to add house events.',
       },
     ],
     'react-native-quick-crypto',

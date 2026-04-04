@@ -27,6 +27,7 @@ import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient, persistOptions } from '@/lib/query-client';
 import { initializeNetworkManager } from '@/lib/network';
 import { initializeAppLifecycle } from '@/lib/app-lifecycle';
+import { initializeNotificationListeners } from '@/lib/notifications';
 import { NAV_THEME } from '@/lib/theme';
 
 // ── Sentry ──────────────────────────────────────────────────
@@ -66,6 +67,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
 
 initializeNetworkManager();
 initializeAppLifecycle();
+initializeNotificationListeners();
 
 // ── Root Navigator ──────────────────────────────────────────
 

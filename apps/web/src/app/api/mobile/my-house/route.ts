@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 
 import { createDrizzleSupabaseClient, db } from "@openhospi/database";
 import { houseMembers, houses, profiles } from "@openhospi/database/schema";
-import { and, eq } from "drizzle-orm";
-import { randomUUID } from "node:crypto";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 
 import { requireApiSession, apiError } from "@/app/api/mobile/_lib/auth";
 

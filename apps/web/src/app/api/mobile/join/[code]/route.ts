@@ -1,9 +1,8 @@
-import { type NextRequest, NextResponse } from "next/server";
-
 import { db } from "@openhospi/database";
 import { houseMembers, houses } from "@openhospi/database/schema";
 import { HouseMemberRole } from "@openhospi/shared/enums";
 import { and, eq } from "drizzle-orm";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { requireApiSession, apiError } from "@/app/api/mobile/_lib/auth";
 

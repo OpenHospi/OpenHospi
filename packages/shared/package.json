@@ -31,5 +31,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
     "typecheck": "tsc --noEmit"
-  }
+  },
+  "dependencies": {},
+  "optionalDependencies": {}
 }

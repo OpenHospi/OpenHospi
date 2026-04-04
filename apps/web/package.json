@@ -50,9 +50,9 @@
     "input-otp": "^1.4.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.7.0",
-    "mermaid": "^11.13.0",
+    "mermaid": "^11.14.0",
     "next": "16.2.1",
-    "next-intl": "^4.8.3",
+    "next-intl": "^4.9.0",
     "next-themes": "^0.4.6",
     "nodemailer": "^8.0.4",
     "qrcode.react": "^4.2.0",
@@ -62,7 +62,7 @@
     "react-dom": "19.2.0",
     "react-hook-form": "catalog:",
     "react-leaflet": "^5.0.0",
-    "shadcn": "^4.1.1",
+    "shadcn": "^4.1.2",
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",
     "tailwind-merge": "catalog:",
@@ -71,7 +71,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.21",
     "@types/node": "catalog:",
@@ -89,12 +89,14 @@
     "eslint-plugin-security": "catalog:",
     "eslint-plugin-sonarjs": "^4.0.2",
     "eslint-plugin-unicorn": "^64.0.0",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.0",
     "drizzle-kit": "catalog:",
     "drizzle-seed": "catalog:",
     "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "tsx": "^4.21.0",
     "typescript": "catalog:"
-  }
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {}
 }

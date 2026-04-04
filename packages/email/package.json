@@ -33,5 +33,7 @@
     "prettier": "catalog:",
     "react-email": "^5.2.10",
     "typescript": "catalog:"
-  }
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {}
 }

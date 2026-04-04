@@ -16,7 +16,7 @@
     "fumadocs-mdx": "14.2.10",
     "fumadocs-ui": "16.6.17",
     "lucide-react": "^1.7.0",
-    "mermaid": "^11.13.0",
+    "mermaid": "^11.14.0",
     "next": "16.2.0",
     "next-themes": "^0.4.6",
     "octokit": "^5.0.5",
@@ -37,5 +37,7 @@
     "typescript": "^5.9.3",
     "@openhospi/eslint-config": "workspace:*",
     "eslint": "^9.39.4"
-  }
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {}
 }

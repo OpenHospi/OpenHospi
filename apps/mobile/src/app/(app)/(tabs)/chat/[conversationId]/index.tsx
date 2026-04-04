@@ -14,7 +14,7 @@ import { Text } from '@/components/ui/text';
 import { useEncryptionContext } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
 import { db as localDb } from '@/lib/db';
-import { localMessages } from '@/lib/db/schema';
+import { localMessages, messageDrafts } from '@/lib/db/schema';
 import { subscribeToChannel } from '@/lib/supabase';
 import {
   useConversationDetail,
@@ -77,6 +77,38 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
 
   const allMessages = messagesData?.pages.flatMap((p) => p.messages) ?? [];
   const memberUserIds = detail?.members.map((m) => m.userId) ?? [];
+
+  // Restore draft on mount
+  useEffect(() => {
+    const [draft] = localDb
+      .select({ content: messageDrafts.content })
+      .from(messageDrafts)
+      .where(eq(messageDrafts.conversationId, conversationId))
+      .all();
+    if (draft?.content) setText(draft.content);
+  }, [conversationId]);
+
+  // Save draft on unmount
+  const textRef = useRef(text);
+  textRef.current = text;
+
+  useEffect(() => {
+    return () => {
+      const draft = textRef.current.trim();
+      if (draft) {
+        localDb
+          .insert(messageDrafts)
+          .values({ conversationId, content: draft, updatedAt: new Date() })
+          .onConflictDoUpdate({
+            target: messageDrafts.conversationId,
+            set: { content: draft, updatedAt: new Date() },
+          })
+          .run();
+      } else {
+        localDb.delete(messageDrafts).where(eq(messageDrafts.conversationId, conversationId)).run();
+      }
+    };
+  }, [conversationId]);
 
   // Mark as read on open
   useEffect(() => {
@@ -199,6 +231,8 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     if (!trimmed || !userId) return;
 
     setText('');
+    // Clear draft on send
+    localDb.delete(messageDrafts).where(eq(messageDrafts.conversationId, conversationId)).run();
 
     try {
       const result = await encryptMessage(conversationId, memberUserIds, trimmed);

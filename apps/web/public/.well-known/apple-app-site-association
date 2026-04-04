@@ -12,7 +12,15 @@
           { "/": "/chat/*", "comment": "Chat (default locale)" },
           { "/": "/nl/chat/*", "comment": "Chat (NL)" },
           { "/": "/en/chat/*", "comment": "Chat (EN)" },
-          { "/": "/de/chat/*", "comment": "Chat (DE)" }
+          { "/": "/de/chat/*", "comment": "Chat (DE)" },
+          { "/": "/join/*", "comment": "Join house (default locale)" },
+          { "/": "/nl/join/*", "comment": "Join house (NL)" },
+          { "/": "/en/join/*", "comment": "Join house (EN)" },
+          { "/": "/de/join/*", "comment": "Join house (DE)" },
+          { "/": "/rooms/*", "comment": "Room public page (default locale)" },
+          { "/": "/nl/rooms/*", "comment": "Room public page (NL)" },
+          { "/": "/en/rooms/*", "comment": "Room public page (EN)" },
+          { "/": "/de/rooms/*", "comment": "Room public page (DE)" }
         ]
       }
     ]

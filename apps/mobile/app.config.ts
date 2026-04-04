@@ -226,6 +226,33 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ],
         category: ['BROWSABLE', 'DEFAULT'],
       },
+      {
+        action: 'VIEW',
+        autoVerify: true,
+        data: [
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/rooms/',
+          },
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/nl/rooms/',
+          },
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/en/rooms/',
+          },
+          {
+            scheme: 'https',
+            host: 'openhospi.nl',
+            pathPrefix: '/de/rooms/',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
     ],
   },
   androidStatusBar: {

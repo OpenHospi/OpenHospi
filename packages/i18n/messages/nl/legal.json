@@ -5,7 +5,7 @@
     "sections": [
       {
         "title": "1. Verwerkingsverantwoordelijke",
-        "content": "OpenHospi is de verwerkingsverantwoordelijke in de zin van art. 4, onder 7, AVG voor de verwerking van je persoonsgegevens. OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Voor privacyvragen kun je contact opnemen via privacy@openhospi.nl. OpenHospi heeft geen functionaris voor gegevensbescherming aangewezen, omdat dit op grond van art. 37 AVG niet vereist is gezien de aard en omvang van onze verwerkingsactiviteiten."
+        "content": "OpenHospi is de verwerkingsverantwoordelijke in de zin van art. 4, onder 7, AVG voor de verwerking van je persoonsgegevens. OpenHospi is een gratis, open-source platform waar studenten in Nederland kamers kunnen vinden en aanbieden. Voor privacyvragen kun je contact opnemen via privacy@openhospi.nl. OpenHospi heeft geen functionaris voor gegevensbescherming aangewezen, omdat dit op grond van art. 37 AVG niet vereist is gezien de aard en omvang van onze verwerkingsactiviteiten."
       },
       {
         "title": "2. Privacycontact",
@@ -119,7 +119,7 @@
       },
       {
         "title": "17. Geautomatiseerde besluitvorming",
-        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig. Gebruikers bladeren door advertenties en melden zich zelf aan. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig. Gebruikers bladeren door kamers en melden zich zelf aan. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie welke kamers ziet of wie wordt geaccepteerd."
       },
       {
         "title": "18. Wijzigingen in dit beleid",
@@ -201,7 +201,7 @@
     "sections": [
       {
         "title": "1. Overeenkomst: art. 6, lid 1, onder b, AVG",
-        "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk voor de uitvoering van onze overeenkomst met jou (het aanbieden van het studentenhuisvestingsplatform):",
+        "content": "De volgende verwerkingsactiviteiten zijn noodzakelijk voor de uitvoering van onze overeenkomst met jou (het aanbieden van het studentenkamerplatform):",
         "items": [
           "Aanmaken en beheren van gebruikersprofiel",
           "Uploaden van profielfoto's",
@@ -243,7 +243,7 @@
       },
       {
         "title": "5. Geen geautomatiseerde besluitvorming",
-        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig. Gebruikers bekijken advertenties en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen wie huisvesting krijgt."
+        "content": "OpenHospi maakt geen gebruik van geautomatiseerde individuele besluitvorming of profilering als bedoeld in art. 22 AVG. Kamermatching is volledig handmatig. Gebruikers bekijken kamers en dienen zelf sollicitaties in. Huisgenoten stemmen handmatig over sollicitanten. Geen algoritmen bepalen welke kamers je te zien krijgt."
       },
       {
         "title": "6. Contact",
@@ -329,7 +329,7 @@
       {
         "title": "1. Gebruikersprofielen",
         "items": [
-          "Doel: Het leveren van de studentenhuisvestingsdienst",
+          "Doel: Het leveren van de studentenkamerdienst",
           "Categorieën betrokkenen: Geregistreerde studenten",
           "Gegevenscategorieën: naam, e-mailadres, geboortedatum, geslacht, studierichting, onderwijsinstelling, bio, leefstijltags, voorkeursstad, beschikbaar vanaf, maximale huur",
           "Rechtsgrond: Overeenkomst (art. 6, lid 1, onder b, AVG)",
@@ -478,7 +478,7 @@
     "sections": [
       {
         "title": "1. Beschrijving van de verwerking",
-        "content": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Gebruikers authenticeren via institutionele SSO, maken profielen aan, plaatsen kamers, bekijken aanbod, reageren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, huisvestingsgegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistraties."
+        "content": "OpenHospi is een gratis, open-source platform waar studenten in Nederland kamers kunnen vinden en aanbieden. Gebruikers authenticeren via institutionele SSO, maken profielen aan, plaatsen kamers, bekijken aanbod, reageren op kamers en communiceren via end-to-end versleutelde chat. Alle gebruikers zijn geverifieerde studenten aan Nederlandse onderwijsinstellingen. De verwerking omvat profielgegevens, huisvestingsgegevens, communicatiegegevens, sollicitatiegegevens, sessiegegevens, push-notificatietokens en toestemmingsregistraties."
       },
       {
         "title": "2. Noodzaak en evenredigheid",

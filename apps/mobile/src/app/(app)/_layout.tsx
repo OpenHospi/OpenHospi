@@ -1,6 +1,8 @@
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
+import { ConnectionStatusBar } from '@/components/connection-status-bar';
 import { DiscoverFiltersProvider } from '@/context/discover-filters';
 
 export default function AppLayout() {
@@ -10,16 +12,21 @@ export default function AppLayout() {
 
   return (
     <DiscoverFiltersProvider>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false, title: tBreadcrumbs('discover') }}
-        />
-        <Stack.Screen name="(modals)" options={{ headerShown: false }} />
-        <Stack.Screen name="room/[id]" options={{ title: '' }} />
-        <Stack.Screen name="application/[id]" options={{ title: t('detailTitle') }} />
-        <Stack.Screen name="settings" options={{ title: tSettings('title') }} />
-      </Stack>
+      <View style={{ flex: 1 }}>
+        <ConnectionStatusBar />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false, title: tBreadcrumbs('discover') }}
+          />
+          <Stack.Screen name="(modals)" options={{ headerShown: false }} />
+          <Stack.Screen name="room/[id]" options={{ title: '' }} />
+          <Stack.Screen name="application/[id]" options={{ title: t('detailTitle') }} />
+          <Stack.Screen name="settings" options={{ title: tSettings('title') }} />
+          <Stack.Screen name="my-house" />
+          <Stack.Screen name="join/[code]" />
+        </Stack>
+      </View>
     </DiscoverFiltersProvider>
   );
 }

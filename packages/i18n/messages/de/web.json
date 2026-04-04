@@ -1,12 +1,12 @@
 {
   "seo": {
     "home": {
-      "title": "Kostenlose Studentenwohnungen | Zimmer Finden & Anbieten",
-      "description": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Nur verifizierte Studierende über ihre Hochschule. Keine Gebühren, keine Vermittler."
+      "title": "Studentenzimmer Finden & Anbieten | Kostenlose Plattform",
+      "description": "OpenHospi ist eine kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden. Nur verifizierte Studierende über ihre Hochschule. Keine Gebühren, keine Vermittler."
     },
     "about": {
       "title": "Über OpenHospi | Unsere Mission & Geschichte",
-      "description": "Erfahre mehr über OpenHospis Mission, Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich für jeden Studierenden zu machen."
+      "description": "Erfahre mehr über OpenHospis Mission, das Finden von Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich für jeden Studierenden zu machen."
     },
     "costs": {
       "title": "Kosten & Transparenz | Wie Wir Kostenlos Bleiben",
@@ -26,7 +26,7 @@
     },
     "terms": {
       "title": "Allgemeine Geschäftsbedingungen",
-      "description": "Nutzungsbedingungen für OpenHospi, die kostenlose Studentenwohnungsplattform für die Niederlande."
+      "description": "Nutzungsbedingungen für OpenHospi, eine kostenlose Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden."
     },
     "cookies": {
       "title": "Cookie-Richtlinie",
@@ -54,7 +54,7 @@
     },
     "faqPage": {
       "title": "FAQ | Häufig Gestellte Fragen",
-      "description": "Finde Antworten auf häufig gestellte Fragen über OpenHospi, die kostenlose Studentenwohnungsplattform für die Niederlande."
+      "description": "Finde Antworten auf häufig gestellte Fragen über OpenHospi, eine kostenlose Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden."
     },
     "rooms": {
       "title": "Studentenzimmer in den Niederlanden",
@@ -139,8 +139,8 @@
     }
   },
   "metadata": {
-    "title": "OpenHospi | Kostenlose Studentenwohnungen",
-    "description": "Die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden."
+    "title": "OpenHospi | Kostenlose Plattform für Studentenzimmer",
+    "description": "OpenHospi ist eine kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden."
   },
   "header": {
     "nav": {
@@ -177,7 +177,7 @@
       "e2eEncryption": "E2E-Verschlüsselung",
       "anbi": "ANBI"
     },
-    "tagline": "Kostenlose, Open-Source-Studentenwohnungen für die Niederlande.",
+    "tagline": "Kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden.",
     "anbiStatus": "Anerkannte ANBI-Einrichtung",
     "license": "Lizenziert unter AGPL-3.0",
     "rights": "Alle Rechte vorbehalten."
@@ -185,7 +185,7 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nKostenlos. Fair.\nNur Studierende.",
-      "subtitle": "OpenHospi ist die kostenlose, Open-Source-Plattform für Studentenwohnungen in den Niederlanden. Verifiziert über deine Hochschule. Keine Vermittler, keine Gebühren.",
+      "subtitle": "OpenHospi ist eine kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden. Verifiziert über deine Hochschule. Keine Vermittler, keine Gebühren.",
       "cta": "Mit deiner Hochschule anmelden"
     },
     "features": {
@@ -390,10 +390,10 @@
   },
   "about": {
     "title": "Über OpenHospi",
-    "subtitle": "Die kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande, von Studierenden, für Studierende.",
+    "subtitle": "Eine kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden, von Studierenden, für Studierende.",
     "mission": {
       "title": "Unsere Mission",
-      "description": "OpenHospi existiert, um Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich zu machen. Wir glauben, dass die Zimmersuche kein Geld kosten sollte und der Prozess transparent sein muss. OpenHospi wird niemals Freemium oder Pay-to-Win sein: Niemand kann zahlen, um mehr Sichtbarkeit zu bekommen. Jeder Studierende bekommt die gleichen Chancen."
+      "description": "OpenHospi existiert, um das Finden von Studentenwohnungen in den Niederlanden fair, kostenlos und zugänglich zu machen. Wir glauben, dass die Zimmersuche kein Geld kosten sollte und der Prozess transparent sein muss. OpenHospi wird niemals Freemium oder Pay-to-Win sein: Niemand kann zahlen, um mehr Sichtbarkeit zu bekommen. Jeder Studierende bekommt die gleichen Chancen."
     },
     "vision": {
       "title": "Unsere Vision",
@@ -657,7 +657,7 @@
   },
   "faq": {
     "title": "Häufig gestellte Fragen",
-    "subtitle": "Alles, was du über OpenHospi wissen musst, die kostenlose, Open-Source-Studentenwohnungsplattform.",
+    "subtitle": "Alles, was du über OpenHospi wissen musst, eine kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern.",
     "cta": {
       "title": "Noch Fragen?",
       "description": "Kannst du die Antwort nicht finden? Kontaktiere uns direkt.",
@@ -669,7 +669,7 @@
         "items": [
           {
             "question": "Was ist OpenHospi?",
-            "answer": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Sie verbindet Studierende, die ein Zimmer suchen, mit WGs, die einen neuen Mitbewohner suchen, über den traditionellen niederländischen Hospiteren-Prozess."
+            "answer": "OpenHospi ist eine kostenlose, Open-Source-Plattform, auf der Studierende in den Niederlanden Zimmer finden und anbieten können. Sie verbindet Studierende, die ein Zimmer suchen, mit WGs, die einen neuen Mitbewohner suchen, über den traditionellen niederländischen Hospiteren-Prozess."
           },
           {
             "question": "Wer kann OpenHospi nutzen?",
@@ -782,7 +782,7 @@
           },
           {
             "question": "Wird es jemals kostenpflichtige Funktionen geben?",
-            "answer": "Nein. Wir glauben, dass Studentenwohnungen fair und gleich sein sollten. Kein Studierender muss jemals zahlen, um die Plattform zu nutzen, mehr Sichtbarkeit zu bekommen oder Funktionen zu nutzen, die anderen nicht zur Verfügung stehen."
+            "answer": "Nein. Wir glauben, dass das Finden von Studentenwohnungen fair und gleich sein sollte. Kein Studierender muss jemals zahlen, um die Plattform zu nutzen, mehr Sichtbarkeit zu bekommen oder Funktionen zu nutzen, die anderen nicht zur Verfügung stehen."
           }
         ]
       }

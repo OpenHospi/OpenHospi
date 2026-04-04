@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { eq } from 'drizzle-orm';
-import { Lock } from 'lucide-react-native';
+import { Lock, AlertCircle } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +14,8 @@ import { Text } from '@/components/ui/text';
 import { useEncryptionContext } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
 import { db as localDb } from '@/lib/db';
-import { localMessages } from '@/lib/db/schema';
-import { supabase } from '@/lib/supabase';
+import { localMessages, messageDrafts } from '@/lib/db/schema';
+import { subscribeToChannel } from '@/lib/supabase';
 import {
   useConversationDetail,
   useMessages,
@@ -63,7 +63,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     isFetchingNextPage,
     refetch: refetchMessages,
   } = useMessages(conversationId);
-  const sendMessageMutation = useSendMessage();
+  const sendMessageMutation = useSendMessage(userId);
   const markRead = useMarkConversationRead();
   const { encryptMessage, decryptMessage, processPendingDistributions, deviceId } =
     useEncryptionContext();
@@ -72,10 +72,43 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
   const [decryptedCache, setDecryptedCache] = useState<Record<string, string>>({});
   const [distributionVersion, setDistributionVersion] = useState(0);
   const [showScrollFab, setShowScrollFab] = useState(false);
+  const [failedMessageIds, setFailedMessageIds] = useState<Set<string>>(new Set());
   const flatListRef = useRef<FlatList>(null);
 
   const allMessages = messagesData?.pages.flatMap((p) => p.messages) ?? [];
   const memberUserIds = detail?.members.map((m) => m.userId) ?? [];
+
+  // Restore draft on mount
+  useEffect(() => {
+    const [draft] = localDb
+      .select({ content: messageDrafts.content })
+      .from(messageDrafts)
+      .where(eq(messageDrafts.conversationId, conversationId))
+      .all();
+    if (draft?.content) setText(draft.content);
+  }, [conversationId]);
+
+  // Save draft on unmount
+  const textRef = useRef(text);
+  textRef.current = text;
+
+  useEffect(() => {
+    return () => {
+      const draft = textRef.current.trim();
+      if (draft) {
+        localDb
+          .insert(messageDrafts)
+          .values({ conversationId, content: draft, updatedAt: new Date() })
+          .onConflictDoUpdate({
+            target: messageDrafts.conversationId,
+            set: { content: draft, updatedAt: new Date() },
+          })
+          .run();
+      } else {
+        localDb.delete(messageDrafts).where(eq(messageDrafts.conversationId, conversationId)).run();
+      }
+    };
+  }, [conversationId]);
 
   // Mark as read on open
   useEffect(() => {
@@ -166,35 +199,40 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     }
   }, [messageIds, distributionVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Supabase Realtime subscription
+  // Managed Supabase Realtime subscription
+  // Auto-reconnects on foreground/network restore via the
+  // connection manager in supabase.ts.
   useEffect(() => {
-    const channel = supabase.channel(`chat:${conversationId}`);
+    const unsubscribe = subscribeToChannel({
+      name: `chat:${conversationId}`,
+      configure: (channel) =>
+        channel
+          .on('broadcast', { event: 'new_message' }, async () => {
+            if (deviceId) {
+              await processPendingDistributions(deviceId).catch(() => {});
+            }
+            refetchMessages();
+          })
+          .on('broadcast', { event: 'sender_key_distribution' }, async () => {
+            if (deviceId) {
+              await processPendingDistributions(deviceId).catch(() => {});
+              setDistributionVersion((v) => v + 1);
+            }
+          }),
+    });
 
-    channel
-      .on('broadcast', { event: 'new_message' }, async () => {
-        if (deviceId) {
-          await processPendingDistributions(deviceId).catch(() => {});
-        }
-        refetchMessages();
-      })
-      .on('broadcast', { event: 'sender_key_distribution' }, async () => {
-        if (deviceId) {
-          await processPendingDistributions(deviceId).catch(() => {});
-          setDistributionVersion((v) => v + 1);
-        }
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return unsubscribe;
   }, [conversationId, deviceId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Send Message ────────────────────────────────────────────
 
   async function handleSend() {
     const trimmed = text.trim();
     if (!trimmed || !userId) return;
 
     setText('');
+    // Clear draft on send
+    localDb.delete(messageDrafts).where(eq(messageDrafts.conversationId, conversationId)).run();
 
     try {
       const result = await encryptMessage(conversationId, memberUserIds, trimmed);
@@ -221,14 +259,31 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       }
     } catch (err) {
       console.error('[Chat] Send failed:', err);
+      // Mark optimistic message as failed
+      const lastOptimistic = allMessages.find((m) => m.senderId === userId && m.id.length > 30);
+      if (lastOptimistic) {
+        setFailedMessageIds((prev) => new Set([...prev, lastOptimistic.id]));
+      }
       setText(trimmed);
     }
   }
 
-  // Compute message grouping
+  // ── Retry Failed Message ──────────────────────────────────
+
+  function handleRetry(messageId: string) {
+    setFailedMessageIds((prev) => {
+      const next = new Set(prev);
+      next.delete(messageId);
+      return next;
+    });
+    // User should resend by retyping — the text was restored to input
+  }
+
+  // ── Message Grouping ──────────────────────────────────────
+
   function getGroupFlags(index: number) {
     const msg = allMessages[index];
-    const prev = allMessages[index - 1]; // newer (inverted list: index-1 is newer)
+    const prev = allMessages[index - 1]; // newer (inverted list)
     const next = allMessages[index + 1]; // older
 
     const FIVE_MIN = 5 * 60_000;
@@ -244,12 +299,26 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       next.senderId === msg.senderId &&
       Math.abs(new Date(next.createdAt).getTime() - msgTime) < FIVE_MIN;
 
-    // In inverted list: "first in group" = last message visually (bottom), "last in group" = first visually (top)
     return {
-      isFirstInGroup: !sameAsNext, // no older message from same sender = top of group
-      isLastInGroup: !sameAsPrev, // no newer message from same sender = bottom of group
-      showSender: !sameAsNext, // show name at top of group
+      isFirstInGroup: !sameAsNext,
+      isLastInGroup: !sameAsPrev,
+      showSender: !sameAsNext,
     };
+  }
+
+  // ── Delivery Status ───────────────────────────────────────
+
+  function getDeliveryStatus(msg: MessageRow): 'sending' | 'sent' | 'failed' | undefined {
+    if (msg.senderId !== userId) return undefined;
+
+    if (failedMessageIds.has(msg.id)) return 'failed';
+
+    // Optimistic messages have UUID-length IDs generated client-side
+    // and won't exist in decryptedCache yet
+    const isOptimistic = !decryptedCache[msg.id] && msg.senderId === userId;
+    if (isOptimistic && sendMessageMutation.isPending) return 'sending';
+
+    return 'sent';
   }
 
   const memberCount = detail?.members.length ?? 0;
@@ -335,6 +404,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
                 !nextMsg || toDateKey(msgDate) !== toDateKey(new Date(nextMsg.createdAt));
 
               const { isFirstInGroup, isLastInGroup, showSender } = getGroupFlags(index);
+              const deliveryStatus = getDeliveryStatus(msg);
 
               return (
                 <View>
@@ -353,6 +423,31 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
                       minute: '2-digit',
                     })}
                   />
+                  {deliveryStatus === 'failed' && (
+                    <Pressable
+                      onPress={() => handleRetry(msg.id)}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        alignSelf: 'flex-end',
+                        gap: 4,
+                        paddingVertical: 2,
+                        paddingHorizontal: 8,
+                      }}>
+                      <AlertCircle size={12} className="text-destructive" />
+                      <Text className="text-destructive text-xs">{t('send_failed')}</Text>
+                    </Pressable>
+                  )}
+                  {deliveryStatus === 'sending' && (
+                    <View
+                      style={{
+                        alignSelf: 'flex-end',
+                        paddingVertical: 2,
+                        paddingHorizontal: 8,
+                      }}>
+                      <Text className="text-muted-foreground text-xs">{t('sending')}</Text>
+                    </View>
+                  )}
                 </View>
               );
             }}

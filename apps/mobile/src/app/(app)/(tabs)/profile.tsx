@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { getInstitution } from '@openhospi/inacademia';
-import { Settings } from 'lucide-react-native';
+import { Bell, Settings } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useProfile } from '@/services/profile';
+import { useNotifications, useMarkNotificationRead } from '@/services/notifications';
 
 export default function ProfileScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
@@ -218,6 +219,8 @@ export default function ProfileScreen() {
             </View>
           </ProfileSectionCard>
 
+          <ActivitySection />
+
           <Button
             variant="destructive"
             onPress={() => {
@@ -229,5 +232,44 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function ActivitySection() {
+  const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
+  const { data, isLoading } = useNotifications();
+  const markRead = useMarkNotificationRead();
+
+  const notifications = data?.pages.flatMap((p) => p.notifications) ?? [];
+
+  if (isLoading || notifications.length === 0) return null;
+
+  // Show up to 5 recent notifications
+  const recent = notifications.slice(0, 5);
+
+  return (
+    <ProfileSectionCard title={t('activity')}>
+      <View style={{ gap: 8 }}>
+        {recent.map((item) => (
+          <Pressable
+            key={item.id}
+            onPress={() => {
+              if (!item.readAt) markRead.mutate(item.id);
+            }}
+            style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+            <Bell size={16} className={item.readAt ? 'text-muted-foreground' : 'text-primary'} />
+            <View style={{ flex: 1 }}>
+              <Text
+                className={`text-sm ${item.readAt ? 'text-muted-foreground' : 'text-foreground font-medium'}`}>
+                {item.title}
+              </Text>
+              <Text className="text-muted-foreground text-xs" numberOfLines={2}>
+                {item.body}
+              </Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    </ProfileSectionCard>
   );
 }

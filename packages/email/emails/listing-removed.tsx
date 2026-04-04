@@ -1,3 +1,4 @@
+import { EMAIL_FOOTER } from "@openhospi/shared/constants";
 import { Text } from "@react-email/components";
 import { createTranslator } from "next-intl";
 
@@ -27,7 +28,7 @@ ListingRemoved.PreviewProps = {
   messages: {
     emails: {
       common: {
-        footer: "OpenHospi — Free student housing platform for the Netherlands",
+        footer: EMAIL_FOOTER,
         doNotReply: "This is an automated message. Please do not reply to this email.",
       },
       listingRemoved: {

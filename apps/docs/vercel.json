@@ -1,4 +1,3 @@
 {
-  "buildCommand": "next build",
-  "ignoreCommand": "bash ../../scripts/vercel-ignore.sh apps/docs"
+  "buildCommand": "next build"
 }

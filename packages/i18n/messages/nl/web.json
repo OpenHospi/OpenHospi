@@ -1,12 +1,12 @@
 {
   "seo": {
     "home": {
-      "title": "Gratis Studentenhuisvesting | Kamers Zoeken & Aanbieden",
-      "description": "OpenHospi is het gratis, open-source studentenhuisvestingsplatform voor Nederland. Alleen geverifieerde studenten via je instelling. Geen kosten, geen tussenpersonen."
+      "title": "Studentenkamers Zoeken & Aanbieden | Gratis Platform",
+      "description": "OpenHospi is een gratis, open-source platform om studentenkamers te vinden en aan te bieden in Nederland. Alleen geverifieerde studenten via je instelling. Geen kosten, geen tussenpersonen."
     },
     "about": {
       "title": "Over OpenHospi | Onze Missie & Verhaal",
-      "description": "Lees over de missie van OpenHospi om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken voor elke student."
+      "description": "Lees over de missie van OpenHospi om het vinden van studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken voor elke student."
     },
     "costs": {
       "title": "Kosten & Transparantie | Hoe We Gratis Blijven",
@@ -26,7 +26,7 @@
     },
     "terms": {
       "title": "Algemene Voorwaarden",
-      "description": "Gebruiksvoorwaarden voor OpenHospi, het gratis studentenhuisvestingsplatform voor Nederland."
+      "description": "Gebruiksvoorwaarden voor OpenHospi, een gratis platform om studentenkamers te vinden en aan te bieden in Nederland."
     },
     "cookies": {
       "title": "Cookiebeleid",
@@ -54,7 +54,7 @@
     },
     "faqPage": {
       "title": "Veelgestelde Vragen | FAQ",
-      "description": "Vind antwoorden op veelgestelde vragen over OpenHospi, het gratis studentenhuisvestingsplatform voor Nederland."
+      "description": "Vind antwoorden op veelgestelde vragen over OpenHospi, een gratis platform om studentenkamers te vinden en aan te bieden in Nederland."
     },
     "rooms": {
       "title": "Studentenkamers in Nederland",
@@ -139,8 +139,8 @@
     }
   },
   "metadata": {
-    "title": "OpenHospi | Gratis studentenhuisvesting",
-    "description": "Het gratis, open-source platform voor studentenhuisvesting in Nederland."
+    "title": "OpenHospi | Gratis platform om studentenkamers te vinden en aan te bieden",
+    "description": "OpenHospi is een gratis, open-source platform om studentenkamers te vinden en aan te bieden in Nederland."
   },
   "header": {
     "nav": {
@@ -177,7 +177,7 @@
       "e2eEncryption": "E2E-encryptie",
       "anbi": "ANBI"
     },
-    "tagline": "Gratis, open-source studentenhuisvesting voor Nederland.",
+    "tagline": "Gratis, open-source platform om studentenkamers te vinden en aan te bieden in Nederland.",
     "anbiStatus": "Erkende ANBI-instelling",
     "license": "Gelicentieerd onder AGPL-3.0",
     "rights": "Alle rechten voorbehouden."
@@ -185,7 +185,7 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nGratis. Eerlijk.\nAlleen studenten.",
-      "subtitle": "OpenHospi is het gratis, open-source platform voor studentenhuisvesting in Nederland. Geverifieerd via je instelling. Geen tussenpersonen, geen kosten.",
+      "subtitle": "OpenHospi is een gratis, open-source platform om studentenkamers te vinden en aan te bieden in Nederland. Geverifieerd via je instelling. Geen tussenpersonen, geen kosten.",
       "cta": "Inloggen met je instelling"
     },
     "features": {
@@ -390,10 +390,10 @@
   },
   "about": {
     "title": "Over OpenHospi",
-    "subtitle": "Het gratis, open-source studentenhuisvestingsplatform voor Nederland, gebouwd door studenten, voor studenten.",
+    "subtitle": "Een gratis, open-source platform om studentenkamers te vinden en aan te bieden in Nederland, gebouwd door studenten, voor studenten.",
     "mission": {
       "title": "Onze Missie",
-      "description": "OpenHospi bestaat om studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant moet zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
+      "description": "OpenHospi bestaat om het vinden van studentenhuisvesting in Nederland eerlijk, gratis en toegankelijk te maken. Wij geloven dat het vinden van een kamer geen geld zou moeten kosten en dat het proces transparant moet zijn. OpenHospi wordt nooit freemium of pay-to-win: niemand kan betalen om meer zichtbaarheid te krijgen. Elke student krijgt dezelfde kansen."
     },
     "vision": {
       "title": "Onze Visie",
@@ -657,7 +657,7 @@
   },
   "faq": {
     "title": "Veelgestelde vragen",
-    "subtitle": "Alles wat je moet weten over OpenHospi, het gratis, open-source studentenhuisvestingsplatform.",
+    "subtitle": "Alles wat je moet weten over OpenHospi, een gratis, open-source platform om studentenkamers te vinden en aan te bieden.",
     "cta": {
       "title": "Nog vragen?",
       "description": "Kun je het antwoord niet vinden? Neem direct contact met ons op.",
@@ -669,7 +669,7 @@
         "items": [
           {
             "question": "Wat is OpenHospi?",
-            "answer": "OpenHospi is een gratis, open-source studentenhuisvestingsplatform voor Nederland. Het verbindt studenten die een kamer zoeken met huizen die een nieuwe huisgenoot zoeken, via het traditionele Nederlandse hospiteren."
+            "answer": "OpenHospi is een gratis, open-source platform waar studenten in Nederland kamers kunnen vinden en aanbieden. Het verbindt studenten die een kamer zoeken met huizen die een nieuwe huisgenoot zoeken, via het traditionele Nederlandse hospiteren."
           },
           {
             "question": "Wie kan OpenHospi gebruiken?",
@@ -782,7 +782,7 @@
           },
           {
             "question": "Komen er ooit betaalde functies?",
-            "answer": "Nee. Wij geloven dat studentenhuisvesting eerlijk en gelijk moet zijn. Geen student hoeft ooit te betalen om het platform te gebruiken, meer zichtbaarheid te krijgen of functies te gebruiken die anderen niet kunnen."
+            "answer": "Nee. Wij geloven dat het vinden van studentenhuisvesting eerlijk en gelijk moet zijn. Geen student hoeft ooit te betalen om het platform te gebruiken, meer zichtbaarheid te krijgen of functies te gebruiken die anderen niet kunnen."
           }
         ]
       }

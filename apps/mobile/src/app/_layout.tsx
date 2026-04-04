@@ -12,7 +12,7 @@ import { hideSplash } from '@/lib/splash';
 import * as Sentry from '@sentry/react-native';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isRunningInExpoGo } from 'expo';
 import { Stack } from 'expo-router';
 import React from 'react';
@@ -24,8 +24,13 @@ import { SessionProvider, useAppSession } from '@/context/session';
 import { useRunMigrations } from '@/lib/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
 import { SENTRY_DSN } from '@/lib/constants';
-import { queryClient } from '@/lib/query-client';
+import { queryClient, persistOptions } from '@/lib/query-client';
+import { initializeNetworkManager } from '@/lib/network';
+import { initializeAppLifecycle } from '@/lib/app-lifecycle';
+import { initializeNotificationListeners } from '@/lib/notifications';
 import { NAV_THEME } from '@/lib/theme';
+
+// ── Sentry ──────────────────────────────────────────────────
 
 Sentry.init({
   dsn: SENTRY_DSN,
@@ -38,7 +43,11 @@ Sentry.init({
   enableNativeFramesTracking: !isRunningInExpoGo(),
 });
 
+// ── Error Boundary ────────────────────────────────────────��─
+
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
+  Sentry.captureException(error);
+
   return (
     <View
       style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 }}
@@ -51,6 +60,16 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
     </View>
   );
 }
+
+// ── Foundation Initialization ───────────────────────────────
+// Initialize network monitoring and app lifecycle management
+// at module level so they start immediately.
+
+initializeNetworkManager();
+initializeAppLifecycle();
+initializeNotificationListeners();
+
+// ── Root Navigator ──────────────────────────────────────────
 
 function RootNavigator() {
   const [i18nLoaded, setI18nLoaded] = React.useState(false);
@@ -98,11 +117,13 @@ function RootNavigator() {
   );
 }
 
+// ── Root Layout ─────────────────────────────────────────────
+
 let RootLayout = function RootLayout() {
   const { theme } = useUniwind();
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
       <I18nextProvider i18n={i18n}>
         <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
           <SessionProvider>
@@ -111,7 +132,7 @@ let RootLayout = function RootLayout() {
           <PortalHost />
         </ThemeProvider>
       </I18nextProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 };
 

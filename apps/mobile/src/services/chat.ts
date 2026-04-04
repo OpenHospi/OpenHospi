@@ -11,7 +11,7 @@ import type {
 
 import { queryKeys } from './keys';
 
-// ── Hooks ──
+// ── Queries ─────────────────────────────────────────────────
 
 export function useConversations() {
   return useQuery({
@@ -45,17 +45,84 @@ export function useMessages(conversationId: string) {
   });
 }
 
-export function useSendMessage() {
+// ── Send Message (Optimistic + Offline Queue) ───────────────
+
+type SendMessageInput = {
+  conversationId: string;
+  payload: string;
+  deviceId?: string;
+  distributions?: { recipientDeviceId: string; ciphertext: string }[];
+};
+
+type OptimisticContext = {
+  previousMessages: ReturnType<typeof useQueryClient> extends { getQueryData: infer G } ? G : never;
+  optimisticId: string;
+};
+
+export function useSendMessage(currentUserId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: {
-      conversationId: string;
-      payload: string;
-      deviceId?: string;
-      distributions?: { recipientDeviceId: string; ciphertext: string }[];
-    }) => api.post<MessageRow>('/api/mobile/chat/send', data),
-    onSuccess: (_data, variables) => {
+    // mutationKey enables offline persistence for this mutation
+    // (encrypted payloads only — never plaintext in AsyncStorage)
+    mutationKey: ['sendMessage'],
+
+    mutationFn: (data: SendMessageInput) => api.post<MessageRow>('/api/mobile/chat/send', data),
+
+    onMutate: async (variables) => {
+      const messagesKey = queryKeys.chat.messages(variables.conversationId);
+
+      // Cancel in-flight refetches so optimistic update isn't overwritten
+      await queryClient.cancelQueries({ queryKey: messagesKey });
+
+      const previousMessages = queryClient.getQueryData(messagesKey);
+      const optimisticId = crypto.randomUUID();
+
+      // Insert optimistic message at the start of the first page
+      queryClient.setQueryData<{ pages: MessagesPage[]; pageParams: unknown[] }>(
+        messagesKey,
+        (old) => {
+          if (!old) return old;
+
+          const optimisticMessage: MessageRow = {
+            id: optimisticId,
+            conversationId: variables.conversationId,
+            senderId: currentUserId ?? '',
+            senderDeviceId: variables.deviceId ?? null,
+            messageType: 'ciphertext',
+            createdAt: new Date().toISOString(),
+            payload: variables.payload,
+            senderFirstName: null,
+          };
+
+          const firstPage = old.pages[0];
+          if (!firstPage) return old;
+
+          return {
+            ...old,
+            pages: [
+              { ...firstPage, messages: [optimisticMessage, ...firstPage.messages] },
+              ...old.pages.slice(1),
+            ],
+          };
+        }
+      );
+
+      return { previousMessages, optimisticId } as OptimisticContext;
+    },
+
+    onError: (_error, variables, context) => {
+      // Rollback: restore previous messages
+      if (context?.previousMessages) {
+        queryClient.setQueryData(
+          queryKeys.chat.messages(variables.conversationId),
+          context.previousMessages
+        );
+      }
+    },
+
+    onSettled: (_data, _error, variables) => {
+      // Sync with server truth
       queryClient.invalidateQueries({
         queryKey: queryKeys.chat.messages(variables.conversationId),
       });
@@ -65,6 +132,8 @@ export function useSendMessage() {
     },
   });
 }
+
+// ── Other Mutations ─────────────────────────────────────────
 
 export function useMarkConversationRead() {
   const queryClient = useQueryClient();

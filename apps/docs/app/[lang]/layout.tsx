@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s — OpenHospi Docs",
   },
   description:
-    "Documentation for OpenHospi — free, open-source student housing platform for the Netherlands.",
+    "Documentation for OpenHospi — free, open-source platform to find and list student rooms in the Netherlands.",
   metadataBase: new URL(
     process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`

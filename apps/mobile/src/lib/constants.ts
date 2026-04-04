@@ -20,5 +20,5 @@ export const DATABASE_NAME = 'openhospi.db';
 
 // ── React Query ──────────────────────────────────────────────
 export const QUERY_STALE_TIME = 1000 * 60 * 5;
-export const QUERY_GC_TIME = 1000 * 60 * 30;
+export const QUERY_GC_TIME = 1000 * 60 * 60 * 24; // 24 hours — cache survives app restarts
 export const QUERY_RETRY_COUNT = 2;

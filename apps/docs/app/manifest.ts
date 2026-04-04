@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "OpenHospi Docs",
     short_name: "OpenHospi Docs",
     description:
-      "Documentation for OpenHospi — free, open-source student housing platform for the Netherlands",
+      "Documentation for OpenHospi — free, open-source platform to find and list student rooms in the Netherlands",
     start_url: "/",
     display: "standalone",
     background_color: "#f5fafa",

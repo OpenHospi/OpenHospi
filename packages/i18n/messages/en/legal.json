@@ -5,7 +5,7 @@
     "sections": [
       {
         "title": "1. Controller",
-        "content": "OpenHospi is the controller within the meaning of Art. 4(7) GDPR for the processing of your personal data. OpenHospi is a free, open-source student housing platform for the Netherlands. For privacy questions, contact us at privacy@openhospi.nl. OpenHospi has not designated a data protection officer, as this is not required under Art. 37 GDPR given the nature and scale of our processing activities."
+        "content": "OpenHospi is the controller within the meaning of Art. 4(7) GDPR for the processing of your personal data. OpenHospi is a free, open-source platform where students in the Netherlands can find and list rooms. For privacy questions, contact us at privacy@openhospi.nl. OpenHospi has not designated a data protection officer, as this is not required under Art. 37 GDPR given the nature and scale of our processing activities."
       },
       {
         "title": "2. Privacy contact",
@@ -201,7 +201,7 @@
     "sections": [
       {
         "title": "1. Performance of a contract: Art. 6(1)(b) GDPR",
-        "content": "The following processing activities are necessary for the performance of our contract with you (providing the student housing platform):",
+        "content": "The following processing activities are necessary for the performance of our contract with you (providing the student room platform):",
         "items": [
           "User profile creation and management",
           "Profile photo uploads",
@@ -243,7 +243,7 @@
       },
       {
         "title": "5. No automated individual decision-making",
-        "content": "OpenHospi does not use automated individual decision-making, including profiling, as referred to in Art. 22 GDPR. Room matching is entirely manual: users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who gets housing."
+        "content": "OpenHospi does not use automated individual decision-making, including profiling, as referred to in Art. 22 GDPR. Room matching is entirely manual: users browse listings and submit applications themselves. House members vote on applicants through a manual voting process. No algorithms determine who sees which listings."
       },
       {
         "title": "6. Contact",
@@ -329,7 +329,7 @@
       {
         "title": "1. User profiles",
         "items": [
-          "Purpose: Providing the student housing platform service",
+          "Purpose: Providing the student room platform service",
           "Categories of data subjects: Registered students",
           "Data categories: name, email address, date of birth, gender, study programme, educational institution, bio, lifestyle tags, preferred city, available from date, maximum rent",
           "Legal basis: Performance of a contract (Art. 6(1)(b) GDPR)",
@@ -478,7 +478,7 @@
     "sections": [
       {
         "title": "1. Description of processing",
-        "content": "OpenHospi is a free, open-source student housing platform for the Netherlands. Users authenticate via institutional SSO, create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions. The processing comprises profile data, housing data, communication data, application data, session data, push notification tokens, and consent records."
+        "content": "OpenHospi is a free, open-source platform where students in the Netherlands can find and list rooms. Users authenticate via institutional SSO, create profiles, list rooms, browse listings, apply for rooms, and communicate through end-to-end encrypted chat. All users are verified students at Dutch educational institutions. The processing comprises profile data, housing data, communication data, application data, session data, push notification tokens, and consent records."
       },
       {
         "title": "2. Necessity and proportionality",

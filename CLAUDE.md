@@ -4,7 +4,7 @@ See @package.json for available scripts and @README.md for project overview.
 
 ## What is OpenHospi?
 
-OpenHospi is a free, open-source student housing/roommate platform for the Netherlands. InAcademia is the only login method — every user is a verified student. No paywalls, no premium, E2EE chat, full privacy.
+OpenHospi is a free, open-source platform where students in the Netherlands find and list rooms/roommates. InAcademia is the only login method — every user is a verified student. No paywalls, no premium, E2EE chat, full privacy.
 
 ## Tech Stack
 

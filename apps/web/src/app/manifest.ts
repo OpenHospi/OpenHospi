@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: APP_NAME,
     short_name: APP_NAME,
-    description: "Free, open-source student housing platform for the Netherlands",
+    description: "Free, open-source platform to find and list student rooms in the Netherlands",
     start_url: "/nl",
     display: "standalone",
     background_color: "#f5fafa",

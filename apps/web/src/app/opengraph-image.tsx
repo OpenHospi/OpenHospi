@@ -1,7 +1,8 @@
 import { OG_IMAGE_SIZE } from "@openhospi/shared/constants";
 import { ImageResponse } from "next/og";
 
-export const alt = "OpenHospi - Free student housing for the Netherlands";
+export const alt =
+  "OpenHospi - Free, open-source platform to find and list student rooms in the Netherlands";
 export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 
@@ -46,7 +47,7 @@ export default function OGImage() {
             lineHeight: 1.4,
           }}
         >
-          Free, open-source student housing for the Netherlands
+          Free, open-source platform to find and list student rooms in the Netherlands
         </div>
       </div>
     </div>,

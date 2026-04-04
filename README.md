@@ -21,9 +21,9 @@
 
 ## About
 
-OpenHospi is a free, open-source student housing platform built for the Netherlands. Authentication is handled
-exclusively through InAcademia, ensuring every user is a verified student at a Dutch institution. No paywalls, no
-middlemen — just a clean platform with end-to-end encrypted chat and full transparency through open source.
+OpenHospi is a free, open-source platform where students in the Netherlands can find and list rooms. Authentication is
+handled exclusively through InAcademia, ensuring every user is a verified student at a Dutch institution. No paywalls,
+no middlemen — just a clean platform with end-to-end encrypted chat and full transparency through open source.
 
 ## Tech Stack
 

@@ -5,7 +5,7 @@
     "sections": [
       {
         "title": "1. Verantwortlicher",
-        "content": "OpenHospi ist der Verantwortliche im Sinne von Art. 4 Nr. 7 DSGVO für die Verarbeitung deiner personenbezogenen Daten. OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Für Datenschutzfragen kontaktiere uns unter privacy@openhospi.nl. OpenHospi hat keinen Datenschutzbeauftragten benannt, da dies auf Grundlage von Art. 37 DSGVO angesichts Art und Umfang unserer Verarbeitungstätigkeiten nicht erforderlich ist."
+        "content": "OpenHospi ist der Verantwortliche im Sinne von Art. 4 Nr. 7 DSGVO für die Verarbeitung deiner personenbezogenen Daten. OpenHospi ist eine kostenlose, Open-Source-Plattform, auf der Studierende in den Niederlanden Zimmer finden und anbieten können. Für Datenschutzfragen kontaktiere uns unter privacy@openhospi.nl. OpenHospi hat keinen Datenschutzbeauftragten benannt, da dies auf Grundlage von Art. 37 DSGVO angesichts Art und Umfang unserer Verarbeitungstätigkeiten nicht erforderlich ist."
       },
       {
         "title": "2. Datenschutzkontakt",
@@ -201,7 +201,7 @@
     "sections": [
       {
         "title": "1. Vertragserfüllung: Art. 6 Abs. 1 lit. b DSGVO",
-        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung unseres Vertrags mit dir (Bereitstellung der Studentenwohnungsplattform) erforderlich:",
+        "content": "Die folgenden Verarbeitungstätigkeiten sind zur Erfüllung unseres Vertrags mit dir (Bereitstellung der Studentenzimmerplattform) erforderlich:",
         "items": [
           "Erstellung und Verwaltung des Nutzerprofils",
           "Upload von Profilfotos",
@@ -243,7 +243,7 @@
       },
       {
         "title": "5. Keine automatisierten Entscheidungen im Einzelfall",
-        "content": "OpenHospi verwendet keine automatisierten Entscheidungen im Einzelfall einschließlich Profiling im Sinne von Art. 22 DSGVO. Die Zimmervermittlung ist vollständig manuell: Nutzer durchsuchen Anzeigen und reichen Bewerbungen selbst ein. Hausmitglieder stimmen in einem manuellen Abstimmungsverfahren über Bewerber ab. Keine Algorithmen bestimmen, wer eine Wohnung bekommt."
+        "content": "OpenHospi verwendet keine automatisierten Entscheidungen im Einzelfall einschließlich Profiling im Sinne von Art. 22 DSGVO. Die Zimmervermittlung ist vollständig manuell: Nutzer durchsuchen Anzeigen und reichen Bewerbungen selbst ein. Hausmitglieder stimmen in einem manuellen Abstimmungsverfahren über Bewerber ab. Keine Algorithmen bestimmen, welche Anzeigen du siehst."
       },
       {
         "title": "6. Kontakt",
@@ -329,7 +329,7 @@
       {
         "title": "1. Nutzerprofile",
         "items": [
-          "Zweck: Bereitstellung der Studentenwohnungsplattform",
+          "Zweck: Bereitstellung der Studentenzimmerplattform",
           "Kategorien betroffener Personen: Registrierte Studierende",
           "Datenkategorien: Name, E-Mail-Adresse, Geburtsdatum, Geschlecht, Studiengang, Bildungseinrichtung, Bio, Lebensstil-Tags, bevorzugte Stadt, verfügbar ab, maximale Miete",
           "Rechtsgrundlage: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)",
@@ -478,7 +478,7 @@
     "sections": [
       {
         "title": "1. Beschreibung der Verarbeitung",
-        "content": "OpenHospi ist eine kostenlose, Open-Source-Studentenwohnungsplattform für die Niederlande. Nutzer authentifizieren sich über institutionelle SSO, erstellen Profile, inserieren Zimmer, durchsuchen Angebote, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen. Die Verarbeitung umfasst Profildaten, Wohnungsdaten, Kommunikationsdaten, Bewerbungsdaten, Sitzungsdaten, Push-Benachrichtigungs-Tokens und Einwilligungsdatensätze."
+        "content": "OpenHospi ist eine kostenlose, Open-Source-Plattform, auf der Studierende in den Niederlanden Zimmer finden und anbieten können. Nutzer authentifizieren sich über institutionelle SSO, erstellen Profile, inserieren Zimmer, durchsuchen Angebote, bewerben sich auf Zimmer und kommunizieren über Ende-zu-Ende verschlüsselten Chat. Alle Nutzer sind verifizierte Studierende an niederländischen Bildungseinrichtungen. Die Verarbeitung umfasst Profildaten, Wohnungsdaten, Kommunikationsdaten, Bewerbungsdaten, Sitzungsdaten, Push-Benachrichtigungs-Tokens und Einwilligungsdatensätze."
       },
       {
         "title": "2. Notwendigkeit und Verhältnismäßigkeit",

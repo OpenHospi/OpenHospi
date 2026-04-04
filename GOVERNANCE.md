@@ -9,7 +9,7 @@
 
 ## 1) Purpose & Principles
 
-OpenHospi exists to make student housing in the Netherlands **fair, free, and accessible**.
+OpenHospi exists to make finding student housing in the Netherlands **fair, free, and accessible**.
 
 We operate by these principles:
 
@@ -181,8 +181,8 @@ Sponsor recognition (e.g., logo placement) is:
 If there is a security incident or major outage requiring immediate spending:
 
 1. A project lead may approve urgent spending up to **€250** with:
-    - A short public postmortem note (issue or discussion) explaining why it was urgent
-    - A receipt and a “why this was necessary” summary in the expense
+   - A short public postmortem note (issue or discussion) explaining why it was urgent
+   - A receipt and a “why this was necessary” summary in the expense
 2. Any emergency expense still follows **no self-approval**.
 3. Emergency spending must be reviewed within **7 days** by the other project lead (or by a maintainer group if one lead
    is unavailable).
@@ -223,5 +223,3 @@ If OpenHospi is discontinued:
 1. Remaining funds will first be used for responsible shutdown costs (final hosting, archiving, notices).
 2. After shutdown costs, any remaining balance should be directed to an aligned open-source / digital public good
    initiative, in line with fiscal host rules.
-
-

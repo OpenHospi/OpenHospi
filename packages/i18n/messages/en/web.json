@@ -1,12 +1,12 @@
 {
   "seo": {
     "home": {
-      "title": "Free Student Housing Platform | Find & List Rooms",
-      "description": "OpenHospi is the free, open-source student housing platform for the Netherlands. Verified students only via institutional login. No fees, no middlemen."
+      "title": "Find & List Student Rooms — Free Platform",
+      "description": "OpenHospi is a free, open-source platform to find and list student rooms in the Netherlands. Verified students only via institutional login. No fees, no middlemen."
     },
     "about": {
       "title": "About OpenHospi | Our Mission & Story",
-      "description": "Learn about OpenHospi's mission to make student housing in the Netherlands fair, free, and accessible for every student."
+      "description": "Learn about OpenHospi's mission to make finding student housing in the Netherlands fair, free, and accessible for every student."
     },
     "costs": {
       "title": "Costs & Transparency | How We Stay Free",
@@ -26,7 +26,7 @@
     },
     "terms": {
       "title": "Terms & Conditions",
-      "description": "Terms of use for OpenHospi, the free student housing platform for the Netherlands."
+      "description": "Terms of use for OpenHospi, a free platform to find and list student rooms in the Netherlands."
     },
     "cookies": {
       "title": "Cookie Policy",
@@ -54,7 +54,7 @@
     },
     "faqPage": {
       "title": "FAQ | Frequently Asked Questions",
-      "description": "Find answers to common questions about OpenHospi, the free student housing platform for the Netherlands."
+      "description": "Find answers to common questions about OpenHospi, a free platform to find and list student rooms in the Netherlands."
     },
     "rooms": {
       "title": "Student Rooms in the Netherlands",
@@ -139,8 +139,8 @@
     }
   },
   "metadata": {
-    "title": "OpenHospi | Free Student Housing Platform for the Netherlands",
-    "description": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via institutional login. No middlemen, no fees."
+    "title": "OpenHospi | Free Platform to Find & List Student Rooms",
+    "description": "OpenHospi is a free, open-source platform to find and list student rooms in the Netherlands. Verified via institutional login. No middlemen, no fees."
   },
   "header": {
     "nav": {
@@ -177,7 +177,7 @@
       "e2eEncryption": "E2E Encryption",
       "anbi": "ANBI"
     },
-    "tagline": "Free, open-source student housing for the Netherlands.",
+    "tagline": "Free, open-source platform to find and list student rooms in the Netherlands.",
     "anbiStatus": "Recognized ANBI institution",
     "license": "Licensed under AGPL-3.0",
     "rights": "All rights reserved."
@@ -185,7 +185,7 @@
   "home": {
     "hero": {
       "title": "Hospiteren.\nFree. Fair.\nStudents only.",
-      "subtitle": "OpenHospi is the free, open-source platform for student housing in the Netherlands. Verified via institutional login. No middlemen, no fees.",
+      "subtitle": "OpenHospi is a free, open-source platform to find and list student rooms in the Netherlands. Verified via institutional login. No middlemen, no fees.",
       "cta": "Log in with your institution"
     },
     "features": {
@@ -390,10 +390,10 @@
   },
   "about": {
     "title": "About OpenHospi",
-    "subtitle": "The free, open-source student housing platform for the Netherlands, built by students, for students.",
+    "subtitle": "A free, open-source platform to find and list student rooms in the Netherlands, built by students, for students.",
     "mission": {
       "title": "Our Mission",
-      "description": "OpenHospi exists to make student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent. OpenHospi will never be freemium or pay-to-win: no one can pay to get more visibility. Every student gets the same chances."
+      "description": "OpenHospi exists to make finding student housing in the Netherlands fair, free, and accessible. We believe finding a room shouldn't cost money, and the process should be transparent. OpenHospi will never be freemium or pay-to-win: no one can pay to get more visibility. Every student gets the same chances."
     },
     "vision": {
       "title": "Our Vision",
@@ -657,7 +657,7 @@
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "subtitle": "Everything you need to know about OpenHospi: the free, open-source student housing platform.",
+    "subtitle": "Everything you need to know about OpenHospi: a free, open-source platform to find and list student rooms.",
     "cta": {
       "title": "Still have questions?",
       "description": "Can't find the answer you're looking for? Reach out to us directly.",
@@ -669,7 +669,7 @@
         "items": [
           {
             "question": "What is OpenHospi?",
-            "answer": "OpenHospi is a free, open-source student housing platform for the Netherlands. It connects students looking for a room with houses looking for a new housemate, through the traditional Dutch hospiteren process."
+            "answer": "OpenHospi is a free, open-source platform where students in the Netherlands can find and list rooms. It connects students looking for a room with houses looking for a new housemate, through the traditional Dutch hospiteren process."
           },
           {
             "question": "Who can use OpenHospi?",
@@ -782,7 +782,7 @@
           },
           {
             "question": "Will there ever be paid features?",
-            "answer": "No. We believe student housing should be fair and equal. No student will ever have to pay to use the platform, get more visibility, or access features that others can't."
+            "answer": "No. We believe finding student housing should be fair and equal. No student will ever have to pay to use the platform, get more visibility, or access features that others can't."
           }
         ]
       }

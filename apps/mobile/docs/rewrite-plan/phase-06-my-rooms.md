@@ -102,7 +102,7 @@ Clear wizard state on successful publish or explicit discard.
 
 - Room photos carousel at top
 - Status badge (published/draft/closed)
-- Action buttons: Edit, Share, Close Room
+- Action buttons: Edit, Share, **Create Event** (shortcut, opens quick event bottom sheet), Close Room
 - Stats: applicant count, event count, days listed
 - Quick links to: Applicants, Events, Voting
 
@@ -130,7 +130,10 @@ Clear wizard state on successful publish or explicit discard.
 
 - Grid of applicant cards (photo + name)
 - Vote buttons per applicant (thumbs up/down)
-- Vote tally display
+- **Checkmark on already-voted applicants** (so user knows who they voted for)
+- **Live vote count updates** (optimistic on tap, confirmed via refetch or Supabase Realtime)
+- **"You voted" indicator** with option to change vote (tap again to toggle)
+- Vote tally display (total votes per applicant)
 - "Voting is open" / "Voting closed" status
 
 ### `events/index.tsx` -- Events list
@@ -141,9 +144,13 @@ Clear wizard state on successful publish or explicit discard.
 
 ### `events/create.tsx` -- Event creation
 
+**Quick event option** (bottom sheet): Just date + time. Location auto-fills from room address. "More options" link opens the full form. Reduces event creation from 5 taps to 3 taps.
+
+**Full form**:
+
 - Title, description inputs
 - Date/time picker (native)
-- Location input
+- Location input (pre-filled from room address, editable)
 - "Create Event" button
 
 ### `events/[eventId].tsx` -- Event detail
@@ -158,12 +165,13 @@ Clear wizard state on successful publish or explicit discard.
 - "Send Invitations" button
 - Haptic on success
 
-### `close-room.tsx` -- Close room flow
+### `close-room.tsx` -- Close room flow (simplified)
 
-- Select accepted applicant(s)
-- Confirmation dialog
+- Single confirm dialog: "Close this room? All pending applicants will be notified."
+- Auto-reject pending applicants on close (no manual selection needed)
+- Accepted applicants keep their status
 - Updates room status to closed
-- Sends notifications to all applicants
+- Sends notifications to all applicants automatically
 
 ### `share-link.tsx` -- Share link
 
@@ -191,7 +199,9 @@ Clear wizard state on successful publish or explicit discard.
 
 - **Room publish fails (validation)**: Specific field errors highlighted: "Add at least 1 photo", "Title is required"
 - **Room publish fails (network)**: "Couldn't publish. Saved as draft." + auto-save to draft
-- **Photo upload fails**: Per-photo error indicator with retry icon on the thumbnail
+- **Photo upload fails (network)**: Per-photo error indicator with retry icon on the thumbnail
+- **Photo upload rejected (NSFWJS)**: "This image can't be uploaded. Please choose a different photo." Remove thumbnail, show error state on that slot.
+- **Photo upload flagged (NSFWJS)**: "Photo uploaded. It will be visible after a brief review." Show photo with "Under review" badge overlay.
 - **Accept/reject fails**: "Couldn't update applicant status. Try again." + retry
 - **Event create fails**: "Couldn't create event." + keep form data for retry
 - **Vote fails**: "Vote not saved. Try again." + optimistic rollback

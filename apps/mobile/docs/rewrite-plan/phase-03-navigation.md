@@ -104,6 +104,46 @@ android: {
 
 ---
 
+## Navigation Rules
+
+### Max modal depth: 1
+
+Maximum 1 modal at a time. No modal stacking. If a user action inside a modal needs to navigate somewhere, dismiss the modal first, then navigate. This prevents unpredictable back-button behavior and keeps the app simple.
+
+### Notification tap routing
+
+Each notification type maps to a specific screen. Implement in `src/lib/notifications.ts`:
+
+| Notification Type    | Route To                                 | Params           |
+| -------------------- | ---------------------------------------- | ---------------- |
+| `new_message`        | `/(app)/(tabs)/chat/[conversationId]`    | `conversationId` |
+| `new_applicant`      | `/(app)/(tabs)/my-rooms/[id]/applicants` | `id` (roomId)    |
+| `application_update` | `/(app)/application/[id]`                | `id`             |
+| `event_invitation`   | `/(app)/application/[id]`                | `id`             |
+| `event_reminder`     | `/(app)/application/[id]`                | `id`             |
+| `room_update`        | `/(app)/room/[id]`                       | `id`             |
+| Default              | `/(app)/(tabs)/profile`                  | none             |
+
+Use shared notification type enums from `@openhospi/shared` (not hardcoded strings).
+
+### URL deep link handling
+
+In root `_layout.tsx`, handle `expo-linking` URL events:
+
+```typescript
+import * as Linking from 'expo-linking';
+
+useEffect(() => {
+  const subscription = Linking.addEventListener('url', ({ url }) => {
+    const parsed = Linking.parse(url);
+    // Route based on parsed path
+  });
+  return () => subscription.remove();
+}, []);
+```
+
+---
+
 ## Verification Checklist
 
 - [ ] `BottomSheetModalProvider` wraps correctly (test by opening a bottom sheet)
@@ -112,4 +152,7 @@ android: {
 - [ ] Modal screens present as `formSheet` on iOS
 - [ ] Swipe-to-dismiss works on modal screens
 - [ ] Deep link `openhospi://chat/123` navigates to correct chat
-- [ ] Deep link from notification tap works
+- [ ] Deep link from notification tap works for ALL notification types
+- [ ] No modal stacking possible (opening a modal from a modal dismisses the first)
+- [ ] URL scheme `openhospi://` handles all supported paths
+- [ ] Universal link `https://openhospi.nl/room/abc` opens room detail

@@ -1,10 +1,10 @@
 # Phase 10: Feature Gaps
 
-> Close the remaining feature gaps: biometric, GDPR, share, deep links, badges, camera.
+> Close the remaining feature gaps: biometric, GDPR, share, badges, camera. (Deep linking moved to Phase 3.)
 
 ## Summary
 
-Implement 6 features that are either missing from mobile or need mobile-native implementations.
+Implement 5 features that are either missing from mobile or need mobile-native implementations. (Deep linking moved to Phase 3 -- it's foundational, notifications depend on it.)
 
 ---
 
@@ -84,47 +84,39 @@ export async function shareRoom(roomId: string, roomTitle: string) {
 
 ---
 
-## 4. Deep Linking
+## 4. Biometric Lock Screen
 
-**Files**: `src/lib/notifications.ts`, `src/app/_layout.tsx`
+> Deep linking moved to Phase 3 (foundational, notifications depend on it).
 
-### Notification tap routing
+When biometric auth is enabled and the app launches (or returns from background after timeout):
 
-Extend the existing switch statement in `notifications.ts` to handle ALL notification types:
+### Lock screen UI
 
-| Notification Type    | Route To                                 |
-| -------------------- | ---------------------------------------- |
-| `new_message`        | `/(app)/(tabs)/chat/[conversationId]`    |
-| `new_applicant`      | `/(app)/(tabs)/my-rooms/[id]/applicants` |
-| `application_update` | `/(app)/application/[id]`                |
-| `event_invitation`   | `/(app)/application/[id]`                |
-| `event_reminder`     | `/(app)/application/[id]`                |
-| `room_update`        | `/(app)/room/[id]`                       |
-| Default              | `/(app)/(tabs)/profile`                  |
+- Branded lock screen: OpenHospi logo centered, blurred background (or solid brand color)
+- "Unlock with Face ID" / "Unlock with Fingerprint" text
+- Biometric prompt triggers automatically on mount
+- "Use InAcademia login instead" fallback link at bottom
+- If biometric fails 3 times: auto-switch to InAcademia login flow
 
-### URL deep links
+### Implementation
 
-In root `_layout.tsx`, handle `expo-linking` URL events:
+In root `_layout.tsx`, add a lock screen overlay:
 
 ```typescript
-import * as Linking from 'expo-linking';
+const [isLocked, setIsLocked] = useState(false);
 
-useEffect(() => {
-  const subscription = Linking.addEventListener('url', ({ url }) => {
-    const parsed = Linking.parse(url);
-    // Route based on parsed path
-  });
-  return () => subscription.remove();
-}, []);
+// On app launch or resume from background:
+if (isBiometricEnabled() && session) {
+  setIsLocked(true);
+  const success = await authenticateWithBiometric();
+  if (success) setIsLocked(false);
+}
+
+// Render lock screen overlay when locked:
+{isLocked && <BiometricLockScreen onFallback={navigateToLogin} />}
 ```
 
-### Verify `app.config.ts` configuration
-
-Ensure these are set:
-
-- `scheme: 'openhospi'`
-- `ios.associatedDomains: ['applinks:openhospi.nl']`
-- `android.intentFilters` for `https://openhospi.nl/room/*` and `https://openhospi.nl/join/*`
+The lock screen renders OVER the app content (not instead of it), so the app state is preserved underneath.
 
 ---
 
@@ -182,14 +174,15 @@ function showPhotoOptions() {
 
 ## Verification Checklist
 
-- [ ] Biometric prompt appears on app launch (when enabled)
+- [ ] Biometric lock screen shows on app launch (when enabled)
+- [ ] Lock screen shows branded UI (not app content visible behind)
+- [ ] Biometric success dismisses lock screen
+- [ ] 3 biometric failures -> falls back to InAcademia login
 - [ ] Biometric toggle in settings works (prompts before enabling)
 - [ ] GDPR data export request submits successfully
 - [ ] Native share sheet opens with room URL
-- [ ] Tapping notification navigates to correct screen
-- [ ] URL deep link `openhospi://chat/123` works
-- [ ] Universal link `https://openhospi.nl/room/abc` works
 - [ ] App badge count updates with unread notifications
 - [ ] Badge clears on app open
 - [ ] "Take Photo" option opens camera
 - [ ] "Choose from Library" option opens photo picker
+- [ ] Deep links verified in Phase 3 (not this phase)

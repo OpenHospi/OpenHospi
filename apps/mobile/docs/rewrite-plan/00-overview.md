@@ -19,19 +19,19 @@ UX-focused overhaul + backend hardening. Keep working backend integrations (cryp
 
 ## Phase Index
 
-| Phase                                | Name                       | Focus                                           | Files         |
-| ------------------------------------ | -------------------------- | ----------------------------------------------- | ------------- |
-| [1](./phase-01-backend-hardening.md) | Backend Hardening          | Fix bugs, optimize data layer                   | ~21 files     |
-| [2](./phase-02-foundation.md)        | Foundation & Design System | New utilities, UI primitives, shared components | ~45 files     |
-| [3](./phase-03-navigation.md)        | Navigation Shell           | Tab bar, layouts, deep links                    | ~4 files      |
-| [4](./phase-04-discover.md)          | Discover Tab               | Map + list, filters, room detail                | ~4 files      |
-| [5](./phase-05-chat.md)              | Chat Tab                   | Conversations, messages, E2EE verify            | ~4 files      |
-| [6](./phase-06-my-rooms.md)          | My Rooms Tab               | Room CRUD, applicants, events, voting           | ~18 files     |
-| [7](./phase-07-applications.md)      | Applications Tab           | Application list, detail, RSVP                  | ~2 files      |
-| [8](./phase-08-profile.md)           | Profile Tab                | Profile, edit modals, settings                  | ~14 files     |
-| [9](./phase-09-auth-onboarding.md)   | Auth & Onboarding          | Login, 7-step onboarding, key recovery          | ~10 files     |
-| [10](./phase-10-feature-gaps.md)     | Feature Gaps               | Biometric, GDPR, share, deep links, camera      | ~6 features   |
-| [11](./phase-11-polish.md)           | Performance Polish         | Offline, pre-fetching, skeletons, image caching | Cross-cutting |
+| Phase                                | Name                       | Focus                                                       | Files             |
+| ------------------------------------ | -------------------------- | ----------------------------------------------------------- | ----------------- |
+| [1](./phase-01-backend-hardening.md) | Backend Hardening          | Fix bugs, optimize data layer, NSFWJS image moderation      | ~21 files + admin |
+| [2](./phase-02-foundation.md)        | Foundation & Design System | New utilities, UI primitives, shared components             | ~45 files         |
+| [3](./phase-03-navigation.md)        | Navigation Shell           | Tab bar, layouts, deep links, modal rules                   | ~4 files          |
+| [4](./phase-04-discover.md)          | Discover Tab               | Photo card feed, FAB map, filters, room detail (7 sections) | ~4 files          |
+| [5](./phase-05-chat.md)              | Chat Tab                   | Conversations, messages, E2EE verify (bottom sheet)         | ~4 files          |
+| [6](./phase-06-my-rooms.md)          | My Rooms Tab               | Room CRUD, applicants, quick events, voting                 | ~18 files         |
+| [7](./phase-07-applications.md)      | Applications Tab           | Application list, detail, binary RSVP                       | ~2 files          |
+| [8](./phase-08-profile.md)           | Profile Tab                | Profile, 6 edit modals, settings, completion indicator      | ~12 files         |
+| [9](./phase-09-auth-onboarding.md)   | Auth & Onboarding          | Login, 7-step onboarding with microcopy, key recovery       | ~10 files         |
+| [10](./phase-10-feature-gaps.md)     | Feature Gaps               | Biometric lock screen, GDPR, share, badges, camera          | ~5 features       |
+| [11](./phase-11-polish.md)           | Performance Polish         | Offline, pre-fetching, skeletons, image caching             | Cross-cutting     |
 
 ## New Dependencies
 
@@ -42,6 +42,8 @@ UX-focused overhaul + backend hardening. Keep working backend integrations (cryp
 | `@shopify/flash-list`                                 | High-performance lists with cell recycling          | None (drop-in FlatList replacement)              |
 | `react-native-mmkv` v4 + `react-native-nitro-modules` | Synchronous KV store                                | `expo prebuild` required                         |
 | `expo-local-authentication`                           | Biometric auth (Face ID, fingerprint)               | Config plugin for Face ID permission             |
+
+**Server-side only (apps/web)**: `nsfwjs` + `@tensorflow/tfjs-node` -- free image moderation, ~93% accuracy, GDPR-perfect
 
 Already installed: expo-camera, expo-haptics, expo-image, expo-image-picker, expo-sharing, expo-glass-effect
 

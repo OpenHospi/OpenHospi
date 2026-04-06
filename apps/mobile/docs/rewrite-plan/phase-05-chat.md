@@ -108,16 +108,19 @@ This is the second most complex screen (after discovery). The E2EE logic stays, 
 
 ---
 
-## Key Verification (`src/app/(app)/(tabs)/chat/[conversationId]/verify/[userId].tsx`) -- REWRITE
+## Key Verification -- BOTTOM SHEET (not full-screen navigation)
+
+**Changed from plan**: Key verification now opens as a `@gorhom/bottom-sheet` from the E2EE banner in the chat thread. This reduces verification from 3 taps to 1 tap. The file `verify/[userId].tsx` is still used for the full QR scanner, but the initial verification UI is a bottom sheet.
 
 ### Flow
 
-1. Show safety number (fingerprint) as text + QR code
-2. Two options: scan QR code or compare numbers manually
-3. QR scanner (using `expo-camera`)
-4. On match: success animation (green checkmark with spring scale), haptic success
-5. On mismatch: error animation (red X with shake), haptic error
-6. Verified status persists locally in SQLite `key_verifications` table
+1. User taps E2EE banner "Tap to verify" in chat thread
+2. Bottom sheet opens with: safety number (groups of 5 digits) + "Scan QR Code" button + "I've verified" button
+3. "Scan QR Code" -> navigates to `verify/[userId].tsx` (full-screen camera)
+4. "I've verified" -> marks as verified immediately (trust-on-first-use with manual confirm)
+5. On match: success animation (green checkmark with spring scale), haptic success
+6. On mismatch: error animation (red X with shake), haptic error
+7. Verified status persists locally in SQLite `key_verifications` table
 
 ### UI
 
@@ -145,7 +148,8 @@ This is the second most complex screen (after discovery). The E2EE logic stays, 
 - **Message send fails (network)**: Red bubble with "Couldn't send. Tap to retry." (not generic alert)
 - **Message decrypt fails**: Show "[Message couldn't be decrypted]" in gray italic (not crash)
 - **Key distribution fails**: "Encryption setup failed. Messages may not deliver." + retry
-- **Archive fails**: Silent retry, show undo toast
+- **Archive success**: Show "Conversation archived" toast with "Undo" button (5 seconds, like Gmail). Undo restores the conversation.
+- **Archive fails**: Silent retry, show error toast "Couldn't archive"
 
 ### Empty states
 

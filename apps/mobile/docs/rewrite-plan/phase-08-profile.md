@@ -54,7 +54,7 @@ Rewrite 14 files: profile screen, 10 edit modals (all as `@gorhom/bottom-sheet`)
 
 ---
 
-## Edit Modals (10 files in `(modals)/edit-*.tsx`)
+## Edit Modals (consolidated from 10 to 6)
 
 All modals share the same pattern:
 
@@ -64,18 +64,39 @@ All modals share the same pattern:
 - **Save**: Haptic on success, optimistic update via `useUpdateProfile()`
 - **Dismiss**: Swipe down or tap backdrop
 
-| Modal                     | Input Type             | Notes                                  |
-| ------------------------- | ---------------------- | -------------------------------------- |
-| `edit-bio.tsx`            | Multi-line text area   | Character counter                      |
-| `edit-birth-date.tsx`     | Date picker            | `date-picker-sheet.tsx` inside modal   |
-| `edit-gender.tsx`         | Single-select chips    | From `Gender` enum                     |
-| `edit-languages.tsx`      | Multi-select list      | From `Language` enum, with search      |
-| `edit-lifestyle.tsx`      | Multi-select chips     | From `LifestyleTag` enum               |
-| `edit-photos.tsx`         | Photo grid             | Camera + library, drag reorder, delete |
-| `edit-preferred-city.tsx` | Single-select chips    | From `City` enum                       |
-| `edit-study-level.tsx`    | Single-select chips    | From `StudyLevel` enum                 |
-| `edit-study-program.tsx`  | Text input             | Free text with suggestions             |
-| `edit-vereniging.tsx`     | Single-select + search | From `Vereniging` enum                 |
+| Modal                    | Fields                                   | Notes                                                                       |
+| ------------------------ | ---------------------------------------- | --------------------------------------------------------------------------- |
+| `edit-personal-info.tsx` | Birth date + gender + preferred city     | 3 fields grouped in one sheet (replaces 3 separate modals)                  |
+| `edit-study-info.tsx`    | Study program + study level + vereniging | 3 fields grouped in one sheet (replaces 3 separate modals)                  |
+| `edit-bio.tsx`           | Multi-line text area                     | Character counter. Kept separate (heavy interaction)                        |
+| `edit-languages.tsx`     | Multi-select list with search            | From `Language` enum. Kept separate (complex picker)                        |
+| `edit-lifestyle.tsx`     | Multi-select chips                       | From `LifestyleTag` enum. Kept separate (chip picker)                       |
+| `edit-photos.tsx`        | Photo grid                               | Camera + library, drag reorder, delete. Kept separate (complex interaction) |
+
+**Removed as separate modals** (merged into personal-info and study-info):
+
+- ~~`edit-birth-date.tsx`~~ -> merged into `edit-personal-info.tsx`
+- ~~`edit-gender.tsx`~~ -> merged into `edit-personal-info.tsx`
+- ~~`edit-preferred-city.tsx`~~ -> merged into `edit-personal-info.tsx`
+- ~~`edit-study-level.tsx`~~ -> merged into `edit-study-info.tsx`
+- ~~`edit-study-program.tsx`~~ -> merged into `edit-study-info.tsx`
+- ~~`edit-vereniging.tsx`~~ -> merged into `edit-study-info.tsx`
+
+### Photo moderation error handling
+
+- **Photo rejected (NSFWJS)**: "This image can't be uploaded. Please choose a different photo." Remove thumbnail, show error on slot.
+- **Photo flagged (NSFWJS)**: "Photo uploaded. It will be visible after a brief review." Show photo with "Under review" badge.
+
+### Profile completion indicator
+
+- Subtle progress ring around avatar (e.g. 80% complete)
+- "Complete your profile" banner below avatar if missing photos or bio
+- Calculation: count filled fields / total fields (photos, bio, languages, lifestyle, study info, personal info)
+- Like LinkedIn's profile strength meter but less aggressive
+  | `edit-preferred-city.tsx` | Single-select chips | From `City` enum |
+  | `edit-study-level.tsx` | Single-select chips | From `StudyLevel` enum |
+  | `edit-study-program.tsx` | Text input | Free text with suggestions |
+  | `edit-vereniging.tsx` | Single-select + search | From `Vereniging` enum |
 
 ---
 

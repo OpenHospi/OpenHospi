@@ -61,8 +61,7 @@ Rewrite 2 screens: applications list (status-grouped) and application detail (ti
 
 3. **Event invitation cards** (if invited to events):
    - Event title, date, location
-   - RSVP buttons: Accept / Decline
-   - Decline reason input (optional bottom sheet)
+   - RSVP buttons: Accept / Decline (binary, no decline reason -- less friction, no negative UX)
    - Optimistic update on RSVP
 
 4. **Actions** (based on status):

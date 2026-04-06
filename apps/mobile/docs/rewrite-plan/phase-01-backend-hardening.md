@@ -145,6 +145,141 @@ Line 73: replace hardcoded `openhospi.nl` with `API_BASE_URL` from constants.
 
 ---
 
+## 10. NSFWJS Image Moderation (server-side)
+
+> Free, GDPR-perfect image screening for all photo uploads across web and mobile.
+
+### Why server-side only
+
+`@tensorflow/tfjs-react-native` is dead: last release 2 years ago, broken with Expo 51+ (GitHub issue tensorflow/tfjs#8292), requires old `expo-camera` v13 incompatible with SDK 55. On-device is NOT viable. Don't waste time trying.
+
+### Install
+
+In `apps/web`:
+
+```bash
+pnpm --filter @openhospi/web add nsfwjs @tensorflow/tfjs-node
+```
+
+### Shared moderation utility
+
+Create `apps/web/src/lib/services/image-moderation.ts`:
+
+```typescript
+import * as nsfwjs from 'nsfwjs';
+import * as tf from '@tensorflow/tfjs-node';
+
+let model: nsfwjs.NSFWJS | null = null;
+
+async function getModel() {
+  if (!model) {
+    model = await nsfwjs.load();
+  }
+  return model;
+}
+
+type ModerationResult = {
+  allowed: boolean;
+  flagged: boolean;
+  category: string;
+  confidence: number;
+};
+
+export async function moderateImage(buffer: Buffer): Promise<ModerationResult> {
+  const nsfw = await getModel();
+  const image = tf.node.decodeImage(buffer, 3);
+  const predictions = await nsfw.classify(image as tf.Tensor3D);
+  image.dispose();
+
+  const porn = predictions.find((p) => p.className === 'Porn');
+  const hentai = predictions.find((p) => p.className === 'Hentai');
+  const sexy = predictions.find((p) => p.className === 'Sexy');
+
+  if ((porn && porn.probability > 0.8) || (hentai && hentai.probability > 0.8)) {
+    return {
+      allowed: false,
+      flagged: false,
+      category: porn?.className ?? 'Hentai',
+      confidence: Math.max(porn?.probability ?? 0, hentai?.probability ?? 0),
+    };
+  }
+  if (sexy && sexy.probability > 0.7) {
+    return { allowed: true, flagged: true, category: 'Sexy', confidence: sexy.probability };
+  }
+  return { allowed: true, flagged: false, category: 'Neutral', confidence: 1 };
+}
+```
+
+- Model loaded once (singleton, lazy init like DB proxy)
+- ~3.5MB model, ~200ms per image
+- 5 categories: Neutral, Drawing, Sexy, Porn, Hentai (~93% accuracy)
+- Reusable by mobile API routes AND web server actions
+
+### Routes to modify
+
+**Mobile API routes** (in `apps/web/src/app/api/mobile/`):
+
+- `profile/photos/route.ts` -- screen before saving to `profile-photos` bucket
+- `my-rooms/[id]/photos/route.ts` -- screen before saving to `room-photos` bucket
+
+**Web server actions** (in `apps/web/src/lib/services/`):
+
+- `profile-mutations.ts` -- photo upload function
+- `room-mutations.ts` -- photo upload function
+
+### Thresholds
+
+| NSFWJS Result      | Confidence | Action                                 | `moderation_status` |
+| ------------------ | ---------- | -------------------------------------- | ------------------- |
+| Porn or Hentai     | > 0.8      | **Reject** -- don't save, return error | N/A (not saved)     |
+| Sexy               | > 0.7      | **Flag** -- save but hide from public  | `'pending_review'`  |
+| Neutral or Drawing | any        | **Allow** -- save normally             | `'approved'`        |
+
+### Database schema change
+
+Add `moderation_status` to `profile_photos` and `room_photos` tables in `packages/database/src/schema/`:
+
+```typescript
+import { pgEnum } from 'drizzle-orm/pg-core';
+
+export const moderationStatusEnum = pgEnum('moderation_status', ['approved', 'pending_review', 'rejected']);
+
+// In profile_photos and room_photos tables:
+moderationStatus: moderationStatusEnum('moderation_status').default('approved').notNull(),
+```
+
+**RLS update**: Discover and public room queries must filter `WHERE moderation_status = 'approved'`. Flagged photos visible only to the uploader and admins.
+
+### Admin dashboard (`apps/admin`)
+
+New page: **Image Review Queue**
+
+- List all photos with `moderation_status = 'pending_review'`
+- Show: photo thumbnail, NSFWJS category + confidence score, uploader name, room (if room photo)
+- Actions per photo: **Approve** (set `'approved'`) or **Reject** (set `'rejected'`, notify user)
+- Simple table with action buttons -- no complex UI needed
+- Query: `SELECT * FROM profile_photos WHERE moderation_status = 'pending_review' UNION SELECT * FROM room_photos WHERE moderation_status = 'pending_review'`
+
+### Error responses
+
+**Rejected upload** (Porn/Hentai > 0.8):
+
+- HTTP 422 with body: `{ error: { code: "INAPPROPRIATE_CONTENT", message: "This image contains inappropriate content" } }`
+- Web: toast "This image contains inappropriate content. Please choose a different photo."
+- Mobile: same message in upload error handler
+
+**Flagged upload** (Sexy > 0.7):
+
+- HTTP 200 (upload succeeds) with body: `{ flagged: true, message: "Photo uploaded. It will be visible after a brief review." }`
+- Web: info toast "Photo uploaded. It will be visible after a brief review."
+- Mobile: info message same text
+
+**Clean upload** (Neutral/Drawing):
+
+- HTTP 200 (upload succeeds) -- no extra feedback, normal flow
+
+---
+
 ## Verification Checklist
 
 - [ ] `pnpm --filter @openhospi/mobile typecheck` passes with strict service types
@@ -157,3 +292,10 @@ Line 73: replace hardcoded `openhospi.nl` with `API_BASE_URL` from constants.
 - [ ] All mutations have `onError` callbacks
 - [ ] No `Record<string, unknown>` in mutation payloads
 - [ ] Notifications use cursor pagination
+- [ ] NSFWJS model loads successfully in Next.js
+- [ ] Porn/Hentai image upload returns 422 with INAPPROPRIATE_CONTENT error
+- [ ] Sexy image upload saves with `moderation_status = 'pending_review'`
+- [ ] Clean image upload saves with `moderation_status = 'approved'`
+- [ ] Discover queries filter out non-approved photos
+- [ ] Admin review queue shows flagged photos with approve/reject actions
+- [ ] `db:push` succeeds with new `moderation_status` column

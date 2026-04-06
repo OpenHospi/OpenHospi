@@ -60,6 +60,7 @@ Keep the existing header as-is -- it already works great on both platforms:
 - Each card:
   - **Cover photo**: full card width, ~60% of card height (~220px), rounded top corners
   - **Price badge**: overlay in bottom-right of photo (semi-transparent background, white text, bold)
+  - **Share icon**: small share button overlay in top-right of photo (1 tap to share room from feed, like Instagram)
   - **Title**: bold, below photo
   - **Details line**: city + room size + furnishing status (muted text)
   - Card: `rounded-xl`, subtle shadow (`shadow-sm`), `bg-card`
@@ -204,14 +205,13 @@ Filters backed by `DiscoverFiltersContext` (MMKV-persisted from Phase 0F).
 
 ### Layout (top to bottom)
 
-1. **Photo gallery**: Full-bleed at top, `photo-carousel.tsx` with pinch-to-zoom. Page indicator dots. Shared element transition on cover photo from room card.
+1. **Photo gallery**: Full-bleed at top, `photo-carousel.tsx` with pinch-to-zoom. Page indicator dots. Shared element transition on cover photo from room card. **Share icon overlay** in top-right corner of photo (1 tap to share from detail).
 2. **Title + price bar**: Room title, price/month, city. Sticky on scroll (becomes header).
 3. **Key details**: Compact row of badges: house type, furnishing, room size, available from.
-4. **Description**: Expandable text (3 lines collapsed, tap to expand).
-5. **Features**: Grid of feature chips.
+4. **Description**: 3 lines collapsed + "Read more" to expand. Progressive disclosure.
+5. **Features**: Show top 4 feature chips. "Show all features" expands the rest. Collapsible to save scroll space.
 6. **Location**: `expo-maps` native map with privacy circle. Replace Leaflet WebView.
-7. **Housemates**: Count + "Meet your potential housemates" section.
-8. **About the lister**: Profile preview card.
+7. **Your potential housemates**: Merged section -- housemate count + lister profile preview card in one section. Reduces from 8 sections to 7.
 
 ### Bottom bar (sticky)
 

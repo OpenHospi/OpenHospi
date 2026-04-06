@@ -54,11 +54,13 @@ On return visits (session exists but expired or locked):
 
 - **Smooth transitions**: Horizontal slide animation between steps (Reanimated `SlideInRight`/`SlideOutLeft`)
 - **Step indicator**: Animated progress dots with current step highlighted
-- **Skip button**: On optional steps (personality), show "Skip" in header
+- **Skip button**: On optional steps (personality), show clearly labeled "Optional - Skip" button in header (not just small text)
 - **Progress persistence**: Save completed step data to MMKV. If app is killed mid-onboarding, resume from last completed step.
-- **Validation**: Per-step validation before allowing "Next". Red shake animation on invalid fields.
-- **Photo step**: Camera + library integration, drag to reorder, minimum 1 photo enforced
-- **Security step**: PIN input with animated dots (`input-otp.tsx`), key generation progress indicator
+- **Validation**: Per-step validation before allowing "Next". Highlight specific invalid fields in red with per-field error message (not generic "Invalid data" alert). Red shake animation on invalid fields.
+- **"Why we ask" microcopy**: On identity step, show subtle helper text below fields explaining why we need this info (e.g. "Your name is shown to potential housemates" under name, "Used to verify your age" under birth date)
+- **Photo step**: Camera + library integration, drag to reorder, minimum 1 photo enforced. Add **"Photo tips"** helper: "Use a clear photo of your face. This helps housemates know who they're meeting."
+- **Photo moderation**: Handle NSFWJS responses -- rejected: "This image can't be uploaded. Please choose a different photo." Flagged: "Photo uploaded. It will be visible after a brief review."
+- **Security step**: PIN input with animated dots (`input-otp.tsx`), key generation progress indicator. Brief explanation: "This PIN protects your encrypted messages. Don't forget it."
 
 ### Wizard controller (`src/app/(onboarding)/index.tsx`)
 

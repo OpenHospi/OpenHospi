@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { apiError, hasError, requireApiSession } from "@/app/api/mobile/_lib/auth";
 import { isRestricted } from "@/lib/auth/server";
+import { moderateImage } from "@/lib/services/image-moderation";
 import { saveRoomPhotoForUser } from "@/lib/services/room-mutations";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -19,8 +20,28 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     if (!file) return apiError("File required", 400);
 
-    const result = await saveRoomPhotoForUser(session.user.id, file, id, slot);
+    // Screen image for inappropriate content before saving
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const moderation = await moderateImage(buffer);
+
+    if (!moderation.allowed) {
+      return apiError("This image contains inappropriate content", 422, "INAPPROPRIATE_CONTENT");
+    }
+
+    const result = await saveRoomPhotoForUser(session.user.id, file, id, slot, moderation.flagged);
     if (hasError(result)) return apiError(result.error, 422);
+
+    if (moderation.flagged) {
+      return NextResponse.json(
+        {
+          ...result,
+          flagged: true,
+          message: "Photo uploaded. It will be visible after a brief review.",
+        },
+        { status: 201 },
+      );
+    }
+
     return NextResponse.json(result, { status: 201 });
   } catch (e) {
     if (e instanceof NextResponse) return e;

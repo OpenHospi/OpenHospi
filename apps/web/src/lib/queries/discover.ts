@@ -240,7 +240,14 @@ export async function getDiscoverRooms(
         coverPhotoUrl: roomPhotos.url,
       })
       .from(rooms)
-      .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
+      .leftJoin(
+        roomPhotos,
+        and(
+          eq(roomPhotos.roomId, rooms.id),
+          eq(roomPhotos.slot, 1),
+          eq(roomPhotos.moderationStatus, "approved"),
+        ),
+      )
       .where(where)
       .orderBy(...orderBy)
       .limit(ROOMS_PER_PAGE + 1);
@@ -293,7 +300,14 @@ export async function getRoomMetadata(roomId: string): Promise<RoomMetadata | nu
       coverPhotoPath: roomPhotos.url,
     })
     .from(rooms)
-    .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
+    .leftJoin(
+      roomPhotos,
+      and(
+        eq(roomPhotos.roomId, rooms.id),
+        eq(roomPhotos.slot, 1),
+        eq(roomPhotos.moderationStatus, "approved"),
+      ),
+    )
     .where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.active)));
 
   if (!row) return null;
@@ -350,7 +364,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
       caption: roomPhotos.caption,
     })
     .from(roomPhotos)
-    .where(eq(roomPhotos.roomId, roomId))
+    .where(and(eq(roomPhotos.roomId, roomId), eq(roomPhotos.moderationStatus, "approved")))
     .orderBy(roomPhotos.slot);
 
   return {
@@ -390,7 +404,14 @@ export async function getPublicRoomsByCity(city: City, limit: number): Promise<D
       coverPhotoUrl: roomPhotos.url,
     })
     .from(rooms)
-    .leftJoin(roomPhotos, and(eq(roomPhotos.roomId, rooms.id), eq(roomPhotos.slot, 1)))
+    .leftJoin(
+      roomPhotos,
+      and(
+        eq(roomPhotos.roomId, rooms.id),
+        eq(roomPhotos.slot, 1),
+        eq(roomPhotos.moderationStatus, "approved"),
+      ),
+    )
     .where(
       and(eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging), eq(rooms.city, city)),
     )

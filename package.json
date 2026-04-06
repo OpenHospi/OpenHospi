@@ -57,6 +57,7 @@
       "@parcel/watcher",
       "@sentry/cli",
       "@swc/core",
+      "@tensorflow/tfjs-node",
       "esbuild",
       "msw",
       "lightningcss",

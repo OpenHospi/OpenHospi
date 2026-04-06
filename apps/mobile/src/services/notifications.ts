@@ -17,26 +17,26 @@ type NotificationItem = {
 type NotificationsResponse = {
   notifications: NotificationItem[];
   unreadCount: number;
+  nextCursor: string | null;
 };
 
 export function useNotifications() {
   return useInfiniteQuery({
     queryKey: queryKeys.notifications.list(),
     queryFn: ({ pageParam }) =>
-      api.get<NotificationsResponse>(`/api/mobile/notifications?page=${pageParam}`),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _allPages, lastPageParam) =>
-      lastPage.notifications.length > 0 ? lastPageParam + 1 : undefined,
+      api.get<NotificationsResponse>(
+        `/api/mobile/notifications${pageParam ? `?cursor=${pageParam}` : ''}`
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     staleTime: STALE_TIMES.notifications,
-    // NOTE: Offset-based pagination has edge cases (skip/duplicate on delete).
-    // Switch to cursor-based when the backend API supports it.
   });
 }
 
 export function useUnreadNotificationCount() {
   return useQuery({
     queryKey: queryKeys.notifications.unreadCount(),
-    queryFn: () => api.get<NotificationsResponse>('/api/mobile/notifications?page=1'),
+    queryFn: () => api.get<NotificationsResponse>('/api/mobile/notifications'),
     select: (data) => data.unreadCount,
     staleTime: STALE_TIMES.notifications,
   });

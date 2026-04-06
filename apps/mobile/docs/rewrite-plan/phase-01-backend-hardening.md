@@ -282,20 +282,51 @@ New page: **Image Review Queue**
 
 ## Verification Checklist
 
-- [ ] `pnpm --filter @openhospi/mobile typecheck` passes with strict service types
-- [ ] API client: timeout fires after 30s
-- [ ] API client: duplicate simultaneous requests are deduplicated
-- [ ] Session: `needsOnboarding` stays `false` during loading state
-- [ ] Network: only ONE listener fires per state change
-- [ ] Supabase: reconnect uses exponential backoff
-- [ ] Offline: `applyToRoom` queues when airplane mode on, sends on reconnect
-- [ ] All mutations have `onError` callbacks
-- [ ] No `Record<string, unknown>` in mutation payloads
-- [ ] Notifications use cursor pagination
-- [ ] NSFWJS model loads successfully in Next.js
-- [ ] Porn/Hentai image upload returns 422 with INAPPROPRIATE_CONTENT error
-- [ ] Sexy image upload saves with `moderation_status = 'pending_review'`
-- [ ] Clean image upload saves with `moderation_status = 'approved'`
-- [ ] Discover queries filter out non-approved photos
-- [ ] Admin review queue shows flagged photos with approve/reject actions
-- [ ] `db:push` succeeds with new `moderation_status` column
+### Mobile backend hardening (DONE)
+
+- [x] `pnpm --filter @openhospi/mobile typecheck` passes with strict service types
+- [x] `pnpm --filter @openhospi/mobile lint` passes
+- [x] API client: timeout via AbortController (30s default, 10s auth refresh)
+- [x] API client: GET request deduplication (in-flight cache)
+- [x] API client: wider error catch (AbortError + TypeError)
+- [x] API client: Sentry breadcrumb on error parse failure
+- [x] API client: session refresh backoff with jitter
+- [x] Session: `needsOnboarding` fixed (`=== true`/`=== false`)
+- [x] Session: cache invalidation on session switch
+- [x] Network: 200ms debounce on restore callbacks
+- [x] App lifecycle: foreground + background callbacks wrapped in try/catch with Sentry
+- [x] Supabase: fixed `activeChannels.size` bug (delete then check)
+- [x] Supabase: exponential backoff with jitter on reconnect (100ms -> 30s max)
+- [x] Supabase: reset attempts on SUBSCRIBED
+- [x] Notifications (lib): Sentry on push token registration failure
+- [x] Calendar: replaced hardcoded domain with API_BASE_URL
+- [x] Query client: GC time reduced from 24h to 30min
+- [x] Query client: expanded offline mutation persistence (5 mutations)
+- [x] Query client: mutation retry:1 + throwOnError:true
+- [x] Query client: cache size filtering in serializer
+- [x] All queries have explicit staleTime from STALE_TIMES
+- [x] my-rooms.ts: 9 `.then()` transforms replaced with `select`
+- [x] my-rooms.ts: 7 `Record<string, unknown>` replaced with typed payloads
+- [x] profile.ts: typed UpdateProfilePayload
+- [x] onboarding.ts: typed SubmitAboutPayload
+- [x] chat.ts: fixed over-invalidation (only specific conversation, not all)
+- [x] invitations.ts: removed unnecessary chat.conversations() invalidation from RSVP
+- [x] verification.ts: staleTime + isError on useKeyChangeDetection
+- [x] notifications.ts (svc): select transform on unreadCount + staleTime
+
+### Server-side work (DONE)
+
+- [x] Notifications: cursor-based pagination (server API + mobile service updated)
+- [x] NSFWJS: installed `nsfwjs` + `@tensorflow/tfjs-node` in `apps/web`
+- [x] NSFWJS: created shared moderation utility (`apps/web/src/lib/services/image-moderation.ts`)
+- [x] NSFWJS: integrated into mobile API photo upload routes (profile + room photos)
+- [x] NSFWJS: integrated into web server action photo upload functions (profile-mutations + room-mutations)
+- [x] DB: added `moderation_status` column to `profile_photos` and `room_photos` tables
+- [x] RLS: discover/public queries filter `moderation_status = 'approved'` (cover photo joins + full photo list)
+- [x] Web + mobile typecheck passes
+
+### Still TODO
+
+- [ ] DB: `db:push` to apply schema changes (run when ready)
+- [ ] Admin: image review queue page in `apps/admin` (deferred to admin dashboard work)
+- [ ] Mutation `onError` callbacks: deferred to Phase 2 (needs toast component first). Errors are already surfaced via `throwOnError: true` in query client defaults -- components can use `error` state from `useMutation()` to show feedback.

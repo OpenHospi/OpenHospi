@@ -28,6 +28,7 @@ import {
   houseTypeEnum,
   languageEnum,
   locationTagEnum,
+  moderationStatusEnum,
   rentalTypeEnum,
   roomFeatureEnum,
   roomStatusEnum,
@@ -140,6 +141,7 @@ export const roomPhotos = pgTable(
     slot: smallint("slot").notNull(),
     url: text("url").notNull(),
     caption: text("caption"),
+    moderationStatus: moderationStatusEnum("moderation_status").default("approved").notNull(),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow(),
   },
   (table) => [

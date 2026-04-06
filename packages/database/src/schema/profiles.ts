@@ -20,6 +20,7 @@ import {
   languageEnum,
   lifestyleTagEnum,
   localeEnum,
+  moderationStatusEnum,
   studyLevelEnum,
   verenigingEnum,
 } from "./enums";
@@ -82,6 +83,7 @@ export const profilePhotos = pgTable(
     slot: smallint("slot").notNull(),
     url: text("url").notNull(),
     caption: text("caption"),
+    moderationStatus: moderationStatusEnum("moderation_status").default("approved").notNull(),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow(),
   },
   (table) => [

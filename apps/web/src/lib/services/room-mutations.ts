@@ -373,6 +373,7 @@ export async function saveRoomPhotoForUser(
   file: File,
   roomId: string,
   slot: number,
+  flagged = false,
 ) {
   if (!file) return { error: CommonError.upload_failed };
   if (slot < 1 || slot > 10) return { error: CommonError.upload_failed };
@@ -387,13 +388,14 @@ export async function saveRoomPhotoForUser(
     url = await uploadPhotoToStorage(file, STORAGE_BUCKET_ROOM_PHOTOS, path);
 
     const photoUrl = url;
+    const moderationStatus = flagged ? ("pending_review" as const) : ("approved" as const);
     const [photo] = await createDrizzleSupabaseClient(userId).rls((tx) =>
       tx
         .insert(roomPhotos)
-        .values({ roomId, slot, url: photoUrl })
+        .values({ roomId, slot, url: photoUrl, moderationStatus })
         .onConflictDoUpdate({
           target: [roomPhotos.roomId, roomPhotos.slot],
-          set: { url: photoUrl, uploadedAt: new Date() },
+          set: { url: photoUrl, moderationStatus, uploadedAt: new Date() },
         })
         .returning(),
     );

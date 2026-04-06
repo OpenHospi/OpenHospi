@@ -69,3 +69,8 @@ export const senderKeyDistributionStatusEnum = pgEnum(
   "sender_key_distribution_status_enum",
   SenderKeyDistributionStatus.values,
 );
+export const moderationStatusEnum = pgEnum("moderation_status_enum", [
+  "approved",
+  "pending_review",
+  "rejected",
+]);

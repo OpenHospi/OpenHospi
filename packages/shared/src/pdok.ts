@@ -24,7 +24,9 @@ export type CitySuggestion = {
 // ── Utilities ───────────────────────────────────────────────
 
 export function parseWktPoint(wkt: string): { latitude: number; longitude: number } | null {
-  const match = wkt.match(/POINT\(([^ ]+) ([^ ]+)\)/);
+  // Match PDOK WKT format: POINT(lon lat) where lon/lat are decimal numbers
+  // Uses specific numeric pattern to avoid polynomial regex backtracking (CodeQL)
+  const match = wkt.match(/^POINT\((-?[\d.]+) (-?[\d.]+)\)$/);
   if (!match) return null;
   return { longitude: Number.parseFloat(match[1]), latitude: Number.parseFloat(match[2]) };
 }

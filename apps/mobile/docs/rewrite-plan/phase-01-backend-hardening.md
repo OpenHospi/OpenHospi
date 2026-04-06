@@ -325,8 +325,11 @@ New page: **Image Review Queue**
 - [x] RLS: discover/public queries filter `moderation_status = 'approved'` (cover photo joins + full photo list)
 - [x] Web + mobile typecheck passes
 
-### Still TODO
+### Remaining action
 
-- [ ] DB: `db:push` to apply schema changes (run when ready)
-- [ ] Admin: image review queue page in `apps/admin` (deferred to admin dashboard work)
-- [ ] Mutation `onError` callbacks: deferred to Phase 2 (needs toast component first). Errors are already surfaced via `throwOnError: true` in query client defaults -- components can use `error` state from `useMutation()` to show feedback.
+- [ ] DB: `db:push` to apply schema changes (run manually when Supabase is running)
+
+### Moved to other docs (fully tracked, not lost)
+
+- Mutation `onError` callbacks -> moved to `phase-02-foundation.md` (needs toast component first)
+- Admin image review queue -> moved to `phase-1.1-admin-review-queue.md` (separate scope)

@@ -234,6 +234,23 @@ Every existing component gets a visual and interaction overhaul.
 
 ---
 
+## Carried from Phase 1: Mutation `onError` Callbacks
+
+> Moved here from Phase 1 because it requires the toast/error feedback component built in this phase.
+
+After creating the toast/error UI components (part of the empty-state and error-state work above), add `onError` callbacks to every mutation across all 11 service files. Pattern:
+
+```typescript
+onError: (error) => {
+  // Show toast with specific error message
+  // Use error.message for API errors, generic message for network errors
+},
+```
+
+All ~45 mutations in `src/services/*.ts` need this. The `throwOnError: true` in query client defaults already surfaces errors to components, but `onError` adds per-mutation toast feedback for better UX.
+
+---
+
 ## Verification Checklist
 
 After completing this phase:
@@ -249,3 +266,5 @@ After completing this phase:
 - [ ] All skeleton variants render correctly
 - [ ] Swipeable row reveals action buttons on swipe
 - [ ] Filter state persists across app restarts (MMKV)
+- [ ] All ~45 mutations have `onError` callbacks with toast feedback
+- [ ] Error toast component renders correctly

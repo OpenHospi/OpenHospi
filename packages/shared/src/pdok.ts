@@ -1,5 +1,4 @@
 import { PDOK_LOOKUP_URL, PDOK_SUGGEST_URL, PDOK_SUGGESTION_LIMIT } from "./constants/external";
-import { ADDRESS_DEBOUNCE_MS } from "./constants/ux";
 
 // ── Types ───────────────────────────────────────────────────
 
@@ -83,5 +82,3 @@ export async function searchCities(query: string): Promise<CitySuggestion[]> {
     name: doc.woonplaatsnaam,
   }));
 }
-
-export { ADDRESS_DEBOUNCE_MS };

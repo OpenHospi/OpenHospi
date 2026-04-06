@@ -1,7 +1,8 @@
 "use client";
 
+import { ADDRESS_DEBOUNCE_MS } from "@openhospi/shared/constants";
 import type { AddressResult, AddressSuggestion } from "@openhospi/shared/pdok";
-import { ADDRESS_DEBOUNCE_MS, lookupAddress, searchAddresses } from "@openhospi/shared/pdok";
+import { lookupAddress, searchAddresses } from "@openhospi/shared/pdok";
 import { MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 

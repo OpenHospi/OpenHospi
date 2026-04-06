@@ -95,7 +95,8 @@
       "brace-expansion@1": "1.1.13",
       "brace-expansion@2": "2.0.3",
       "@expo/dom-webview": "55.0.5",
-      "@expo/log-box": "55.0.8"
+      "@expo/log-box": "55.0.8",
+      "tar": ">=7.5.7"
     },
     "ignoredBuiltDependencies": [
       "@prisma/engines",

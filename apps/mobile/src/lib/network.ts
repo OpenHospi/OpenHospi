@@ -33,11 +33,22 @@ function updateStatus(state: NetworkState) {
   notifyListeners();
 
   // Fire restore callbacks when transitioning from offline to online
+  // Debounced to prevent query floods on rapid WiFi reconnections
   if (!wasOnline && isOnline) {
+    fireRestoreCallbacks();
+  }
+}
+
+let restoreDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+function fireRestoreCallbacks() {
+  if (restoreDebounceTimer) clearTimeout(restoreDebounceTimer);
+  restoreDebounceTimer = setTimeout(() => {
     for (const cb of restoreCallbacks) {
       cb();
     }
-  }
+    restoreDebounceTimer = null;
+  }, 200);
 }
 
 // ── Initialization ──────────────────────────────────────────

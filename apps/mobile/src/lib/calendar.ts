@@ -1,6 +1,8 @@
 import * as Calendar from 'expo-calendar';
 import { Alert, Linking, Platform } from 'react-native';
 
+import { API_BASE_URL } from '@/lib/constants';
+
 // ── Calendar Permission ─────────────────────────────────────
 
 async function ensureCalendarPermission(): Promise<boolean> {
@@ -70,14 +72,14 @@ export async function addEventToCalendar(event: EventDetails): Promise<boolean> 
 // Opens the system calendar subscription flow with the iCal URL.
 
 export async function subscribeToFeed(calendarToken: string) {
-  const webcalUrl = `webcal://openhospi.nl/api/calendar/${calendarToken}`;
+  const baseUrl = API_BASE_URL.replace(/^https?:\/\//, '');
+  const webcalUrl = `webcal://${baseUrl}/api/calendar/${calendarToken}`;
   const canOpen = await Linking.canOpenURL(webcalUrl);
 
   if (canOpen) {
     await Linking.openURL(webcalUrl);
   } else {
-    // Fallback: try https URL which some calendar apps handle
-    const httpsUrl = `https://openhospi.nl/api/calendar/${calendarToken}`;
+    const httpsUrl = `${API_BASE_URL}/api/calendar/${calendarToken}`;
     await Linking.openURL(httpsUrl);
   }
 }

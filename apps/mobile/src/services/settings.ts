@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 import type { ActiveConsent, SessionInfo } from '@openhospi/shared/api-types';
@@ -9,6 +10,7 @@ export function useConsent() {
   return useQuery({
     queryKey: queryKeys.settings.consent(),
     queryFn: () => api.get<ActiveConsent[]>('/api/mobile/settings/consent'),
+    staleTime: STALE_TIMES.settings,
   });
 }
 
@@ -25,6 +27,7 @@ export function useSessions() {
   return useQuery({
     queryKey: queryKeys.settings.sessions(),
     queryFn: () => api.get<SessionInfo[]>('/api/mobile/settings/sessions'),
+    staleTime: STALE_TIMES.settings,
   });
 }
 

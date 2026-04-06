@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api, NetworkError } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 import { getNetworkStatus } from '@/lib/network';
 
 import { queryKeys } from './keys';
@@ -33,6 +34,7 @@ export function useMyHouse() {
   return useQuery({
     queryKey: queryKeys.house.detail(),
     queryFn: () => api.get<MyHouseResponse>('/api/mobile/my-house'),
+    staleTime: STALE_TIMES.houses,
   });
 }
 

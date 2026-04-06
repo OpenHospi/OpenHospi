@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 
@@ -26,17 +27,18 @@ export function useNotifications() {
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) =>
       lastPage.notifications.length > 0 ? lastPageParam + 1 : undefined,
+    staleTime: STALE_TIMES.notifications,
+    // NOTE: Offset-based pagination has edge cases (skip/duplicate on delete).
+    // Switch to cursor-based when the backend API supports it.
   });
 }
 
 export function useUnreadNotificationCount() {
   return useQuery({
     queryKey: queryKeys.notifications.unreadCount(),
-    queryFn: async () => {
-      const data = await api.get<NotificationsResponse>('/api/mobile/notifications?page=1');
-      return data.unreadCount;
-    },
-    staleTime: 1000 * 60, // 1 minute
+    queryFn: () => api.get<NotificationsResponse>('/api/mobile/notifications?page=1'),
+    select: (data) => data.unreadCount,
+    staleTime: STALE_TIMES.notifications,
   });
 }
 

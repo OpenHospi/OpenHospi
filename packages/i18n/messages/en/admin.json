@@ -10,8 +10,34 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "reports": "Reports",
+      "imageReview": "Image Review",
       "dataRequests": "Data requests",
       "auditLog": "Audit log"
+    },
+    "imageReview": {
+      "title": "Image Review Queue",
+      "description": "Review photos flagged by automated content screening.",
+      "emptyState": "No photos pending review",
+      "emptyDescription": "All uploaded photos have been reviewed. Check back later.",
+      "colPreview": "Preview",
+      "colType": "Type",
+      "colUploader": "Uploader",
+      "colRoom": "Room",
+      "colUploaded": "Uploaded",
+      "colActions": "Actions",
+      "typeProfile": "Profile",
+      "typeRoom": "Room",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approveConfirm": "Approve this photo? It will become visible to all users.",
+      "rejectConfirm": "Reject this photo? It will be permanently hidden and the user will be notified.",
+      "approveSuccess": "Photo approved",
+      "rejectSuccess": "Photo rejected",
+      "error": "Something went wrong. Please try again.",
+      "stats": {
+        "pending": "Pending review",
+        "reviewedToday": "Reviewed today"
+      }
     },
     "userMenu": {},
     "dashboard": "Dashboard",

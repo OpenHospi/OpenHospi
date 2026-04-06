@@ -938,7 +938,13 @@ async function main() {
         features: f.valuesFromArray({
           values: [
             ["shared_kitchen", "bike_storage", "wifi_included", "dishwasher", "no_smoking"],
-            ["shared_kitchen", "shared_bathroom", "bike_storage", "wifi_included", "washing_machine"],
+            [
+              "shared_kitchen",
+              "shared_bathroom",
+              "bike_storage",
+              "wifi_included",
+              "washing_machine",
+            ],
             ["private_kitchen", "shared_bathroom", "wifi_included", "bike_storage", "no_pets"],
             ["shared_kitchen", "balcony", "bike_storage", "wifi_included", "no_smoking"],
             ["shared_kitchen", "garden", "bike_storage", "wifi_included", "pets_allowed"],
@@ -964,7 +970,13 @@ async function main() {
             ["shared_kitchen", "shared_bathroom", "bike_storage", "wifi_included", "no_smoking"],
             ["shared_kitchen", "wifi_included", "bike_storage", "washing_machine", "parking"],
             ["shared_kitchen", "shared_bathroom", "garden", "wifi_included", "bike_storage"],
-            ["shared_kitchen", "shared_bathroom", "wifi_included", "washing_machine", "bike_storage"],
+            [
+              "shared_kitchen",
+              "shared_bathroom",
+              "wifi_included",
+              "washing_machine",
+              "bike_storage",
+            ],
             ["private_bathroom", "private_kitchen", "wifi_included", "parking", "bike_storage"],
             ["shared_kitchen", "shared_bathroom", "bike_storage", "wifi_included"],
             ["private_kitchen", "shared_bathroom", "wifi_included", "bike_storage"],
@@ -1316,9 +1328,78 @@ async function main() {
     .where(inArray(rooms.rentalType, ["temporary", "sublet"]));
 
   await seedPhotos(db);
+  await seedFlaggedPhotos(db);
 
   await client.end();
   console.log("Local database seeded successfully.");
+}
+
+// ── Flagged photo seeding (for admin review queue testing) ──
+
+async function seedFlaggedPhotos(db: ReturnType<typeof drizzle>) {
+  console.log("🔍 Flagging photos for moderation review...");
+
+  // Flag 6 profile photos as pending_review
+  const profilePhotosToFlag = await db
+    .select({ id: profilePhotos.id })
+    .from(profilePhotos)
+    .orderBy(asc(profilePhotos.uploadedAt))
+    .limit(6);
+
+  if (profilePhotosToFlag.length > 0) {
+    await db
+      .update(profilePhotos)
+      .set({ moderationStatus: "pending_review" })
+      .where(
+        inArray(
+          profilePhotos.id,
+          profilePhotosToFlag.map((p) => p.id),
+        ),
+      );
+  }
+
+  // Flag 6 room photos as pending_review
+  const roomPhotosToFlag = await db
+    .select({ id: roomPhotos.id })
+    .from(roomPhotos)
+    .orderBy(asc(roomPhotos.uploadedAt))
+    .limit(6);
+
+  if (roomPhotosToFlag.length > 0) {
+    await db
+      .update(roomPhotos)
+      .set({ moderationStatus: "pending_review" })
+      .where(
+        inArray(
+          roomPhotos.id,
+          roomPhotosToFlag.map((p) => p.id),
+        ),
+      );
+  }
+
+  // Set 2 profile photos as rejected to test that state
+  const profilePhotosToReject = await db
+    .select({ id: profilePhotos.id })
+    .from(profilePhotos)
+    .where(eq(profilePhotos.moderationStatus, "approved"))
+    .limit(2);
+
+  if (profilePhotosToReject.length > 0) {
+    await db
+      .update(profilePhotos)
+      .set({ moderationStatus: "rejected" })
+      .where(
+        inArray(
+          profilePhotos.id,
+          profilePhotosToReject.map((p) => p.id),
+        ),
+      );
+  }
+
+  console.log(
+    `   ✓ Flagged ${profilePhotosToFlag.length} profile + ${roomPhotosToFlag.length} room photos as pending_review`,
+  );
+  console.log(`   ✓ Set ${profilePhotosToReject.length} profile photos as rejected`);
 }
 
 // ── Photo seeding ────────────────────────────────────────────────────
@@ -1383,10 +1464,7 @@ async function seedRoomPhoto(
 }
 
 async function seedPhotos(db: ReturnType<typeof drizzle>) {
-  const allProfiles = await db
-    .select({ id: profiles.id })
-    .from(profiles)
-    .orderBy(asc(profiles.id));
+  const allProfiles = await db.select({ id: profiles.id }).from(profiles).orderBy(asc(profiles.id));
   const allRooms = await db.select({ id: rooms.id }).from(rooms).orderBy(asc(rooms.id));
 
   // Clean existing storage files (idempotent re-runs)
@@ -1443,6 +1521,3 @@ async function seedPhotos(db: ReturnType<typeof drizzle>) {
 }
 
 main();
-
-
-

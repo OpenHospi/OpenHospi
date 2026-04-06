@@ -10,8 +10,34 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "reports": "Meldingen",
+      "imageReview": "Fotobeoordeling",
       "dataRequests": "Gegevensverzoeken",
       "auditLog": "Auditlog"
+    },
+    "imageReview": {
+      "title": "Foto beoordelingslijst",
+      "description": "Beoordeel foto's die door geautomatiseerde inhoudscontrole zijn gemarkeerd.",
+      "emptyState": "Geen foto's in afwachting van beoordeling",
+      "emptyDescription": "Alle foto's zijn beoordeeld. Kijk later nog eens.",
+      "colPreview": "Voorbeeld",
+      "colType": "Type",
+      "colUploader": "Uploader",
+      "colRoom": "Kamer",
+      "colUploaded": "Geüpload",
+      "colActions": "Acties",
+      "typeProfile": "Profiel",
+      "typeRoom": "Kamer",
+      "approve": "Goedkeuren",
+      "reject": "Afwijzen",
+      "approveConfirm": "Deze foto goedkeuren? De foto wordt zichtbaar voor alle gebruikers.",
+      "rejectConfirm": "Deze foto afwijzen? De foto wordt permanent verborgen en de gebruiker wordt op de hoogte gesteld.",
+      "approveSuccess": "Foto goedgekeurd",
+      "rejectSuccess": "Foto afgewezen",
+      "error": "Er is iets misgegaan. Probeer het opnieuw.",
+      "stats": {
+        "pending": "In afwachting van beoordeling",
+        "reviewedToday": "Vandaag beoordeeld"
+      }
     },
     "userMenu": {},
     "dashboard": "Dashboard",

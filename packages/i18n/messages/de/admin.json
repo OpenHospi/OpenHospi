@@ -10,8 +10,34 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "reports": "Meldungen",
+      "imageReview": "Bildüberprüfung",
       "dataRequests": "Datenanfragen",
       "auditLog": "Auditprotokoll"
+    },
+    "imageReview": {
+      "title": "Bildüberprüfungswarteschlange",
+      "description": "Fotos überprüfen, die von der automatischen Inhaltsprüfung markiert wurden.",
+      "emptyState": "Keine Fotos zur Überprüfung ausstehend",
+      "emptyDescription": "Alle Fotos wurden überprüft. Schauen Sie später noch einmal vorbei.",
+      "colPreview": "Vorschau",
+      "colType": "Typ",
+      "colUploader": "Uploader",
+      "colRoom": "Zimmer",
+      "colUploaded": "Hochgeladen",
+      "colActions": "Aktionen",
+      "typeProfile": "Profil",
+      "typeRoom": "Zimmer",
+      "approve": "Genehmigen",
+      "reject": "Ablehnen",
+      "approveConfirm": "Dieses Foto genehmigen? Es wird für alle Nutzer sichtbar.",
+      "rejectConfirm": "Dieses Foto ablehnen? Es wird dauerhaft ausgeblendet und der Nutzer wird benachrichtigt.",
+      "approveSuccess": "Foto genehmigt",
+      "rejectSuccess": "Foto abgelehnt",
+      "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+      "stats": {
+        "pending": "Überprüfung ausstehend",
+        "reviewedToday": "Heute überprüft"
+      }
     },
     "userMenu": {},
     "dashboard": "Dashboard",

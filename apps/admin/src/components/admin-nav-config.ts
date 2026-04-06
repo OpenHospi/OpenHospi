@@ -1,4 +1,4 @@
-import { BarChart3, ClipboardList, FileText, ScrollText } from "lucide-react";
+import { BarChart3, ClipboardList, FileText, ImageOff, ScrollText } from "lucide-react";
 
 export const ADMIN_NAV_ITEMS = [
   {
@@ -12,6 +12,12 @@ export const ADMIN_NAV_ITEMS = [
     label: "admin.sidebar.reports",
     href: "/reports" as const,
     icon: ClipboardList,
+  },
+  {
+    id: "image-review",
+    label: "admin.sidebar.imageReview",
+    href: "/image-review" as const,
+    icon: ImageOff,
   },
   {
     id: "data-requests",

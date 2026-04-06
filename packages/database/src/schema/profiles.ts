@@ -15,7 +15,6 @@ import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { user } from "./auth-schema";
 import {
-  cityEnum,
   genderEnum,
   languageEnum,
   lifestyleTagEnum,
@@ -42,7 +41,7 @@ export const profiles = pgTable(
     studyProgram: text("study_program"),
     studyLevel: studyLevelEnum("study_level"),
     vereniging: verenigingEnum("vereniging"),
-    preferredCity: cityEnum("preferred_city"),
+    preferredCity: text("preferred_city"),
     lifestyleTags: lifestyleTagEnum("lifestyle_tags").array().default([]),
     languages: languageEnum("languages").array().default([]),
     preferredLocale: localeEnum("preferred_locale").default("nl"),

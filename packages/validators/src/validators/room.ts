@@ -4,7 +4,6 @@ import {
   MAX_ROOM_TITLE_LENGTH,
 } from "@openhospi/shared/constants";
 import {
-  City,
   Furnishing,
   GenderPreference,
   HouseType,
@@ -22,7 +21,7 @@ const DUTCH_POSTAL_CODE_REGEX = /^\d{4}\s?[A-Za-z]{2}$/;
 const baseRoomSchema = z.object({
   title: z.string().min(1).max(MAX_ROOM_TITLE_LENGTH),
   description: z.string().max(MAX_ROOM_DESCRIPTION_LENGTH).optional(),
-  city: z.enum(City.values),
+  city: z.string().min(1).max(255),
   neighborhood: z.string().max(100).optional(),
   streetName: z.string().max(100).optional(),
   houseNumber: z.string().max(20).optional(),

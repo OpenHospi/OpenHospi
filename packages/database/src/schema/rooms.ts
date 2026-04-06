@@ -22,7 +22,6 @@ import {
 import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import {
-  cityEnum,
   furnishingEnum,
   genderPreferenceEnum,
   houseTypeEnum,
@@ -50,7 +49,7 @@ export const rooms = pgTable(
       .references(() => houses.id),
     title: text("title").notNull(),
     description: text("description"),
-    city: cityEnum("city").notNull(),
+    city: text("city").notNull(),
     neighborhood: text("neighborhood"),
     streetName: text("street_name"),
     houseNumber: text("house_number"),

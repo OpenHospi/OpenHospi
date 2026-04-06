@@ -2,11 +2,14 @@
 
 ## What & Why
 
-OpenHospi's mobile app (Expo SDK 55, ~17.5K LOC) has all major features at parity with web, but the UI feels amateur, navigation is confusing, and it's buggy. Students live on their phones: if the app isn't polished, nobody will use it. This is a non-profit serving Dutch students, so the quality bar is high.
+OpenHospi's mobile app (Expo SDK 55, ~17.5K LOC) has all major features at parity with web, but the UI feels amateur,
+navigation is confusing, and it's buggy. Students live on their phones: if the app isn't polished, nobody will use it.
+This is a non-profit serving Dutch students, so the quality bar is high.
 
 ## Scope
 
-UX-focused overhaul + backend hardening. Keep working backend integrations (crypto, auth, SQLite). Rewrite every screen and component for Airbnb-quality discovery + WhatsApp-quality chat. Fix critical bugs in the data layer.
+UX-focused overhaul + backend hardening. Keep working backend integrations (crypto, auth, SQLite). Rewrite every screen
+and component for Airbnb-quality discovery + WhatsApp-quality chat. Fix critical bugs in the data layer.
 
 ## User Decisions
 
@@ -20,7 +23,7 @@ UX-focused overhaul + backend hardening. Keep working backend integrations (cryp
 ## Phase Index
 
 | Phase                                    | Name                       | Focus                                                                        | Files                 |
-| ---------------------------------------- | -------------------------- | ---------------------------------------------------------------------------- | --------------------- |
+|------------------------------------------|----------------------------|------------------------------------------------------------------------------|-----------------------|
 | [1](./phase-01-backend-hardening.md)     | Backend Hardening          | Fix bugs, optimize data layer, NSFWJS image moderation                       | DONE                  |
 | [1.1](./phase-1.1-admin-review-queue.md) | Admin Review Queue         | Admin page for reviewing NSFWJS-flagged photos                               | ~5 files (apps/admin) |
 | [2](./phase-02-foundation.md)            | Foundation & Design System | New utilities, UI primitives, shared components + mutation onError callbacks | ~45 files             |
@@ -37,16 +40,18 @@ UX-focused overhaul + backend hardening. Keep working backend integrations (cryp
 ## New Dependencies
 
 | Package                                               | Purpose                                             | Config Required                                  |
-| ----------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
+|-------------------------------------------------------|-----------------------------------------------------|--------------------------------------------------|
 | `expo-maps`                                           | Native maps (Apple MapKit iOS, Google Maps Android) | Config plugin + Google Cloud API key for Android |
 | `@gorhom/bottom-sheet` v5                             | Gesture-driven bottom sheets                        | `BottomSheetModalProvider` in root layout        |
 | `@shopify/flash-list`                                 | High-performance lists with cell recycling          | None (drop-in FlatList replacement)              |
 | `react-native-mmkv` v4 + `react-native-nitro-modules` | Synchronous KV store                                | `expo prebuild` required                         |
 | `expo-local-authentication`                           | Biometric auth (Face ID, fingerprint)               | Config plugin for Face ID permission             |
 
-**Server-side only (apps/web)**: `nsfwjs` + `@tensorflow/tfjs-node` -- free image moderation, ~93% accuracy, GDPR-perfect
+**Server-side only (apps/web)**: `nsfwjs` + `@tensorflow/tfjs-node` -- free image moderation, ~93% accuracy,
+GDPR-perfect
 
-**Shared package** (new): `packages/shared/src/pdok.ts` -- `searchCities()` utility for PDOK city search (used by web + mobile)
+**Shared package** (new): `packages/shared/src/pdok.ts` -- `searchCities()` utility for PDOK city search (used by web +
+mobile
 
 **Mobile** (new): `src/components/city-search.tsx` -- PDOK-powered city search component for preferred city
 
@@ -54,7 +59,8 @@ Already installed: expo-camera, expo-haptics, expo-image, expo-image-picker, exp
 
 Remove: `react-native-leaflet-view` + patch + leaflet.html asset + expo-doctor exclusion
 
-**Delete**: `packages/shared/src/enums/cities.ts` (City enum replaced by free-text PDOK cities) + `enums.city.*` translation keys from all locales
+**Delete**: `packages/shared/src/enums/cities.ts` (City enum replaced by free-text PDOK cities) + `enums.city.*`
+translation keys from all locales
 
 ## Execution Timeline
 

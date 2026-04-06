@@ -84,14 +84,68 @@ Rewrite 2 screens: applications list (status-grouped) and application detail (ti
 
 ---
 
+## UX Requirements
+
+### Skeleton loading
+
+- **Applications list**: 3 `SkeletonApplicationCard` (photo rect + 2 text lines + badge)
+- **Application detail**: Room card skeleton + 4 timeline dot skeletons
+
+### Error handling
+
+- **List fetch fails**: "Couldn't load applications." + retry button
+- **Withdraw fails**: "Couldn't withdraw. Try again." + keep confirmation open for retry
+- **RSVP accept fails**: "Couldn't accept invitation." + retry button on the card
+- **RSVP decline fails**: "Couldn't decline." + retry
+- **Detail fetch fails**: "Application not found." + back button
+
+### Empty states
+
+- **No applications**: "You haven't applied to any rooms yet. Start discovering!" + CTA to discover tab
+- **No active applications**: "All caught up! No pending applications." (within section)
+- **No event invitations**: "No event invitations yet."
+
+### Animations
+
+- Application cards: `FadeIn` staggered entering per section
+- Timeline dots: staggered `FadeIn` in sequence (dot 1, then 2, then 3...)
+- RSVP success: button transforms to checkmark with spring animation
+- Withdraw: card slides out with `FadeOut`
+
+### Haptic feedback
+
+- RSVP accept: `hapticSuccess()`
+- RSVP decline: `hapticMedium()`
+- Withdraw confirm: `hapticHeavy()`
+- Withdraw success: `hapticSuccess()`
+- Pull-to-refresh trigger: `hapticLight()`
+- Tap room card: `hapticLight()`
+
+### Accessibility
+
+- Application cards: `accessibilityLabel="Application to [room title], status: [status], applied [date]"`
+- Status badges: not color-only, include text label
+- Timeline steps: `accessibilityLabel="Step: [status], [date]"`
+- RSVP buttons: `accessibilityLabel="Accept event invitation"` / `"Decline event invitation"`
+- Withdraw button: `accessibilityLabel="Withdraw application"`
+- All touch targets minimum 44pt
+
+### Pull-to-refresh
+
+- Applications list: yes
+- Application detail: yes
+
+---
+
 ## Verification Checklist
 
-- [ ] Applications list shows correct status-grouped sections
-- [ ] Application cards display room photo, title, status badge
-- [ ] Application detail timeline renders correctly for each status
-- [ ] RSVP accept/decline works with optimistic update
-- [ ] Withdraw application works with confirmation
-- [ ] Pull-to-refresh works
-- [ ] Empty state shows when no applications
-- [ ] Skeleton loading shows while data fetches
-- [ ] Tap room card in detail navigates to room detail screen
+- [ ] Applications list shows skeletons on load (not spinner)
+- [ ] Application cards with status badges, room photo, timeline preview
+- [ ] Timeline dots animate in sequence
+- [ ] RSVP accept/decline with optimistic update and haptic
+- [ ] Withdraw with confirmation, haptic, and card animation
+- [ ] Specific error messages for each failure type
+- [ ] Empty state with CTA to discover tab
+- [ ] Pull-to-refresh on both screens
+- [ ] All elements have accessibilityLabel
+- [ ] All touch targets minimum 44pt

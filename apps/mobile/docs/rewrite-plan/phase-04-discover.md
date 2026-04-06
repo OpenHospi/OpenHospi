@@ -1,10 +1,10 @@
 # Phase 4: Discover Tab (Flagship Screen)
 
-> The single most important screen. Airbnb-style map + list split view.
+> The single most important screen. Full-bleed photo cards with native search.
 
 ## Summary
 
-Rewrite the discover screen from a plain list to a map + draggable list split view. Replace Leaflet WebView map on room detail with native `expo-maps`. Add filter sheet and apply sheet with `@gorhom/bottom-sheet`.
+Rewrite the discover screen as an immersive **full-bleed photo card feed** with native search and a **map FAB** for spatial browsing. Replace Leaflet WebView map on room detail with native `expo-maps`. Add filter sheet and apply sheet with `@gorhom/bottom-sheet`.
 
 **Server-side prerequisite**: Add `latitude`/`longitude` (with privacy offset) to the `DiscoverRoom` API type before starting this phase.
 
@@ -12,26 +12,106 @@ Rewrite the discover screen from a plain list to a map + draggable list split vi
 
 ## Discovery Screen (`src/app/(app)/(tabs)/discover/index.tsx`) -- MAJOR REWRITE
 
-### Architecture
+### Layout
 
 ```
-+---------------------------+
-|        Search Bar         |
-|  [Filter] [City] [Price]  |  <-- filter chips
-+---------------------------+
-|                           |
-|     expo-maps MapView     |  <-- AppleMapsView (iOS) / GoogleMapsView (Android)
-|    with price markers     |
-|     and privacy circles   |
-|                           |
-+---------------------------+
-|  ======================== |  <-- @gorhom/bottom-sheet handle
-|  Room Card 1   [$450/mo]  |
-|  Room Card 2   [$380/mo]  |  <-- FlashList inside bottom sheet
-|  Room Card 3   [$520/mo]  |
-|  ...                      |
-+---------------------------+
++-----------------------------+
+|  LogoText              [ ⫏ ]|  <-- header: logo title + filter toolbar button
+|  [ Native Search Bar      ] |  <-- Stack.SearchBar (native iOS/Android)
++-----------------------------+
+|  [Amsterdam] [<600] [Furn.] |  <-- active filter chips (only when filters active)
++-----------------------------+
+|                             |
+| +-------------------------+ |
+| |                         | |
+| |                         | |
+| |     Large Room Photo    | |  <-- full-bleed photo, ~60% of card height
+| |                         | |
+| |                   €450  | |  <-- price badge overlay (bottom-right)
+| +-------------------------+ |
+| | Cozy room in De Pijp    | |  <-- title (bold)
+| | Amsterdam · 45m² · Furn.| |  <-- city + details (muted)
+| +-------------------------+ |
+|                             |
+| +-------------------------+ |
+| |                         | |
+| |     Next Room Photo     | |
+| |                   €380  | |
+| +-------------------------+ |
+| | Bright studio near VU   | |
+| | Amsterdam · 28m²        | |
+| +-------------------------+ |
+|                             |
+|                   [ Map 🗺 ]|  <-- FAB bottom-right (toggles to map view)
++-----------------------------+
 ```
+
+### Header (keep existing native patterns)
+
+Keep the existing header as-is -- it already works great on both platforms:
+
+- **`Stack.SearchBar`** -- native search bar in the navigation header
+- **`Stack.Toolbar placement="right"`** + **`Stack.Toolbar.Button`** -- filter icon, navigates to filter-sheet modal
+- **`LogoText`** in `headerTitle`
+
+### Card Feed (new)
+
+- Replace `FlatList` with **FlashList** of **full-bleed photo cards**
+- Each card:
+  - **Cover photo**: full card width, ~60% of card height (~220px), rounded top corners
+  - **Price badge**: overlay in bottom-right of photo (semi-transparent background, white text, bold)
+  - **Title**: bold, below photo
+  - **Details line**: city + room size + furnishing status (muted text)
+  - Card: `rounded-xl`, subtle shadow (`shadow-sm`), `bg-card`
+- `CachedImage` for cover photos with disk caching + placeholder
+- `FadeIn.duration(200)` entering animation, staggered by index
+- Haptic on card press (`hapticLight()`)
+- Tap card -> navigate to room detail
+- Infinite scroll with pagination
+- Pull-to-refresh
+- **Active filter chips**: horizontal scrollable row between header and cards (only visible when filters are active, collapses when no filters)
+
+### Map FAB (new)
+
+- Floating action button in bottom-right corner (above tab bar)
+- Map icon, brand color, circular, subtle shadow
+- Tap -> toggles to full-screen map view
+- `hapticLight()` on press
+- Animated appear (spring scale-in on mount)
+
+### Map View (toggled via FAB)
+
+When map FAB is tapped:
+
+```
++-----------------------------+
+|  LogoText              [ ⫏ ]|  <-- same header
+|  [ Native Search Bar      ] |
++-----------------------------+
+|                             |
+|                             |
+|      expo-maps MapView      |  <-- full screen map
+|     with price markers      |
+|     and privacy circles     |
+|                             |
+|                             |
++-----------------------------+
+|  +-----------------------+  |  <-- bottom sheet (peek) when marker tapped
+|  | Room Card preview     |  |
+|  +-----------------------+  |
+|                  [ List 📋 ]|  <-- FAB changes to list icon
++-----------------------------+
+```
+
+- `expo-maps` (`AppleMapsView` on iOS, `GoogleMapsView` on Android) fills the screen
+- Markers at privacy-offset coordinates with price in callout title
+- Privacy circles (300m radius, semi-transparent blue)
+- Tap marker -> `@gorhom/bottom-sheet` peeks up with compact `RoomMapCard` preview
+- Tap room card preview -> navigate to room detail
+- FAB changes to list icon (tap returns to card feed)
+- Remember last-used mode in MMKV
+- Smooth crossfade transition between modes
+- Both modes share same filter state and query data
 
 ### Implementation Details
 
@@ -53,23 +133,13 @@ import { AppleMaps, GoogleMaps } from 'expo-maps';
 { center: { latitude, longitude }, radius: 300, color: 'rgba(59, 130, 246, 0.15)', lineColor: '#3B82F6', lineWidth: 2 }
 ```
 
-**Bottom sheet**: `@gorhom/bottom-sheet` with FlashList inside.
+**Map room preview**: When a marker is tapped, show a `RoomMapCard` (compact room card) in a small bottom sheet at the bottom. Not a full draggable list -- just the selected room.
 
-- 3 snap points: `['15%', '50%', '90%']` (peek, half, full)
-- Default snap: `'50%'` (half screen)
-- `enableDynamicSizing: false`
-
-**Map <-> list sync**:
-
-- Scroll to a room card -> map pans to that room's marker (`setCameraPosition`)
-- Tap a map marker -> list scrolls to that room card + sheet snaps to peek
-- Use `onViewableItemsChanged` on FlashList to track visible rooms
-
-**Filter chips**: Below search bar, show active filters as removable `FilterChip` components. "X" removes the filter and updates the query.
+**Filter chips**: Below search bar in both modes. Show active filters as removable `FilterChip` components. "X" removes the filter and updates the query.
 
 **Search bar**: Keep native `Stack.SearchBar` (already great on both platforms).
 
-**Pre-fetching**: When FlashList renders, prefetch first 5 room details:
+**Pre-fetching**: When FlashList renders (list mode), prefetch first 5 room details:
 
 ```tsx
 queryClient.prefetchQuery({
@@ -78,7 +148,7 @@ queryClient.prefetchQuery({
 });
 ```
 
-### Camera positioning
+### Camera positioning (map mode)
 
 Calculate initial camera from first batch of rooms:
 
@@ -158,6 +228,66 @@ Filters backed by `DiscoverFiltersContext` (MMKV-persisted from Phase 0F).
 
 ---
 
+## UX Requirements (all screens in this phase)
+
+### Skeleton loading (no spinners)
+
+- **Discovery screen initial load**: Map placeholder (gray rect) + 3 `SkeletonRoomCard` in bottom sheet
+- **Room detail**: Photo placeholder + title bar + 4 text line skeletons
+- **Filter sheet**: No skeleton needed (opens instantly, no data fetch)
+- **Apply sheet**: No skeleton needed (form, no data fetch)
+
+### Error handling (specific, not generic)
+
+- **Room list fetch fails**: "Couldn't load rooms. Check your connection." + retry button in empty area
+- **Room detail fetch fails**: "Room not found or unavailable." + back button
+- **Apply fails (network)**: "Couldn't send application. You're offline." + "Retry" button
+- **Apply fails (already applied)**: "You've already applied to this room."
+- **Apply fails (room closed)**: "This room is no longer accepting applications."
+- **Filter apply fails**: Silently retry, show stale cached results with "Results may be outdated" banner
+
+### Empty states with CTAs
+
+- **No rooms match filters**: "No rooms found" + "Clear filters" button + "Broaden your search" suggestion
+- **No rooms at all**: "No rooms available yet. Check back soon!" (unlikely but handle it)
+- **No search results**: "No results for '[query]'" + "Clear search" button
+
+### Animations
+
+- Room cards: `FadeIn.duration(200)` entering animation, staggered by index
+- Bottom sheet: spring animation on snap transitions
+- Filter chips: scale-in when added, scale-out when removed
+- Room detail sections: fade-in as they scroll into view
+- Apply success: checkmark scale animation + haptic success
+
+### Haptic feedback
+
+- Tab on map marker: `hapticSelection()`
+- Tap on room card: `hapticLight()`
+- Apply button press: `hapticLight()`
+- Apply success: `hapticSuccess()`
+- Apply error: `hapticError()`
+- Filter apply: `hapticLight()`
+- Filter reset: `hapticSelection()`
+- Pull-to-refresh trigger: `hapticLight()`
+
+### Accessibility
+
+- Map markers: `accessibilityLabel="Room at [price] per month in [city]"`
+- Room cards: `accessibilityRole="button"`, `accessibilityLabel="[title], [price] per month, [city]"`
+- Filter button: `accessibilityLabel="Open filters"` (not icon-only)
+- Search bar: `accessibilityLabel="Search rooms"`
+- Price text: include "per month" in label (not just the number)
+- All touch targets minimum 44pt
+- Photo gallery: `accessibilityLabel="Room photo [n] of [total]"`
+
+### Pull-to-refresh
+
+- Discovery room list: yes (refreshes both map pins and list)
+- Room detail: yes (refreshes room data)
+
+---
+
 ## Verification Checklist
 
 - [ ] Map renders on iOS (Apple Maps) with markers and privacy circles
@@ -169,6 +299,12 @@ Filters backed by `DiscoverFiltersContext` (MMKV-persisted from Phase 0F).
 - [ ] Room detail loads with photo gallery, parallax, and native map
 - [ ] Apply sheet submits application with optimistic update
 - [ ] Share button triggers native share sheet
-- [ ] Skeleton loading shows while data fetches
+- [ ] Skeleton loading shows on initial load (not spinner)
+- [ ] Specific error messages show for each failure type
+- [ ] Empty state with CTA shows when no rooms match
+- [ ] Room cards animate in with staggered FadeIn
+- [ ] Haptic fires on every interactive element
+- [ ] All icon buttons have accessibilityLabel
+- [ ] All touch targets are minimum 44pt
 - [ ] Pre-fetching loads first 5 room details in background
 - [ ] Pull-to-refresh works on the room list

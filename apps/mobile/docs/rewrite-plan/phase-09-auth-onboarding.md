@@ -93,17 +93,93 @@ const savedStep = mmkv.getNumber(ONBOARDING_STEP_KEY) ?? 0;
 
 ---
 
+## UX Requirements
+
+### Skeleton loading
+
+- **Login screen**: No skeleton (static UI, no data fetch)
+- **Onboarding wizard**: Brief skeleton on `index.tsx` while checking onboarding status from API
+- **Security step**: "Generating encryption keys..." progress indicator (not skeleton, but branded spinner with status text)
+- **Key recovery**: No skeleton (static PIN input)
+
+### Error handling
+
+- **InAcademia login fails (network)**: "No internet connection. Check your WiFi and try again."
+- **InAcademia login fails (auth rejected)**: "Login was cancelled or your institution couldn't verify you. Try again."
+- **InAcademia login fails (unknown)**: "Something went wrong. Please try again." + retry button
+- **Biometric fails (not recognized)**: "Face ID didn't recognize you. Try again or log in with InAcademia."
+- **Biometric fails (not enrolled)**: "Face ID not set up. Log in with InAcademia."
+- **Onboarding step validation**: Highlight specific invalid fields in red with per-field error message (not generic "Invalid data" alert)
+- **Photo upload fails in onboarding**: Per-photo error with retry icon, "Couldn't upload. Tap to retry."
+- **E2EE key generation fails**: "Encryption setup failed. This is needed for secure messaging." + retry button
+- **Key recovery wrong PIN**: "Wrong PIN. [n] attempts remaining." (not just shake animation)
+- **Key recovery PIN exhausted**: "Too many attempts. Your encryption keys cannot be recovered. You'll need to set up new keys."
+
+### Empty states
+
+- Not applicable for login/onboarding (wizard flow, not data screens)
+
+### Animations
+
+- **Login**: Logo scale-in with spring bounce on mount
+- **Login button**: Press scale animation (animated-pressable)
+- **Onboarding step transitions**: `SlideInRight`/`SlideOutLeft` horizontal slide
+- **Step indicator**: Animated progress fill between dots
+- **Step completion**: Brief checkmark flash on completed dot
+- **Photo step**: Photo thumbnails fade-in as they upload
+- **Security step**: Key generation progress ring animation
+- **PIN input**: Dots fill with spring animation, shake on error
+- **Key recovery success**: Green checkmark spring scale
+- **Biometric success**: Brief green flash overlay
+
+### Haptic feedback
+
+- **Login button press**: `hapticLight()`
+- **Login success**: `hapticSuccess()`
+- **Login failure**: `hapticError()`
+- **Biometric success**: `hapticSuccess()`
+- **Biometric failure**: `hapticError()`
+- **Onboarding "Next" button**: `hapticLight()`
+- **Onboarding step complete**: `hapticSuccess()`
+- **Onboarding "Skip" button**: `hapticSelection()`
+- **Photo capture**: `hapticLight()`
+- **PIN digit entry**: `hapticLight()` (subtle, per digit)
+- **PIN correct**: `hapticSuccess()`
+- **PIN wrong**: `hapticError()`
+- **Key generation complete**: `hapticSuccess()`
+
+### Accessibility
+
+- **Login button**: `accessibilityLabel="Log in with your institution account"`
+- **Language picker**: `accessibilityLabel="Change language"` (not icon-only)
+- **Onboarding step indicator**: `accessibilityLabel="Step [n] of 7: [step name]"`
+- **"Next" button**: `accessibilityLabel="Continue to next step"`
+- **"Skip" button**: `accessibilityLabel="Skip this step"`
+- **Photo slots**: `accessibilityLabel="Add profile photo [n]"`
+- **PIN input dots**: `accessibilityLabel="Enter digit [n] of 6"`
+- **All touch targets minimum 44pt**
+- **Form fields**: proper `accessibilityLabel` with field purpose (not just placeholder)
+
+### Pull-to-refresh
+
+- Not applicable (wizard/auth flows, not data lists)
+
+---
+
 ## Verification Checklist
 
-- [ ] Login screen shows brand animation on mount
-- [ ] InAcademia login flow completes successfully
-- [ ] Biometric re-auth works on return (when enabled)
-- [ ] Onboarding: all 7 steps complete and data saves
-- [ ] Onboarding: step transitions are smooth horizontal slides
-- [ ] Onboarding: skip works on optional step (personality)
-- [ ] Onboarding: progress persists across app kills (MMKV)
-- [ ] Onboarding: photo upload works (camera + library)
-- [ ] Onboarding: E2EE key setup generates keys and creates PIN backup
-- [ ] Key recovery: correct PIN restores keys
-- [ ] Key recovery: wrong PIN shows shake animation
-- [ ] Haptic feedback on PIN entry and errors
+- [ ] Login shows brand animation with haptic on button press
+- [ ] Specific error messages for each login failure type
+- [ ] Biometric re-auth with success/failure haptic and specific errors
+- [ ] Onboarding loads with brief skeleton while checking status
+- [ ] Step transitions are smooth horizontal slides with haptic
+- [ ] Step indicator animates progress between dots
+- [ ] Skip works on optional step with haptic
+- [ ] Per-field validation errors (red highlight, not generic alert)
+- [ ] Photo upload with per-photo error/retry
+- [ ] E2EE key setup with progress indicator and specific error handling
+- [ ] Progress persists in MMKV across app kills
+- [ ] PIN input with per-digit haptic, shake on error, specific error messages
+- [ ] Key recovery exhaustion shows clear warning
+- [ ] All buttons have accessibilityLabel
+- [ ] All touch targets minimum 44pt

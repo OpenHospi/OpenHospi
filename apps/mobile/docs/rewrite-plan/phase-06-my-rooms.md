@@ -36,9 +36,14 @@ All screens share: `step-indicator.tsx` at top, smooth horizontal transitions, f
 
 - Title (text input, required)
 - City (select from `City` enum chips)
-- Address (text input)
-- Location picker: `expo-maps` mini-map where user can drag a pin to set approximate room location
-- Uses `expo-maps` `onMapClick` to capture coordinates
+- **Address autocomplete** (same approach as web): type address, PDOK Dutch government API returns suggestions, select one to auto-fill street, house number, postal code, and lat/lng coordinates
+  - Uses `PDOK_SUGGEST_URL` and `PDOK_LOOKUP_URL` from `@openhospi/shared/constants` (already shared)
+  - Create a React Native `AddressAutocomplete` component mirroring `apps/web/src/components/shared/address-autocomplete.tsx`
+  - Text input with debounced search (300ms), dropdown suggestion list, tap to select
+  - On select: PDOK lookup returns `straatnaam`, `huisnummer`, `postcode`, `woonplaatsnaam`, `centroide_ll` (WKT point with lat/lng)
+  - Parse WKT point same as web: `POINT(lon lat)` regex
+  - No map interaction needed: coordinates come from PDOK, free, no API keys
+- Description (multi-line text area)
 
 ### `details.tsx` -- Step 2
 
@@ -169,19 +174,105 @@ Clear wizard state on successful publish or explicit discard.
 
 ---
 
+## UX Requirements (all 18 screens in this phase)
+
+### Skeleton loading
+
+- **My rooms list**: 2 `SkeletonRoomCard` while loading
+- **Room detail (owner)**: Photo placeholder + stats row + 3 action button skeletons
+- **Applicant list**: 3 applicant card skeletons (avatar + 2 lines)
+- **Applicant review**: Profile photo placeholder + 4 section skeletons
+- **Voting board**: Grid of 4 avatar circle skeletons
+- **Events list**: 2 event card skeletons
+- **Event detail**: Title + date + 3 attendee row skeletons
+- **Wizard steps**: No skeleton (forms render instantly, only data pre-fill may need brief loading)
+
+### Error handling
+
+- **Room publish fails (validation)**: Specific field errors highlighted: "Add at least 1 photo", "Title is required"
+- **Room publish fails (network)**: "Couldn't publish. Saved as draft." + auto-save to draft
+- **Photo upload fails**: Per-photo error indicator with retry icon on the thumbnail
+- **Accept/reject fails**: "Couldn't update applicant status. Try again." + retry
+- **Event create fails**: "Couldn't create event." + keep form data for retry
+- **Vote fails**: "Vote not saved. Try again." + optimistic rollback
+- **Close room fails**: "Couldn't close room." + retry (don't lose selected applicant)
+- **Share link regenerate fails**: "Couldn't generate new link." + keep old link visible
+- **Address lookup fails (PDOK)**: "Couldn't find address. Check spelling and try again."
+
+### Empty states
+
+- **No rooms**: "You haven't listed any rooms yet." + "Create your first room" CTA button
+- **No applicants**: "No applicants yet. Share your room to get more visibility!" + share CTA
+- **No events**: "No events planned." + "Create an event" CTA
+- **No votes**: "No votes yet. Voting opens when you have applicants."
+- **Applicant filter empty**: "No applicants with this status." + "Show all" button
+
+### Animations
+
+- Room cards: `FadeIn` staggered entering
+- Wizard step transitions: horizontal slide (`SlideInRight` / `SlideOutLeft`)
+- Publish success: checkmark scale animation
+- Applicant cards: `FadeIn` staggered entering
+- Accept/reject: card slides out with status change animation
+- Vote: thumb icon spring scale on tap
+- Photo upload: progress ring animation per photo
+
+### Haptic feedback
+
+- Create room FAB: `hapticLight()`
+- Wizard "Next" button: `hapticLight()`
+- Wizard "Publish": `hapticMedium()`
+- Publish success: `hapticSuccess()`
+- Publish error: `hapticError()`
+- Photo capture: `hapticLight()`
+- Photo delete: `hapticMedium()`
+- Accept applicant: `hapticSuccess()`
+- Reject applicant: `hapticMedium()`
+- Cast vote: `hapticLight()`
+- Close room confirm: `hapticHeavy()`
+- Share link copy: `hapticSelection()`
+- Pull-to-refresh trigger: `hapticLight()`
+
+### Accessibility
+
+- Room cards: `accessibilityLabel="[title], [status], [price] per month, [applicant count] applicants"`
+- Status badges: `accessibilityLabel="Status: [published/draft/closed]"` (not color-only)
+- Create room FAB: `accessibilityLabel="Create new room"`
+- Wizard step indicator: `accessibilityLabel="Step [n] of 6: [step name]"`
+- Photo slots: `accessibilityLabel="Photo [n] of [total]. Tap to change."`
+- Accept/reject buttons: `accessibilityLabel="Accept [name]"` / `"Reject [name]"`
+- Vote buttons: `accessibilityLabel="Vote for [name]"`
+- All touch targets minimum 44pt
+- Address autocomplete suggestions: `accessibilityRole="button"` with full address as label
+
+### Pull-to-refresh
+
+- My rooms list: yes
+- Room detail: yes
+- Applicant list: yes
+- Events list: yes
+- Voting board: yes
+- Wizard steps: no (form, not data list)
+- Share link: no (static)
+
+---
+
 ## Verification Checklist
 
-- [ ] My rooms list shows correct status badges and colors
-- [ ] Room creation wizard: all 6 steps complete and publish successfully
-- [ ] Wizard progress persists in MMKV (kill app mid-wizard, reopen, data preserved)
-- [ ] Location picker works on both iOS and Android maps
-- [ ] Photo upload works (camera + library)
+- [ ] My rooms list shows skeletons on load (not spinner)
+- [ ] Room creation wizard: all 6 steps with step indicator and smooth transitions
+- [ ] Wizard progress persists in MMKV
+- [ ] PDOK address autocomplete works (type -> suggestions -> select -> coordinates)
+- [ ] Photo upload works with per-photo error/retry
+- [ ] Publish failure auto-saves as draft with specific error
 - [ ] Room edit saves with optimistic update
-- [ ] Applicant list filters work (All/New/Under Review/etc.)
-- [ ] Accept/reject applicant works
-- [ ] Voting board records votes
-- [ ] Event creation + invite flow works end-to-end
-- [ ] Close room flow completes correctly
-- [ ] Share link generates and opens native share sheet
-- [ ] Pull-to-refresh works on all list screens
-- [ ] Empty states show on all screens with no data
+- [ ] Applicant list with skeletons, filters, and empty states
+- [ ] Accept/reject with haptic and card animation
+- [ ] Voting board with haptic on vote
+- [ ] Event creation with error handling
+- [ ] Close room with confirmation and haptic
+- [ ] Share link with copy haptic and native share
+- [ ] Pull-to-refresh on all list screens
+- [ ] All empty states have CTAs
+- [ ] All icon buttons have accessibilityLabel
+- [ ] All touch targets minimum 44pt

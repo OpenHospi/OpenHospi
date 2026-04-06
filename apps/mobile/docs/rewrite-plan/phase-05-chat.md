@@ -129,19 +129,84 @@ This is the second most complex screen (after discovery). The E2EE logic stays, 
 
 ---
 
+## UX Requirements (all screens in this phase)
+
+### Skeleton loading
+
+- **Conversation list initial load**: 5 `SkeletonConversation` rows (circle + 2 text lines)
+- **Message thread initial load**: 4 message bubble skeletons (alternating left/right alignment)
+- **Conversation info**: Avatar skeleton + 2 member row skeletons
+- **Key verification**: No skeleton needed (instant local data)
+
+### Error handling
+
+- **Conversation list fetch fails**: "Couldn't load conversations. Check your connection." + retry
+- **Messages fetch fails**: "Couldn't load messages." + retry button
+- **Message send fails (network)**: Red bubble with "Couldn't send. Tap to retry." (not generic alert)
+- **Message decrypt fails**: Show "[Message couldn't be decrypted]" in gray italic (not crash)
+- **Key distribution fails**: "Encryption setup failed. Messages may not deliver." + retry
+- **Archive fails**: Silent retry, show undo toast
+
+### Empty states
+
+- **No conversations**: "No conversations yet. Apply to a room to start chatting!" + CTA to discover tab
+- **No messages in thread**: "Say hello! This is the start of your conversation." (inline, not empty state)
+- **No search results**: "No conversations matching '[query]'"
+
+### Animations
+
+- Conversation rows: `FadeIn.duration(150)` staggered entering
+- Message bubbles: `SlideInUp.duration(150)` + `FadeIn` on new messages
+- Unread badge: spring scale animation on count change
+- Swipe-to-archive: smooth horizontal pan with reveal
+- Scroll-to-bottom FAB: spring appear/disappear
+- Key verification success: green checkmark spring scale
+
+### Haptic feedback
+
+- Message send: `hapticLight()`
+- Message send success: `hapticSuccess()` (subtle, when server confirms)
+- Message send failure: `hapticError()`
+- Swipe-to-archive: `hapticMedium()` on threshold
+- Long-press context menu: `hapticMedium()`
+- Copy message: `hapticSelection()`
+- Pull-to-refresh trigger: `hapticLight()`
+- Key verification success: `hapticSuccess()`
+- Key verification failure: `hapticError()`
+
+### Accessibility
+
+- Conversation rows: `accessibilityLabel="Conversation with [name], last message: [preview], [time]"`
+- Message bubbles: `accessibilityLabel="[sender] said: [message text], [time], [status]"`
+- Delivery status icons: `accessibilityLabel="Sending"` / `"Sent"` / `"Delivered"` (not icon-only)
+- E2EE banner: `accessibilityLabel="Messages are encrypted. Tap to verify keys."`
+- Send button: `accessibilityLabel="Send message"`
+- Archive action: `accessibilityLabel="Archive conversation"`
+- All touch targets minimum 44pt (especially send button, FAB)
+
+### Pull-to-refresh
+
+- Conversation list: yes
+- Message thread: no (use scroll-to-top to load older, not pull-to-refresh)
+
+---
+
 ## Verification Checklist
 
-- [ ] Conversation list loads with FlashList (no FlatList)
-- [ ] Swipe-to-archive gesture works smoothly
+- [ ] Conversation list loads with FlashList and skeleton (not spinner)
+- [ ] Message thread loads with skeleton (not spinner)
+- [ ] Swipe-to-archive gesture works with haptic
 - [ ] Unread badge animates on count change
 - [ ] Messages encrypt/decrypt correctly (E2EE regression test)
 - [ ] Delivery status icons update: clock -> check -> double-check
-- [ ] Long-press context menu appears on messages
-- [ ] Failed message shows retry UI
-- [ ] Keyboard animation is smooth (no jumping)
+- [ ] Failed message shows "Tap to retry" (not generic alert)
+- [ ] Decrypt failure shows gray italic placeholder (not crash)
+- [ ] Long-press context menu with haptic
+- [ ] Keyboard animation is smooth
 - [ ] Scroll-to-bottom FAB appears when scrolled up
-- [ ] Realtime messages appear instantly via Supabase Broadcast
-- [ ] Pull-to-refresh works
-- [ ] Key verification QR scan works
-- [ ] Verification success/error animations play
-- [ ] Haptic feedback on message send
+- [ ] Realtime messages animate in via Supabase Broadcast
+- [ ] Empty state with CTA when no conversations
+- [ ] All icon buttons have accessibilityLabel
+- [ ] All touch targets minimum 44pt
+- [ ] Pull-to-refresh works on conversation list
+- [ ] Key verification success/error with haptic

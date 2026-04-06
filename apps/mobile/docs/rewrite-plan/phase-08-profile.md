@@ -139,19 +139,100 @@ All modals share the same pattern:
 
 ---
 
+## UX Requirements
+
+### Skeleton loading
+
+- **Profile screen**: Large avatar circle skeleton + 3 section card skeletons
+- **Edit modals**: No skeleton (forms with pre-filled data, instant)
+- **Settings**: 4 section header skeletons + 3 row skeletons per section
+- **My house**: House name skeleton + 3 member row skeletons
+- **Join house**: House preview card skeleton
+
+### Error handling
+
+- **Profile fetch fails**: "Couldn't load profile." + retry button
+- **Profile update fails**: "Couldn't save changes. Try again." + keep modal open with data
+- **Photo upload fails**: Per-photo error with retry icon on thumbnail
+- **Photo delete fails**: "Couldn't delete photo." + retry
+- **Session logout fails**: "Couldn't log out session." + retry
+- **GDPR export fails**: "Request failed. Try again later."
+- **Delete account fails**: "Couldn't delete account. Contact support." (critical, don't lose data)
+- **Biometric setup fails**: "Face ID not available. Check your device settings."
+- **Join house invalid code**: "Invalid or expired code. Check with your housemates."
+- **Leave house fails**: "Couldn't leave house." + retry
+
+### Empty states
+
+- **No profile photos**: "Add photos so housemates can get to know you!" + add photo CTA
+- **No languages selected**: "Add your languages" + add CTA
+- **No lifestyle tags**: "Tell people about your lifestyle" + add CTA
+- **No house members** (shouldn't happen, but): "Invite housemates" + share invite code CTA
+- **No active sessions** (shouldn't happen): handled by always showing current session
+
+### Animations
+
+- Profile sections: `FadeIn` staggered entering on initial load
+- Edit modal open/close: spring animation (gorhom bottom-sheet default)
+- Save success: brief green flash on the edited field row
+- Photo reorder: drag animation
+- Photo delete: fade out + collapse
+- Sign out: fade-to-login transition
+- Settings toggles: smooth switch animation (native)
+
+### Haptic feedback
+
+- Field row tap (open edit modal): `hapticLight()`
+- Edit modal save: `hapticSuccess()`
+- Edit modal error: `hapticError()`
+- Photo capture: `hapticLight()`
+- Photo delete: `hapticMedium()`
+- Settings toggle (biometric, consent): `hapticSelection()`
+- Session logout: `hapticMedium()`
+- Delete account confirm: `hapticHeavy()`
+- Sign out: `hapticMedium()`
+- Leave house confirm: `hapticHeavy()`
+- Join house success: `hapticSuccess()`
+- Copy invite code: `hapticSelection()`
+- Pull-to-refresh trigger: `hapticLight()`
+
+### Accessibility
+
+- Profile photo: `accessibilityLabel="Profile photo. Tap to edit."`
+- Section cards: `accessibilityRole="button"`, label includes current value
+- Field rows: `accessibilityLabel="[field name]: [current value]. Tap to edit."`
+- Settings gear icon: `accessibilityLabel="Settings"`
+- Sign out button: `accessibilityLabel="Sign out of OpenHospi"`
+- Delete account: `accessibilityLabel="Delete account permanently"` (destructive action)
+- Biometric toggle: `accessibilityLabel="Face ID unlock: [on/off]"`
+- All touch targets minimum 44pt
+- Photo thumbnails: `accessibilityLabel="Photo [n]. Tap to view or remove."`
+
+### Pull-to-refresh
+
+- Profile screen: yes
+- Settings screen: yes (reload sessions, consent status)
+- My house: yes
+- Edit modals: no (form, not data)
+- Join house: no (one-time action)
+
+---
+
 ## Verification Checklist
 
-- [ ] Profile loads with photo carousel and all sections
-- [ ] Each field row navigates to correct edit modal
-- [ ] All 10 edit modals open as bottom sheet (not full-screen)
-- [ ] Edit modals save with optimistic update and haptic
-- [ ] Photo edit: camera capture, library pick, reorder, delete all work
-- [ ] Settings: active sessions display correctly
-- [ ] Settings: GDPR data export request submits
-- [ ] Settings: biometric toggle works (prompt on enable)
-- [ ] Settings: language change takes effect immediately
-- [ ] Settings: delete account flows through confirmation
-- [ ] My house: member list and invite code display
-- [ ] Join house: preview and join work
-- [ ] Sign out clears session and navigates to login
-- [ ] Pull-to-refresh works on profile
+- [ ] Profile loads with skeleton (not spinner)
+- [ ] Photo carousel with large, swipeable photos
+- [ ] Each field row has chevron, haptic on tap, opens correct modal
+- [ ] All 10 edit modals open as bottom sheet with spring animation
+- [ ] Edit modals save with optimistic update, haptic, and brief success flash
+- [ ] Specific error messages for each failure type
+- [ ] Photo edit: camera, library, reorder, delete with per-photo error handling
+- [ ] Settings loads with skeleton
+- [ ] GDPR export request with specific error/success feedback
+- [ ] Biometric toggle with auth prompt and haptic
+- [ ] Language change takes effect immediately
+- [ ] Delete account with haptic heavy and confirmation
+- [ ] Join house with specific invalid code error
+- [ ] All elements have accessibilityLabel
+- [ ] All touch targets minimum 44pt
+- [ ] Pull-to-refresh on profile and settings

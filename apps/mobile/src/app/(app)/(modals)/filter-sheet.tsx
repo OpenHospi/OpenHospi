@@ -1,5 +1,4 @@
 import {
-  City,
   DiscoverSort,
   Furnishing,
   HouseType,
@@ -12,6 +11,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { CitySearchInput } from '@/components/city-search';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -156,20 +156,11 @@ export default function FilterSheetScreen() {
           {/* City */}
           <View style={{ gap: 8 }}>
             <Label>{tFilters('city')}</Label>
-            <Select
-              value={cityOption}
-              onValueChange={(option) => update({ city: option?.value as typeof filters.city })}>
-              <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tFilters('cityPlaceholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {City.values.map((v) => (
-                  <SelectItem key={v} value={v} label={tEnums(`city.${v}`)}>
-                    {tEnums(`city.${v}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <CitySearchInput
+              value={filters.city ?? ''}
+              onSelect={(v) => update({ city: v || undefined })}
+              placeholder={tFilters('cityPlaceholder')}
+            />
           </View>
 
           {/* Price range */}

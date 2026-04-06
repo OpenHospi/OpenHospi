@@ -1,33 +1,26 @@
 "use client";
 
-import type { AddressResult, AddressSuggestion } from "@openhospi/shared/pdok";
-import { ADDRESS_DEBOUNCE_MS, lookupAddress, searchAddresses } from "@openhospi/shared/pdok";
-import { MapPin, X } from "lucide-react";
+import type { CitySuggestion } from "@openhospi/shared/pdok";
+import { searchCities } from "@openhospi/shared/pdok";
+import { MapPin } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-export type { AddressResult };
+const DEBOUNCE_MS = 300;
 
 type Props = {
-  defaultDisplayValue?: string;
-  onSelect: (result: AddressResult) => void;
-  onClear: () => void;
+  value: string;
+  onSelect: (cityName: string) => void;
+  onClear?: () => void;
   placeholder?: string;
 };
 
-export function AddressAutocomplete({
-  defaultDisplayValue,
-  onSelect,
-  onClear,
-  placeholder,
-}: Props) {
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+export function CitySearchInput({ value, onSelect, onClear, placeholder }: Props) {
+  const [query, setQuery] = useState(value);
+  const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDisplay, setSelectedDisplay] = useState(defaultDisplayValue ?? "");
-  const [isLoading, setIsLoading] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,46 +31,23 @@ export function AddressAutocomplete({
       setIsOpen(false);
       return;
     }
-
-    setIsLoading(true);
-    try {
-      const items = await searchAddresses(q);
-      setSuggestions(items);
-      setIsOpen(items.length > 0);
-      setHighlightedIndex(-1);
-    } finally {
-      setIsLoading(false);
-    }
+    const items = await searchCities(q);
+    setSuggestions(items);
+    setIsOpen(items.length > 0);
+    setHighlightedIndex(-1);
   }, []);
 
-  function handleInputChange(value: string) {
-    setQuery(value);
+  function handleInputChange(text: string) {
+    setQuery(text);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchSuggestions(value), ADDRESS_DEBOUNCE_MS);
+    debounceRef.current = setTimeout(() => fetchSuggestions(text), DEBOUNCE_MS);
   }
 
-  async function handleSelect(suggestion: AddressSuggestion) {
-    setIsOpen(false);
-    setSuggestions([]);
-
-    try {
-      const result = await lookupAddress(suggestion.id);
-      if (!result) return;
-
-      setSelectedDisplay(suggestion.displayName);
-      setQuery("");
-      onSelect(result);
-    } catch {
-      // silently fail — user can retry
-    }
-  }
-
-  function handleClear() {
-    setSelectedDisplay("");
-    setQuery("");
+  function handleSelect(suggestion: CitySuggestion) {
+    setQuery(suggestion.name);
     setSuggestions([]);
     setIsOpen(false);
-    onClear();
+    onSelect(suggestion.name);
   }
 
   useEffect(() => {
@@ -86,7 +56,6 @@ export function AddressAutocomplete({
         setIsOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -96,22 +65,6 @@ export function AddressAutocomplete({
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
-
-  if (selectedDisplay) {
-    return (
-      <div className="flex items-center gap-2 rounded-md border bg-muted/50 px-3 py-2 text-sm">
-        <MapPin className="size-4 shrink-0 text-muted-foreground" />
-        <span className="flex-1 truncate">{selectedDisplay}</span>
-        <button
-          type="button"
-          onClick={handleClear}
-          className="shrink-0 rounded-sm p-0.5 text-muted-foreground hover:text-foreground"
-        >
-          <X className="size-4" />
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div ref={containerRef} className="relative">
@@ -157,13 +110,10 @@ export function AddressAutocomplete({
                   )}
                 >
                   <MapPin className="size-3.5 shrink-0 text-muted-foreground" />
-                  <span className="truncate">{s.displayName}</span>
+                  <span className="truncate">{s.name}</span>
                 </button>
               </li>
             ))}
-            {isLoading && (
-              <li className="px-2 py-1.5 text-center text-sm text-muted-foreground">...</li>
-            )}
           </ul>
         </div>
       )}

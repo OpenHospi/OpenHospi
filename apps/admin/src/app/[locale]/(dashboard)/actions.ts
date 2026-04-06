@@ -12,7 +12,7 @@ import {
   user,
 } from "@openhospi/database/schema";
 import type { Locale } from "@openhospi/i18n";
-import type { City, ReportReason } from "@openhospi/shared/enums";
+import type { ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -30,7 +30,7 @@ export type AggregateStats = {
   activeListings: number;
   pendingReports: number;
   pendingReportsByType: Record<ReportType, number>;
-  listingsByCity: { city: City; count: number }[];
+  listingsByCity: { city: string; count: number }[];
 };
 
 export async function getAggregateStats(): Promise<AggregateStats> {
@@ -202,7 +202,7 @@ export async function getReportDetail(reportId: string): Promise<ReportDetail | 
 export type RoomDetail = {
   id: string;
   title: string;
-  city: City;
+  city: string;
   rentPrice: string;
   status: RoomStatus;
   description: string | null;

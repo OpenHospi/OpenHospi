@@ -34,7 +34,7 @@ export async function generateMetadata({
   const room = await getRoomMetadata(id);
   if (!room) return { title: t("notFound") };
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = room.city;
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} | ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;

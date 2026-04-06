@@ -2,7 +2,6 @@
 
 import { PRICE_MAX, PRICE_MIN, PRICE_STEP } from "@openhospi/shared/constants";
 import {
-  City,
   DiscoverSort,
   Furnishing,
   HouseType,
@@ -13,6 +12,7 @@ import { Euro, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { CitySearchInput } from "@/components/shared/city-search-input";
 import { Button } from "@/components/ui/button";
 import {
   Combobox,
@@ -186,24 +186,11 @@ export function DiscoverFiltersPanel({ filters, sort }: DiscoverFilterProps) {
         {/* City */}
         <div className="space-y-1.5">
           <Label>{t("city")}</Label>
-          <Combobox
-            value={filters.city ?? null}
-            onValueChange={(v) => updateFilter("city", v ?? undefined)}
-            items={City.values}
-            itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
-          >
-            <ComboboxInput placeholder={t("cityPlaceholder")} showClear />
-            <ComboboxContent>
-              <ComboboxEmpty>{t("cityPlaceholder")}</ComboboxEmpty>
-              <ComboboxList>
-                {(city: City) => (
-                  <ComboboxItem key={city} value={city}>
-                    {tEnums(`city.${city}`)}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
+          <CitySearchInput
+            value={filters.city ?? ""}
+            onSelect={(v) => updateFilter("city", v || undefined)}
+            placeholder={t("cityPlaceholder")}
+          />
         </div>
 
         {/* Price range slider */}

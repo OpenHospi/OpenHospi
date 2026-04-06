@@ -40,7 +40,7 @@ export async function RoomCard({ room }: Props) {
         <CardHeader>
           <CardTitle className="truncate">{room.title || t("wizard.steps.basicInfo")}</CardTitle>
           <CardDescription className="flex items-center gap-2">
-            {tEnums(`city.${room.city}`)}
+            {room.city}
             <Badge className={cn(ROOM_STATUS_COLORS[room.status])}>
               {tEnums(`room_status.${room.status}`)}
             </Badge>

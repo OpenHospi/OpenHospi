@@ -3,7 +3,6 @@ import { processingRestrictions, profiles, roomPhotos, rooms } from "@openhospi/
 import type { RoomPhoto } from "@openhospi/database/types";
 import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
 import type {
-  City,
   Furnishing,
   HouseType,
   RentalType,
@@ -39,7 +38,7 @@ import { notBlockedBy } from "@/lib/queries/block-filter";
 export type DiscoverRoom = {
   id: string;
   title: string;
-  city: City;
+  city: string;
   rentPrice: number;
   serviceCosts: number | null;
   totalCost: number;
@@ -57,7 +56,7 @@ export type DiscoverRoom = {
 };
 
 export type DiscoverFilters = {
-  city?: City;
+  city?: string;
   minPrice?: number;
   maxPrice?: number;
   houseType?: HouseType;
@@ -83,7 +82,7 @@ export type PublicRoom = {
   id: string;
   title: string;
   description: string | null;
-  city: City;
+  city: string;
   neighborhood: string | null;
   latitude: number | null;
   longitude: number | null;
@@ -110,7 +109,7 @@ export type PublicRoom = {
 };
 
 export type CityWithCount = {
-  city: City;
+  city: string;
   count: number;
 };
 
@@ -283,7 +282,7 @@ export async function getDiscoverRooms(
 export type RoomMetadata = {
   title: string;
   description: string | null;
-  city: City;
+  city: string;
   totalCost: number;
   roomSizeM2: number | null;
   coverPhotoPath: string | null;
@@ -382,7 +381,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
   };
 }
 
-export async function getPublicRoomsByCity(city: City, limit: number): Promise<DiscoverRoom[]> {
+export async function getPublicRoomsByCity(city: string, limit: number): Promise<DiscoverRoom[]> {
   const rows = await db
     .select({
       id: rooms.id,

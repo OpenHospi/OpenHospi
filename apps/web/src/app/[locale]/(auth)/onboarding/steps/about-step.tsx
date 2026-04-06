@@ -1,6 +1,8 @@
 "use client";
 
-import { City, Gender, StudyLevel, Vereniging } from "@openhospi/shared/enums";
+import { Gender, StudyLevel, Vereniging } from "@openhospi/shared/enums";
+
+import { CitySearchInput } from "@/components/shared/city-search-input";
 import type { AboutStepData } from "@openhospi/validators";
 import { aboutStepSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
@@ -170,24 +172,11 @@ export function AboutStep({ defaultValues, onNext }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("fields.preferredCity")}</FormLabel>
-              <Combobox
-                value={field.value ?? null}
-                onValueChange={field.onChange}
-                items={City.values}
-                itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
-              >
-                <ComboboxInput placeholder={t("placeholders.preferredCity")} />
-                <ComboboxContent>
-                  <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
-                  <ComboboxList>
-                    {(city: City) => (
-                      <ComboboxItem key={city} value={city}>
-                        {tEnums(`city.${city}`)}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
+              <CitySearchInput
+                value={field.value ?? ""}
+                onSelect={field.onChange}
+                placeholder={t("placeholders.preferredCity")}
+              />
               <FormMessage />
             </FormItem>
           )}

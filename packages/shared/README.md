@@ -10,7 +10,6 @@ src/
   enums/
     index.ts                  # All 28 small enums + re-exports
     define-enum.ts            # defineEnum() helper (internal)
-    cities.ts                 # City enum (60 Dutch cities)
     verenigingen.ts           # Vereniging enum (182 student associations)
     transitions.ts            # State machine maps, validators, status categories
   constants/

@@ -1,7 +1,7 @@
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import { applications, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { Room, RoomPhoto } from "@openhospi/database/types";
-import { City, RoomStatus } from "@openhospi/shared/enums";
+import { RoomStatus } from "@openhospi/shared/enums";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { cache } from "react";
 
@@ -12,7 +12,7 @@ export type RoomWithPhotos = Room & { photos: RoomPhoto[] };
 export type RoomSummary = {
   id: string;
   title: string;
-  city: City;
+  city: string;
   rentPrice: number;
   serviceCosts: number | null;
   totalCost: number;
@@ -48,7 +48,7 @@ export async function createDraftRoom(userId: string, houseId: string): Promise<
       ownerId: userId,
       houseId,
       title: "",
-      city: City.amsterdam,
+      city: "",
       rentPrice: "0",
       status: RoomStatus.draft,
     });

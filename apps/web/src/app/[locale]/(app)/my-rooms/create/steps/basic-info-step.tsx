@@ -1,7 +1,6 @@
 "use client";
 
 import { MAX_ROOM_DESCRIPTION_LENGTH } from "@openhospi/shared/constants";
-import { City } from "@openhospi/shared/enums";
 import type { RoomBasicInfoData } from "@openhospi/validators";
 import { roomBasicInfoSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
@@ -138,20 +137,9 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.city")}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {City.values.map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {tEnums(`city.${city}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input {...field} placeholder={t("fields.city")} readOnly={!!field.value} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

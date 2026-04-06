@@ -1,4 +1,4 @@
-import { City, Gender, StudyLevel, Vereniging } from '@openhospi/shared/enums';
+import { Gender, StudyLevel, Vereniging } from '@openhospi/shared/enums';
 import { useImperativeHandle, useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { ChipPicker } from '@/components/chip-picker';
 import { DatePickerSheet } from '@/components/date-picker-sheet';
 import { SelectPickerSheet } from '@/components/select-picker-sheet';
 import { Input } from '@/components/ui/input';
+import { CitySearchInput } from '@/components/city-search';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -142,14 +143,10 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
 
       <View style={{ gap: 8 }}>
         <Label>{t('preferredCity')}</Label>
-        <SelectPickerSheet
-          values={City.values}
-          selected={preferredCity}
+        <CitySearchInput
+          value={preferredCity ?? ''}
           onSelect={setPreferredCity}
-          title={t('preferredCity')}
           placeholder={tPlaceholders('preferredCity')}
-          searchPlaceholder={tPlaceholders('searchCity')}
-          t={tCityEnums}
         />
       </View>
 

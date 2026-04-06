@@ -64,8 +64,8 @@ const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
 };
 
 describe("@openhospi/shared — enums", () => {
-  it("exports 29 enum companion objects", () => {
-    expect(Object.keys(ALL_ENUMS)).toHaveLength(29);
+  it("exports 28 enum companion objects", () => {
+    expect(Object.keys(ALL_ENUMS)).toHaveLength(28);
   });
 
   it.each(Object.entries(ALL_ENUMS))("%s has a non-empty values array", (_name, enumObj) => {

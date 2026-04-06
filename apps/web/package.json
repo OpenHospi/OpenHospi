@@ -32,7 +32,7 @@
     "@openhospi/validators": "workspace:*",
     "@supabase/supabase-js": "catalog:",
     "@tanstack/react-table": "^8.21.3",
-    "@tensorflow/tfjs-node": "^4.22.0",
+    "@tensorflow/tfjs": "^4.22.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
     "@vercel/analytics": "^2.0.1",
@@ -98,7 +98,5 @@
     "tailwindcss": "catalog:",
     "tsx": "^4.21.0",
     "typescript": "catalog:"
-  },
-  "peerDependencies": {},
-  "optionalDependencies": {}
+  }
 }

@@ -20,7 +20,7 @@ const cspHeader = `
   .trim();
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@tensorflow/tfjs-node", "nsfwjs"],
+  serverExternalPackages: ["nsfwjs", "sharp"],
   experimental: {
     serverActions: {
       bodySizeLimit: "12mb",

@@ -1,5 +1,5 @@
-import * as nsfwjs from "nsfwjs";
 import * as tf from "@tensorflow/tfjs-node";
+import * as nsfwjs from "nsfwjs";
 
 // Singleton model instance (lazy loaded on first use, like the DB proxy)
 let model: nsfwjs.NSFWJS | null = null;

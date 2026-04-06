@@ -41,7 +41,6 @@ export default async function RoomsIndexPage({ params }: Props) {
 
   const cities = await getCitiesWithRoomCount();
   const t = await getTranslations({ locale, namespace: "public.rooms" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const loginUrl = getLoginUrl();
 

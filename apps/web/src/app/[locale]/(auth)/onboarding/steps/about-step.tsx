@@ -1,8 +1,6 @@
 "use client";
 
 import { Gender, StudyLevel, Vereniging } from "@openhospi/shared/enums";
-
-import { CitySearchInput } from "@/components/shared/city-search-input";
 import type { AboutStepData } from "@openhospi/validators";
 import { aboutStepSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
@@ -11,6 +9,7 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { CitySearchInput } from "@/components/shared/city-search-input";
 import { Button } from "@/components/ui/button";
 import {
   Combobox,

@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { db } from "@openhospi/database";
 import {
   adminAuditLog,
@@ -11,6 +10,7 @@ import {
 } from "@openhospi/database/schema";
 import { AdminAction } from "@openhospi/shared/enums";
 import { count, desc, eq, gte, and } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/auth/server";
 

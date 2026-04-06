@@ -1,14 +1,14 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { useFormatter, useTranslations } from "next-intl";
 import {
   STORAGE_BUCKET_PROFILE_PHOTOS,
   STORAGE_BUCKET_ROOM_PHOTOS,
 } from "@openhospi/shared/constants";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useFormatter, useTranslations } from "next-intl";
 
-import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/data-table";
+import { Badge } from "@/components/ui/badge";
 import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 
 import type { FlaggedPhoto } from "./actions";

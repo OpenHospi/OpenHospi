@@ -13,11 +13,10 @@ const DEBOUNCE_MS = 300;
 type Props = {
   value: string;
   onSelect: (cityName: string) => void;
-  onClear?: () => void;
   placeholder?: string;
 };
 
-export function CitySearchInput({ value, onSelect, onClear, placeholder }: Props) {
+export function CitySearchInput({ value, onSelect, placeholder }: Props) {
   const [query, setQuery] = useState(value);
   const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);

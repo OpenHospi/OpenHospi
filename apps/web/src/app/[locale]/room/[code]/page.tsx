@@ -74,7 +74,6 @@ export async function generateMetadata({
   const { locale, code } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.join" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomByShareLink(code);
   if (!room || validateShareLink(room)) return { title: t("title") };
@@ -95,7 +94,6 @@ export default async function JoinRoomPage({ params }: Props) {
 
   const t = await getTranslations({ locale, namespace: "app.join" });
   const tCommon = await getTranslations({ locale, namespace: "common.labels" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomByShareLink(code);
 

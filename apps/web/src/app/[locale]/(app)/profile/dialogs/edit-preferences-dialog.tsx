@@ -1,14 +1,13 @@
 "use client";
 
 import { Vereniging } from "@openhospi/shared/enums";
-
-import { CitySearchInput } from "@/components/shared/city-search-input";
 import type { EditProfileData } from "@openhospi/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { CitySearchInput } from "@/components/shared/city-search-input";
 import {
   Combobox,
   ComboboxContent,

@@ -22,13 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@/lib/form-utils";
 
@@ -43,7 +36,6 @@ type Props = {
 export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   const t = useTranslations("app.rooms");
   const tCommon = useTranslations("common.labels");
-  const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<RoomBasicInfoData>({

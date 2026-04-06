@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { getCookie } from '@better-auth/expo/client';
 
 import { api, ApiError } from '@/lib/api-client';
-import { API_BASE_URL, STORAGE_PREFIX } from '@/lib/constants';
+import { API_BASE_URL, STALE_TIMES, STORAGE_PREFIX } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
@@ -14,13 +14,28 @@ export function useProfile() {
   return useQuery({
     queryKey: queryKeys.profile.detail(),
     queryFn: () => api.get<ProfileWithPhotos>('/api/mobile/profile'),
+    staleTime: STALE_TIMES.profile,
   });
 }
+
+type UpdateProfilePayload = Partial<{
+  firstName: string;
+  lastName: string;
+  bio: string;
+  gender: string | null;
+  birthDate: string;
+  preferredCity: string | null;
+  studyProgram: string;
+  studyLevel: string;
+  vereniging: string | null;
+  lifestyleTags: string[];
+  languages: string[];
+}>;
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: Record<string, unknown>) => api.patch('/api/mobile/profile', data),
+    mutationFn: (data: UpdateProfilePayload) => api.patch('/api/mobile/profile', data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() }),
   });
 }

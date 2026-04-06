@@ -41,7 +41,6 @@ export default async function RoomsIndexPage({ params }: Props) {
 
   const cities = await getCitiesWithRoomCount();
   const t = await getTranslations({ locale, namespace: "public.rooms" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
   const loginUrl = getLoginUrl();
 
@@ -70,7 +69,7 @@ export default async function RoomsIndexPage({ params }: Props) {
                 <CardContent className="flex items-center gap-3 p-4">
                   <MapPin className="size-5 text-primary" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{tEnums(`city.${city}`)}</p>
+                    <p className="truncate font-semibold">{city}</p>
                     <p className="text-sm text-muted-foreground">
                       {t("roomsAvailable", { count: String(String(count)) })}
                     </p>

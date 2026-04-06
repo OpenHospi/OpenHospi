@@ -1,6 +1,5 @@
 import type {
   ApplicationStatus,
-  City,
   Furnishing,
   GenderPreference,
   HouseType,
@@ -19,7 +18,7 @@ export type RoomDetail = {
   id: string;
   title: string;
   description: string | null;
-  city: City;
+  city: string;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;

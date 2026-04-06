@@ -53,7 +53,7 @@ export async function RoomCard({ room }: Props) {
       <CardHeader>
         <CardTitle className="truncate">{room.title}</CardTitle>
         <CardDescription className="flex items-center gap-2">
-          {tEnums(`city.${room.city}`)}
+          {room.city}
           {room.houseType && (
             <Badge variant="secondary">{tEnums(`house_type.${room.houseType}`)}</Badge>
           )}

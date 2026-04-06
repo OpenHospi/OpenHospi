@@ -16,7 +16,7 @@ export async function RoomDetails({ room }: Props) {
       <h2 className="text-lg font-semibold">{t("manage.details")}</h2>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Detail label={t("fields.city")} value={tEnums(`city.${room.city}`)} />
+        <Detail label={t("fields.city")} value={room.city} />
         {room.neighborhood && <Detail label={t("fields.neighborhood")} value={room.neighborhood} />}
         {room.streetName && (
           <Detail

@@ -37,10 +37,19 @@ export function useResendCode() {
   });
 }
 
+type SubmitAboutPayload = {
+  gender?: string;
+  birthDate?: string;
+  studyProgram?: string;
+  studyLevel?: string;
+  preferredCity?: string;
+  vereniging?: string;
+};
+
 export function useSubmitAbout() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: Record<string, unknown>) => api.post('/api/mobile/onboarding/about', data),
+    mutationFn: (data: SubmitAboutPayload) => api.post('/api/mobile/onboarding/about', data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() }),
   });
 }

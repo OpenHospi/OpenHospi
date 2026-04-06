@@ -4,7 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, focusManager, type Mutation, type Query } from '@tanstack/react-query';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 
-import { APP_VERSION, QUERY_RETRY_COUNT, QUERY_GC_TIME, QUERY_STALE_TIME } from '@/lib/constants';
+import {
+  APP_VERSION,
+  OFFLINE_MUTATIONS,
+  QUERY_GC_TIME,
+  QUERY_RETRY_COUNT,
+  QUERY_STALE_TIME,
+} from '@/lib/constants';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,12 +24,13 @@ export const queryClient = new QueryClient({
     mutations: {
       gcTime: QUERY_GC_TIME,
       networkMode: 'offlineFirst',
+      retry: 1,
+      throwOnError: true,
     },
   },
 });
 
 // ── Focus Manager ───────────────────────────────────────────
-// Auto-refetch stale queries when app returns to foreground.
 
 function handleAppStateChange(status: AppStateStatus) {
   if (Platform.OS !== 'web') {
@@ -44,6 +51,21 @@ export const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,
   key: 'openhospi-query-cache',
   throttleTime: 1000,
+  serialize: (data) => {
+    // Filter out stale queries during serialization to prevent
+    // unbounded cache growth in AsyncStorage
+    const filtered = {
+      ...data,
+      clientState: {
+        ...data.clientState,
+        queries: data.clientState.queries.filter(
+          (q: { state: { dataUpdatedAt: number } }) =>
+            Date.now() - q.state.dataUpdatedAt < QUERY_GC_TIME
+        ),
+      },
+    };
+    return JSON.stringify(filtered);
+  },
 });
 
 export const persistOptions = {
@@ -62,9 +84,12 @@ export const persistOptions = {
       return true;
     },
     shouldDehydrateMutation: (mutation: Mutation) => {
-      // Only persist chat send mutations (they store encrypted payloads)
+      // Persist critical mutations that should survive offline/app restart
       const firstKey = mutation.options.mutationKey?.[0];
-      return typeof firstKey === 'string' && firstKey === 'sendMessage';
+      return (
+        typeof firstKey === 'string' &&
+        OFFLINE_MUTATIONS.includes(firstKey as (typeof OFFLINE_MUTATIONS)[number])
+      );
     },
   },
 };

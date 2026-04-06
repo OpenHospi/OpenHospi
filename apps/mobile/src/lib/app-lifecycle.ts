@@ -1,6 +1,7 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 import type { AppStateStatus } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 
 // ── App Lifecycle Manager ───────────────────────────────────
 // Central manager for foreground/background transitions.
@@ -42,7 +43,11 @@ function handleAppStateChange(nextState: AppStateStatus) {
     }
 
     for (const cb of foregroundCallbacks) {
-      cb();
+      try {
+        cb();
+      } catch (error) {
+        Sentry.captureException(error, { tags: { context: 'app-lifecycle-foreground' } });
+      }
     }
   }
 
@@ -55,7 +60,11 @@ function handleAppStateChange(nextState: AppStateStatus) {
       // Only fire if still in background
       if (currentState !== 'active') {
         for (const cb of backgroundCallbacks) {
-          cb();
+          try {
+            cb();
+          } catch (error) {
+            Sentry.captureException(error, { tags: { context: 'app-lifecycle-background' } });
+          }
         }
       }
     }, BACKGROUND_DELAY_MS);

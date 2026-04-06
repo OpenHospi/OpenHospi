@@ -1,12 +1,13 @@
 "use client";
 
-import { City, Vereniging } from "@openhospi/shared/enums";
+import { Vereniging } from "@openhospi/shared/enums";
 import type { EditProfileData } from "@openhospi/validators";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { CitySearchInput } from "@/components/shared/city-search-input";
 import {
   Combobox,
   ComboboxContent,
@@ -29,7 +30,7 @@ import type { CardProps } from "./dialog-helpers";
 import { DialogFooter, SectionCard, useSectionSubmit } from "./dialog-helpers";
 
 const preferencesFormSchema = z.object({
-  preferredCity: z.enum(City.values),
+  preferredCity: z.string().max(255).optional(),
   vereniging: z.enum(Vereniging.values).optional(),
 });
 
@@ -58,7 +59,7 @@ export function PreferencesCard({ profile }: CardProps) {
           {profile.preferredCity && (
             <div>
               <dt className="text-muted-foreground">{t("preferredCity")}</dt>
-              <dd>{tEnums(`city.${profile.preferredCity}`)}</dd>
+              <dd>{profile.preferredCity}</dd>
             </div>
           )}
           {profile.vereniging && (
@@ -83,24 +84,11 @@ export function PreferencesCard({ profile }: CardProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{tOnboarding("fields.preferredCity")}</FormLabel>
-                  <Combobox
-                    value={field.value ?? null}
-                    onValueChange={field.onChange}
-                    items={City.values}
-                    itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
-                  >
-                    <ComboboxInput placeholder={tOnboarding("placeholders.preferredCity")} />
-                    <ComboboxContent>
-                      <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
-                      <ComboboxList>
-                        {(city: City) => (
-                          <ComboboxItem key={city} value={city}>
-                            {tEnums(`city.${city}`)}
-                          </ComboboxItem>
-                        )}
-                      </ComboboxList>
-                    </ComboboxContent>
-                  </Combobox>
+                  <CitySearchInput
+                    value={field.value ?? ""}
+                    onSelect={field.onChange}
+                    placeholder={tOnboarding("placeholders.preferredCity")}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

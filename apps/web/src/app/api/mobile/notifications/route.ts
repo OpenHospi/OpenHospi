@@ -11,14 +11,14 @@ export async function GET(request: Request) {
   try {
     const session = await requireApiSession(request);
     const url = new URL(request.url);
-    const page = Number(url.searchParams.get("page") ?? "1");
+    const cursor = url.searchParams.get("cursor") ?? undefined;
 
-    const [items, unreadCount] = await Promise.all([
-      getUserNotifications(session.user.id, page),
+    const [{ items, nextCursor }, unreadCount] = await Promise.all([
+      getUserNotifications(session.user.id, cursor),
       getUnreadNotificationCount(session.user.id),
     ]);
 
-    return NextResponse.json({ notifications: items, unreadCount });
+    return NextResponse.json({ notifications: items, unreadCount, nextCursor });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     return apiError("Internal server error", 500);

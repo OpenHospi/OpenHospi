@@ -1,4 +1,4 @@
-import type { City, StudyLevel } from "../enums";
+import type { StudyLevel } from "../enums";
 
 export type ProfilePhoto = {
   id: string;
@@ -21,7 +21,7 @@ export type ProfileWithPhotos = {
   bio: string | null;
   lifestyleTags: string[] | null;
   languages: string[] | null;
-  preferredCity: City | null;
+  preferredCity: string | null;
   vereniging: string | null;
   institutionDomain: string;
   preferredLocale: string | null;

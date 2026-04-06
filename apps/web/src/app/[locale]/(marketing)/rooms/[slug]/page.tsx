@@ -1,7 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
 import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
-import type { City } from "@openhospi/shared/enums";
-import { City as CityEnum } from "@openhospi/shared/enums";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -14,15 +12,21 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd } from "@/lib/marketing/seo";
-import { getPublicRoom, getPublicRoomsByCity } from "@/lib/queries/discover";
+import {
+  getCitiesWithRoomCount,
+  getPublicRoom,
+  getPublicRoomsByCity,
+} from "@/lib/queries/discover";
 import { publicRoomToDetail } from "@/lib/queries/room-detail";
 import { getStoragePublicUrl } from "@/lib/supabase/storage-url";
 import { getLoginUrl } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
 
-function isCity(slug: string): boolean {
-  return CityEnum.values.includes(slug as (typeof CityEnum.values)[number]);
+async function findCityName(slug: string): Promise<string | null> {
+  const cities = await getCitiesWithRoomCount();
+  const match = cities.find((c) => c.city.toLowerCase() === slug.toLowerCase());
+  return match?.city ?? null;
 }
 
 export async function generateMetadata({
@@ -33,11 +37,9 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
 
-  if (isCity(slug)) {
-    const tEnums = await getTranslations({ locale, namespace: "enums" });
+  const cityName = await findCityName(slug);
+  if (cityName) {
     const t = await getTranslations({ locale, namespace: "public.cityPage" });
-    const validCity = slug as City;
-    const cityName = tEnums(`city.${validCity}`);
     return {
       title: t("title", { city: cityName }),
       description: t("subtitle", { city: cityName, count: 0 }),
@@ -48,11 +50,9 @@ export async function generateMetadata({
   const room = await getPublicRoom(slug);
   if (!room) return { title: "Not found" };
 
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
-  const cityName = tEnums(`city.${room.city}`);
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
-  const title = `${room.title} | ${cityName}`;
-  const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;
+  const title = `${room.title} | ${room.city}`;
+  const description = `€${room.totalCost}/mo · ${room.city}${sizeSuffix}`;
   const ogImage = room.photos[0]?.url
     ? getStoragePublicUrl(room.photos[0].url, STORAGE_BUCKET_ROOM_PHOTOS)
     : undefined;
@@ -84,8 +84,9 @@ export default async function RoomSlugPage({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
 
-  if (isCity(slug)) {
-    return <CityPage locale={locale} city={slug as City} />;
+  const matchedCity = await findCityName(slug);
+  if (matchedCity) {
+    return <CityPage locale={locale} city={matchedCity} />;
   }
 
   return <RoomDetailPage locale={locale} roomId={slug} />;
@@ -93,12 +94,11 @@ export default async function RoomSlugPage({ params }: Props) {
 
 // ── City Page ────────────────────────────────────────────────────────────────
 
-async function CityPage({ locale, city }: { locale: Locale; city: City }) {
+async function CityPage({ locale, city }: { locale: Locale; city: string }) {
   const rooms = await getPublicRoomsByCity(city, 6);
   const t = await getTranslations({ locale, namespace: "public.cityPage" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
-  const cityName = tEnums(`city.${city}`);
+  const cityName = city;
   const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://openhospi.nl";
   const loginUrl = getLoginUrl();
 
@@ -176,10 +176,9 @@ async function RoomDetailPage({ locale, roomId }: { locale: Locale; roomId: stri
   if (!room) notFound();
 
   const tSeo = await getTranslations({ locale, namespace: "seo.breadcrumbs" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
   const tRoom = await getTranslations({ locale, namespace: "public.room" });
   const loginUrl = getLoginUrl();
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = room.city;
   const coverPhoto = room.photos[0];
 
   // Safe: JSON-LD from i18n translations and DB, sanitized in seo.ts (per Next.js docs recommendation)

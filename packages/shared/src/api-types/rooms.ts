@@ -1,6 +1,5 @@
 import type {
   ApplicationStatus,
-  City,
   Furnishing,
   GenderPreference,
   HouseType,
@@ -33,7 +32,7 @@ export type RoomDetail = {
   id: string;
   title: string;
   description: string | null;
-  city: City;
+  city: string;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;
@@ -74,7 +73,7 @@ export type RoomDetailResponse = {
 export type MyRoomSummary = {
   id: string;
   title: string;
-  city: City;
+  city: string;
   rentPrice: number;
   serviceCosts: number | null;
   totalCost: number;
@@ -88,7 +87,7 @@ export type MyRoomDetail = {
   id: string;
   title: string;
   description: string | null;
-  city: City;
+  city: string;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;

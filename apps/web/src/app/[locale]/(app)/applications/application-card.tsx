@@ -53,7 +53,7 @@ export async function ApplicationCard({ application }: Props) {
         </div>
         <CardHeader className="pb-2">
           <h3 className="truncate font-semibold">{application.roomTitle}</h3>
-          <p className="text-sm text-muted-foreground">{tEnums(`city.${application.roomCity}`)}</p>
+          <p className="text-sm text-muted-foreground">{application.roomCity}</p>
         </CardHeader>
         <CardContent className="flex items-center justify-between text-sm">
           <span className="font-semibold">

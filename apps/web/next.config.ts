@@ -20,6 +20,7 @@ const cspHeader = `
   .trim();
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["nsfwjs", "sharp"],
   experimental: {
     serverActions: {
       bodySizeLimit: "12mb",

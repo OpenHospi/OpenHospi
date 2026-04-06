@@ -12,7 +12,6 @@ import {
   RoomFeature,
   RentalType,
   LocationTag,
-  City,
   ApplicationStatus,
   ReviewDecision,
   InvitationStatus,
@@ -44,7 +43,6 @@ const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
   RoomFeature,
   RentalType,
   LocationTag,
-  City,
   ApplicationStatus,
   ReviewDecision,
   InvitationStatus,
@@ -66,8 +64,8 @@ const ALL_ENUMS: Record<string, { readonly values: readonly string[] }> = {
 };
 
 describe("@openhospi/shared — enums", () => {
-  it("exports 29 enum companion objects", () => {
-    expect(Object.keys(ALL_ENUMS)).toHaveLength(29);
+  it("exports 28 enum companion objects", () => {
+    expect(Object.keys(ALL_ENUMS)).toHaveLength(28);
   });
 
   it.each(Object.entries(ALL_ENUMS))("%s has a non-empty values array", (_name, enumObj) => {
@@ -92,16 +90,6 @@ describe("@openhospi/shared — enums", () => {
 
   it("Gender has expected values", () => {
     expect([...Gender.values]).toEqual(["male", "female", "prefer_not_to_say"]);
-  });
-
-  it("City includes major Dutch cities and has 60 values", () => {
-    expect(City.values).toContain("amsterdam");
-    expect(City.values).toContain("groningen");
-    expect(City.values).toContain("utrecht");
-    expect(City.values).toContain("dronten");
-    expect(City.values).toContain("terschelling");
-    expect(City.values).not.toContain("anders");
-    expect(City.values).toHaveLength(60);
   });
 
   it("LifestyleTag has at least 20 tags", () => {

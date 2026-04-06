@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 
@@ -16,27 +17,28 @@ type NotificationItem = {
 type NotificationsResponse = {
   notifications: NotificationItem[];
   unreadCount: number;
+  nextCursor: string | null;
 };
 
 export function useNotifications() {
   return useInfiniteQuery({
     queryKey: queryKeys.notifications.list(),
     queryFn: ({ pageParam }) =>
-      api.get<NotificationsResponse>(`/api/mobile/notifications?page=${pageParam}`),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _allPages, lastPageParam) =>
-      lastPage.notifications.length > 0 ? lastPageParam + 1 : undefined,
+      api.get<NotificationsResponse>(
+        `/api/mobile/notifications${pageParam ? `?cursor=${pageParam}` : ''}`
+      ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    staleTime: STALE_TIMES.notifications,
   });
 }
 
 export function useUnreadNotificationCount() {
   return useQuery({
     queryKey: queryKeys.notifications.unreadCount(),
-    queryFn: async () => {
-      const data = await api.get<NotificationsResponse>('/api/mobile/notifications?page=1');
-      return data.unreadCount;
-    },
-    staleTime: 1000 * 60, // 1 minute
+    queryFn: () => api.get<NotificationsResponse>('/api/mobile/notifications'),
+    select: (data) => data.unreadCount,
+    staleTime: STALE_TIMES.notifications,
   });
 }
 

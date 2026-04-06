@@ -74,12 +74,11 @@ export async function generateMetadata({
   const { locale, code } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.join" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomByShareLink(code);
   if (!room || validateShareLink(room)) return { title: t("title") };
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = room.city;
   return { title: `${room.title} | ${cityName}` };
 }
 
@@ -95,7 +94,6 @@ export default async function JoinRoomPage({ params }: Props) {
 
   const t = await getTranslations({ locale, namespace: "app.join" });
   const tCommon = await getTranslations({ locale, namespace: "common.labels" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomByShareLink(code);
 
@@ -155,7 +153,7 @@ export default async function JoinRoomPage({ params }: Props) {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <MapPin className="size-4" />
-                {tEnums(`city.${room.city}`)}
+                {room.city}
               </span>
               <span className="flex items-center gap-1.5">
                 <Users className="size-4" />

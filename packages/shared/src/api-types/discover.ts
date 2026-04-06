@@ -1,9 +1,9 @@
-import type { City, Furnishing, HouseType, LocationTag, RentalType, RoomFeature } from "../enums";
+import type { Furnishing, HouseType, LocationTag, RentalType, RoomFeature } from "../enums";
 
 export type DiscoverRoom = {
   id: string;
   title: string;
-  city: City;
+  city: string;
   rentPrice: number;
   serviceCosts: number | null;
   totalCost: number;
@@ -21,7 +21,7 @@ export type DiscoverRoom = {
 };
 
 export type DiscoverFilters = {
-  city?: City;
+  city?: string;
   minPrice?: number;
   maxPrice?: number;
   houseType?: HouseType;

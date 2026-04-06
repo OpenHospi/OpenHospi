@@ -1,5 +1,4 @@
 import {
-  City,
   Furnishing,
   GenderPreference,
   HouseType,
@@ -17,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/date-picker-sheet';
 import { MultiChipPicker } from '@/components/multi-chip-picker';
+import { CitySearchInput } from '@/components/city-search';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -43,7 +43,7 @@ export default function EditRoomScreen() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [city, setCity] = useState<string>(City.amsterdam);
+  const [city, setCity] = useState<string>('');
   const [neighborhood, setNeighborhood] = useState('');
   const [streetName, setStreetName] = useState('');
   const [houseNumber, setHouseNumber] = useState('');
@@ -72,7 +72,7 @@ export default function EditRoomScreen() {
   if (room && !initialized) {
     setTitle(room.title || '');
     setDescription(room.description || '');
-    setCity(room.city || City.amsterdam);
+    setCity(room.city || '');
     setNeighborhood(room.neighborhood || '');
     setStreetName(room.streetName || '');
     setHouseNumber(room.houseNumber || '');
@@ -183,18 +183,7 @@ export default function EditRoomScreen() {
 
         <View style={{ gap: 8 }}>
           <Label>{t('fields.city')}</Label>
-          <Select value={cityOption} onValueChange={(opt) => opt && setCity(opt.value)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.city')} />
-            </SelectTrigger>
-            <SelectContent>
-              {City.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`city.${v}`)}>
-                  {tEnums(`city.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <CitySearchInput value={city} onSelect={setCity} placeholder={t('fields.city')} />
         </View>
 
         {/* Address */}

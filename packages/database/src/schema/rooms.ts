@@ -22,12 +22,12 @@ import {
 import { anonRole, authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import {
-  cityEnum,
   furnishingEnum,
   genderPreferenceEnum,
   houseTypeEnum,
   languageEnum,
   locationTagEnum,
+  moderationStatusEnum,
   rentalTypeEnum,
   roomFeatureEnum,
   roomStatusEnum,
@@ -49,7 +49,7 @@ export const rooms = pgTable(
       .references(() => houses.id),
     title: text("title").notNull(),
     description: text("description"),
-    city: cityEnum("city").notNull(),
+    city: text("city").notNull(),
     neighborhood: text("neighborhood"),
     streetName: text("street_name"),
     houseNumber: text("house_number"),
@@ -140,6 +140,7 @@ export const roomPhotos = pgTable(
     slot: smallint("slot").notNull(),
     url: text("url").notNull(),
     caption: text("caption"),
+    moderationStatus: moderationStatusEnum("moderation_status").default("approved").notNull(),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow(),
   },
   (table) => [

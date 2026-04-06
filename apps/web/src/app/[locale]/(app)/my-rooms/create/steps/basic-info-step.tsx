@@ -1,7 +1,6 @@
 "use client";
 
 import { MAX_ROOM_DESCRIPTION_LENGTH } from "@openhospi/shared/constants";
-import { City } from "@openhospi/shared/enums";
 import type { RoomBasicInfoData } from "@openhospi/validators";
 import { roomBasicInfoSchema } from "@openhospi/validators";
 import { Loader2 } from "lucide-react";
@@ -23,13 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@/lib/form-utils";
 
@@ -44,7 +36,6 @@ type Props = {
 export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
   const t = useTranslations("app.rooms");
   const tCommon = useTranslations("common.labels");
-  const tEnums = useTranslations("enums");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<RoomBasicInfoData>({
@@ -138,20 +129,9 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.city")}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {City.values.map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {tEnums(`city.${city}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input {...field} placeholder={t("fields.city")} readOnly={!!field.value} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

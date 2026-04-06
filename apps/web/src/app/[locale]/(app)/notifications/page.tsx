@@ -25,7 +25,7 @@ export default async function NotificationsPage({ params }: Props) {
   setRequestLocale(locale);
   const { user } = await requireSession();
 
-  const notifications = await getUserNotifications(user.id);
+  const { items: notifications } = await getUserNotifications(user.id);
 
   return (
     <div className="mx-auto w-full max-w-2xl">

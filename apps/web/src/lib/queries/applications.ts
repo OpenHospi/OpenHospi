@@ -7,7 +7,6 @@ import {
   rooms,
 } from "@openhospi/database/schema";
 import type {
-  City,
   Furnishing,
   GenderPreference,
   HouseType,
@@ -27,7 +26,7 @@ export type UserApplication = {
   id: string;
   roomId: string;
   roomTitle: string;
-  roomCity: City;
+  roomCity: string;
   roomRentPrice: number;
   roomCoverPhotoUrl: string | null;
   roomPhotoCount: number;
@@ -52,7 +51,7 @@ export type RoomDetailForApply = {
   id: string;
   title: string;
   description: string | null;
-  city: City;
+  city: string;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;

@@ -29,12 +29,11 @@ export async function generateMetadata({
   const { locale, id } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "app.roomDetail" });
-  const tEnums = await getTranslations({ locale, namespace: "enums" });
 
   const room = await getRoomMetadata(id);
   if (!room) return { title: t("notFound") };
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = room.city;
   const sizeSuffix = room.roomSizeM2 ? ` · ${room.roomSizeM2} m²` : "";
   const title = `${room.title} | ${cityName}`;
   const description = `€${room.totalCost}/mo · ${cityName}${sizeSuffix}`;

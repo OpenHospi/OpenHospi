@@ -2,7 +2,6 @@ import { SUPPORTED_LOCALES } from "@openhospi/i18n";
 import {
   AdminAction,
   ApplicationStatus,
-  City,
   ConsentPurpose,
   DataRequestStatus,
   DataRequestType,
@@ -45,7 +44,6 @@ export const furnishingEnum = pgEnum("furnishing_enum", Furnishing.values);
 export const roomFeatureEnum = pgEnum("room_feature_enum", RoomFeature.values);
 export const rentalTypeEnum = pgEnum("rental_type_enum", RentalType.values);
 export const locationTagEnum = pgEnum("location_tag_enum", LocationTag.values);
-export const cityEnum = pgEnum("city_enum", City.values);
 export const applicationStatusEnum = pgEnum("application_status_enum", ApplicationStatus.values);
 export const reviewDecisionEnum = pgEnum("review_decision_enum", ReviewDecision.values);
 export const invitationStatusEnum = pgEnum("invitation_status_enum", InvitationStatus.values);
@@ -69,3 +67,8 @@ export const senderKeyDistributionStatusEnum = pgEnum(
   "sender_key_distribution_status_enum",
   SenderKeyDistributionStatus.values,
 );
+export const moderationStatusEnum = pgEnum("moderation_status_enum", [
+  "approved",
+  "pending_review",
+  "rejected",
+]);

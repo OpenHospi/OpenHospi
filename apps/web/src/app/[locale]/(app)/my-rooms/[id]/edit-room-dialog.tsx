@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  City,
   Furnishing,
   GenderPreference,
   HouseType,
@@ -200,24 +199,14 @@ export function EditRoomDialog({ room }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.city")}</FormLabel>
-                  <Combobox
-                    value={field.value ?? null}
-                    onValueChange={field.onChange}
-                    items={City.values}
-                    itemToStringLabel={(city: City) => tEnums(`city.${city}`)}
-                  >
-                    <ComboboxInput placeholder={t("fields.city")} />
-                    <ComboboxContent>
-                      <ComboboxEmpty>{tCommon("noResults")}</ComboboxEmpty>
-                      <ComboboxList>
-                        {(city: City) => (
-                          <ComboboxItem key={city} value={city}>
-                            {tEnums(`city.${city}`)}
-                          </ComboboxItem>
-                        )}
-                      </ComboboxList>
-                    </ComboboxContent>
-                  </Combobox>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      placeholder={t("fields.city")}
+                      readOnly={!!field.value}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

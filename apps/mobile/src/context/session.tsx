@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect } from 'react';
 import { router } from 'expo-router';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { useSession } from '@/lib/auth-client';
 import { onSessionExpired } from '@/lib/api-client';
 import { useOnboardingStatus } from '@/services/onboarding';
+import { queryKeys } from '@/services/keys';
 import type { OnboardingStatus } from '@openhospi/shared/api-types';
 
 type SessionContextValue = {
@@ -27,10 +29,21 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const { data: onboardingStatus, isPending: onboardingPending } = useOnboardingStatus({
     enabled: !!session,
   });
+  const queryClient = useQueryClient();
 
   const isLoading = sessionPending || (!!session && onboardingPending);
-  const isAuthenticated = !!session && (onboardingStatus?.isComplete ?? false);
-  const needsOnboarding = !!session && !(onboardingStatus?.isComplete ?? false);
+  // Use === true/false instead of ?? false to avoid needsOnboarding being
+  // briefly true while onboardingStatus is still undefined (loading).
+  const isAuthenticated = !!session && onboardingStatus?.isComplete === true;
+  const needsOnboarding = !!session && onboardingStatus?.isComplete === false;
+
+  // Invalidate onboarding cache when user switches (prevents stale data
+  // from a previous user showing for the new user).
+  useEffect(() => {
+    if (session?.user?.id) {
+      queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
+    }
+  }, [session?.user?.id, queryClient]);
 
   // Listen for session-expired events from the 401 interceptor
   // in api-client.ts. When a session refresh fails after a 401,

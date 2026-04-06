@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 
 import { queryKeys } from './keys';
 import type {
@@ -16,29 +17,100 @@ import type {
   VoteBoard,
 } from '@openhospi/shared/api-types';
 
+// ── Typed Payloads ─────────────────────────────────────────
+
+type SaveBasicInfoPayload = {
+  title: string;
+  city: string;
+  neighborhood?: string;
+  streetName?: string;
+  houseNumber?: string;
+  postalCode?: string;
+  description?: string;
+  latitude?: number;
+  longitude?: number;
+};
+
+type SaveDetailsPayload = {
+  rentPrice?: number;
+  deposit?: number;
+  serviceCosts?: number;
+  estimatedUtilitiesCosts?: number;
+  utilitiesIncluded?: string;
+  roomSizeM2?: number;
+  rentalType?: string;
+  houseType?: string;
+  furnishing?: string;
+  features?: string[];
+  availableFrom?: string;
+  availableUntil?: string;
+  totalHousemates?: number;
+};
+
+type SavePreferencesPayload = {
+  genderPreference?: string;
+  preferredGender?: string;
+  preferredAgeMin?: number;
+  preferredAgeMax?: number;
+  maxOccupancy?: number;
+  locationTags?: string[];
+  features?: string[];
+  acceptedLanguages?: string[];
+  roomVereniging?: string | null;
+};
+
+type UpdateRoomPayload = Partial<
+  SaveBasicInfoPayload & SaveDetailsPayload & SavePreferencesPayload
+>;
+
+type ShareLinkSettingsPayload = {
+  isActive?: boolean;
+  shareLinkExpiresAt?: string | null;
+  shareLinkMaxUses?: number | null;
+};
+
+type CreateEventPayload = {
+  title: string;
+  description?: string;
+  eventDate?: string;
+  startDate?: string;
+  timeStart?: string;
+  timeEnd?: string;
+  endDate?: string;
+  location?: string;
+  maxAttendees?: number;
+  notes?: string;
+};
+
+type UpdateEventPayload = Partial<CreateEventPayload>;
+
 // ── Queries ─────────────────────────────────────────────────
 
 export function useMyRooms() {
   return useQuery({
     queryKey: queryKeys.myRooms.list(),
-    queryFn: () => api.get<{ rooms: MyRoomSummary[] }>('/api/mobile/my-rooms').then((r) => r.rooms),
+    queryFn: () => api.get<{ rooms: MyRoomSummary[] }>('/api/mobile/my-rooms'),
+    select: (data) => data.rooms,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
 export function useMyRoom(id: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.detail(id),
-    queryFn: () =>
-      api.get<{ room: MyRoomDetail }>(`/api/mobile/my-rooms/${id}`).then((r) => r.room),
+    queryFn: () => api.get<{ room: MyRoomDetail }>(`/api/mobile/my-rooms/${id}`),
+    select: (data) => data.room,
     enabled: !!id,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
 export function useOwnerHouses() {
   return useQuery({
     queryKey: queryKeys.myRooms.houses(),
-    queryFn: () =>
-      api.get<{ houses: OwnerHouse[] }>('/api/mobile/my-rooms/houses').then((r) => r.houses),
+    queryFn: () => api.get<{ houses: OwnerHouse[] }>('/api/mobile/my-rooms/houses'),
+    select: (data) => data.houses,
+    staleTime: STALE_TIMES.houses,
   });
 }
 
@@ -70,7 +142,7 @@ export function useCreateDraft() {
 export function useSaveBasicInfo() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ roomId, data }: { roomId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({ roomId, data }: { roomId: string; data: SaveBasicInfoPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/basic-info`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
@@ -81,7 +153,7 @@ export function useSaveBasicInfo() {
 export function useSaveDetails() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ roomId, data }: { roomId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({ roomId, data }: { roomId: string; data: SaveDetailsPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/details`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
@@ -92,7 +164,7 @@ export function useSaveDetails() {
 export function useSavePreferences() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ roomId, data }: { roomId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({ roomId, data }: { roomId: string; data: SavePreferencesPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/preferences`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
@@ -150,7 +222,7 @@ export function useDeleteRoomPhoto() {
 export function useUpdateRoom() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ roomId, data }: { roomId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({ roomId, data }: { roomId: string; data: UpdateRoomPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
@@ -195,7 +267,7 @@ export function useRegenerateShareLink() {
 export function useUpdateShareLinkSettings() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ roomId, data }: { roomId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({ roomId, data }: { roomId: string; data: ShareLinkSettingsPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/share-link`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
@@ -209,10 +281,10 @@ export function useRoomApplicants(roomId: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.applicants(roomId),
     queryFn: () =>
-      api
-        .get<{ applicants: RoomApplicant[] }>(`/api/mobile/my-rooms/${roomId}/applicants`)
-        .then((r) => r.applicants),
+      api.get<{ applicants: RoomApplicant[] }>(`/api/mobile/my-rooms/${roomId}/applicants`),
+    select: (data) => data.applicants,
     enabled: !!roomId,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
@@ -269,11 +341,10 @@ export function useUpdateApplicantStatus() {
 export function useRoomEvents(roomId: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.events(roomId),
-    queryFn: () =>
-      api
-        .get<{ events: EventSummary[] }>(`/api/mobile/my-rooms/${roomId}/events`)
-        .then((r) => r.events),
+    queryFn: () => api.get<{ events: EventSummary[] }>(`/api/mobile/my-rooms/${roomId}/events`),
+    select: (data) => data.events,
     enabled: !!roomId,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
@@ -281,17 +352,17 @@ export function useEventDetail(roomId: string, eventId: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.eventDetail(roomId, eventId),
     queryFn: () =>
-      api
-        .get<{ event: EventDetail }>(`/api/mobile/my-rooms/${roomId}/events/${eventId}`)
-        .then((r) => r.event),
+      api.get<{ event: EventDetail }>(`/api/mobile/my-rooms/${roomId}/events/${eventId}`),
+    select: (data) => data.event,
     enabled: !!roomId && !!eventId,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
 export function useCreateEvent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ roomId, data }: { roomId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({ roomId, data }: { roomId: string; data: CreateEventPayload }) =>
       api.post<{ success: boolean; eventId: string }>(
         `/api/mobile/my-rooms/${roomId}/events`,
         data
@@ -312,7 +383,7 @@ export function useUpdateEvent() {
     }: {
       roomId: string;
       eventId: string;
-      data: Record<string, unknown>;
+      data: UpdateEventPayload;
     }) => api.patch(`/api/mobile/my-rooms/${roomId}/events/${eventId}`, data),
     onSuccess: (_data, { roomId, eventId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.events(roomId) });
@@ -363,23 +434,22 @@ export function useVotableApplicants(roomId: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.votableApplicants(roomId),
     queryFn: () =>
-      api
-        .get<{
-          applicants: VotableApplicant[];
-        }>(`/api/mobile/my-rooms/${roomId}/voting/applicants`)
-        .then((r) => r.applicants),
+      api.get<{ applicants: VotableApplicant[] }>(
+        `/api/mobile/my-rooms/${roomId}/voting/applicants`
+      ),
+    select: (data) => data.applicants,
     enabled: !!roomId,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
 export function useVoteBoard(roomId: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.voteBoard(roomId),
-    queryFn: () =>
-      api
-        .get<{ board: VoteBoard }>(`/api/mobile/my-rooms/${roomId}/voting/board`)
-        .then((r) => r.board),
+    queryFn: () => api.get<{ board: VoteBoard }>(`/api/mobile/my-rooms/${roomId}/voting/board`),
+    select: (data) => data.board,
     enabled: !!roomId,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
@@ -407,12 +477,12 @@ export function useCloseRoomApplicants(roomId: string) {
   return useQuery({
     queryKey: queryKeys.myRooms.closeApplicants(roomId),
     queryFn: () =>
-      api
-        .get<{
-          applicants: CloseRoomApplicant[];
-        }>(`/api/mobile/my-rooms/${roomId}/close/applicants`)
-        .then((r) => r.applicants),
+      api.get<{ applicants: CloseRoomApplicant[] }>(
+        `/api/mobile/my-rooms/${roomId}/close/applicants`
+      ),
+    select: (data) => data.applicants,
     enabled: !!roomId,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 

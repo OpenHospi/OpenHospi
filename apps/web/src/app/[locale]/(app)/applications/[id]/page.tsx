@@ -92,9 +92,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
           </div>
           <div className="flex-1 p-4">
             <h2 className="text-xl font-semibold">{application.roomTitle}</h2>
-            <p className="text-sm text-muted-foreground">
-              {tEnums(`city.${application.roomCity}`)}
-            </p>
+            <p className="text-sm text-muted-foreground">{application.roomCity}</p>
             <p className="mt-2 text-lg font-bold">
               €{application.roomRentPrice}
               <span className="text-sm font-normal text-muted-foreground">

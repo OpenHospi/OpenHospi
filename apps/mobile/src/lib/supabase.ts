@@ -51,8 +51,6 @@ export function useRealtimeStatus(): ConnectionStatus {
 }
 
 // ── Managed Channel Registry ────────────────────────────────
-// Tracks active subscriptions so they can be reconnected
-// after network restore or foreground return.
 
 type ChannelSetup = {
   name: string;
@@ -61,26 +59,20 @@ type ChannelSetup = {
 
 const activeChannels = new Map<string, { setup: ChannelSetup; channel: RealtimeChannel }>();
 
-/**
- * Subscribe to a managed Realtime channel. The channel will be
- * automatically reconnected when the app returns to foreground
- * or network is restored.
- *
- * Returns an unsubscribe function that removes the channel.
- */
 export function subscribeToChannel(setup: ChannelSetup): () => void {
-  // Remove existing channel with same name if any
   unsubscribeFromChannel(setup.name);
 
   const channel = setup.configure(supabase.channel(setup.name));
   channel.subscribe((status) => {
     if (status === 'SUBSCRIBED') {
+      reconnectAttempts = 0; // Reset backoff on successful connection
       setConnectionStatus('connected');
     } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
       setConnectionStatus('reconnecting');
     } else if (status === 'CLOSED') {
-      // Only set disconnected if no other channels are active
-      if (activeChannels.size <= 1) {
+      // Check if this was the last active channel
+      activeChannels.delete(setup.name);
+      if (activeChannels.size === 0) {
         setConnectionStatus('disconnected');
       }
     }
@@ -91,9 +83,6 @@ export function subscribeToChannel(setup: ChannelSetup): () => void {
   return () => unsubscribeFromChannel(setup.name);
 }
 
-/**
- * Remove a managed channel by name.
- */
 export function unsubscribeFromChannel(name: string): void {
   const entry = activeChannels.get(name);
   if (entry) {
@@ -106,37 +95,60 @@ export function unsubscribeFromChannel(name: string): void {
   }
 }
 
-// ── Reconnection Logic ──────────────────────────────────────
+// ── Reconnection with Exponential Backoff ───────────────────
+
+let reconnectAttempts = 0;
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+
+function getBackoffDelay(): number {
+  const delay = Math.min(100 * Math.pow(2, reconnectAttempts), 30_000);
+  const jitter = Math.random() * 100;
+  return delay + jitter;
+}
 
 function reconnectAllChannels() {
   if (activeChannels.size === 0) return;
+  if (reconnectTimer) return; // Already scheduled
 
-  setConnectionStatus('reconnecting');
+  const delay = reconnectAttempts === 0 ? 0 : getBackoffDelay();
 
-  // Re-create each channel from its setup function
-  const entries = [...activeChannels.entries()];
-  for (const [name, { setup }] of entries) {
-    // Remove old channel
-    supabase.removeChannel(activeChannels.get(name)!.channel);
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
 
-    // Create fresh channel with same configuration
-    const newChannel = setup.configure(supabase.channel(setup.name));
-    newChannel.subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        setConnectionStatus('connected');
-      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-        setConnectionStatus('reconnecting');
-      }
-    });
+    if (activeChannels.size === 0) return;
+    setConnectionStatus('reconnecting');
 
-    activeChannels.set(name, { setup, channel: newChannel });
-  }
+    const entries = [...activeChannels.entries()];
+    for (const [name, { setup }] of entries) {
+      supabase.removeChannel(activeChannels.get(name)!.channel);
 
-  // Invalidate chat queries to catch up on missed messages
-  queryClient.invalidateQueries({ queryKey: ['chat'] });
+      const newChannel = setup.configure(supabase.channel(setup.name));
+      newChannel.subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          reconnectAttempts = 0;
+          setConnectionStatus('connected');
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          setConnectionStatus('reconnecting');
+        }
+      });
+
+      activeChannels.set(name, { setup, channel: newChannel });
+    }
+
+    reconnectAttempts++;
+
+    // Invalidate chat queries to catch up on missed messages
+    queryClient.invalidateQueries({ queryKey: ['chat'] });
+  }, delay);
 }
 
 function disconnectAllChannels() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  reconnectAttempts = 0;
+
   for (const [, { channel }] of activeChannels) {
     channel.unsubscribe();
   }
@@ -144,8 +156,6 @@ function disconnectAllChannels() {
 }
 
 // ── Lifecycle Integration ───────────────────────────────────
-// Reconnect on foreground return and network restore.
-// Disconnect after background delay (handled by app-lifecycle).
 
 onForeground(() => {
   reconnectAllChannels();

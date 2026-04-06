@@ -1,30 +1,15 @@
 "use client";
 
-import {
-  ADDRESS_DEBOUNCE_MS,
-  PDOK_LOOKUP_URL,
-  PDOK_SUGGEST_URL,
-  PDOK_SUGGESTION_LIMIT,
-} from "@openhospi/shared/constants";
+import { ADDRESS_DEBOUNCE_MS } from "@openhospi/shared/constants";
+import type { AddressResult, AddressSuggestion } from "@openhospi/shared/pdok";
+import { lookupAddress, searchAddresses } from "@openhospi/shared/pdok";
 import { MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-export type AddressResult = {
-  streetName: string;
-  houseNumber: string;
-  postalCode: string;
-  city: string;
-  latitude: number;
-  longitude: number;
-};
-
-type Suggestion = {
-  id: string;
-  weergavenaam: string;
-};
+export type { AddressResult };
 
 type Props = {
   defaultDisplayValue?: string;
@@ -33,12 +18,6 @@ type Props = {
   placeholder?: string;
 };
 
-function parseWktPoint(wkt: string): { latitude: number; longitude: number } | null {
-  const match = wkt.match(/POINT\(([^ ]+) ([^ ]+)\)/);
-  if (!match) return null;
-  return { longitude: Number.parseFloat(match[1]), latitude: Number.parseFloat(match[2]) };
-}
-
 export function AddressAutocomplete({
   defaultDisplayValue,
   onSelect,
@@ -46,7 +25,7 @@ export function AddressAutocomplete({
   placeholder,
 }: Props) {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDisplay, setSelectedDisplay] = useState(defaultDisplayValue ?? "");
   const [isLoading, setIsLoading] = useState(false);
@@ -63,16 +42,7 @@ export function AddressAutocomplete({
 
     setIsLoading(true);
     try {
-      const url = `${PDOK_SUGGEST_URL}?q=${encodeURIComponent(q)}&fq=type:adres&rows=${PDOK_SUGGESTION_LIMIT}`;
-      const res = await fetch(url);
-      if (!res.ok) return;
-      const data = await res.json();
-      const items: Suggestion[] = (data.response?.docs ?? []).map(
-        (doc: { id: string; weergavenaam: string }) => ({
-          id: doc.id,
-          weergavenaam: doc.weergavenaam,
-        }),
-      );
+      const items = await searchAddresses(q);
       setSuggestions(items);
       setIsOpen(items.length > 0);
       setHighlightedIndex(-1);
@@ -87,31 +57,15 @@ export function AddressAutocomplete({
     debounceRef.current = setTimeout(() => fetchSuggestions(value), ADDRESS_DEBOUNCE_MS);
   }
 
-  async function handleSelect(suggestion: Suggestion) {
+  async function handleSelect(suggestion: AddressSuggestion) {
     setIsOpen(false);
     setSuggestions([]);
 
     try {
-      const url = `${PDOK_LOOKUP_URL}?id=${encodeURIComponent(suggestion.id)}`;
-      const res = await fetch(url);
-      if (!res.ok) return;
-      const data = await res.json();
-      const doc = data.response?.docs?.[0];
-      if (!doc) return;
+      const result = await lookupAddress(suggestion.id);
+      if (!result) return;
 
-      const coords = parseWktPoint(doc.centroide_ll ?? "");
-      if (!coords) return;
-
-      const result: AddressResult = {
-        streetName: doc.straatnaam ?? "",
-        houseNumber: String(doc.huisnummer ?? ""),
-        postalCode: doc.postcode ?? "",
-        city: doc.woonplaatsnaam ?? "",
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      };
-
-      setSelectedDisplay(suggestion.weergavenaam);
+      setSelectedDisplay(suggestion.displayName);
       setQuery("");
       onSelect(result);
     } catch {
@@ -127,7 +81,6 @@ export function AddressAutocomplete({
     onClear();
   }
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -139,7 +92,6 @@ export function AddressAutocomplete({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Cleanup debounce on unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -206,7 +158,7 @@ export function AddressAutocomplete({
                   )}
                 >
                   <MapPin className="size-3.5 shrink-0 text-muted-foreground" />
-                  <span className="truncate">{s.weergavenaam}</span>
+                  <span className="truncate">{s.displayName}</span>
                 </button>
               </li>
             ))}

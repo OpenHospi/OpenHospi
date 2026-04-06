@@ -4,7 +4,7 @@ import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
 import type { Locale } from "@openhospi/i18n";
 import { getMessages } from "@openhospi/i18n/web";
 import { NOTIFICATIONS_PER_PAGE } from "@openhospi/shared/constants";
-import { and, count, desc, eq, isNull } from "drizzle-orm";
+import { and, count, desc, eq, isNull, lt } from "drizzle-orm";
 
 import { sendTemplatedEmail } from "@/lib/services/email";
 import { sendWebPushToUser } from "@/lib/services/web-push";
@@ -100,8 +100,15 @@ function resolveMessageKey(
   return result;
 }
 
-export async function getUserNotifications(userId: string, page = 1): Promise<NotificationItem[]> {
-  return createDrizzleSupabaseClient(userId).rls(async (tx) => {
+export async function getUserNotifications(
+  userId: string,
+  cursor?: string,
+): Promise<{ items: NotificationItem[]; nextCursor: string | null }> {
+  const items = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
+    const conditions = [eq(notifications.userId, userId)];
+    if (cursor) {
+      conditions.push(lt(notifications.createdAt, new Date(cursor)));
+    }
     return tx
       .select({
         id: notifications.id,
@@ -112,11 +119,17 @@ export async function getUserNotifications(userId: string, page = 1): Promise<No
         createdAt: notifications.createdAt,
       })
       .from(notifications)
-      .where(eq(notifications.userId, userId))
+      .where(and(...conditions))
       .orderBy(desc(notifications.createdAt))
-      .limit(NOTIFICATIONS_PER_PAGE)
-      .offset((page - 1) * NOTIFICATIONS_PER_PAGE);
+      .limit(NOTIFICATIONS_PER_PAGE + 1);
   });
+
+  const hasMore = items.length > NOTIFICATIONS_PER_PAGE;
+  const page = hasMore ? items.slice(0, NOTIFICATIONS_PER_PAGE) : items;
+  const lastItem = page[page.length - 1];
+  const nextCursor = hasMore && lastItem ? lastItem.createdAt.toISOString() : null;
+
+  return { items: page, nextCursor };
 }
 
 export async function getUnreadNotificationCount(userId: string): Promise<number> {

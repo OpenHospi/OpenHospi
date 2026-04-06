@@ -100,7 +100,7 @@ export async function RoomDetailContent({ room, context, sidebarActions }: Props
   const tCommon = await getTranslations("common.labels");
   const tEnums = await getTranslations("enums");
 
-  const cityName = tEnums(`city.${room.city}`);
+  const cityName = room.city;
 
   // Build address parts based on auth level
   const addressParts = [cityName];

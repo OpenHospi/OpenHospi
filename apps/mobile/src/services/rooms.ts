@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api, NetworkError } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 import { getNetworkStatus } from '@/lib/network';
 import { ApplicationStatus } from '@openhospi/shared/enums';
 
@@ -46,6 +47,7 @@ export function useRooms(filters: DiscoverFilters) {
       ),
     initialPageParam: undefined as { createdAt: string; id: string } | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 
@@ -54,6 +56,7 @@ export function useRoom(id: string) {
     queryKey: queryKeys.rooms.detail(id),
     queryFn: () => api.get<RoomDetailResponse>(`/api/mobile/rooms/${id}`),
     enabled: !!id,
+    staleTime: STALE_TIMES.rooms,
   });
 }
 

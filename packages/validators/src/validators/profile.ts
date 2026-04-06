@@ -6,14 +6,7 @@ import {
   MIN_LANGUAGES,
   MIN_LIFESTYLE_TAGS,
 } from "@openhospi/shared/constants";
-import {
-  City,
-  Gender,
-  Language,
-  LifestyleTag,
-  StudyLevel,
-  Vereniging,
-} from "@openhospi/shared/enums";
+import { Gender, Language, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { z } from "zod";
 
 const baseProfileSchema = z.object({
@@ -27,7 +20,7 @@ const baseProfileSchema = z.object({
     .min(MIN_LIFESTYLE_TAGS)
     .max(MAX_LIFESTYLE_TAGS),
   languages: z.array(z.enum(Language.values)).min(MIN_LANGUAGES).max(MAX_LANGUAGES),
-  preferredCity: z.enum(City.values),
+  preferredCity: z.string().max(255).optional(),
   vereniging: z.enum(Vereniging.values).optional(),
 });
 

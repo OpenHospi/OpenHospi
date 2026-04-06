@@ -12,6 +12,7 @@ export const AdminAction = defineEnum([
   "lift_restriction",
   "export_user_data",
   "view_user_data",
+  "moderate_photo",
 ] as const);
 export type AdminAction = (typeof AdminAction.values)[number];
 

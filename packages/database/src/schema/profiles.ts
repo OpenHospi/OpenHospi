@@ -15,11 +15,11 @@ import { authUid, authenticatedRole } from "drizzle-orm/supabase";
 
 import { user } from "./auth-schema";
 import {
-  cityEnum,
   genderEnum,
   languageEnum,
   lifestyleTagEnum,
   localeEnum,
+  moderationStatusEnum,
   studyLevelEnum,
   verenigingEnum,
 } from "./enums";
@@ -41,7 +41,7 @@ export const profiles = pgTable(
     studyProgram: text("study_program"),
     studyLevel: studyLevelEnum("study_level"),
     vereniging: verenigingEnum("vereniging"),
-    preferredCity: cityEnum("preferred_city"),
+    preferredCity: text("preferred_city"),
     lifestyleTags: lifestyleTagEnum("lifestyle_tags").array().default([]),
     languages: languageEnum("languages").array().default([]),
     preferredLocale: localeEnum("preferred_locale").default("nl"),
@@ -82,6 +82,7 @@ export const profilePhotos = pgTable(
     slot: smallint("slot").notNull(),
     url: text("url").notNull(),
     caption: text("caption"),
+    moderationStatus: moderationStatusEnum("moderation_status").default("approved").notNull(),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow(),
   },
   (table) => [

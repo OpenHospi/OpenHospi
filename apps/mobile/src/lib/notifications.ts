@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import * as Sentry from '@sentry/react-native';
 import { router } from 'expo-router';
 import { Platform } from 'react-native';
 
@@ -60,7 +61,14 @@ export async function registerForPushNotifications(): Promise<string | null> {
     projectId: getProjectId(),
   });
 
-  await api.post('/api/push-tokens', { expoPushToken: token }).catch(console.error);
+  try {
+    await api.post('/api/push-tokens', { expoPushToken: token });
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { context: 'push-token-registration' },
+      level: 'warning',
+    });
+  }
 
   return token;
 }

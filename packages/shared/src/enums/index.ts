@@ -30,8 +30,6 @@ export { DiscoverSort } from "./discover";
 
 export { ConsentPurpose, DataRequestStatus, DataRequestType, LegalBasis } from "./privacy";
 
-export { City } from "./cities";
-
 export { Vereniging } from "./verenigingen";
 
 export {

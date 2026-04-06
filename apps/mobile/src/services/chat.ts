@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { STALE_TIMES } from '@/lib/constants';
 
 import type {
   ConversationDetail,
@@ -17,6 +18,7 @@ export function useConversations() {
   return useQuery({
     queryKey: queryKeys.chat.conversations(),
     queryFn: () => api.get<ConversationSummary[]>('/api/mobile/chat/conversations'),
+    staleTime: STALE_TIMES.chat,
   });
 }
 
@@ -25,6 +27,7 @@ export function useConversationDetail(id: string) {
     queryKey: queryKeys.chat.conversationDetail(id),
     queryFn: () => api.get<ConversationDetail>(`/api/mobile/chat/conversations/${id}`),
     enabled: !!id,
+    staleTime: STALE_TIMES.chat,
   });
 }
 
@@ -122,12 +125,13 @@ export function useSendMessage(currentUserId?: string) {
     },
 
     onSettled: (_data, _error, variables) => {
-      // Sync with server truth
       queryClient.invalidateQueries({
         queryKey: queryKeys.chat.messages(variables.conversationId),
       });
+      // Only invalidate this specific conversation, not the entire list
       queryClient.invalidateQueries({
-        queryKey: queryKeys.chat.conversations(),
+        queryKey: queryKeys.chat.conversationDetail(variables.conversationId),
+        exact: true,
       });
     },
   });

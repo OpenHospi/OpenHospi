@@ -46,7 +46,12 @@ export async function updateProfileForUser(userId: string, data: EditProfileData
   return { success: true };
 }
 
-export async function saveProfilePhotoForUser(userId: string, file: File, slot: number) {
+export async function saveProfilePhotoForUser(
+  userId: string,
+  file: File,
+  slot: number,
+  flagged = false,
+) {
   if (!file) return { error: CommonError.upload_failed };
   if (slot < 1 || slot > 5) return { error: CommonError.upload_failed };
 
@@ -58,13 +63,14 @@ export async function saveProfilePhotoForUser(userId: string, file: File, slot: 
     url = await uploadPhotoToStorage(file, STORAGE_BUCKET_PROFILE_PHOTOS, path);
 
     const photoUrl = url;
+    const moderationStatus = flagged ? ("pending_review" as const) : ("approved" as const);
     const [photo] = await createDrizzleSupabaseClient(userId).rls(async (tx) => {
       const [inserted] = await tx
         .insert(profilePhotos)
-        .values({ userId, slot, url: photoUrl })
+        .values({ userId, slot, url: photoUrl, moderationStatus })
         .onConflictDoUpdate({
           target: [profilePhotos.userId, profilePhotos.slot],
-          set: { url: photoUrl, uploadedAt: new Date() },
+          set: { url: photoUrl, moderationStatus, uploadedAt: new Date() },
         })
         .returning();
       await syncAvatarUrl(tx, userId);

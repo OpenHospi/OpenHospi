@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/lib/db';
 import { keyVerifications } from '@/lib/db/schema';
+import { STALE_TIMES } from '@/lib/constants';
 import type { IdentityKeyResult } from '@openhospi/shared/api-types';
 import { api } from '@/lib/api-client';
 import { queryKeys } from './keys';
@@ -44,6 +45,7 @@ export function useVerificationStatus(peerUserId: string) {
     queryKey: queryKeys.verification.status(peerUserId),
     queryFn: () => getVerification(peerUserId),
     enabled: !!peerUserId,
+    staleTime: STALE_TIMES.verification,
   });
 
   return {
@@ -78,15 +80,16 @@ export function useSaveVerification() {
 export function useKeyChangeDetection(peerUserId: string) {
   const { signingPublicKey: verifiedKey, isVerified } = useVerificationStatus(peerUserId);
 
-  const { data: serverKeys } = useQuery({
+  const { data: serverKeys, isError } = useQuery({
     queryKey: queryKeys.verification.identityKeys([peerUserId]),
     queryFn: () => fetchIdentityKeysApi([peerUserId]),
     enabled: !!peerUserId && isVerified,
+    staleTime: STALE_TIMES.verification,
   });
 
   const currentSigningKey = serverKeys?.[0]?.signingPublicKey;
   const hasChanged =
     isVerified && !!currentSigningKey && !!verifiedKey && verifiedKey !== currentSigningKey;
 
-  return { hasChanged, isVerified };
+  return { hasChanged, isVerified, isError };
 }

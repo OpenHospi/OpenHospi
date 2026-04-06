@@ -29,9 +29,9 @@ export function useRespondToInvitation() {
       if (variables.applicationId) {
         queryClient.invalidateQueries({
           queryKey: queryKeys.applications.detail(variables.applicationId),
+          exact: true,
         });
       }
-      queryClient.invalidateQueries({ queryKey: queryKeys.chat.conversations() });
     },
   });
 }

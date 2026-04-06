@@ -1,11 +1,4 @@
-import type {
-  ApplicationStatus,
-  City,
-  Furnishing,
-  HouseType,
-  LocationTag,
-  RoomFeature,
-} from "../enums";
+import type { ApplicationStatus, Furnishing, HouseType, LocationTag, RoomFeature } from "../enums";
 
 import type { UserInvitation } from "./invitations";
 
@@ -13,7 +6,7 @@ export type UserApplication = {
   id: string;
   roomId: string;
   roomTitle: string;
-  roomCity: City;
+  roomCity: string;
   roomRentPrice: number;
   roomCoverPhotoUrl: string | null;
   roomPhotoCount: number;

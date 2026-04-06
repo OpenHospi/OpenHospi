@@ -12,6 +12,7 @@
     "./error-codes": "./src/error-codes.ts",
     "./api-types": "./src/api-types/index.ts",
     "./calendar": "./src/calendar.ts",
+    "./pdok": "./src/pdok.ts",
     "./icons": "./src/icons/index.tsx",
     "./assets/*": "./assets/*"
   },

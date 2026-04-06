@@ -6348,6 +6348,9 @@ packages:
   '@types/archiver@7.0.0':
     resolution: {integrity: sha512-/3vwGwx9n+mCQdYZ2IKGGHEFL30I96UgBlk8EtRDDFQ9uxM1l4O5Ci6r00EMAkiDaTqD9DQ6nVrWRICnBPtzzg==}
 
+  '@types/argparse@1.0.38':
+    resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
+
   '@types/aws-lambda@8.10.161':
     resolution: {integrity: sha512-rUYdp+MQwSFocxIOcSsYSF3YYYC/uUpMbCY/mbO21vGqfrEYvNSoPyKYDj6RhXXpPfS0KstW9RwG3qXh9sL7FQ==}
 
@@ -6487,6 +6490,9 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/decamelize@1.2.0':
+    resolution: {integrity: sha512-viw/LG++yGW9GP7ggfDpR+qpBz/NHFEbRTWNumTzebeUlURwfX+sjQfdfbiEoxXgJrj+1G8p4VN/bLquur7Hmg==}
+
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
 
@@ -6496,6 +6502,9 @@ packages:
 
   '@types/emscripten@1.41.5':
     resolution: {integrity: sha512-cMQm7pxu6BxtHyqJ7mQZ2kXWV5SLmugybFdHCBbJ5eHzOo6VhBckEgAT3//rP5FwPHNPeEiq4SmQ5ucBwsOo4Q==}
+
+  '@types/es6-promisify@5.0.0':
+    resolution: {integrity: sha512-PARB3NvwZVOnoH3j1t9qnRLxI4NTFlQAZKfr9xypPlwIUaLhqABN4arx/B8LD/wpAs6mTQPgRTSFP9eVf9nP2w==}
 
   '@types/eslint@9.6.1':
     resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
@@ -6515,6 +6524,9 @@ packages:
   '@types/geojson@7946.0.16':
     resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
 
+  '@types/get-intrinsic@1.2.3':
+    resolution: {integrity: sha512-snGKUfZKZ4OBdh5exTMWbfCx2BgTx8QePbIg0jOawZe56AlJXRsuehT/vwZwEFW6Ac6NB0aDE6NhHsq3k0WSyQ==}
+
   '@types/glob@7.2.0':
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
 
@@ -6523,6 +6535,10 @@ packages:
 
   '@types/hammerjs@2.0.46':
     resolution: {integrity: sha512-ynRvcq6wvqexJ9brDMS4BnBLzmr0e14d6ZJTEShTBWKymQiHwlAyGu0ZPEFI2Fh1U53F7tN9ufClWM5KvqkKOw==}
+
+  '@types/has-symbols@1.1.0':
+    resolution: {integrity: sha512-zkCEKAJlcPxEusVhHrm+lCWOdMHOrzEGTPTNMFNfnP45nwHHKF7kdRYxfr6Ifda/fPZVDyPSMhp2qcmvJDe+Ow==}
+    deprecated: This is a stub types definition. has-symbols provides its own type definitions, so you do not need this installed.
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
@@ -6630,6 +6646,9 @@ packages:
   '@types/picomatch@4.0.2':
     resolution: {integrity: sha512-qHHxQ+P9PysNEGbALT8f8YOSHW0KJu6l2xU8DYY0fu/EmGxXdVnuTLvFUvBgPJMSqXq29SYHveejeAha+4AYgA==}
 
+  '@types/progress@2.0.7':
+    resolution: {integrity: sha512-iadjw02vte8qWx7U0YM++EybBha2CQLPGu9iJ97whVgJUT5Zq9MjAPYUnbfRI2Kpehimf1QjFJYxD0t8nqzu5w==}
+
   '@types/proper-lockfile@4.1.4':
     resolution: {integrity: sha512-uo2ABllncSqg9F1D4nugVl9v93RmjxF6LJzQLMLDdPaXCUIDPeOJ21Gbqi43xNKzBi/WQ0Q0dICqufzQbMjipQ==}
 
@@ -6655,6 +6674,9 @@ packages:
 
   '@types/retry@0.12.5':
     resolution: {integrity: sha512-3xSjTp3v03X/lSQLkczaN9UIEwJMoMCA1+Nb5HfbJEQWogdeQIyVtTvxPXDQjZ5zws8rFQfVfRdz03ARihPJgw==}
+
+  '@types/rimraf@2.0.5':
+    resolution: {integrity: sha512-YyP+VfeaqAyFmXoTh3HChxOQMyjByRMsHU7kc5KOJkSlXudhMhQIALbYV7rHh/l8d2lX3VUQzprrcAgWdRuU8g==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -6715,6 +6737,9 @@ packages:
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
+
+  '@types/yargs@15.0.20':
+    resolution: {integrity: sha512-KIkX+/GgfFitlASYCGoSF+T4XRXhOubJLhkLVtSfsRTe9jWMmuM2g28zQ41BtPTG7TRBb2xHW+LCNVE9QR/vsg==}
 
   '@types/yargs@17.0.35':
     resolution: {integrity: sha512-qUHkeCyQFxMXg79wQfTtfndEC+N9ZZg76HJftDJp+qH2tV7Gj4OJi7l+PiWwJ+pWtW8GwSmqsDj/oymhrTWXjg==}
@@ -19970,6 +19995,8 @@ snapshots:
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9
       '@tensorflow/tfjs': 4.22.0(seedrandom@3.0.5)
+      '@types/progress': 2.0.7
+      '@types/rimraf': 2.0.5
       adm-zip: 0.5.17
       google-protobuf: 3.21.4
       https-proxy-agent: 2.2.4
@@ -19989,6 +20016,8 @@ snapshots:
       '@tensorflow/tfjs-core': 4.22.0
       '@tensorflow/tfjs-data': 4.22.0(@tensorflow/tfjs-core@4.22.0)(seedrandom@3.0.5)
       '@tensorflow/tfjs-layers': 4.22.0(@tensorflow/tfjs-core@4.22.0)
+      '@types/argparse': 1.0.38
+      '@types/yargs': 15.0.20
       argparse: 1.0.10
       chalk: 4.1.2
       core-js: 3.29.1
@@ -20013,6 +20042,8 @@ snapshots:
     dependencies:
       '@types/readdir-glob': 1.1.5
     optional: true
+
+  '@types/argparse@1.0.38': {}
 
   '@types/aws-lambda@8.10.161': {}
 
@@ -20195,6 +20226,8 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
+  '@types/decamelize@1.2.0': {}
+
   '@types/deep-eql@4.0.2': {}
 
   '@types/diff@8.0.0':
@@ -20203,6 +20236,8 @@ snapshots:
     optional: true
 
   '@types/emscripten@1.41.5': {}
+
+  '@types/es6-promisify@5.0.0': {}
 
   '@types/eslint@9.6.1':
     dependencies:
@@ -20228,17 +20263,22 @@ snapshots:
 
   '@types/geojson@7946.0.16': {}
 
+  '@types/get-intrinsic@1.2.3': {}
+
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
       '@types/node': 25.5.2
-    optional: true
 
   '@types/graceful-fs@4.1.9':
     dependencies:
       '@types/node': 25.5.2
 
   '@types/hammerjs@2.0.46': {}
+
+  '@types/has-symbols@1.1.0':
+    dependencies:
+      has-symbols: 1.1.0
 
   '@types/hast@3.0.4':
     dependencies:
@@ -20309,7 +20349,6 @@ snapshots:
   '@types/minimatch@6.0.0':
     dependencies:
       minimatch: 3.1.4
-    optional: true
 
   '@types/ms@2.1.0': {}
 
@@ -20372,6 +20411,10 @@ snapshots:
   '@types/picomatch@4.0.2':
     optional: true
 
+  '@types/progress@2.0.7':
+    dependencies:
+      '@types/node': 25.5.2
+
   '@types/proper-lockfile@4.1.4':
     dependencies:
       '@types/retry': 0.12.5
@@ -20402,6 +20445,11 @@ snapshots:
 
   '@types/retry@0.12.5':
     optional: true
+
+  '@types/rimraf@2.0.5':
+    dependencies:
+      '@types/glob': 7.2.0
+      '@types/node': 25.5.2
 
   '@types/sax@1.2.7':
     dependencies:
@@ -20467,6 +20515,10 @@ snapshots:
     optional: true
 
   '@types/yargs-parser@21.0.3': {}
+
+  '@types/yargs@15.0.20':
+    dependencies:
+      '@types/yargs-parser': 21.0.3
 
   '@types/yargs@17.0.35':
     dependencies:
@@ -21050,10 +21102,12 @@ snapshots:
 
   agent-base@4.3.0:
     dependencies:
+      '@types/es6-promisify': 5.0.0
       es6-promisify: 5.0.0
 
   agent-base@6.0.2:
     dependencies:
+      '@types/debug': 4.1.12
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
@@ -22802,6 +22856,7 @@ snapshots:
 
   es-set-tostringtag@2.1.0:
     dependencies:
+      '@types/get-intrinsic': 1.2.3
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
@@ -24408,6 +24463,7 @@ snapshots:
 
   has-tostringtag@1.0.2:
     dependencies:
+      '@types/has-symbols': 1.1.0
       has-symbols: 1.1.0
 
   has-unicode@2.0.1: {}
@@ -24632,6 +24688,7 @@ snapshots:
 
   https-proxy-agent@5.0.1:
     dependencies:
+      '@types/debug': 4.1.12
       agent-base: 6.0.2
       debug: 4.4.3
     transitivePeerDependencies:
@@ -30063,6 +30120,7 @@ snapshots:
 
   yargs@15.4.1:
     dependencies:
+      '@types/decamelize': 1.2.0
       cliui: 6.0.0
       decamelize: 1.2.0
       find-up: 4.1.0

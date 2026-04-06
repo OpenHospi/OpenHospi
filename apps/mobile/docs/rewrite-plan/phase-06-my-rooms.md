@@ -35,7 +35,7 @@ All screens share: `step-indicator.tsx` at top, smooth horizontal transitions, f
 ### `basic-info.tsx` -- Step 1
 
 - Title (text input, required)
-- City (select from `City` enum chips)
+- City: auto-filled from PDOK address search (free text, not enum). Shown as read-only after address selection. "Change city" link for edge cases opens PDOK city search.
 - **Address autocomplete** (same approach as web): type address, PDOK Dutch government API returns suggestions, select one to auto-fill street, house number, postal code, and lat/lng coordinates
   - Uses `PDOK_SUGGEST_URL` and `PDOK_LOOKUP_URL` from `@openhospi/shared/constants` (already shared)
   - Create a React Native `AddressAutocomplete` component mirroring `apps/web/src/components/shared/address-autocomplete.tsx`

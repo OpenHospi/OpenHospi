@@ -171,7 +171,7 @@ No `fitToCoordinates` available in expo-maps. Calculate bounding box manually if
 
 ### Sections
 
-1. **City**: Multi-select chips for Dutch cities (from `City` enum)
+1. **City**: Searchable dropdown populated dynamically from rooms in the database (`useAvailableCities()` hook -- returns `SELECT DISTINCT city FROM rooms WHERE status = 'available'`). No hardcoded list.
 2. **Price range**: Custom dual-thumb slider using `react-native-gesture-handler` PanGesture
 3. **House type**: Single-select chips (from `HouseType` enum)
 4. **Furnishing**: Single-select chips (from `Furnishing` enum)

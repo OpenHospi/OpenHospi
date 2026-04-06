@@ -40,15 +40,15 @@ On return visits (session exists but expired or locked):
 
 7 steps with horizontal page transitions. Step indicator at top (`step-indicator.tsx`).
 
-| Step | File                   | Content                                          | Required?       |
-| ---- | ---------------------- | ------------------------------------------------ | --------------- |
-| 1    | `identity-step.tsx`    | First name, last name, birth date, gender        | Yes             |
-| 2    | `about-step.tsx`       | Study program, study level, preferred city       | Yes             |
-| 3    | `bio-step.tsx`         | Bio text (who are you, what are you looking for) | Yes             |
-| 4    | `personality-step.tsx` | Lifestyle tags selection                         | No (skippable)  |
-| 5    | `languages-step.tsx`   | Languages spoken (multi-select)                  | Yes             |
-| 6    | `photos-step.tsx`      | Profile photos (at least 1 required)             | Yes (1 minimum) |
-| 7    | `security-step.tsx`    | E2EE key setup: create PIN, generate device keys | Yes             |
+| Step | File                   | Content                                                                          | Required?       |
+| ---- | ---------------------- | -------------------------------------------------------------------------------- | --------------- |
+| 1    | `identity-step.tsx`    | First name, last name, birth date, gender                                        | Yes             |
+| 2    | `about-step.tsx`       | Study program, study level, preferred city (PDOK city search, not enum dropdown) | Yes             |
+| 3    | `bio-step.tsx`         | Bio text (who are you, what are you looking for)                                 | Yes             |
+| 4    | `personality-step.tsx` | Lifestyle tags selection                                                         | No (skippable)  |
+| 5    | `languages-step.tsx`   | Languages spoken (multi-select)                                                  | Yes             |
+| 6    | `photos-step.tsx`      | Profile photos (at least 1 required)                                             | Yes (1 minimum) |
+| 7    | `security-step.tsx`    | E2EE key setup: create PIN, generate device keys                                 | Yes             |
 
 ### UX Improvements
 

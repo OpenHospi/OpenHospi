@@ -64,14 +64,14 @@ All modals share the same pattern:
 - **Save**: Haptic on success, optimistic update via `useUpdateProfile()`
 - **Dismiss**: Swipe down or tap backdrop
 
-| Modal                    | Fields                                   | Notes                                                                       |
-| ------------------------ | ---------------------------------------- | --------------------------------------------------------------------------- |
-| `edit-personal-info.tsx` | Birth date + gender + preferred city     | 3 fields grouped in one sheet (replaces 3 separate modals)                  |
-| `edit-study-info.tsx`    | Study program + study level + vereniging | 3 fields grouped in one sheet (replaces 3 separate modals)                  |
-| `edit-bio.tsx`           | Multi-line text area                     | Character counter. Kept separate (heavy interaction)                        |
-| `edit-languages.tsx`     | Multi-select list with search            | From `Language` enum. Kept separate (complex picker)                        |
-| `edit-lifestyle.tsx`     | Multi-select chips                       | From `LifestyleTag` enum. Kept separate (chip picker)                       |
-| `edit-photos.tsx`        | Photo grid                               | Camera + library, drag reorder, delete. Kept separate (complex interaction) |
+| Modal                    | Fields                                   | Notes                                                                                               |
+| ------------------------ | ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `edit-personal-info.tsx` | Birth date + gender + preferred city     | 3 fields in one sheet. Preferred city uses PDOK city search (`city-search.tsx`), not enum dropdown. |
+| `edit-study-info.tsx`    | Study program + study level + vereniging | 3 fields grouped in one sheet (replaces 3 separate modals)                                          |
+| `edit-bio.tsx`           | Multi-line text area                     | Character counter. Kept separate (heavy interaction)                                                |
+| `edit-languages.tsx`     | Multi-select list with search            | From `Language` enum. Kept separate (complex picker)                                                |
+| `edit-lifestyle.tsx`     | Multi-select chips                       | From `LifestyleTag` enum. Kept separate (chip picker)                                               |
+| `edit-photos.tsx`        | Photo grid                               | Camera + library, drag reorder, delete. Kept separate (complex interaction)                         |
 
 **Removed as separate modals** (merged into personal-info and study-info):
 
@@ -93,10 +93,6 @@ All modals share the same pattern:
 - "Complete your profile" banner below avatar if missing photos or bio
 - Calculation: count filled fields / total fields (photos, bio, languages, lifestyle, study info, personal info)
 - Like LinkedIn's profile strength meter but less aggressive
-  | `edit-preferred-city.tsx` | Single-select chips | From `City` enum |
-  | `edit-study-level.tsx` | Single-select chips | From `StudyLevel` enum |
-  | `edit-study-program.tsx` | Text input | Free text with suggestions |
-  | `edit-vereniging.tsx` | Single-select + search | From `Vereniging` enum |
 
 ---
 

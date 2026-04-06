@@ -45,9 +45,15 @@ UX-focused overhaul + backend hardening. Keep working backend integrations (cryp
 
 **Server-side only (apps/web)**: `nsfwjs` + `@tensorflow/tfjs-node` -- free image moderation, ~93% accuracy, GDPR-perfect
 
+**Shared package** (new): `packages/shared/src/pdok.ts` -- `searchCities()` utility for PDOK city search (used by web + mobile)
+
+**Mobile** (new): `src/components/city-search.tsx` -- PDOK-powered city search component for preferred city
+
 Already installed: expo-camera, expo-haptics, expo-image, expo-image-picker, expo-sharing, expo-glass-effect
 
 Remove: `react-native-leaflet-view` + patch + leaflet.html asset + expo-doctor exclusion
+
+**Delete**: `packages/shared/src/enums/cities.ts` (City enum replaced by free-text PDOK cities) + `enums.city.*` translation keys from all locales
 
 ## Execution Timeline
 

@@ -229,7 +229,8 @@ Every existing component gets a visual and interaction overhaul.
 - Back state with MMKV for persistence across app restarts
 - Add `activeFilterCount` computed property (for badge on filter button)
 - Add `resetFilters()` method
-- Type-safe filter state matching `DiscoverRoom` filter params
+- City filter uses free-text values from `useAvailableCities()` hook (dynamic from DB, not hardcoded enum)
+- All other filters type-safe matching `DiscoverRoom` filter params
 
 ---
 

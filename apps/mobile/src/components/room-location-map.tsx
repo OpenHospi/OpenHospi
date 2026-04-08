@@ -3,81 +3,55 @@ import {
   MAP_PRIVACY_OFFSET,
   MAP_PRIVACY_RADIUS,
 } from '@openhospi/shared/constants';
-import { useEffect, useMemo, useState } from 'react';
-import { useColorScheme, View } from 'react-native';
-import { Asset } from 'expo-asset';
-import { File } from 'expo-file-system';
-import { LeafletView, MapShapeType } from 'react-native-leaflet-view';
-
-import { Skeleton } from '@/components/ui/skeleton';
-import { NAV_THEME } from '@/lib/theme';
+import { AppleMaps, GoogleMaps } from 'expo-maps';
+import { Platform, View } from 'react-native';
 
 type Props = {
   latitude: number;
   longitude: number;
 };
 
-// Apply a small random-ish offset for privacy (deterministic per coord)
 function offsetCoords(lat: number, lng: number) {
   const seed = Math.abs(Math.sin(lat * 1000 + lng * 2000));
   const offsetLat = (seed - 0.5) * MAP_PRIVACY_OFFSET;
   const offsetLng = (((seed * 1.3) % 1) - 0.5) * MAP_PRIVACY_OFFSET;
-  return { lat: lat + offsetLat, lng: lng + offsetLng };
+  return { latitude: lat + offsetLat, longitude: lng + offsetLng };
 }
 
-function useLeafletHtml() {
-  const [html, setHtml] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      const [asset] = await Asset.loadAsync(require('../../assets/leaflet.html'));
-      if (cancelled || !asset.localUri) return;
-
-      const file = new File(asset.localUri);
-      const content = await file.text();
-      if (!cancelled) setHtml(content);
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return html;
-}
+const CIRCLE_FILL = 'rgba(13, 148, 136, 0.15)';
+const CIRCLE_STROKE = 'rgba(13, 148, 136, 0.5)';
 
 export default function RoomLocationMap({ latitude, longitude }: Props) {
-  const html = useLeafletHtml();
-  const colorScheme = useColorScheme();
-  const offset = useMemo(() => offsetCoords(latitude, longitude), [latitude, longitude]);
+  const center = offsetCoords(latitude, longitude);
 
-  if (!html) return <Skeleton style={{ height: 256, borderRadius: 12 }} />;
+  const circleOverlay = {
+    center,
+    radius: MAP_PRIVACY_RADIUS,
+    fillColor: CIRCLE_FILL,
+    strokeColor: CIRCLE_STROKE,
+    strokeWidth: 2,
+  };
 
-  const circleColor =
-    colorScheme === 'dark' ? NAV_THEME.dark.colors.primary : NAV_THEME.light.colors.primary;
+  const cameraPosition = {
+    coordinates: center,
+    zoom: MAP_DEFAULT_ZOOM,
+  };
 
   return (
-    <View style={{ height: 256, borderRadius: 12, overflow: 'hidden' }}>
-      <LeafletView
-        renderLoading={() => <></>}
-        mapCenterPosition={{ lat: offset.lat, lng: offset.lng }}
-        zoom={MAP_DEFAULT_ZOOM}
-        zoomControl={false}
-        doDebug={false}
-        source={{ html }}
-        mapShapes={[
-          {
-            shapeType: MapShapeType.CIRCLE,
-            center: { lat: offset.lat, lng: offset.lng },
-            radius: MAP_PRIVACY_RADIUS,
-            color: circleColor,
-          },
-        ]}
-        onMessageReceived={() => {}}
-      />
+    <View style={{ height: 256, borderRadius: 12, overflow: 'hidden' }} pointerEvents="none">
+      {Platform.OS === 'ios' ? (
+        <AppleMaps.View
+          style={{ flex: 1 }}
+          cameraPosition={cameraPosition}
+          circles={[circleOverlay]}
+        />
+      ) : (
+        <GoogleMaps.View
+          style={{ flex: 1 }}
+          cameraPosition={cameraPosition}
+          circles={[circleOverlay]}
+        />
+      )}
     </View>
   );
 }

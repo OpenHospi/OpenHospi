@@ -1,7 +1,9 @@
-import * as Haptics from 'expo-haptics';
-import { Send } from 'lucide-react-native';
-import { ActivityIndicator, Pressable, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Paperclip, Send } from 'lucide-react-native';
+import { ActivityIndicator, Pressable, TextInput } from 'react-native';
+import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-reanimated';
+
+import { AnimatedPressable } from '@/components/animated-pressable';
+import { hapticLight } from '@/lib/haptics';
 
 type Props = {
   value: string;
@@ -12,27 +14,45 @@ type Props = {
 };
 
 export function ChatInputBar({ value, onChangeText, onSend, isSending, placeholder }: Props) {
-  const insets = useSafeAreaInsets();
+  const keyboard = useAnimatedKeyboard();
   const trimmed = value.trim();
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    paddingBottom: 12 + keyboard.height.value,
+  }));
 
   function handleSend() {
     if (!trimmed || isSending) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    hapticLight();
     onSend();
   }
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        gap: 8,
-        paddingHorizontal: 12,
-        paddingTop: 12,
-        paddingBottom: 12 + insets.bottom,
-        borderTopWidth: 1,
-      }}
+    <Animated.View
+      style={[
+        {
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          gap: 8,
+          paddingHorizontal: 12,
+          paddingTop: 12,
+          borderTopWidth: 1,
+        },
+        animatedStyle,
+      ]}
       className="border-border bg-background">
+      <Pressable
+        disabled
+        style={{
+          width: 40,
+          height: 40,
+          justifyContent: 'center',
+          alignItems: 'center',
+          opacity: 0.3,
+        }}>
+        <Paperclip size={20} className="text-muted-foreground" />
+      </Pressable>
+
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -52,7 +72,8 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
         onSubmitEditing={handleSend}
         blurOnSubmit={false}
       />
-      <Pressable
+
+      <AnimatedPressable
         onPress={handleSend}
         disabled={!trimmed || isSending}
         style={{
@@ -69,7 +90,7 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
         ) : (
           <Send size={18} color="white" />
         )}
-      </Pressable>
-    </View>
+      </AnimatedPressable>
+    </Animated.View>
   );
 }

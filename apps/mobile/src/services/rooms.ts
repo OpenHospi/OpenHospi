@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { api, NetworkError } from '@/lib/api-client';
+import { api, ApiError, NetworkError } from '@/lib/api-client';
 import { STALE_TIMES } from '@/lib/constants';
+import { hapticError } from '@/lib/haptics';
+import { useToast } from '@/hooks/use-toast';
 import { getNetworkStatus } from '@/lib/network';
 import { ApplicationStatus } from '@openhospi/shared/enums';
 
@@ -64,6 +66,7 @@ export function useRoom(id: string) {
 
 export function useApplyToRoom() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: { personalMessage: string } }) => {
@@ -96,11 +99,12 @@ export function useApplyToRoom() {
       return { previousDetail };
     },
 
-    onError: (_error, variables, context) => {
-      // Rollback on failure
+    onError: (error, variables, context) => {
       if (context?.previousDetail) {
         queryClient.setQueryData(queryKeys.rooms.detail(variables.roomId), context.previousDetail);
       }
+      showToast('error', error instanceof ApiError ? error.message : 'Something went wrong');
+      hapticError();
     },
 
     onSettled: (_data, _error, variables) => {

@@ -4,6 +4,8 @@ import { getCookie } from '@better-auth/expo/client';
 
 import { api, ApiError } from '@/lib/api-client';
 import { API_BASE_URL, STALE_TIMES, STORAGE_PREFIX } from '@/lib/constants';
+import { useToast } from '@/hooks/use-toast';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
 
 import { queryKeys } from './keys';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
@@ -34,14 +36,19 @@ type UpdateProfilePayload = Partial<{
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (data: UpdateProfilePayload) => api.patch('/api/mobile/profile', data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() }),
+    onError,
   });
 }
 
 export function useUploadProfilePhoto() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: async ({
       file,
@@ -79,13 +86,17 @@ export function useUploadProfilePhoto() {
       return response.json();
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() }),
+    onError,
   });
 }
 
 export function useDeleteProfilePhoto() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (slot: number) => api.delete(`/api/mobile/profile/photos/${slot}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() }),
+    onError,
   });
 }

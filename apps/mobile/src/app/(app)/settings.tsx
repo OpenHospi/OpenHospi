@@ -6,7 +6,10 @@ import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { BottomSheet, type BottomSheetModal } from '@/components/bottom-sheet';
+import {
+  AppBottomSheetModal as BottomSheet,
+  type BottomSheetModal,
+} from '@/components/bottom-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

@@ -2,6 +2,8 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 
 import { api } from '@/lib/api-client';
 import { STALE_TIMES } from '@/lib/constants';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
+import { useToast } from '@/hooks/use-toast';
 
 import { queryKeys } from './keys';
 
@@ -44,6 +46,8 @@ export function useUnreadNotificationCount() {
 
 export function useMarkNotificationRead() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
 
   return useMutation({
     mutationFn: (notificationId: string) =>
@@ -52,11 +56,14 @@ export function useMarkNotificationRead() {
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.list() });
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() });
     },
+    onError,
   });
 }
 
 export function useMarkAllNotificationsRead() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
 
   return useMutation({
     mutationFn: () => api.post('/api/mobile/notifications', { action: 'mark-all-read' }),
@@ -64,5 +71,6 @@ export function useMarkAllNotificationsRead() {
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.list() });
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount() });
     },
+    onError,
   });
 }

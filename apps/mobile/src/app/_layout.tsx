@@ -9,6 +9,7 @@ setCryptoProvider(createNativeCryptoProvider());
 import '../global.css';
 import { hideSplash } from '@/lib/splash';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
@@ -18,9 +19,11 @@ import { Stack } from 'expo-router';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useUniwind } from 'uniwind';
 
 import { SessionProvider, useAppSession } from '@/context/session';
+import { ToastProvider } from '@/context/toast';
 import { useRunMigrations } from '@/lib/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
 import { SENTRY_DSN } from '@/lib/constants';
@@ -123,16 +126,22 @@ let RootLayout = function RootLayout() {
   const { theme } = useUniwind();
 
   return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-      <I18nextProvider i18n={i18n}>
-        <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
-          <SessionProvider>
-            <RootNavigator />
-          </SessionProvider>
-          <PortalHost />
-        </ThemeProvider>
-      </I18nextProvider>
-    </PersistQueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
+            <BottomSheetModalProvider>
+              <SessionProvider>
+                <ToastProvider>
+                  <RootNavigator />
+                </ToastProvider>
+              </SessionProvider>
+            </BottomSheetModalProvider>
+            <PortalHost />
+          </ThemeProvider>
+        </I18nextProvider>
+      </PersistQueryClientProvider>
+    </GestureHandlerRootView>
   );
 };
 

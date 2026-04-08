@@ -3,7 +3,10 @@ import { CalendarDays } from 'lucide-react-native';
 import { useRef } from 'react';
 import { Platform, Pressable, View } from 'react-native';
 
-import { BottomSheet, type BottomSheetModal } from '@/components/bottom-sheet';
+import {
+  AppBottomSheetModal as BottomSheet,
+  type BottomSheetModal,
+} from '@/components/bottom-sheet';
 import { Text } from '@/components/ui/text';
 
 type DatePickerSheetProps = {

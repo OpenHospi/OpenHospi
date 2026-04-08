@@ -2,7 +2,10 @@ import { ChevronRight } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
 
-import { BottomSheet, type BottomSheetModal } from '@/components/bottom-sheet';
+import {
+  AppBottomSheetModal as BottomSheet,
+  type BottomSheetModal,
+} from '@/components/bottom-sheet';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 

@@ -12,7 +12,11 @@
       "processingRestricted": "De verwerking van je account is momenteel beperkt. Je kunt dit beheren in Instellingen > Privacy.",
       "createFailed": "Aanmaken mislukt. Probeer het opnieuw.",
       "notAuthenticated": "Niet ingelogd.",
-      "invalidData": "Ongeldige gegevens."
+      "invalidData": "Ongeldige gegevens.",
+      "generic": "Er is iets misgegaan. Probeer het opnieuw.",
+      "network": "Geen internetverbinding.",
+      "timeout": "Het verzoek is verlopen. Probeer het opnieuw.",
+      "sendFailed": "Bericht kon niet worden verzonden."
     },
     "labels": {
       "title": "Titel",

@@ -330,126 +330,19 @@ Standardized screen header component.
 
 ---
 
-## 0D. Enhance Existing UI Primitives
+## 0D. Skeleton Variants + UI Notes
 
-### `button.tsx` -- REWRITE
+### `button.tsx`, `input.tsx`, `badge.tsx` -- DO NOT MODIFY
 
-Current: Pure `Pressable` with CVA variants, no haptics, no loading state.
+These are @rn-primitives registry components. **Never edit files in `src/components/ui/`**. Instead:
 
-Add to the existing component:
+- **Haptic feedback on press**: Use `AnimatedPressable` (from `src/components/ui/animated-pressable.tsx`) as a parent, or
+  call `hapticLight()` in the screen's `onPress` handler directly
+- **Loading state**: Render `ActivityIndicator` conditionally at the screen level, disable the button via `disabled` prop
+- **Animated focus/error on input**: Handle at the form level with an `Animated.View` border around the `Input` component
+- **Badge bounce animation**: Apply `Animated.View` with scale spring at the usage site
 
-1. `loading?: boolean` prop -- renders `ActivityIndicator` instead of children, disables press
-2. `onPressIn` handler calling `hapticLight()` from `@/lib/haptics`
-3. `ActivityIndicator` uses `accent-` prefix for color matching variant
-
-```typescript
-type ButtonProps = React.ComponentProps<typeof Pressable> &
-  VariantProps<typeof buttonVariants> & {
-    loading?: boolean;
-  };
-
-function Button({ className, variant, size, loading, onPressIn, ...props }: ButtonProps) {
-  function handlePressIn(e: any) {
-    if (!loading && !props.disabled) hapticLight();
-    onPressIn?.(e);
-  }
-
-  return (
-    <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
-      <Pressable
-        className={cn(
-          (props.disabled || loading) && 'opacity-50',
-          buttonVariants({ variant, size }),
-          className
-        )}
-        role="button"
-        disabled={props.disabled || loading}
-        onPressIn={handlePressIn}
-        {...props}>
-        {loading ? (
-          <ActivityIndicator size="small" className="accent-primary-foreground" />
-        ) : (
-          props.children
-        )}
-      </Pressable>
-    </TextClassContext.Provider>
-  );
-}
-```
-
-### `input.tsx` -- REWRITE
-
-Current: Static border, no native focus animation, no error state.
-
-Full rewrite with:
-
-1. `error?: boolean` prop -- applies `border-destructive` color
-2. `Animated.View` border with `interpolateColor` transition on focus
-3. On focus: animated border from `border-input` to `border-ring`
-4. When `error`: destructive border, overrides focus color
-
-```typescript
-function Input({ className, error, onFocus, onBlur, ...props }: InputProps) {
-  const focused = useSharedValue(0);
-
-  const animatedBorderStyle = useAnimatedStyle(() => ({
-    borderColor: error
-      ? '#ef4444'
-      : interpolateColor(focused.value, [0, 1], ['#e5e7eb', '#0d9488']),
-  }));
-
-  return (
-    <Animated.View style={[{ borderWidth: 1, borderRadius: 8 }, animatedBorderStyle]}>
-      <TextInput
-        onFocus={(e) => {
-          focused.value = withTiming(1, TIMING_FAST);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          focused.value = withTiming(0, TIMING_FAST);
-          onBlur?.(e);
-        }}
-        className={cn(
-          'dark:bg-input/30 bg-background text-foreground flex h-10 w-full min-w-0 flex-row items-center rounded-md px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9',
-          className
-        )}
-        {...props}
-      />
-    </Animated.View>
-  );
-}
-```
-
-### `badge.tsx` -- REWRITE
-
-Current: Static badge with CVA variants, no animation.
-
-Full rewrite adding spring bounce on content change:
-
-```typescript
-function Badge({ className, variant, asChild, children, ...props }: BadgeProps) {
-  const scale = useSharedValue(1);
-  const Component = asChild ? Slot.View : View;
-
-  useEffect(() => {
-    scale.value = withSequence(withSpring(1.15, SPRING_SNAPPY), withSpring(1, SPRING_SNAPPY));
-  }, [children, scale]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  return (
-    <TextClassContext.Provider value={badgeTextVariants({ variant })}>
-      <Animated.View style={animatedStyle}>
-        <Component className={cn(badgeVariants({ variant }), className)} {...props}>
-          {children}
-        </Component>
-      </Animated.View>
-    </TextClassContext.Provider>
-  );
-}
-```
+These behaviors are screen-level concerns, not component-level modifications.
 
 ### `src/components/skeleton.tsx` -- ADD VARIANTS
 

@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, NetworkError } from '@/lib/api-client';
 import { STALE_TIMES } from '@/lib/constants';
 import { getNetworkStatus } from '@/lib/network';
+import { useToast } from '@/hooks/use-toast';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
 
 import { queryKeys } from './keys';
 
@@ -40,6 +42,8 @@ export function useMyHouse() {
 
 export function useRegenerateInviteCode() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
 
   return useMutation({
     mutationFn: () => {
@@ -52,6 +56,7 @@ export function useRegenerateInviteCode() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.house.detail() });
     },
+    onError,
   });
 }
 
@@ -65,6 +70,8 @@ export function useJoinHousePreview(code: string) {
 
 export function useJoinHouse() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
 
   return useMutation({
     mutationFn: (code: string) => {
@@ -76,5 +83,6 @@ export function useJoinHouse() {
       queryClient.invalidateQueries({ queryKey: queryKeys.house.detail() });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.houses() });
     },
+    onError,
   });
 }

@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
+import { useToast } from '@/hooks/use-toast';
 
 import { queryKeys } from './keys';
 import type { UserInvitation } from '@openhospi/shared/api-types';
@@ -14,6 +16,9 @@ export function useInvitations() {
 
 export function useRespondToInvitation() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
+
   return useMutation({
     mutationFn: ({
       invitationId,
@@ -33,5 +38,6 @@ export function useRespondToInvitation() {
         });
       }
     },
+    onError,
   });
 }

@@ -12,7 +12,11 @@
       "processingRestricted": "Die Verarbeitung deines Kontos ist derzeit eingeschränkt. Du kannst dies unter Einstellungen > Datenschutz verwalten.",
       "createFailed": "Erstellung fehlgeschlagen. Bitte versuche es erneut.",
       "notAuthenticated": "Nicht angemeldet.",
-      "invalidData": "Ungültige Daten."
+      "invalidData": "Ungültige Daten.",
+      "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+      "network": "Keine Internetverbindung.",
+      "timeout": "Zeituberschreitung. Bitte erneut versuchen.",
+      "sendFailed": "Nachricht konnte nicht gesendet werden."
     },
     "labels": {
       "title": "Titel",

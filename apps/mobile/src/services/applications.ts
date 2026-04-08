@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/lib/api-client';
 import { STALE_TIMES } from '@/lib/constants';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
+import { useToast } from '@/hooks/use-toast';
 
 import { queryKeys } from './keys';
 import type { ApplicationDetail, UserApplication } from '@openhospi/shared/api-types';
@@ -25,11 +27,15 @@ export function useApplicationDetail(id: string) {
 
 export function useWithdrawApplication() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
+
   return useMutation({
     mutationFn: (id: string) => api.post(`/api/mobile/applications/${id}/withdraw`),
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.applications.list() });
       queryClient.invalidateQueries({ queryKey: queryKeys.applications.detail(id) });
     },
+    onError,
   });
 }

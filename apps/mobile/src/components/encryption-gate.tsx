@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { hapticError, hapticSuccess } from '@/lib/haptics';
+
 import { InputOTP } from '@/components/input-otp';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
@@ -49,7 +51,9 @@ export function EncryptionGate({ children }: Props) {
 
     try {
       await initializeDevice(value);
+      hapticSuccess();
     } catch {
+      hapticError();
       setError(tSecurity('setup_error'));
       setPin('');
       setLoading(false);

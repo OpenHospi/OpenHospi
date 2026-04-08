@@ -1,7 +1,10 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { api } from '@/lib/api-client';
+import { api, ApiError } from '@/lib/api-client';
 import { STALE_TIMES } from '@/lib/constants';
+import { hapticError } from '@/lib/haptics';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
+import { useToast } from '@/hooks/use-toast';
 
 import type {
   ConversationDetail,
@@ -64,6 +67,7 @@ type OptimisticContext = {
 
 export function useSendMessage(currentUserId?: string) {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   return useMutation({
     // mutationKey enables offline persistence for this mutation
@@ -114,14 +118,15 @@ export function useSendMessage(currentUserId?: string) {
       return { previousMessages, optimisticId } as OptimisticContext;
     },
 
-    onError: (_error, variables, context) => {
-      // Rollback: restore previous messages
+    onError: (error, variables, context) => {
       if (context?.previousMessages) {
         queryClient.setQueryData(
           queryKeys.chat.messages(variables.conversationId),
           context.previousMessages
         );
       }
+      showToast('error', error instanceof ApiError ? error.message : 'Message could not be sent.');
+      hapticError();
     },
 
     onSettled: (_data, _error, variables) => {
@@ -141,6 +146,8 @@ export function useSendMessage(currentUserId?: string) {
 
 export function useMarkConversationRead() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
 
   return useMutation({
     mutationFn: (conversationId: string) =>
@@ -153,12 +160,17 @@ export function useMarkConversationRead() {
         queryKey: queryKeys.chat.conversations(),
       });
     },
+    onError,
   });
 }
 
 export function useOpenConversation() {
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
+
   return useMutation({
     mutationFn: (data: { roomId: string; seekerUserId: string; memberUserIds: string[] }) =>
       api.post<{ id: string }>('/api/mobile/chat/conversations/open', data),
+    onError,
   });
 }

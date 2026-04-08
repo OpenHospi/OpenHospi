@@ -260,6 +260,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     'expo-router',
+    'expo-maps',
     [
       'expo-splash-screen',
       {

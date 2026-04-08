@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { useToast } from '@/hooks/use-toast';
 import { api } from '@/lib/api-client';
 import { STALE_TIMES } from '@/lib/constants';
+import { createMutationErrorHandler } from '@/lib/mutation-error';
 
 import { queryKeys } from './keys';
 import type {
@@ -118,22 +120,28 @@ export function useOwnerHouses() {
 
 export function useCreateHouse() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (name: string) => api.post<{ id: string }>('/api/mobile/my-rooms/houses', { name }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.houses() });
     },
+    onError,
   });
 }
 
 export function useCreateDraft() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (houseId: string) =>
       api.post<{ id: string }>(`/api/mobile/my-rooms/houses/${houseId}/draft`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.list() });
     },
+    onError,
   });
 }
 
@@ -141,44 +149,56 @@ export function useCreateDraft() {
 
 export function useSaveBasicInfo() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: SaveBasicInfoPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/basic-info`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
 export function useSaveDetails() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: SaveDetailsPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/details`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
 export function useSavePreferences() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: SavePreferencesPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/preferences`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
 export function usePublishRoom() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (roomId: string) => api.post(`/api/mobile/my-rooms/${roomId}/publish`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.list() });
     },
+    onError,
   });
 }
 
@@ -186,6 +206,8 @@ export function usePublishRoom() {
 
 export function useUploadRoomPhoto() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, uri, slot }: { roomId: string; uri: string; slot: number }) => {
       const formData = new FormData();
@@ -203,17 +225,21 @@ export function useUploadRoomPhoto() {
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
 export function useDeleteRoomPhoto() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, slot }: { roomId: string; slot: number }) =>
       api.delete(`/api/mobile/my-rooms/${roomId}/photos/${slot}`),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
@@ -221,6 +247,8 @@ export function useDeleteRoomPhoto() {
 
 export function useUpdateRoom() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: UpdateRoomPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}`, data),
@@ -228,11 +256,14 @@ export function useUpdateRoom() {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.list() });
     },
+    onError,
   });
 }
 
 export function useUpdateRoomStatus() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, status }: { roomId: string; status: string }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/status`, { status }),
@@ -240,38 +271,48 @@ export function useUpdateRoomStatus() {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.list() });
     },
+    onError,
   });
 }
 
 export function useDeleteRoom() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (roomId: string) => api.delete(`/api/mobile/my-rooms/${roomId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.list() });
     },
+    onError,
   });
 }
 
 export function useRegenerateShareLink() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (roomId: string) =>
       api.post(`/api/mobile/my-rooms/${roomId}/share-link/regenerate`),
     onSuccess: (_data, roomId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
 export function useUpdateShareLinkSettings() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: ShareLinkSettingsPayload }) =>
       api.patch(`/api/mobile/my-rooms/${roomId}/share-link`, data),
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
@@ -290,16 +331,21 @@ export function useRoomApplicants(roomId: string) {
 
 export function useMarkApplicationsSeen() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: (roomId: string) => api.post(`/api/mobile/my-rooms/${roomId}/applicants/mark-seen`),
     onSuccess: (_data, roomId) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.applicants(roomId) });
     },
+    onError,
   });
 }
 
 export function useSubmitReview() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({
       roomId,
@@ -313,11 +359,14 @@ export function useSubmitReview() {
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.applicants(roomId) });
     },
+    onError,
   });
 }
 
 export function useUpdateApplicantStatus() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({
       roomId,
@@ -333,6 +382,7 @@ export function useUpdateApplicantStatus() {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.applicants(roomId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.detail(roomId) });
     },
+    onError,
   });
 }
 
@@ -361,6 +411,8 @@ export function useEventDetail(roomId: string, eventId: string) {
 
 export function useCreateEvent() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, data }: { roomId: string; data: CreateEventPayload }) =>
       api.post<{ success: boolean; eventId: string }>(
@@ -370,11 +422,14 @@ export function useCreateEvent() {
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.events(roomId) });
     },
+    onError,
   });
 }
 
 export function useUpdateEvent() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({
       roomId,
@@ -389,11 +444,14 @@ export function useUpdateEvent() {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.events(roomId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.eventDetail(roomId, eventId) });
     },
+    onError,
   });
 }
 
 export function useCancelEvent() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({ roomId, eventId }: { roomId: string; eventId: string }) =>
       api.post(`/api/mobile/my-rooms/${roomId}/events/${eventId}/cancel`),
@@ -401,11 +459,14 @@ export function useCancelEvent() {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.events(roomId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.eventDetail(roomId, eventId) });
     },
+    onError,
   });
 }
 
 export function useBatchInvite() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({
       roomId,
@@ -425,6 +486,7 @@ export function useBatchInvite() {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.eventDetail(roomId, eventId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.applicants(roomId) });
     },
+    onError,
   });
 }
 
@@ -455,6 +517,8 @@ export function useVoteBoard(roomId: string) {
 
 export function useSubmitVotes() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({
       roomId,
@@ -468,6 +532,7 @@ export function useSubmitVotes() {
     onSuccess: (_data, { roomId }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.voteBoard(roomId) });
     },
+    onError,
   });
 }
 
@@ -488,6 +553,8 @@ export function useCloseRoomApplicants(roomId: string) {
 
 export function useCloseRoom() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
   return useMutation({
     mutationFn: ({
       roomId,
@@ -499,5 +566,6 @@ export function useCloseRoom() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.myRooms.list() });
     },
+    onError,
   });
 }

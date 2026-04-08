@@ -12,7 +12,11 @@
       "processingRestricted": "Your account processing is currently restricted. You can manage this in Settings > Privacy.",
       "createFailed": "Creation failed. Please try again.",
       "notAuthenticated": "Not authenticated.",
-      "invalidData": "Invalid data."
+      "invalidData": "Invalid data.",
+      "generic": "Something went wrong. Please try again.",
+      "network": "No internet connection.",
+      "timeout": "The request timed out. Please try again.",
+      "sendFailed": "Message could not be sent."
     },
     "labels": {
       "title": "Title",

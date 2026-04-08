@@ -26,7 +26,7 @@ and component for Airbnb-quality discovery + WhatsApp-quality chat. Fix critical
 | ---------------------------------------- | -------------------------- | ---------------------------------------------------------------------------- | ------------- |
 | [1](./phase-01-backend-hardening.md)     | Backend Hardening          | Fix bugs, optimize data layer, NSFWJS image moderation                       | DONE          |
 | [1.1](./phase-1.1-admin-review-queue.md) | Admin Review Queue         | Admin page for reviewing NSFWJS-flagged photos                               | DONE          |
-| [2](./phase-02-foundation.md)            | Foundation & Design System | New utilities, UI primitives, shared components + mutation onError callbacks | ~45 files     |
+| [2](./phase-02-foundation.md)            | Foundation & Design System | New utilities, UI primitives, shared components + mutation onError callbacks | DONE          |
 | [3](./phase-03-navigation.md)            | Navigation Shell           | Tab bar, layouts, deep links, modal rules                                    | ~4 files      |
 | [4](./phase-04-discover.md)              | Discover Tab               | Photo card feed, FAB map, filters, room detail (7 sections)                  | ~4 files      |
 | [5](./phase-05-chat.md)                  | Chat Tab                   | Conversations, messages, E2EE verify (bottom sheet)                          | ~4 files      |

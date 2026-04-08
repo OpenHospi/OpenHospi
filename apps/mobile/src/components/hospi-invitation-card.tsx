@@ -5,7 +5,12 @@ import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { BottomSheet, type BottomSheetModal } from '@/components/bottom-sheet';
+import { hapticSuccess, hapticError } from '@/lib/haptics';
+
+import {
+  AppBottomSheetModal as BottomSheet,
+  type BottomSheetModal,
+} from '@/components/bottom-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
@@ -50,8 +55,14 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
         data: { status },
       },
       {
-        onSuccess: () => Alert.alert(t('rsvpSuccess')),
-        onError: () => Alert.alert(t('errors.not_found')),
+        onSuccess: () => {
+          hapticSuccess();
+          Alert.alert(t('rsvpSuccess'));
+        },
+        onError: () => {
+          hapticError();
+          Alert.alert(t('errors.not_found'));
+        },
       }
     );
   }

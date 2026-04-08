@@ -24,7 +24,7 @@ When working on the mobile app, use these skills for up-to-date guidance:
 ## Stack
 
 | Layer      | Technology                                                                          |
-|------------|-------------------------------------------------------------------------------------|
+| ---------- | ----------------------------------------------------------------------------------- |
 | Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                                      |
 | Styling    | **Uniwind v1.6** (Tailwind CSS v4 for RN) — NOT NativeWind                          |
 | UI         | @rn-primitives/\* (accordion, dialog, tabs, etc.) + custom components               |
@@ -86,7 +86,7 @@ components or Expo components (they already support className).
 Always use `cn()` (from `src/lib/utils.ts`) when merging conditional classes to avoid duplicate/conflicting styles:
 
 ```tsx
-<View className={cn('bg-card rounded-xl', isActive && 'bg-primary')}/>
+<View className={cn('bg-card rounded-xl', isActive && 'bg-primary')} />
 ```
 
 ### Do NOT use NativeWind APIs
@@ -131,12 +131,12 @@ still use `style` for layout.
 - **Expo Router v4** with file-based routing in `src/app/`
 - **NativeTabs** from `expo-router/unstable-native-tabs` for the main tab bar (NOT `@react-navigation/bottom-tabs`)
 - Route groups:
-    - `(auth)/` — Login screen
-    - `(onboarding)/` — Onboarding flow (separate route group, NOT inside `(auth)/`)
-    - `(app)/` — Authenticated app shell
-        - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
-        - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
-        - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
+  - `(auth)/` — Login screen
+  - `(onboarding)/` — Onboarding flow (separate route group, NOT inside `(auth)/`)
+  - `(app)/` — Authenticated app shell
+    - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
+    - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
+    - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
 - Icons: SF Symbols via `expo-symbols` (iOS), `lucide-react-native` + `@expo/vector-icons` fallback (Android)
 - Typed routes enabled (`experiments.typedRoutes: true`)
 
@@ -148,10 +148,10 @@ Route types are auto-generated in `.expo/types/router.d.ts` when the dev server 
 
 ```tsx
 // CORRECT — typed pathname + params
-router.push({pathname: '/(app)/room/[id]', params: {id}});
+router.push({ pathname: '/(app)/room/[id]', params: { id } });
 router.push({
-    pathname: '/(app)/(tabs)/chat/[conversationId]/info',
-    params: {conversationId},
+  pathname: '/(app)/(tabs)/chat/[conversationId]/info',
+  params: { conversationId },
 });
 
 // CORRECT — string form for static routes (no dynamic segments)
@@ -178,8 +178,8 @@ router.push(`/(app)/room/${id}` as never);
 
 ```tsx
 // Preferred — explicit, readable
-const {id} = useLocalSearchParams<{ id: string }>();
-const {conversationId} = useLocalSearchParams<{ conversationId: string }>();
+const { id } = useLocalSearchParams<{ id: string }>();
+const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
 ```
 
 ## Data Fetching & Services
@@ -203,7 +203,7 @@ REST wrapper in `src/lib/api-client.ts`:
 Centralized in `src/services/keys.ts`:
 
 ```tsx
-import {queryKeys} from '@/services/keys';
+import { queryKeys } from '@/services/keys';
 
 // Usage in hooks
 queryKey: queryKeys.rooms.list(filters);
@@ -278,11 +278,11 @@ Each file in `src/services/` exports React Query hooks:
 - `expo-sqlite` provides the SQLite driver
 - Drizzle ORM for type-safe queries
 - Schema in `src/lib/db/schema.ts` — 12 tables for E2EE protocol state and local caching:
-    - `identityKeys`, `preKeys`, `signedPreKeys` — Device key material
-    - `sessions`, `senderKeys`, `skippedKeys` — Signal Protocol state
-    - `localMessages` — Decrypted plaintext message cache
-    - `trustedIdentities`, `keyVerifications` — TOFU & manual key verification
-    - `preferences`, `cachedProfiles`, `messageDrafts`, `syncMetadata` — App state
+  - `identityKeys`, `preKeys`, `signedPreKeys` — Device key material
+  - `sessions`, `senderKeys`, `skippedKeys` — Signal Protocol state
+  - `localMessages` — Decrypted plaintext message cache
+  - `trustedIdentities`, `keyVerifications` — TOFU & manual key verification
+  - `preferences`, `cachedProfiles`, `messageDrafts`, `syncMetadata` — App state
 - Database setup in `src/lib/db/index.ts`
 - Migration gate in root `_layout.tsx` — app waits for `useRunMigrations()` before rendering
 - Drizzle config (`drizzle.config.ts`): dialect `sqlite`, driver `expo`, output `./drizzle`
@@ -292,9 +292,12 @@ Each file in `src/services/` exports React Query hooks:
 
 ## Components
 
-- **UI primitives:** `src/components/ui/` — exclusively for @rn-primitives components. Do not place custom components
-  here.
-- **Custom components:** `src/components/` — room-card, logo, message-bubble, encryption-gate, etc.
+- **UI primitives:** `src/components/ui/` — **REGISTRY ONLY**. These are @rn-primitives components downloaded via shadcn
+  CLI. **NEVER edit, modify, or add custom files here.** If they need updating, re-download them. If you need custom
+  behavior (haptics, loading states, animations), handle it at the usage site or create a custom component in
+  `src/components/`.
+- **Custom components:** `src/components/` — room-card, logo, message-bubble, encryption-gate, animated-pressable,
+  bottom-sheet, skeleton variants, etc. All custom components live here, NOT in `ui/`.
 - Use `class-variance-authority` (`cva`) for component variants
 - Use `cn()` utility for class merging
 - Icons: `lucide-react-native` for custom icons, SF Symbols via `expo-symbols` for iOS system icons
@@ -312,7 +315,7 @@ Each file in `src/services/` exports React Query hooks:
 All client-exposed variables use `EXPO_PUBLIC_` prefix:
 
 | Variable                   | Description                         | Default                |
-|----------------------------|-------------------------------------|------------------------|
+| -------------------------- | ----------------------------------- | ---------------------- |
 | `EXPO_PUBLIC_API_URL`      | Next.js backend URL                 | `https://openhospi.nl` |
 | `EXPO_PUBLIC_SUPABASE_URL` | Supabase project URL (Realtime)     | —                      |
 | `EXPO_PUBLIC_SUPABASE_KEY` | Supabase publishable key            | —                      |
@@ -337,6 +340,9 @@ Defined in `src/lib/constants.ts`. For local dev, set in `.env.local`.
 - **`as never` on route paths** — use proper typed pathnames; `as never` bypasses all route validation
 - **String-interpolated dynamic routes** — ``router.push(`/room/${id}`)`` bypasses type checking; use object form with
   `pathname` + `params`
+- **Editing `src/components/ui/` files** — these are @rn-primitives registry components. Never modify them. Re-download
+  via shadcn CLI if they need updating. Custom components go in `src/components/`
+- **`as` type assertions** — never use `as` casts. Fix the types properly or restructure the code
 
 ## Project Structure
 
@@ -369,18 +375,35 @@ src/
       application/[id].tsx
       settings.tsx
   components/
-    ui/                      # @rn-primitives UI components (button, card, text, dialog, etc.)
-    room-card.tsx            # Custom components (message-bubble, encryption-gate, etc.)
+    ui/                      # @rn-primitives REGISTRY components ONLY (button, card, text, etc.) — NEVER edit or add custom files here
+    animated-pressable.tsx   # Custom: scale + haptic pressable
+    bottom-sheet.tsx         # Custom: @gorhom/bottom-sheet (AppBottomSheet, AppBottomSheetModal)
+    empty-state.tsx          # Custom: empty screen placeholder (icon, title, subtitle, action)
+    screen-header.tsx        # Custom: standardized screen header (back, title, right action)
+    skeleton.tsx             # Custom: skeleton variants using ui/skeleton.tsx as base
+    room-card.tsx            # Custom: discover room card
+    my-room-card.tsx         # Custom: owner room card with status badge
+    message-bubble.tsx       # Custom: chat message bubble with delivery status
+    conversation-list-item.tsx # Custom: chat list row with swipe + unread badge
+    toast.tsx                # Custom: animated toast pill (used by ToastProvider)
+    # ... and more custom components (encryption-gate, photo-carousel, etc.)
   context/
     session.tsx              # Auth + onboarding state provider
-    discover-filters.tsx     # Discovery filter state
+    discover-filters.tsx     # Discovery filter state (MMKV-persisted)
+    toast.tsx                # Toast context provider (showToast)
   hooks/
     use-encryption.ts        # E2EE encryption/decryption context
+    use-toast.ts             # useToast() hook for showing toasts
   i18n/
     index.ts                 # react-i18next + i18next-icu setup
   lib/
+    animations.ts            # Reanimated spring/timing presets
     auth-client.ts           # Better Auth Expo client
     api-client.ts            # REST API wrapper
+    biometric.ts             # expo-local-authentication utilities
+    haptics.ts               # expo-haptics named exports
+    mmkv.ts                  # react-native-mmkv instance + typed helpers
+    mutation-error.ts        # createMutationErrorHandler for mutation onError
     supabase.ts              # Supabase client (Realtime only)
     constants.ts             # Environment variables, query config
     query-client.ts          # React Query config

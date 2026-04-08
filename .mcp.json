@@ -10,7 +10,7 @@
     },
     "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=hvirymwzncllkjudtdsi"
+      "url": "https://mcp.supabase.com/mcp?project_ref=ljtsmvtvrctybzzkcero"
     },
     "sentry": {
       "type": "http",

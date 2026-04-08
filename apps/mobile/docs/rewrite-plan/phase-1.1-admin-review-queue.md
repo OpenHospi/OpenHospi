@@ -11,7 +11,7 @@ Phase 1 added NSFWJS image moderation to all photo upload routes. Photos flagged
 - [x] NSFWJS installed and integrated (Phase 1, done)
 - [x] `moderation_status` column on `profile_photos` and `room_photos` (Phase 1, done)
 - [x] Discover queries filter `moderation_status = 'approved'` (Phase 1, done)
-- [ ] `db:push` applied (schema ready, needs Supabase running)
+- [x] `db:push` applied (schema ready, needs Supabase running)
 
 ## Scope
 

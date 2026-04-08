@@ -22,25 +22,25 @@ and component for Airbnb-quality discovery + WhatsApp-quality chat. Fix critical
 
 ## Phase Index
 
-| Phase                                    | Name                       | Focus                                                                        | Files                 |
-|------------------------------------------|----------------------------|------------------------------------------------------------------------------|-----------------------|
-| [1](./phase-01-backend-hardening.md)     | Backend Hardening          | Fix bugs, optimize data layer, NSFWJS image moderation                       | DONE                  |
-| [1.1](./phase-1.1-admin-review-queue.md) | Admin Review Queue         | Admin page for reviewing NSFWJS-flagged photos                               | ~5 files (apps/admin) |
-| [2](./phase-02-foundation.md)            | Foundation & Design System | New utilities, UI primitives, shared components + mutation onError callbacks | ~45 files             |
-| [3](./phase-03-navigation.md)            | Navigation Shell           | Tab bar, layouts, deep links, modal rules                                    | ~4 files              |
-| [4](./phase-04-discover.md)              | Discover Tab               | Photo card feed, FAB map, filters, room detail (7 sections)                  | ~4 files              |
-| [5](./phase-05-chat.md)                  | Chat Tab                   | Conversations, messages, E2EE verify (bottom sheet)                          | ~4 files              |
-| [6](./phase-06-my-rooms.md)              | My Rooms Tab               | Room CRUD, applicants, quick events, voting                                  | ~18 files             |
-| [7](./phase-07-applications.md)          | Applications Tab           | Application list, detail, binary RSVP                                        | ~2 files              |
-| [8](./phase-08-profile.md)               | Profile Tab                | Profile, 6 edit modals, settings, completion indicator                       | ~12 files             |
-| [9](./phase-09-auth-onboarding.md)       | Auth & Onboarding          | Login, 7-step onboarding with microcopy, key recovery                        | ~10 files             |
-| [10](./phase-10-feature-gaps.md)         | Feature Gaps               | Biometric lock screen, GDPR, share, badges, camera                           | ~5 features           |
-| [11](./phase-11-polish.md)               | Performance Polish         | Offline, pre-fetching, skeletons, image caching                              | Cross-cutting         |
+| Phase                                    | Name                       | Focus                                                                        | Files         |
+| ---------------------------------------- | -------------------------- | ---------------------------------------------------------------------------- | ------------- |
+| [1](./phase-01-backend-hardening.md)     | Backend Hardening          | Fix bugs, optimize data layer, NSFWJS image moderation                       | DONE          |
+| [1.1](./phase-1.1-admin-review-queue.md) | Admin Review Queue         | Admin page for reviewing NSFWJS-flagged photos                               | DONE          |
+| [2](./phase-02-foundation.md)            | Foundation & Design System | New utilities, UI primitives, shared components + mutation onError callbacks | ~45 files     |
+| [3](./phase-03-navigation.md)            | Navigation Shell           | Tab bar, layouts, deep links, modal rules                                    | ~4 files      |
+| [4](./phase-04-discover.md)              | Discover Tab               | Photo card feed, FAB map, filters, room detail (7 sections)                  | ~4 files      |
+| [5](./phase-05-chat.md)                  | Chat Tab                   | Conversations, messages, E2EE verify (bottom sheet)                          | ~4 files      |
+| [6](./phase-06-my-rooms.md)              | My Rooms Tab               | Room CRUD, applicants, quick events, voting                                  | ~18 files     |
+| [7](./phase-07-applications.md)          | Applications Tab           | Application list, detail, binary RSVP                                        | ~2 files      |
+| [8](./phase-08-profile.md)               | Profile Tab                | Profile, 6 edit modals, settings, completion indicator                       | ~12 files     |
+| [9](./phase-09-auth-onboarding.md)       | Auth & Onboarding          | Login, 7-step onboarding with microcopy, key recovery                        | ~10 files     |
+| [10](./phase-10-feature-gaps.md)         | Feature Gaps               | Biometric lock screen, GDPR, share, badges, camera                           | ~5 features   |
+| [11](./phase-11-polish.md)               | Performance Polish         | Offline, pre-fetching, skeletons, image caching                              | Cross-cutting |
 
 ## New Dependencies
 
 | Package                                               | Purpose                                             | Config Required                                  |
-|-------------------------------------------------------|-----------------------------------------------------|--------------------------------------------------|
+| ----------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
 | `expo-maps`                                           | Native maps (Apple MapKit iOS, Google Maps Android) | Config plugin + Google Cloud API key for Android |
 | `@gorhom/bottom-sheet` v5                             | Gesture-driven bottom sheets                        | `BottomSheetModalProvider` in root layout        |
 | `@shopify/flash-list`                                 | High-performance lists with cell recycling          | None (drop-in FlatList replacement)              |

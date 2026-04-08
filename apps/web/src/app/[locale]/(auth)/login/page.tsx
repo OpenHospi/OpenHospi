@@ -52,9 +52,6 @@ export default async function LoginPage({ params }: Props) {
         </CardHeader>
         <CardContent>
           <LoginButton />
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            {t("inacademiaDescription")}
-          </p>
         </CardContent>
       </Card>
     </>

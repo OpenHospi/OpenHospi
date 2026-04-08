@@ -38,12 +38,16 @@ export function LoginButton() {
     });
   }
 
+  const showInAcademia = false;
+
   return (
     <div className="w-full space-y-4">
-      <Button onClick={handleLogin} disabled={isPending} size="lg" className="w-full">
-        {isPending ? <Loader2 className="animate-spin" /> : <GraduationCap />}
-        {t("inacademiaButton")}
-      </Button>
+      {showInAcademia && (
+        <Button onClick={handleLogin} disabled={isPending} size="lg" className="w-full">
+          {isPending ? <Loader2 className="animate-spin" /> : <GraduationCap />}
+          {t("inacademiaButton")}
+        </Button>
+      )}
 
       {process.env.NODE_ENV === "development" && (
         <>

@@ -25,7 +25,7 @@ Rewrite conversation list with FlashList + swipe gestures. Rewrite message threa
 - **Last message preview**: Truncated to 1 line, with delivery status icon
 - **Relative timestamps**: "2m ago", "Yesterday", "Mon" (use `date-fns` or manual)
 - **Unread badge**: Animated spring badge with count (via `notification-badge.tsx`)
-- **Pull-to-refresh**: `pull-to-refresh.tsx` component
+- **Pull-to-refresh**: `RefreshControl` with `tintColor={BRAND_COLOR}` and `colors={[BRAND_COLOR]}`
 - **Skeleton loading**: 5 conversation row skeletons while loading
 - **Empty state**: "No conversations yet" with illustration
 

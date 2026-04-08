@@ -4,32 +4,16 @@
 
 ## Summary
 
-Wire up new providers (`BottomSheetModalProvider`), enhance tab bar with badges and haptics, configure modal presentation styles, and set up deep link handling.
+Enhance tab bar with badges and haptics, configure modal presentation styles, and set up deep link handling. (`GestureHandlerRootView`, `BottomSheetModalProvider`, and `ToastProvider` are already wired in Phase 2.)
 
 ---
 
 ## Files to Modify
 
-### `src/app/_layout.tsx` (KEEP, minor additions)
+### `src/app/_layout.tsx` (NO CHANGES in Phase 3)
 
-- Add `BottomSheetModalProvider` from `@gorhom/bottom-sheet` inside the existing `GestureHandlerRootView`
-- Add MMKV initialization (import `storage` from `src/lib/mmkv.ts` to ensure it's created early)
-- Keep everything else: Sentry, crypto polyfill, i18n, theme, RQ provider, session, migrations
-
-```tsx
-// Provider nesting order (existing + new):
-<GestureHandlerRootView>
-  <BottomSheetModalProvider>
-    {' '}
-    {/* NEW */}
-    <QueryClientProvider>
-      <SessionProvider>
-        <Stack>...</Stack>
-      </SessionProvider>
-    </QueryClientProvider>
-  </BottomSheetModalProvider>
-</GestureHandlerRootView>
-```
+Already updated in Phase 2 with `GestureHandlerRootView`, `BottomSheetModalProvider`, and `ToastProvider`. MMKV is
+initialized via `src/lib/mmkv.ts` (also Phase 2). No further changes needed here.
 
 ### `src/app/(app)/_layout.tsx` (REWRITE)
 
@@ -146,7 +130,6 @@ useEffect(() => {
 
 ## Verification Checklist
 
-- [ ] `BottomSheetModalProvider` wraps correctly (test by opening a bottom sheet)
 - [ ] Tab badges show correct unread counts
 - [ ] Haptic fires on tab press (test on real device)
 - [ ] Modal screens present as `formSheet` on iOS

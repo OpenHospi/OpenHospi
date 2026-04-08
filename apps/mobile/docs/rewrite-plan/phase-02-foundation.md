@@ -198,13 +198,14 @@ export function useToast() {
 
 ### `src/app/_layout.tsx` -- MODIFY
 
-Add `ToastProvider` and `BottomSheetModalProvider` to the provider tree:
+Add `GestureHandlerRootView`, `BottomSheetModalProvider`, and `ToastProvider` to the provider tree:
 
 ```
 Current:  PersistQueryClientProvider > I18nextProvider > ThemeProvider > SessionProvider > RootNavigator
-New:      PersistQueryClientProvider > I18nextProvider > ThemeProvider > BottomSheetModalProvider > SessionProvider > ToastProvider > RootNavigator
+New:      GestureHandlerRootView > PersistQueryClientProvider > I18nextProvider > ThemeProvider > BottomSheetModalProvider > SessionProvider > ToastProvider > RootNavigator
 ```
 
+`GestureHandlerRootView` from `react-native-gesture-handler` must wrap the entire app (required by @gorhom/bottom-sheet and gesture-based components).
 `BottomSheetModalProvider` from `@gorhom/bottom-sheet` enables modal bottom sheets throughout the app.
 `ToastProvider` renders toasts above all content.
 

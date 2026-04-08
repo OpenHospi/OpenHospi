@@ -8,35 +8,19 @@ Cross-cutting performance optimizations that make the app feel instant and work 
 
 ---
 
-## 1. Offline Mutation Queue
+## 1. Offline Mutation Queue (DONE in Phase 1)
 
-### Extend React Query offline persistence
+Offline mutation persistence was already expanded in Phase 1 (Backend Hardening) to 5 mutations: `sendMessage`,
+`applyToRoom`, `uploadProfilePhoto`, `uploadRoomPhoto`, `markConversationRead`.
 
-Currently only `sendMessage` is persisted. Add:
+### Remaining work: offline feedback UX
 
-| Mutation               | Why                                                          |
-| ---------------------- | ------------------------------------------------------------ |
-| `applyToRoom`          | User applies while on subway, shouldn't lose the application |
-| `updateProfile`        | Profile edits should queue, not fail silently                |
-| `uploadProfilePhoto`   | Large binary, important to retry                             |
-| `uploadRoomPhoto`      | Large binary, important to retry                             |
-| `markConversationRead` | Read status should sync when back online                     |
+Add user-facing feedback for queued mutations using the toast system (Phase 2):
 
-### Offline feedback
-
-When a mutation is queued offline, show a toast:
-
-```
-"Saved offline. Will sync when you're back online."
-```
-
-Use `connection-status-bar.tsx` (rewritten in Phase 2) to show persistent offline indicator at top of screen.
-
-When mutations sync on reconnect, show brief success toast:
-
-```
-"Synced 3 pending changes."
-```
+- When a mutation is queued offline, show toast: "Saved offline. Will sync when you're back online."
+- Use `connection-status-bar.tsx` (rewritten in Phase 2) for persistent offline indicator
+- When mutations sync on reconnect, show brief success toast: "Synced [n] pending changes."
+- Add i18n keys for these messages in `shared.json` under `common.offline`
 
 ---
 
@@ -87,36 +71,40 @@ Prefetch first room's detail when my-rooms list renders.
 
 ## 3. Image Caching
 
-### `CachedImage` component (created in Phase 2)
-
-Ensure all images across the app use `CachedImage` instead of raw `expo-image` or `Image`:
+All images use `expo-image` `Image` directly (no wrapper component). Verify every image across the app has the correct
+props for optimal caching and performance:
 
 ```typescript
-// CachedImage defaults:
+// Required props on every Image:
 cachePolicy: 'disk',        // Persist across app restarts
 transition: 200,             // 200ms crossfade on load
-recyclingKey: item.id,       // For FlashList cell recycling
-placeholder: { color: '#f0f0f0' },  // Muted gray placeholder
+recyclingKey: item.id,       // For FlashList cell recycling (only in lists)
 ```
 
-### Integration points
+### Audit points
 
-- Room cards (cover photo)
-- Room detail (photo gallery)
-- Profile photos (carousel + avatars)
-- Conversation list (avatars)
-- Applicant cards (avatars)
-- Onboarding (photo preview)
+Verify these screens use expo-image with disk caching:
+
+- Room cards (cover photo) -- rewritten in Phase 2
+- Room detail photo gallery (photo-carousel) -- rewritten in Phase 2
+- Profile photos (carousel + avatars) -- rewritten in Phase 8
+- Conversation list (avatars) -- rewritten in Phase 2
+- Applicant cards (avatars) -- rewritten in Phase 6
+- Onboarding photo preview -- rewritten in Phase 9
+- My room cards (cover photo) -- rewritten in Phase 2
 
 ### Memory management
 
-For FlashList with many images, use `recyclingKey` to prevent memory leaks:
+For FlashList with many images, ensure `recyclingKey` is set to prevent memory leaks:
 
 ```tsx
-<CachedImage
+<Image
   source={{ uri: room.coverPhotoUrl }}
-  recyclingKey={room.id} // Reuse image view when cell is recycled
+  cachePolicy="disk"
+  transition={200}
+  recyclingKey={room.id}
   style={{ width: '100%', height: 200 }}
+  contentFit="cover"
 />
 ```
 
@@ -189,11 +177,11 @@ const entering = ENABLE_ANIMATIONS ? FadeIn.duration(200) : undefined;
 ## Verification Checklist
 
 - [ ] Airplane mode: cached rooms display from React Query persister
-- [ ] Airplane mode: "Apply to Room" queues and shows offline toast
-- [ ] Reconnect: queued mutations sync and show success toast
+- [ ] Airplane mode: "Apply to Room" queues and shows "Saved offline" toast
+- [ ] Reconnect: queued mutations sync and show "Synced [n] pending changes" toast
 - [ ] Pre-fetch: tapping a room card shows instant content (no loading)
 - [ ] Pre-fetch: tapping a conversation shows instant header (no loading)
-- [ ] All images use `CachedImage` (grep for raw `Image` or `expo-image` usage)
+- [ ] All images use `expo-image` with `cachePolicy="disk"` (grep for missing cachePolicy)
 - [ ] Skeleton screens show on every screen during initial load
 - [ ] No spinners anywhere (skeletons only)
 - [ ] 60fps on room list scroll (FlashList profiler)

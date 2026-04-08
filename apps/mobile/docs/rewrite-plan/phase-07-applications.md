@@ -18,7 +18,7 @@ Rewrite 2 screens: applications list (status-grouped) and application detail (ti
   - **Completed**: Accepted, rejected, withdrawn
 
 - Each card (`application-card` inline component):
-  - Room cover photo (CachedImage)
+  - Room cover photo (expo-image with `cachePolicy="disk"`, `transition={200}`)
   - Room title + city
   - Application status badge (color-coded)
   - Date applied

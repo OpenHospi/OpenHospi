@@ -37,15 +37,16 @@ Implement 5 features that are either missing from mobile or need mobile-native i
 ```typescript
 export function useRequestDataExport() {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
+
   return useMutation({
     mutationKey: ['requestDataExport'],
     mutationFn: () => api.post('/api/mobile/settings/gdpr-export'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.settings.root() });
     },
-    onError: (error) => {
-      // Show error toast
-    },
+    onError,
   });
 }
 ```

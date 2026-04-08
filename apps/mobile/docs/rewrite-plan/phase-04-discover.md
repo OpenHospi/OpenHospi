@@ -64,7 +64,7 @@ Keep the existing header as-is -- it already works great on both platforms:
   - **Title**: bold, below photo
   - **Details line**: city + room size + furnishing status (muted text)
   - Card: `rounded-xl`, subtle shadow (`shadow-sm`), `bg-card`
-- `CachedImage` for cover photos with disk caching + placeholder
+- `expo-image` `Image` with `cachePolicy="disk"`, `transition={200}` for cover photos
 - `FadeIn.duration(200)` entering animation, staggered by index
 - Haptic on card press (`hapticLight()`)
 - Tap card -> navigate to room detail

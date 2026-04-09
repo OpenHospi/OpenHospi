@@ -26,7 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: './assets/openhospi.icon',
     appleTeamId: 'K937444566',
     supportsTablet: true,
-    bundleIdentifier: 'nl.openhospi',
+    bundleIdentifier: 'nl.openhospi.app',
     associatedDomains: ['applinks:openhospi.nl', 'webcredentials:openhospi.nl'],
     splash: {
       image: './assets/images/splash-icon.png',

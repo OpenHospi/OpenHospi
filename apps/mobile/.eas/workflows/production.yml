@@ -1,0 +1,81 @@
+name: Production Deploy
+
+# Uncomment triggers when ready to automate:
+# on:
+#   push:
+#     branches: ['main']
+
+jobs:
+  # Step 1: Calculate fingerprints for both platforms
+  fingerprint:
+    type: fingerprint
+    environment: production
+
+  # Step 2: Check if compatible builds already exist
+  get_ios_build:
+    needs: [fingerprint]
+    type: get-build
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.ios_fingerprint_hash }}
+      profile: production
+      platform: ios
+
+  get_android_build:
+    needs: [fingerprint]
+    type: get-build
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.android_fingerprint_hash }}
+      profile: production
+      platform: android
+
+  # Step 3a: Build iOS if no compatible build exists (native code changed)
+  build_ios:
+    needs: [get_ios_build]
+    if: ${{ !needs.get_ios_build.outputs.build_id }}
+    type: build
+    params:
+      platform: ios
+      profile: production
+
+  # Step 3b: Build Android if no compatible build exists (native code changed)
+  build_android:
+    needs: [get_android_build]
+    if: ${{ !needs.get_android_build.outputs.build_id }}
+    type: build
+    params:
+      platform: android
+      profile: production
+
+  # Step 4a: Submit new iOS build to TestFlight
+  submit_ios:
+    needs: [build_ios]
+    if: ${{ needs.build_ios.outputs.build_id }}
+    type: submit
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+
+  # Step 4b: Submit new Android build to Play Store (internal track)
+  submit_android:
+    needs: [build_android]
+    if: ${{ needs.build_android.outputs.build_id }}
+    type: submit
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
+
+  # Step 5a: Publish OTA update for iOS if build already exists (JS-only changes)
+  update_ios:
+    needs: [get_ios_build]
+    if: ${{ needs.get_ios_build.outputs.build_id }}
+    type: update
+    params:
+      platform: ios
+      branch: production
+
+  # Step 5b: Publish OTA update for Android if build already exists (JS-only changes)
+  update_android:
+    needs: [get_android_build]
+    if: ${{ needs.get_android_build.outputs.build_id }}
+    type: update
+    params:
+      platform: android
+      branch: production

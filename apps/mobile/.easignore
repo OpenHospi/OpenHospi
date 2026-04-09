@@ -1,0 +1,24 @@
+# Tests
+__tests__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Documentation
+*.md
+LICENSE
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+
+# CI
+.github/
+
+# Local env
+.env.local
+.env.example

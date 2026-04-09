@@ -24,8 +24,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     icon: './assets/openhospi.icon',
+    appleTeamId: 'K937444566',
     supportsTablet: true,
-    bundleIdentifier: IS_PRODUCTION ? 'nl.openhospi.app' : 'nl.openhospi.app.dev',
+    bundleIdentifier: IS_PRODUCTION ? 'nl.openhospi' : 'nl.openhospi.dev',
     associatedDomains: ['applinks:openhospi.nl', 'webcredentials:openhospi.nl'],
     splash: {
       image: './assets/images/splash-icon.png',
@@ -345,9 +346,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
     reactCompiler: true,
   },
-  owner: 'openhospi',
+  owner: 'stichting-openhospi',
   extra: {
-    router: {},
     eas: {
       projectId: '6e5a9f1e-1994-424a-a0a6-5f010b59f1b3',
     },

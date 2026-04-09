@@ -26,7 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: './assets/openhospi.icon',
     appleTeamId: 'K937444566',
     supportsTablet: true,
-    bundleIdentifier: IS_PRODUCTION ? 'nl.openhospi' : 'nl.openhospi.dev',
+    bundleIdentifier: 'nl.openhospi',
     associatedDomains: ['applinks:openhospi.nl', 'webcredentials:openhospi.nl'],
     splash: {
       image: './assets/images/splash-icon.png',
@@ -89,7 +89,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    package: IS_PRODUCTION ? 'nl.openhospi.app' : 'nl.openhospi.app.dev',
+    package: 'nl.openhospi.app',
     softwareKeyboardLayoutMode: 'resize',
     permissions: [
       'CAMERA',

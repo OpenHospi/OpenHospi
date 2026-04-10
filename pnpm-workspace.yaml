@@ -14,13 +14,13 @@ catalog:
   typescript-eslint: ^8
   # ── Core shared deps ──
   zod: ^4.3.6
-  drizzle-orm: 1.0.0-beta.20
-  drizzle-kit: 1.0.0-beta.20
-  drizzle-seed: 1.0.0-beta.20
-  better-auth: 1.5.6
-  "@better-auth/expo": 1.5.6
-  "@better-auth/drizzle-adapter": 1.5.6
-  "@supabase/supabase-js": 2.101.1
+  drizzle-orm: 1.0.0-beta.21
+  drizzle-kit: 1.0.0-beta.21
+  drizzle-seed: 1.0.0-beta.21
+  better-auth: 1.6.2
+  "@better-auth/expo": 1.6.2
+  "@better-auth/drizzle-adapter": 1.6.2
+  "@supabase/supabase-js": 2.103.0
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
@@ -30,4 +30,4 @@ catalog:
   react-hook-form: 7.72.1
   "@hookform/resolvers": ^5.2.2
   # ── Types ──
-  "@types/node": 25.5.2
+  "@types/node": 25.6.0

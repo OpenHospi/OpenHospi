@@ -11,7 +11,7 @@ import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
-import type { StepHandle } from '@/components/onboarding-types';
+import type { StepHandle } from '@/components/shared/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;

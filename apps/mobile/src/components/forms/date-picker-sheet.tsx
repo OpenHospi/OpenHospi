@@ -6,7 +6,7 @@ import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
-} from '@/components/bottom-sheet';
+} from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { ThemedText } from '@/components/primitives/themed-text';

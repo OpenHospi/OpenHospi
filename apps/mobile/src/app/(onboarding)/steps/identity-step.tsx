@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { InputOTP } from '@/components/input-otp';
+import { InputOTP } from '@/components/forms/input-otp';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';

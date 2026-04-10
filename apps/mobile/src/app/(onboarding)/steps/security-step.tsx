@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { InputOTP } from '@/components/input-otp';
+import { InputOTP } from '@/components/forms/input-otp';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';

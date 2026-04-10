@@ -18,7 +18,7 @@ export default function TabLayout() {
   ).length;
 
   return (
-    <NativeTabs minimizeBehavior="onScrollDown">
+    <NativeTabs minimizeBehavior="onScrollDown" blurEffect="systemMaterial">
       <NativeTabs.Trigger name="discover">
         <NativeTabs.Trigger.Icon sf="magnifyingglass" md="search" />
         <NativeTabs.Trigger.Label>{t('discover')}</NativeTabs.Trigger.Label>

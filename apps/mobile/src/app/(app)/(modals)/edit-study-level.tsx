@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { ChipPicker } from '@/components/chip-picker';
+import { ChipPicker } from '@/components/forms/chip-picker';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';

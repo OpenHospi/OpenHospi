@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
-import { LanguagePicker } from '@/components/language-picker';
-import { Logo } from '@/components/logo';
+import { LanguagePicker } from '@/components/shared/language-picker';
+import { Logo } from '@/components/shared/logo';
 import { useTheme } from '@/design';
 import { authClient } from '@/lib/auth-client';
 

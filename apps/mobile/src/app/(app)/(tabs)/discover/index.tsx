@@ -5,11 +5,11 @@ import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { LogoText } from '@/components/logo-text';
+import { LogoText } from '@/components/shared/logo-text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { RoomCard } from '@/components/room-card';
+import { RoomCard } from '@/components/rooms/room-card';
 import { useDiscoverFilters } from '@/context/discover-filters';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -36,6 +36,7 @@ function DiscoverHeader({
       <Stack.SearchBar
         placeholder={searchPlaceholder}
         hideWhenScrolling
+        obscureBackground
         onChangeText={(event) => onSearchChange(event.nativeEvent.text)}
         onCancelButtonPress={() => onSearchChange('')}
       />

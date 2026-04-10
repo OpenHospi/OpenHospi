@@ -9,7 +9,7 @@ import { useTheme } from '@/design';
 import { useSubmitBio } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
-import type { StepHandle } from '@/components/onboarding-types';
+import type { StepHandle } from '@/components/shared/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;

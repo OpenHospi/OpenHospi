@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { hapticError, hapticSuccess } from '@/lib/haptics';
 import { useTheme } from '@/design';
 
-import { InputOTP } from '@/components/input-otp';
+import { InputOTP } from '@/components/forms/input-otp';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { EncryptionContext, useEncryptionProvider } from '@/hooks/use-encryption';

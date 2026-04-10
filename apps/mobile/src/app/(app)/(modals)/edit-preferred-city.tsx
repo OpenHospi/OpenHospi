@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { CitySearchInput } from '@/components/city-search';
+import { CitySearchInput } from '@/components/forms/city-search';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';

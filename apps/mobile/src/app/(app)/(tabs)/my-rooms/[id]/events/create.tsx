@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { DatePickerSheet } from '@/components/date-picker-sheet';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedTextarea } from '@/components/primitives/themed-textarea';

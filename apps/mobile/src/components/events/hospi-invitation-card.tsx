@@ -12,7 +12,7 @@ import { radius } from '@/design/tokens/radius';
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
-} from '@/components/bottom-sheet';
+} from '@/components/shared/bottom-sheet';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';

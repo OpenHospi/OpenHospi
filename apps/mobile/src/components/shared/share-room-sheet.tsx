@@ -4,7 +4,7 @@ import { Share2 } from 'lucide-react-native';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppBottomSheetModal } from '@/components/bottom-sheet';
+import { AppBottomSheetModal } from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';

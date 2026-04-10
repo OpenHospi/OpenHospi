@@ -14,8 +14,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { AppBottomSheetModal, type BottomSheetModal } from '@/components/bottom-sheet';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';

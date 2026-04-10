@@ -2,7 +2,7 @@ import { Paperclip, Send } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput } from 'react-native';
 import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-reanimated';
 
-import { AnimatedPressable } from '@/components/animated-pressable';
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 

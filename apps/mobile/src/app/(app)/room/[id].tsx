@@ -11,8 +11,8 @@ import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListSeparator } from '@/components/layout/list-separator';
-import { PhotoCarousel } from '@/components/photo-carousel';
-import RoomLocationMap from '@/components/room-location-map';
+import { PhotoCarousel } from '@/components/rooms/photo-carousel';
+import RoomLocationMap from '@/components/rooms/room-location-map';
 import { useTranslation } from 'react-i18next';
 import { useRoom } from '@/services/rooms';
 

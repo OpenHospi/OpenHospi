@@ -3,17 +3,17 @@ import { useImperativeHandle, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ChipPicker } from '@/components/chip-picker';
-import { CitySearchInput } from '@/components/city-search';
-import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { SelectPickerSheet } from '@/components/select-picker-sheet';
+import { ChipPicker } from '@/components/forms/chip-picker';
+import { CitySearchInput } from '@/components/forms/city-search';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { useSubmitAbout } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
-import type { StepHandle } from '@/components/onboarding-types';
+import type { StepHandle } from '@/components/shared/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;

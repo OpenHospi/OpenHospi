@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { AnimatedPressable } from '@/components/animated-pressable';
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 

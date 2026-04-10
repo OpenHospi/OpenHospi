@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ChatInputBar } from '@/components/chat-input-bar';
-import { DateSeparator } from '@/components/date-separator';
-import { EncryptionGate } from '@/components/encryption-gate';
-import { MessageBubble } from '@/components/message-bubble';
-import { ScrollToBottomFab } from '@/components/scroll-to-bottom-fab';
+import { ChatInputBar } from '@/components/chat/chat-input-bar';
+import { DateSeparator } from '@/components/chat/date-separator';
+import { EncryptionGate } from '@/components/chat/encryption-gate';
+import { MessageBubble } from '@/components/chat/message-bubble';
+import { ScrollToBottomFab } from '@/components/navigation/scroll-to-bottom-fab';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { useEncryptionContext } from '@/hooks/use-encryption';

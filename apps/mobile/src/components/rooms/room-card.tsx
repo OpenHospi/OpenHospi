@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
-import { AnimatedPressable } from '@/components/animated-pressable';
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';

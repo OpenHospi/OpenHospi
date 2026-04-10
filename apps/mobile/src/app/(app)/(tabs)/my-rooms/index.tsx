@@ -4,7 +4,7 @@ import { Home } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { MyRoomCard } from '@/components/my-room-card';
+import { MyRoomCard } from '@/components/rooms/my-room-card';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { useTheme } from '@/design';

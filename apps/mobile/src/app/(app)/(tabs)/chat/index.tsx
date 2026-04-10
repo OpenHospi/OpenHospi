@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ConversationListItem } from '@/components/conversation-list-item';
+import { ConversationListItem } from '@/components/chat/conversation-list-item';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ListSeparator } from '@/components/layout/list-separator';
@@ -29,6 +29,7 @@ function ChatHeader({
       <Stack.SearchBar
         placeholder={searchPlaceholder}
         hideWhenScrolling
+        obscureBackground
         onChangeText={(event) => onSearchChange(event.nativeEvent.text)}
         onCancelButtonPress={() => onSearchChange('')}
       />

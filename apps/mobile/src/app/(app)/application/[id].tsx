@@ -5,7 +5,7 @@ import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/design';
-import { HospiInvitationCard } from '@/components/hospi-invitation-card';
+import { HospiInvitationCard } from '@/components/events/hospi-invitation-card';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';

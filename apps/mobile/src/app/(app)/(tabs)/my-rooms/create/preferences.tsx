@@ -13,8 +13,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { MultiChipPicker } from '@/components/multi-chip-picker';
-import { AppBottomSheetModal, type BottomSheetModal } from '@/components/bottom-sheet';
+import { MultiChipPicker } from '@/components/forms/multi-chip-picker';
+import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';

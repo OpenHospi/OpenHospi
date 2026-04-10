@@ -13,7 +13,7 @@ import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ErrorState } from '@/components/error-state';
+import { ErrorState } from '@/components/feedback/error-state';
 import { useTheme } from '@/design';
 import { hapticSuccess } from '@/lib/haptics';
 import { useMyHouse, useRegenerateInviteCode } from '@/services/house';

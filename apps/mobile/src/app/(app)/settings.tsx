@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
-} from '@/components/bottom-sheet';
+} from '@/components/shared/bottom-sheet';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';

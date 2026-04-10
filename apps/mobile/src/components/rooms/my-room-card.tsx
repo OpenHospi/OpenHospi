@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { RoomStatus } from '@openhospi/shared/enums';
 
-import { AnimatedPressable } from '@/components/animated-pressable';
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { StatusPill } from '@/components/layout/status-pill';
 import { useTheme } from '@/design';

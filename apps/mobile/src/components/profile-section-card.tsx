@@ -1,7 +1,10 @@
 import { Pencil } from 'lucide-react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 
 type Props = {
   title: string;
@@ -10,23 +13,39 @@ type Props = {
 };
 
 export function ProfileSectionCard({ title, onEdit, children }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <Card>
-      <CardHeader
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingBottom: 8,
-        }}>
-        <CardTitle>{title}</CardTitle>
+    <GroupedSection>
+      <View style={styles.header}>
+        <ThemedText variant="headline">{title}</ThemedText>
         {onEdit && (
-          <Button variant="ghost" size="icon" onPress={onEdit}>
-            <Pencil size={16} className="text-muted-foreground" />
-          </Button>
+          <Pressable
+            onPress={() => {
+              hapticLight();
+              onEdit();
+            }}
+            hitSlop={8}>
+            <Pencil size={16} color={colors.tertiaryForeground} />
+          </Pressable>
         )}
-      </CardHeader>
-      <CardContent style={{ paddingTop: 0 }}>{children}</CardContent>
-    </Card>
+      </View>
+      <View style={styles.content}>{children}</View>
+    </GroupedSection>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  content: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+});

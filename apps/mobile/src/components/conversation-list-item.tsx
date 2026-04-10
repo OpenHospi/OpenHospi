@@ -1,11 +1,12 @@
 import { Archive, Lock, Shield } from 'lucide-react-native';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Text } from '@/components/ui/text';
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedText } from '@/components/primitives/themed-text';
 import { NotificationBadge } from '@/components/notification-badge';
 import { SwipeableRow } from '@/components/swipeable-row';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
 type Props = {
@@ -50,8 +51,10 @@ export function ConversationListItem({
   onPress,
   onArchive,
 }: Props) {
-  const initial = (roomTitle || displayName).charAt(0).toUpperCase();
+  const { colors } = useTheme();
   const hasUnread = unreadCount > 0;
+
+  const avatarUri = roomPhotoUrl ? getStoragePublicUrl(roomPhotoUrl, 'room-photos') : null;
 
   const archiveActions = onArchive
     ? [
@@ -67,75 +70,94 @@ export function ConversationListItem({
   return (
     <SwipeableRow rightActions={archiveActions}>
       <AnimatedPressable
+        accessibilityRole="button"
+        accessibilityLabel={`${roomTitle}, ${displayName}`}
         onPress={onPress}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 12,
-          paddingHorizontal: 16,
-          paddingVertical: 12,
-        }}
-        className="bg-background">
+        style={[styles.row, { backgroundColor: colors.background }]}>
         <View>
-          <Avatar alt={roomTitle} style={{ width: 48, height: 48 }}>
-            {roomPhotoUrl ? (
-              <AvatarImage source={{ uri: getStoragePublicUrl(roomPhotoUrl, 'room-photos') }} />
-            ) : null}
-            <AvatarFallback>
-              <Text className="text-muted-foreground font-medium">{initial}</Text>
-            </AvatarFallback>
-          </Avatar>
-          <View
-            style={{
-              position: 'absolute',
-              bottom: -2,
-              right: -2,
-              width: 16,
-              height: 16,
-              borderRadius: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            className="bg-background">
-            <Lock size={10} className="text-primary" />
+          <ThemedAvatar source={avatarUri} fallback={roomTitle} size={48} />
+          <View style={[styles.lockBadge, { backgroundColor: colors.background }]}>
+            <Lock size={10} color={colors.primary} />
           </View>
         </View>
 
-        <View style={{ flex: 1, gap: 2 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text
-              className={`text-sm ${hasUnread ? 'text-foreground font-semibold' : 'text-foreground font-medium'}`}
+        <View style={styles.content}>
+          <View style={styles.topRow}>
+            <ThemedText
+              variant="subheadline"
+              weight={hasUnread ? '600' : '500'}
               numberOfLines={1}
-              style={{ flex: 1 }}>
+              style={styles.titleText}>
               {roomTitle}
-            </Text>
-            <Text className="text-muted-foreground text-xs" style={{ marginLeft: 8 }}>
+            </ThemedText>
+            <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.time}>
               {formatRelativeTime(lastMessageAt, locale)}
-            </Text>
+            </ThemedText>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, flex: 1 }}>
-              <Shield size={10} className="text-primary" />
-              <Text variant="muted" className="text-xs" numberOfLines={1}>
+          <View style={styles.bottomRow}>
+            <View style={styles.memberRow}>
+              <Shield size={10} color={colors.primary} />
+              <ThemedText
+                variant="footnote"
+                color={colors.tertiaryForeground}
+                numberOfLines={1}
+                style={styles.memberName}>
                 {displayName}
-              </Text>
+              </ThemedText>
             </View>
-            <View style={{ position: 'relative', marginLeft: 8 }}>
-              <NotificationBadge count={unreadCount} />
-            </View>
+            <NotificationBadge count={unreadCount} />
           </View>
         </View>
       </AnimatedPressable>
     </SwipeableRow>
   );
 }
+
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  lockBadge: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+    gap: 2,
+  },
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  titleText: {
+    flex: 1,
+  },
+  time: {
+    marginLeft: 8,
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  memberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    flex: 1,
+  },
+  memberName: {
+    flex: 1,
+  },
+});

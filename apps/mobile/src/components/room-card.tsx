@@ -1,15 +1,18 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Dot, Euro, Home } from 'lucide-react-native';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
-import { Card } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { shadow } from '@/design/tokens/shadows';
 import { LIST_ITEM_ENTERING } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
+import { isAndroid } from '@/lib/platform';
 import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
 type Props = {
@@ -18,6 +21,7 @@ type Props = {
 
 export function RoomCard({ room }: Props) {
   const router = useRouter();
+  const { colors } = useTheme();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -28,79 +32,120 @@ export function RoomCard({ room }: Props) {
   return (
     <Animated.View entering={LIST_ITEM_ENTERING}>
       <AnimatedPressable
+        accessibilityRole="button"
+        accessibilityLabel={`${room.title}, ${room.totalCost} per month`}
         onPress={() => router.push({ pathname: '/(app)/room/[id]', params: { id: room.id } })}>
-        <Card style={{ padding: 0, gap: 0, paddingVertical: 0 }} className="overflow-hidden">
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: colors.tertiaryBackground,
+              borderRadius: radius.lg,
+            },
+            isAndroid ? shadow('sm') : undefined,
+          ]}>
           {coverUrl ? (
             <Image
               source={{ uri: coverUrl }}
-              style={{ aspectRatio: 4 / 3, width: '100%' }}
-              className="rounded-t-xl"
+              style={[
+                styles.coverImage,
+                { borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg },
+              ]}
               contentFit="cover"
               cachePolicy="disk"
               transition={200}
             />
           ) : (
             <View
-              style={{
-                aspectRatio: 4 / 3,
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              className="bg-muted rounded-t-xl">
-              <Home size={32} className="text-muted-foreground" />
+              style={[
+                styles.coverPlaceholder,
+                {
+                  backgroundColor: colors.muted,
+                  borderTopLeftRadius: radius.lg,
+                  borderTopRightRadius: radius.lg,
+                },
+              ]}>
+              <Home size={32} color={colors.tertiaryForeground} />
             </View>
           )}
 
-          <View style={{ gap: 8, padding: 16 }}>
-            <Text className="text-card-foreground text-base font-semibold" numberOfLines={1}>
+          <View style={styles.content}>
+            <ThemedText variant="headline" numberOfLines={1}>
               {room.title}
-            </Text>
+            </ThemedText>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text variant="muted" className="text-sm">
+            <View style={styles.metaRow}>
+              <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                 {tEnums(`city.${room.city}`)}
-              </Text>
+              </ThemedText>
               {room.houseType && (
                 <>
-                  <Dot size={16} className="text-muted-foreground" />
-                  <Text variant="muted" className="text-sm">
+                  <Dot size={16} color={colors.tertiaryForeground} />
+                  <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                     {tEnums(`house_type.${room.houseType}`)}
-                  </Text>
+                  </ThemedText>
                 </>
               )}
               {room.roomSizeM2 && (
                 <>
-                  <Dot size={16} className="text-muted-foreground" />
-                  <Text variant="muted" className="text-sm">
+                  <Dot size={16} color={colors.tertiaryForeground} />
+                  <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                     {room.roomSizeM2}m²
-                  </Text>
+                  </ThemedText>
                 </>
               )}
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Euro size={18} className="text-primary" />
-                <Text className="text-primary text-lg font-bold">
+            <View style={styles.priceRow}>
+              <View style={styles.priceLeft}>
+                <Euro size={18} color={colors.primary} />
+                <ThemedText variant="title3" color={colors.primary}>
                   {room.totalCost}
                   {tCommon('perMonth')}
-                </Text>
+                </ThemedText>
               </View>
               {room.totalHousemates != null && (
-                <Text variant="muted" className="text-xs">
+                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                   {tCommon('housemates', { count: room.totalHousemates })}
-                </Text>
+                </ThemedText>
               )}
             </View>
           </View>
-        </Card>
+        </View>
       </AnimatedPressable>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    overflow: 'hidden',
+  },
+  coverImage: {
+    aspectRatio: 4 / 3,
+    width: '100%',
+  },
+  coverPlaceholder: {
+    aspectRatio: 4 / 3,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    gap: 8,
+    padding: 16,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  priceLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

@@ -3,440 +3,377 @@
 See root `CLAUDE.md` for project-wide conventions (coding philosophy, git, enums, i18n zero-duplication rule). This file
 covers mobile-specific details.
 
-## Skills
-
-When working on the mobile app, use these skills for up-to-date guidance:
-
-- `uniwind` — Tailwind CSS v4 for RN: styling, theming, className, `cn()`, `accent-` prefix
-- `building-native-ui` — Expo Router navigation, animations, patterns, NativeTabs
-- `native-data-fetching` — API calls, React Query, caching, offline, auth tokens
-- `expo-dev-client` — Dev builds, TestFlight distribution
-- `use-dom` — Web-only libraries in webview on native
-- `upgrading-expo` — SDK upgrades, breaking changes
-- `expo-deployment` — EAS builds, App Store, Play Store
-- `expo-cicd-workflows` — EAS workflow YAML, CI/CD pipelines
-- `better-auth-best-practices` — Auth server/client, sessions, plugins
-- `better-auth-security-best-practices` — Rate limiting, CSRF, secrets
-- `i18n-conventions` — Translation keys, namespaces, zero-duplication rule
-- `drizzle-rls` — Server-side DB schema, RLS policies (when touching shared schema)
-- `shadcn` — rn-primitives UI components
-
 ## Stack
 
-| Layer      | Technology                                                                          |
-| ---------- | ----------------------------------------------------------------------------------- |
-| Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                                      |
-| Styling    | **Uniwind v1.6** (Tailwind CSS v4 for RN) — NOT NativeWind                          |
-| UI         | @rn-primitives/\* (accordion, dialog, tabs, etc.) + custom components               |
-| Animations | react-native-reanimated v4                                                          |
-| Icons      | `lucide-react-native` + SF Symbols (`expo-symbols`) + `@expo/vector-icons` fallback |
-| i18n       | react-i18next + i18next-icu — NOT next-intl                                         |
-| Auth       | Better Auth Expo client (`@better-auth/expo`)                                       |
-| Data       | React Query (`@tanstack/react-query` v5) + REST to Next.js backend                  |
-| Local DB   | expo-sqlite + Drizzle ORM (cache + E2EE protocol state)                             |
-| E2EE       | `@openhospi/crypto` + `react-native-quick-crypto` (Signal Protocol)                 |
-| Realtime   | Supabase Broadcast (WebSocket) — chat only                                          |
-| Backend    | **Next.js API** (apps/web) — NOT Expo API routes                                    |
-| Monitoring | Sentry (`@sentry/react-native`)                                                     |
-| Compiler   | React Compiler (enabled via `experiments.reactCompiler`)                            |
+| Layer      | Technology                                                                            |
+| ---------- | ------------------------------------------------------------------------------------- |
+| Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                                        |
+| Styling    | `StyleSheet.create` + `useTheme()` hook — NO Tailwind, NO className                   |
+| Design     | `src/design/` — tokens (colors, spacing, typography, radius, shadows) + ThemeProvider |
+| UI         | Custom native components in `components/primitives/` + `components/layout/`           |
+| Animations | react-native-reanimated v4                                                            |
+| Icons      | `lucide-react-native` + SF Symbols (`expo-symbols`) + `@expo/vector-icons` fallback   |
+| Menus      | `@expo/ui` — SwiftUI ContextMenu/Menu (iOS), Jetpack Compose DropdownMenu (Android)   |
+| i18n       | react-i18next + i18next-icu — NOT next-intl                                           |
+| Auth       | Better Auth Expo client (`@better-auth/expo`)                                         |
+| Data       | React Query (`@tanstack/react-query` v5) + REST to Next.js backend                    |
+| Lists      | `@shopify/flash-list` v2 — NOT FlatList                                               |
+| Local DB   | expo-sqlite + Drizzle ORM (cache + E2EE protocol state)                               |
+| E2EE       | `@openhospi/crypto` + `react-native-quick-crypto` (Signal Protocol)                   |
+| Realtime   | Supabase Broadcast (WebSocket) — chat only                                            |
+| Backend    | **Next.js API** (apps/web) — NOT Expo API routes                                      |
+| Monitoring | Sentry (`@sentry/react-native`)                                                       |
+| Compiler   | React Compiler (enabled via `experiments.reactCompiler`)                              |
 
-## Styling Rules (Uniwind)
+## Styling
 
-### Use `style` for layout, `className` for visuals
+### All styles via `StyleSheet.create` + `useTheme()`
 
-Uniwind's `className` does NOT reliably handle layout properties on all components. Always split:
-
-```tsx
-// CORRECT
-<View
-    style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24}}
-    className="bg-background"
->
-
-    // WRONG — layout via className breaks on SafeAreaView, Animated.View, etc.
-    <View className="flex-1 items-center justify-center px-6 bg-background">
-```
-
-**Use `style` for:** `flex`, `flexDirection`, `justifyContent`, `alignItems`, `gap`, `padding*`, `margin*`, `width`,
-`height`, `maxWidth`, `position`, `top/right/bottom/left`
-
-**Use `className` for:** colors (`bg-*`, `text-*`, `border-*`), typography (`text-xl`, `font-semibold`,
-`tracking-tight`), borders (`rounded-xl`, `border`), shadows (`shadow-sm`), opacity
-
-### `accent-` prefix for non-style color props
-
-For props that are NOT `style` (e.g. `tintColor`, `color`, `placeholderTextColor`), use the `accent-` prefix:
+Every component uses `StyleSheet.create` for static styles at the bottom of the file, and `useTheme()` from `@/design`
+for dynamic theme-dependent values (colors, spacing, typography).
 
 ```tsx
-// CORRECT — accent- prefix for non-style color props
-<ActivityIndicator className="accent-primary"/>
-<TextInput className="accent-muted-foreground" placeholder="Search..."/>
+import { StyleSheet, View } from 'react-native';
+import { useTheme } from '@/design';
+import { ThemedText } from '@/components/primitives/themed-text';
 
-// WRONG — tintColor/color are not style properties
-<ActivityIndicator className="text-primary"/>
+export function MyComponent() {
+  const { colors, spacing, typography } = useTheme();
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ThemedText variant="headline">Title</ThemedText>
+      <ThemedText variant="body" color={colors.tertiaryForeground}>
+        Subtitle
+      </ThemedText>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+});
 ```
 
-### `withUniwind` only for third-party components
+### Design tokens
 
-Only use `withUniwind()` to add className support to third-party components that don't have it. Never use it on RN core
-components or Expo components (they already support className).
+All design values come from `src/design/tokens/`:
 
-### `cn()` for class deduplication
+- **Colors:** `useTheme().colors` — semantic tokens (background, foreground, primary, destructive, muted, etc.) with light/dark variants
+- **Typography:** `useTheme().typography` — iOS semantic scale (largeTitle, title1, title2, title3, headline, body, callout, subheadline, footnote, caption1, caption2)
+- **Spacing:** `useTheme().spacing` — base-4 scale (xs=4, sm=8, md=12, lg=16, xl=20, 2xl=24, 3xl=32, 4xl=40, 5xl=48)
+- **Radius:** `radius` from `@/design/tokens/radius` — platform-specific (iOS slightly larger than Android)
+- **Shadows:** `shadow()` from `@/design/tokens/shadows` — iOS shadow props vs Android elevation
 
-Always use `cn()` (from `src/lib/utils.ts`) when merging conditional classes to avoid duplicate/conflicting styles:
+### Platform differences
+
+Use `Platform.select`, `isIOS`, or `isAndroid` from `@/lib/platform`:
 
 ```tsx
-<View className={cn('bg-card rounded-xl', isActive && 'bg-primary')} />
+import { isIOS } from '@/lib/platform';
+
+// iOS: ripple doesn't exist, use opacity feedback
+// Android: use android_ripple prop
 ```
 
-### Do NOT use NativeWind APIs
+## Native Design Patterns
 
-The app uses **Uniwind**, not NativeWind. Do not use:
+### iOS patterns
 
-- `styled()` or `StyledComponent` from NativeWind
-- `NativeWindStyleSheet` or `useColorScheme` from NativeWind
-- `cssInterop` or `remapProps` from NativeWind
-- Any import from `nativewind`
+- **GroupedSection** (`components/layout/grouped-section.tsx`) for iOS Settings-style grouped lists — replaces Card
+- **ListCell** (`components/layout/list-cell.tsx`) for standard list rows with label, value, and chevron
+- **ListSeparator** (`components/layout/list-separator.tsx`) for hairline separators (0.5px on iOS, 1px on Android)
+- **Background hierarchy** for depth — NOT borders and shadows. Depth comes from background color differences (background → secondaryBackground → tertiaryBackground)
+- **Large titles** on main tab screens via `headerLargeTitle: true`
+- **Blur headers** via `headerTransparent: true` + `headerBlurEffect: 'regular'`
+- **SF Symbols** via `expo-symbols` for native iOS icons
+- **Native sheets** via `presentation: 'formSheet'` — NOT custom dialog overlays
+- **Native alerts** via `Alert.alert()` — NOT custom alert dialog components
+- **Action sheets** via `showActionSheet()` from `@/lib/action-sheet` for destructive choices
 
-### Avoid `leading-none` on React Native Text
+### Android patterns
 
-Tailwind's `leading-none` = `lineHeight: 1`. On web this is a multiplier. On React Native this is **1 pixel**, making
-text invisible. Use explicit values like `leading-7`.
+- **Elevation** via `shadow()` from design tokens — NOT CSS shadow classes
+- **Material ripple** via `android_ripple` prop on Pressable
+- **1px separators** (full-width) instead of iOS hairline with inset
 
-### Don't use dynamic classNames
+### Context menus
 
-Uniwind does NOT support dynamic string interpolation in classNames:
+Use `@expo/ui` for native menus — platform-specific imports:
 
 ```tsx
-// WRONG — class is not compiled
-<Text className={`text-${color}`}>
+// iOS — SwiftUI ContextMenu (long-press) and Menu (tap)
+import { ContextMenu, Menu, Button } from '@expo/ui/swift-ui';
 
-    // CORRECT — use conditional or style
-    <Text className={color === 'red' ? 'text-red-500' : 'text-blue-500'}>
+// Android — Jetpack Compose DropdownMenu
+import { DropdownMenu, DropdownMenuItem } from '@expo/ui/jetpack-compose';
 ```
 
-### Don't rely on Card's TextClassContext
+Use `Platform.OS` to pick the right implementation per platform. Never import SwiftUI components on Android or Jetpack Compose components on iOS.
 
-The shadcn Card wraps children in `TextClassContext.Provider`. This is unreliable in Uniwind — text can render
-invisible. Always add explicit text color classes on every `Text` inside cards, or build card UIs with plain `View` +
-explicit colors.
+### Haptics
 
-### `className` works on Animated.View
+Every interactive element should have haptic feedback. Use contextual helpers from `@/lib/haptics`:
 
-`Animated.View` from react-native-reanimated supports `className` directly — no `withUniwind()` wrapper needed. But
-still use `style` for layout.
+- `hapticLight` — button taps, selections
+- `hapticToggle` — switch/checkbox toggles
+- `hapticPullToRefreshSnap` — pull-to-refresh snap
+- `hapticSheetSnap` — bottom sheet snap
+- `hapticDelete` — destructive actions
+- `hapticFormSubmitSuccess/Error` — form submission results
+- `hapticPinEntry` — PIN digit entry
+- `hapticZoom` — pinch zoom thresholds
+
+### Lists
+
+Always use `FlashList` from `@shopify/flash-list`, never `FlatList`. FlashList v2 does NOT use `estimatedItemSize` (removed in v2).
+
+### Loading states
+
+Use skeleton placeholders (`ThemedSkeleton` from `components/primitives/`), never full-screen `ActivityIndicator`. Match skeleton dimensions to the real content layout.
+
+### Empty states
+
+Use `NativeEmptyState` from `components/feedback/native-empty-state.tsx` with SF Symbols on iOS and Lucide icons on Android.
 
 ## Navigation
 
 - **Expo Router v4** with file-based routing in `src/app/`
-- **NativeTabs** from `expo-router/unstable-native-tabs` for the main tab bar (NOT `@react-navigation/bottom-tabs`)
+- **NativeTabs** from `expo-router/unstable-native-tabs` with `blurEffect="systemMaterial"` for frosted glass tab bar
 - Route groups:
   - `(auth)/` — Login screen
-  - `(onboarding)/` — Onboarding flow (separate route group, NOT inside `(auth)/`)
+  - `(onboarding)/` — Onboarding flow
   - `(app)/` — Authenticated app shell
     - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
     - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
     - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
-- Icons: SF Symbols via `expo-symbols` (iOS), `lucide-react-native` + `@expo/vector-icons` fallback (Android)
+- Icons: SF Symbols via `expo-symbols` (iOS), `@expo/vector-icons` Material (Android)
 - Typed routes enabled (`experiments.typedRoutes: true`)
+- Screen transitions: `animation: 'slide_from_right'` on detail screens
 
 ### Typed Routes
-
-Route types are auto-generated in `.expo/types/router.d.ts` when the dev server starts.
-
-**`router.push/replace` — object form for dynamic routes:**
 
 ```tsx
 // CORRECT — typed pathname + params
 router.push({ pathname: '/(app)/room/[id]', params: { id } });
-router.push({
-  pathname: '/(app)/(tabs)/chat/[conversationId]/info',
-  params: { conversationId },
-});
 
-// CORRECT — string form for static routes (no dynamic segments)
+// CORRECT — string form for static routes
 router.push('/(app)/(modals)/filter-sheet');
-router.replace('/(app)/(tabs)/my-rooms');
 
 // WRONG — string interpolation bypasses type checking
 router.push(`/(app)/room/${id}`);
-router.push(`/(app)/room/${id}` as never);
 ```
 
-**`<Link>` — same rules apply:**
+## Component Conventions
+
+### Primitives (`components/primitives/`)
+
+Base native components that replace the old @rn-primitives registry:
+
+- `ThemedText` — typography with semantic variants (body, headline, title2, caption1, etc.)
+- `ThemedButton` — pressable with variants (primary, secondary, outline, ghost, destructive), haptic, loading state
+- `ThemedInput` — styled TextInput with focus/error states
+- `ThemedTextarea` — multiline input
+- `ThemedBadge` — native pill/chip
+- `ThemedAvatar` — circular image with initials fallback
+- `ThemedSwitch` — native RN Switch with theme colors + haptic
+- `ThemedProgress` — Reanimated animated progress bar
+- `ThemedSkeleton` — Reanimated shimmer placeholder
+- `ThemedCheckbox` — custom checkbox with haptic
+- `NativeSelect` — trigger that opens a bottom sheet picker
+
+### Layout (`components/layout/`)
+
+iOS-native structural components:
+
+- `GroupedSection` — iOS Settings-style rounded section container (replaces Card)
+- `ListCell` — standard row with label, value, chevron, haptic
+- `ListSeparator` — platform-aware hairline
+- `StatusPill` — small tinted status indicator
+
+### Domain components
+
+Organized by feature domain:
+
+- `components/chat/` — MessageBubble, ChatInputBar, ConversationListItem, etc.
+- `components/rooms/` — RoomCard, MyRoomCard, PhotoCarousel, etc.
+- `components/profile/` — ProfileFieldRow, ProfileSectionCard, VerificationBadge
+- `components/forms/` — ChipPicker, CitySearch, DatePickerSheet, InputOTP, etc.
+- `components/events/` — HospiInvitationCard
+- `components/feedback/` — NativeEmptyState, ErrorState, Skeleton, Toast, ConnectionStatusBar
+- `components/navigation/` — ScrollToBottomFab
+- `components/shared/` — AnimatedPressable, BottomSheet, Logo, SwipeableRow, etc.
+
+## Import Conventions
 
 ```tsx
-// CORRECT
-<Link href="/"/>
-<Link href={{pathname: '/(app)/room/[id]', params: {id}}}/>
+// Design system
+import { useTheme } from '@/design';
+import { spacing } from '@/design/tokens/spacing';
+import { radius } from '@/design/tokens/radius';
+import { shadow } from '@/design/tokens/shadows';
 
-// WRONG
-<Link href={'/' as never}/>
-```
+// Primitives
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedButton } from '@/components/primitives/themed-button';
 
-**`useLocalSearchParams` — manual type generic is fine:**
+// Layout
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
 
-```tsx
-// Preferred — explicit, readable
-const { id } = useLocalSearchParams<{ id: string }>();
-const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
+// Domain components
+import { RoomCard } from '@/components/rooms/room-card';
+import { MessageBubble } from '@/components/chat/message-bubble';
+
+// Utilities
+import { hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 ```
 
 ## Data Fetching & Services
 
 ### API Client
 
-REST wrapper in `src/lib/api-client.ts`:
-
-- Thin `fetch` wrapper with `ApiError` class
-- Auto-includes `Cookie` header from Better Auth client
-- Methods: `api.get()`, `api.post()`, `api.patch()`, `api.delete()`
-- All requests go to Next.js backend (`API_BASE_URL` from constants)
+REST wrapper in `src/lib/api-client.ts` — thin `fetch` wrapper with `ApiError` class. All requests go to Next.js backend.
 
 ### React Query
 
-- All server state managed via React Query (`@tanstack/react-query` v5)
-- Query client config in `src/lib/query-client.ts` (stale: 5min, GC: 30min, retry: 2)
+All server state via `@tanstack/react-query` v5. Query client in `src/lib/query-client.ts`.
 
 ### Query Key Factory
 
-Centralized in `src/services/keys.ts`:
-
-```tsx
-import { queryKeys } from '@/services/keys';
-
-// Usage in hooks
-queryKey: queryKeys.rooms.list(filters);
-queryKey: queryKeys.chat.messages(conversationId);
-```
+Centralized in `src/services/keys.ts`.
 
 ### Service Layer
 
-Each file in `src/services/` exports React Query hooks:
-
-- `chat.ts` — `useConversations()`, `useMessages()`, `useSendMessage()`
-- `rooms.ts` — `useRooms()`, `useRoom()`, `useApplyToRoom()`
-- `profile.ts` — `useProfile()`, `useUpdateProfile()`, `useUploadProfilePhoto()`
-- `applications.ts` — `useApplications()`, `useApplicationDetail()`
-- `onboarding.ts` — `useOnboardingStatus()`
-- `invitations.ts` — `useInvitations()`
-- `settings.ts` — `useSettings()`, `useConsentMutations()`, `useSessions()`
-- `verification.ts` — `useVerificationStatus()`, `useIdentityKeys()`
+Each file in `src/services/` exports React Query hooks (useConversations, useRooms, useProfile, etc.).
 
 ## Auth
 
 - **Better Auth Expo** client via `@better-auth/expo` in `src/lib/auth-client.ts`
 - Token storage: `expo-secure-store`
-- Login: InAcademia OIDC (SURFconext) via `expo-web-browser`
-- Session context in `src/context/session.tsx` — provides `useSession`, handles auth + onboarding state
-- Auth guard in root `_layout.tsx` — routes to `(app)`, `(onboarding)`, or `(auth)` based on session + onboarding status
+- Login: InAcademia OIDC (SURFconext)
+- Auth guard in root `_layout.tsx`
 
 ## i18n
 
-- **react-i18next** with `i18next-icu` plugin — NOT next-intl (that's web-only)
-- Setup in `src/i18n/index.ts`
-- Resources loaded from `@openhospi/i18n/app` (merges `shared.json` + `app.json`)
-- Type definitions in `src/@types/i18next.d.ts`
-- Use `useTranslation('translation', { keyPrefix: 'feature.section' })` pattern
-- Shared labels live in `common.labels` — use `keyPrefix: 'common.labels'`
-- Translation files: `packages/i18n/messages/{nl,en,de}/shared.json` and `app.json`
+- **react-i18next** with `i18next-icu` plugin — NOT next-intl
+- Resources from `@openhospi/i18n/app` (merges `shared.json` + `app.json`)
+- Shared labels in `common.labels`
 
 ## E2EE Chat
 
-### Crypto Stack
-
-- **`@openhospi/crypto`** (workspace package) — Signal Protocol implementation (ECDH P-256, HKDF, AES-256-GCM, Sender
-  Keys)
-- **`react-native-quick-crypto`** — Native crypto polyfill (installed as Metro resolver alias for `crypto`)
-- Polyfill installed in root `_layout.tsx` via `createNativeCryptoProvider()`
-
-### Key Storage
-
-- **Identity keys**: SQLite (`identityKeys` table) + backup encrypted in SecureStore
-- **Session state**: SQLite tables (`sessions`, `preKeys`, `signedPreKeys`, `senderKeys`, `skippedKeys`)
-- **Protocol store**: `src/lib/crypto/stores/index.ts` — `SqliteProtocolStore` implements the `ProtocolStore` interface
-- **Secure storage**: `src/lib/crypto/secure-storage.ts` — wrapper around `expo-secure-store`
-
-### Encryption Context
-
-`src/hooks/use-encryption.ts` provides:
-
-- `initializeDevice(pin)` — Generates device keys, registers with server, backs up encrypted identity key
-- `ensureSessions(memberUserIds)` — Downloads prekey bundles, establishes Signal sessions
-- `encryptMessage(conversationId, members, plaintext)` — Sender Key ratchet encryption
-- `decryptMessage(messageId, conversationId, senderAddress, payload)` — Decryption via Sender Key
-- `distributeSenderKey()` / `processIncomingDistribution()` — Key distribution management
-
-### Realtime
-
-- Supabase client in `src/lib/supabase.ts` — configured for **Realtime only** (`persistSession: false`)
-- Chat screens subscribe to `chat:${conversationId}` Broadcast channel for live message updates
-- All data queries go through the Next.js REST API, NOT through Supabase directly
+- `@openhospi/crypto` — Signal Protocol (ECDH P-256, HKDF, AES-256-GCM, Sender Keys)
+- Key storage: SQLite + SecureStore
+- Protocol store: `src/lib/crypto/stores/index.ts`
+- Encryption hooks: `src/hooks/use-encryption.ts`
+- Realtime: Supabase Broadcast per `chat:${conversationId}` channel
 
 ## Local Database (SQLite + Drizzle)
 
-- `expo-sqlite` provides the SQLite driver
-- Drizzle ORM for type-safe queries
-- Schema in `src/lib/db/schema.ts` — 12 tables for E2EE protocol state and local caching:
-  - `identityKeys`, `preKeys`, `signedPreKeys` — Device key material
-  - `sessions`, `senderKeys`, `skippedKeys` — Signal Protocol state
-  - `localMessages` — Decrypted plaintext message cache
-  - `trustedIdentities`, `keyVerifications` — TOFU & manual key verification
-  - `preferences`, `cachedProfiles`, `messageDrafts`, `syncMetadata` — App state
-- Database setup in `src/lib/db/index.ts`
-- Migration gate in root `_layout.tsx` — app waits for `useRunMigrations()` before rendering
-- Drizzle config (`drizzle.config.ts`): dialect `sqlite`, driver `expo`, output `./drizzle`
-- **`babel.config.js` MUST stay** — `babel-plugin-inline-import` is required by Drizzle's SQLite migrator to import
-  `.sql` migration files as strings at build time
-- **NEVER create migration files manually** — always use `pnpm db:mobile:generate` from repo root
-
-## Components
-
-- **UI primitives:** `src/components/ui/` — **REGISTRY ONLY**. These are @rn-primitives components downloaded via shadcn
-  CLI. **NEVER edit, modify, or add custom files here.** If they need updating, re-download them. If you need custom
-  behavior (haptics, loading states, animations), handle it at the usage site or create a custom component in
-  `src/components/`.
-- **Custom components:** `src/components/` — room-card, logo, message-bubble, encryption-gate, animated-pressable,
-  bottom-sheet, skeleton variants, etc. All custom components live here, NOT in `ui/`.
-- Use `class-variance-authority` (`cva`) for component variants
-- Use `cn()` utility for class merging
-- Icons: `lucide-react-native` for custom icons, SF Symbols via `expo-symbols` for iOS system icons
-
-## Shared Packages
-
-- `@openhospi/shared` — Enums (companion objects), constants (`APP_NAME`, `BRAND_COLOR`), types
-- `@openhospi/i18n` — Translation resources, locale config
-- `@openhospi/crypto` — E2EE Signal Protocol implementation (imports `@openhospi/crypto/native` for RN-specific exports)
-- `@openhospi/inacademia` — InAcademia OIDC utilities
-- `@openhospi/validators` — Standalone Zod validation schemas
+- `expo-sqlite` + Drizzle ORM, schema in `src/lib/db/schema.ts`
+- `babel.config.js` MUST stay — `babel-plugin-inline-import` required for Drizzle migrations
+- Never create migration files manually — use `pnpm db:mobile:generate`
 
 ## Environment Variables
 
-All client-exposed variables use `EXPO_PUBLIC_` prefix:
-
-| Variable                   | Description                         | Default                |
-| -------------------------- | ----------------------------------- | ---------------------- |
-| `EXPO_PUBLIC_API_URL`      | Next.js backend URL                 | `https://openhospi.nl` |
-| `EXPO_PUBLIC_SUPABASE_URL` | Supabase project URL (Realtime)     | —                      |
-| `EXPO_PUBLIC_SUPABASE_KEY` | Supabase publishable key            | —                      |
-| `EXPO_PUBLIC_SENTRY_DSN`   | Sentry error tracking DSN           | —                      |
-| `SENTRY_AUTH_TOKEN`        | Sentry auth token (private, builds) | —                      |
-
-Defined in `src/lib/constants.ts`. For local dev, set in `.env.local`.
+All client-exposed use `EXPO_PUBLIC_` prefix: `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_KEY`, `EXPO_PUBLIC_SENTRY_DSN`.
 
 ## Don'ts
 
-- **NativeWind APIs** — app uses Uniwind, not NativeWind
-- **Expo API routes** — backend is Next.js (apps/web)
-- **`leading-none`** — causes 1px lineHeight on RN, making text invisible
-- **Dynamic classNames** — `text-${var}` won't compile; use conditionals or `style`
-- **`forwardRef`** — React 19 passes ref as a prop; use `ref` prop directly
-- **Manual `useMemo`/`useCallback`** — React Compiler handles memoization automatically
+- **`className` prop** — app uses StyleSheet, not Tailwind
+- **`cn()` utility** — deleted, does not exist
+- **Hardcoded colors** — use `useTheme().colors`
+- **Hardcoded font sizes** — use `useTheme().typography` variants
+- **`FlatList`** — use FlashList from `@shopify/flash-list`
+- **`ActivityIndicator` for full-screen loading** — use ThemedSkeleton placeholders
+- **`Card`, `Badge`, `Select` from old ui/** — those files are deleted. Use primitives/layout components
+- **`@rn-primitives/*`** — removed entirely. Use native components
+- **`as` type assertions** — fix types properly (except `as const` and `Platform.select() as number`)
+- **Web-style shadows** — use `shadow()` from design/tokens/shadows
+- **Bordered cards for sections** — use GroupedSection with background hierarchy
+- **Custom dialog overlays** — use `Alert.alert()` or formSheet
+- **Dashed-border empty states** — use NativeEmptyState with SF Symbols
+- **`forwardRef`** — React 19 passes ref as a prop
+- **Manual `useMemo`/`useCallback`** — React Compiler handles memoization
 - **Hardcoded enum strings** — use companion objects from `@openhospi/shared/enums`
-- **next-intl imports** — mobile uses react-i18next, not next-intl
+- **next-intl imports** — mobile uses react-i18next
 - **TODO comments** — fix it now or create an issue
-- **Direct Supabase data queries** — all data goes through Next.js REST API; Supabase client is Realtime-only
-- **`withUniwind()` on RN/Expo components** — only for third-party components without className support
-- **`as never` on route paths** — use proper typed pathnames; `as never` bypasses all route validation
-- **String-interpolated dynamic routes** — ``router.push(`/room/${id}`)`` bypasses type checking; use object form with
-  `pathname` + `params`
-- **Editing `src/components/ui/` files** — these are @rn-primitives registry components. Never modify them. Re-download
-  via shadcn CLI if they need updating. Custom components go in `src/components/`
-- **`as` type assertions** — never use `as` casts. Fix the types properly or restructure the code
+- **Direct Supabase data queries** — all data goes through Next.js REST API
+- **`as never` on route paths** — use proper typed pathnames
+- **Components in `components/` root** — all components live in domain subdirectories
 
 ## Project Structure
 
 ```
 src/
   @types/
-    i18next.d.ts             # i18next type augmentation
+    i18next.d.ts
   app/
-    _layout.tsx              # Root: Sentry, crypto polyfill, i18n, theme, migrations, auth guard
-    index.tsx                # Session check, redirect to (app), (onboarding), or (auth)
-    +not-found.tsx           # 404 handler
-    (auth)/
-      _layout.tsx            # Stack with headerShown: false
-      login.tsx              # InAcademia OIDC login
+    _layout.tsx              # Root: Sentry, crypto, ThemeProvider, auth guard
+    index.tsx                # Session check, routing
+    +not-found.tsx
+    (auth)/login.tsx
     (onboarding)/
-      _layout.tsx            # Onboarding layout
-      index.tsx              # Onboarding entry
+      index.tsx              # Onboarding flow
       steps/                 # about, bio, identity, languages, personality, photos, security
     (app)/
-      _layout.tsx            # App shell
+      _layout.tsx            # App shell with ConnectionStatusBar
       (tabs)/
-        _layout.tsx          # NativeTabs (discover, my-rooms, chat, applications, profile)
-        discover/            # Room discovery with search
-        my-rooms.tsx
-        chat/                # Conversation list + [conversationId]/ thread
+        _layout.tsx          # NativeTabs with blurEffect
+        discover/            # Room discovery
+        my-rooms/            # Room management + creation wizard
+        chat/                # Conversations + threads
         applications.tsx
         profile.tsx
-      (modals)/              # Modal screens (edit-*, filter-sheet, apply-sheet, key-recovery)
+      (modals)/              # FormSheet modals (edit-*, filter-sheet, apply-sheet)
       room/[id].tsx
       application/[id].tsx
       settings.tsx
+      my-house.tsx
+      join/[code].tsx
+  design/
+    tokens/
+      colors.ts              # Semantic color tokens (light/dark)
+      spacing.ts             # Base-4 spacing scale
+      typography.ts          # iOS semantic type scale
+      radius.ts              # Platform-specific corner radii
+      shadows.ts             # Native shadow helpers
+    theme.ts                 # ThemeProvider + useTheme() hook
+    index.ts                 # Re-exports
   components/
-    ui/                      # @rn-primitives REGISTRY components ONLY (button, card, text, etc.) — NEVER edit or add custom files here
-    animated-pressable.tsx   # Custom: scale + haptic pressable
-    bottom-sheet.tsx         # Custom: @gorhom/bottom-sheet (AppBottomSheet, AppBottomSheetModal)
-    empty-state.tsx          # Custom: empty screen placeholder (icon, title, subtitle, action)
-    screen-header.tsx        # Custom: standardized screen header (back, title, right action)
-    skeleton.tsx             # Custom: skeleton variants using ui/skeleton.tsx as base
-    room-card.tsx            # Custom: discover room card
-    my-room-card.tsx         # Custom: owner room card with status badge
-    message-bubble.tsx       # Custom: chat message bubble with delivery status
-    conversation-list-item.tsx # Custom: chat list row with swipe + unread badge
-    toast.tsx                # Custom: animated toast pill (used by ToastProvider)
-    # ... and more custom components (encryption-gate, photo-carousel, etc.)
+    primitives/              # ThemedText, ThemedButton, ThemedInput, etc.
+    layout/                  # GroupedSection, ListCell, ListSeparator, StatusPill
+    feedback/                # NativeEmptyState, ErrorState, Skeleton, Toast
+    navigation/              # ScrollToBottomFab
+    chat/                    # MessageBubble, ChatInputBar, ConversationListItem
+    rooms/                   # RoomCard, MyRoomCard, PhotoCarousel
+    profile/                 # ProfileFieldRow, ProfileSectionCard
+    forms/                   # ChipPicker, CitySearch, DatePickerSheet, InputOTP
+    events/                  # HospiInvitationCard
+    shared/                  # AnimatedPressable, BottomSheet, Logo, SwipeableRow
   context/
-    session.tsx              # Auth + onboarding state provider
-    discover-filters.tsx     # Discovery filter state (MMKV-persisted)
-    toast.tsx                # Toast context provider (showToast)
+    session.tsx              # Auth + onboarding state
+    discover-filters.tsx     # Discovery filters (MMKV)
+    toast.tsx                # Toast notifications
   hooks/
-    use-encryption.ts        # E2EE encryption/decryption context
-    use-toast.ts             # useToast() hook for showing toasts
-  i18n/
-    index.ts                 # react-i18next + i18next-icu setup
+    use-encryption.ts        # E2EE encryption context
+    use-toast.ts
+  i18n/index.ts              # react-i18next setup
   lib/
-    animations.ts            # Reanimated spring/timing presets
-    auth-client.ts           # Better Auth Expo client
     api-client.ts            # REST API wrapper
-    biometric.ts             # expo-local-authentication utilities
-    haptics.ts               # expo-haptics named exports
-    mmkv.ts                  # react-native-mmkv instance + typed helpers
-    mutation-error.ts        # createMutationErrorHandler for mutation onError
-    supabase.ts              # Supabase client (Realtime only)
-    constants.ts             # Environment variables, query config
+    auth-client.ts           # Better Auth Expo client
+    supabase.ts              # Realtime only
     query-client.ts          # React Query config
-    theme.ts                 # Navigation theme
-    utils.ts                 # cn() utility
-    crypto/
-      secure-storage.ts      # expo-secure-store wrapper
-      stores/index.ts        # SQLiteProtocolStore (Signal Protocol)
-    db/
-      index.ts               # Drizzle + expo-sqlite setup
-      schema.ts              # 12 SQLite tables (E2EE + cache)
-      migrations.ts          # useRunMigrations hook
-  services/
-    keys.ts                  # Query key factory
-    types.ts                 # API response types
-    chat.ts                  # Chat queries/mutations
-    rooms.ts                 # Room queries/mutations
-    profile.ts               # Profile queries/mutations
-    applications.ts          # Application queries/mutations
-    onboarding.ts            # Onboarding status
-    invitations.ts           # Invitation queries
-    settings.ts              # Settings queries/mutations
-    verification.ts          # Key verification queries
+    platform.ts              # isIOS, isAndroid, platformSelect()
+    haptics.ts               # Haptic feedback helpers (15 exports)
+    animations.ts            # Reanimated presets (20 exports)
+    action-sheet.ts          # Native action sheet (iOS/Android)
+    biometric.ts, mmkv.ts, network.ts, constants.ts, mutation-error.ts
+    crypto/                  # E2EE key storage
+    db/                      # SQLite + Drizzle
+  services/                  # API query hooks (chat, rooms, profile, etc.)
 ```
-
-## Taking Screenshots from the iOS Simulator
-
-```bash
-xcrun simctl list devices booted
-xcrun simctl io <DEVICE-UUID> screenshot /tmp/screenshot.png
-```
-
-After saving, use the Read tool to view the image. Wait a few seconds for hot reload before taking screenshots.
 
 ## Verification
 

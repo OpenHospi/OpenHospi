@@ -1,6 +1,5 @@
 import { Archive, Lock, Shield } from 'lucide-react-native';
-import { StyleSheet, View } from 'react-native';
-import * as ContextMenu from 'zeego/context-menu';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedAvatar } from '@/components/primitives/themed-avatar';
@@ -68,67 +67,81 @@ export function ConversationListItem({
       ]
     : undefined;
 
-  return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger>
-        <SwipeableRow rightActions={archiveActions}>
-          <AnimatedPressable
-            accessibilityRole="button"
-            accessibilityLabel={`${roomTitle}, ${displayName}`}
-            onPress={onPress}
-            style={[styles.row, { backgroundColor: colors.background }]}>
-            <View>
-              <ThemedAvatar source={avatarUri} fallback={roomTitle} size={48} />
-              <View style={[styles.lockBadge, { backgroundColor: colors.background }]}>
-                <Lock size={10} color={colors.primary} />
-              </View>
-            </View>
+  function handleLongPress() {
+    Alert.alert(undefined as unknown as string, undefined, [
+      { text: 'Mute', onPress: () => {} },
+      { text: 'Block', onPress: () => {}, style: 'destructive' },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  }
 
-            <View style={styles.content}>
-              <View style={styles.topRow}>
-                <ThemedText
-                  variant="subheadline"
-                  weight={hasUnread ? '600' : '500'}
-                  numberOfLines={1}
-                  style={styles.titleText}>
-                  {roomTitle}
-                </ThemedText>
-                <ThemedText
-                  variant="caption1"
-                  color={colors.tertiaryForeground}
-                  style={styles.time}>
-                  {formatRelativeTime(lastMessageAt, locale)}
-                </ThemedText>
-              </View>
-              <View style={styles.bottomRow}>
-                <View style={styles.memberRow}>
-                  <Shield size={10} color={colors.primary} />
-                  <ThemedText
-                    variant="footnote"
-                    color={colors.tertiaryForeground}
-                    numberOfLines={1}
-                    style={styles.memberName}>
-                    {displayName}
-                  </ThemedText>
-                </View>
-                <NotificationBadge count={unreadCount} />
-              </View>
+  const listRow = (
+    <SwipeableRow rightActions={archiveActions}>
+      <AnimatedPressable
+        accessibilityRole="button"
+        accessibilityLabel={`${roomTitle}, ${displayName}`}
+        onPress={onPress}
+        style={[styles.row, { backgroundColor: colors.background }]}>
+        <View>
+          <ThemedAvatar source={avatarUri} fallback={roomTitle} size={48} />
+          <View style={[styles.lockBadge, { backgroundColor: colors.background }]}>
+            <Lock size={10} color={colors.primary} />
+          </View>
+        </View>
+
+        <View style={styles.content}>
+          <View style={styles.topRow}>
+            <ThemedText
+              variant="subheadline"
+              weight={hasUnread ? '600' : '500'}
+              numberOfLines={1}
+              style={styles.titleText}>
+              {roomTitle}
+            </ThemedText>
+            <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.time}>
+              {formatRelativeTime(lastMessageAt, locale)}
+            </ThemedText>
+          </View>
+          <View style={styles.bottomRow}>
+            <View style={styles.memberRow}>
+              <Shield size={10} color={colors.primary} />
+              <ThemedText
+                variant="footnote"
+                color={colors.tertiaryForeground}
+                numberOfLines={1}
+                style={styles.memberName}>
+                {displayName}
+              </ThemedText>
             </View>
-          </AnimatedPressable>
-        </SwipeableRow>
-      </ContextMenu.Trigger>
-      <ContextMenu.Content>
-        <ContextMenu.Item key="mute" onSelect={() => {}}>
-          <ContextMenu.ItemTitle>Mute</ContextMenu.ItemTitle>
-          <ContextMenu.ItemIcon ios={{ name: 'bell.slash' }} />
-        </ContextMenu.Item>
-        <ContextMenu.Item key="block" onSelect={() => {}} destructive>
-          <ContextMenu.ItemTitle>Block</ContextMenu.ItemTitle>
-          <ContextMenu.ItemIcon ios={{ name: 'hand.raised' }} />
-        </ContextMenu.Item>
-      </ContextMenu.Content>
-    </ContextMenu.Root>
+            <NotificationBadge count={unreadCount} />
+          </View>
+        </View>
+      </AnimatedPressable>
+    </SwipeableRow>
   );
+
+  if (Platform.OS === 'ios') {
+    const { ContextMenu } = require('@expo/ui/swift-ui');
+    const { Button: ExpoButton } = require('@expo/ui/swift-ui');
+
+    return (
+      <ContextMenu>
+        <ContextMenu.Items>
+          <ExpoButton label="Mute" systemImage="bell.slash" onPress={() => {}} />
+          <ExpoButton
+            label="Block"
+            systemImage="hand.raised"
+            role="destructive"
+            onPress={() => {}}
+          />
+        </ContextMenu.Items>
+        <ContextMenu.Trigger>{listRow}</ContextMenu.Trigger>
+      </ContextMenu>
+    );
+  }
+
+  // Android: long-press opens native alert with actions
+  return <Pressable onLongPress={handleLongPress}>{listRow}</Pressable>;
 }
 
 const styles = StyleSheet.create({

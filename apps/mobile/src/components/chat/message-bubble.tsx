@@ -1,8 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { Check, CheckCheck, Clock } from 'lucide-react-native';
-import { StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import * as ContextMenu from 'zeego/context-menu';
 
 import { useTheme } from '@/design';
 import { ThemedText } from '@/components/primitives/themed-text';
@@ -49,8 +48,103 @@ export function MessageBubble({
     hapticSuccess();
   }
 
+  function handleLongPress() {
+    const actions: { text: string; onPress?: () => void; style?: 'destructive' | 'cancel' }[] = [
+      { text: 'Copy', onPress: handleCopy },
+    ];
+    if (isOwn && onDelete) {
+      actions.push({ text: 'Delete', onPress: onDelete, style: 'destructive' });
+    }
+    actions.push({ text: 'Cancel', style: 'cancel' });
+    Alert.alert(undefined as unknown as string, undefined, actions);
+  }
+
   const entering = isOwn ? MESSAGE_OWN_ENTERING : MESSAGE_OTHER_ENTERING;
 
+  const bubbleContent = (
+    <View
+      style={{
+        maxWidth: '75%',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderTopLeftRadius: isOwn ? 16 : topRadius,
+        borderTopRightRadius: isOwn ? topRadius : 16,
+        borderBottomLeftRadius: isOwn ? 16 : bottomRadius,
+        borderBottomRightRadius: isOwn ? bottomRadius : 16,
+        backgroundColor: isOwn ? colors.primary : colors.muted,
+      }}>
+      {showSender && !isOwn && senderName && (
+        <ThemedText
+          variant="caption1"
+          weight="500"
+          color={colors.foreground}
+          style={styles.senderName}>
+          {senderName}
+        </ThemedText>
+      )}
+
+      <View style={styles.messageContent}>
+        <ThemedText
+          variant="subheadline"
+          color={isOwn ? colors.primaryForeground : colors.foreground}
+          style={styles.messageText}>
+          {text}
+        </ThemedText>
+
+        <View style={styles.timestampRow}>
+          <ThemedText
+            color={isOwn ? colors.primaryForeground : colors.mutedForeground}
+            style={styles.timestamp}>
+            {timestamp}
+          </ThemedText>
+          {isOwn &&
+            status &&
+            (() => {
+              const { icon: StatusIcon, opacity } = STATUS_ICONS[status];
+              return (
+                <StatusIcon
+                  size={12}
+                  color={isOwn ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)'}
+                  style={{ opacity }}
+                />
+              );
+            })()}
+        </View>
+      </View>
+    </View>
+  );
+
+  if (Platform.OS === 'ios') {
+    // iOS: use @expo/ui SwiftUI ContextMenu
+    const { ContextMenu } = require('@expo/ui/swift-ui');
+    const { Button: ExpoButton } = require('@expo/ui/swift-ui');
+
+    return (
+      <Animated.View
+        entering={entering}
+        style={{
+          alignItems: isOwn ? 'flex-end' : 'flex-start',
+          marginTop: isFirstInGroup ? 8 : 2,
+        }}>
+        <ContextMenu>
+          <ContextMenu.Items>
+            <ExpoButton label="Copy" systemImage="doc.on.doc" onPress={handleCopy} />
+            {isOwn && onDelete && (
+              <ExpoButton
+                label="Delete"
+                systemImage="trash"
+                role="destructive"
+                onPress={onDelete}
+              />
+            )}
+          </ContextMenu.Items>
+          <ContextMenu.Trigger>{bubbleContent}</ContextMenu.Trigger>
+        </ContextMenu>
+      </Animated.View>
+    );
+  }
+
+  // Android: long-press opens Alert with actions
   return (
     <Animated.View
       entering={entering}
@@ -58,72 +152,7 @@ export function MessageBubble({
         alignItems: isOwn ? 'flex-end' : 'flex-start',
         marginTop: isFirstInGroup ? 8 : 2,
       }}>
-      <ContextMenu.Root>
-        <ContextMenu.Trigger>
-          <View
-            style={{
-              maxWidth: '75%',
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderTopLeftRadius: isOwn ? 16 : topRadius,
-              borderTopRightRadius: isOwn ? topRadius : 16,
-              borderBottomLeftRadius: isOwn ? 16 : bottomRadius,
-              borderBottomRightRadius: isOwn ? bottomRadius : 16,
-              backgroundColor: isOwn ? colors.primary : colors.muted,
-            }}>
-            {showSender && !isOwn && senderName && (
-              <ThemedText
-                variant="caption1"
-                weight="500"
-                color={colors.foreground}
-                style={styles.senderName}>
-                {senderName}
-              </ThemedText>
-            )}
-
-            <View style={styles.messageContent}>
-              <ThemedText
-                variant="subheadline"
-                color={isOwn ? colors.primaryForeground : colors.foreground}
-                style={styles.messageText}>
-                {text}
-              </ThemedText>
-
-              <View style={styles.timestampRow}>
-                <ThemedText
-                  color={isOwn ? colors.primaryForeground : colors.mutedForeground}
-                  style={styles.timestamp}>
-                  {timestamp}
-                </ThemedText>
-                {isOwn &&
-                  status &&
-                  (() => {
-                    const { icon: StatusIcon, opacity } = STATUS_ICONS[status];
-                    return (
-                      <StatusIcon
-                        size={12}
-                        color={isOwn ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)'}
-                        style={{ opacity }}
-                      />
-                    );
-                  })()}
-              </View>
-            </View>
-          </View>
-        </ContextMenu.Trigger>
-        <ContextMenu.Content>
-          <ContextMenu.Item key="copy" onSelect={handleCopy}>
-            <ContextMenu.ItemTitle>Copy</ContextMenu.ItemTitle>
-            <ContextMenu.ItemIcon ios={{ name: 'doc.on.doc' }} />
-          </ContextMenu.Item>
-          {isOwn && onDelete && (
-            <ContextMenu.Item key="delete" onSelect={onDelete} destructive>
-              <ContextMenu.ItemTitle>Delete</ContextMenu.ItemTitle>
-              <ContextMenu.ItemIcon ios={{ name: 'trash' }} />
-            </ContextMenu.Item>
-          )}
-        </ContextMenu.Content>
-      </ContextMenu.Root>
+      <Pressable onLongPress={handleLongPress}>{bubbleContent}</Pressable>
     </Animated.View>
   );
 }

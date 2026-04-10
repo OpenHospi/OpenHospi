@@ -1,6 +1,10 @@
 import React, { createContext, useContext } from 'react';
 import { useColorScheme } from 'react-native';
-import { DarkTheme, DefaultTheme, type Theme as NavigationTheme } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider as NavigationThemeProvider,
+} from '@react-navigation/native';
 
 import { type Colors, darkColors, lightColors } from './tokens/colors';
 import { radius, type RadiusKey } from './tokens/radius';
@@ -17,7 +21,7 @@ export interface Theme {
   isDark: boolean;
 }
 
-// ── Build theme from color scheme ──
+// ── Build themes ──
 
 function buildTheme(isDark: boolean): Theme {
   return {
@@ -29,9 +33,7 @@ function buildTheme(isDark: boolean): Theme {
   };
 }
 
-// ── React Navigation bridge ──
-
-export function getNavigationTheme(isDark: boolean): NavigationTheme {
+function buildNavigationTheme(isDark: boolean) {
   const colors = isDark ? darkColors : lightColors;
   const base = isDark ? DarkTheme : DefaultTheme;
 
@@ -54,15 +56,21 @@ export function getNavigationTheme(isDark: boolean): NavigationTheme {
 const ThemeContext = createContext<Theme | null>(null);
 
 /**
- * Provides the theme to the entire app.
- * Reads the system color scheme and builds light/dark theme accordingly.
+ * Single theme provider for the entire app.
+ * Reads the system color scheme, provides design tokens via useTheme(),
+ * and internally wraps React Navigation's ThemeProvider.
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const theme = buildTheme(isDark);
+  const navigationTheme = buildNavigationTheme(isDark);
 
-  return React.createElement(ThemeContext.Provider, { value: theme }, children);
+  return React.createElement(
+    ThemeContext.Provider,
+    { value: theme },
+    React.createElement(NavigationThemeProvider, { value: navigationTheme }, children)
+  );
 }
 
 /**

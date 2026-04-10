@@ -1,5 +1,5 @@
 // Theme provider and hook
-export { ThemeProvider, useTheme, getNavigationTheme } from './theme';
+export { ThemeProvider, useTheme } from './theme';
 export type { Theme, Colors, SpacingKey, TypographyVariant, RadiusKey } from './theme';
 
 // Design tokens

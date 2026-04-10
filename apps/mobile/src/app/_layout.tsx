@@ -6,22 +6,19 @@ import { setCryptoProvider } from '@openhospi/crypto';
 import { createNativeCryptoProvider } from '@openhospi/crypto/native';
 setCryptoProvider(createNativeCryptoProvider());
 
-import '../global.css';
 import { hideSplash } from '@/lib/splash';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
-import { ThemeProvider } from '@react-navigation/native';
-import { PortalHost } from '@rn-primitives/portal';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isRunningInExpoGo } from 'expo';
 import { Stack } from 'expo-router';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useUniwind } from 'uniwind';
 
+import { ThemeProvider } from '@/design';
 import { SessionProvider, useAppSession } from '@/context/session';
 import { ToastProvider } from '@/context/toast';
 import { useRunMigrations } from '@/lib/db/migrations';
@@ -31,7 +28,6 @@ import { queryClient, persistOptions } from '@/lib/query-client';
 import { initializeNetworkManager } from '@/lib/network';
 import { initializeAppLifecycle } from '@/lib/app-lifecycle';
 import { initializeNotificationListeners } from '@/lib/notifications';
-import { NAV_THEME } from '@/lib/theme';
 
 // ── Sentry ──────────────────────────────────────────────────
 
@@ -52,17 +48,22 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
   Sentry.captureException(error);
 
   return (
-    <View
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 }}
-      className="bg-background">
-      <Text className="text-foreground mb-2.5 text-lg font-bold">Something went wrong</Text>
-      <Text className="text-muted-foreground mb-5 text-center text-sm">{error.message}</Text>
+    <View style={errorStyles.container}>
+      <Text style={errorStyles.title}>Something went wrong</Text>
+      <Text style={errorStyles.message}>{error.message}</Text>
       <Pressable onPress={retry}>
-        <Text className="text-primary text-base">Try Again</Text>
+        <Text style={errorStyles.retry}>Try Again</Text>
       </Pressable>
     </View>
   );
 }
+
+const errorStyles = StyleSheet.create({
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
+  title: { fontSize: 18, fontWeight: '700', marginBottom: 10, color: '#134e4a' },
+  message: { fontSize: 14, textAlign: 'center', marginBottom: 20, color: '#5f8a86' },
+  retry: { fontSize: 16, color: '#0d9488' },
+});
 
 // ── Foundation Initialization ───────────────────────────────
 // Initialize network monitoring and app lifecycle management
@@ -123,13 +124,11 @@ function RootNavigator() {
 // ── Root Layout ─────────────────────────────────────────────
 
 let RootLayout = function RootLayout() {
-  const { theme } = useUniwind();
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-        <I18nextProvider i18n={i18n}>
-          <ThemeProvider value={NAV_THEME[(theme ?? 'light') as 'light' | 'dark']}>
+      <ThemeProvider>
+        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+          <I18nextProvider i18n={i18n}>
             <BottomSheetModalProvider>
               <SessionProvider>
                 <ToastProvider>
@@ -137,10 +136,9 @@ let RootLayout = function RootLayout() {
                 </ToastProvider>
               </SessionProvider>
             </BottomSheetModalProvider>
-            <PortalHost />
-          </ThemeProvider>
-        </I18nextProvider>
-      </PersistQueryClientProvider>
+          </I18nextProvider>
+        </PersistQueryClientProvider>
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 };

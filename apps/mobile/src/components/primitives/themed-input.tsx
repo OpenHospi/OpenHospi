@@ -31,7 +31,7 @@ function ThemedInput({ error, editable = true, style, ...props }: ThemedInputPro
 
   return (
     <TextInput
-      style={[inputStyle, style as TextStyle]}
+      style={[inputStyle, style]}
       placeholderTextColor={colors.tertiaryForeground}
       editable={editable}
       onFocus={(e) => {

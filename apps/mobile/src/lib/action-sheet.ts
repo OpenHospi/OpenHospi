@@ -37,11 +37,10 @@ export function showActionSheet(
     );
   } else {
     Alert.alert(title, undefined, [
-      ...options.map((o) => ({
-        text: o.label,
-        onPress: o.onPress,
-        style: (o.destructive ? 'destructive' : 'default') as 'destructive' | 'default',
-      })),
+      ...options.map((o) => {
+        const buttonStyle: 'destructive' | 'default' = o.destructive ? 'destructive' : 'default';
+        return { text: o.label, onPress: o.onPress, style: buttonStyle };
+      }),
       { text: cancelLabel, style: 'cancel' },
     ]);
   }

@@ -35,7 +35,7 @@ function ThemedTextarea({
 
   return (
     <TextInput
-      style={[inputStyle, style as TextStyle]}
+      style={[inputStyle, style]}
       placeholderTextColor={colors.tertiaryForeground}
       editable={editable}
       multiline

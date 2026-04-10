@@ -20,7 +20,7 @@ export default function EditStudyLevelScreen() {
 
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
-  const [studyLevel, setStudyLevel] = useState(profile?.studyLevel ?? null);
+  const [studyLevel, setStudyLevel] = useState<string | null>(profile?.studyLevel ?? null);
 
   function handleSave() {
     updateProfile.mutate(

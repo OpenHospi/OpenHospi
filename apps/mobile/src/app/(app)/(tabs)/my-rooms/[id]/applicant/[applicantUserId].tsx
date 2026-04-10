@@ -229,29 +229,22 @@ export default function ApplicantDetailScreen() {
             <GroupedSection>
               <View style={styles.sectionContent}>
                 <ThemedText variant="headline">Reviews</ThemedText>
-                {applicant.reviews.map(
-                  (review: {
-                    reviewerId: string;
-                    reviewerName: string;
-                    decision: string;
-                    notes?: string;
-                  }) => (
-                    <View key={review.reviewerId} style={styles.reviewRow}>
-                      <ThemedText variant="subheadline" weight="500">
-                        {review.reviewerName}
+                {applicant.reviews.map((review) => (
+                  <View key={review.reviewerId} style={styles.reviewRow}>
+                    <ThemedText variant="subheadline" weight="500">
+                      {review.reviewerName}
+                    </ThemedText>
+                    <ThemedBadge variant="secondary" label={t(review.decision)} />
+                    {review.notes && (
+                      <ThemedText
+                        variant="caption1"
+                        color={colors.tertiaryForeground}
+                        style={styles.reviewNotes}>
+                        {review.notes}
                       </ThemedText>
-                      <ThemedBadge variant="secondary" label={t(review.decision)} />
-                      {review.notes && (
-                        <ThemedText
-                          variant="caption1"
-                          color={colors.tertiaryForeground}
-                          style={styles.reviewNotes}>
-                          {review.notes}
-                        </ThemedText>
-                      )}
-                    </View>
-                  )
-                )}
+                    )}
+                  </View>
+                ))}
               </View>
             </GroupedSection>
           )}

@@ -9,13 +9,14 @@ import {
 } from '@openhospi/crypto';
 import { CircleCheck, ScanLine, ShieldAlert, ShieldCheck } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getProtocolStore } from '@/lib/crypto/stores';
 import { useSession } from '@/lib/auth-client';
 import { useConversationDetail } from '@/services/chat';
@@ -34,6 +35,7 @@ export default function VerifyScreen() {
     userId: string;
   }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.chat.safety_number' });
+  const { colors } = useTheme();
   const { data: session } = useSession();
   const localUserId = session?.user?.id;
   const router = useRouter();
@@ -124,93 +126,87 @@ export default function VerifyScreen() {
       <Stack.Screen options={{ title: peerName, headerBackTitle: t('close') }} />
 
       {state.type === 'loading' && (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 }}
-          className="bg-background">
-          <ShieldCheck size={48} className="text-muted-foreground" />
+        <View style={[styles.centeredGap, { backgroundColor: colors.background }]}>
+          <ShieldCheck size={48} color={colors.tertiaryForeground} />
           <ActivityIndicator />
-          <Text variant="muted" className="text-sm">
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('loading')}
-          </Text>
+          </ThemedText>
         </View>
       )}
 
       {state.type === 'error' && (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 }}
-          className="bg-background">
-          <ShieldAlert size={48} className="text-muted-foreground" />
-          <Text variant="muted" className="text-center text-sm">
+        <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+          <ShieldAlert size={48} color={colors.tertiaryForeground} />
+          <ThemedText
+            variant="subheadline"
+            color={colors.tertiaryForeground}
+            style={styles.textCenter}>
             {t('unavailable')}
-          </Text>
-          <Button variant="outline" onPress={() => router.back()}>
-            <Text className="text-foreground">{t('close')}</Text>
-          </Button>
+          </ThemedText>
+          <ThemedButton variant="outline" onPress={() => router.back()}>
+            {t('close')}
+          </ThemedButton>
         </View>
       )}
 
       {state.type === 'ready' && !scanning && (
         <ScrollView
-          style={{ flex: 1 }}
-          className="bg-background"
+          style={[styles.flex1, { backgroundColor: colors.background }]}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 32, paddingBottom: 40 }}>
+          contentContainerStyle={styles.readyScrollContent}>
           {/* Description */}
-          <Text variant="muted" className="text-center text-sm">
+          <ThemedText
+            variant="subheadline"
+            color={colors.tertiaryForeground}
+            style={styles.textCenter}>
             {t('description', { name: peerName })}
-          </Text>
+          </ThemedText>
 
           {/* QR Code */}
-          <View style={{ alignItems: 'center', marginTop: 28 }}>
-            <View
-              style={{ padding: 16, borderRadius: 12, alignItems: 'center' }}
-              className="bg-white shadow-sm">
+          <View style={styles.qrContainer}>
+            <View style={styles.qrBox}>
               <QRCode value={state.qrPayload} size={180} />
             </View>
           </View>
 
-          {/* Safety number — single code block */}
-          <View
-            style={{
-              marginTop: 28,
-              borderRadius: 10,
-              paddingVertical: 16,
-              paddingHorizontal: 20,
-              gap: 8,
-              alignItems: 'center',
-            }}
-            className="bg-muted">
+          {/* Safety number */}
+          <View style={[styles.safetyNumberBox, { backgroundColor: colors.muted }]}>
             {formatSafetyNumber(state.safetyNumber).map((row, i) => (
-              <Text
-                key={i}
-                style={{ fontFamily: 'Courier', letterSpacing: 3 }}
-                className="text-foreground text-base font-semibold">
+              <ThemedText key={i} variant="body" weight="600" style={styles.safetyNumberRow}>
                 {row}
-              </Text>
+              </ThemedText>
             ))}
           </View>
 
           {/* Instructions */}
-          <Text variant="muted" className="mt-6 text-center text-xs" style={{ marginTop: 24 }}>
+          <ThemedText
+            variant="caption1"
+            color={colors.tertiaryForeground}
+            style={[styles.textCenter, styles.instructions]}>
             {t('instructions')}
-          </Text>
+          </ThemedText>
 
           {/* Scan button */}
-          <Button
-            style={{ marginTop: 32 }}
+          <ThemedButton
+            style={styles.scanButton}
             onPress={() => {
               scanProcessedRef.current = false;
               setScanResult(null);
               setScanning(true);
             }}>
-            <ScanLine size={18} className="text-primary-foreground" />
-            <Text className="text-primary-foreground font-medium">{t('scan_tab')}</Text>
-          </Button>
+            <View style={styles.scanButtonContent}>
+              <ScanLine size={18} color={colors.primaryForeground} />
+              <ThemedText variant="subheadline" weight="500" color={colors.primaryForeground}>
+                {t('scan_tab')}
+              </ThemedText>
+            </View>
+          </ThemedButton>
         </ScrollView>
       )}
 
       {state.type === 'ready' && scanning && (
-        <View style={{ flex: 1 }} className="bg-background">
+        <View style={[styles.flex1, { backgroundColor: colors.background }]}>
           <CameraSection
             onScan={handleScanResult}
             scanResult={scanResult}
@@ -232,12 +228,13 @@ function CameraSection({
   onClose: () => void;
 }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.chat.safety_number' });
+  const { colors } = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
   const insets = useSafeAreaInsets();
 
   if (!permission) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.centered}>
         <ActivityIndicator />
       </View>
     );
@@ -245,31 +242,31 @@ function CameraSection({
 
   if (!permission.granted) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 }}>
-        <Text variant="muted" className="text-center text-sm">
+      <View style={styles.permissionContainer}>
+        <ThemedText
+          variant="subheadline"
+          color={colors.tertiaryForeground}
+          style={styles.textCenter}>
           {permission.canAskAgain ? t('camera_permission') : t('camera_permission_settings')}
-        </Text>
+        </ThemedText>
         {permission.canAskAgain ? (
-          <Button onPress={requestPermission}>
-            <Text className="text-primary-foreground">{t('grant_camera')}</Text>
-          </Button>
+          <ThemedButton onPress={requestPermission}>{t('grant_camera')}</ThemedButton>
         ) : (
-          <Button variant="outline" onPress={() => Linking.openSettings()}>
-            <Text className="text-foreground">{t('open_settings')}</Text>
-          </Button>
+          <ThemedButton variant="outline" onPress={() => Linking.openSettings()}>
+            {t('open_settings')}
+          </ThemedButton>
         )}
-        <Button variant="ghost" onPress={onClose}>
-          <Text className="text-foreground">{t('close')}</Text>
-        </Button>
+        <ThemedButton variant="ghost" onPress={onClose}>
+          {t('close')}
+        </ThemedButton>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.flex1}>
       <CameraView
-        style={{ flex: 1 }}
+        style={styles.flex1}
         facing="back"
         barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
         onBarcodeScanned={({ data }) => onScan(data)}
@@ -278,45 +275,131 @@ function CameraSection({
       {/* Scan result overlay */}
       {scanResult && (
         <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          className={scanResult === 'match' ? 'bg-green-500/80' : 'bg-destructive/80'}>
+          style={[
+            styles.scanOverlay,
+            {
+              backgroundColor:
+                scanResult === 'match' ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)',
+            },
+          ]}>
           {scanResult === 'match' ? (
             <CircleCheck size={64} color="white" />
           ) : (
             <ShieldAlert size={64} color="white" />
           )}
-          <Text className="mt-3 text-lg font-semibold text-white" style={{ marginTop: 12 }}>
+          <ThemedText variant="headline" color="white" style={styles.scanResultText}>
             {scanResult === 'match' ? t('verified') : t('mismatch')}
-          </Text>
+          </ThemedText>
         </View>
       )}
 
       {/* Bottom bar */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          paddingHorizontal: 24,
-          paddingBottom: insets.bottom + 60,
-          paddingTop: 16,
-        }}>
-        <Text className="text-center text-sm text-white" style={{ marginBottom: 16 }}>
+      <View style={[styles.cameraBottom, { paddingBottom: insets.bottom + 60 }]}>
+        <ThemedText
+          variant="subheadline"
+          color="white"
+          style={[styles.textCenter, styles.scanInstructions]}>
           {t('scan_instructions')}
-        </Text>
-        <Button variant="secondary" onPress={onClose}>
-          <Text className="text-secondary-foreground">{t('close')}</Text>
-        </Button>
+        </ThemedText>
+        <ThemedButton variant="secondary" onPress={onClose}>
+          {t('close')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredGap: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  readyScrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 40,
+  },
+  qrContainer: {
+    alignItems: 'center',
+    marginTop: 28,
+  },
+  qrBox: {
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  safetyNumberBox: {
+    marginTop: 28,
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    gap: 8,
+    alignItems: 'center',
+  },
+  safetyNumberRow: {
+    fontFamily: 'Courier',
+    letterSpacing: 3,
+  },
+  instructions: {
+    marginTop: 24,
+  },
+  scanButton: {
+    marginTop: 32,
+  },
+  scanButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
+  },
+  scanOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanResultText: {
+    marginTop: 12,
+  },
+  cameraBottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 24,
+    paddingTop: 16,
+  },
+  scanInstructions: {
+    marginBottom: 16,
+  },
+});

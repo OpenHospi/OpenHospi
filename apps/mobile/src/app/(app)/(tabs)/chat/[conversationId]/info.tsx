@@ -1,21 +1,12 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ban, BellOff, ChevronRight, Flag, Shield } from 'lucide-react-native';
-import { useState } from 'react';
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Text } from '@/components/ui/text';
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useSession } from '@/lib/auth-client';
 import { useConversationDetail } from '@/services/chat';
 
@@ -30,15 +21,14 @@ export default function ConversationInfoScreen() {
   const userId = session?.user?.id;
   const { data: detail } = useConversationDetail(conversationId);
   const router = useRouter();
-  const [blockOpen, setBlockOpen] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
+  const { colors } = useTheme();
 
   if (!detail) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text variant="muted" className="text-sm">
+      <View style={styles.centered}>
+        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('loading_messages')}
-        </Text>
+        </ThemedText>
       </View>
     );
   }
@@ -46,93 +36,95 @@ export default function ConversationInfoScreen() {
   const initial = detail.roomTitle.charAt(0).toUpperCase();
 
   function handleBlock() {
-    setBlockOpen(false);
-    Alert.alert(t('block_user'), 'User blocked');
+    Alert.alert(t('block_user'), t('blocked'), [
+      { text: tCommon('cancel'), style: 'cancel' },
+      {
+        text: t('block_user'),
+        style: 'destructive',
+        onPress: () => Alert.alert(t('block_user'), 'User blocked'),
+      },
+    ]);
   }
 
   function handleReport() {
-    setReportOpen(false);
-    Alert.alert(t('report_message'), 'Report submitted');
+    Alert.alert(t('report_message'), t('report_message'), [
+      { text: tCommon('cancel'), style: 'cancel' },
+      {
+        text: t('report_message'),
+        style: 'destructive',
+        onPress: () => Alert.alert(t('report_message'), 'Report submitted'),
+      },
+    ]);
   }
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
-      className="bg-background"
-      contentContainerStyle={{ padding: 24, gap: 24 }}>
+      style={[styles.flex1, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.scrollContent}>
       {/* Header */}
-      <View style={{ alignItems: 'center', gap: 12 }}>
-        <Avatar alt={detail.roomTitle} style={{ width: 80, height: 80 }}>
-          <AvatarFallback>
-            <Text className="text-muted-foreground text-2xl font-semibold">{initial}</Text>
-          </AvatarFallback>
-        </Avatar>
-        <Text className="text-foreground text-lg font-semibold">{detail.roomTitle}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Shield size={14} className="text-primary" />
-          <Text variant="muted" className="text-xs">
+      <View style={styles.headerContainer}>
+        <ThemedAvatar fallback={initial} size={80} />
+        <ThemedText variant="headline">{detail.roomTitle}</ThemedText>
+        <View style={styles.encryptedRow}>
+          <Shield size={14} color={colors.primary} />
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('encrypted')}
-          </Text>
+          </ThemedText>
         </View>
       </View>
 
       {/* Room info card */}
       <View
-        style={{ borderRadius: 12, padding: 16, gap: 12, borderWidth: 1 }}
-        className="bg-card border-border">
-        <Text className="text-foreground text-sm font-semibold">{t('room_info')}</Text>
-        <Text variant="muted" className="text-sm">
+        style={[styles.roomInfoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <ThemedText variant="subheadline" weight="600">
+          {t('room_info')}
+        </ThemedText>
+        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {detail.roomTitle}
-        </Text>
+        </ThemedText>
         <Pressable
           onPress={() =>
             router.push({ pathname: '/(app)/room/[id]', params: { id: detail.roomId } })
           }
-          style={{
-            borderRadius: 8,
-            paddingVertical: 10,
-            alignItems: 'center',
-            borderWidth: 1,
-          }}
-          className="border-border">
-          <Text className="text-primary text-sm font-medium">{t('view_listing')}</Text>
+          style={[styles.viewListingButton, { borderColor: colors.border }]}>
+          <ThemedText variant="subheadline" weight="500" color={colors.primary}>
+            {t('view_listing')}
+          </ThemedText>
         </Pressable>
       </View>
 
       {/* Members */}
-      <View style={{ gap: 12 }}>
-        <Text className="text-muted-foreground text-xs font-medium uppercase">
+      <View style={styles.membersSection}>
+        <ThemedText
+          variant="caption1"
+          weight="500"
+          color={colors.tertiaryForeground}
+          style={styles.sectionLabel}>
           {t('members')} ({detail.members.length})
-        </Text>
+        </ThemedText>
         {detail.members.map((member) => {
           const isCurrentUser = member.userId === userId;
 
           const row = (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <Avatar alt={member.firstName} style={{ width: 32, height: 32 }}>
-                <AvatarFallback>
-                  <Text className="text-muted-foreground text-xs font-medium">
-                    {member.firstName.charAt(0).toUpperCase()}
-                  </Text>
-                </AvatarFallback>
-              </Avatar>
-              <View style={{ flex: 1 }}>
-                <Text className="text-foreground text-sm">
+            <View style={styles.memberRow}>
+              <ThemedAvatar fallback={member.firstName.charAt(0).toUpperCase()} size={32} />
+              <View style={styles.flex1}>
+                <ThemedText variant="subheadline">
                   {member.firstName}
                   {isCurrentUser && (
-                    <Text variant="muted" className="text-xs">
+                    <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                       {' '}
                       ({t('you')})
-                    </Text>
+                    </ThemedText>
                   )}
-                </Text>
+                </ThemedText>
                 {!isCurrentUser && (
-                  <Text variant="muted" className="text-xs">
+                  <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                     {tSafetyNumber('title')}
-                  </Text>
+                  </ThemedText>
                 )}
               </View>
-              {!isCurrentUser && <ChevronRight size={16} className="text-muted-foreground" />}
+              {!isCurrentUser && <ChevronRight size={16} color={colors.tertiaryForeground} />}
             </View>
           );
 
@@ -154,82 +146,83 @@ export default function ConversationInfoScreen() {
       </View>
 
       {/* Actions */}
-      <View style={{ gap: 2 }}>
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 12,
-            paddingVertical: 14,
-            paddingHorizontal: 4,
-          }}
-          onPress={() => Alert.alert(t('mute_conversation'))}>
-          <BellOff size={20} className="text-muted-foreground" />
-          <Text className="text-foreground text-sm">{t('mute_conversation')}</Text>
+      <View style={styles.actionsSection}>
+        <Pressable style={styles.actionRow} onPress={() => Alert.alert(t('mute_conversation'))}>
+          <BellOff size={20} color={colors.tertiaryForeground} />
+          <ThemedText variant="subheadline">{t('mute_conversation')}</ThemedText>
         </Pressable>
 
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 12,
-            paddingVertical: 14,
-            paddingHorizontal: 4,
-          }}
-          onPress={() => setBlockOpen(true)}>
-          <Ban size={20} className="text-destructive" />
-          <Text className="text-destructive text-sm">{t('block_user')}</Text>
+        <Pressable style={styles.actionRow} onPress={handleBlock}>
+          <Ban size={20} color={colors.destructive} />
+          <ThemedText variant="subheadline" color={colors.destructive}>
+            {t('block_user')}
+          </ThemedText>
         </Pressable>
 
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 12,
-            paddingVertical: 14,
-            paddingHorizontal: 4,
-          }}
-          onPress={() => setReportOpen(true)}>
-          <Flag size={20} className="text-destructive" />
-          <Text className="text-destructive text-sm">{t('report_message')}</Text>
+        <Pressable style={styles.actionRow} onPress={handleReport}>
+          <Flag size={20} color={colors.destructive} />
+          <ThemedText variant="subheadline" color={colors.destructive}>
+            {t('report_message')}
+          </ThemedText>
         </Pressable>
       </View>
-
-      {/* Block confirmation */}
-      <AlertDialog open={blockOpen} onOpenChange={setBlockOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('block_user')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('blocked')}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              <Text>{tCommon('cancel')}</Text>
-            </AlertDialogCancel>
-            <AlertDialogAction onPress={handleBlock} className="bg-destructive">
-              <Text>{t('block_user')}</Text>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Report confirmation */}
-      <AlertDialog open={reportOpen} onOpenChange={setReportOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('report_message')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('report_message')}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              <Text>{tCommon('cancel')}</Text>
-            </AlertDialogCancel>
-            <AlertDialogAction onPress={handleReport} className="bg-destructive">
-              <Text>{t('report_message')}</Text>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContent: {
+    padding: 24,
+    gap: 24,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    gap: 12,
+  },
+  encryptedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  roomInfoCard: {
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+    borderWidth: 1,
+  },
+  viewListingButton: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  membersSection: {
+    gap: 12,
+  },
+  sectionLabel: {
+    textTransform: 'uppercase',
+  },
+  memberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  actionsSection: {
+    gap: 2,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+  },
+});

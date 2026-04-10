@@ -1,12 +1,14 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useCreateEvent, useEventDetail, useUpdateEvent } from '@/services/my-rooms';
 
 export default function CreateEventScreen() {
@@ -14,6 +16,7 @@ export default function CreateEventScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.events' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { colors } = useTheme();
 
   const { data: existingEvent } = useEventDetail(id, eventId ?? '');
   const createEvent = useCreateEvent();
@@ -52,15 +55,19 @@ export default function CreateEventScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 16 }}>
-        <View style={{ gap: 4 }}>
-          <Text className="text-foreground text-sm font-medium">{t('fields.title')}</Text>
-          <Input value={title} onChangeText={setTitle} placeholder={t('fields.title')} />
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
+      <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.title')}
+          </ThemedText>
+          <ThemedInput value={title} onChangeText={setTitle} placeholder={t('fields.title')} />
         </View>
 
-        <View style={{ gap: 4 }}>
-          <Text className="text-foreground text-sm font-medium">{t('fields.date')}</Text>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.date')}
+          </ThemedText>
           <DatePickerSheet
             value={eventDate ? new Date(eventDate) : new Date()}
             onChange={(date) => setEventDate(date.toISOString().split('T')[0])}
@@ -68,38 +75,49 @@ export default function CreateEventScreen() {
           />
         </View>
 
-        <View style={{ flexDirection: 'row', gap: 12 }}>
-          <View style={{ flex: 1, gap: 4 }}>
-            <Text className="text-foreground text-sm font-medium">{t('fields.startTime')}</Text>
-            <Input value={timeStart} onChangeText={setTimeStart} placeholder="14:00" />
+        <View style={styles.timeRow}>
+          <View style={styles.timeField}>
+            <ThemedText variant="subheadline" weight="500">
+              {t('fields.startTime')}
+            </ThemedText>
+            <ThemedInput value={timeStart} onChangeText={setTimeStart} placeholder="14:00" />
           </View>
-          <View style={{ flex: 1, gap: 4 }}>
-            <Text className="text-foreground text-sm font-medium">{t('fields.endTime')}</Text>
-            <Input value={timeEnd} onChangeText={setTimeEnd} placeholder="16:00" />
+          <View style={styles.timeField}>
+            <ThemedText variant="subheadline" weight="500">
+              {t('fields.endTime')}
+            </ThemedText>
+            <ThemedInput value={timeEnd} onChangeText={setTimeEnd} placeholder="16:00" />
           </View>
         </View>
 
-        <View style={{ gap: 4 }}>
-          <Text className="text-foreground text-sm font-medium">{t('fields.location')}</Text>
-          <Input value={location} onChangeText={setLocation} placeholder={t('fields.location')} />
-        </View>
-
-        <View style={{ gap: 4 }}>
-          <Text className="text-foreground text-sm font-medium">{t('fields.description')}</Text>
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder={t('fields.description')}
-            multiline
-            numberOfLines={3}
-            className="border-border bg-background text-foreground rounded-lg border p-3 text-sm"
-            style={{ minHeight: 80, textAlignVertical: 'top' }}
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.location')}
+          </ThemedText>
+          <ThemedInput
+            value={location}
+            onChangeText={setLocation}
+            placeholder={t('fields.location')}
           />
         </View>
 
-        <View style={{ gap: 4 }}>
-          <Text className="text-foreground text-sm font-medium">{t('fields.maxAttendees')}</Text>
-          <Input
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.description')}
+          </ThemedText>
+          <ThemedTextarea
+            value={description}
+            onChangeText={setDescription}
+            placeholder={t('fields.description')}
+            minHeight={80}
+          />
+        </View>
+
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.maxAttendees')}
+          </ThemedText>
+          <ThemedInput
             value={maxAttendees}
             onChangeText={setMaxAttendees}
             placeholder={t('fields.maxAttendees')}
@@ -107,27 +125,56 @@ export default function CreateEventScreen() {
           />
         </View>
 
-        <View style={{ gap: 4 }}>
-          <Text className="text-foreground text-sm font-medium">{t('fields.notes')}</Text>
-          <TextInput
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.notes')}
+          </ThemedText>
+          <ThemedTextarea
             value={notes}
             onChangeText={setNotes}
             placeholder={t('fields.notes')}
-            multiline
-            numberOfLines={2}
-            className="border-border bg-background text-foreground rounded-lg border p-3 text-sm"
-            style={{ minHeight: 60, textAlignVertical: 'top' }}
+            minHeight={60}
           />
         </View>
       </ScrollView>
 
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button onPress={handleSubmit} disabled={!title || !eventDate || !timeStart || isPending}>
-          <Text>{isEditing ? tCommon('save') : t('createSubmit')}</Text>
-        </Button>
+        style={[
+          styles.bottomBar,
+          { borderTopColor: colors.border, backgroundColor: colors.background },
+        ]}>
+        <ThemedButton
+          onPress={handleSubmit}
+          disabled={!title || !eventDate || !timeStart || isPending}>
+          {isEditing ? tCommon('save') : t('createSubmit')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    gap: 16,
+  },
+  fieldGroup: {
+    gap: 4,
+  },
+  timeRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  timeField: {
+    flex: 1,
+    gap: 4,
+  },
+  bottomBar: {
+    padding: 16,
+    paddingBottom: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

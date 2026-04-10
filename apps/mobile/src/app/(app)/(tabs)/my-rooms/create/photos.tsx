@@ -2,11 +2,14 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Camera, Trash2 } from 'lucide-react-native';
-import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useDeleteRoomPhoto, useMyRoom, useUploadRoomPhoto } from '@/services/my-rooms';
 import type { RoomDetailPhoto } from '@openhospi/shared/api-types';
@@ -16,6 +19,8 @@ const MAX_SLOTS = 10;
 export default function PhotosScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -37,11 +42,7 @@ export default function PhotosScreen() {
     if (result.canceled || !result.assets[0]) return;
 
     try {
-      await uploadPhoto.mutateAsync({
-        roomId,
-        uri: result.assets[0].uri,
-        slot,
-      });
+      await uploadPhoto.mutateAsync({ roomId, uri: result.assets[0].uri, slot });
     } catch {
       Alert.alert(t('status.createFailed'));
     }
@@ -64,39 +65,29 @@ export default function PhotosScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 100 }}>
-        <Text className="text-foreground text-lg font-semibold">{t('wizard.steps.photos')}</Text>
-        <Text variant="muted" className="text-sm">
+    <View style={styles.container}>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <ThemedText variant="headline">{t('wizard.steps.photos')}</ThemedText>
+        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('wizard.photoGuidance')}
-        </Text>
-        <Text variant="muted" className="text-xs">
+        </ThemedText>
+        <ThemedText variant="caption1" color={colors.tertiaryForeground}>
           {t('wizard.photoCount', { count: photos.length, max: MAX_SLOTS })}
-        </Text>
+        </ThemedText>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: 8,
-          }}>
+        <View style={styles.grid}>
           {Array.from({ length: MAX_SLOTS }, (_, i) => i + 1).map((slot) => {
             const photo = photoMap.get(slot);
             return (
               <PhotoSlot
                 key={slot}
-                slot={slot}
                 photo={photo}
                 slotLabel={t(`photoSlots.slot${slot}` as never)}
                 onPick={() => handlePickPhoto(slot)}
@@ -109,91 +100,108 @@ export default function PhotosScreen() {
       </ScrollView>
 
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button onPress={handleNext}>
-          <Text>{tCommon('next')}</Text>
-        </Button>
+        style={[
+          styles.footer,
+          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
+        ]}>
+        <ThemedButton onPress={handleNext}>{tCommon('next')}</ThemedButton>
       </View>
     </View>
   );
 }
 
 function PhotoSlot({
-  slot,
   photo,
   slotLabel,
   onPick,
   onDelete,
   isUploading,
 }: {
-  slot: number;
   photo: RoomDetailPhoto | undefined;
   slotLabel: string;
   onPick: () => void;
   onDelete: () => void;
   isUploading: boolean;
 }) {
+  const { colors } = useTheme();
   const photoUrl = photo ? getStoragePublicUrl(photo.url, 'room-photos') : null;
 
   return (
-    <View style={{ width: '48%', aspectRatio: 4 / 3 }}>
+    <View style={styles.slotWrapper}>
       {photoUrl ? (
-        <Pressable onPress={onDelete} style={{ flex: 1, position: 'relative' }}>
+        <Pressable onPress={onDelete} style={styles.slotFill}>
           <Image
             source={{ uri: photoUrl }}
-            style={{ flex: 1, borderRadius: 12 }}
+            style={[styles.slotFill, { borderRadius: radius.lg }]}
             contentFit="cover"
           />
-          <View
-            style={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              width: 28,
-              height: 28,
-              borderRadius: 14,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            className="bg-destructive">
-            <Trash2 size={14} color="white" />
+          <View style={[styles.deleteButton, { backgroundColor: colors.destructive }]}>
+            <Trash2 size={14} color="#ffffff" />
           </View>
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              borderBottomLeftRadius: 12,
-              borderBottomRightRadius: 12,
-            }}
-            className="bg-black/50">
-            <Text className="text-xs text-white">{slotLabel}</Text>
+          <View style={styles.slotLabelOverlay}>
+            <ThemedText variant="caption2" color="#ffffff">
+              {slotLabel}
+            </ThemedText>
           </View>
         </Pressable>
       ) : (
         <Pressable
           onPress={onPick}
           disabled={isUploading}
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 12,
-            borderWidth: 1,
-            borderStyle: 'dashed',
-            gap: 4,
-          }}
-          className="border-muted-foreground/30 bg-muted/50">
-          <Camera size={20} className="text-muted-foreground" />
-          <Text variant="muted" className="text-xs">
+          style={[
+            styles.emptySlot,
+            {
+              borderColor: colors.tertiaryForeground + '4D',
+              backgroundColor: colors.muted + '80',
+              borderRadius: radius.lg,
+            },
+          ]}>
+          <Camera size={20} color={colors.tertiaryForeground} />
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {slotLabel}
-          </Text>
+          </ThemedText>
         </Pressable>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  scroll: { flex: 1 },
+  scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  slotWrapper: { width: '48%', aspectRatio: 4 / 3 },
+  slotFill: { flex: 1, position: 'relative' },
+  deleteButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  slotLabelOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  emptySlot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    gap: 4,
+  },
+  footer: { padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
+});

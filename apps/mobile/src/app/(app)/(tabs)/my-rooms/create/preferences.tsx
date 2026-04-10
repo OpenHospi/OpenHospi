@@ -1,33 +1,40 @@
 import { GenderPreference, Language, LocationTag, RoomFeature } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { MultiChipPicker } from '@/components/multi-chip-picker';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  type Option,
-} from '@/components/ui/select';
-import { Text } from '@/components/ui/text';
+import { AppBottomSheetModal, type BottomSheetModal } from '@/components/bottom-sheet';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeSelect } from '@/components/primitives/native-select';
+import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSavePreferences } from '@/services/my-rooms';
 
 export default function PreferencesScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data: room, isLoading } = useMyRoom(roomId);
   const savePreferences = useSavePreferences();
+  const genderSheetRef = useRef<BottomSheetModal>(null);
 
   const [features, setFeatures] = useState<string[]>([]);
   const [locationTags, setLocationTags] = useState<string[]>([]);
@@ -48,14 +55,6 @@ export default function PreferencesScreen() {
     setRoomVereniging(room.roomVereniging || '');
     setInitialized(true);
   }
-
-  const genderOption: Option | undefined = useMemo(
-    () => ({
-      value: preferredGender,
-      label: tEnums(`gender_preference.${preferredGender}`),
-    }),
-    [preferredGender, tEnums]
-  );
 
   const handleNext = async () => {
     try {
@@ -79,33 +78,30 @@ export default function PreferencesScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={styles.container}>
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 100 }}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
-        <Text className="text-foreground text-lg font-semibold">
-          {t('wizard.steps.preferences')}
-        </Text>
-        <Text variant="muted" className="text-sm">
+        <ThemedText variant="headline">{t('wizard.steps.preferences')}</ThemedText>
+        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('wizard.stepDescriptions.step3')}
-        </Text>
+        </ThemedText>
 
-        {/* Features */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.features')}</Label>
-          <Text variant="muted" className="text-xs">
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.features')}
+          </ThemedText>
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('wizard.sectionDescriptions.features')}
-          </Text>
+          </ThemedText>
           <MultiChipPicker
             values={RoomFeature.values}
             selected={features}
@@ -115,9 +111,10 @@ export default function PreferencesScreen() {
           />
         </View>
 
-        {/* Location Tags */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.locationTags')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.locationTags')}
+          </ThemedText>
           <MultiChipPicker
             values={LocationTag.values}
             selected={locationTags}
@@ -127,39 +124,35 @@ export default function PreferencesScreen() {
           />
         </View>
 
-        {/* Preferences */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.preferences')}</Label>
-          <Text variant="muted" className="text-xs">
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.preferences')}
+          </ThemedText>
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('wizard.sectionDescriptions.preferences')}
-          </Text>
+          </ThemedText>
 
-          <Select
-            value={genderOption}
-            onValueChange={(option) => option && setPreferredGender(option.value)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.preferredGender')} />
-            </SelectTrigger>
-            <SelectContent>
-              {GenderPreference.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`gender_preference.${v}`)}>
-                  {tEnums(`gender_preference.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <NativeSelect
+            value={preferredGender}
+            options={GenderPreference.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`gender_preference.${v}`),
+            }))}
+            onValueChange={setPreferredGender}
+            onPress={() => genderSheetRef.current?.present()}
+          />
 
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ flex: 1 }}>
-              <Input
+          <View style={styles.rowFields}>
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={preferredAgeMin}
                 onChangeText={setPreferredAgeMin}
                 placeholder={t('fields.preferredAgeMin')}
                 keyboardType="numeric"
               />
             </View>
-            <View style={{ flex: 1 }}>
-              <Input
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={preferredAgeMax}
                 onChangeText={setPreferredAgeMax}
                 placeholder={t('fields.preferredAgeMax')}
@@ -169,9 +162,10 @@ export default function PreferencesScreen() {
           </View>
         </View>
 
-        {/* Languages */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.acceptedLanguages')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.acceptedLanguages')}
+          </ThemedText>
           <MultiChipPicker
             values={Language.values}
             selected={acceptedLanguages}
@@ -181,13 +175,14 @@ export default function PreferencesScreen() {
           />
         </View>
 
-        {/* Association */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.association')}</Label>
-          <Text variant="muted" className="text-xs">
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.association')}
+          </ThemedText>
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('wizard.sectionDescriptions.association')}
-          </Text>
-          <Input
+          </ThemedText>
+          <ThemedInput
             value={roomVereniging}
             onChangeText={setRoomVereniging}
             placeholder={t('placeholders.searchVereniging')}
@@ -196,16 +191,53 @@ export default function PreferencesScreen() {
       </ScrollView>
 
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button onPress={handleNext} disabled={savePreferences.isPending}>
-          {savePreferences.isPending ? (
-            <ActivityIndicator className="accent-primary-foreground" />
-          ) : (
-            <Text>{tCommon('next')}</Text>
-          )}
-        </Button>
+        style={[
+          styles.footer,
+          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
+        ]}>
+        <ThemedButton onPress={handleNext} loading={savePreferences.isPending}>
+          {tCommon('next')}
+        </ThemedButton>
       </View>
+
+      <AppBottomSheetModal ref={genderSheetRef} enableDynamicSizing scrollable={false}>
+        <View style={styles.pickerContent}>
+          {GenderPreference.values.map((v: string) => (
+            <Pressable
+              key={v}
+              onPress={() => {
+                hapticLight();
+                setPreferredGender(v);
+                genderSheetRef.current?.dismiss();
+              }}
+              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+              style={[
+                styles.pickerRow,
+                preferredGender === v ? { backgroundColor: colors.accent } : undefined,
+              ]}>
+              <ThemedText
+                variant="body"
+                weight={preferredGender === v ? '600' : '400'}
+                color={preferredGender === v ? colors.primary : colors.foreground}>
+                {tEnums(`gender_preference.${v}`)}
+              </ThemedText>
+            </Pressable>
+          ))}
+        </View>
+      </AppBottomSheetModal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  scroll: { flex: 1 },
+  scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
+  fieldGroup: { gap: 8 },
+  rowFields: { flexDirection: 'row', gap: 8 },
+  flex1: { flex: 1 },
+  footer: { padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
+  pickerContent: { paddingHorizontal: 16, paddingVertical: 8 },
+  pickerRow: { borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12 },
+});

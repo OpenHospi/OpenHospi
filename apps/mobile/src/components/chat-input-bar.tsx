@@ -1,8 +1,9 @@
 import { Paperclip, Send } from 'lucide-react-native';
-import { ActivityIndicator, Pressable, TextInput } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, TextInput } from 'react-native';
 import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-reanimated';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
+import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function ChatInputBar({ value, onChangeText, onSend, isSending, placeholder }: Props) {
+  const { colors } = useTheme();
   const keyboard = useAnimatedKeyboard();
   const trimmed = value.trim();
 
@@ -30,44 +32,21 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
   return (
     <Animated.View
       style={[
-        {
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: 8,
-          paddingHorizontal: 12,
-          paddingTop: 12,
-          borderTopWidth: 1,
-        },
+        styles.container,
+        { borderTopColor: colors.separator, backgroundColor: colors.background },
         animatedStyle,
-      ]}
-      className="border-border bg-background">
-      <Pressable
-        disabled
-        style={{
-          width: 40,
-          height: 40,
-          justifyContent: 'center',
-          alignItems: 'center',
-          opacity: 0.3,
-        }}>
-        <Paperclip size={20} className="text-muted-foreground" />
+      ]}>
+      <Pressable disabled style={styles.attachButton}>
+        <Paperclip size={20} color={colors.tertiaryForeground} />
       </Pressable>
 
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor={colors.tertiaryForeground}
         multiline
-        style={{
-          flex: 1,
-          minHeight: 40,
-          maxHeight: 120,
-          borderRadius: 20,
-          paddingHorizontal: 16,
-          paddingVertical: 10,
-          fontSize: 14,
-        }}
-        className="bg-muted text-foreground"
+        style={[styles.input, { backgroundColor: colors.muted, color: colors.foreground }]}
         returnKeyType="send"
         onSubmitEditing={handleSend}
         blurOnSubmit={false}
@@ -76,21 +55,50 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
       <AnimatedPressable
         onPress={handleSend}
         disabled={!trimmed || isSending}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-          opacity: trimmed ? 1 : 0.5,
-        }}
-        className="bg-primary">
+        style={[
+          styles.sendButton,
+          { backgroundColor: colors.primary, opacity: trimmed ? 1 : 0.5 },
+        ]}>
         {isSending ? (
-          <ActivityIndicator size="small" color="white" />
+          <ActivityIndicator size="small" color={colors.primaryForeground} />
         ) : (
-          <Send size={18} color="white" />
+          <Send size={18} color={colors.primaryForeground} />
         )}
       </AnimatedPressable>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  attachButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.3,
+  },
+  input: {
+    flex: 1,
+    minHeight: 40,
+    maxHeight: 120,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    fontSize: 14,
+  },
+  sendButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

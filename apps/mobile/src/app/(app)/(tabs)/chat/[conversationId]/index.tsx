@@ -2,7 +2,14 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { eq } from 'drizzle-orm';
 import { Lock, AlertCircle } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, Pressable, View } from 'react-native';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ChatInputBar } from '@/components/chat-input-bar';
@@ -10,7 +17,8 @@ import { DateSeparator } from '@/components/date-separator';
 import { EncryptionGate } from '@/components/encryption-gate';
 import { MessageBubble } from '@/components/message-bubble';
 import { ScrollToBottomFab } from '@/components/scroll-to-bottom-fab';
-import { Text } from '@/components/ui/text';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useEncryptionContext } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
 import { db as localDb } from '@/lib/db';
@@ -50,6 +58,7 @@ export default function ConversationScreen() {
 
 function ConversationChat({ conversationId }: { conversationId: string }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'app.chat' });
+  const { colors } = useTheme();
   const dateLabels = { today: t('date_today'), yesterday: t('date_yesterday') };
   const { data: session } = useSession();
   const userId = session?.user?.id;
@@ -325,10 +334,9 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={[styles.flex1, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-      className="bg-background">
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
       <Stack.Screen
         options={{
           headerTitle: () => (
@@ -339,14 +347,14 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
                   params: { conversationId },
                 })
               }>
-              <View style={{ alignItems: 'center' }}>
-                <Text className="text-foreground text-base font-semibold" numberOfLines={1}>
+              <View style={styles.headerCenter}>
+                <ThemedText variant="body" weight="600" numberOfLines={1}>
                   {detail?.roomTitle ?? t('conversation')}
-                </Text>
+                </ThemedText>
                 {memberCount > 0 && (
-                  <Text className="text-muted-foreground text-xs">
+                  <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                     {t('members_count', { count: memberCount })}
-                  </Text>
+                  </ThemedText>
                 )}
               </View>
             </Pressable>
@@ -355,18 +363,21 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
         }}
       />
 
-      <View style={{ flex: 1 }}>
+      <View style={styles.flex1}>
         {allMessages.length === 0 ? (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 }}>
-            <Lock size={32} className="text-muted-foreground" />
-            <Text variant="muted" className="text-center text-sm">
+          <View style={styles.emptyContainer}>
+            <Lock size={32} color={colors.tertiaryForeground} />
+            <ThemedText
+              variant="subheadline"
+              color={colors.tertiaryForeground}
+              style={styles.textCenter}>
               {t('say_hello')}
-            </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Lock size={12} className="text-muted-foreground" />
-              <Text variant="muted" className="text-xs">
+            </ThemedText>
+            <View style={styles.e2eRow}>
+              <Lock size={12} color={colors.tertiaryForeground} />
+              <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                 {t('e2e_info')}
-              </Text>
+              </ThemedText>
             </View>
           </View>
         ) : (
@@ -375,7 +386,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
             data={allMessages}
             keyExtractor={(item) => item.id}
             inverted
-            contentContainerStyle={{ padding: 16 }}
+            contentContainerStyle={styles.listContent}
             onEndReached={() => {
               if (hasNextPage && !isFetchingNextPage) fetchNextPage();
             }}
@@ -386,12 +397,12 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
             }}
             scrollEventThrottle={100}
             ListHeaderComponent={
-              <View style={{ alignItems: 'center', paddingVertical: 8 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <Lock size={12} className="text-muted-foreground" />
-                  <Text variant="muted" className="text-xs">
+              <View style={styles.listHeader}>
+                <View style={styles.e2eRow}>
+                  <Lock size={12} color={colors.tertiaryForeground} />
+                  <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                     {t('e2e_info')}
-                  </Text>
+                  </ThemedText>
                 </View>
               </View>
             }
@@ -424,28 +435,18 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
                     })}
                   />
                   {deliveryStatus === 'failed' && (
-                    <Pressable
-                      onPress={() => handleRetry(msg.id)}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        alignSelf: 'flex-end',
-                        gap: 4,
-                        paddingVertical: 2,
-                        paddingHorizontal: 8,
-                      }}>
-                      <AlertCircle size={12} className="text-destructive" />
-                      <Text className="text-destructive text-xs">{t('send_failed')}</Text>
+                    <Pressable onPress={() => handleRetry(msg.id)} style={styles.failedRow}>
+                      <AlertCircle size={12} color={colors.destructive} />
+                      <ThemedText variant="caption1" color={colors.destructive}>
+                        {t('send_failed')}
+                      </ThemedText>
                     </Pressable>
                   )}
                   {deliveryStatus === 'sending' && (
-                    <View
-                      style={{
-                        alignSelf: 'flex-end',
-                        paddingVertical: 2,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Text className="text-muted-foreground text-xs">{t('sending')}</Text>
+                    <View style={styles.sendingRow}>
+                      <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                        {t('sending')}
+                      </ThemedText>
                     </View>
                   )}
                 </View>
@@ -470,3 +471,46 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  headerCenter: {
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  e2eRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  listContent: {
+    padding: 16,
+  },
+  listHeader: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  failedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    gap: 4,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+  },
+  sendingRow: {
+    alignSelf: 'flex-end',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+  },
+});

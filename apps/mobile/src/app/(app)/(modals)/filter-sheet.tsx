@@ -109,8 +109,8 @@ export default function FilterSheetScreen() {
   }
 
   const currentSortLabel = useMemo(() => {
-    if (!filters.sort) return undefined;
-    const key = SORT_LABEL_KEYS[filters.sort];
+    if (!filters.sort || !(filters.sort in SORT_LABEL_KEYS)) return undefined;
+    const key = SORT_LABEL_KEYS[filters.sort as DiscoverSort];
     return key ? tFilters(key) : undefined;
   }, [filters.sort, tFilters]);
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,10 +7,13 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useNetworkStatus } from '@/lib/network';
 import { useRealtimeStatus } from '@/lib/supabase';
 
 export function ConnectionStatusBar() {
+  const { colors } = useTheme();
   const { isOnline } = useNetworkStatus();
   const realtimeStatus = useRealtimeStatus();
 
@@ -30,12 +33,18 @@ export function ConnectionStatusBar() {
 
   return (
     <Animated.View
-      style={[
-        { justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
-        animatedStyle,
-      ]}
-      className="bg-destructive">
-      <Text className="text-destructive-foreground text-xs font-medium">{label}</Text>
+      style={[styles.container, { backgroundColor: colors.destructive }, animatedStyle]}>
+      <ThemedText variant="caption1" weight="500" color={colors.destructiveForeground}>
+        {label}
+      </ThemedText>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+});

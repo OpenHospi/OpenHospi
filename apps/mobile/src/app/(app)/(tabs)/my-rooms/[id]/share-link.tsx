@@ -2,15 +2,15 @@ import * as Clipboard from 'expo-clipboard';
 import { useLocalSearchParams } from 'expo-router';
 import { Copy, RefreshCw } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { useTheme } from '@/design';
 import { API_BASE_URL } from '@/lib/constants';
 import { useMyRoom, useRegenerateShareLink, useUpdateShareLinkSettings } from '@/services/my-rooms';
 
@@ -18,6 +18,7 @@ export default function ShareLinkScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.shareLink' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { colors } = useTheme();
 
   const { data: room, isLoading } = useMyRoom(id);
   const regenerate = useRegenerateShareLink();
@@ -64,89 +65,137 @@ export default function ShareLinkScreen() {
 
   if (isLoading || !room) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 32 }}
+        style={styles.flex1}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
         {/* Share Link */}
-        <Card style={{ gap: 12 }}>
-          <Text className="text-foreground font-semibold">{t('title')}</Text>
-          {shareUrl ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 8,
-                padding: 12,
-                borderRadius: 8,
-                borderWidth: 1,
-              }}
-              className="border-input bg-muted/50">
-              <Text className="text-foreground text-xs" numberOfLines={1} style={{ flex: 1 }}>
-                {shareUrl}
-              </Text>
-              <Button variant="ghost" size="icon" onPress={handleCopy}>
-                <Copy size={16} className="text-foreground" />
-              </Button>
-            </View>
-          ) : (
-            <Text variant="muted" className="text-sm">
-              {t('noExpiry')}
-            </Text>
-          )}
+        <GroupedSection style={styles.noMargin}>
+          <View style={styles.cardInner}>
+            <ThemedText variant="body" weight="600">
+              {t('title')}
+            </ThemedText>
+            {shareUrl ? (
+              <View
+                style={[
+                  styles.linkBox,
+                  { borderColor: colors.separator, backgroundColor: `${colors.muted}80` },
+                ]}>
+                <ThemedText variant="caption1" numberOfLines={1} style={styles.flex1}>
+                  {shareUrl}
+                </ThemedText>
+                <ThemedButton variant="ghost" size="icon" onPress={handleCopy}>
+                  <Copy size={16} color={colors.foreground} />
+                </ThemedButton>
+              </View>
+            ) : (
+              <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+                {t('noExpiry')}
+              </ThemedText>
+            )}
 
-          {copied && <Text className="text-primary text-sm font-semibold">{t('copied')}</Text>}
+            {copied && (
+              <ThemedText variant="subheadline" weight="600" color={colors.primary}>
+                {t('copied')}
+              </ThemedText>
+            )}
 
-          <Text variant="muted" className="text-xs">
-            {t('useCount', { count: room.shareLinkUseCount })}
-          </Text>
-        </Card>
+            <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+              {t('useCount', { count: room.shareLinkUseCount })}
+            </ThemedText>
+          </View>
+        </GroupedSection>
 
         {/* Settings */}
-        <Card style={{ gap: 12 }}>
-          <View style={{ gap: 8 }}>
-            <Label>{t('expiry')}</Label>
-            <DatePickerSheet
-              title={t('expiry')}
-              value={room.shareLinkExpiresAt ? new Date(room.shareLinkExpiresAt) : new Date()}
-              onChange={handleUpdateExpiry}
-              minimumDate={new Date()}
-            />
-          </View>
+        <GroupedSection style={styles.noMargin}>
+          <View style={styles.cardInner}>
+            <View style={styles.fieldGroup}>
+              <ThemedText variant="subheadline" weight="500">
+                {t('expiry')}
+              </ThemedText>
+              <DatePickerSheet
+                title={t('expiry')}
+                value={room.shareLinkExpiresAt ? new Date(room.shareLinkExpiresAt) : new Date()}
+                onChange={handleUpdateExpiry}
+                minimumDate={new Date()}
+              />
+            </View>
 
-          <View style={{ gap: 8 }}>
-            <Label>{t('maxUses')}</Label>
-            <Input
-              value={room.shareLinkMaxUses ? String(room.shareLinkMaxUses) : ''}
-              onChangeText={handleUpdateMaxUses}
-              placeholder={t('noLimit')}
-              keyboardType="numeric"
-            />
+            <View style={styles.fieldGroup}>
+              <ThemedText variant="subheadline" weight="500">
+                {t('maxUses')}
+              </ThemedText>
+              <ThemedInput
+                value={room.shareLinkMaxUses ? String(room.shareLinkMaxUses) : ''}
+                onChangeText={handleUpdateMaxUses}
+                placeholder={t('noLimit')}
+                keyboardType="numeric"
+              />
+            </View>
           </View>
-        </Card>
+        </GroupedSection>
 
         {/* Regenerate */}
-        <Button variant="outline" onPress={handleRegenerate} disabled={regenerate.isPending}>
+        <ThemedButton variant="outline" onPress={handleRegenerate} disabled={regenerate.isPending}>
           {regenerate.isPending ? (
-            <ActivityIndicator className="accent-foreground" />
+            <ActivityIndicator color={colors.foreground} />
           ) : (
-            <>
-              <RefreshCw size={16} className="text-foreground" />
-              <Text>{t('regenerate')}</Text>
-            </>
+            <View style={styles.regenerateContent}>
+              <RefreshCw size={16} color={colors.foreground} />
+              <ThemedText variant="subheadline" weight="600">
+                {t('regenerate')}
+              </ThemedText>
+            </View>
           )}
-        </Button>
+        </ThemedButton>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContent: {
+    padding: 16,
+    gap: 16,
+    paddingBottom: 32,
+  },
+  noMargin: {
+    marginHorizontal: 0,
+  },
+  cardInner: {
+    padding: 16,
+    gap: 12,
+  },
+  linkBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  fieldGroup: {
+    gap: 8,
+  },
+  regenerateContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+});

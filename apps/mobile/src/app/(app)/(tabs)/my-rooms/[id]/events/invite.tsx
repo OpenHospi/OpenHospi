@@ -1,14 +1,15 @@
 import { INVITABLE_APPLICATION_STATUSES } from '@openhospi/shared/enums';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Check } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Text } from '@/components/ui/text';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useBatchInvite, useRoomApplicants } from '@/services/my-rooms';
 import type { RoomApplicant } from '@openhospi/shared/api-types';
@@ -18,6 +19,7 @@ export default function InviteApplicantsScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.invite' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { colors } = useTheme();
 
   const { data: allApplicants, isLoading } = useRoomApplicants(id);
   const batchInvite = useBatchInvite();
@@ -56,22 +58,18 @@ export default function InviteApplicantsScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   if (!invitable || invitable.length === 0) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}
-        className="bg-background">
-        <Text variant="muted" className="text-center text-base">
+      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
+        <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
           {t('noInvitable')}
-        </Text>
+        </ThemedText>
       </View>
     );
   }
@@ -84,40 +82,38 @@ export default function InviteApplicantsScreen() {
 
     return (
       <Pressable onPress={() => toggleSelect(item.applicationId)}>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', padding: 16, gap: 12 }}
-          className="border-border border-b">
-          <Checkbox checked={isSelected} onCheckedChange={() => toggleSelect(item.applicationId)} />
-          <View className="bg-muted overflow-hidden rounded-full" style={{ width: 40, height: 40 }}>
-            {avatarUri && <Image source={{ uri: avatarUri }} style={{ width: 40, height: 40 }} />}
+        <View style={[styles.applicantRow, { borderBottomColor: colors.border }]}>
+          <View
+            style={[
+              styles.checkbox,
+              {
+                borderColor: isSelected ? colors.primary : colors.border,
+                backgroundColor: isSelected ? colors.primary : 'transparent',
+              },
+            ]}>
+            {isSelected && <Check size={14} color={colors.primaryForeground} />}
           </View>
-          <Text className="text-foreground text-sm" style={{ flex: 1 }}>
+          <View style={[styles.avatarCircle, { backgroundColor: colors.muted }]}>
+            {avatarUri && <Image source={{ uri: avatarUri }} style={styles.avatarImage} />}
+          </View>
+          <ThemedText variant="subheadline" style={styles.flex1}>
             {item.firstName} {item.lastName}
-          </Text>
-          <Badge variant="secondary">
-            <Text>{tEnums(`application_status.${item.status}`)}</Text>
-          </Badge>
+          </ThemedText>
+          <ThemedBadge variant="secondary" label={tEnums(`application_status.${item.status}`)} />
         </View>
       </Pressable>
     );
   };
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View
-        style={{
-          padding: 12,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-        className="border-border border-b">
-        <Text variant="muted" className="text-sm">
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
+      <View style={[styles.toolbar, { borderBottomColor: colors.border }]}>
+        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('selected', { count: selected.size })}
-        </Text>
-        <Button variant="outline" size="sm" onPress={selectAllLiked}>
-          <Text>{t('selectAllLiked')}</Text>
-        </Button>
+        </ThemedText>
+        <ThemedButton variant="outline" size="sm" onPress={selectAllLiked}>
+          {t('selectAllLiked')}
+        </ThemedButton>
       </View>
 
       <FlatList
@@ -127,12 +123,73 @@ export default function InviteApplicantsScreen() {
       />
 
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button onPress={handleInvite} disabled={selected.size === 0 || batchInvite.isPending}>
-          <Text>{t('submit', { count: selected.size })}</Text>
-        </Button>
+        style={[
+          styles.bottomBar,
+          { borderTopColor: colors.border, backgroundColor: colors.background },
+        ]}>
+        <ThemedButton
+          onPress={handleInvite}
+          disabled={selected.size === 0 || batchInvite.isPending}>
+          {t('submit', { count: selected.size })}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  toolbar: {
+    padding: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  applicantRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 4,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+  },
+  bottomBar: {
+    padding: 16,
+    paddingBottom: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

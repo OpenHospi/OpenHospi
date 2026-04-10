@@ -1,9 +1,11 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useRef } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { Text } from '@/components/ui/text';
-import { cn } from '@/lib/utils';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { hapticPinEntry } from '@/lib/haptics';
 
 type InputOTPProps = {
   value: string;
@@ -23,11 +25,15 @@ export function InputOTP({
   autoFocus = false,
 }: InputOTPProps) {
   const inputRef = useRef<TextInput>(null);
+  const { colors } = useTheme();
 
   const halfLength = Math.ceil(length / 2);
 
   function handleChange(text: string) {
     const filtered = text.replace(/[^0-9]/g, '').slice(0, length);
+    if (filtered.length > value.length) {
+      hapticPinEntry();
+    }
     onChangeText(filtered);
     if (filtered.length === length) {
       onFilled?.(filtered);
@@ -35,7 +41,7 @@ export function InputOTP({
   }
 
   return (
-    <Pressable onPress={() => inputRef.current?.focus()}>
+    <Pressable onPress={() => inputRef.current?.focus()} accessibilityLabel="Enter PIN">
       <TextInput
         ref={inputRef}
         value={value}
@@ -44,39 +50,44 @@ export function InputOTP({
         maxLength={length}
         autoFocus={autoFocus}
         caretHidden
-        style={{ position: 'absolute', opacity: 0, height: 1, width: 1 }}
+        style={styles.hiddenInput}
       />
-      <View
-        style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
+      <View style={styles.boxRow}>
         {Array.from({ length }, (_, i) => {
           const isActive = i === value.length;
           const isFilled = i < value.length;
           const showSeparator = i === halfLength - 1 && i < length - 1;
 
+          const boxBg =
+            isActive || isFilled
+              ? colors.primary + '0D' // 5% opacity
+              : colors.secondaryBackground;
+          const boxBorder = isActive
+            ? colors.primary
+            : isFilled
+              ? colors.primary + '66' // 40% opacity
+              : colors.separator;
+
           return (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View key={i} style={styles.boxGroup}>
               <View
-                style={{ width: 44, height: 52, justifyContent: 'center', alignItems: 'center' }}
-                className={cn(
-                  'rounded-lg border',
-                  isActive
-                    ? 'border-primary bg-primary/5'
-                    : isFilled
-                      ? 'border-primary/40 bg-primary/5'
-                      : 'border-input bg-background'
-                )}>
-                <Text
-                  className={cn(
-                    'text-2xl font-semibold',
-                    isFilled ? 'text-foreground' : 'text-muted-foreground'
-                  )}>
+                style={[
+                  styles.box,
+                  {
+                    backgroundColor: boxBg,
+                    borderColor: boxBorder,
+                    borderRadius: radius.md,
+                  },
+                ]}>
+                <ThemedText
+                  variant="title2"
+                  color={isFilled ? colors.foreground : colors.tertiaryForeground}>
                   {isFilled ? (secureTextEntry ? '\u2022' : value[i]) : ''}
-                </Text>
+                </ThemedText>
               </View>
               {showSeparator && (
                 <View
-                  style={{ width: 8, height: 2, borderRadius: 1 }}
-                  className="bg-muted-foreground/30"
+                  style={[styles.separator, { backgroundColor: colors.tertiaryForeground + '4D' }]}
                 />
               )}
             </View>
@@ -86,3 +97,35 @@ export function InputOTP({
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  hiddenInput: {
+    position: 'absolute',
+    opacity: 0,
+    height: 1,
+    width: 1,
+  },
+  boxRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+  boxGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  box: {
+    width: 44,
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  separator: {
+    width: 8,
+    height: 2,
+    borderRadius: 1,
+  },
+});

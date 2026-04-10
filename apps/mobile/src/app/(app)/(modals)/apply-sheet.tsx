@@ -4,18 +4,20 @@ import {
 } from '@openhospi/shared/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Text } from '@/components/ui/text';
-import { Textarea } from '@/components/ui/textarea';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { useTheme } from '@/design';
+import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useApplyToRoom } from '@/services/rooms';
 
 export default function ApplySheetScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.roomDetail' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -29,10 +31,12 @@ export default function ApplySheetScreen() {
       { roomId, data: { personalMessage: message.trim() } },
       {
         onSuccess: () => {
+          hapticFormSubmitSuccess();
           Alert.alert(t('applySuccess'));
           router.back();
         },
         onError: (err) => {
+          hapticFormSubmitError();
           Alert.alert(err.message);
         },
       }
@@ -40,34 +44,56 @@ export default function ApplySheetScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}>
-        <View style={{ gap: 8 }}>
-          <Label>{t('personalMessage')}</Label>
-          <Textarea
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.content}>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('personalMessage')}
+          </ThemedText>
+          <ThemedTextarea
             value={message}
             onChangeText={setMessage}
             placeholder={t('personalMessagePlaceholder')}
             maxLength={MAX_PERSONAL_MESSAGE_LENGTH}
             numberOfLines={8}
-            className="min-h-[160px] rounded-xl"
+            minHeight={160}
           />
-          <Text variant="muted" className="text-right text-xs">
+          <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.counter}>
             {message.length}/{MAX_PERSONAL_MESSAGE_LENGTH} (min {MIN_PERSONAL_MESSAGE_LENGTH})
-          </Text>
+          </ThemedText>
         </View>
       </View>
 
-      <View
-        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
-        className="border-border border-t">
-        <Button
-          className="h-14 rounded-xl"
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <ThemedButton
           onPress={handleSubmit}
           disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}>
-          <Text>{tCommon('submit')}</Text>
-        </Button>
+          {tCommon('submit')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  fieldGroup: {
+    gap: 8,
+  },
+  counter: {
+    textAlign: 'right',
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 24,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

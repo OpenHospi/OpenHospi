@@ -1,16 +1,18 @@
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { useTheme } from '@/design';
+import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
+import { useTranslation } from 'react-i18next';
 
 export default function EditStudyProgramScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const headerHeight = useHeaderHeight();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -22,23 +24,43 @@ export default function EditStudyProgramScreen() {
     updateProfile.mutate(
       { studyProgram: studyProgram.trim() },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert('Error'),
+        onSuccess: () => {
+          hapticFormSubmitSuccess();
+          router.back();
+        },
+        onError: () => {
+          hapticFormSubmitError();
+          Alert.alert('Error');
+        },
       }
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: headerHeight + 16 }}>
-        <Input value={studyProgram} onChangeText={setStudyProgram} autoFocus />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.content, { paddingTop: headerHeight + 16 }]}>
+        <ThemedInput value={studyProgram} onChangeText={setStudyProgram} autoFocus />
       </View>
 
-      <View style={{ paddingHorizontal: 16, paddingBottom: 24 }}>
-        <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
-          <Text>{tCommon('save')}</Text>
-        </Button>
+      <View style={styles.footer}>
+        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
+          {tCommon('save')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+});

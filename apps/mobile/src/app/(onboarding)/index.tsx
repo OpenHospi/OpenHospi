@@ -1,12 +1,13 @@
 import { ONBOARDING_TOTAL_STEPS } from '@openhospi/shared/constants';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedProgress } from '@/components/primitives/themed-progress';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useOnboardingStatus } from '@/services/onboarding';
 import { useProfile } from '@/services/profile';
 
@@ -33,6 +34,7 @@ const STEP_KEYS = [
 const SELF_MANAGED_STEPS = new Set([1, 7]);
 
 export default function OnboardingScreen() {
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { data: status, isPending: statusPending } = useOnboardingStatus();
@@ -45,10 +47,8 @@ export default function OnboardingScreen() {
 
   if (statusPending || profilePending) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
-        <ActivityIndicator size="large" />
+      <SafeAreaView style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </SafeAreaView>
     );
   }
@@ -78,26 +78,29 @@ export default function OnboardingScreen() {
   const showBottomBar = !SELF_MANAGED_STEPS.has(clampedStep);
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background">
-      <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.header}>
         <View>
-          <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
-          <Text variant="muted" style={{ marginTop: 4 }}>
+          <ThemedText variant="title2">{t('title')}</ThemedText>
+          <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.stepOf}>
             {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
-          </Text>
+          </ThemedText>
         </View>
 
-        <Progress value={progress} />
+        <ThemedProgress value={progress} />
 
         <View>
-          <Text className="text-foreground font-semibold">{t(`steps.${stepKey}`)}</Text>
-          <Text variant="muted" style={{ marginTop: 4 }} className="text-sm">
+          <ThemedText variant="headline">{t(`steps.${stepKey}`)}</ThemedText>
+          <ThemedText
+            variant="footnote"
+            color={colors.tertiaryForeground}
+            style={styles.stepDescription}>
             {t(`stepDescriptions.step${clampedStep}`)}
-          </Text>
+          </ThemedText>
         </View>
       </View>
 
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
+      <View style={styles.stepContent}>
         {clampedStep === 1 && (
           <IdentityStep onNext={handleNext} profile={profile} status={status} />
         )}
@@ -112,34 +115,68 @@ export default function OnboardingScreen() {
       </View>
 
       {showBottomBar && (
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 16,
-            paddingBottom: 16,
-            gap: 12,
-          }}>
+        <View style={styles.bottomBar}>
           {clampedStep > 1 ? (
-            <Button variant="ghost" onPress={handleBack} style={{ flex: 1 }}>
-              <Text>{tCommon('back')}</Text>
-            </Button>
+            <ThemedButton variant="ghost" onPress={handleBack} style={styles.bottomBarButton}>
+              {tCommon('back')}
+            </ThemedButton>
           ) : (
-            <View style={{ flex: 1 }} />
+            <View style={styles.bottomBarButton} />
           )}
-          <Button onPress={handleNextPress} style={{ flex: 1 }}>
-            <Text>{tCommon('next')}</Text>
-          </Button>
+          <ThemedButton onPress={handleNextPress} style={styles.bottomBarButton}>
+            {tCommon('next')}
+          </ThemedButton>
         </View>
       )}
 
       {!showBottomBar && clampedStep > 1 && (
-        <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
-          <Button variant="ghost" onPress={handleBack}>
-            <Text>{tCommon('back')}</Text>
-          </Button>
+        <View style={styles.backOnlyBar}>
+          <ThemedButton variant="ghost" onPress={handleBack}>
+            {tCommon('back')}
+          </ThemedButton>
         </View>
       )}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    gap: 24,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  stepOf: {
+    marginTop: 4,
+  },
+  stepDescription: {
+    marginTop: 4,
+  },
+  stepContent: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  bottomBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    gap: 12,
+  },
+  bottomBarButton: {
+    flex: 1,
+  },
+  backOnlyBar: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+});

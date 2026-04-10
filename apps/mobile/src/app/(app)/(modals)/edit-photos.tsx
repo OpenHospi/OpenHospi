@@ -1,16 +1,19 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { ActivityIndicator, Alert, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useDeleteProfilePhoto, useProfile, useUploadProfilePhoto } from '@/services/profile';
+import { useTranslation } from 'react-i18next';
+
 const SLOT_KEYS = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5'] as const;
 
 export default function EditPhotosScreen() {
+  const { colors } = useTheme();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
 
@@ -20,10 +23,8 @@ export default function EditPhotosScreen() {
 
   if (isPending || !profile) {
     return (
-      <View
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
-        <ActivityIndicator size="large" />
+      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -62,55 +63,92 @@ export default function EditPhotosScreen() {
   }
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }} className="bg-background">
-      <View style={{ gap: 12 }}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.slotList}>
         {SLOT_KEYS.map((key, index) => {
           const slot = index + 1;
           const photo = photos.find((p) => p.slot === slot);
           const photoUrl = photo ? getStoragePublicUrl(photo.url, 'profile-photos') : null;
 
           return (
-            <Card key={key}>
-              <CardContent style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <GroupedSection key={key} style={styles.slotCard}>
+              <View style={styles.slotRow}>
                 {photoUrl ? (
-                  <Image
-                    source={{ uri: photoUrl }}
-                    style={{ width: 64, height: 64, borderRadius: 8 }}
-                    contentFit="cover"
-                  />
+                  <Image source={{ uri: photoUrl }} style={styles.thumbnail} contentFit="cover" />
                 ) : (
-                  <View
-                    style={{
-                      height: 64,
-                      width: 64,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 8,
-                    }}
-                    className="bg-muted">
-                    <Text variant="muted" className="text-2xl">
+                  <View style={[styles.thumbnailPlaceholder, { backgroundColor: colors.muted }]}>
+                    <ThemedText variant="title2" color={colors.tertiaryForeground}>
                       +
-                    </Text>
+                    </ThemedText>
                   </View>
                 )}
-                <View style={{ flex: 1 }}>
-                  <Text className="text-card-foreground text-sm font-medium">{t(key)}</Text>
+                <View style={styles.slotLabel}>
+                  <ThemedText variant="subheadline" weight="500">
+                    {t(key)}
+                  </ThemedText>
                 </View>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  <Button variant="outline" size="sm" onPress={() => handlePick(slot)}>
-                    <Text>{photoUrl ? tCommon('edit') : 'Add'}</Text>
-                  </Button>
+                <View style={styles.slotActions}>
+                  <ThemedButton variant="outline" size="sm" onPress={() => handlePick(slot)}>
+                    {photoUrl ? tCommon('edit') : 'Add'}
+                  </ThemedButton>
                   {photoUrl && (
-                    <Button variant="destructive" size="sm" onPress={() => handleDelete(slot)}>
-                      <Text>{tCommon('delete')}</Text>
-                    </Button>
+                    <ThemedButton
+                      variant="destructive"
+                      size="sm"
+                      onPress={() => handleDelete(slot)}>
+                      {tCommon('delete')}
+                    </ThemedButton>
                   )}
                 </View>
-              </CardContent>
-            </Card>
+              </View>
+            </GroupedSection>
           );
         })}
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  slotList: {
+    gap: 12,
+  },
+  slotCard: {
+    marginHorizontal: 0,
+  },
+  slotRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 12,
+  },
+  thumbnail: {
+    width: 64,
+    height: 64,
+    borderRadius: 8,
+  },
+  thumbnailPlaceholder: {
+    height: 64,
+    width: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  slotLabel: {
+    flex: 1,
+  },
+  slotActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+});

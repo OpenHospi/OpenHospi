@@ -8,24 +8,17 @@ import {
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { CitySearchInput } from '@/components/city-search';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  type Option,
-} from '@/components/ui/select';
-import { Text } from '@/components/ui/text';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useDiscoverFilters } from '@/context/discover-filters';
+import { hapticLight } from '@/lib/haptics';
 import type { DiscoverFilters } from '@openhospi/shared/api-types';
 
 function MultiChipSelect({
@@ -42,22 +35,40 @@ function MultiChipSelect({
   t: (key: string) => string;
 }) {
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+    <View style={chipStyles.grid}>
       {values.map((v) => {
         const isSelected = selected?.includes(v);
         return (
-          <Pressable key={v} onPress={() => onToggle(v)}>
-            <Badge
-              variant={isSelected ? 'default' : 'outline'}
-              className="rounded-full px-3.5 py-2">
-              <Text>{t(`${translateKey}.${v}`)}</Text>
-            </Badge>
+          <Pressable
+            key={v}
+            onPress={() => {
+              hapticLight();
+              onToggle(v);
+            }}>
+            <ThemedBadge
+              variant={isSelected ? 'primary' : 'outline'}
+              label={t(`${translateKey}.${v}`)}
+              style={chipStyles.chip}
+            />
           </Pressable>
         );
       })}
     </View>
   );
 }
+
+const chipStyles = StyleSheet.create({
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  chip: {
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+});
 
 const SORT_LABEL_KEYS: Record<DiscoverSort, string> = {
   [DiscoverSort.newest]: 'sortNewest',
@@ -67,6 +78,7 @@ const SORT_LABEL_KEYS: Record<DiscoverSort, string> = {
 
 export default function FilterSheetScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tFilters } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
@@ -96,66 +108,60 @@ export default function FilterSheetScreen() {
     router.back();
   }
 
-  const cityOption: Option | undefined = useMemo(
-    () =>
-      filters.city ? { value: filters.city, label: tEnums(`city.${filters.city}`) } : undefined,
-    [filters.city, tEnums]
-  );
+  const currentSortLabel = useMemo(() => {
+    if (!filters.sort) return undefined;
+    const key = SORT_LABEL_KEYS[filters.sort];
+    return key ? tFilters(key) : undefined;
+  }, [filters.sort, tFilters]);
 
-  const houseTypeOption: Option | undefined = useMemo(
-    () =>
-      filters.houseType
-        ? { value: filters.houseType, label: tEnums(`house_type.${filters.houseType}`) }
-        : undefined,
+  const currentHouseTypeLabel = useMemo(
+    () => (filters.houseType ? tEnums(`house_type.${filters.houseType}`) : undefined),
     [filters.houseType, tEnums]
   );
 
-  const furnishingOption: Option | undefined = useMemo(
-    () =>
-      filters.furnishing
-        ? { value: filters.furnishing, label: tEnums(`furnishing.${filters.furnishing}`) }
-        : undefined,
+  const currentFurnishingLabel = useMemo(
+    () => (filters.furnishing ? tEnums(`furnishing.${filters.furnishing}`) : undefined),
     [filters.furnishing, tEnums]
   );
 
-  const sortOption: Option | undefined = useMemo(
-    () =>
-      filters.sort && SORT_LABEL_KEYS[filters.sort as DiscoverSort]
-        ? {
-            value: filters.sort,
-            label: tFilters(SORT_LABEL_KEYS[filters.sort as DiscoverSort] as never),
-          }
-        : undefined,
-    [filters.sort, tFilters]
-  );
-
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 32 }}
+        style={styles.scrollView}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: headerHeight }]}
         keyboardShouldPersistTaps="handled">
-        <View style={{ gap: 20, paddingHorizontal: 16, paddingTop: 16 }}>
+        <View style={styles.sections}>
           {/* Sort */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('sort')}</Label>
-            <Select value={sortOption} onValueChange={(option) => update({ sort: option?.value })}>
-              <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tFilters('sort')} />
-              </SelectTrigger>
-              <SelectContent>
-                {DiscoverSort.values.map((v) => (
-                  <SelectItem key={v} value={v} label={tFilters(SORT_LABEL_KEYS[v] as never)}>
-                    {tFilters(SORT_LABEL_KEYS[v] as never)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('sort')}
+            </ThemedText>
+            <View style={chipStyles.grid}>
+              {DiscoverSort.values.map((v) => {
+                const isSelected = filters.sort === v;
+                return (
+                  <Pressable
+                    key={v}
+                    onPress={() => {
+                      hapticLight();
+                      update({ sort: isSelected ? undefined : v });
+                    }}>
+                    <ThemedBadge
+                      variant={isSelected ? 'primary' : 'outline'}
+                      label={tFilters(SORT_LABEL_KEYS[v])}
+                      style={chipStyles.chip}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {/* City */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('city')}</Label>
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('city')}
+            </ThemedText>
             <CitySearchInput
               value={filters.city ?? ''}
               onSelect={(v) => update({ city: v || undefined })}
@@ -164,20 +170,20 @@ export default function FilterSheetScreen() {
           </View>
 
           {/* Price range */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('priceRange')}</Label>
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <Input
-                style={{ flex: 1 }}
-                className="rounded-xl"
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('priceRange')}
+            </ThemedText>
+            <View style={styles.priceRow}>
+              <ThemedInput
+                style={styles.priceInput}
                 value={filters.minPrice != null ? String(filters.minPrice) : ''}
                 onChangeText={(v) => update({ minPrice: v ? Number(v) : undefined })}
                 placeholder="Min €"
                 keyboardType="numeric"
               />
-              <Input
-                style={{ flex: 1 }}
-                className="rounded-xl"
+              <ThemedInput
+                style={styles.priceInput}
                 value={filters.maxPrice != null ? String(filters.maxPrice) : ''}
                 onChangeText={(v) => update({ maxPrice: v ? Number(v) : undefined })}
                 placeholder="Max €"
@@ -187,52 +193,63 @@ export default function FilterSheetScreen() {
           </View>
 
           {/* House type */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('houseType')}</Label>
-            <Select
-              value={houseTypeOption}
-              onValueChange={(option) =>
-                update({ houseType: option?.value as typeof filters.houseType })
-              }>
-              <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tFilters('houseTypePlaceholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {HouseType.values.map((v) => (
-                  <SelectItem key={v} value={v} label={tEnums(`house_type.${v}`)}>
-                    {tEnums(`house_type.${v}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('houseType')}
+            </ThemedText>
+            <View style={chipStyles.grid}>
+              {HouseType.values.map((v) => {
+                const isSelected = filters.houseType === v;
+                return (
+                  <Pressable
+                    key={v}
+                    onPress={() => {
+                      hapticLight();
+                      update({ houseType: isSelected ? undefined : v });
+                    }}>
+                    <ThemedBadge
+                      variant={isSelected ? 'primary' : 'outline'}
+                      label={tEnums(`house_type.${v}`)}
+                      style={chipStyles.chip}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {/* Furnishing */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('furnishing')}</Label>
-            <Select
-              value={furnishingOption}
-              onValueChange={(option) =>
-                update({ furnishing: option?.value as typeof filters.furnishing })
-              }>
-              <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder={tFilters('furnishingPlaceholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {Furnishing.values.map((v) => (
-                  <SelectItem key={v} value={v} label={tEnums(`furnishing.${v}`)}>
-                    {tEnums(`furnishing.${v}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('furnishing')}
+            </ThemedText>
+            <View style={chipStyles.grid}>
+              {Furnishing.values.map((v) => {
+                const isSelected = filters.furnishing === v;
+                return (
+                  <Pressable
+                    key={v}
+                    onPress={() => {
+                      hapticLight();
+                      update({ furnishing: isSelected ? undefined : v });
+                    }}>
+                    <ThemedBadge
+                      variant={isSelected ? 'primary' : 'outline'}
+                      label={tEnums(`furnishing.${v}`)}
+                      style={chipStyles.chip}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {/* Available from */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('availableFrom')}</Label>
-            <Input
-              className="rounded-xl"
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('availableFrom')}
+            </ThemedText>
+            <ThemedInput
               value={filters.availableFrom ?? ''}
               onChangeText={(v) => update({ availableFrom: v || undefined })}
               placeholder="YYYY-MM-DD"
@@ -240,8 +257,10 @@ export default function FilterSheetScreen() {
           </View>
 
           {/* Features */}
-          <View style={{ gap: 8 }}>
-            <Label>{tFilters('features')}</Label>
+          <View style={styles.section}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('features')}
+            </ThemedText>
             <MultiChipSelect
               values={RoomFeature.values}
               selected={filters.features}
@@ -252,8 +271,10 @@ export default function FilterSheetScreen() {
           </View>
 
           {/* Location tags */}
-          <View style={{ gap: 8, marginBottom: 16 }}>
-            <Label>{tFilters('locationTags')}</Label>
+          <View style={[styles.section, { marginBottom: 16 }]}>
+            <ThemedText variant="subheadline" weight="500">
+              {tFilters('locationTags')}
+            </ThemedText>
             <MultiChipSelect
               values={LocationTag.values}
               selected={filters.locationTags}
@@ -265,18 +286,50 @@ export default function FilterSheetScreen() {
         </View>
       </ScrollView>
 
-      <View
-        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
-        className="border-border border-t">
-        <View style={{ gap: 8 }}>
-          <Button className="h-14 rounded-xl" onPress={handleApply}>
-            <Text>{tCommon('apply')}</Text>
-          </Button>
-          <Button variant="ghost" onPress={handleClear}>
-            <Text className="text-muted-foreground">{tFilters('clearFilters')}</Text>
-          </Button>
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <View style={styles.footerButtons}>
+          <ThemedButton onPress={handleApply}>{tCommon('apply')}</ThemedButton>
+          <ThemedButton variant="ghost" onPress={handleClear}>
+            {tFilters('clearFilters')}
+          </ThemedButton>
         </View>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 32,
+  },
+  sections: {
+    gap: 20,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  section: {
+    gap: 8,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  priceInput: {
+    flex: 1,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 24,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  footerButtons: {
+    gap: 8,
+  },
+});

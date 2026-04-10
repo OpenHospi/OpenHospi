@@ -1,18 +1,24 @@
+import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Dot, Euro, FileText, Home } from 'lucide-react-native';
-import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+
+import { NativeEmptyState } from '@/components/feedback/native-empty-state';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { hapticLight, hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useApplications } from '@/services/applications';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import type { UserApplication } from '@openhospi/shared/api-types';
 
 function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: () => void }) {
+  const { colors } = useTheme();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
@@ -22,78 +28,69 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
     : null;
 
   return (
-    <Pressable onPress={onPress}>
-      <Card
-        style={{
-          flexDirection: 'row',
-          gap: 12,
-          padding: 12,
-          paddingVertical: 12,
-        }}>
-        {coverUrl ? (
-          <Image
-            source={{ uri: coverUrl }}
-            style={{ width: 80, height: 80, borderRadius: 8 }}
-            contentFit="cover"
-          />
-        ) : (
-          <View
-            style={{
-              height: 80,
-              width: 80,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 8,
-            }}
-            className="bg-muted">
-            <Home size={24} className="text-muted-foreground" />
-          </View>
-        )}
-        <View style={{ flex: 1, justifyContent: 'center', gap: 4 }}>
-          <Text className="text-card-foreground font-semibold" numberOfLines={1}>
-            {item.roomTitle}
-          </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text variant="muted" className="text-sm">
-              {tEnums(`city.${item.roomCity}`)}
-            </Text>
-            <Dot size={14} className="text-muted-foreground" />
-            <Euro size={12} className="text-muted-foreground" />
-            <Text variant="muted" className="text-sm">
-              {item.roomRentPrice}
-              {tCommon('perMonth')}
-            </Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Badge variant="secondary" className="rounded-full">
-              <Text>{tEnums(`application_status.${item.status}`)}</Text>
-            </Badge>
-            <Text variant="muted" className="text-xs">
-              {t('appliedOn', { date: new Date(item.appliedAt).toLocaleDateString() })}
-            </Text>
-          </View>
+    <Pressable
+      onPress={() => {
+        hapticLight();
+        onPress();
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.roomTitle}, ${tEnums(`application_status.${item.status}`)}`}
+      android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+      style={({ pressed }) => [
+        styles.applicationRow,
+        pressed && Platform.OS === 'ios' ? { opacity: 0.7 } : undefined,
+      ]}>
+      {coverUrl ? (
+        <Image
+          source={{ uri: coverUrl }}
+          style={[styles.applicationImage, { borderRadius: radius.md }]}
+          contentFit="cover"
+          cachePolicy="disk"
+        />
+      ) : (
+        <View
+          style={[
+            styles.applicationImage,
+            styles.applicationPlaceholder,
+            { backgroundColor: colors.muted, borderRadius: radius.md },
+          ]}>
+          <Home size={24} color={colors.tertiaryForeground} />
         </View>
-      </Card>
+      )}
+      <View style={styles.applicationContent}>
+        <ThemedText variant="headline" numberOfLines={1}>
+          {item.roomTitle}
+        </ThemedText>
+        <View style={styles.metaRow}>
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+            {tEnums(`city.${item.roomCity}`)}
+          </ThemedText>
+          <Dot size={14} color={colors.tertiaryForeground} />
+          <Euro size={12} color={colors.tertiaryForeground} />
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+            {item.roomRentPrice}
+            {tCommon('perMonth')}
+          </ThemedText>
+        </View>
+        <View style={styles.statusRow}>
+          <ThemedBadge variant="secondary" label={tEnums(`application_status.${item.status}`)} />
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+            {t('appliedOn', { date: new Date(item.appliedAt).toLocaleDateString() })}
+          </ThemedText>
+        </View>
+      </View>
     </Pressable>
   );
 }
 
-function EmptyState({ message }: { message: string }) {
+function SkeletonRow() {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 32,
-      }}>
-      <View
-        style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
-        className="rounded-lg border border-dashed">
-        <FileText size={32} className="text-muted-foreground" />
-        <Text variant="muted" style={{ marginTop: 16 }} className="text-center">
-          {message}
-        </Text>
+    <View style={styles.applicationRow}>
+      <ThemedSkeleton width={64} height={64} rounded="md" />
+      <View style={styles.skeletonLines}>
+        <ThemedSkeleton width="70%" height={16} />
+        <ThemedSkeleton width="50%" height={12} />
+        <ThemedSkeleton width="30%" height={12} />
       </View>
     </View>
   );
@@ -105,28 +102,34 @@ export default function ApplicationsScreen() {
 
   const { data: applications, isPending, refetch, isRefetching } = useApplications();
 
-  if (isPending) {
-    return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background"
-        edges={['top']}>
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
-    );
-  }
+  const handleRefresh = () => {
+    hapticPullToRefreshSnap();
+    refetch();
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
-      <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
-        <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
-      </View>
-
-      <FlatList
-        data={applications ?? []}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }: { item: UserApplication }) => (
-          <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
+    <>
+      <Stack.Screen
+        options={{
+          headerTitle: t('title'),
+          headerLargeTitle: true,
+          ...(Platform.OS === 'ios'
+            ? { headerTransparent: true, headerBlurEffect: 'regular' }
+            : undefined),
+        }}
+      />
+      {isPending ? (
+        <View style={styles.skeletonContainer}>
+          {[1, 2, 3, 4].map((i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </View>
+      ) : (
+        <FlashList
+          data={applications ?? []}
+          keyExtractor={(item) => item.id}
+          contentInsetAdjustmentBehavior="automatic"
+          renderItem={({ item }: { item: UserApplication }) => (
             <ApplicationCard
               item={item}
               onPress={() =>
@@ -136,13 +139,54 @@ export default function ApplicationsScreen() {
                 })
               }
             />
-          </View>
-        )}
-        ListEmptyComponent={<EmptyState message={t('empty')} />}
-        contentContainerStyle={!applications?.length ? { flex: 1 } : { paddingBottom: 16 }}
-        refreshing={isRefetching}
-        onRefresh={refetch}
-      />
-    </SafeAreaView>
+          )}
+          ItemSeparatorComponent={() => <ListSeparator insetLeft={96} />}
+          ListEmptyComponent={
+            <NativeEmptyState sfSymbol="doc.text" icon={FileText} title={t('empty')} />
+          }
+          refreshing={isRefetching}
+          onRefresh={handleRefresh}
+        />
+      )}
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  applicationRow: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  applicationImage: {
+    width: 64,
+    height: 64,
+  },
+  applicationPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  applicationContent: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 4,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  skeletonContainer: {
+    flex: 1,
+  },
+  skeletonLines: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 8,
+  },
+});

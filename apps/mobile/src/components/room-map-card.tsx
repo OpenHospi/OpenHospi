@@ -1,9 +1,11 @@
 import { Image } from 'expo-image';
 import { Euro } from 'lucide-react-native';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { AnimatedPressable } from '@/components/animated-pressable';
-import { Text } from '@/components/ui/text';
+import { ThemedText } from '@/components/primitives/themed-text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
 type RoomMapCardRoom = {
@@ -20,6 +22,7 @@ type Props = {
 };
 
 export function RoomMapCard({ room, onPress }: Props) {
+  const { colors } = useTheme();
   const coverUrl = room.coverPhotoUrl
     ? getStoragePublicUrl(room.coverPhotoUrl, 'room-photos')
     : null;
@@ -27,33 +30,61 @@ export function RoomMapCard({ room, onPress }: Props) {
   return (
     <AnimatedPressable onPress={onPress}>
       <View
-        style={{
-          flexDirection: 'row',
-          gap: 12,
-          padding: 12,
-          borderRadius: 12,
-        }}
-        className="bg-card border-border border">
+        style={[
+          styles.card,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+          },
+        ]}>
         {coverUrl && (
           <Image
             source={{ uri: coverUrl }}
-            style={{ width: 80, height: 60, borderRadius: 8 }}
+            style={styles.image}
             contentFit="cover"
             cachePolicy="disk"
             transition={200}
           />
         )}
-        <View style={{ flex: 1, justifyContent: 'center', gap: 4 }}>
-          <Text className="text-foreground text-sm font-semibold" numberOfLines={1}>
+        <View style={styles.content}>
+          <ThemedText variant="subheadline" weight="600" numberOfLines={1}>
             {room.title}
-          </Text>
-          <Text className="text-muted-foreground text-xs">{room.city}</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Euro size={14} className="text-primary" />
-            <Text className="text-primary text-sm font-bold">{room.totalCost}</Text>
+          </ThemedText>
+          <ThemedText variant="caption1" color={colors.mutedForeground}>
+            {room.city}
+          </ThemedText>
+          <View style={styles.priceRow}>
+            <Euro size={14} color={colors.primary} />
+            <ThemedText variant="subheadline" weight="700" color={colors.primary}>
+              {room.totalCost}
+            </ThemedText>
           </View>
         </View>
       </View>
     </AnimatedPressable>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    flexDirection: 'row',
+    gap: 12,
+    padding: 12,
+    borderRadius: radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  image: {
+    width: 80,
+    height: 60,
+    borderRadius: radius.md,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 4,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

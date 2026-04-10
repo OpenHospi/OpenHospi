@@ -1,13 +1,15 @@
 import { ChevronRight } from 'lucide-react-native';
 import { useRef, useState } from 'react';
-import { FlatList, Pressable, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/bottom-sheet';
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type SelectPickerSheetProps = {
   values: readonly string[];
@@ -28,6 +30,7 @@ export function SelectPickerSheet({
   searchPlaceholder,
   t,
 }: SelectPickerSheetProps) {
+  const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
   const [search, setSearch] = useState('');
 
@@ -47,26 +50,23 @@ export function SelectPickerSheet({
     <>
       <Pressable
         onPress={() => sheetRef.current?.present()}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingVertical: 12,
-          paddingHorizontal: 16,
-          borderWidth: 1,
-          borderRadius: 12,
-        }}
-        className="border-input bg-background">
-        <Text className={selected ? 'text-foreground' : 'text-muted-foreground'}>
+        style={[
+          styles.trigger,
+          {
+            borderColor: colors.input,
+            backgroundColor: colors.background,
+          },
+        ]}>
+        <ThemedText variant="body" color={selected ? colors.foreground : colors.tertiaryForeground}>
           {selected ? t(selected) : placeholder}
-        </Text>
-        <ChevronRight size={16} className="text-muted-foreground" />
+        </ThemedText>
+        <ChevronRight size={16} color={colors.mutedForeground} />
       </Pressable>
 
       <BottomSheet ref={sheetRef} title={title} scrollable={false} onDismiss={() => setSearch('')}>
         <View style={{ flex: 1 }}>
-          <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-            <Input
+          <View style={styles.searchContainer}>
+            <ThemedInput
               value={search}
               onChangeText={setSearch}
               placeholder={searchPlaceholder}
@@ -78,22 +78,23 @@ export function SelectPickerSheet({
             data={filtered}
             keyExtractor={(item) => item}
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+            contentContainerStyle={styles.listContent}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => {
               const isSelected = item === selected;
               return (
                 <Pressable
                   onPress={() => handleSelect(item)}
-                  style={{
-                    paddingVertical: 12,
-                    paddingHorizontal: 12,
-                    borderRadius: 10,
-                  }}
-                  className={isSelected ? 'bg-primary/10' : ''}>
-                  <Text className={isSelected ? 'text-primary font-semibold' : 'text-foreground'}>
+                  style={[
+                    styles.listItem,
+                    isSelected && { backgroundColor: colors.primary + '1A' },
+                  ]}>
+                  <ThemedText
+                    variant="body"
+                    weight={isSelected ? '600' : '400'}
+                    color={isSelected ? colors.primary : colors.foreground}>
                     {t(item)}
-                  </Text>
+                  </ThemedText>
                 </Pressable>
               );
             }}
@@ -103,3 +104,28 @@ export function SelectPickerSheet({
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  trigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.lg,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  listContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 32,
+  },
+  listItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: radius.md,
+  },
+});

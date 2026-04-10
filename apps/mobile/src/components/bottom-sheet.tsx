@@ -6,12 +6,12 @@ import BottomSheet, {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import { X } from 'lucide-react-native';
-import { useColorScheme, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Text } from '@/components/ui/text';
-import { NAV_THEME } from '@/lib/theme';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { useTheme } from '@/design';
+import { hapticLight, hapticSheetSnap } from '@/lib/haptics';
 
 function renderBackdrop(props: BottomSheetBackdropProps) {
   return <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.5} />;
@@ -38,8 +38,7 @@ export function AppBottomSheet({
   onDismiss,
   ref,
 }: AppBottomSheetProps) {
-  const colorScheme: 'light' | 'dark' = useColorScheme() === 'dark' ? 'dark' : 'light';
-  const theme = NAV_THEME[colorScheme];
+  const { colors } = useTheme();
 
   return (
     <BottomSheet
@@ -47,23 +46,19 @@ export function AppBottomSheet({
       snapPoints={snapPoints}
       enablePanDownToClose
       onClose={onDismiss}
-      backgroundStyle={{ backgroundColor: theme.colors.card }}
-      handleIndicatorStyle={{ backgroundColor: theme.colors.border }}
+      onChange={(index) => {
+        if (index >= 0) hapticSheetSnap();
+      }}
+      backgroundStyle={{ backgroundColor: colors.tertiaryBackground }}
+      handleIndicatorStyle={{ backgroundColor: colors.border }}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore">
       {title && (
         <>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-            }}>
-            <Text className="text-base font-semibold">{title}</Text>
+          <View style={styles.header}>
+            <ThemedText variant="headline">{title}</ThemedText>
           </View>
-          <Separator />
+          <ListSeparator insetLeft={0} />
         </>
       )}
       {scrollable ? (
@@ -73,14 +68,10 @@ export function AppBottomSheet({
           {children}
         </BottomSheetScrollView>
       ) : (
-        <BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
+        <BottomSheetView style={styles.viewContainer}>{children}</BottomSheetView>
       )}
       {footer && (
-        <View
-          className="border-border border-t"
-          style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}>
-          {footer}
-        </View>
+        <View style={[styles.footer, { borderTopColor: colors.separator }]}>{footer}</View>
       )}
     </BottomSheet>
   );
@@ -111,8 +102,7 @@ export function AppBottomSheetModal({
   onClose,
   ref,
 }: AppBottomSheetModalProps) {
-  const colorScheme: 'light' | 'dark' = useColorScheme() === 'dark' ? 'dark' : 'light';
-  const theme = NAV_THEME[colorScheme];
+  const { colors } = useTheme();
 
   return (
     <BottomSheetModal
@@ -121,27 +111,30 @@ export function AppBottomSheetModal({
       enableDynamicSizing={enableDynamicSizing}
       enablePanDownToClose
       onDismiss={onDismiss}
-      backgroundStyle={{ backgroundColor: theme.colors.card }}
-      handleIndicatorStyle={{ backgroundColor: theme.colors.border }}
+      onChange={(index) => {
+        if (index >= 0) hapticSheetSnap();
+      }}
+      backgroundStyle={{ backgroundColor: colors.tertiaryBackground }}
+      handleIndicatorStyle={{ backgroundColor: colors.border }}
       backdropComponent={renderBackdrop}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore">
       {title && (
         <>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-            }}>
-            <Text className="text-base font-semibold">{title}</Text>
-            <Button variant="ghost" size="icon" onPress={onClose ?? onDismiss}>
-              <X size={20} className="text-muted-foreground" />
-            </Button>
+          <View style={styles.header}>
+            <ThemedText variant="headline" style={styles.headerTitle}>
+              {title}
+            </ThemedText>
+            <Pressable
+              onPress={() => {
+                hapticLight();
+                (onClose ?? onDismiss)?.();
+              }}
+              hitSlop={8}>
+              <X size={20} color={colors.tertiaryForeground} />
+            </Pressable>
           </View>
-          <Separator />
+          <ListSeparator insetLeft={0} />
         </>
       )}
       {scrollable ? (
@@ -151,14 +144,10 @@ export function AppBottomSheetModal({
           {children}
         </BottomSheetScrollView>
       ) : (
-        <BottomSheetView style={{ flex: 1 }}>{children}</BottomSheetView>
+        <BottomSheetView style={styles.viewContainer}>{children}</BottomSheetView>
       )}
       {footer && (
-        <View
-          className="border-border border-t"
-          style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}>
-          {footer}
-        </View>
+        <View style={[styles.footer, { borderTopColor: colors.separator }]}>{footer}</View>
       )}
     </BottomSheetModal>
   );
@@ -166,3 +155,25 @@ export function AppBottomSheetModal({
 
 export { BottomSheetModal };
 export type { BottomSheetBackdropProps };
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerTitle: {
+    flex: 1,
+  },
+  viewContainer: {
+    flex: 1,
+  },
+  footer: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 24,
+  },
+});

@@ -69,7 +69,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return React.createElement(
     ThemeContext.Provider,
     { value: theme },
-    React.createElement(NavigationThemeProvider, { value: navigationTheme }, children)
+    React.createElement(NavigationThemeProvider, { value: navigationTheme, children })
   );
 }
 

@@ -1,6 +1,8 @@
-import { Dimensions, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
-import { Skeleton } from '@/components/ui/skeleton';
+import { useTheme } from '@/design';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { radius } from '@/design/tokens/radius';
 
 // ── Primitives ──────────────────────────────────────────────
 
@@ -10,7 +12,7 @@ type SkeletonLineProps = {
 };
 
 export function SkeletonLine({ width = '100%', height = 14 }: SkeletonLineProps) {
-  return <Skeleton style={{ width, height, borderRadius: 6 }} />;
+  return <ThemedSkeleton width={width} height={height} rounded="sm" />;
 }
 
 type SkeletonCircleProps = {
@@ -18,15 +20,24 @@ type SkeletonCircleProps = {
 };
 
 export function SkeletonCircle({ size = 40 }: SkeletonCircleProps) {
-  return <Skeleton style={{ width: size, height: size, borderRadius: size / 2 }} />;
+  return <ThemedSkeleton width={size} height={size} circle />;
 }
 
 export function SkeletonCard() {
+  const { colors } = useTheme();
+
   return (
-    <View style={{ padding: 16, gap: 12 }} className="bg-card border-border rounded-xl border">
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+        },
+      ]}>
+      <View style={styles.cardHeader}>
         <SkeletonCircle size={48} />
-        <View style={{ flex: 1, gap: 6 }}>
+        <View style={styles.cardHeaderText}>
           <SkeletonLine width="60%" height={16} />
           <SkeletonLine width="40%" height={12} />
         </View>
@@ -45,7 +56,7 @@ type SkeletonListProps = {
 
 export function SkeletonList({ count = 4 }: SkeletonListProps) {
   return (
-    <View style={{ padding: 16, gap: 12 }}>
+    <View style={styles.listContainer}>
       {Array.from({ length: count }, (_, i) => (
         <SkeletonCard key={i} />
       ))}
@@ -58,14 +69,22 @@ export function SkeletonList({ count = 4 }: SkeletonListProps) {
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export function SkeletonRoomCard() {
+  const { colors } = useTheme();
+
   return (
-    <View className="bg-card border-border overflow-hidden rounded-xl border">
-      <Skeleton style={{ width: '100%', height: SCREEN_WIDTH * 0.75, borderRadius: 0 }} />
-      <View style={{ padding: 16, gap: 8 }}>
+    <View
+      style={[
+        styles.roomCard,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+        },
+      ]}>
+      <ThemedSkeleton width="100%" height={SCREEN_WIDTH * 0.75} rounded="sm" />
+      <View style={styles.roomCardContent}>
         <SkeletonLine width="70%" height={18} />
         <SkeletonLine width="50%" height={14} />
-        <View
-          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={styles.roomCardFooter}>
           <SkeletonLine width="30%" height={20} />
           <SkeletonLine width="20%" height={12} />
         </View>
@@ -76,16 +95,9 @@ export function SkeletonRoomCard() {
 
 export function SkeletonConversation() {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-      }}>
+    <View style={styles.conversation}>
       <SkeletonCircle size={48} />
-      <View style={{ flex: 1, gap: 6 }}>
+      <View style={styles.conversationText}>
         <SkeletonLine width="60%" height={16} />
         <SkeletonLine width="80%" height={12} />
       </View>
@@ -95,10 +107,10 @@ export function SkeletonConversation() {
 
 export function SkeletonProfile() {
   return (
-    <View style={{ alignItems: 'center', padding: 24, gap: 24 }}>
+    <View style={styles.profile}>
       <SkeletonCircle size={80} />
       {Array.from({ length: 4 }, (_, i) => (
-        <View key={i} style={{ width: '100%', gap: 6 }}>
+        <View key={i} style={styles.profileField}>
           <SkeletonLine width="30%" height={12} />
           <SkeletonLine width="70%" height={16} />
         </View>
@@ -110,11 +122,11 @@ export function SkeletonProfile() {
 export function SkeletonRoomDetail() {
   return (
     <View>
-      <Skeleton style={{ width: '100%', height: SCREEN_WIDTH * 0.75, borderRadius: 0 }} />
-      <View style={{ padding: 16, gap: 12 }}>
+      <ThemedSkeleton width="100%" height={SCREEN_WIDTH * 0.75} rounded="sm" />
+      <View style={styles.roomDetailContent}>
         <SkeletonLine width="80%" height={22} />
         <SkeletonLine width="40%" height={16} />
-        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+        <View style={styles.roomDetailBadges}>
           <SkeletonLine width="25%" height={28} />
           <SkeletonLine width="25%" height={28} />
           <SkeletonLine width="25%" height={28} />
@@ -128,16 +140,105 @@ export function SkeletonRoomDetail() {
 }
 
 export function SkeletonApplicationCard() {
+  const { colors } = useTheme();
+
   return (
-    <View style={{ padding: 16, gap: 12 }} className="bg-card border-border rounded-xl border">
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <Skeleton style={{ width: 80, height: 60, borderRadius: 6 }} />
-        <View style={{ flex: 1, gap: 6 }}>
+    <View
+      style={[
+        styles.applicationCard,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+        },
+      ]}>
+      <View style={styles.applicationCardContent}>
+        <ThemedSkeleton width={80} height={60} rounded="sm" />
+        <View style={styles.applicationCardText}>
           <SkeletonLine width="60%" height={16} />
           <SkeletonLine width="40%" height={12} />
         </View>
-        <Skeleton style={{ width: 60, height: 22, borderRadius: 11 }} />
+        <ThemedSkeleton width={60} height={22} rounded="full" />
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    padding: 16,
+    gap: 12,
+    borderRadius: radius.xl,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  cardHeaderText: {
+    flex: 1,
+    gap: 6,
+  },
+  listContainer: {
+    padding: 16,
+    gap: 12,
+  },
+  roomCard: {
+    borderRadius: radius.xl,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  roomCardContent: {
+    padding: 16,
+    gap: 8,
+  },
+  roomCardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  conversation: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  conversationText: {
+    flex: 1,
+    gap: 6,
+  },
+  profile: {
+    alignItems: 'center',
+    padding: 24,
+    gap: 24,
+  },
+  profileField: {
+    width: '100%',
+    gap: 6,
+  },
+  roomDetailContent: {
+    padding: 16,
+    gap: 12,
+  },
+  roomDetailBadges: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  applicationCard: {
+    padding: 16,
+    gap: 12,
+    borderRadius: radius.xl,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  applicationCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  applicationCardText: {
+    flex: 1,
+    gap: 6,
+  },
+});

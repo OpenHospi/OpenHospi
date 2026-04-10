@@ -1,27 +1,50 @@
 import { Link, Stack } from 'expo-router';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Text } from '@/components/ui/text';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useTranslation } from 'react-i18next';
 
 export default function NotFoundScreen() {
+  const { colors } = useTheme();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   return (
     <>
       <Stack.Screen options={{ title: 'Not Found' }} />
-      <View
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 }}
-        className="bg-background">
-        <View
-          style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
-          className="rounded-lg border border-dashed">
-          <Text className="text-foreground text-lg font-semibold">Page not found</Text>
-          <Link href="/" style={{ marginTop: 16 }}>
-            <Text className="text-primary underline">{tCommon('back')}</Text>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.card, { borderColor: colors.border }]}>
+          <ThemedText variant="headline">Page not found</ThemedText>
+          <Link href="/" style={styles.link}>
+            <ThemedText variant="body" color={colors.primary} style={styles.linkText}>
+              {tCommon('back')}
+            </ThemedText>
           </Link>
         </View>
       </View>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  card: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 48,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+  },
+  link: {
+    marginTop: 16,
+  },
+  linkText: {
+    textDecorationLine: 'underline',
+  },
+});

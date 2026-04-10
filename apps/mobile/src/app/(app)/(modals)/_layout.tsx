@@ -3,8 +3,11 @@ import { X } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { useTheme } from '@/design';
+
 export default function ModalsLayout() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
@@ -18,7 +21,7 @@ export default function ModalsLayout() {
         sheetCornerRadius: 16,
         headerRight: () => (
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <X size={22} className="text-muted-foreground" />
+            <X size={22} color={colors.tertiaryForeground} />
           </Pressable>
         ),
       }}>

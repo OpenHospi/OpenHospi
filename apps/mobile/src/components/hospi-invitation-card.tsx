@@ -2,18 +2,20 @@ import { MAX_DECLINE_REASON_LENGTH } from '@openhospi/shared/constants';
 import { InvitationStatus } from '@openhospi/shared/enums';
 import { Calendar, Check, Clock, HelpCircle, MapPin, X } from 'lucide-react-native';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Alert, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { hapticSuccess, hapticError } from '@/lib/haptics';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/bottom-sheet';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
 import { useRespondToInvitation } from '@/services/invitations';
 import type { UserInvitation } from '@openhospi/shared/api-types';
 
@@ -26,6 +28,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { colors } = useTheme();
 
   const respondMutation = useRespondToInvitation();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -98,144 +101,151 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
   return (
     <>
       <View
-        style={{
-          borderLeftWidth: 4,
-          borderLeftColor: '#a855f7',
-          borderRadius: 12,
-          padding: 16,
-          gap: 12,
-          opacity: isCancelled ? 0.6 : 1,
-        }}
-        className="border-border bg-card border">
+        style={[
+          styles.card,
+          {
+            borderColor: colors.border,
+            backgroundColor: colors.card,
+            opacity: isCancelled ? 0.6 : 1,
+          },
+        ]}>
         {/* Header */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-          }}>
-          <Text className="text-card-foreground text-base font-semibold" style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <ThemedText variant="body" weight="600" color={colors.cardForeground} style={{ flex: 1 }}>
             {t('hospiTitle')}
-          </Text>
+          </ThemedText>
           {isCancelled ? (
-            <Badge variant="destructive">
-              <Text>{t('cancelled')}</Text>
-            </Badge>
+            <ThemedBadge variant="destructive" label={t('cancelled')} />
           ) : (
             hasResponded && (
-              <Badge variant="secondary">
-                <Text>{tEnums(`invitation_status.${invitation.status}`)}</Text>
-              </Badge>
+              <ThemedBadge
+                variant="secondary"
+                label={tEnums(`invitation_status.${invitation.status}`)}
+              />
             )
           )}
         </View>
 
         {/* Event details */}
-        <View style={{ gap: 6 }}>
-          <Text className="text-card-foreground font-medium">{invitation.eventTitle}</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Calendar size={14} className="text-muted-foreground" />
-            <Text variant="muted" className="text-sm">
+        <View style={styles.details}>
+          <ThemedText variant="body" weight="500" color={colors.cardForeground}>
+            {invitation.eventTitle}
+          </ThemedText>
+          <View style={styles.detailRow}>
+            <Calendar size={14} color={colors.mutedForeground} />
+            <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {new Date(invitation.eventDate + 'T00:00:00').toLocaleDateString()}
-            </Text>
+            </ThemedText>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Clock size={14} className="text-muted-foreground" />
-            <Text variant="muted" className="text-sm">
+          <View style={styles.detailRow}>
+            <Clock size={14} color={colors.mutedForeground} />
+            <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {invitation.timeStart.slice(0, 5)}
               {invitation.timeEnd ? ` – ${invitation.timeEnd.slice(0, 5)}` : ''}
-            </Text>
+            </ThemedText>
           </View>
           {invitation.location && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <MapPin size={14} className="text-muted-foreground" />
-              <Text variant="muted" className="text-sm">
+            <View style={styles.detailRow}>
+              <MapPin size={14} color={colors.mutedForeground} />
+              <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                 {invitation.location}
-              </Text>
+              </ThemedText>
             </View>
           )}
         </View>
 
         {/* Deadline warning */}
         {deadlineText && (
-          <Text className="text-sm font-medium" style={{ color: '#ea580c' }}>
+          <ThemedText variant="subheadline" weight="500" style={{ color: '#ea580c' }}>
             {deadlineText}
-          </Text>
+          </ThemedText>
         )}
 
-        {/* RSVP buttons — pending */}
+        {/* RSVP buttons -- pending */}
         {!isCancelled && invitation.status === InvitationStatus.pending && (
-          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-            <Button
+          <View style={styles.buttonRow}>
+            <ThemedButton
               size="sm"
               onPress={() => handleRsvp(InvitationStatus.attending)}
               disabled={respondMutation.isPending}
-              style={{ flexDirection: 'row', gap: 4 }}>
+              style={styles.rsvpButton}>
               {respondMutation.isPending ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
                 <Check size={14} color="white" />
               )}
-              <Text className="text-primary-foreground">{t('attend')}</Text>
-            </Button>
-            <Button
+              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
+                {t('attend')}
+              </ThemedText>
+            </ThemedButton>
+            <ThemedButton
               size="sm"
               variant="outline"
               onPress={() => handleRsvp(InvitationStatus.maybe)}
               disabled={respondMutation.isPending}
-              style={{ flexDirection: 'row', gap: 4 }}>
-              <HelpCircle size={14} className="text-foreground" />
-              <Text>{t('maybe')}</Text>
-            </Button>
-            <Button
+              style={styles.rsvpButton}>
+              <HelpCircle size={14} color={colors.foreground} />
+              <ThemedText variant="subheadline" weight="600">
+                {t('maybe')}
+              </ThemedText>
+            </ThemedButton>
+            <ThemedButton
               size="sm"
               variant="outline"
               onPress={() => handleRsvp(InvitationStatus.not_attending)}
               disabled={respondMutation.isPending}
-              style={{ flexDirection: 'row', gap: 4 }}>
-              <X size={14} className="text-foreground" />
-              <Text>{t('decline')}</Text>
-            </Button>
+              style={styles.rsvpButton}>
+              <X size={14} color={colors.foreground} />
+              <ThemedText variant="subheadline" weight="600">
+                {t('decline')}
+              </ThemedText>
+            </ThemedButton>
           </View>
         )}
 
-        {/* Change response — attending: can decline */}
+        {/* Change response -- attending: can decline */}
         {!isCancelled && invitation.status === InvitationStatus.attending && (
-          <Button
+          <ThemedButton
             size="sm"
             variant="ghost"
             onPress={() => handleRsvp(InvitationStatus.not_attending)}
             disabled={respondMutation.isPending}
-            style={{ flexDirection: 'row', gap: 4, alignSelf: 'flex-start' }}>
-            <X size={14} className="text-foreground" />
-            <Text>{t('decline')}</Text>
-          </Button>
+            style={[styles.rsvpButton, { alignSelf: 'flex-start' }]}>
+            <X size={14} color={colors.foreground} />
+            <ThemedText variant="subheadline" weight="600">
+              {t('decline')}
+            </ThemedText>
+          </ThemedButton>
         )}
 
-        {/* Change response — maybe: can attend or decline */}
+        {/* Change response -- maybe: can attend or decline */}
         {!isCancelled && invitation.status === InvitationStatus.maybe && (
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Button
+          <View style={styles.buttonRow}>
+            <ThemedButton
               size="sm"
               onPress={() => handleRsvp(InvitationStatus.attending)}
               disabled={respondMutation.isPending}
-              style={{ flexDirection: 'row', gap: 4 }}>
+              style={styles.rsvpButton}>
               {respondMutation.isPending ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
                 <Check size={14} color="white" />
               )}
-              <Text className="text-primary-foreground">{t('attend')}</Text>
-            </Button>
-            <Button
+              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
+                {t('attend')}
+              </ThemedText>
+            </ThemedButton>
+            <ThemedButton
               size="sm"
               variant="ghost"
               onPress={() => handleRsvp(InvitationStatus.not_attending)}
               disabled={respondMutation.isPending}
-              style={{ flexDirection: 'row', gap: 4 }}>
-              <X size={14} className="text-foreground" />
-              <Text>{t('decline')}</Text>
-            </Button>
+              style={styles.rsvpButton}>
+              <X size={14} color={colors.foreground} />
+              <ThemedText variant="subheadline" weight="600">
+                {t('decline')}
+              </ThemedText>
+            </ThemedButton>
           </View>
         )}
       </View>
@@ -246,8 +256,8 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
         title={t('declineReasonLabel')}
         onDismiss={() => setDeclineReason('')}
         footer={
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Button
+          <View style={styles.buttonRow}>
+            <ThemedButton
               variant="destructive"
               onPress={handleDeclineSubmit}
               disabled={respondMutation.isPending || !declineReason.trim()}
@@ -255,22 +265,24 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
               {respondMutation.isPending ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text className="text-destructive-foreground">{t('confirmDecline')}</Text>
+                <ThemedText variant="subheadline" weight="600" color={colors.destructiveForeground}>
+                  {t('confirmDecline')}
+                </ThemedText>
               )}
-            </Button>
-            <Button
+            </ThemedButton>
+            <ThemedButton
               variant="ghost"
               onPress={() => bottomSheetRef.current?.dismiss()}
               disabled={respondMutation.isPending}
               style={{ flex: 1 }}>
-              <Text>{tCommon('cancel')}</Text>
-            </Button>
+              {tCommon('cancel')}
+            </ThemedButton>
           </View>
         }>
-        <View style={{ padding: 16, gap: 12 }}>
-          <Text variant="muted" className="text-sm">
+        <View style={styles.sheetContent}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('declineReasonPlaceholder')}
-          </Text>
+          </ThemedText>
           <TextInput
             value={declineReason}
             onChangeText={setDeclineReason}
@@ -279,17 +291,62 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
             multiline
             numberOfLines={4}
             textAlignVertical="top"
-            style={{
-              minHeight: 100,
-              padding: 12,
-              borderWidth: 1,
-              borderRadius: 8,
-              fontSize: 14,
-            }}
-            className="border-input bg-background text-foreground"
+            placeholderTextColor={colors.tertiaryForeground}
+            style={[
+              styles.textArea,
+              {
+                borderColor: colors.input,
+                backgroundColor: colors.background,
+                color: colors.foreground,
+              },
+            ]}
           />
         </View>
       </BottomSheet>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#a855f7',
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  details: {
+    gap: 6,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  rsvpButton: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  sheetContent: {
+    padding: 16,
+    gap: 12,
+  },
+  textArea: {
+    minHeight: 100,
+    padding: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.md,
+    fontSize: 14,
+  },
+});

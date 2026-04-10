@@ -3,7 +3,9 @@ import { Check } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button } from '@/components/ui/button';
+import { useTheme } from '@/design';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,12 +14,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Icon } from '@/components/ui/icon';
-import { Text } from '@/components/ui/text';
 
 export function LanguagePicker() {
   const { i18n } = useTranslation();
-  const locale = i18n.language as Locale;
+  const locale = i18n.language;
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const contentInsets = {
     top: insets.top,
@@ -29,18 +31,25 @@ export function LanguagePicker() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-lg">
-          <Text className="uppercase">{locale}</Text>
-        </Button>
+        <ThemedButton variant="outline" size="sm" style={{ borderRadius: 10 }}>
+          <ThemedText variant="subheadline" weight="600" style={{ textTransform: 'uppercase' }}>
+            {locale}
+          </ThemedText>
+        </ThemedButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-48" align="end">
+      <DropdownMenuContent insets={contentInsets} sideOffset={2} style={{ width: 192 }} align="end">
         <DropdownMenuGroup>
           {SUPPORTED_LOCALES.map((loc) => {
             const isSelected = loc === locale;
             return (
               <DropdownMenuItem key={loc} onPress={() => i18n.changeLanguage(loc)}>
-                <Text className={isSelected ? 'font-semibold' : ''}>{LOCALE_CONFIG[loc].name}</Text>
-                {isSelected && <Icon as={Check} className="text-primary ml-auto size-4" />}
+                <ThemedText
+                  variant="body"
+                  weight={isSelected ? '600' : '400'}
+                  color={colors.foreground}>
+                  {LOCALE_CONFIG[loc].name}
+                </ThemedText>
+                {isSelected && <Icon as={Check} size={16} color={colors.primary} />}
               </DropdownMenuItem>
             );
           })}

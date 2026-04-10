@@ -1,16 +1,19 @@
 import { MAX_BIO_LENGTH } from '@openhospi/shared/constants';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { Textarea } from '@/components/ui/textarea';
-import { useTranslation } from 'react-i18next';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { useTheme } from '@/design';
+import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
+import { useTranslation } from 'react-i18next';
 
 export default function EditBioScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -22,34 +25,59 @@ export default function EditBioScreen() {
     updateProfile.mutate(
       { bio: bio.trim() },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert('Error'),
+        onSuccess: () => {
+          hapticFormSubmitSuccess();
+          router.back();
+        },
+        onError: () => {
+          hapticFormSubmitError();
+          Alert.alert('Error');
+        },
       }
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ flex: 1, gap: 8, paddingHorizontal: 16, paddingTop: 16 }}>
-        <Textarea
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.content}>
+        <ThemedTextarea
           value={bio}
           onChangeText={setBio}
           placeholder={t('placeholders.bio')}
           maxLength={MAX_BIO_LENGTH}
           numberOfLines={6}
         />
-        <Text variant="muted" className="text-right text-xs">
+        <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.counter}>
           {bio.length}/{MAX_BIO_LENGTH}
-        </Text>
+        </ThemedText>
       </View>
 
-      <View
-        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 24 }}
-        className="border-border border-t">
-        <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
-          <Text>{tCommon('save')}</Text>
-        </Button>
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
+          {tCommon('save')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  counter: {
+    textAlign: 'right',
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 24,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

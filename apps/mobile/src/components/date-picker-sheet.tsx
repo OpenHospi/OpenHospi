@@ -1,13 +1,15 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CalendarDays } from 'lucide-react-native';
 import { useRef } from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/bottom-sheet';
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type DatePickerSheetProps = {
   value: Date;
@@ -31,28 +33,26 @@ export function DatePickerSheet({
   maximumDate,
   minimumDate,
 }: DatePickerSheetProps) {
+  const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
 
   return (
     <>
       <Pressable
         onPress={() => sheetRef.current?.present()}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingVertical: 12,
-          paddingHorizontal: 16,
-          borderWidth: 1,
-          borderRadius: 12,
-        }}
-        className="border-input bg-background">
-        <Text className="text-foreground">{formatDisplayDate(value)}</Text>
-        <CalendarDays size={16} className="text-muted-foreground" />
+        style={[
+          styles.trigger,
+          {
+            borderColor: colors.input,
+            backgroundColor: colors.background,
+          },
+        ]}>
+        <ThemedText variant="body">{formatDisplayDate(value)}</ThemedText>
+        <CalendarDays size={16} color={colors.mutedForeground} />
       </Pressable>
 
       <BottomSheet ref={sheetRef} title={title} scrollable={false}>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={styles.pickerContainer}>
           <DateTimePicker
             value={value}
             mode="date"
@@ -68,3 +68,20 @@ export function DatePickerSheet({
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  trigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.lg,
+  },
+  pickerContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

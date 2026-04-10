@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Dot, Euro, Home } from 'lucide-react-native';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTheme } from '@/design';
 import { HospiInvitationCard } from '@/components/hospi-invitation-card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTranslation } from 'react-i18next';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useApplicationDetail, useWithdrawApplication } from '@/services/applications';
@@ -18,6 +19,7 @@ const TIMELINE_STEPS: ApplicationStatus[] = ['sent', 'seen', 'liked', 'hospi', '
 
 function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications.timeline' });
+  const { colors } = useTheme();
 
   const terminalStatuses = ['rejected', 'not_chosen', 'withdrawn'] as const;
   const isTerminal = (terminalStatuses as readonly string[]).includes(currentStatus);
@@ -31,36 +33,48 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
         const isLast = index === TIMELINE_STEPS.length - 1;
 
         return (
-          <View key={step} style={{ flexDirection: 'row' }}>
-            <View style={{ alignItems: 'center', width: 24 }}>
+          <View key={step} style={styles.timelineStep}>
+            <View style={styles.timelineLine}>
               <View
-                className={`h-3 w-3 rounded-full ${isReached ? 'bg-primary' : 'bg-muted'}`}
-                style={{ marginTop: 4 }}
+                style={[
+                  styles.timelineDot,
+                  { backgroundColor: isReached ? colors.primary : colors.muted },
+                ]}
               />
               {!isLast && (
                 <View
-                  className={`w-0.5 ${isReached ? 'bg-primary' : 'bg-muted'}`}
-                  style={{ flex: 1, minHeight: 24 }}
+                  style={[
+                    styles.timelineConnector,
+                    { backgroundColor: isReached ? colors.primary : colors.muted },
+                  ]}
                 />
               )}
             </View>
-            <Text
-              style={{ marginLeft: 8, paddingBottom: 16 }}
-              className={`text-sm ${isReached ? 'font-medium' : 'text-muted-foreground'}`}>
+            <ThemedText
+              variant="subheadline"
+              weight={isReached ? '500' : '400'}
+              color={isReached ? colors.foreground : colors.mutedForeground}
+              style={styles.timelineLabel}>
               {t(step)}
-            </Text>
+            </ThemedText>
           </View>
         );
       })}
 
       {isTerminal && (
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ alignItems: 'center', width: 24 }}>
-            <View className="bg-destructive h-3 w-3 rounded-full" style={{ marginTop: 4 }} />
+        <View style={styles.timelineStep}>
+          <View style={styles.timelineLine}>
+            <View
+              style={[styles.timelineDot, { backgroundColor: colors.destructive, marginTop: 4 }]}
+            />
           </View>
-          <Text style={{ marginLeft: 8 }} className="text-destructive text-sm font-medium">
+          <ThemedText
+            variant="subheadline"
+            weight="500"
+            color={colors.destructive}
+            style={{ marginLeft: 8 }}>
             {t(currentStatus)}
-          </Text>
+          </ThemedText>
         </View>
       )}
     </View>
@@ -73,6 +87,7 @@ export default function ApplicationDetailScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { colors } = useTheme();
 
   const { data: app, isPending } = useApplicationDetail(id);
   const withdrawMutation = useWithdrawApplication();
@@ -97,9 +112,7 @@ export default function ApplicationDetailScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
+      <SafeAreaView style={[styles.centered, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -108,11 +121,10 @@ export default function ApplicationDetailScreen() {
   if (!app) {
     return (
       <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}
-        className="bg-background">
-        <Text variant="muted" className="text-center">
+        style={[styles.centered, { backgroundColor: colors.background, paddingHorizontal: 32 }]}>
+        <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
           {t('errors.not_found')}
-        </Text>
+        </ThemedText>
       </SafeAreaView>
     );
   }
@@ -122,71 +134,69 @@ export default function ApplicationDetailScreen() {
     : null;
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
+    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
       <ScrollView
-        style={{ flex: 1 }}
+        style={styles.flex}
         contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}>
         {coverUrl ? (
-          <Image
-            source={{ uri: coverUrl }}
-            style={{ width: '100%', height: 200 }}
-            contentFit="cover"
-          />
+          <Image source={{ uri: coverUrl }} style={styles.coverImage} contentFit="cover" />
         ) : (
-          <View
-            style={{
-              height: 200,
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            className="bg-muted">
-            <Home size={48} className="text-muted-foreground" />
+          <View style={[styles.placeholderCover, { backgroundColor: colors.muted }]}>
+            <Home size={48} color={colors.mutedForeground} />
           </View>
         )}
 
-        <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
+        <View style={styles.content}>
           <View>
-            <Text className="text-foreground text-2xl font-bold tracking-tight">
-              {app.roomTitle}
-            </Text>
-            <View style={{ marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
-              <Text variant="muted">{tEnums(`city.${app.roomCity}`)}</Text>
+            <ThemedText variant="title2">{app.roomTitle}</ThemedText>
+            <View style={styles.metaRow}>
+              <ThemedText variant="body" color={colors.tertiaryForeground}>
+                {tEnums(`city.${app.roomCity}`)}
+              </ThemedText>
               {app.roomHouseType && (
                 <>
-                  <Dot size={16} className="text-muted-foreground" />
-                  <Text variant="muted">{tEnums(`house_type.${app.roomHouseType}`)}</Text>
+                  <Dot size={16} color={colors.mutedForeground} />
+                  <ThemedText variant="body" color={colors.tertiaryForeground}>
+                    {tEnums(`house_type.${app.roomHouseType}`)}
+                  </ThemedText>
                 </>
               )}
               {app.roomSizeM2 && (
                 <>
-                  <Dot size={16} className="text-muted-foreground" />
-                  <Text variant="muted">{app.roomSizeM2}m²</Text>
+                  <Dot size={16} color={colors.mutedForeground} />
+                  <ThemedText variant="body" color={colors.tertiaryForeground}>
+                    {app.roomSizeM2}m²
+                  </ThemedText>
                 </>
               )}
             </View>
-            <View style={{ marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
-              <Euro size={18} className="text-primary" />
-              <Text className="text-primary text-lg font-bold">
+            <View style={styles.priceRow}>
+              <Euro size={18} color={colors.primary} />
+              <ThemedText variant="headline" color={colors.primary}>
                 {app.roomRentPrice}
                 {tCommon('perMonth')}
-              </Text>
+              </ThemedText>
             </View>
           </View>
 
           <View>
-            <Badge variant="secondary" style={{ alignSelf: 'flex-start' }} className="rounded-full">
-              <Text>{tEnums(`application_status.${app.status}`)}</Text>
-            </Badge>
-            <Text variant="muted" style={{ marginTop: 4 }} className="text-xs">
+            <ThemedBadge
+              variant="secondary"
+              label={tEnums(`application_status.${app.status}`)}
+              style={{ alignSelf: 'flex-start', borderRadius: 999 }}
+            />
+            <ThemedText
+              variant="caption1"
+              color={colors.tertiaryForeground}
+              style={{ marginTop: 4 }}>
               {t('appliedOn', { date: new Date(app.appliedAt).toLocaleDateString() })}
-            </Text>
+            </ThemedText>
           </View>
 
           <View>
-            <Text style={{ marginBottom: 12 }} className="text-foreground font-semibold">
+            <ThemedText variant="body" weight="600" style={{ marginBottom: 12 }}>
               {t('timeline.title')}
-            </Text>
+            </ThemedText>
             <StatusTimeline currentStatus={app.status} />
           </View>
 
@@ -196,47 +206,115 @@ export default function ApplicationDetailScreen() {
 
           {app.personalMessage && (
             <View>
-              <Text style={{ marginBottom: 8 }} className="text-foreground font-semibold">
+              <ThemedText variant="body" weight="600" style={{ marginBottom: 8 }}>
                 {t('yourMessage')}
-              </Text>
-              <Card>
-                <CardContent>
-                  <Text className="text-card-foreground text-sm">{app.personalMessage}</Text>
-                </CardContent>
-              </Card>
+              </ThemedText>
+              <GroupedSection>
+                <View style={{ padding: 16 }}>
+                  <ThemedText variant="subheadline">{app.personalMessage}</ThemedText>
+                </View>
+              </GroupedSection>
             </View>
           )}
 
-          <Button
+          <ThemedButton
             variant="outline"
             onPress={() =>
               router.push({ pathname: '/(app)/room/[id]', params: { id: app.roomId } })
             }>
-            <Text>{t('viewRoom')}</Text>
-          </Button>
+            {t('viewRoom')}
+          </ThemedButton>
         </View>
       </ScrollView>
 
       {canWithdraw && (
         <View
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            paddingHorizontal: 16,
-            paddingTop: 12,
-            paddingBottom: 32,
-          }}
-          className="border-border bg-background border-t">
-          <Button
+          style={[
+            styles.bottomBar,
+            {
+              borderTopColor: colors.border,
+              backgroundColor: colors.background,
+            },
+          ]}>
+          <ThemedButton
             variant="destructive"
             onPress={handleWithdraw}
             disabled={withdrawMutation.isPending}>
-            <Text>{withdrawMutation.isPending ? '...' : t('withdraw')}</Text>
-          </Button>
+            {withdrawMutation.isPending ? '...' : t('withdraw')}
+          </ThemedButton>
         </View>
       )}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  coverImage: {
+    width: '100%',
+    height: 200,
+  },
+  placeholderCover: {
+    height: 200,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    gap: 24,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  metaRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priceRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  timelineStep: {
+    flexDirection: 'row',
+  },
+  timelineLine: {
+    alignItems: 'center',
+    width: 24,
+  },
+  timelineDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginTop: 4,
+  },
+  timelineConnector: {
+    width: 2,
+    flex: 1,
+    minHeight: 24,
+  },
+  timelineLabel: {
+    marginLeft: 8,
+    paddingBottom: 16,
+  },
+  bottomBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

@@ -1,8 +1,9 @@
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react-native';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type ToastType = 'success' | 'error' | 'info';
 
@@ -18,40 +19,31 @@ const ICON_MAP = {
   info: Info,
 } as const;
 
-const BG_CLASS = {
-  success: 'bg-primary',
-  error: 'bg-destructive',
-  info: 'bg-foreground',
-} as const;
-
-const TEXT_CLASS = {
-  success: 'text-primary-foreground',
-  error: 'text-white',
-  info: 'text-background',
-} as const;
+function getToastColors(type: ToastType, colors: ReturnType<typeof useTheme>['colors']) {
+  switch (type) {
+    case 'success':
+      return { bg: colors.primary, text: colors.primaryForeground, icon: '#fff' };
+    case 'error':
+      return { bg: colors.destructive, text: '#ffffff', icon: '#fff' };
+    case 'info':
+      return { bg: colors.foreground, text: colors.background, icon: '#000' };
+  }
+}
 
 function ToastItem({ toast }: { toast: Toast }) {
+  const { colors } = useTheme();
   const Icon = ICON_MAP[toast.type];
-  const iconColor = toast.type === 'error' ? '#fff' : toast.type === 'success' ? '#fff' : '#000';
+  const toastColors = getToastColors(toast.type, colors);
 
   return (
     <Animated.View
       entering={FadeIn.duration(200)}
       exiting={FadeOut.duration(200)}
-      style={{
-        marginBottom: 8,
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-      }}
-      className={BG_CLASS[toast.type]}>
-      <Icon size={18} color={iconColor} />
-      <Text className={`text-sm font-medium ${TEXT_CLASS[toast.type]}`} style={{ flex: 1 }}>
+      style={[styles.toastItem, { backgroundColor: toastColors.bg }]}>
+      <Icon size={18} color={toastColors.icon} />
+      <ThemedText variant="subheadline" weight="500" color={toastColors.text} style={{ flex: 1 }}>
         {toast.message}
-      </Text>
+      </ThemedText>
     </Animated.View>
   );
 }
@@ -60,18 +52,29 @@ export function ToastContainer({ toasts }: { toasts: Toast[] }) {
   if (toasts.length === 0) return null;
 
   return (
-    <View
-      style={{
-        position: 'absolute',
-        bottom: 100,
-        left: 24,
-        right: 24,
-        zIndex: 999,
-      }}
-      pointerEvents="none">
+    <View style={styles.container} pointerEvents="none">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} />
       ))}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 100,
+    left: 24,
+    right: 24,
+    zIndex: 999,
+  },
+  toastItem: {
+    marginBottom: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+});

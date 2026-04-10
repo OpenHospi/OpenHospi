@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedText } from '@/components/primitives/themed-text';
 import { SPRING_BOUNCY, SPRING_SNAPPY } from '@/lib/animations';
 
 type NotificationBadgeProps = {
@@ -9,6 +11,7 @@ type NotificationBadgeProps = {
 };
 
 export function NotificationBadge({ count }: NotificationBadgeProps) {
+  const { colors } = useTheme();
   const scale = useSharedValue(0);
 
   useEffect(() => {
@@ -22,23 +25,28 @@ export function NotificationBadge({ count }: NotificationBadgeProps) {
   if (count === 0) return null;
 
   return (
-    <Animated.View
-      style={[
-        {
-          position: 'absolute',
-          top: -4,
-          right: -8,
-          minWidth: 18,
-          height: 18,
-          borderRadius: 9,
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: 4,
-        },
-        animatedStyle,
-      ]}
-      className="bg-destructive">
-      <Text className="text-xs font-bold text-white">{count > 99 ? '99+' : String(count)}</Text>
+    <Animated.View style={[styles.badge, { backgroundColor: colors.destructive }, animatedStyle]}>
+      <ThemedText color="#ffffff" style={styles.text}>
+        {count > 99 ? '99+' : String(count)}
+      </ThemedText>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -8,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  text: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+});

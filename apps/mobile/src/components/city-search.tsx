@@ -1,9 +1,11 @@
 import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
 import { useCallback, useRef, useState } from 'react';
-import { FlatList, Pressable, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 const DEBOUNCE_MS = 300;
 
@@ -15,6 +17,7 @@ type Props = {
 };
 
 export function CitySearchInput({ value, onSelect, placeholder, autoFocus }: Props) {
+  const { colors } = useTheme();
   const [query, setQuery] = useState(value);
   const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -46,24 +49,29 @@ export function CitySearchInput({ value, onSelect, placeholder, autoFocus }: Pro
 
   return (
     <View>
-      <Input
+      <ThemedInput
         value={query}
         onChangeText={handleSearch}
         placeholder={placeholder}
         autoFocus={autoFocus}
       />
       {isOpen && suggestions.length > 0 && (
-        <View className="border-border bg-card rounded-xl border" style={{ marginTop: 4 }}>
+        <View
+          style={[
+            styles.dropdown,
+            {
+              borderColor: colors.border,
+              backgroundColor: colors.card,
+            },
+          ]}>
           <FlatList
             data={suggestions}
             keyExtractor={(item) => item.id}
             keyboardShouldPersistTaps="handled"
             scrollEnabled={false}
             renderItem={({ item }) => (
-              <Pressable
-                onPress={() => handleSelect(item)}
-                style={{ paddingVertical: 12, paddingHorizontal: 14 }}>
-                <Text className="text-foreground">{item.name}</Text>
+              <Pressable onPress={() => handleSelect(item)} style={styles.dropdownItem}>
+                <ThemedText variant="body">{item.name}</ThemedText>
               </Pressable>
             )}
           />
@@ -72,3 +80,15 @@ export function CitySearchInput({ value, onSelect, placeholder, autoFocus }: Pro
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  dropdown: {
+    marginTop: 4,
+    borderRadius: radius.xl,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  dropdownItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+});

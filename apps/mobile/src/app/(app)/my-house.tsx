@@ -1,16 +1,21 @@
 import { Stack } from 'expo-router';
 import { Copy, RefreshCw, Share2, Users } from 'lucide-react-native';
-import { Alert, Pressable, ScrollView, Share, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ErrorState } from '@/components/error-state';
-import { SkeletonList } from '@/components/skeleton';
+import { useTheme } from '@/design';
+import { hapticSuccess } from '@/lib/haptics';
 import { useMyHouse, useRegenerateInviteCode } from '@/services/house';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { HouseMemberRole } from '@openhospi/shared/enums';
@@ -19,36 +24,41 @@ export default function MyHouseScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.myHouse' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { colors } = useTheme();
   const { data, isPending, isError, refetch } = useMyHouse();
   const regenerateCode = useRegenerateInviteCode();
 
   if (isPending) {
     return (
-      <SafeAreaView style={{ flex: 1 }} className="bg-background">
+      <>
         <Stack.Screen options={{ title: t('title') }} />
-        <SkeletonList count={3} />
-      </SafeAreaView>
+        <View style={styles.loadingContainer}>
+          <ThemedSkeleton width="50%" height={24} />
+          <ThemedSkeleton width="30%" height={16} />
+          <View style={styles.skeletonCards}>
+            <ThemedSkeleton width="100%" height={80} rounded="lg" />
+            <ThemedSkeleton width="100%" height={120} rounded="lg" />
+          </View>
+        </View>
+      </>
     );
   }
 
   if (isError) {
     return (
-      <SafeAreaView style={{ flex: 1 }} className="bg-background">
+      <>
         <Stack.Screen options={{ title: t('title') }} />
         <ErrorState onRetry={refetch} />
-      </SafeAreaView>
+      </>
     );
   }
 
   if (!data?.house) {
     return (
-      <SafeAreaView style={{ flex: 1 }} className="bg-background">
+      <>
         <Stack.Screen options={{ title: t('title') }} />
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <Users size={48} className="text-muted-foreground" />
-          <Text className="text-muted-foreground mt-4 text-center">{t('noHouse')}</Text>
-        </View>
-      </SafeAreaView>
+        <NativeEmptyState sfSymbol="person.2" icon={Users} title={t('noHouse')} />
+      </>
     );
   }
 
@@ -58,95 +68,138 @@ export default function MyHouseScreen() {
 
   async function handleCopyCode() {
     await Clipboard.setStringAsync(inviteLink);
-    Alert.alert(t('codeCopied'));
+    hapticSuccess();
+    Alert.alert(tCommon('copied'));
   }
 
-  async function handleShareCode() {
+  async function handleShare() {
+    hapticSuccess();
     await Share.share({ message: inviteLink });
   }
 
-  function handleRegenerateCode() {
-    Alert.alert(t('regenerateTitle'), t('regenerateMessage'), [
-      { text: tCommon('cancel'), style: 'cancel' },
-      {
-        text: tCommon('confirm'),
-        style: 'destructive',
-        onPress: () => regenerateCode.mutate(),
-      },
-    ]);
-  }
-
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background">
+    <>
       <Stack.Screen options={{ title: t('title') }} />
-
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 20 }}>
-        {/* House Name */}
-        <View style={{ alignItems: 'center', gap: 4 }}>
-          <Text className="text-foreground text-2xl font-bold">{house.name}</Text>
-          <Text className="text-muted-foreground text-sm">
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.headerSection}>
+          <ThemedText variant="title2">{house.name}</ThemedText>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('memberCount', { count: members.length })}
-          </Text>
+          </ThemedText>
         </View>
 
-        {/* Invite Code */}
-        <View style={{ gap: 8 }} className="bg-card border-border rounded-xl border p-4">
-          <Text className="text-foreground text-sm font-medium">{t('inviteCode')}</Text>
-          <Text className="text-muted-foreground text-xs" numberOfLines={1}>
-            {inviteLink}
-          </Text>
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Button variant="outline" size="sm" onPress={handleCopyCode} style={{ flex: 1 }}>
-              <Copy size={14} className="text-foreground" />
-              <Text>{tCommon('copy')}</Text>
-            </Button>
-            <Button variant="outline" size="sm" onPress={handleShareCode} style={{ flex: 1 }}>
-              <Share2 size={14} className="text-foreground" />
-              <Text>{tCommon('share')}</Text>
-            </Button>
+        <GroupedSection>
+          <ListCell label={t('inviteCode')} value={house.inviteCode} onPress={handleCopyCode} />
+          <ListSeparator />
+          <View style={styles.actionRow}>
+            <ThemedButton variant="outline" size="sm" onPress={handleCopyCode}>
+              <Copy size={16} color={colors.foreground} />
+              <ThemedText variant="footnote" weight="500">
+                {tCommon('copy')}
+              </ThemedText>
+            </ThemedButton>
+            <ThemedButton variant="outline" size="sm" onPress={handleShare}>
+              <Share2 size={16} color={colors.foreground} />
+              <ThemedText variant="footnote" weight="500">
+                {tCommon('share')}
+              </ThemedText>
+            </ThemedButton>
+            {isOwner && (
+              <ThemedButton variant="ghost" size="sm" onPress={() => regenerateCode.mutate()}>
+                <RefreshCw size={16} color={colors.tertiaryForeground} />
+              </ThemedButton>
+            )}
           </View>
-          {isOwner && (
-            <Pressable
-              onPress={handleRegenerateCode}
-              style={{ alignItems: 'center', paddingTop: 4 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <RefreshCw size={12} className="text-muted-foreground" />
-                <Text className="text-muted-foreground text-xs">{t('regenerateCode')}</Text>
-              </View>
-            </Pressable>
-          )}
+        </GroupedSection>
+
+        <View style={styles.membersHeader}>
+          <ThemedText
+            variant="footnote"
+            color={colors.tertiaryForeground}
+            style={styles.sectionTitle}>
+            {t('members').toUpperCase()}
+          </ThemedText>
         </View>
 
-        {/* Members */}
-        <View style={{ gap: 12 }}>
-          <Text className="text-foreground text-base font-semibold">{t('members')}</Text>
-          {members.map((member) => (
-            <View
-              key={member.userId}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}
-              className="bg-card border-border rounded-xl border p-3">
-              <Avatar alt={member.firstName}>
-                {member.avatarUrl ? (
-                  <AvatarImage
-                    source={{ uri: getStoragePublicUrl(member.avatarUrl, 'profile-photos') }}
-                  />
-                ) : null}
-                <AvatarFallback>
-                  <Text>{member.firstName[0]?.toUpperCase() ?? '?'}</Text>
-                </AvatarFallback>
-              </Avatar>
-              <View style={{ flex: 1 }}>
-                <Text className="text-foreground text-sm font-medium">
-                  {member.firstName} {member.lastName}
-                </Text>
+        <GroupedSection>
+          {members.map((member, index) => (
+            <View key={member.userId}>
+              {index > 0 && <ListSeparator insetLeft={72} />}
+              <View style={styles.memberRow}>
+                <ThemedAvatar
+                  source={
+                    member.avatarUrl
+                      ? getStoragePublicUrl(member.avatarUrl, 'profile-photos')
+                      : null
+                  }
+                  fallback={member.firstName}
+                  size={40}
+                />
+                <View style={styles.memberInfo}>
+                  <ThemedText variant="body">
+                    {member.firstName} {member.lastName}
+                  </ThemedText>
+                </View>
+                <ThemedBadge
+                  variant="secondary"
+                  label={tEnums(`house_member_role.${member.role}`)}
+                />
               </View>
-              <Badge variant={member.role === HouseMemberRole.owner ? 'default' : 'secondary'}>
-                <Text>{tEnums(`houseMemberRole.${member.role}`)}</Text>
-              </Badge>
             </View>
           ))}
-        </View>
+        </GroupedSection>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 48,
+    gap: 12,
+  },
+  skeletonCards: {
+    width: '100%',
+    paddingHorizontal: 16,
+    gap: 16,
+    marginTop: 24,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 32,
+  },
+  headerSection: {
+    alignItems: 'center',
+    paddingVertical: 24,
+    gap: 4,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  membersHeader: {
+    paddingHorizontal: 32,
+    paddingTop: 24,
+    paddingBottom: 8,
+  },
+  sectionTitle: {
+    letterSpacing: 0.5,
+  },
+  memberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    minHeight: Platform.select({ ios: 44, android: 48 }),
+  },
+  memberInfo: {
+    flex: 1,
+  },
+});

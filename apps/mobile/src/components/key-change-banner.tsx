@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
 import { ShieldAlert } from 'lucide-react-native';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type Props = {
   conversationId: string;
@@ -17,6 +18,7 @@ export function KeyChangeBanner({ conversationId, peerUserId, peerName, hasChang
     keyPrefix: 'app.chat.safety_number',
   });
   const router = useRouter();
+  const { colors } = useTheme();
 
   if (!hasChanged) return null;
 
@@ -28,22 +30,36 @@ export function KeyChangeBanner({ conversationId, peerUserId, peerName, hasChang
           params: { conversationId, userId: peerUserId },
         })
       }
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-      }}
-      className="border-destructive/20 bg-destructive/10 border-b">
-      <ShieldAlert size={20} className="text-destructive" />
+      style={[
+        styles.banner,
+        {
+          borderBottomColor: colors.destructive + '33',
+          backgroundColor: colors.destructive + '1A',
+        },
+      ]}>
+      <ShieldAlert size={20} color={colors.destructive} />
       <View style={{ flex: 1 }}>
-        <Text className="text-destructive text-sm font-medium">{t('key_changed')}</Text>
-        <Text className="text-destructive/70 text-xs">
+        <ThemedText variant="subheadline" weight="500" color={colors.destructive}>
+          {t('key_changed')}
+        </ThemedText>
+        <ThemedText variant="caption1" color={colors.destructive} style={{ opacity: 0.7 }}>
           {t('key_changed_description', { name: peerName })}
-        </Text>
+        </ThemedText>
       </View>
-      <Text className="text-destructive text-xs font-semibold">{t('reverify')}</Text>
+      <ThemedText variant="caption1" weight="600" color={colors.destructive}>
+        {t('reverify')}
+      </ThemedText>
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  banner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+});

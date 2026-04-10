@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 
-import { Text } from '@/components/ui/text';
+import { ThemedText } from '@/components/primitives/themed-text';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
@@ -98,16 +98,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
 
       {photos.length > 1 && (
         <>
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 16,
-              left: 0,
-              right: 0,
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: 8,
-            }}>
+          <View style={styles.dotsContainer}>
             {photos.map((_, i) => (
               <Animated.View
                 key={i}
@@ -122,22 +113,38 @@ export function PhotoCarousel({ photos, bucket }: Props) {
             ))}
           </View>
 
-          <View
-            style={{
-              position: 'absolute',
-              top: 16,
-              right: 16,
-              borderRadius: 999,
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              backgroundColor: 'rgba(0,0,0,0.4)',
-            }}>
-            <Text className="text-xs font-medium text-white">
+          <View style={styles.counterBadge}>
+            <ThemedText color="#ffffff" style={styles.counterText}>
               {activeIndex + 1}/{photos.length}
-            </Text>
+            </ThemedText>
           </View>
         </>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  dotsContainer: {
+    position: 'absolute',
+    bottom: 16,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  counterBadge: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  counterText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+});

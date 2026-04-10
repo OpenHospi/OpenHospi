@@ -1,18 +1,20 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Home } from 'lucide-react-native';
-import { ActivityIndicator, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { ErrorState } from '@/components/error-state';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeEmptyState } from '@/components/feedback/native-empty-state';
+import { useTheme } from '@/design';
 import { useJoinHousePreview, useJoinHouse } from '@/services/house';
 
 export default function JoinHouseScreen() {
   const { code } = useLocalSearchParams<{ code: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.joinHouse' });
   const router = useRouter();
+  const { colors } = useTheme();
 
   const { data, isPending, isError, refetch } = useJoinHousePreview(code);
   const joinHouse = useJoinHouse();
@@ -29,66 +31,80 @@ export default function JoinHouseScreen() {
 
   if (isPending) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
+      <>
         <Stack.Screen options={{ title: t('title') }} />
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
+        <View style={styles.center}>
+          <ThemedSkeleton width={80} height={80} circle />
+          <ThemedSkeleton width="50%" height={20} />
+          <ThemedSkeleton width="60%" height={28} />
+        </View>
+      </>
     );
   }
 
   if (isError || !data?.house) {
     return (
-      <SafeAreaView style={{ flex: 1 }} className="bg-background">
+      <>
         <Stack.Screen options={{ title: t('title') }} />
-        <ErrorState onRetry={refetch} message={t('notFound')} />
-      </SafeAreaView>
+        <NativeEmptyState
+          sfSymbol="exclamationmark.triangle"
+          icon={Home}
+          title={t('notFound')}
+          actionLabel={t('cancel')}
+          onAction={() => router.back()}
+        />
+      </>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background">
+    <>
       <Stack.Screen options={{ title: t('title') }} />
 
-      <View
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 24 }}>
-        <View
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          className="bg-primary/10">
-          <Home size={40} className="text-primary" />
-        </View>
+      <View style={styles.center}>
+        <Home size={48} color={colors.primary} />
 
-        <View style={{ alignItems: 'center', gap: 8 }}>
-          <Text className="text-foreground text-xl font-bold">{t('joinPrompt')}</Text>
-          <Text className="text-foreground text-2xl font-bold">{data.house.name}</Text>
+        <View style={styles.textGroup}>
+          <ThemedText variant="title3">{t('joinPrompt')}</ThemedText>
+          <ThemedText variant="title1">{data.house.name}</ThemedText>
         </View>
 
         {joinHouse.isError && (
-          <Text className="text-destructive text-center text-sm">
+          <ThemedText variant="footnote" color={colors.destructive} style={styles.errorText}>
             {joinHouse.error?.message ?? t('joinError')}
-          </Text>
+          </ThemedText>
         )}
 
-        <View style={{ width: '100%', gap: 12 }}>
-          <Button onPress={handleJoin} disabled={joinHouse.isPending}>
-            {joinHouse.isPending ? (
-              <ActivityIndicator size="small" />
-            ) : (
-              <Text>{t('joinButton')}</Text>
-            )}
-          </Button>
-          <Button variant="outline" onPress={() => router.back()}>
-            <Text>{t('cancel')}</Text>
-          </Button>
+        <View style={styles.buttonGroup}>
+          <ThemedButton onPress={handleJoin} loading={joinHouse.isPending}>
+            {t('joinButton')}
+          </ThemedButton>
+          <ThemedButton variant="outline" onPress={() => router.back()}>
+            {t('cancel')}
+          </ThemedButton>
         </View>
       </View>
-    </SafeAreaView>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    gap: 24,
+  },
+  textGroup: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  errorText: {
+    textAlign: 'center',
+  },
+  buttonGroup: {
+    width: '100%',
+    gap: 12,
+  },
+});

@@ -1,6 +1,7 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type Props = {
   date: Date;
@@ -27,15 +28,27 @@ export function formatDateSeparator(
 }
 
 export function DateSeparator({ date, locale, labels }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <View style={{ alignItems: 'center', paddingVertical: 12 }}>
-      <View
-        style={{ borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4 }}
-        className="bg-muted">
-        <Text className="text-muted-foreground text-xs">
+    <View style={styles.container}>
+      <View style={[styles.pill, { backgroundColor: colors.muted }]}>
+        <ThemedText variant="caption1" color={colors.mutedForeground}>
           {formatDateSeparator(date, locale, labels)}
-        </Text>
+        </ThemedText>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  pill: {
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+});

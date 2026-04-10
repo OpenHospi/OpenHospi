@@ -2,11 +2,12 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import * as Sharing from 'expo-sharing';
 import { Share2 } from 'lucide-react-native';
 import { useRef } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppBottomSheetModal } from '@/components/bottom-sheet';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
 import { hapticLight } from '@/lib/haptics';
 
 type ShareRoomSheetProps = {
@@ -16,6 +17,7 @@ type ShareRoomSheetProps = {
 };
 
 export function ShareRoomSheet({ roomId, roomTitle, trigger }: ShareRoomSheetProps) {
+  const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
   const shareUrl = `https://openhospi.nl/room/${roomId}`;
 
@@ -43,14 +45,32 @@ export function ShareRoomSheet({ roomId, roomTitle, trigger }: ShareRoomSheetPro
         ref={sheetRef}
         title={roomTitle}
         onClose={() => sheetRef.current?.dismiss()}>
-        <View style={{ padding: 16, gap: 16, alignItems: 'center' }}>
-          <Text className="text-muted-foreground text-center text-sm">{shareUrl}</Text>
-          <Button onPress={handleShare} style={{ width: '100%' }}>
-            <Share2 size={18} className="text-primary-foreground" />
-            <Text className="text-primary-foreground font-medium">Share</Text>
-          </Button>
+        <View style={styles.content}>
+          <ThemedText variant="subheadline" color={colors.mutedForeground} style={styles.centered}>
+            {shareUrl}
+          </ThemedText>
+          <ThemedButton onPress={handleShare} style={styles.shareButton}>
+            <Share2 size={18} color={colors.primaryForeground} />
+            <ThemedText variant="subheadline" weight="500" color={colors.primaryForeground}>
+              Share
+            </ThemedText>
+          </ThemedButton>
         </View>
       </AppBottomSheetModal>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    padding: 16,
+    gap: 16,
+    alignItems: 'center',
+  },
+  centered: {
+    textAlign: 'center',
+  },
+  shareButton: {
+    width: '100%',
+  },
+});

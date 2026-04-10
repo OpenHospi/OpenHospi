@@ -1,8 +1,10 @@
 import type { LucideIcon } from 'lucide-react-native';
+import { StyleSheet } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type EmptyStateProps = {
   icon: LucideIcon;
@@ -19,24 +21,37 @@ export function EmptyState({
   actionLabel,
   onAction,
 }: EmptyStateProps) {
+  const { colors } = useTheme();
+
   return (
-    <Animated.View
-      entering={FadeIn.duration(300)}
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 32,
-        gap: 12,
-      }}>
-      <Icon size={48} className="text-muted-foreground" />
-      <Text className="text-foreground text-center text-lg font-semibold">{title}</Text>
-      {subtitle && <Text className="text-muted-foreground text-center text-sm">{subtitle}</Text>}
+    <Animated.View entering={FadeIn.duration(300)} style={styles.container}>
+      <Icon size={48} color={colors.mutedForeground} />
+      <ThemedText variant="headline" style={styles.centered}>
+        {title}
+      </ThemedText>
+      {subtitle && (
+        <ThemedText variant="subheadline" color={colors.mutedForeground} style={styles.centered}>
+          {subtitle}
+        </ThemedText>
+      )}
       {actionLabel && onAction && (
-        <Button onPress={onAction} style={{ marginTop: 8 }}>
-          <Text>{actionLabel}</Text>
-        </Button>
+        <ThemedButton onPress={onAction} style={{ marginTop: 8 }}>
+          {actionLabel}
+        </ThemedButton>
       )}
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    gap: 12,
+  },
+  centered: {
+    textAlign: 'center',
+  },
+});

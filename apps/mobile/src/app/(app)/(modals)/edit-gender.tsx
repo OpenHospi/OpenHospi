@@ -2,16 +2,19 @@ import { Gender } from '@openhospi/shared/enums';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { ChipPicker } from '@/components/chip-picker';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
+import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
+import { useTranslation } from 'react-i18next';
 
 export default function EditGenderScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const headerHeight = useHeaderHeight();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
@@ -25,15 +28,21 @@ export default function EditGenderScreen() {
     updateProfile.mutate(
       { gender },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert('Error'),
+        onSuccess: () => {
+          hapticFormSubmitSuccess();
+          router.back();
+        },
+        onError: () => {
+          hapticFormSubmitError();
+          Alert.alert('Error');
+        },
       }
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: headerHeight + 16, gap: 12 }}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.content, { paddingTop: headerHeight + 16 }]}>
         <ChipPicker
           values={Gender.values}
           selected={gender}
@@ -42,17 +51,32 @@ export default function EditGenderScreen() {
           t={tEnums}
         />
         {gender === Gender.prefer_not_to_say && (
-          <Text variant="muted" className="text-sm">
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
             {tOnboarding('genderPreferNotToSayHint')}
-          </Text>
+          </ThemedText>
         )}
       </View>
 
-      <View style={{ paddingHorizontal: 16, paddingBottom: 24 }}>
-        <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
-          <Text>{tCommon('save')}</Text>
-        </Button>
+      <View style={styles.footer}>
+        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
+          {tCommon('save')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+});

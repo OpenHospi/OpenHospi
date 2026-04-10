@@ -1,12 +1,13 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Platform, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { useTranslation } from 'react-i18next';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { useTheme } from '@/design';
+import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
+import { useTranslation } from 'react-i18next';
 
 function toDateObject(dateStr: string | null | undefined): Date {
   if (dateStr) {
@@ -25,6 +26,7 @@ function toISODate(date: Date): string {
 
 export default function EditBirthDateScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data: profile } = useProfile();
@@ -35,15 +37,21 @@ export default function EditBirthDateScreen() {
     updateProfile.mutate(
       { birthDate: toISODate(date) },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert('Error'),
+        onSuccess: () => {
+          hapticFormSubmitSuccess();
+          router.back();
+        },
+        onError: () => {
+          hapticFormSubmitError();
+          Alert.alert('Error');
+        },
       }
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.pickerContainer}>
         <DateTimePicker
           value={date}
           mode="date"
@@ -56,11 +64,26 @@ export default function EditBirthDateScreen() {
         />
       </View>
 
-      <View style={{ paddingHorizontal: 16, paddingBottom: 24 }}>
-        <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
-          <Text>{tCommon('save')}</Text>
-        </Button>
+      <View style={styles.footer}>
+        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
+          {tCommon('save')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  pickerContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+});

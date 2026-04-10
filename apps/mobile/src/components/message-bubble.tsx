@@ -1,9 +1,10 @@
 import * as Clipboard from 'expo-clipboard';
 import { Check, CheckCheck, Clock } from 'lucide-react-native';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
-import { Text } from '@/components/ui/text';
+import { useTheme } from '@/design';
+import { ThemedText } from '@/components/primitives/themed-text';
 
 type MessageStatus = 'sending' | 'sent' | 'delivered';
 
@@ -36,6 +37,7 @@ export function MessageBubble({
   status,
   onDelete: _onDelete,
 }: Props) {
+  const { colors } = useTheme();
   const topRadius = isFirstInGroup ? 16 : 4;
   const bottomRadius = isLastInGroup ? 16 : 4;
 
@@ -59,34 +61,35 @@ export function MessageBubble({
           borderTopRightRadius: isOwn ? topRadius : 16,
           borderBottomLeftRadius: isOwn ? 16 : bottomRadius,
           borderBottomRightRadius: isOwn ? bottomRadius : 16,
+          backgroundColor: isOwn ? colors.primary : colors.muted,
         }}
-        className={isOwn ? 'bg-primary' : 'bg-muted'}
         onTouchEnd={undefined}
         onStartShouldSetResponder={() => true}
         onResponderGrant={undefined}>
         {showSender && !isOwn && senderName && (
-          <Text
-            className="text-foreground text-xs font-medium"
+          <ThemedText
+            variant="caption1"
+            weight="500"
+            color={colors.foreground}
             style={{ opacity: 0.7, marginBottom: 2 }}>
             {senderName}
-          </Text>
+          </ThemedText>
         )}
 
-        <Pressable
-          style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}
-          onLongPress={handleLongPress}>
-          <Text
-            className={`text-sm ${isOwn ? 'text-primary-foreground' : 'text-foreground'}`}
+        <Pressable style={styles.messageContent} onLongPress={handleLongPress}>
+          <ThemedText
+            variant="subheadline"
+            color={isOwn ? colors.primaryForeground : colors.foreground}
             style={{ flexShrink: 1 }}>
             {text}
-          </Text>
+          </ThemedText>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-            <Text
-              className={isOwn ? 'text-primary-foreground' : 'text-muted-foreground'}
+          <View style={styles.timestampRow}>
+            <ThemedText
+              color={isOwn ? colors.primaryForeground : colors.mutedForeground}
               style={{ fontSize: 10, opacity: 0.5 }}>
               {timestamp}
-            </Text>
+            </ThemedText>
             {isOwn &&
               status &&
               (() => {
@@ -105,3 +108,16 @@ export function MessageBubble({
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  messageContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
+  },
+  timestampRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+});

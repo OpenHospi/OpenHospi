@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, Pressable, View, type ViewStyle } from 'react-native';
+import { Platform, Pressable, type ViewStyle } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 
 import { useTheme } from '@/design';
@@ -46,7 +46,7 @@ function NativeSelect({
   disabled,
   error,
 }: NativeSelectProps) {
-  const { colors, typography } = useTheme();
+  const { colors } = useTheme();
 
   const selectedLabel = options.find((o) => o.value === value)?.label;
 

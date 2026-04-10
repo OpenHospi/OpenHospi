@@ -121,7 +121,9 @@ export function ConversationListItem({
   );
 
   if (Platform.OS === 'ios') {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { ContextMenu } = require('@expo/ui/swift-ui');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Button: ExpoButton } = require('@expo/ui/swift-ui');
 
     return (

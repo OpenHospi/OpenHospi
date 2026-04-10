@@ -1,13 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
@@ -173,6 +165,7 @@ function PushNotificationSetting({ t }: { t: TFunction }) {
 }
 
 function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) {
+  const { colors } = useTheme();
   const { data: consents, isPending } = useConsent();
   const updateConsent = useUpdateConsent();
 
@@ -194,7 +187,7 @@ function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) 
     <GroupedSection>
       <View style={styles.consentHeader}>
         <ThemedText variant="headline">{t('privacy.consentManagement.title')}</ThemedText>
-        <ThemedText variant="footnote" color={useTheme().colors.tertiaryForeground}>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('privacy.consentManagement.description')}
         </ThemedText>
       </View>
@@ -208,7 +201,7 @@ function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) 
             <View style={styles.consentRow}>
               <View style={styles.consentLabel}>
                 <ThemedText variant="body">{tConsent(`purposes.${purpose}.name`)}</ThemedText>
-                <ThemedText variant="caption1" color={useTheme().colors.tertiaryForeground}>
+                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                   {tConsent(`purposes.${purpose}.description`)}
                 </ThemedText>
               </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text as RNText, type TextProps, type TextStyle } from 'react-native';
+import { Text as RNText, type TextProps, type TextStyle } from 'react-native';
 
 import { useTheme } from '@/design';
 import type { TypographyVariant } from '@/design/tokens/typography';

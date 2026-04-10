@@ -9,7 +9,6 @@ import { ConversationListItem } from '@/components/chat/conversation-list-item';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ListSeparator } from '@/components/layout/list-separator';
-import { useTheme } from '@/design';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useSession } from '@/lib/auth-client';
 import { useConversations } from '@/services/chat';

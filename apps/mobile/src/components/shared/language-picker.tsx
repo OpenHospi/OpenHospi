@@ -26,6 +26,7 @@ function IOSPicker({
   locale: string;
   changeLanguage: (lng: string) => void;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Menu, Button: ExpoButton } = require('@expo/ui/swift-ui');
 
   return (
@@ -53,6 +54,7 @@ function AndroidPicker({
 }) {
   const { colors } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { DropdownMenu, DropdownMenuItem } = require('@expo/ui/jetpack-compose');
 
   return (

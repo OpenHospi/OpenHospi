@@ -7,7 +7,7 @@ import {
 } from '@openhospi/shared/enums';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -107,22 +107,6 @@ export default function FilterSheetScreen() {
     setContextFilters(filters);
     router.back();
   }
-
-  const currentSortLabel = useMemo(() => {
-    if (!filters.sort || !(filters.sort in SORT_LABEL_KEYS)) return undefined;
-    const key = SORT_LABEL_KEYS[filters.sort as DiscoverSort];
-    return key ? tFilters(key) : undefined;
-  }, [filters.sort, tFilters]);
-
-  const currentHouseTypeLabel = useMemo(
-    () => (filters.houseType ? tEnums(`house_type.${filters.houseType}`) : undefined),
-    [filters.houseType, tEnums]
-  );
-
-  const currentFurnishingLabel = useMemo(
-    () => (filters.furnishing ? tEnums(`furnishing.${filters.furnishing}`) : undefined),
-    [filters.furnishing, tEnums]
-  );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>

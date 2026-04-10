@@ -4,7 +4,6 @@ import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { useSession } from '@/lib/auth-client';

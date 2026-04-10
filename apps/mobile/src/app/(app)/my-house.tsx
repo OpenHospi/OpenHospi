@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import { Copy, RefreshCw, Share2, Users } from 'lucide-react-native';
-import { Alert, Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { Alert, Platform, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 

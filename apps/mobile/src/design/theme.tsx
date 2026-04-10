@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { useColorScheme } from 'react-native';
 import {
   DarkTheme,
@@ -66,10 +66,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = buildTheme(isDark);
   const navigationTheme = buildNavigationTheme(isDark);
 
-  return React.createElement(
-    ThemeContext.Provider,
-    { value: theme },
-    React.createElement(NavigationThemeProvider, { value: navigationTheme, children })
+  return (
+    <ThemeContext.Provider value={theme}>
+      <NavigationThemeProvider value={navigationTheme}>{children}</NavigationThemeProvider>
+    </ThemeContext.Provider>
   );
 }
 

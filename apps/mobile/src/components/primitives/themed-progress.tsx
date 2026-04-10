@@ -9,7 +9,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
 
 interface ThemedProgressProps {
   /** Progress value from 0 to 100 */

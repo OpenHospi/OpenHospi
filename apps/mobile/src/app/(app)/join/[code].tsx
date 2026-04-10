@@ -16,7 +16,7 @@ export default function JoinHouseScreen() {
   const router = useRouter();
   const { colors } = useTheme();
 
-  const { data, isPending, isError, refetch } = useJoinHousePreview(code);
+  const { data, isPending, isError } = useJoinHousePreview(code);
   const joinHouse = useJoinHouse();
 
   async function handleJoin() {

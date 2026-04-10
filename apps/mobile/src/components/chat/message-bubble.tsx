@@ -116,7 +116,9 @@ export function MessageBubble({
 
   if (Platform.OS === 'ios') {
     // iOS: use @expo/ui SwiftUI ContextMenu
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { ContextMenu } = require('@expo/ui/swift-ui');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Button: ExpoButton } = require('@expo/ui/swift-ui');
 
     return (

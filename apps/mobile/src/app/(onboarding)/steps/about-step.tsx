@@ -3,9 +3,9 @@ import { useImperativeHandle, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ChipPicker } from '@/components/forms/chip-picker';
 import { CitySearchInput } from '@/components/forms/city-search';
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { NativeMenuPicker } from '@/components/forms/native-menu-picker';
 import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';
@@ -88,12 +88,12 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         <ThemedText variant="subheadline" weight="500">
           {t('gender')}
         </ThemedText>
-        <ChipPicker
+        <NativeMenuPicker
           values={Gender.values}
           selected={gender}
           onSelect={setGender}
-          translateKey="gender"
-          t={tEnums}
+          placeholder={t('gender')}
+          t={(v) => tEnums(`gender.${v}`)}
         />
         {gender === Gender.prefer_not_to_say && (
           <ThemedText variant="footnote" color={colors.tertiaryForeground}>
@@ -130,12 +130,12 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         <ThemedText variant="subheadline" weight="500">
           {t('studyLevel')}
         </ThemedText>
-        <ChipPicker
+        <NativeMenuPicker
           values={StudyLevel.values}
           selected={studyLevel}
           onSelect={setStudyLevel}
-          translateKey="study_level"
-          t={tEnums}
+          placeholder={tPlaceholders('studyLevel')}
+          t={(v) => tEnums(`study_level.${v}`)}
         />
       </View>
 

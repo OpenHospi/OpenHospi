@@ -1,14 +1,11 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CalendarDays } from 'lucide-react-native';
-import { useRef } from 'react';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
-import {
-  AppBottomSheetModal as BottomSheet,
-  type BottomSheetModal,
-} from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { hapticLight } from '@/lib/haptics';
 import { ThemedText } from '@/components/primitives/themed-text';
 
 type DatePickerSheetProps = {
@@ -29,17 +26,35 @@ function formatDisplayDate(date: Date): string {
 export function DatePickerSheet({
   value,
   onChange,
-  title,
   maximumDate,
   minimumDate,
 }: DatePickerSheetProps) {
   const { colors } = useTheme();
-  const sheetRef = useRef<BottomSheetModal>(null);
+  const [showAndroid, setShowAndroid] = useState(false);
+
+  if (Platform.OS === 'ios') {
+    return (
+      <DateTimePicker
+        value={value}
+        mode="date"
+        display="compact"
+        maximumDate={maximumDate}
+        minimumDate={minimumDate}
+        style={styles.iosPicker}
+        onChange={(_, selectedDate) => {
+          if (selectedDate) onChange(selectedDate);
+        }}
+      />
+    );
+  }
 
   return (
     <>
       <Pressable
-        onPress={() => sheetRef.current?.present()}
+        onPress={() => {
+          hapticLight();
+          setShowAndroid(true);
+        }}
         style={[
           styles.trigger,
           {
@@ -51,20 +66,19 @@ export function DatePickerSheet({
         <CalendarDays size={16} color={colors.mutedForeground} />
       </Pressable>
 
-      <BottomSheet ref={sheetRef} title={title} scrollable={false}>
-        <View style={styles.pickerContainer}>
-          <DateTimePicker
-            value={value}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            maximumDate={maximumDate}
-            minimumDate={minimumDate}
-            onChange={(_, selectedDate) => {
-              if (selectedDate) onChange(selectedDate);
-            }}
-          />
-        </View>
-      </BottomSheet>
+      {showAndroid && (
+        <DateTimePicker
+          value={value}
+          mode="date"
+          display="default"
+          maximumDate={maximumDate}
+          minimumDate={minimumDate}
+          onChange={(_, selectedDate) => {
+            setShowAndroid(false);
+            if (selectedDate) onChange(selectedDate);
+          }}
+        />
+      )}
     </>
   );
 }
@@ -79,9 +93,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radius.lg,
   },
-  pickerContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  iosPicker: {
+    alignSelf: 'flex-start',
   },
 });

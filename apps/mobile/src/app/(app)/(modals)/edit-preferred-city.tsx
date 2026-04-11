@@ -15,6 +15,7 @@ export default function EditPreferredCityScreen() {
   const { colors } = useTheme();
   const headerHeight = useHeaderHeight();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
   });
@@ -33,7 +34,7 @@ export default function EditPreferredCityScreen() {
         },
         onError: () => {
           hapticFormSubmitError();
-          Alert.alert('Error');
+          Alert.alert(tErrors('generic'));
         },
       }
     );
@@ -46,7 +47,6 @@ export default function EditPreferredCityScreen() {
           value={city}
           onSelect={setCity}
           placeholder={tPlaceholders('searchCity')}
-          autoFocus
         />
       </View>
 

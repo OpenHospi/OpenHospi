@@ -63,7 +63,13 @@ export function SelectPickerSheet({
         <ChevronRight size={16} color={colors.mutedForeground} />
       </Pressable>
 
-      <BottomSheet ref={sheetRef} title={title} scrollable={false} onDismiss={() => setSearch('')}>
+      <BottomSheet
+        ref={sheetRef}
+        title={title}
+        scrollable={false}
+        snapPoints={['60%']}
+        enableDynamicSizing={false}
+        onDismiss={() => setSearch('')}>
         <View style={{ flex: 1 }}>
           <View style={styles.searchContainer}>
             <ThemedInput

@@ -1,18 +1,37 @@
+import * as Device from 'expo-device';
 import * as Haptics from 'expo-haptics';
 
-// ── Base haptics ──
+const isRealDevice = Device.isDevice;
 
-export const hapticLight = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-export const hapticMedium = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-export const hapticHeavy = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-export const hapticRigid = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-export const hapticSoft = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-export const hapticSelection = () => Haptics.selectionAsync();
-export const hapticSuccess = () =>
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-export const hapticWarning = () =>
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-export const hapticError = () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+function noop() {}
+
+// ── Base haptics (disabled on simulator/emulator) ──
+
+export const hapticLight = isRealDevice
+  ? () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  : noop;
+export const hapticMedium = isRealDevice
+  ? () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  : noop;
+export const hapticHeavy = isRealDevice
+  ? () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+  : noop;
+export const hapticRigid = isRealDevice
+  ? () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
+  : noop;
+export const hapticSoft = isRealDevice
+  ? () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
+  : noop;
+export const hapticSelection = isRealDevice ? () => Haptics.selectionAsync() : noop;
+export const hapticSuccess = isRealDevice
+  ? () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+  : noop;
+export const hapticWarning = isRealDevice
+  ? () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+  : noop;
+export const hapticError = isRealDevice
+  ? () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+  : noop;
 
 // ── Contextual haptics (use these in screens) ──
 

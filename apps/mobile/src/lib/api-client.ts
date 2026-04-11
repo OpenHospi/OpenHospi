@@ -177,7 +177,8 @@ async function resilientRequest<T>(
       return await executeRequest<T>(method, url, headers, requestBody, API_TIMEOUT_MS);
     } catch (error) {
       // Timeout (AbortController fired)
-      if (error instanceof DOMException && error.name === 'AbortError') {
+      // Hermes doesn't have DOMException, so check by error name
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new NetworkError('Request timed out');
       }
 

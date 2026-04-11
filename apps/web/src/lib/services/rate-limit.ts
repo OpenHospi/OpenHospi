@@ -9,7 +9,12 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
 // Only create Redis client when Upstash is configured (skip in local dev)
-const redis = process.env.UPSTASH_REDIS_REST_URL ? Redis.fromEnv() : null;
+const redis = process.env.KV_REST_API_URL
+  ? new Redis({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN!,
+    })
+  : null;
 
 function limiter(
   requests: number,

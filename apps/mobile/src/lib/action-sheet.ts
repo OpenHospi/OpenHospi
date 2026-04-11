@@ -1,5 +1,6 @@
 import { ActionSheetIOS, Alert, Platform } from 'react-native';
-import * as Haptics from 'expo-haptics';
+
+import { hapticSelection } from '@/lib/haptics';
 
 interface ActionSheetOption {
   label: string;
@@ -16,7 +17,7 @@ export function showActionSheet(
   options: ActionSheetOption[],
   cancelLabel = 'Cancel'
 ) {
-  Haptics.selectionAsync();
+  hapticSelection();
 
   if (Platform.OS === 'ios') {
     const labels = [...options.map((o) => o.label), cancelLabel];

@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "clean": "rm -rf .expo node_modules",
-    "postinstall": "expo prebuild"
+    "postinstall": "expo prebuild",
+    "eas-build-on-complete": "sentry-eas-build-on-complete"
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",

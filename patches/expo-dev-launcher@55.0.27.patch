@@ -1,0 +1,13 @@
+diff --git a/ios/EXDevLauncherController.m b/ios/EXDevLauncherController.m
+index a99d2099deb81c34cdffff49739e739f4e7cc60b..cb7077694cbd79b8347bbf43fae5d93050319a1c 100644
+--- a/ios/EXDevLauncherController.m
++++ b/ios/EXDevLauncherController.m
+@@ -620,7 +620,7 @@ static const NSTimeInterval EXDevLauncherDefaultRequestTimeout = 10.0;
+ - (void)setDevMenuAppBridge
+ {
+   DevMenuManager *manager = [DevMenuManager shared];
+-  [manager updateCurrentBridge:self.appBridge];
++  [manager updateCurrentBridge:nil];
+ 
+   if (self.manifest != nil) {
+     [manager updateCurrentManifest:self.manifest manifestURL:self.manifestURL];

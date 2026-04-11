@@ -15,7 +15,7 @@
     "db:generate": "drizzle-kit generate",
     "clean": "rm -rf .expo node_modules",
     "postinstall": "expo prebuild",
-    "eas-build-on-complete": "sentry-eas-build-on-complete"
+    "eas-build-on-complete": "npx sentry-eas-build-on-complete"
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",

@@ -10,18 +10,83 @@ import {
 } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Euro } from 'lucide-react-native';
-import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { MultiChipPicker } from '@/components/forms/multi-chip-picker';
 import { CitySearchInput } from '@/components/forms/city-search';
+import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeSelect } from '@/components/primitives/native-select';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useUpdateRoom } from '@/services/my-rooms';
+
+function SkeletonEditRoom() {
+  return (
+    <View style={styles.skeletonContainer}>
+      <View style={styles.scrollContent}>
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={80} rounded="lg" />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+      </View>
+    </View>
+  );
+}
+
+function PickerSheet({
+  ref,
+  options,
+  selected,
+  onSelect,
+}: {
+  ref: React.Ref<BottomSheetModal>;
+  options: { value: string; label: string }[];
+  selected: string | null;
+  onSelect: (value: string) => void;
+}) {
+  const { colors } = useTheme();
+
+  return (
+    <AppBottomSheetModal ref={ref} enableDynamicSizing scrollable={false}>
+      <View style={styles.pickerContent}>
+        {options.map((opt) => (
+          <Pressable
+            key={opt.value}
+            onPress={() => {
+              hapticLight();
+              onSelect(opt.value);
+            }}
+            android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+            style={[
+              styles.pickerRow,
+              selected === opt.value ? { backgroundColor: colors.accent } : undefined,
+            ]}>
+            <ThemedText
+              variant="body"
+              weight={selected === opt.value ? '600' : '400'}
+              color={selected === opt.value ? colors.primary : colors.foreground}>
+              {opt.label}
+            </ThemedText>
+          </Pressable>
+        ))}
+      </View>
+    </AppBottomSheetModal>
+  );
+}
 
 export default function EditRoomScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -61,6 +126,13 @@ export default function EditRoomScreen() {
   const [acceptedLanguages, setAcceptedLanguages] = useState<string[]>([]);
   const [roomVereniging, setRoomVereniging] = useState('');
   const [initialized, setInitialized] = useState(false);
+
+  // Bottom sheet refs
+  const utilitiesSheetRef = useRef<BottomSheetModal>(null);
+  const houseTypeSheetRef = useRef<BottomSheetModal>(null);
+  const furnishingSheetRef = useRef<BottomSheetModal>(null);
+  const rentalTypeSheetRef = useRef<BottomSheetModal>(null);
+  const genderSheetRef = useRef<BottomSheetModal>(null);
 
   if (room && !initialized) {
     setTitle(room.title || '');
@@ -136,16 +208,13 @@ export default function EditRoomScreen() {
   };
 
   if (isLoading) {
-    return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <SkeletonEditRoom />;
   }
 
   return (
     <View style={[styles.flex1, { backgroundColor: colors.background }]}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.flex1}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
@@ -257,16 +326,30 @@ export default function EditRoomScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.utilitiesIncluded')}
           </ThemedText>
-          <ThemedButton
-            variant="outline"
-            onPress={() => {
-              const currentIdx = UtilitiesIncluded.values.findIndex((v) => v === utilitiesIncluded);
-              const nextIdx = (currentIdx + 1) % UtilitiesIncluded.values.length;
-              setUtilitiesIncluded(UtilitiesIncluded.values[nextIdx]);
-            }}>
-            {t(`utilities.${utilitiesIncluded}` as never)}
-          </ThemedButton>
+          <NativeSelect
+            value={utilitiesIncluded}
+            options={UtilitiesIncluded.values.map((v: string) => ({
+              value: v,
+              label: t(`utilities.${v}` as never),
+            }))}
+            onValueChange={setUtilitiesIncluded}
+            onPress={() => utilitiesSheetRef.current?.present()}
+          />
         </View>
+
+        {utilitiesIncluded === UtilitiesIncluded.estimated && (
+          <View style={styles.iconInputRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
+                value={estimatedUtilitiesCosts}
+                onChangeText={setEstimatedUtilitiesCosts}
+                placeholder={t('placeholders.estimatedUtilitiesCosts')}
+                keyboardType="numeric"
+              />
+            </View>
+          </View>
+        )}
 
         {/* Property */}
         <View style={styles.fieldGroup}>
@@ -292,17 +375,16 @@ export default function EditRoomScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.houseType')}
           </ThemedText>
-          <ThemedButton
-            variant="outline"
-            onPress={() => {
-              const currentIdx = houseType
-                ? HouseType.values.findIndex((v) => v === houseType)
-                : -1;
-              const nextIdx = (currentIdx + 1) % HouseType.values.length;
-              setHouseType(HouseType.values[nextIdx]);
-            }}>
-            {houseType ? tEnums(`house_type.${houseType}`) : t('fields.houseType')}
-          </ThemedButton>
+          <NativeSelect
+            value={houseType ?? undefined}
+            placeholder={t('fields.houseType')}
+            options={HouseType.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`house_type.${v}`),
+            }))}
+            onValueChange={(v) => setHouseType(v)}
+            onPress={() => houseTypeSheetRef.current?.present()}
+          />
         </View>
 
         {/* Furnishing */}
@@ -310,17 +392,16 @@ export default function EditRoomScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.furnishing')}
           </ThemedText>
-          <ThemedButton
-            variant="outline"
-            onPress={() => {
-              const currentIdx = furnishing
-                ? Furnishing.values.findIndex((v) => v === furnishing)
-                : -1;
-              const nextIdx = (currentIdx + 1) % Furnishing.values.length;
-              setFurnishing(Furnishing.values[nextIdx]);
-            }}>
-            {furnishing ? tEnums(`furnishing.${furnishing}`) : t('fields.furnishing')}
-          </ThemedButton>
+          <NativeSelect
+            value={furnishing ?? undefined}
+            placeholder={t('fields.furnishing')}
+            options={Furnishing.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`furnishing.${v}`),
+            }))}
+            onValueChange={(v) => setFurnishing(v)}
+            onPress={() => furnishingSheetRef.current?.present()}
+          />
         </View>
 
         {/* Rental Type */}
@@ -328,17 +409,16 @@ export default function EditRoomScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.rentalType')}
           </ThemedText>
-          <ThemedButton
-            variant="outline"
-            onPress={() => {
-              const currentIdx = rentalType
-                ? RentalType.values.findIndex((v) => v === rentalType)
-                : -1;
-              const nextIdx = (currentIdx + 1) % RentalType.values.length;
-              setRentalType(RentalType.values[nextIdx]);
-            }}>
-            {rentalType ? tEnums(`rental_type.${rentalType}`) : t('fields.rentalType')}
-          </ThemedButton>
+          <NativeSelect
+            value={rentalType ?? undefined}
+            placeholder={t('fields.rentalType')}
+            options={RentalType.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`rental_type.${v}`),
+            }))}
+            onValueChange={(v) => setRentalType(v)}
+            onPress={() => rentalTypeSheetRef.current?.present()}
+          />
         </View>
 
         {/* Availability */}
@@ -359,6 +439,41 @@ export default function EditRoomScreen() {
               minimumDate={availableFrom}
             />
           )}
+        </View>
+
+        {/* Gender Preference */}
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.preferredGender')}
+          </ThemedText>
+          <NativeSelect
+            value={preferredGender}
+            options={GenderPreference.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`gender_preference.${v}`),
+            }))}
+            onValueChange={setPreferredGender}
+            onPress={() => genderSheetRef.current?.present()}
+          />
+
+          <View style={styles.rowGap}>
+            <View style={styles.flex1}>
+              <ThemedInput
+                value={preferredAgeMin}
+                onChangeText={setPreferredAgeMin}
+                placeholder={t('fields.preferredAgeMin')}
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={styles.flex1}>
+              <ThemedInput
+                value={preferredAgeMax}
+                onChangeText={setPreferredAgeMax}
+                placeholder={t('fields.preferredAgeMax')}
+                keyboardType="numeric"
+              />
+            </View>
+          </View>
         </View>
 
         {/* Features */}
@@ -416,19 +531,73 @@ export default function EditRoomScreen() {
         </View>
       </ScrollView>
 
-      <View
-        style={[
-          styles.bottomBar,
-          { borderTopColor: colors.border, backgroundColor: colors.background },
-        ]}>
-        <ThemedButton onPress={handleSave} disabled={updateRoom.isPending || !title.trim()}>
-          {updateRoom.isPending ? (
-            <ActivityIndicator color={colors.primaryForeground} />
-          ) : (
-            tCommon('save')
-          )}
+      <BlurBottomBar>
+        <ThemedButton onPress={handleSave} loading={updateRoom.isPending} disabled={!title.trim()}>
+          {tCommon('save')}
         </ThemedButton>
-      </View>
+      </BlurBottomBar>
+
+      {/* Picker sheets */}
+      <PickerSheet
+        ref={utilitiesSheetRef}
+        options={UtilitiesIncluded.values.map((v: string) => ({
+          value: v,
+          label: t(`utilities.${v}` as never),
+        }))}
+        selected={utilitiesIncluded}
+        onSelect={(v) => {
+          setUtilitiesIncluded(v);
+          utilitiesSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={houseTypeSheetRef}
+        options={HouseType.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`house_type.${v}`),
+        }))}
+        selected={houseType}
+        onSelect={(v) => {
+          setHouseType(v);
+          houseTypeSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={furnishingSheetRef}
+        options={Furnishing.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`furnishing.${v}`),
+        }))}
+        selected={furnishing}
+        onSelect={(v) => {
+          setFurnishing(v);
+          furnishingSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={rentalTypeSheetRef}
+        options={RentalType.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`rental_type.${v}`),
+        }))}
+        selected={rentalType}
+        onSelect={(v) => {
+          setRentalType(v);
+          rentalTypeSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={genderSheetRef}
+        options={GenderPreference.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`gender_preference.${v}`),
+        }))}
+        selected={preferredGender}
+        onSelect={(v) => {
+          setPreferredGender(v);
+          genderSheetRef.current?.dismiss();
+        }}
+      />
     </View>
   );
 }
@@ -439,11 +608,6 @@ const styles = StyleSheet.create({
   },
   flex2: {
     flex: 2,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   scrollContent: {
     padding: 16,
@@ -466,9 +630,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  bottomBar: {
-    padding: 16,
-    paddingBottom: 32,
-    borderTopWidth: StyleSheet.hairlineWidth,
+  pickerContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  pickerRow: {
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  skeletonContainer: {
+    flex: 1,
   },
 });

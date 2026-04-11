@@ -41,6 +41,7 @@
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "expo": "~55.0.14",
+    "expo-blur": "~55.0.14",
     "expo-build-properties": "~55.0.13",
     "expo-calendar": "~55.0.14",
     "expo-camera": "~55.0.15",
@@ -100,7 +101,5 @@
     "prettier": "catalog:",
     "typescript": "~5.9.3"
   },
-  "private": true,
-  "peerDependencies": {},
-  "optionalDependencies": {}
+  "private": true
 }

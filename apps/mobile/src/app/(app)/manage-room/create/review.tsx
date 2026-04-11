@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListSeparator } from '@/components/layout/list-separator';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useMyRoom, usePublishRoom } from '@/services/my-rooms';
@@ -17,7 +18,6 @@ export default function ReviewScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
   const { colors } = useTheme();
-  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
@@ -37,7 +37,10 @@ export default function ReviewScreen() {
   if (isLoading || !room) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
+        <ThemedSkeleton width="100%" height={140} rounded="lg" />
+        <ThemedSkeleton width="100%" height={100} rounded="lg" />
+        <ThemedSkeleton width="100%" height={120} rounded="lg" />
+        <ThemedSkeleton width="100%" height={80} rounded="lg" />
       </View>
     );
   }
@@ -47,11 +50,16 @@ export default function ReviewScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}>
         {photos.length > 0 && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            pagingEnabled={false}
+            decelerationRate="fast"
             contentContainerStyle={styles.photoRow}>
             {photos.map((photo) => (
               <Image
@@ -169,18 +177,14 @@ export default function ReviewScreen() {
         )}
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
-        ]}>
+      <BlurBottomBar>
         <ThemedButton
           onPress={handlePublish}
           loading={publishRoom.isPending}
           disabled={!canPublish}>
           {t('actions.publish')}
         </ThemedButton>
-      </View>
+      </BlurBottomBar>
     </View>
   );
 }
@@ -208,7 +212,7 @@ const rowStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingContainer: { flex: 1, padding: 16, gap: 16 },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
   photoRow: { gap: 8 },
@@ -216,5 +220,4 @@ const styles = StyleSheet.create({
   sectionContent: { padding: 16, gap: 8 },
   tagWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   errorText: { textAlign: 'center' },
-  footer: { padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
 });

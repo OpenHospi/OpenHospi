@@ -51,7 +51,10 @@ export default function SettingsScreen() {
   const locale = i18n.language as Locale;
 
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scroll}
+      contentContainerStyle={styles.scrollContent}>
       <View style={styles.descriptionWrapper}>
         <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('description')}

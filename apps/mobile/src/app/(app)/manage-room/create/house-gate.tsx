@@ -1,24 +1,30 @@
 import { useRouter } from 'expo-router';
 import { Home, Plus } from 'lucide-react-native';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
+import { ListSeparator } from '@/components/layout/list-separator';
 import { useTheme } from '@/design';
-import { hapticLight } from '@/lib/haptics';
 import { useCreateDraft, useCreateHouse, useOwnerHouses } from '@/services/my-rooms';
+
+function SkeletonHouseGate() {
+  return (
+    <View style={styles.skeletonContainer}>
+      <ThemedSkeleton width="60%" height={20} />
+      <ThemedSkeleton width="80%" height={14} />
+      <ThemedSkeleton width="100%" height={60} rounded="lg" />
+      <ThemedSkeleton width="100%" height={60} rounded="lg" />
+      <ThemedSkeleton width="100%" height={48} rounded="lg" />
+    </View>
+  );
+}
 
 export default function HouseGateScreen() {
   const router = useRouter();
@@ -37,7 +43,7 @@ export default function HouseGateScreen() {
     try {
       const result = await createDraft.mutateAsync(houseId);
       router.push({
-        pathname: '/(app)/(tabs)/my-rooms/create/basic-info',
+        pathname: '/(app)/manage-room/create/basic-info',
         params: { roomId: result.id },
       });
     } catch {
@@ -53,7 +59,7 @@ export default function HouseGateScreen() {
     try {
       const result = await createHouse.mutateAsync(houseName.trim());
       router.push({
-        pathname: '/(app)/(tabs)/my-rooms/create/basic-info',
+        pathname: '/(app)/manage-room/create/basic-info',
         params: { roomId: result.id },
       });
     } catch {
@@ -62,17 +68,14 @@ export default function HouseGateScreen() {
   };
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <SkeletonHouseGate />;
   }
 
   const hasHouses = houses && houses.length > 0;
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scroll}
       contentContainerStyle={styles.scrollContent}
       keyboardShouldPersistTaps="handled">
@@ -83,45 +86,25 @@ export default function HouseGateScreen() {
             {t('housePicker.description')}
           </ThemedText>
 
-          {houses.map((house) => (
-            <Pressable
-              key={house.id}
-              onPress={() => {
-                hapticLight();
-                handleSelectHouse(house.id);
-              }}
-              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
-              style={({ pressed }) => [
-                pressed && Platform.OS === 'ios' ? { opacity: 0.7 } : undefined,
-              ]}>
-              <GroupedSection>
-                <View style={styles.houseRow}>
-                  <Home size={20} color={colors.tertiaryForeground} />
-                  <View style={styles.houseInfo}>
-                    <ThemedText variant="headline">{house.name}</ThemedText>
-                    <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                      {t('housePicker.roomCount', { count: house.roomCount })}
-                    </ThemedText>
-                  </View>
-                </View>
-              </GroupedSection>
-            </Pressable>
-          ))}
-
-          <Pressable
-            onPress={() => {
-              hapticLight();
-              setShowNewForm(true);
-            }}>
-            <GroupedSection>
-              <View style={styles.createRow}>
-                <Plus size={20} color={colors.primary} />
-                <ThemedText variant="headline" color={colors.primary}>
-                  {t('housePicker.createNew')}
-                </ThemedText>
+          <GroupedSection>
+            {houses.map((house, index) => (
+              <View key={house.id}>
+                {index > 0 && <ListSeparator />}
+                <ListCell
+                  label={house.name}
+                  value={t('housePicker.roomCount', { count: house.roomCount })}
+                  leftContent={<Home size={20} color={colors.tertiaryForeground} />}
+                  onPress={() => handleSelectHouse(house.id)}
+                />
               </View>
-            </GroupedSection>
-          </Pressable>
+            ))}
+            <ListSeparator />
+            <ListCell
+              label={t('housePicker.createNew')}
+              leftContent={<Plus size={20} color={colors.primary} />}
+              onPress={() => setShowNewForm(true)}
+            />
+          </GroupedSection>
         </>
       )}
 
@@ -163,11 +146,6 @@ export default function HouseGateScreen() {
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   scroll: {
     flex: 1,
   },
@@ -176,24 +154,12 @@ const styles = StyleSheet.create({
     gap: 16,
     paddingBottom: 32,
   },
-  houseRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    padding: 16,
-  },
-  houseInfo: {
-    flex: 1,
-    gap: 2,
-  },
-  createRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    justifyContent: 'center',
-    padding: 16,
-  },
   fieldGroup: {
     gap: 8,
+  },
+  skeletonContainer: {
+    flex: 1,
+    padding: 16,
+    gap: 16,
   },
 });

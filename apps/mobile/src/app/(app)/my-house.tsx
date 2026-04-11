@@ -80,7 +80,10 @@ export default function MyHouseScreen() {
   return (
     <>
       <Stack.Screen options={{ title: t('title') }} />
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
           <ThemedText variant="title2">{house.name}</ThemedText>
           <ThemedText variant="subheadline" color={colors.tertiaryForeground}>

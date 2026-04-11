@@ -111,6 +111,7 @@ export default function FilterSheetScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         contentContainerStyle={[styles.scrollContent, { paddingTop: headerHeight }]}
         keyboardShouldPersistTaps="handled">

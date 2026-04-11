@@ -1,18 +1,41 @@
 import { INVITABLE_APPLICATION_STATUSES } from '@openhospi/shared/enums';
-import { Image } from 'expo-image';
+import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Check } from 'lucide-react-native';
+import { Users } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
+import { NativeEmptyState } from '@/components/feedback/native-empty-state';
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedCheckbox } from '@/components/primitives/themed-checkbox';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useBatchInvite, useRoomApplicants } from '@/services/my-rooms';
 import type { RoomApplicant } from '@openhospi/shared/api-types';
+
+function SkeletonInviteList() {
+  return (
+    <View style={styles.skeletonContainer}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <View key={i} style={styles.skeletonRow}>
+          <ThemedSkeleton width={22} height={22} rounded="sm" />
+          <ThemedSkeleton width={40} height={40} rounded="full" />
+          <ThemedSkeleton width="50%" height={16} />
+          <ThemedSkeleton width={60} height={24} rounded="full" />
+        </View>
+      ))}
+    </View>
+  );
+}
 
 export default function InviteApplicantsScreen() {
   const { id, eventId } = useLocalSearchParams<{ id: string; eventId: string }>();
@@ -31,6 +54,7 @@ export default function InviteApplicantsScreen() {
   );
 
   const toggleSelect = (applicationId: string) => {
+    hapticLight();
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(applicationId)) {
@@ -43,6 +67,7 @@ export default function InviteApplicantsScreen() {
   };
 
   const selectAllLiked = () => {
+    hapticLight();
     const liked = invitable?.filter((a) => a.status === 'liked') ?? [];
     setSelected(new Set(liked.map((a) => a.applicationId)));
   };
@@ -57,20 +82,17 @@ export default function InviteApplicantsScreen() {
   };
 
   if (isLoading) {
-    return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <SkeletonInviteList />;
   }
 
   if (!invitable || invitable.length === 0) {
     return (
-      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
-        <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
-          {t('noInvitable')}
-        </ThemedText>
-      </View>
+      <NativeEmptyState
+        sfSymbol="person.crop.rectangle.stack"
+        icon={Users}
+        title={t('inviteApplicants')}
+        subtitle={t('noInvitable')}
+      />
     );
   }
 
@@ -81,27 +103,23 @@ export default function InviteApplicantsScreen() {
     const isSelected = selected.has(item.applicationId);
 
     return (
-      <Pressable onPress={() => toggleSelect(item.applicationId)}>
-        <View style={[styles.applicantRow, { borderBottomColor: colors.border }]}>
-          <View
-            style={[
-              styles.checkbox,
-              {
-                borderColor: isSelected ? colors.primary : colors.border,
-                backgroundColor: isSelected ? colors.primary : 'transparent',
-              },
-            ]}>
-            {isSelected && <Check size={14} color={colors.primaryForeground} />}
-          </View>
-          <View style={[styles.avatarCircle, { backgroundColor: colors.muted }]}>
-            {avatarUri && <Image source={{ uri: avatarUri }} style={styles.avatarImage} />}
-          </View>
+      <AnimatedPressable
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: isSelected }}
+        accessibilityLabel={`${item.firstName} ${item.lastName}`}
+        onPress={() => toggleSelect(item.applicationId)}>
+        <View style={[styles.applicantRow, { backgroundColor: colors.background }]}>
+          <ThemedCheckbox
+            checked={isSelected}
+            onCheckedChange={() => toggleSelect(item.applicationId)}
+          />
+          <ThemedAvatar source={avatarUri} fallback={item.firstName.charAt(0)} size={40} />
           <ThemedText variant="subheadline" style={styles.flex1}>
             {item.firstName} {item.lastName}
           </ThemedText>
           <ThemedBadge variant="secondary" label={tEnums(`application_status.${item.status}`)} />
         </View>
-      </Pressable>
+      </AnimatedPressable>
     );
   };
 
@@ -116,23 +134,21 @@ export default function InviteApplicantsScreen() {
         </ThemedButton>
       </View>
 
-      <FlatList
+      <FlashList
+        contentInsetAdjustmentBehavior="automatic"
         data={invitable}
         keyExtractor={(item) => item.applicationId}
         renderItem={renderApplicant}
+        ItemSeparatorComponent={ListSeparator}
       />
 
-      <View
-        style={[
-          styles.bottomBar,
-          { borderTopColor: colors.border, backgroundColor: colors.background },
-        ]}>
+      <BlurBottomBar>
         <ThemedButton
           onPress={handleInvite}
           disabled={selected.size === 0 || batchInvite.isPending}>
           {t('submit', { count: selected.size })}
         </ThemedButton>
-      </View>
+      </BlurBottomBar>
     </View>
   );
 }
@@ -140,20 +156,6 @@ export default function InviteApplicantsScreen() {
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  textCenter: {
-    textAlign: 'center',
   },
   toolbar: {
     padding: 12,
@@ -167,29 +169,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     gap: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 4,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-  avatarImage: {
-    width: 40,
-    height: 40,
-  },
-  bottomBar: {
+  skeletonContainer: {
+    flex: 1,
     padding: 16,
-    paddingBottom: 32,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    gap: 16,
+  },
+  skeletonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
 });

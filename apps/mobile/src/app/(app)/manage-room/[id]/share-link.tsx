@@ -2,8 +2,10 @@ import * as Clipboard from 'expo-clipboard';
 import { useLocalSearchParams } from 'expo-router';
 import { Copy, RefreshCw } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
@@ -65,8 +67,10 @@ export default function ShareLinkScreen() {
 
   if (isLoading || !room) {
     return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator color={colors.primary} />
+      <View style={styles.skeletonContainer}>
+        <ThemedSkeleton width="100%" height={100} rounded="lg" />
+        <ThemedSkeleton width="100%" height={120} rounded="lg" />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
       </View>
     );
   }
@@ -74,6 +78,7 @@ export default function ShareLinkScreen() {
   return (
     <View style={[styles.flex1, { backgroundColor: colors.background }]}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.flex1}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
@@ -144,17 +149,13 @@ export default function ShareLinkScreen() {
         </GroupedSection>
 
         {/* Regenerate */}
-        <ThemedButton variant="outline" onPress={handleRegenerate} disabled={regenerate.isPending}>
-          {regenerate.isPending ? (
-            <ActivityIndicator color={colors.foreground} />
-          ) : (
-            <View style={styles.regenerateContent}>
-              <RefreshCw size={16} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('regenerate')}
-              </ThemedText>
-            </View>
-          )}
+        <ThemedButton variant="outline" onPress={handleRegenerate} loading={regenerate.isPending}>
+          <View style={styles.regenerateContent}>
+            <RefreshCw size={16} color={colors.foreground} />
+            <ThemedText variant="subheadline" weight="600">
+              {t('regenerate')}
+            </ThemedText>
+          </View>
         </ThemedButton>
       </ScrollView>
     </View>
@@ -165,10 +166,10 @@ const styles = StyleSheet.create({
   flex1: {
     flex: 1,
   },
-  centered: {
+  skeletonContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 16,
+    gap: 16,
   },
   scrollContent: {
     padding: 16,

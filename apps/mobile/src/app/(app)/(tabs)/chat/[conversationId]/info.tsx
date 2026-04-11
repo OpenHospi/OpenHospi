@@ -58,6 +58,7 @@ export default function ConversationInfoScreen() {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={[styles.flex1, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.scrollContent}>
       {/* Header */}

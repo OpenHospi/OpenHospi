@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { Dot, Euro, FileText, Home } from 'lucide-react-native';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
@@ -112,10 +112,6 @@ export default function ApplicationsScreen() {
       <Stack.Screen
         options={{
           headerTitle: t('title'),
-          headerLargeTitle: true,
-          ...(Platform.OS === 'ios'
-            ? { headerTransparent: true, headerBlurEffect: 'regular' }
-            : undefined),
         }}
       />
       {isPending ? (

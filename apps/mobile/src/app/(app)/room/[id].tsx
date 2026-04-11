@@ -108,7 +108,7 @@ export default function RoomDetailScreen() {
 
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
-      <ScrollView style={styles.flex}>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.flex}>
         <PhotoCarousel photos={room.photos} bucket={STORAGE_BUCKET_ROOM_PHOTOS} />
 
         <View style={styles.content}>

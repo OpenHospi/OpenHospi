@@ -72,6 +72,7 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
   if (verified) {
     return (
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scrollContent}>
@@ -88,6 +89,7 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
   if (showCodeInput) {
     return (
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scrollContent}>
@@ -123,6 +125,7 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent}>

@@ -1,16 +1,17 @@
 import { GenderPreference, Language, LocationTag, RoomFeature } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { MultiChipPicker } from '@/components/forms/multi-chip-picker';
 import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { NativeSelect } from '@/components/primitives/native-select';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSavePreferences } from '@/services/my-rooms';
@@ -19,7 +20,6 @@ export default function PreferencesScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
   const { colors } = useTheme();
-  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
@@ -62,7 +62,7 @@ export default function PreferencesScreen() {
           roomVereniging: roomVereniging || undefined,
         },
       });
-      router.push({ pathname: '/(app)/(tabs)/my-rooms/create/photos', params: { roomId } });
+      router.push({ pathname: '/(app)/manage-room/create/photos', params: { roomId } });
     } catch {
       Alert.alert(t('status.draftSaved'));
     }
@@ -71,7 +71,13 @@ export default function PreferencesScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="80%" height={12} />
+        <ThemedSkeleton width="100%" height={80} rounded="lg" />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={80} rounded="lg" />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
       </View>
     );
   }
@@ -79,6 +85,7 @@ export default function PreferencesScreen() {
   return (
     <View style={styles.container}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
@@ -182,15 +189,11 @@ export default function PreferencesScreen() {
         </View>
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
-        ]}>
+      <BlurBottomBar>
         <ThemedButton onPress={handleNext} loading={savePreferences.isPending}>
           {tCommon('next')}
         </ThemedButton>
-      </View>
+      </BlurBottomBar>
 
       <AppBottomSheetModal ref={genderSheetRef} enableDynamicSizing scrollable={false}>
         <View style={styles.pickerContent}>
@@ -223,13 +226,12 @@ export default function PreferencesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingContainer: { flex: 1, padding: 16, gap: 12 },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
   fieldGroup: { gap: 8 },
   rowFields: { flexDirection: 'row', gap: 8 },
   flex1: { flex: 1 },
-  footer: { padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
   pickerContent: { paddingHorizontal: 16, paddingVertical: 8 },
   pickerRow: { borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12 },
 });

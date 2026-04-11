@@ -1,16 +1,18 @@
 import { ReviewDecision } from '@openhospi/shared/enums';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { GroupedSection } from '@/components/layout/grouped-section';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
@@ -31,13 +33,29 @@ function getDecisionColor(d: string): { bg: string; border: string } {
   }
 }
 
+function SkeletonApplicantDetail() {
+  return (
+    <View style={styles.skeletonContainer}>
+      <ThemedSkeleton width="100%" height={250} />
+      <View style={styles.body}>
+        <View style={styles.nameRow}>
+          <ThemedSkeleton width="50%" height={24} />
+          <ThemedSkeleton width={60} height={24} rounded="full" />
+        </View>
+        <ThemedSkeleton width="100%" height={120} rounded="lg" />
+        <ThemedSkeleton width="100%" height={80} rounded="lg" />
+        <ThemedSkeleton width="100%" height={160} rounded="lg" />
+      </View>
+    </View>
+  );
+}
+
 export default function ApplicantDetailScreen() {
   const { id, applicantUserId } = useLocalSearchParams<{ id: string; applicantUserId: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.applicants' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { colors } = useTheme();
-  const { bottom } = useSafeAreaInsets();
 
   const { data: applicants, isLoading } = useRoomApplicants(id);
   const submitReview = useSubmitReview();
@@ -52,11 +70,7 @@ export default function ApplicantDetailScreen() {
   const [notes, setNotes] = useState(existingReview?.notes ?? '');
 
   if (isLoading || !applicant) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <SkeletonApplicantDetail />;
   }
 
   const age = applicant.birthDate
@@ -91,8 +105,11 @@ export default function ApplicantDetailScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}>
         {applicant.photos.length > 0 && (
           <PhotoCarousel photos={applicant.photos} bucket="profile-photos" />
         )}
@@ -108,7 +125,7 @@ export default function ApplicantDetailScreen() {
             />
           </View>
 
-          <GroupedSection>
+          <GroupedSection inset={false}>
             <View style={styles.sectionContent}>
               <ThemedText variant="headline">{t('aboutThem')}</ThemedText>
               {applicant.bio && (
@@ -137,7 +154,7 @@ export default function ApplicantDetailScreen() {
           </GroupedSection>
 
           {applicant.lifestyleTags.length > 0 && (
-            <GroupedSection>
+            <GroupedSection inset={false}>
               <View style={styles.sectionContent}>
                 <ThemedText variant="headline">{t('lifestyle')}</ThemedText>
                 <View style={styles.tagWrap}>
@@ -154,7 +171,7 @@ export default function ApplicantDetailScreen() {
           )}
 
           {applicant.personalMessage && (
-            <GroupedSection>
+            <GroupedSection inset={false}>
               <View style={styles.sectionContent}>
                 <ThemedText variant="headline">{t('personalMessage')}</ThemedText>
                 <ThemedText variant="body" color={colors.secondaryForeground}>
@@ -164,7 +181,7 @@ export default function ApplicantDetailScreen() {
             </GroupedSection>
           )}
 
-          <GroupedSection>
+          <GroupedSection inset={false}>
             <View style={styles.sectionContent}>
               <ThemedText variant="headline">{t('yourReview')}</ThemedText>
 
@@ -177,7 +194,7 @@ export default function ApplicantDetailScreen() {
                   const decisionColors = getDecisionColor(d);
 
                   return (
-                    <Pressable
+                    <AnimatedPressable
                       key={d}
                       onPress={() => {
                         hapticLight();
@@ -194,7 +211,7 @@ export default function ApplicantDetailScreen() {
                       <ThemedText variant="subheadline" weight="500">
                         {t(d)}
                       </ThemedText>
-                    </Pressable>
+                    </AnimatedPressable>
                   );
                 })}
               </View>
@@ -218,7 +235,7 @@ export default function ApplicantDetailScreen() {
           </GroupedSection>
 
           {applicant.reviews.length > 0 && (
-            <GroupedSection>
+            <GroupedSection inset={false}>
               <View style={styles.sectionContent}>
                 <ThemedText variant="headline">Reviews</ThemedText>
                 {applicant.reviews.map((review) => (
@@ -244,26 +261,20 @@ export default function ApplicantDetailScreen() {
       </ScrollView>
 
       {applicant.status !== 'accepted' && applicant.status !== 'rejected' && (
-        <View
-          style={[
-            styles.bottomBar,
-            {
-              borderTopColor: colors.separator,
-              paddingBottom: Math.max(bottom, 16),
-            },
-          ]}>
-          <ThemedButton
-            variant="outline"
-            style={styles.bottomButton}
-            onPress={() => handleStatusAction('rejected', t('rejected'))}>
-            {t('rejected')}
-          </ThemedButton>
-          <ThemedButton
-            style={styles.bottomButton}
-            onPress={() => handleStatusAction('accepted', t('accept'))}>
-            {t('accept')}
-          </ThemedButton>
-        </View>
+        <BlurBottomBar style={styles.bottomRow}>
+          <View style={styles.flex1}>
+            <ThemedButton
+              variant="outline"
+              onPress={() => handleStatusAction('rejected', t('rejected'))}>
+              {t('rejected')}
+            </ThemedButton>
+          </View>
+          <View style={styles.flex1}>
+            <ThemedButton onPress={() => handleStatusAction('accepted', t('accept'))}>
+              {t('accept')}
+            </ThemedButton>
+          </View>
+        </BlurBottomBar>
       )}
     </View>
   );
@@ -272,11 +283,6 @@ export default function ApplicantDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   scroll: {
     flex: 1,
@@ -325,13 +331,13 @@ const styles = StyleSheet.create({
   reviewNotes: {
     flex: 1,
   },
-  bottomBar: {
+  bottomRow: {
     flexDirection: 'row',
-    gap: 8,
-    padding: 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
   },
-  bottomButton: {
+  flex1: {
+    flex: 1,
+  },
+  skeletonContainer: {
     flex: 1,
   },
 });

@@ -3,7 +3,7 @@ import { Stack, useRouter } from 'expo-router';
 import { getInstitution } from '@openhospi/inacademia';
 import { Bell, Settings } from 'lucide-react-native';
 import { useMemo } from 'react';
-import { Platform, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
@@ -51,15 +51,7 @@ export default function ProfileScreen() {
   if (isPending) {
     return (
       <>
-        <Stack.Screen
-          options={{
-            headerTitle: t('title'),
-            headerLargeTitle: true,
-            ...(Platform.OS === 'ios'
-              ? { headerTransparent: true, headerBlurEffect: 'regular' }
-              : undefined),
-          }}
-        />
+        <Stack.Screen options={{ headerTitle: t('title') }} />
         <View style={styles.loadingContainer}>
           <ThemedSkeleton width={96} height={96} circle />
           <View style={styles.loadingLines}>
@@ -93,10 +85,6 @@ export default function ProfileScreen() {
       <Stack.Screen
         options={{
           headerTitle: t('title'),
-          headerLargeTitle: true,
-          ...(Platform.OS === 'ios'
-            ? { headerTransparent: true, headerBlurEffect: 'regular' }
-            : undefined),
           headerRight: () => (
             <Pressable onPress={() => router.push('/(app)/settings')} hitSlop={8}>
               <Settings size={22} color={colors.tertiaryForeground} />

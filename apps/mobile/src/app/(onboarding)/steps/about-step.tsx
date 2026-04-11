@@ -81,6 +81,7 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent}>

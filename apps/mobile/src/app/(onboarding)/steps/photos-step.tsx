@@ -109,7 +109,10 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
   }
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}>
       <View style={styles.slotList}>
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];

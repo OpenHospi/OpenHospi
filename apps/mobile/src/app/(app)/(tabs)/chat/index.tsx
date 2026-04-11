@@ -95,6 +95,7 @@ export default function ChatTab() {
         onSearchChange={setSearchText}
       />
       <FlashList
+        contentInsetAdjustmentBehavior="automatic"
         data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {

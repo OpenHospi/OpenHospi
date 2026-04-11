@@ -115,6 +115,7 @@ export default function DiscoverScreen() {
         onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
       />
       <FlashList
+        contentInsetAdjustmentBehavior="automatic"
         data={filteredRooms}
         keyExtractor={(item) => item.id}
         renderItem={({ item }: { item: DiscoverRoom }) => (

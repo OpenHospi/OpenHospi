@@ -2,16 +2,17 @@ import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from '@openhospi
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Euro } from 'lucide-react-native';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { NativeSelect } from '@/components/primitives/native-select';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSaveDetails } from '@/services/my-rooms';
@@ -20,7 +21,6 @@ export default function DetailsScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
   const { colors } = useTheme();
-  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
@@ -87,7 +87,7 @@ export default function DetailsScreen() {
           totalHousemates: totalHousemates ? Number(totalHousemates) : undefined,
         },
       });
-      router.push({ pathname: '/(app)/(tabs)/my-rooms/create/preferences', params: { roomId } });
+      router.push({ pathname: '/(app)/manage-room/create/preferences', params: { roomId } });
     } catch {
       Alert.alert(t('status.draftSaved'));
     }
@@ -96,7 +96,12 @@ export default function DetailsScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="40%" height={16} />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        <ThemedSkeleton width="100%" height={44} rounded="lg" />
       </View>
     );
   }
@@ -104,6 +109,7 @@ export default function DetailsScreen() {
   return (
     <View style={styles.container}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
@@ -277,15 +283,11 @@ export default function DetailsScreen() {
         </View>
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
-        ]}>
+      <BlurBottomBar>
         <ThemedButton onPress={handleNext} loading={saveDetails.isPending}>
           {tCommon('next')}
         </ThemedButton>
-      </View>
+      </BlurBottomBar>
 
       {/* Picker sheets */}
       <PickerSheet
@@ -383,16 +385,12 @@ function PickerSheet({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingContainer: { flex: 1, padding: 16, gap: 12 },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
   fieldGroup: { gap: 8 },
   euroRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   flex1: { flex: 1 },
-  footer: {
-    padding: 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
   pickerContent: {
     paddingHorizontal: 16,
     paddingVertical: 8,

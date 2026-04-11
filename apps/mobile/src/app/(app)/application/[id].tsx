@@ -136,6 +136,7 @@ export default function ApplicationDetailScreen() {
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.flex}
         contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}>
         {coverUrl ? (

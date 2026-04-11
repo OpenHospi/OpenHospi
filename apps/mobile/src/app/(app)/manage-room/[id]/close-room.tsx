@@ -1,14 +1,36 @@
-import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { AnimatedPressable } from '@/components/shared/animated-pressable';
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
 import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { hapticLight } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useCloseRoom, useCloseRoomApplicants } from '@/services/my-rooms';
+
+function SkeletonCloseRoom() {
+  return (
+    <View style={styles.skeletonContainer}>
+      <ThemedSkeleton width="80%" height={16} />
+      <ThemedSkeleton width="50%" height={18} />
+      <ThemedSkeleton width="60%" height={14} />
+      {Array.from({ length: 3 }, (_, i) => (
+        <View key={i} style={styles.skeletonRow}>
+          <ThemedSkeleton width={40} height={40} rounded="full" />
+          <ThemedSkeleton width="50%" height={16} />
+          <ThemedSkeleton width={20} height={20} rounded="full" />
+        </View>
+      ))}
+    </View>
+  );
+}
 
 export default function CloseRoomScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,11 +45,7 @@ export default function CloseRoomScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   if (isLoading) {
-    return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return <SkeletonCloseRoom />;
   }
 
   const handleClose = (withChoice: boolean) => {
@@ -52,7 +70,10 @@ export default function CloseRoomScreen() {
 
   return (
     <View style={[styles.flex1, { backgroundColor: colors.background }]}>
-      <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.flex1}
+        contentContainerStyle={styles.scrollContent}>
         <ThemedText variant="subheadline">{t('description')}</ThemedText>
 
         {applicants && applicants.length > 0 ? (
@@ -71,22 +92,26 @@ export default function CloseRoomScreen() {
               const isSelected = selectedId === applicant.applicationId;
 
               return (
-                <Pressable
+                <AnimatedPressable
                   key={applicant.applicationId}
-                  onPress={() => setSelectedId(isSelected ? null : applicant.applicationId)}>
+                  onPress={() => {
+                    hapticLight();
+                    setSelectedId(isSelected ? null : applicant.applicationId);
+                  }}>
                   <View
                     style={[
                       styles.applicantCard,
                       {
                         borderColor: isSelected ? colors.primary : colors.border,
                         backgroundColor: isSelected ? `${colors.primary}1A` : 'transparent',
+                        borderRadius: radius.lg,
                       },
                     ]}>
-                    <View style={[styles.avatarCircle, { backgroundColor: colors.muted }]}>
-                      {avatarUri && (
-                        <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
-                      )}
-                    </View>
+                    <ThemedAvatar
+                      source={avatarUri}
+                      fallback={applicant.firstName.charAt(0)}
+                      size={40}
+                    />
                     <View style={styles.flex1}>
                       <ThemedText variant="subheadline" weight="500">
                         {applicant.firstName} {applicant.lastName}
@@ -107,7 +132,7 @@ export default function CloseRoomScreen() {
                       ]}
                     />
                   </View>
-                </Pressable>
+                </AnimatedPressable>
               );
             })}
           </View>
@@ -118,11 +143,7 @@ export default function CloseRoomScreen() {
         )}
       </ScrollView>
 
-      <View
-        style={[
-          styles.bottomBar,
-          { borderTopColor: colors.border, backgroundColor: colors.background },
-        ]}>
+      <BlurBottomBar>
         {selectedId && (
           <ThemedButton variant="destructive" onPress={() => handleClose(true)}>
             {t('closeWithChoice')}
@@ -131,7 +152,7 @@ export default function CloseRoomScreen() {
         <ThemedButton variant="outline" onPress={() => handleClose(false)}>
           {t('closeWithoutChoice')}
         </ThemedButton>
-      </View>
+      </BlurBottomBar>
     </View>
   );
 }
@@ -139,11 +160,6 @@ export default function CloseRoomScreen() {
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   scrollContent: {
     padding: 16,
@@ -157,18 +173,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 12,
     gap: 12,
-    borderRadius: 10,
     borderWidth: 1,
-  },
-  avatarCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-  avatarImage: {
-    width: 40,
-    height: 40,
   },
   radioCircle: {
     width: 20,
@@ -176,10 +181,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
   },
-  bottomBar: {
+  skeletonContainer: {
+    flex: 1,
     padding: 16,
-    paddingBottom: 32,
-    gap: 8,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    gap: 12,
+  },
+  skeletonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
 });

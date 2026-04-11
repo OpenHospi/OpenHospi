@@ -2,12 +2,13 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Camera, Trash2 } from 'lucide-react-native';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
+import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -20,7 +21,6 @@ export default function PhotosScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
   const { colors } = useTheme();
-  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -60,20 +60,31 @@ export default function PhotosScreen() {
   };
 
   const handleNext = () => {
-    router.push({ pathname: '/(app)/(tabs)/my-rooms/create/review', params: { roomId } });
+    router.push({ pathname: '/(app)/manage-room/create/review', params: { roomId } });
   };
 
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
+        <ThemedSkeleton width="60%" height={20} />
+        <ThemedSkeleton width="80%" height={14} />
+        <View style={styles.grid}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <View key={i} style={styles.slotWrapper}>
+              <ThemedSkeleton width="100%" height={120} rounded="lg" />
+            </View>
+          ))}
+        </View>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}>
         <ThemedText variant="headline">{t('wizard.steps.photos')}</ThemedText>
         <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('wizard.photoGuidance')}
@@ -99,13 +110,9 @@ export default function PhotosScreen() {
         </View>
       </ScrollView>
 
-      <View
-        style={[
-          styles.footer,
-          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
-        ]}>
+      <BlurBottomBar>
         <ThemedButton onPress={handleNext}>{tCommon('next')}</ThemedButton>
-      </View>
+      </BlurBottomBar>
     </View>
   );
 }
@@ -151,8 +158,7 @@ function PhotoSlot({
           style={[
             styles.emptySlot,
             {
-              borderColor: colors.tertiaryForeground + '4D',
-              backgroundColor: colors.muted + '80',
+              backgroundColor: colors.muted,
               borderRadius: radius.lg,
             },
           ]}>
@@ -168,7 +174,7 @@ function PhotoSlot({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingContainer: { flex: 1, padding: 16, gap: 16 },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -199,9 +205,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderStyle: 'dashed',
     gap: 4,
   },
-  footer: { padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
 });

@@ -51,7 +51,10 @@ export default function PersonalityStep({ ref, onNext, profile }: Props) {
   useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}>
       <ThemedText variant="footnote" color={colors.tertiaryForeground}>
         {t('tagCounter', {
           count: selected.length,

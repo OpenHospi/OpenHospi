@@ -51,7 +51,10 @@ export default function LanguagesStep({ ref, onNext, profile }: Props) {
   useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}>
       <ThemedText variant="footnote" color={colors.tertiaryForeground}>
         {t('languageCounter', { count: selected.length, min: MIN_LANGUAGES, max: MAX_LANGUAGES })}
       </ThemedText>

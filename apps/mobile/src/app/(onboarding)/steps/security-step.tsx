@@ -83,6 +83,7 @@ export default function SecurityStep() {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent}>

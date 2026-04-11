@@ -23,7 +23,6 @@ import { SessionProvider, useAppSession } from '@/context/session';
 import { ToastProvider } from '@/context/toast';
 import { useRunMigrations } from '@/lib/db/migrations';
 import i18n, { i18nReady } from '@/i18n';
-import { SENTRY_DSN } from '@/lib/constants';
 import { queryClient, persistOptions } from '@/lib/query-client';
 import { initializeNetworkManager } from '@/lib/network';
 import { initializeAppLifecycle } from '@/lib/app-lifecycle';
@@ -32,7 +31,7 @@ import { initializeNotificationListeners } from '@/lib/notifications';
 // ── Sentry ──────────────────────────────────────────────────
 
 Sentry.init({
-  dsn: SENTRY_DSN,
+  dsn: 'https://a93aab45c6f5e6cc68cacf09fa300ff7@o4511172188438528.ingest.de.sentry.io/4511172379934800',
   sendDefaultPii: false,
   enableAutoSessionTracking: true,
   tracesSampleRate: 0.2,

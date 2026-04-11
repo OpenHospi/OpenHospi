@@ -325,7 +325,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     'react-native-quick-crypto',
     [
-      '@sentry/react-native',
+      '@sentry/react-native/expo',
       {
         url: 'https://sentry.io/',
         project: 'mobile',

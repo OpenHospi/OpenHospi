@@ -30,6 +30,7 @@
     "@openhospi/inacademia": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "@openhospi/validators": "workspace:*",
+    "@sentry/nextjs": "^10.48.0",
     "@supabase/supabase-js": "catalog:",
     "@tanstack/react-table": "^8.21.3",
     "@tensorflow/tfjs": "^4.22.0",
@@ -98,7 +99,5 @@
     "tailwindcss": "catalog:",
     "tsx": "^4.21.0",
     "typescript": "catalog:"
-  },
-  "peerDependencies": {},
-  "optionalDependencies": {}
+  }
 }

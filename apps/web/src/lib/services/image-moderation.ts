@@ -1,7 +1,7 @@
 import "@tensorflow/tfjs";
 
-import * as nsfwjs from "nsfwjs";
 import * as tf from "@tensorflow/tfjs";
+import * as nsfwjs from "nsfwjs";
 import sharp from "sharp";
 
 // Singleton model instance (lazy loaded on first use, like the DB proxy)

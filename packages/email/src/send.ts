@@ -1,17 +1,9 @@
-import type { EmailTemplateName, TemplatePropsMap } from "@openhospi/email";
-import { renderEmail } from "@openhospi/email";
 import type { Locale } from "@openhospi/i18n";
-import { createTransport } from "nodemailer";
 
-const transporter = createTransport({
-  host: process.env.SMTP_HOST!,
-  port: Number(process.env.SMTP_PORT ?? 465),
-  secure: process.env.SMTP_SECURE !== "false",
-  auth: {
-    user: process.env.SMTP_USER!,
-    pass: process.env.SMTP_PASS!,
-  },
-});
+import { getTransporter } from "./transport";
+
+import type { EmailTemplateName, TemplatePropsMap } from "./index";
+import { renderEmail } from "./index";
 
 export async function sendEmail({
   to,
@@ -24,7 +16,7 @@ export async function sendEmail({
   text: string;
   html?: string;
 }) {
-  return transporter.sendMail({
+  return getTransporter().sendMail({
     from: '"OpenHospi" <noreply@openhospi.nl>',
     to,
     subject,

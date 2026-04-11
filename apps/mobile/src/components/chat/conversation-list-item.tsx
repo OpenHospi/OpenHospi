@@ -122,23 +122,23 @@ export function ConversationListItem({
 
   if (Platform.OS === 'ios') {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ContextMenu } = require('@expo/ui/swift-ui');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Button: ExpoButton } = require('@expo/ui/swift-ui');
+    const { Host, ContextMenu, Button: ExpoButton } = require('@expo/ui/swift-ui');
 
     return (
-      <ContextMenu>
-        <ContextMenu.Items>
-          <ExpoButton label="Mute" systemImage="bell.slash" onPress={() => {}} />
-          <ExpoButton
-            label="Block"
-            systemImage="hand.raised"
-            role="destructive"
-            onPress={() => {}}
-          />
-        </ContextMenu.Items>
-        <ContextMenu.Trigger>{listRow}</ContextMenu.Trigger>
-      </ContextMenu>
+      <Host matchContents>
+        <ContextMenu>
+          <ContextMenu.Items>
+            <ExpoButton label="Mute" systemImage="bell.slash" onPress={() => {}} />
+            <ExpoButton
+              label="Block"
+              systemImage="hand.raised"
+              role="destructive"
+              onPress={() => {}}
+            />
+          </ContextMenu.Items>
+          <ContextMenu.Trigger>{listRow}</ContextMenu.Trigger>
+        </ContextMenu>
+      </Host>
     );
   }
 

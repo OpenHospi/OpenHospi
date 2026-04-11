@@ -27,21 +27,23 @@ function IOSPicker({
   changeLanguage: (lng: string) => void;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Menu, Button: ExpoButton } = require('@expo/ui/swift-ui');
+  const { Host, Menu, Button: ExpoButton } = require('@expo/ui/swift-ui');
 
   return (
-    <Menu label="Language" systemImage="globe">
-      {SUPPORTED_LOCALES.map((loc) => (
-        <ExpoButton
-          key={loc}
-          label={LOCALE_CONFIG[loc].name}
-          onPress={() => {
-            hapticLight();
-            changeLanguage(loc);
-          }}
-        />
-      ))}
-    </Menu>
+    <Host matchContents>
+      <Menu label="Language" systemImage="globe">
+        {SUPPORTED_LOCALES.map((loc) => (
+          <ExpoButton
+            key={loc}
+            label={LOCALE_CONFIG[loc].name}
+            onPress={() => {
+              hapticLight();
+              changeLanguage(loc);
+            }}
+          />
+        ))}
+      </Menu>
+    </Host>
   );
 }
 

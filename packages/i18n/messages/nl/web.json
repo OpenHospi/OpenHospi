@@ -471,7 +471,7 @@
             {
               "name": "Sentry",
               "description": "Crashrapportage & foutmonitoring (EU)",
-              "current": "€0/mnd (Developer)",
+              "current": "€0/mnd (Gesponsord Business)",
               "atScale": "~€26/mnd (Team)"
             }
           ]
@@ -498,18 +498,13 @@
           ]
         },
         {
-          "name": "App Stores",
-          "description": "Publicatie in iOS en Android app stores",
+          "name": "App Store",
+          "description": "Publicatie in de iOS App Store",
           "items": [
             {
               "name": "Apple Developer Program",
               "description": "Vereist voor iOS App Store",
-              "cost": "€99/jr"
-            },
-            {
-              "name": "Google Play Developer",
-              "description": "Vereist voor Play Store",
-              "cost": "€25 (eenmalig)"
+              "cost": "€0/jr (Kwijtgescholden)"
             }
           ]
         }
@@ -544,7 +539,7 @@
         },
         {
           "name": "Sentry",
-          "current": "€0",
+          "current": "€0 (gesponsord)",
           "atScale": "~€312"
         },
         {
@@ -554,18 +549,52 @@
         },
         {
           "name": "Apple Developer",
-          "current": "€99",
-          "atScale": "€99"
-        },
-        {
-          "name": "Google Play",
-          "current": "€25",
-          "atScale": "—"
+          "current": "€0 (kwijtgescholden)",
+          "atScale": "€0 (kwijtgescholden)"
         }
       ],
       "totalLabel": "Totaal per jaar",
-      "currentTotal": "~€174/jr",
-      "atScaleTotal": "~€1.187/jr (~€99/mnd)"
+      "currentTotal": "~€50/jr",
+      "atScaleTotal": "~€1.088/jr (~€91/mnd)"
+    },
+    "waived": {
+      "title": "Kwijtgescholden kosten",
+      "subtitle": "Deze diensten worden gesponsord of gedoneerd, waardoor OpenHospi aanzienlijk bespaart.",
+      "badge": "Gesponsord",
+      "items": [
+        {
+          "name": "Sentry",
+          "description": "Crashrapportage en foutmonitoring (EU)",
+          "normalCost": "~$80/mnd",
+          "sponsor": "Gesponsord Business-plan"
+        },
+        {
+          "name": "Apple Developer Program",
+          "description": "Vereist voor publicatie in de iOS App Store",
+          "normalCost": "€99/jr",
+          "sponsor": "Kwijtgescholden voor non-profits"
+        },
+        {
+          "name": "Google Workspace",
+          "description": "E-mail, cloudopslag en samenwerkingstools",
+          "normalCost": "~€5,75/gebruiker/mnd",
+          "sponsor": "Non-profit abonnement"
+        },
+        {
+          "name": "GitHub Team",
+          "description": "Versiebeheer, CI/CD en projectbeheer",
+          "normalCost": "~$4/gebruiker/mnd",
+          "sponsor": "Kwijtgescholden voor non-profits"
+        },
+        {
+          "name": "Crowdin",
+          "description": "Vertaalbeheer voor opensourceprojecten",
+          "normalCost": "~$100/mnd",
+          "sponsor": "Gratis voor open source"
+        }
+      ],
+      "totalLabel": "Totaal bespaard per jaar",
+      "totalValue": "~€1.500+/jr"
     },
     "keepFree": {
       "title": "Hoe houden we het gratis?",

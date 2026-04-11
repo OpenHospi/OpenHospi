@@ -9,6 +9,7 @@ import { CostCard } from "@/components/marketing/cost-card";
 import { DonateCard } from "@/components/marketing/donate-card";
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { SponsorStrip } from "@/components/marketing/sponsor-strip";
+import { WaivedCostCard } from "@/components/marketing/waived-cost-card";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/table";
 import { routing } from "@/i18n/routing";
 import { alternatesForPath, breadcrumbJsonLd, faqJsonLd } from "@/lib/marketing/seo";
+import { WAIVED_SPONSORS } from "@/lib/marketing/sponsors";
 
 export async function generateMetadata({
   params,
@@ -37,10 +39,7 @@ export async function generateMetadata({
 }
 
 const groupIcons: LucideIcon[] = [Cloud, Globe, Smartphone];
-const groupItemCounts = [3, 3, 2] as const;
 const pillarIcons: LucideIcon[] = [Heart, Building2, Code];
-
-const infrastructureGroupIndex = 0;
 
 export default async function CostsPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -59,8 +58,14 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
   const faqItems = tSeo.raw("faq.costs") as { question: string; answer: string }[];
   const faq = faqJsonLd(faqItems);
 
+  const groups = t.raw("breakdown.groups") as { items: unknown[] }[];
+  const summaryRows = t.raw("summary.rows") as unknown[];
+  const pillars = t.raw("keepFree.pillars") as unknown[];
+  const tiers = t.raw("donate.tiers") as unknown[];
+
   return (
     <>
+      {/* Safe: JSON-LD from our own i18n translations, not user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbs }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faq }} />
 
@@ -84,8 +89,10 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("breakdown.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {([0, 1, 2] as const).map((groupIndex) => {
-              const items = Array.from({ length: groupItemCounts[groupIndex] }, (_, j) => {
+            {groups.map((group, groupIndex) => {
+              const hasCurrentAtScale = "current" in (group.items[0] as Record<string, unknown>);
+
+              const items = group.items.map((_, j) => {
                 const base = {
                   name: t(
                     `breakdown.groups.${groupIndex}.items.${j}.name` as Parameters<typeof t>[0],
@@ -97,7 +104,7 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
                   ),
                 };
 
-                if (groupIndex === infrastructureGroupIndex) {
+                if (hasCurrentAtScale) {
                   return {
                     ...base,
                     current: t(
@@ -155,11 +162,17 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {([0, 1, 2, 3, 4, 5] as const).map((i) => (
+                {summaryRows.map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell className="font-medium">{t(`summary.rows.${i}.name`)}</TableCell>
-                    <TableCell className="text-right">{t(`summary.rows.${i}.current`)}</TableCell>
-                    <TableCell className="text-right">{t(`summary.rows.${i}.atScale`)}</TableCell>
+                    <TableCell className="font-medium">
+                      {t(`summary.rows.${i}.name` as Parameters<typeof t>[0])}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {t(`summary.rows.${i}.current` as Parameters<typeof t>[0])}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {t(`summary.rows.${i}.atScale` as Parameters<typeof t>[0])}
+                    </TableCell>
                   </TableRow>
                 ))}
                 <TableRow className="border-t-2 font-bold">
@@ -177,17 +190,45 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
         </div>
       </section>
 
-      {/* How we keep it free */}
+      {/* Waived costs */}
       <section className="bg-muted/30 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("waived.title")}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground">
+            {t("waived.subtitle")}
+          </p>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {WAIVED_SPONSORS.map((sponsor, i) => (
+              <WaivedCostCard
+                key={sponsor.name}
+                logoLight={sponsor.logoLight}
+                logoDark={sponsor.logoDark}
+                url={sponsor.url}
+                name={t(`waived.items.${i}.name` as Parameters<typeof t>[0])}
+                description={t(`waived.items.${i}.description` as Parameters<typeof t>[0])}
+                normalCost={t(`waived.items.${i}.normalCost` as Parameters<typeof t>[0])}
+                sponsor={t(`waived.items.${i}.sponsor` as Parameters<typeof t>[0])}
+                badge={t("waived.badge")}
+              />
+            ))}
+          </div>
+          <p className="mt-8 text-center text-lg font-semibold text-primary">
+            {t("waived.totalLabel")}: {t("waived.totalValue")}
+          </p>
+        </div>
+      </section>
+
+      {/* How we keep it free */}
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("keepFree.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
-            {([0, 1, 2] as const).map((i) => (
+            {pillars.map((_, i) => (
               <FeatureCard
                 key={i}
                 icon={pillarIcons[i]}
-                title={t(`keepFree.pillars.${i}.title`)}
-                description={t(`keepFree.pillars.${i}.description`)}
+                title={t(`keepFree.pillars.${i}.title` as Parameters<typeof t>[0])}
+                description={t(`keepFree.pillars.${i}.description` as Parameters<typeof t>[0])}
               />
             ))}
           </div>
@@ -199,13 +240,13 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("donate.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
-            {([0, 1, 2] as const).map((i) => (
+            {tiers.map((_, i) => (
               <DonateCard
                 key={i}
-                name={t(`donate.tiers.${i}.name`)}
-                price={t(`donate.tiers.${i}.price`)}
-                badge={t(`donate.tiers.${i}.badge`)}
-                description={t(`donate.tiers.${i}.description`)}
+                name={t(`donate.tiers.${i}.name` as Parameters<typeof t>[0])}
+                price={t(`donate.tiers.${i}.price` as Parameters<typeof t>[0])}
+                badge={t(`donate.tiers.${i}.badge` as Parameters<typeof t>[0])}
+                description={t(`donate.tiers.${i}.description` as Parameters<typeof t>[0])}
               />
             ))}
           </div>

@@ -117,9 +117,7 @@ export function MessageBubble({
   if (Platform.OS === 'ios') {
     // iOS: use @expo/ui SwiftUI ContextMenu
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { ContextMenu } = require('@expo/ui/swift-ui');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Button: ExpoButton } = require('@expo/ui/swift-ui');
+    const { Host, ContextMenu, Button: ExpoButton } = require('@expo/ui/swift-ui');
 
     return (
       <Animated.View
@@ -128,20 +126,22 @@ export function MessageBubble({
           alignItems: isOwn ? 'flex-end' : 'flex-start',
           marginTop: isFirstInGroup ? 8 : 2,
         }}>
-        <ContextMenu>
-          <ContextMenu.Items>
-            <ExpoButton label="Copy" systemImage="doc.on.doc" onPress={handleCopy} />
-            {isOwn && onDelete && (
-              <ExpoButton
-                label="Delete"
-                systemImage="trash"
-                role="destructive"
-                onPress={onDelete}
-              />
-            )}
-          </ContextMenu.Items>
-          <ContextMenu.Trigger>{bubbleContent}</ContextMenu.Trigger>
-        </ContextMenu>
+        <Host matchContents>
+          <ContextMenu>
+            <ContextMenu.Items>
+              <ExpoButton label="Copy" systemImage="doc.on.doc" onPress={handleCopy} />
+              {isOwn && onDelete && (
+                <ExpoButton
+                  label="Delete"
+                  systemImage="trash"
+                  role="destructive"
+                  onPress={onDelete}
+                />
+              )}
+            </ContextMenu.Items>
+            <ContextMenu.Trigger>{bubbleContent}</ContextMenu.Trigger>
+          </ContextMenu>
+        </Host>
       </Animated.View>
     );
   }

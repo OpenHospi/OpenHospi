@@ -471,7 +471,7 @@
             {
               "name": "Sentry",
               "description": "Crash reporting & error monitoring (EU)",
-              "current": "€0/mo (Developer)",
+              "current": "€0/mo (Sponsored Business)",
               "atScale": "~€26/mo (Team)"
             }
           ]
@@ -498,18 +498,13 @@
           ]
         },
         {
-          "name": "App Stores",
-          "description": "Publishing to iOS and Android app stores",
+          "name": "App Store",
+          "description": "Publishing to the iOS App Store",
           "items": [
             {
               "name": "Apple Developer Program",
               "description": "Required for iOS App Store",
-              "cost": "€99/yr"
-            },
-            {
-              "name": "Google Play Developer",
-              "description": "Required for Play Store",
-              "cost": "€25 (one-time)"
+              "cost": "€0/yr (Waived)"
             }
           ]
         }
@@ -544,7 +539,7 @@
         },
         {
           "name": "Sentry",
-          "current": "€0",
+          "current": "€0 (sponsored)",
           "atScale": "~€312"
         },
         {
@@ -554,18 +549,52 @@
         },
         {
           "name": "Apple Developer",
-          "current": "€99",
-          "atScale": "€99"
-        },
-        {
-          "name": "Google Play",
-          "current": "€25",
-          "atScale": "—"
+          "current": "€0 (waived)",
+          "atScale": "€0 (waived)"
         }
       ],
       "totalLabel": "Total per year",
-      "currentTotal": "~€174/yr",
-      "atScaleTotal": "~€1,187/yr (~€99/mo)"
+      "currentTotal": "~€50/yr",
+      "atScaleTotal": "~€1,088/yr (~€91/mo)"
+    },
+    "waived": {
+      "title": "Waived costs",
+      "subtitle": "These services are sponsored or donated, saving OpenHospi significant costs.",
+      "badge": "Sponsored",
+      "items": [
+        {
+          "name": "Sentry",
+          "description": "Crash reporting & error monitoring (EU)",
+          "normalCost": "~$80/mo",
+          "sponsor": "Sponsored Business plan"
+        },
+        {
+          "name": "Apple Developer Program",
+          "description": "Required for publishing to the iOS App Store",
+          "normalCost": "€99/yr",
+          "sponsor": "Waived for non-profits"
+        },
+        {
+          "name": "Google Workspace",
+          "description": "Email, cloud storage and collaboration tools",
+          "normalCost": "~€5.75/user/mo",
+          "sponsor": "Non-profit subscription"
+        },
+        {
+          "name": "GitHub Team",
+          "description": "Version control, CI/CD and project management",
+          "normalCost": "~$4/user/mo",
+          "sponsor": "Waived for non-profits"
+        },
+        {
+          "name": "Crowdin",
+          "description": "Translation management for open-source projects",
+          "normalCost": "~$100/mo",
+          "sponsor": "Free for open-source"
+        }
+      ],
+      "totalLabel": "Total saved per year",
+      "totalValue": "~€1,500+/yr"
     },
     "keepFree": {
       "title": "How do we keep it free?",

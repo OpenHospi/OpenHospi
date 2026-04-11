@@ -20,18 +20,27 @@ function SponsorLogo({ name, logoLight, logoDark, url }: Sponsor) {
             alt={name}
             width={120}
             height={40}
-            className="block h-10 w-auto dark:hidden"
+            className="block h-10 dark:hidden"
+            style={{ width: "auto" }}
           />
           <Image
             src={logoDark}
             alt={name}
             width={120}
             height={40}
-            className="hidden h-10 w-auto dark:block"
+            className="hidden h-10 dark:block"
+            style={{ width: "auto" }}
           />
         </>
       ) : (
-        <Image src={logoLight} alt={name} width={120} height={40} className="h-10 w-auto" />
+        <Image
+          src={logoLight}
+          alt={name}
+          width={120}
+          height={40}
+          className="h-10"
+          style={{ width: "auto" }}
+        />
       )}
     </a>
   );

@@ -31,11 +31,29 @@ import { requireRoomOwnership } from "@/lib/auth/server";
 import { createDraftRoom, getExistingDraft } from "@/lib/queries/rooms";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
+import { MAX_ROOMS_PER_USER } from "@openhospi/shared/constants";
+
+// ── Room limit (database-checked, not time-based) ─────────
+
+async function hasReachedRoomLimit(userId: string): Promise<boolean> {
+  const [result] = await createDrizzleSupabaseClient(userId).rls((tx) =>
+    tx
+      .select({ total: count() })
+      .from(rooms)
+      .where(
+        and(
+          eq(rooms.ownerId, userId),
+          inArray(rooms.status, [RoomStatus.draft, RoomStatus.active]),
+        ),
+      ),
+  );
+  return (result?.total ?? 0) >= MAX_ROOMS_PER_USER;
+}
 
 // ── House + Draft Creation ──────────────────────────────────
 
 export async function createHouseAndDraft(userId: string, name: string) {
-  if (!(await checkRateLimit(rateLimiters.createRoom, userId))) {
+  if (await hasReachedRoomLimit(userId)) {
     return { error: CommonError.rate_limited };
   }
 
@@ -69,7 +87,7 @@ export async function createHouseAndDraft(userId: string, name: string) {
 }
 
 export async function createDraftForHouse(userId: string, houseId: string) {
-  if (!(await checkRateLimit(rateLimiters.createRoom, userId))) {
+  if (await hasReachedRoomLimit(userId)) {
     return { error: CommonError.rate_limited };
   }
 

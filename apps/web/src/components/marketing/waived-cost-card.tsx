@@ -36,18 +36,27 @@ export function WaivedCostCard({
                   alt={name}
                   width={120}
                   height={40}
-                  className="block h-8 w-auto dark:hidden"
+                  className="block h-8 dark:hidden"
+                  style={{ width: "auto" }}
                 />
                 <Image
                   src={logoDark}
                   alt={name}
                   width={120}
                   height={40}
-                  className="hidden h-8 w-auto dark:block"
+                  className="hidden h-8 dark:block"
+                  style={{ width: "auto" }}
                 />
               </>
             ) : (
-              <Image src={logoLight} alt={name} width={120} height={40} className="h-8 w-auto" />
+              <Image
+                src={logoLight}
+                alt={name}
+                width={120}
+                height={40}
+                className="h-8"
+                style={{ width: "auto" }}
+              />
             )}
           </a>
           <Badge variant="secondary">{badge}</Badge>

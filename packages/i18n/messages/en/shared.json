@@ -828,6 +828,11 @@
         "totalHousemates": "e.g. 5",
         "searchVereniging": "Search association..."
       },
+      "addressSearch": {
+        "searchError": "Could not find addresses. Check your connection.",
+        "noResults": "No addresses found.",
+        "resolving": "Loading address details..."
+      },
       "helpers": {
         "serviceCosts": "e.g. cleaning, internet, VvE contribution"
       },

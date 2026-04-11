@@ -1,12 +1,14 @@
+import { type AddressResult } from '@openhospi/shared/pdok';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { CitySearchInput } from '@/components/forms/city-search';
+import { AddressSearchInput } from '@/components/forms/address-search';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { useMyRoom, useSaveBasicInfo } from '@/services/my-rooms';
@@ -18,17 +20,20 @@ export default function BasicInfoScreen() {
   const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const { data: room, isLoading } = useMyRoom(roomId);
   const saveBasicInfo = useSaveBasicInfo();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [city, setCity] = useState<string>('');
+  const [city, setCity] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
   const [streetName, setStreetName] = useState('');
   const [houseNumber, setHouseNumber] = useState('');
   const [postalCode, setPostalCode] = useState('');
+  const [latitude, setLatitude] = useState<number | undefined>();
+  const [longitude, setLongitude] = useState<number | undefined>();
   const [initialized, setInitialized] = useState(false);
 
   if (room && !initialized) {
@@ -42,6 +47,20 @@ export default function BasicInfoScreen() {
     setInitialized(true);
   }
 
+  function handleAddressSelect(address: AddressResult) {
+    setCity(address.city);
+    setStreetName(address.streetName);
+    setHouseNumber(address.houseNumber);
+    setPostalCode(address.postalCode);
+    setNeighborhood(address.neighborhood);
+    setLatitude(address.latitude);
+    setLongitude(address.longitude);
+  }
+
+  const addressDisplay = streetName
+    ? `${streetName} ${houseNumber}, ${postalCode} ${city}`.trim()
+    : '';
+
   const handleNext = async () => {
     try {
       await saveBasicInfo.mutateAsync({
@@ -54,18 +73,26 @@ export default function BasicInfoScreen() {
           streetName: streetName || undefined,
           houseNumber: houseNumber || undefined,
           postalCode: postalCode || undefined,
+          latitude,
+          longitude,
         },
       });
       router.push({ pathname: '/(app)/(tabs)/my-rooms/create/details', params: { roomId } });
     } catch {
-      Alert.alert(t('status.draftSaved'));
+      Alert.alert(tErrors('generic'));
     }
   };
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator color={colors.primary} />
+      <View style={styles.container}>
+        <View style={[styles.scrollContent, { padding: 16 }]}>
+          <ThemedSkeleton width="60%" height={24} />
+          <ThemedSkeleton width="100%" height={44} rounded="lg" />
+          <ThemedSkeleton width="100%" height={80} rounded="lg" />
+          <ThemedSkeleton width="100%" height={44} rounded="lg" />
+          <ThemedSkeleton width="100%" height={44} rounded="lg" />
+        </View>
       </View>
     );
   }
@@ -102,46 +129,42 @@ export default function BasicInfoScreen() {
             placeholder={t('placeholders.description')}
             multiline
             numberOfLines={4}
-            style={{ minHeight: 80, textAlignVertical: 'top' }}
+            style={styles.descriptionInput}
           />
         </View>
 
         <View style={styles.fieldGroup}>
           <ThemedText variant="subheadline" weight="500">
-            {t('fields.city')}
+            {t('fields.address')}
           </ThemedText>
-          <CitySearchInput value={city} onSelect={setCity} placeholder={t('fields.city')} />
+          <AddressSearchInput
+            displayValue={addressDisplay}
+            onSelect={handleAddressSelect}
+            placeholder={t('placeholders.searchAddress')}
+          />
+          {addressDisplay ? (
+            <View style={styles.addressDetails}>
+              <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                {streetName} {houseNumber}
+              </ThemedText>
+              <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                {postalCode} {city}
+              </ThemedText>
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.fieldGroup}>
           <ThemedText variant="subheadline" weight="500">
-            {t('wizard.sections.location')}
+            {t('fields.neighborhood')}{' '}
+            <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+              ({tCommon('optional')})
+            </ThemedText>
           </ThemedText>
           <ThemedInput
             value={neighborhood}
             onChangeText={setNeighborhood}
             placeholder={t('placeholders.neighborhood')}
-          />
-          <View style={styles.rowFields}>
-            <View style={styles.flex2}>
-              <ThemedInput
-                value={streetName}
-                onChangeText={setStreetName}
-                placeholder={t('fields.streetName')}
-              />
-            </View>
-            <View style={styles.flex1}>
-              <ThemedInput
-                value={houseNumber}
-                onChangeText={setHouseNumber}
-                placeholder={t('fields.houseNumber')}
-              />
-            </View>
-          </View>
-          <ThemedInput
-            value={postalCode}
-            onChangeText={setPostalCode}
-            placeholder={t('fields.postalCode')}
           />
         </View>
       </ScrollView>
@@ -164,13 +187,11 @@ export default function BasicInfoScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
   fieldGroup: { gap: 8 },
-  rowFields: { flexDirection: 'row', gap: 8 },
-  flex2: { flex: 2 },
-  flex1: { flex: 1 },
+  descriptionInput: { minHeight: 80, textAlignVertical: 'top' },
+  addressDetails: { gap: 2, paddingHorizontal: 4 },
   footer: {
     padding: 16,
     borderTopWidth: StyleSheet.hairlineWidth,

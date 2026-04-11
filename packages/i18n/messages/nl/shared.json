@@ -827,6 +827,11 @@
         "totalHousemates": "bijv. 5",
         "searchVereniging": "Zoek vereniging..."
       },
+      "addressSearch": {
+        "searchError": "Kon geen adressen vinden. Controleer je verbinding.",
+        "noResults": "Geen adressen gevonden.",
+        "resolving": "Adresgegevens laden..."
+      },
       "helpers": {
         "serviceCosts": "Bijv. schoonmaak, internet, VvE-bijdrage"
       },

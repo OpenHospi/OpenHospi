@@ -827,6 +827,11 @@
         "totalHousemates": "z.B. 5",
         "searchVereniging": "Verein suchen..."
       },
+      "addressSearch": {
+        "searchError": "Adressen konnten nicht geladen werden. Prüfe deine Verbindung.",
+        "noResults": "Keine Adressen gefunden.",
+        "resolving": "Adressdetails werden geladen..."
+      },
       "helpers": {
         "serviceCosts": "z.B. Reinigung, Internet, VvE-Beitrag"
       },

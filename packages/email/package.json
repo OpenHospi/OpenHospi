@@ -5,7 +5,8 @@
   "type": "module",
   "license": "AGPL-3.0-only",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./send": "./src/send.ts"
   },
   "scripts": {
     "dev": "email dev -p 3080",
@@ -19,6 +20,7 @@
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
     "next-intl": "^4.8.3",
+    "nodemailer": "^8.0.5",
     "@react-email/components": "^1.0.10",
     "@react-email/render": "^2.0.4",
     "next": "16.1.7",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@openhospi/eslint-config": "workspace:*",
     "@react-email/preview-server": "5.2.10",
+    "@types/nodemailer": "^8.0.0",
     "@types/react": "^19.2.14",
     "eslint": "catalog:",
     "prettier": "catalog:",

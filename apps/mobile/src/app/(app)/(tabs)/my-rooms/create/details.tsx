@@ -1,28 +1,26 @@
 import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Euro } from 'lucide-react-native';
-import { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  type Option,
-} from '@/components/ui/select';
-import { Text } from '@/components/ui/text';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeSelect } from '@/components/primitives/native-select';
+import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSaveDetails } from '@/services/my-rooms';
 
 export default function DetailsScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
+  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
@@ -44,6 +42,12 @@ export default function DetailsScreen() {
   const [totalHousemates, setTotalHousemates] = useState('');
   const [initialized, setInitialized] = useState(false);
 
+  // Sheet refs for pickers
+  const utilitiesSheetRef = useRef<BottomSheetModal>(null);
+  const houseTypeSheetRef = useRef<BottomSheetModal>(null);
+  const furnishingSheetRef = useRef<BottomSheetModal>(null);
+  const rentalTypeSheetRef = useRef<BottomSheetModal>(null);
+
   if (room && !initialized) {
     setRentPrice(room.rentPrice ? String(room.rentPrice) : '');
     setDeposit(room.deposit ? String(room.deposit) : '');
@@ -61,31 +65,6 @@ export default function DetailsScreen() {
     setTotalHousemates(room.totalHousemates ? String(room.totalHousemates) : '');
     setInitialized(true);
   }
-
-  const utilitiesOption: Option | undefined = useMemo(
-    () => ({
-      value: utilitiesIncluded,
-      label: t(`utilities.${utilitiesIncluded}` as never),
-    }),
-    [utilitiesIncluded, t]
-  );
-
-  const rentalTypeOption: Option | undefined = useMemo(
-    () =>
-      rentalType ? { value: rentalType, label: tEnums(`rental_type.${rentalType}`) } : undefined,
-    [rentalType, tEnums]
-  );
-
-  const houseTypeOption: Option | undefined = useMemo(
-    () => (houseType ? { value: houseType, label: tEnums(`house_type.${houseType}`) } : undefined),
-    [houseType, tEnums]
-  );
-
-  const furnishingOption: Option | undefined = useMemo(
-    () =>
-      furnishing ? { value: furnishing, label: tEnums(`furnishing.${furnishing}`) } : undefined,
-    [furnishing, tEnums]
-  );
 
   const handleNext = async () => {
     try {
@@ -116,78 +95,73 @@ export default function DetailsScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={styles.container}>
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 100 }}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
-        <Text className="text-foreground text-lg font-semibold">{t('wizard.steps.details')}</Text>
-        <Text variant="muted" className="text-sm">
+        <ThemedText variant="headline">{t('wizard.steps.details')}</ThemedText>
+        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('wizard.stepDescriptions.step2')}
-        </Text>
+        </ThemedText>
 
         {/* Pricing */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.pricing')}</Label>
-          <View style={{ gap: 8 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Euro size={16} className="text-muted-foreground" />
-              <View style={{ flex: 1 }}>
-                <Input
-                  value={rentPrice}
-                  onChangeText={setRentPrice}
-                  placeholder={t('placeholders.rentPrice')}
-                  keyboardType="numeric"
-                />
-              </View>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.pricing')}
+          </ThemedText>
+          <View style={styles.euroRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
+                value={rentPrice}
+                onChangeText={setRentPrice}
+                placeholder={t('placeholders.rentPrice')}
+                keyboardType="numeric"
+              />
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Euro size={16} className="text-muted-foreground" />
-              <View style={{ flex: 1 }}>
-                <Input
-                  value={deposit}
-                  onChangeText={setDeposit}
-                  placeholder={t('placeholders.deposit')}
-                  keyboardType="numeric"
-                />
-              </View>
+          </View>
+          <View style={styles.euroRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
+                value={deposit}
+                onChangeText={setDeposit}
+                placeholder={t('placeholders.deposit')}
+                keyboardType="numeric"
+              />
             </View>
           </View>
         </View>
 
         {/* Utilities */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.utilitiesIncluded')}</Label>
-          <Select
-            value={utilitiesOption}
-            onValueChange={(option) => option && setUtilitiesIncluded(option.value)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.utilitiesIncluded')} />
-            </SelectTrigger>
-            <SelectContent>
-              {UtilitiesIncluded.values.map((v) => (
-                <SelectItem key={v} value={v} label={t(`utilities.${v}` as never)}>
-                  {t(`utilities.${v}` as never)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.utilitiesIncluded')}
+          </ThemedText>
+          <NativeSelect
+            value={utilitiesIncluded}
+            options={UtilitiesIncluded.values.map((v: string) => ({
+              value: v,
+              label: t(`utilities.${v}` as never),
+            }))}
+            onValueChange={setUtilitiesIncluded}
+            onPress={() => utilitiesSheetRef.current?.present()}
+          />
         </View>
 
         {utilitiesIncluded !== UtilitiesIncluded.included && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Euro size={16} className="text-muted-foreground" />
-            <View style={{ flex: 1 }}>
-              <Input
+          <View style={styles.euroRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={serviceCosts}
                 onChangeText={setServiceCosts}
                 placeholder={t('placeholders.serviceCosts')}
@@ -198,10 +172,10 @@ export default function DetailsScreen() {
         )}
 
         {utilitiesIncluded === UtilitiesIncluded.estimated && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Euro size={16} className="text-muted-foreground" />
-            <View style={{ flex: 1 }}>
-              <Input
+          <View style={styles.euroRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={estimatedUtilitiesCosts}
                 onChangeText={setEstimatedUtilitiesCosts}
                 placeholder={t('placeholders.estimatedUtilitiesCosts')}
@@ -212,15 +186,17 @@ export default function DetailsScreen() {
         )}
 
         {/* Property */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.property')}</Label>
-          <Input
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.property')}
+          </ThemedText>
+          <ThemedInput
             value={roomSizeM2}
             onChangeText={setRoomSizeM2}
             placeholder={t('placeholders.roomSize')}
             keyboardType="numeric"
           />
-          <Input
+          <ThemedInput
             value={totalHousemates}
             onChangeText={setTotalHousemates}
             placeholder={t('placeholders.totalHousemates')}
@@ -229,65 +205,61 @@ export default function DetailsScreen() {
         </View>
 
         {/* House Type */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.houseType')}</Label>
-          <Select
-            value={houseTypeOption}
-            onValueChange={(option) => setHouseType(option?.value ?? null)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.houseType')} />
-            </SelectTrigger>
-            <SelectContent>
-              {HouseType.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`house_type.${v}`)}>
-                  {tEnums(`house_type.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.houseType')}
+          </ThemedText>
+          <NativeSelect
+            value={houseType ?? undefined}
+            placeholder={t('fields.houseType')}
+            options={HouseType.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`house_type.${v}`),
+            }))}
+            onValueChange={(v) => setHouseType(v)}
+            onPress={() => houseTypeSheetRef.current?.present()}
+          />
         </View>
 
         {/* Furnishing */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.furnishing')}</Label>
-          <Select
-            value={furnishingOption}
-            onValueChange={(option) => setFurnishing(option?.value ?? null)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.furnishing')} />
-            </SelectTrigger>
-            <SelectContent>
-              {Furnishing.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`furnishing.${v}`)}>
-                  {tEnums(`furnishing.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.furnishing')}
+          </ThemedText>
+          <NativeSelect
+            value={furnishing ?? undefined}
+            placeholder={t('fields.furnishing')}
+            options={Furnishing.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`furnishing.${v}`),
+            }))}
+            onValueChange={(v) => setFurnishing(v)}
+            onPress={() => furnishingSheetRef.current?.present()}
+          />
         </View>
 
         {/* Rental Type */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.rentalType')}</Label>
-          <Select
-            value={rentalTypeOption}
-            onValueChange={(option) => setRentalType(option?.value ?? null)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.rentalType')} />
-            </SelectTrigger>
-            <SelectContent>
-              {RentalType.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`rental_type.${v}`)}>
-                  {tEnums(`rental_type.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.rentalType')}
+          </ThemedText>
+          <NativeSelect
+            value={rentalType ?? undefined}
+            placeholder={t('fields.rentalType')}
+            options={RentalType.values.map((v: string) => ({
+              value: v,
+              label: tEnums(`rental_type.${v}`),
+            }))}
+            onValueChange={(v) => setRentalType(v)}
+            onPress={() => rentalTypeSheetRef.current?.present()}
+          />
         </View>
 
         {/* Availability */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.availability')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.availability')}
+          </ThemedText>
           <DatePickerSheet
             title={t('fields.availableFrom')}
             value={availableFrom}
@@ -306,16 +278,128 @@ export default function DetailsScreen() {
       </ScrollView>
 
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button onPress={handleNext} disabled={saveDetails.isPending}>
-          {saveDetails.isPending ? (
-            <ActivityIndicator className="accent-primary-foreground" />
-          ) : (
-            <Text>{tCommon('next')}</Text>
-          )}
-        </Button>
+        style={[
+          styles.footer,
+          { borderTopColor: colors.separator, paddingBottom: Math.max(bottom, 16) },
+        ]}>
+        <ThemedButton onPress={handleNext} loading={saveDetails.isPending}>
+          {tCommon('next')}
+        </ThemedButton>
       </View>
+
+      {/* Picker sheets */}
+      <PickerSheet
+        ref={utilitiesSheetRef}
+        options={UtilitiesIncluded.values.map((v: string) => ({
+          value: v,
+          label: t(`utilities.${v}` as never),
+        }))}
+        selected={utilitiesIncluded}
+        onSelect={(v) => {
+          setUtilitiesIncluded(v);
+          utilitiesSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={houseTypeSheetRef}
+        options={HouseType.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`house_type.${v}`),
+        }))}
+        selected={houseType}
+        onSelect={(v) => {
+          setHouseType(v);
+          houseTypeSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={furnishingSheetRef}
+        options={Furnishing.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`furnishing.${v}`),
+        }))}
+        selected={furnishing}
+        onSelect={(v) => {
+          setFurnishing(v);
+          furnishingSheetRef.current?.dismiss();
+        }}
+      />
+      <PickerSheet
+        ref={rentalTypeSheetRef}
+        options={RentalType.values.map((v: string) => ({
+          value: v,
+          label: tEnums(`rental_type.${v}`),
+        }))}
+        selected={rentalType}
+        onSelect={(v) => {
+          setRentalType(v);
+          rentalTypeSheetRef.current?.dismiss();
+        }}
+      />
     </View>
   );
 }
+
+function PickerSheet({
+  ref,
+  options,
+  selected,
+  onSelect,
+}: {
+  ref: React.Ref<BottomSheetModal>;
+  options: { value: string; label: string }[];
+  selected: string | null;
+  onSelect: (value: string) => void;
+}) {
+  const { colors } = useTheme();
+
+  return (
+    <AppBottomSheetModal ref={ref} enableDynamicSizing scrollable={false}>
+      <View style={styles.pickerContent}>
+        {options.map((opt) => (
+          <Pressable
+            key={opt.value}
+            onPress={() => {
+              hapticLight();
+              onSelect(opt.value);
+            }}
+            android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+            style={[
+              styles.pickerRow,
+              selected === opt.value ? { backgroundColor: colors.accent } : undefined,
+            ]}>
+            <ThemedText
+              variant="body"
+              weight={selected === opt.value ? '600' : '400'}
+              color={selected === opt.value ? colors.primary : colors.foreground}>
+              {opt.label}
+            </ThemedText>
+          </Pressable>
+        ))}
+      </View>
+    </AppBottomSheetModal>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  scroll: { flex: 1 },
+  scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
+  fieldGroup: { gap: 8 },
+  euroRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  flex1: { flex: 1 },
+  footer: {
+    padding: 16,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  pickerContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  pickerRow: {
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+});

@@ -1,23 +1,36 @@
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 
 export default function KeyRecoveryScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
+  const { colors } = useTheme();
   const router = useRouter();
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 }}>
-      <Text className="text-foreground font-semibold">{t('e2ee_title')}</Text>
-      <Text variant="muted" className="text-center text-sm">
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ThemedText variant="headline">{t('e2ee_title')}</ThemedText>
+      <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.description}>
         {t('e2ee_description')}
-      </Text>
-      <Button onPress={() => router.back()}>
-        <Text>{t('use_pin')}</Text>
-      </Button>
+      </ThemedText>
+      <ThemedButton onPress={() => router.back()}>{t('use_pin')}</ThemedButton>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
+  },
+  description: {
+    textAlign: 'center',
+  },
+});

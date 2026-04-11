@@ -2,6 +2,7 @@
   "common": {
     "appName": "OpenHospi",
     "loading": "Laden...",
+    "searching": "Zoeken...",
     "error": "Er is iets misgegaan",
     "retry": "Opnieuw proberen",
     "errors": {
@@ -64,7 +65,10 @@
       "notSet": "Niet ingesteld",
       "email": "E-mail",
       "total": "Totaal",
-      "confirm": "Bevestigen"
+      "confirm": "Bevestigen",
+      "loading": "Laden...",
+      "uploading": "Uploaden...",
+      "uploaded": "Geupload"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",
@@ -658,6 +662,15 @@
         "start_fresh_warning": "Opnieuw beginnen genereert nieuwe versleutelingssleutels. Je verliest toegang tot oude chatberichten.",
         "start_fresh_confirm": "Weet je het zeker?",
         "no_backup": "Geen back-up gevonden. Stel nieuwe versleutelingssleutels in."
+      },
+      "errors": {
+        "requiredFields": "Vul alle verplichte velden in.",
+        "minPhotos": "Upload minimaal een foto."
+      },
+      "citySearch": {
+        "searching": "Zoeken...",
+        "searchError": "Kon geen steden laden. Controleer je verbinding.",
+        "noResults": "Geen steden gevonden."
       }
     },
     "rooms": {
@@ -813,6 +826,11 @@
         "roomSize": "bijv. 12",
         "totalHousemates": "bijv. 5",
         "searchVereniging": "Zoek vereniging..."
+      },
+      "addressSearch": {
+        "searchError": "Kon geen adressen vinden. Controleer je verbinding.",
+        "noResults": "Geen adressen gevonden.",
+        "resolving": "Adresgegevens laden..."
       },
       "helpers": {
         "serviceCosts": "Bijv. schoonmaak, internet, VvE-bijdrage"

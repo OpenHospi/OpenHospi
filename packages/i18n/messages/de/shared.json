@@ -2,6 +2,7 @@
   "common": {
     "appName": "OpenHospi",
     "loading": "Laden...",
+    "searching": "Suchen...",
     "error": "Etwas ist schiefgelaufen",
     "retry": "Erneut versuchen",
     "errors": {
@@ -64,7 +65,10 @@
       "notSet": "Nicht festgelegt",
       "email": "E-Mail",
       "total": "Gesamt",
-      "confirm": "Bestätigen"
+      "confirm": "Bestätigen",
+      "loading": "Laden...",
+      "uploading": "Hochladen...",
+      "uploaded": "Hochgeladen"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -658,6 +662,15 @@
         "start_fresh_warning": "Neu beginnen generiert neue Verschlüsselungsschlüssel. Du verlierst den Zugriff auf alte Chatnachrichten.",
         "start_fresh_confirm": "Bist du sicher?",
         "no_backup": "Kein Backup gefunden. Richte neue Verschlüsselungsschlüssel ein."
+      },
+      "errors": {
+        "requiredFields": "Bitte alle Pflichtfelder ausfüllen.",
+        "minPhotos": "Bitte lade mindestens ein Foto hoch."
+      },
+      "citySearch": {
+        "searching": "Suchen...",
+        "searchError": "Städte konnten nicht geladen werden. Prüfe deine Verbindung.",
+        "noResults": "Keine Städte gefunden."
       }
     },
     "rooms": {
@@ -813,6 +826,11 @@
         "roomSize": "z.B. 12",
         "totalHousemates": "z.B. 5",
         "searchVereniging": "Verein suchen..."
+      },
+      "addressSearch": {
+        "searchError": "Adressen konnten nicht geladen werden. Prüfe deine Verbindung.",
+        "noResults": "Keine Adressen gefunden.",
+        "resolving": "Adressdetails werden geladen..."
       },
       "helpers": {
         "serviceCosts": "z.B. Reinigung, Internet, VvE-Beitrag"

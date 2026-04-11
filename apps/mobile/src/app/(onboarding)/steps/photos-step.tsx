@@ -1,16 +1,17 @@
 import { MAX_PROFILE_PHOTOS } from '@openhospi/shared/constants';
 import * as ImagePicker from 'expo-image-picker';
 import { useImperativeHandle, useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Card } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
-import type { StepHandle } from '@/components/onboarding-types';
+import type { StepHandle } from '@/components/shared/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;
@@ -40,7 +41,11 @@ function buildInitialSlots(profile: ProfileWithPhotos | undefined): PhotoSlot[] 
 }
 
 export default function PhotosStep({ ref, onNext, profile }: Props) {
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
+  const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const [slots, setSlots] = useState<PhotoSlot[]>(() => buildInitialSlots(profile));
   const uploadPhoto = useUploadProfilePhoto();
@@ -49,7 +54,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
 
   function handleSubmit() {
     if (!hasAtLeastOnePhoto) {
-      Alert.alert('Please upload at least one photo.');
+      Alert.alert(tOnboarding('errors.minPhotos'));
       return;
     }
     onNext();
@@ -97,60 +102,51 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
             next[slotIndex] = null;
             return next;
           });
-          Alert.alert('Upload failed. Please try again.');
+          Alert.alert(tErrors('uploadFailed'));
         },
       }
     );
   }
 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingBottom: 32 }}>
-      <View style={{ gap: 12 }}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <View style={styles.slotList}>
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];
           return (
             <Pressable key={key} onPress={() => pickPhoto(index)} disabled={photo?.uploading}>
-              <Card
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: 12,
-                  paddingVertical: 12,
-                }}>
-                {photo?.uri ? (
-                  <Image
-                    source={{ uri: photo.uri }}
-                    style={{ height: 64, width: 64, borderRadius: 8 }}
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <View
-                    style={{
-                      height: 64,
-                      width: 64,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 8,
-                    }}
-                    className="bg-muted">
-                    <Text variant="muted" className="text-2xl">
-                      +
-                    </Text>
-                  </View>
-                )}
-                <View style={{ flex: 1 }}>
-                  <Text className="text-card-foreground text-sm font-medium">{t(key)}</Text>
-                  {photo?.uploading && (
-                    <Text variant="muted" className="text-xs">
-                      Uploading...
-                    </Text>
+              <GroupedSection style={styles.slotCard}>
+                <View style={styles.slotRow}>
+                  {photo?.uri ? (
+                    <Image
+                      source={{ uri: photo.uri }}
+                      style={styles.thumbnail}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View style={[styles.thumbnailPlaceholder, { backgroundColor: colors.muted }]}>
+                      <ThemedText variant="title2" color={colors.tertiaryForeground}>
+                        +
+                      </ThemedText>
+                    </View>
                   )}
-                  {photo?.uploaded && <Text className="text-primary text-xs">Uploaded</Text>}
+                  <View style={styles.slotLabel}>
+                    <ThemedText variant="subheadline" weight="500">
+                      {t(key)}
+                    </ThemedText>
+                    {photo?.uploading && (
+                      <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                        {tCommon('uploading')}
+                      </ThemedText>
+                    )}
+                    {photo?.uploaded && (
+                      <ThemedText variant="caption1" color={colors.primary}>
+                        {tCommon('uploaded')}
+                      </ThemedText>
+                    )}
+                  </View>
                 </View>
-              </Card>
+              </GroupedSection>
             </Pressable>
           );
         })}
@@ -158,3 +154,41 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    gap: 16,
+    paddingBottom: 32,
+  },
+  slotList: {
+    gap: 12,
+  },
+  slotCard: {
+    marginHorizontal: 0,
+  },
+  slotRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 12,
+  },
+  thumbnail: {
+    height: 64,
+    width: 64,
+    borderRadius: 8,
+  },
+  thumbnailPlaceholder: {
+    height: 64,
+    width: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  slotLabel: {
+    flex: 1,
+  },
+});

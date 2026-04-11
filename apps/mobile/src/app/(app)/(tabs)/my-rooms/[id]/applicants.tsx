@@ -1,23 +1,25 @@
-import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
-import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge } from '@/components/ui/badge';
-import { Text } from '@/components/ui/text';
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useMarkApplicationsSeen, useRoomApplicants } from '@/services/my-rooms';
 import type { RoomApplicant } from '@openhospi/shared/api-types';
+import type { BadgeVariant } from '@/components/primitives/themed-badge';
 
-const STATUS_BADGE_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
+const STATUS_BADGE_VARIANT: Record<string, BadgeVariant> = {
   sent: 'outline',
   seen: 'secondary',
-  liked: 'default',
+  liked: 'primary',
   maybe: 'secondary',
   rejected: 'destructive',
-  hospi: 'default',
-  accepted: 'default',
+  hospi: 'primary',
+  accepted: 'primary',
   not_chosen: 'destructive',
 };
 
@@ -26,6 +28,7 @@ export default function ApplicantsScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.applicants' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
+  const { colors } = useTheme();
 
   const { data: applicants, isLoading } = useRoomApplicants(id);
   const markSeen = useMarkApplicationsSeen();
@@ -40,22 +43,18 @@ export default function ApplicantsScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   if (!applicants || applicants.length === 0) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}
-        className="bg-background">
-        <Text variant="muted" className="text-center text-base">
+      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
+        <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
           {t('empty')}
-        </Text>
+        </ThemedText>
       </View>
     );
   }
@@ -73,40 +72,32 @@ export default function ApplicantsScreen() {
             params: { id, applicantUserId: item.userId },
           })
         }>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            gap: 12,
-          }}
-          className="border-border border-b">
-          <View className="bg-muted overflow-hidden rounded-full" style={{ width: 48, height: 48 }}>
-            {avatarUri && <Image source={{ uri: avatarUri }} style={{ width: 48, height: 48 }} />}
-          </View>
-          <View style={{ flex: 1, gap: 2 }}>
-            <Text className="text-foreground font-semibold">
+        <View style={[styles.applicantRow, { borderBottomColor: colors.border }]}>
+          <ThemedAvatar source={avatarUri} fallback={item.firstName.charAt(0)} size={48} />
+          <View style={styles.applicantInfo}>
+            <ThemedText variant="body" weight="600">
               {item.firstName} {item.lastName}
-            </Text>
+            </ThemedText>
             {item.studyProgram && (
-              <Text variant="muted" className="text-sm">
+              <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                 {item.studyProgram}
-              </Text>
+              </ThemedText>
             )}
-            <Text variant="muted" className="text-xs">
+            <ThemedText variant="caption1" color={colors.tertiaryForeground}>
               {t('applied')} {new Date(item.appliedAt).toLocaleDateString()}
-            </Text>
+            </ThemedText>
           </View>
-          <Badge variant={STATUS_BADGE_VARIANT[item.status] ?? 'outline'}>
-            <Text>{tEnums(`application_status.${item.status}`)}</Text>
-          </Badge>
+          <ThemedBadge
+            variant={STATUS_BADGE_VARIANT[item.status] ?? 'outline'}
+            label={tEnums(`application_status.${item.status}`)}
+          />
         </View>
       </Pressable>
     );
   };
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
       <FlatList
         data={applicants}
         keyExtractor={(item) => item.applicationId}
@@ -115,3 +106,34 @@ export default function ApplicantsScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  applicantRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  applicantInfo: {
+    flex: 1,
+    gap: 2,
+  },
+});

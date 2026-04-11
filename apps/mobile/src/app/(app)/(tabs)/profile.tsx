@@ -1,20 +1,24 @@
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { getInstitution } from '@openhospi/inacademia';
 import { Bell, Settings } from 'lucide-react-native';
 import { useMemo } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Text } from '@/components/ui/text';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ProfileFieldRow } from '@/components/profile-field-row';
-import { ProfileSectionCard } from '@/components/profile-section-card';
+import { Platform, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
+
+import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { ProfileFieldRow } from '@/components/profile/profile-field-row';
+import { ProfileSectionCard } from '@/components/profile/profile-section-card';
+import { useTheme } from '@/design';
+import { STAGGER_DELAY } from '@/lib/animations';
+import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -26,9 +30,10 @@ export default function ProfileScreen() {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
+  const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
 
-  const { data: profile, isPending } = useProfile();
+  const { data: profile, isPending, refetch, isRefetching } = useProfile();
   const { i18n } = useTranslation();
   const institution = useMemo(
     () => (profile ? getInstitution(profile.institutionDomain) : null),
@@ -38,23 +43,44 @@ export default function ProfileScreen() {
     ? institution.name[i18n.language === 'nl' ? 'nl' : 'en']
     : null;
 
+  const handleRefresh = () => {
+    hapticPullToRefreshSnap();
+    refetch();
+  };
+
   if (isPending) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
+      <>
+        <Stack.Screen
+          options={{
+            headerTitle: t('title'),
+            headerLargeTitle: true,
+            ...(Platform.OS === 'ios'
+              ? { headerTransparent: true, headerBlurEffect: 'regular' }
+              : undefined),
+          }}
+        />
+        <View style={styles.loadingContainer}>
+          <ThemedSkeleton width={96} height={96} circle />
+          <View style={styles.loadingLines}>
+            <ThemedSkeleton width="50%" height={22} />
+            <ThemedSkeleton width="30%" height={14} />
+          </View>
+        </View>
+      </>
     );
   }
 
   if (!profile) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
-        <Text variant="muted">Profile not found</Text>
-      </SafeAreaView>
+      <>
+        <Stack.Screen options={{ headerTitle: t('title') }} />
+        <View style={styles.loadingContainer}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+            Profile not found
+          </ThemedText>
+        </View>
+      </>
     );
   }
 
@@ -63,180 +89,179 @@ export default function ProfileScreen() {
     : null;
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['top']}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingHorizontal: 16,
-          paddingTop: 8,
-          paddingBottom: 8,
-        }}>
-        <Text className="text-foreground text-2xl font-bold tracking-tight">{t('title')}</Text>
-        <Pressable onPress={() => router.push('/(app)/settings')}>
-          <Settings size={24} className="text-muted-foreground" />
-        </Pressable>
-      </View>
-
+    <>
+      <Stack.Screen
+        options={{
+          headerTitle: t('title'),
+          headerLargeTitle: true,
+          ...(Platform.OS === 'ios'
+            ? { headerTransparent: true, headerBlurEffect: 'regular' }
+            : undefined),
+          headerRight: () => (
+            <Pressable onPress={() => router.push('/(app)/settings')} hitSlop={8}>
+              <Settings size={22} color={colors.tertiaryForeground} />
+            </Pressable>
+          ),
+        }}
+      />
       <ScrollView
-        style={{ flex: 1, paddingHorizontal: 16 }}
-        contentContainerStyle={{ paddingBottom: bottom + 16 }}>
-        <View style={{ alignItems: 'center', paddingVertical: 24 }}>
-          <Avatar alt={profile.firstName ?? 'Avatar'} className="size-24">
-            {avatarUrl ? (
-              <AvatarImage source={{ uri: avatarUrl }} />
-            ) : (
-              <AvatarFallback>
-                <Text className="text-3xl">{profile.firstName?.[0] ?? '?'}</Text>
-              </AvatarFallback>
-            )}
-          </Avatar>
-          <Text style={{ marginTop: 12 }} className="text-foreground text-2xl font-bold">
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: bottom + 16 }}
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />}>
+        <Animated.View entering={FadeInDown.duration(300)} style={styles.avatarSection}>
+          <ThemedAvatar source={avatarUrl} fallback={profile.firstName} size={96} />
+          <ThemedText variant="title2" style={styles.nameText}>
             {profile.firstName} {profile.lastName}
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              gap: 8,
-              marginTop: 8,
-            }}>
+          </ThemedText>
+          <View style={styles.badgeRow}>
             {institution && institutionName && (
-              <Tooltip delayDuration={150}>
-                <TooltipTrigger>
-                  <Badge variant="secondary" className="rounded-lg">
-                    <Text className="text-xs">{institution.short}</Text>
-                  </Badge>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <Text>{institutionName}</Text>
-                </TooltipContent>
-              </Tooltip>
+              <ThemedBadge variant="secondary" label={institution.short} />
             )}
             {profile.vereniging && (
-              <Badge variant="outline" className="rounded-lg">
-                <Text className="text-xs">{tEnums(`vereniging.${profile.vereniging}`)}</Text>
-              </Badge>
+              <ThemedBadge variant="outline" label={tEnums(`vereniging.${profile.vereniging}`)} />
             )}
           </View>
-        </View>
+        </Animated.View>
 
-        <View style={{ gap: 16 }}>
-          <ProfileSectionCard
-            title={t('title')}
-            onEdit={() => router.push('/(app)/(modals)/edit-photos')}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={{ flexDirection: 'row', gap: 12 }}>
-                {profile.photos.map((photo) => (
-                  <Image
-                    key={photo.id}
-                    source={{
-                      uri: getStoragePublicUrl(photo.url, 'profile-photos'),
-                    }}
-                    style={{ width: 80, height: 80, borderRadius: 8 }}
-                    contentFit="cover"
+        <View style={styles.sections}>
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY).duration(300)}>
+            <ProfileSectionCard
+              title={t('title')}
+              onEdit={() => router.push('/(app)/(modals)/edit-photos')}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.photoRow}>
+                  {profile.photos.map((photo) => (
+                    <Image
+                      key={photo.id}
+                      source={{ uri: getStoragePublicUrl(photo.url, 'profile-photos') }}
+                      style={styles.photoThumb}
+                      contentFit="cover"
+                      cachePolicy="disk"
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+            </ProfileSectionCard>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 2).duration(300)}>
+            <ProfileSectionCard title={t('studyInfo')}>
+              <View>
+                <ProfileFieldRow
+                  label={t('gender')}
+                  value={profile.gender ? tEnums(`gender.${profile.gender}`) : null}
+                  placeholder={tCommon('notSet')}
+                  onPress={() => router.push('/(app)/(modals)/edit-gender')}
+                />
+                <ListSeparator insetLeft={0} />
+                <ProfileFieldRow
+                  label={t('birthDate')}
+                  value={
+                    profile.birthDate ? new Date(profile.birthDate).toLocaleDateString() : null
+                  }
+                  placeholder={tCommon('notSet')}
+                  onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
+                />
+                <ListSeparator insetLeft={0} />
+                <ProfileFieldRow
+                  label={t('studyProgram')}
+                  value={profile.studyProgram || null}
+                  placeholder={tCommon('notSet')}
+                  onPress={() => router.push('/(app)/(modals)/edit-study-program')}
+                />
+                <ListSeparator insetLeft={0} />
+                <ProfileFieldRow
+                  label={t('studyLevel')}
+                  value={profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : null}
+                  placeholder={tCommon('notSet')}
+                  onPress={() => router.push('/(app)/(modals)/edit-study-level')}
+                />
+                <ListSeparator insetLeft={0} />
+                <ProfileFieldRow
+                  label={t('preferredCity')}
+                  value={profile.preferredCity ? tEnums(`city.${profile.preferredCity}`) : null}
+                  placeholder={tCommon('notSet')}
+                  onPress={() => router.push('/(app)/(modals)/edit-preferred-city')}
+                />
+                <ListSeparator insetLeft={0} />
+                <ProfileFieldRow
+                  label={t('vereniging')}
+                  value={profile.vereniging || null}
+                  placeholder={tCommon('notSet')}
+                  onPress={() => router.push('/(app)/(modals)/edit-vereniging')}
+                />
+              </View>
+            </ProfileSectionCard>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 3).duration(300)}>
+            <ProfileSectionCard
+              title={t('bio')}
+              onEdit={() => router.push('/(app)/(modals)/edit-bio')}>
+              <ThemedText variant="body" color={colors.secondaryForeground}>
+                {profile.bio || '-'}
+              </ThemedText>
+            </ProfileSectionCard>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 4).duration(300)}>
+            <ProfileSectionCard
+              title={t('languages')}
+              onEdit={() => router.push('/(app)/(modals)/edit-languages')}>
+              <View style={styles.tagRow}>
+                {(profile.languages ?? []).map((lang) => (
+                  <ThemedBadge
+                    key={lang}
+                    variant="secondary"
+                    label={tEnums(`language_enum.${lang}`)}
                   />
                 ))}
               </View>
-            </ScrollView>
-          </ProfileSectionCard>
+            </ProfileSectionCard>
+          </Animated.View>
 
-          <ProfileSectionCard title={t('studyInfo')}>
-            <View>
-              <ProfileFieldRow
-                label={t('gender')}
-                value={profile.gender ? tEnums(`gender.${profile.gender}`) : null}
-                placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/(modals)/edit-gender')}
-              />
-              <Separator />
-              <ProfileFieldRow
-                label={t('birthDate')}
-                value={profile.birthDate ? new Date(profile.birthDate).toLocaleDateString() : null}
-                placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
-              />
-              <Separator />
-              <ProfileFieldRow
-                label={t('studyProgram')}
-                value={profile.studyProgram || null}
-                placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/(modals)/edit-study-program')}
-              />
-              <Separator />
-              <ProfileFieldRow
-                label={t('studyLevel')}
-                value={profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : null}
-                placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/(modals)/edit-study-level')}
-              />
-              <Separator />
-              <ProfileFieldRow
-                label={t('preferredCity')}
-                value={profile.preferredCity ? tEnums(`city.${profile.preferredCity}`) : null}
-                placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/(modals)/edit-preferred-city')}
-              />
-              <Separator />
-              <ProfileFieldRow
-                label={t('vereniging')}
-                value={profile.vereniging || null}
-                placeholder={tCommon('notSet')}
-                onPress={() => router.push('/(app)/(modals)/edit-vereniging')}
-              />
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 5).duration(300)}>
+            <ProfileSectionCard
+              title={t('lifestyleTags')}
+              onEdit={() => router.push('/(app)/(modals)/edit-lifestyle')}>
+              <View style={styles.tagRow}>
+                {(profile.lifestyleTags ?? []).map((tag) => (
+                  <ThemedBadge
+                    key={tag}
+                    variant="secondary"
+                    label={tEnums(`lifestyle_tag.${tag}`)}
+                  />
+                ))}
+              </View>
+            </ProfileSectionCard>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 6).duration(300)}>
+            <ActivitySection />
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 7).duration(300)}>
+            <View style={styles.logoutWrapper}>
+              <ThemedButton
+                variant="destructive"
+                onPress={() => {
+                  queryClient.clear();
+                  authClient.signOut();
+                }}>
+                {tCommon('logout')}
+              </ThemedButton>
             </View>
-          </ProfileSectionCard>
-
-          <ProfileSectionCard
-            title={t('bio')}
-            onEdit={() => router.push('/(app)/(modals)/edit-bio')}>
-            <Text className="text-card-foreground text-sm">{profile.bio || '-'}</Text>
-          </ProfileSectionCard>
-
-          <ProfileSectionCard
-            title={t('languages')}
-            onEdit={() => router.push('/(app)/(modals)/edit-languages')}>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-              {(profile.languages ?? []).map((lang) => (
-                <Badge key={lang} variant="secondary" className="rounded-lg">
-                  <Text>{tEnums(`language_enum.${lang}`)}</Text>
-                </Badge>
-              ))}
-            </View>
-          </ProfileSectionCard>
-
-          <ProfileSectionCard
-            title={t('lifestyleTags')}
-            onEdit={() => router.push('/(app)/(modals)/edit-lifestyle')}>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-              {(profile.lifestyleTags ?? []).map((tag) => (
-                <Badge key={tag} variant="secondary" className="rounded-lg">
-                  <Text>{tEnums(`lifestyle_tag.${tag}`)}</Text>
-                </Badge>
-              ))}
-            </View>
-          </ProfileSectionCard>
-
-          <ActivitySection />
-
-          <Button
-            variant="destructive"
-            onPress={() => {
-              queryClient.clear();
-              authClient.signOut();
-            }}>
-            <Text>{tCommon('logout')}</Text>
-          </Button>
+          </Animated.View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 }
 
 function ActivitySection() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
+  const { colors } = useTheme();
   const { data, isLoading } = useNotifications();
   const markRead = useMarkNotificationRead();
 
@@ -244,28 +269,29 @@ function ActivitySection() {
 
   if (isLoading || notifications.length === 0) return null;
 
-  // Show up to 5 recent notifications
   const recent = notifications.slice(0, 5);
 
   return (
     <ProfileSectionCard title={t('activity')}>
-      <View style={{ gap: 8 }}>
+      <View style={styles.activityList}>
         {recent.map((item) => (
           <Pressable
             key={item.id}
             onPress={() => {
               if (!item.readAt) markRead.mutate(item.id);
             }}
-            style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
-            <Bell size={16} className={item.readAt ? 'text-muted-foreground' : 'text-primary'} />
-            <View style={{ flex: 1 }}>
-              <Text
-                className={`text-sm ${item.readAt ? 'text-muted-foreground' : 'text-foreground font-medium'}`}>
+            style={styles.activityRow}>
+            <Bell size={16} color={item.readAt ? colors.tertiaryForeground : colors.primary} />
+            <View style={styles.activityText}>
+              <ThemedText
+                variant="subheadline"
+                weight={item.readAt ? '400' : '500'}
+                color={item.readAt ? colors.tertiaryForeground : colors.foreground}>
                 {item.title}
-              </Text>
-              <Text className="text-muted-foreground text-xs" numberOfLines={2}>
+              </ThemedText>
+              <ThemedText variant="caption1" color={colors.tertiaryForeground} numberOfLines={2}>
                 {item.body}
-              </Text>
+              </ThemedText>
             </View>
           </Pressable>
         ))}
@@ -273,3 +299,62 @@ function ActivitySection() {
     </ProfileSectionCard>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  loadingLines: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  avatarSection: {
+    alignItems: 'center',
+    paddingVertical: 24,
+  },
+  nameText: {
+    marginTop: 12,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  sections: {
+    gap: 16,
+    paddingBottom: 16,
+  },
+  photoRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  photoThumb: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  tagRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  logoutWrapper: {
+    paddingHorizontal: 16,
+  },
+  activityList: {
+    gap: 8,
+  },
+  activityRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  activityText: {
+    flex: 1,
+  },
+});

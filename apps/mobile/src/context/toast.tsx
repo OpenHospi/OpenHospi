@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 
-import { ToastContainer } from '@/components/toast';
+import { ToastContainer } from '@/components/feedback/toast';
 import { hapticError, hapticSuccess } from '@/lib/haptics';
 
 type ToastType = 'success' | 'error' | 'info';

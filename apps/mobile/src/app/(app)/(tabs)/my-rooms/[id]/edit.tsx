@@ -10,25 +10,17 @@ import {
 } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Euro } from 'lucide-react-native';
-import { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { MultiChipPicker } from '@/components/multi-chip-picker';
-import { CitySearchInput } from '@/components/city-search';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  type Option,
-} from '@/components/ui/select';
-import { Text } from '@/components/ui/text';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { MultiChipPicker } from '@/components/forms/multi-chip-picker';
+import { CitySearchInput } from '@/components/forms/city-search';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useMyRoom, useUpdateRoom } from '@/services/my-rooms';
 
 export default function EditRoomScreen() {
@@ -37,6 +29,7 @@ export default function EditRoomScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { colors } = useTheme();
 
   const { data: room, isLoading } = useMyRoom(id);
   const updateRoom = useUpdateRoom();
@@ -101,11 +94,6 @@ export default function EditRoomScreen() {
     setInitialized(true);
   }
 
-  const cityOption: Option | undefined = useMemo(
-    () => (city ? { value: city, label: tEnums(`city.${city}`) } : undefined),
-    [city, tEnums]
-  );
-
   const handleSave = async () => {
     try {
       await updateRoom.mutateAsync({
@@ -149,67 +137,75 @@ export default function EditRoomScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 100 }}
+        style={styles.flex1}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
         {/* Basic Info */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.title')}</Label>
-          <Input value={title} onChangeText={setTitle} placeholder={t('placeholders.title')} />
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.title')}
+          </ThemedText>
+          <ThemedInput
+            value={title}
+            onChangeText={setTitle}
+            placeholder={t('placeholders.title')}
+          />
         </View>
 
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.description')}</Label>
-          <Input
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.description')}
+          </ThemedText>
+          <ThemedInput
             value={description}
             onChangeText={setDescription}
             placeholder={t('placeholders.description')}
             multiline
             numberOfLines={4}
-            style={{ minHeight: 80, textAlignVertical: 'top' }}
+            style={styles.multilineInput}
           />
         </View>
 
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.city')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.city')}
+          </ThemedText>
           <CitySearchInput value={city} onSelect={setCity} placeholder={t('fields.city')} />
         </View>
 
         {/* Address */}
-        <View style={{ gap: 8 }}>
-          <Input
+        <View style={styles.fieldGroup}>
+          <ThemedInput
             value={neighborhood}
             onChangeText={setNeighborhood}
             placeholder={t('placeholders.neighborhood')}
           />
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ flex: 2 }}>
-              <Input
+          <View style={styles.rowGap}>
+            <View style={styles.flex2}>
+              <ThemedInput
                 value={streetName}
                 onChangeText={setStreetName}
                 placeholder={t('fields.streetName')}
               />
             </View>
-            <View style={{ flex: 1 }}>
-              <Input
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={houseNumber}
                 onChangeText={setHouseNumber}
                 placeholder={t('fields.houseNumber')}
               />
             </View>
           </View>
-          <Input
+          <ThemedInput
             value={postalCode}
             onChangeText={setPostalCode}
             placeholder={t('fields.postalCode')}
@@ -217,12 +213,14 @@ export default function EditRoomScreen() {
         </View>
 
         {/* Pricing */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.pricing')}</Label>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Euro size={16} className="text-muted-foreground" />
-            <View style={{ flex: 1 }}>
-              <Input
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.pricing')}
+          </ThemedText>
+          <View style={styles.iconInputRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={rentPrice}
                 onChangeText={setRentPrice}
                 placeholder={t('placeholders.rentPrice')}
@@ -230,10 +228,10 @@ export default function EditRoomScreen() {
               />
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Euro size={16} className="text-muted-foreground" />
-            <View style={{ flex: 1 }}>
-              <Input
+          <View style={styles.iconInputRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={deposit}
                 onChangeText={setDeposit}
                 placeholder={t('placeholders.deposit')}
@@ -241,10 +239,10 @@ export default function EditRoomScreen() {
               />
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Euro size={16} className="text-muted-foreground" />
-            <View style={{ flex: 1 }}>
-              <Input
+          <View style={styles.iconInputRow}>
+            <Euro size={16} color={colors.tertiaryForeground} />
+            <View style={styles.flex1}>
+              <ThemedInput
                 value={serviceCosts}
                 onChangeText={setServiceCosts}
                 placeholder={t('placeholders.serviceCosts')}
@@ -255,37 +253,33 @@ export default function EditRoomScreen() {
         </View>
 
         {/* Utilities */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.utilitiesIncluded')}</Label>
-          <Select
-            value={{
-              value: utilitiesIncluded,
-              label: t(`utilities.${utilitiesIncluded}` as never),
-            }}
-            onValueChange={(opt) => opt && setUtilitiesIncluded(opt.value)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.utilitiesIncluded')} />
-            </SelectTrigger>
-            <SelectContent>
-              {UtilitiesIncluded.values.map((v) => (
-                <SelectItem key={v} value={v} label={t(`utilities.${v}` as never)}>
-                  {t(`utilities.${v}` as never)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.utilitiesIncluded')}
+          </ThemedText>
+          <ThemedButton
+            variant="outline"
+            onPress={() => {
+              const currentIdx = UtilitiesIncluded.values.findIndex((v) => v === utilitiesIncluded);
+              const nextIdx = (currentIdx + 1) % UtilitiesIncluded.values.length;
+              setUtilitiesIncluded(UtilitiesIncluded.values[nextIdx]);
+            }}>
+            {t(`utilities.${utilitiesIncluded}` as never)}
+          </ThemedButton>
         </View>
 
         {/* Property */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.property')}</Label>
-          <Input
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.property')}
+          </ThemedText>
+          <ThemedInput
             value={roomSizeM2}
             onChangeText={setRoomSizeM2}
             placeholder={t('placeholders.roomSize')}
             keyboardType="numeric"
           />
-          <Input
+          <ThemedInput
             value={totalHousemates}
             onChangeText={setTotalHousemates}
             placeholder={t('placeholders.totalHousemates')}
@@ -294,75 +288,64 @@ export default function EditRoomScreen() {
         </View>
 
         {/* House Type */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.houseType')}</Label>
-          <Select
-            value={
-              houseType ? { value: houseType, label: tEnums(`house_type.${houseType}`) } : undefined
-            }
-            onValueChange={(opt) => setHouseType(opt?.value ?? null)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.houseType')} />
-            </SelectTrigger>
-            <SelectContent>
-              {HouseType.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`house_type.${v}`)}>
-                  {tEnums(`house_type.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.houseType')}
+          </ThemedText>
+          <ThemedButton
+            variant="outline"
+            onPress={() => {
+              const currentIdx = houseType
+                ? HouseType.values.findIndex((v) => v === houseType)
+                : -1;
+              const nextIdx = (currentIdx + 1) % HouseType.values.length;
+              setHouseType(HouseType.values[nextIdx]);
+            }}>
+            {houseType ? tEnums(`house_type.${houseType}`) : t('fields.houseType')}
+          </ThemedButton>
         </View>
 
         {/* Furnishing */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.furnishing')}</Label>
-          <Select
-            value={
-              furnishing
-                ? { value: furnishing, label: tEnums(`furnishing.${furnishing}`) }
-                : undefined
-            }
-            onValueChange={(opt) => setFurnishing(opt?.value ?? null)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.furnishing')} />
-            </SelectTrigger>
-            <SelectContent>
-              {Furnishing.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`furnishing.${v}`)}>
-                  {tEnums(`furnishing.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.furnishing')}
+          </ThemedText>
+          <ThemedButton
+            variant="outline"
+            onPress={() => {
+              const currentIdx = furnishing
+                ? Furnishing.values.findIndex((v) => v === furnishing)
+                : -1;
+              const nextIdx = (currentIdx + 1) % Furnishing.values.length;
+              setFurnishing(Furnishing.values[nextIdx]);
+            }}>
+            {furnishing ? tEnums(`furnishing.${furnishing}`) : t('fields.furnishing')}
+          </ThemedButton>
         </View>
 
         {/* Rental Type */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.rentalType')}</Label>
-          <Select
-            value={
-              rentalType
-                ? { value: rentalType, label: tEnums(`rental_type.${rentalType}`) }
-                : undefined
-            }
-            onValueChange={(opt) => setRentalType(opt?.value ?? null)}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t('fields.rentalType')} />
-            </SelectTrigger>
-            <SelectContent>
-              {RentalType.values.map((v) => (
-                <SelectItem key={v} value={v} label={tEnums(`rental_type.${v}`)}>
-                  {tEnums(`rental_type.${v}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.rentalType')}
+          </ThemedText>
+          <ThemedButton
+            variant="outline"
+            onPress={() => {
+              const currentIdx = rentalType
+                ? RentalType.values.findIndex((v) => v === rentalType)
+                : -1;
+              const nextIdx = (currentIdx + 1) % RentalType.values.length;
+              setRentalType(RentalType.values[nextIdx]);
+            }}>
+            {rentalType ? tEnums(`rental_type.${rentalType}`) : t('fields.rentalType')}
+          </ThemedButton>
         </View>
 
         {/* Availability */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('wizard.sections.availability')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('wizard.sections.availability')}
+          </ThemedText>
           <DatePickerSheet
             title={t('fields.availableFrom')}
             value={availableFrom}
@@ -379,8 +362,10 @@ export default function EditRoomScreen() {
         </View>
 
         {/* Features */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.features')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.features')}
+          </ThemedText>
           <MultiChipPicker
             values={RoomFeature.values}
             selected={features}
@@ -391,8 +376,10 @@ export default function EditRoomScreen() {
         </View>
 
         {/* Location Tags */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.locationTags')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.locationTags')}
+          </ThemedText>
           <MultiChipPicker
             values={LocationTag.values}
             selected={locationTags}
@@ -403,8 +390,10 @@ export default function EditRoomScreen() {
         </View>
 
         {/* Languages */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.acceptedLanguages')}</Label>
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.acceptedLanguages')}
+          </ThemedText>
           <MultiChipPicker
             values={Language.values}
             selected={acceptedLanguages}
@@ -415,9 +404,11 @@ export default function EditRoomScreen() {
         </View>
 
         {/* Association */}
-        <View style={{ gap: 8 }}>
-          <Label>{t('fields.roomVereniging')}</Label>
-          <Input
+        <View style={styles.fieldGroup}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('fields.roomVereniging')}
+          </ThemedText>
+          <ThemedInput
             value={roomVereniging}
             onChangeText={setRoomVereniging}
             placeholder={t('placeholders.searchVereniging')}
@@ -426,16 +417,58 @@ export default function EditRoomScreen() {
       </ScrollView>
 
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button onPress={handleSave} disabled={updateRoom.isPending || !title.trim()}>
+        style={[
+          styles.bottomBar,
+          { borderTopColor: colors.border, backgroundColor: colors.background },
+        ]}>
+        <ThemedButton onPress={handleSave} disabled={updateRoom.isPending || !title.trim()}>
           {updateRoom.isPending ? (
-            <ActivityIndicator className="accent-primary-foreground" />
+            <ActivityIndicator color={colors.primaryForeground} />
           ) : (
-            <Text>{tCommon('save')}</Text>
+            tCommon('save')
           )}
-        </Button>
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  flex2: {
+    flex: 2,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContent: {
+    padding: 16,
+    gap: 16,
+    paddingBottom: 100,
+  },
+  fieldGroup: {
+    gap: 8,
+  },
+  multilineInput: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  rowGap: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  iconInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  bottomBar: {
+    padding: 16,
+    paddingBottom: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

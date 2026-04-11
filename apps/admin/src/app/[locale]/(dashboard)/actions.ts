@@ -11,6 +11,7 @@ import {
   session,
   user,
 } from "@openhospi/database/schema";
+import { sendTemplatedEmail } from "@openhospi/email/send";
 import type { Locale } from "@openhospi/i18n";
 import type { ReportReason } from "@openhospi/shared/enums";
 import { AdminAction, ReportStatus, ReportType, RoomStatus } from "@openhospi/shared/enums";
@@ -20,7 +21,6 @@ import { revalidatePath } from "next/cache";
 import { parseUUID } from "@/lib/action-result";
 import { auth } from "@/lib/auth/auth";
 import { requireAdmin } from "@/lib/auth/server";
-import { sendTemplatedEmail } from "@/lib/services/email";
 
 export type AggregateStats = {
   totalUsers: number;

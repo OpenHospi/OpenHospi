@@ -1,40 +1,52 @@
 import { STORAGE_BUCKET_ROOM_PHOTOS } from '@openhospi/shared/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Dot, Euro } from 'lucide-react-native';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Text } from '@/components/ui/text';
-import { PhotoCarousel } from '@/components/photo-carousel';
-import RoomLocationMap from '@/components/room-location-map';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { PhotoCarousel } from '@/components/rooms/photo-carousel';
+import RoomLocationMap from '@/components/rooms/room-location-map';
 import { useTranslation } from 'react-i18next';
 import { useRoom } from '@/services/rooms';
 
-function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
+function DetailRow({
+  label,
+  value,
+  colors,
+}: {
+  label: string;
+  value: string | null | undefined;
+  colors: ReturnType<typeof useTheme>['colors'];
+}) {
   if (!value) return null;
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        paddingVertical: 6,
-      }}>
-      <Text className="text-muted-foreground text-sm">{label}</Text>
-      <Text className="text-card-foreground text-sm">{value}</Text>
+    <View style={styles.detailRow}>
+      <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+        {label}
+      </ThemedText>
+      <ThemedText variant="subheadline">{value}</ThemedText>
     </View>
   );
 }
 
-function PriceValue({ amount }: { amount: string | number }) {
+function PriceValue({
+  amount,
+  colors,
+}: {
+  amount: string | number;
+  colors: ReturnType<typeof useTheme>['colors'];
+}) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Euro size={12} className="text-foreground" />
-      <Text className="text-card-foreground text-sm">{amount}</Text>
+    <View style={styles.priceValue}>
+      <Euro size={12} color={colors.foreground} />
+      <ThemedText variant="subheadline">{amount}</ThemedText>
     </View>
   );
 }
@@ -42,21 +54,19 @@ function PriceValue({ amount }: { amount: string | number }) {
 function PriceDetailRow({
   label,
   amount,
+  colors,
 }: {
   label: string;
   amount: string | number | null | undefined;
+  colors: ReturnType<typeof useTheme>['colors'];
 }) {
   if (!amount) return null;
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        paddingVertical: 6,
-      }}>
-      <Text className="text-muted-foreground text-sm">{label}</Text>
-      <PriceValue amount={amount} />
+    <View style={styles.detailRow}>
+      <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+        {label}
+      </ThemedText>
+      <PriceValue amount={amount} colors={colors} />
     </View>
   );
 }
@@ -68,15 +78,14 @@ export default function RoomDetailScreen() {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tRoomFields } = useTranslation('translation', { keyPrefix: 'app.rooms.fields' });
+  const { colors } = useTheme();
 
   const insets = useSafeAreaInsets();
   const { data, isPending } = useRoom(id);
 
   if (isPending) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
+      <SafeAreaView style={[styles.centered, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -84,13 +93,13 @@ export default function RoomDetailScreen() {
 
   if (!data) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        className="bg-background">
-        <Text variant="muted">{t('notFound')}</Text>
-        <Button variant="link" style={{ marginTop: 16 }} onPress={() => router.back()}>
-          <Text>{t('backToDiscover')}</Text>
-        </Button>
+      <SafeAreaView style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ThemedText variant="body" color={colors.tertiaryForeground}>
+          {t('notFound')}
+        </ThemedText>
+        <ThemedButton variant="link" style={{ marginTop: 16 }} onPress={() => router.back()}>
+          {t('backToDiscover')}
+        </ThemedButton>
       </SafeAreaView>
     );
   }
@@ -98,28 +107,36 @@ export default function RoomDetailScreen() {
   const { room, application } = data;
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
-      <ScrollView style={{ flex: 1 }}>
+    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
+      <ScrollView style={styles.flex}>
         <PhotoCarousel photos={room.photos} bucket={STORAGE_BUCKET_ROOM_PHOTOS} />
 
-        <View style={{ gap: 24, paddingHorizontal: 16, paddingTop: 16 }}>
+        <View style={styles.content}>
           <View>
-            <Text className="text-foreground text-2xl font-bold tracking-tight">{room.title}</Text>
-            <View style={{ marginTop: 4, flexDirection: 'row', alignItems: 'center' }}>
-              <Text variant="muted">{tEnums(`city.${room.city}`)}</Text>
+            <ThemedText variant="title2">{room.title}</ThemedText>
+            <View style={styles.locationRow}>
+              <ThemedText variant="body" color={colors.tertiaryForeground}>
+                {tEnums(`city.${room.city}`)}
+              </ThemedText>
               {room.neighborhood && (
                 <>
-                  <Dot size={16} className="text-muted-foreground" />
-                  <Text variant="muted">{room.neighborhood}</Text>
+                  <Dot size={16} color={colors.mutedForeground} />
+                  <ThemedText variant="body" color={colors.tertiaryForeground}>
+                    {room.neighborhood}
+                  </ThemedText>
                 </>
               )}
             </View>
           </View>
 
-          <Card>
-            <CardContent>
-              <PriceDetailRow label={t('rent')} amount={room.rentPrice} />
-              <PriceDetailRow label={t('serviceCosts')} amount={room.serviceCosts} />
+          <GroupedSection>
+            <View style={styles.sectionPadding}>
+              <PriceDetailRow label={t('rent')} amount={room.rentPrice} colors={colors} />
+              <PriceDetailRow
+                label={t('serviceCosts')}
+                amount={room.serviceCosts}
+                colors={colors}
+              />
               <DetailRow
                 label={t('utilitiesIncluded')}
                 value={
@@ -127,47 +144,49 @@ export default function RoomDetailScreen() {
                     ? tEnums(`utilities_included.${room.utilitiesIncluded}`)
                     : null
                 }
+                colors={colors}
               />
-              <PriceDetailRow label={t('deposit')} amount={room.deposit} />
-              <Separator className="my-2" />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <Text className="text-card-foreground font-semibold">{t('totalCost')}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Euro size={18} className="text-primary" />
-                  <Text className="text-primary text-lg font-bold">
+              <PriceDetailRow label={t('deposit')} amount={room.deposit} colors={colors} />
+              <ListSeparator insetLeft={0} />
+              <View style={styles.totalRow}>
+                <ThemedText variant="body" weight="600">
+                  {t('totalCost')}
+                </ThemedText>
+                <View style={styles.priceValue}>
+                  <Euro size={18} color={colors.primary} />
+                  <ThemedText variant="headline" color={colors.primary}>
                     {room.totalCost}
                     {tCommon('perMonth')}
-                  </Text>
+                  </ThemedText>
                 </View>
               </View>
-            </CardContent>
-          </Card>
+            </View>
+          </GroupedSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('details')}</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <GroupedSection>
+            <View style={styles.sectionPadding}>
+              <ThemedText variant="headline" style={styles.sectionTitle}>
+                {t('details')}
+              </ThemedText>
               <DetailRow
                 label={tRoomFields('roomSize')}
                 value={room.roomSizeM2 ? t('roomSize', { size: String(room.roomSizeM2) }) : null}
+                colors={colors}
               />
               <DetailRow
                 label={tEnums('house_type._label')}
                 value={room.houseType ? tEnums(`house_type.${room.houseType}`) : null}
+                colors={colors}
               />
               <DetailRow
                 label={tEnums('furnishing_label')}
                 value={room.furnishing ? tEnums(`furnishing.${room.furnishing}`) : null}
+                colors={colors}
               />
               <DetailRow
                 label={t('rentalType')}
                 value={room.rentalType ? tEnums(`rental_type.${room.rentalType}`) : null}
+                colors={colors}
               />
               {room.availableFrom && (
                 <DetailRow
@@ -178,25 +197,32 @@ export default function RoomDetailScreen() {
                       ? ` · ${t('availableUntil', { date: room.availableUntil })}`
                       : '')
                   }
+                  colors={colors}
                 />
               )}
               {room.totalHousemates != null && (
                 <DetailRow
                   label={tRoomFields('totalHousemates')}
                   value={tCommon('housemates', { count: Number(room.totalHousemates) })}
+                  colors={colors}
                 />
               )}
-            </CardContent>
-          </Card>
+            </View>
+          </GroupedSection>
 
           {room.features.length > 0 && (
             <View>
-              <Text className="text-foreground font-semibold">{t('features')}</Text>
-              <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              <ThemedText variant="body" weight="600">
+                {t('features')}
+              </ThemedText>
+              <View style={styles.chipRow}>
                 {room.features.map((f) => (
-                  <Badge key={f} variant="secondary" className="rounded-lg">
-                    <Text>{tEnums(`room_feature.${f}`)}</Text>
-                  </Badge>
+                  <ThemedBadge
+                    key={f}
+                    variant="secondary"
+                    label={tEnums(`room_feature.${f}`)}
+                    style={styles.featureBadge}
+                  />
                 ))}
               </View>
             </View>
@@ -204,12 +230,17 @@ export default function RoomDetailScreen() {
 
           {room.locationTags.length > 0 && (
             <View>
-              <Text className="text-foreground font-semibold">{t('locationTags')}</Text>
-              <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              <ThemedText variant="body" weight="600">
+                {t('locationTags')}
+              </ThemedText>
+              <View style={styles.chipRow}>
                 {room.locationTags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="rounded-lg">
-                    <Text>{tEnums(`location_tag.${tag}`)}</Text>
-                  </Badge>
+                  <ThemedBadge
+                    key={tag}
+                    variant="outline"
+                    label={tEnums(`location_tag.${tag}`)}
+                    style={styles.featureBadge}
+                  />
                 ))}
               </View>
             </View>
@@ -217,67 +248,81 @@ export default function RoomDetailScreen() {
 
           {room.latitude != null && room.longitude != null && (
             <View>
-              <Text className="text-foreground font-semibold">{t('location')}</Text>
+              <ThemedText variant="body" weight="600">
+                {t('location')}
+              </ThemedText>
               <View style={{ marginTop: 8 }}>
                 <RoomLocationMap latitude={room.latitude} longitude={room.longitude} />
               </View>
-              <Text style={{ marginTop: 8 }} className="text-muted-foreground text-xs">
+              <ThemedText
+                variant="caption1"
+                color={colors.mutedForeground}
+                style={{ marginTop: 8 }}>
                 {t('approximateLocation')}
-              </Text>
+              </ThemedText>
             </View>
           )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('whoWereLookingFor')}</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <GroupedSection>
+            <View style={styles.sectionPadding}>
+              <ThemedText variant="headline" style={styles.sectionTitle}>
+                {t('whoWereLookingFor')}
+              </ThemedText>
               {room.preferredGender && room.preferredGender !== 'no_preference' ? (
                 <DetailRow
                   label={tEnums('gender._label')}
                   value={tEnums(`gender.${room.preferredGender}`)}
+                  colors={colors}
                 />
               ) : (
-                <Text variant="muted" className="text-sm">
+                <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                   {t('everyoneWelcome')}
-                </Text>
+                </ThemedText>
               )}
               {(room.preferredAgeMin || room.preferredAgeMax) && (
                 <DetailRow
                   label={t('ageRange')}
                   value={`${room.preferredAgeMin ?? '?'} - ${room.preferredAgeMax ?? '?'}`}
+                  colors={colors}
                 />
               )}
               {room.acceptedLanguages.length > 0 && (
                 <DetailRow
                   label={t('acceptedLanguages')}
                   value={room.acceptedLanguages.map((l) => tEnums(`language_enum.${l}`)).join(', ')}
+                  colors={colors}
                 />
               )}
-            </CardContent>
-          </Card>
+            </View>
+          </GroupedSection>
 
           {room.description && (
             <View>
-              <Text className="text-foreground font-semibold">{t('description')}</Text>
-              <Text style={{ marginTop: 8 }} className="text-foreground text-sm leading-5">
+              <ThemedText variant="body" weight="600">
+                {t('description')}
+              </ThemedText>
+              <ThemedText variant="subheadline" style={{ marginTop: 8, lineHeight: 20 }}>
                 {room.description}
-              </Text>
+              </ThemedText>
             </View>
           )}
 
           {room.owner && (
-            <Card>
-              <CardContent>
-                <Text className="text-muted-foreground text-sm">{t('postedBy')}</Text>
-                <Text style={{ marginTop: 4 }} className="text-card-foreground font-medium">
+            <GroupedSection>
+              <View style={styles.sectionPadding}>
+                <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+                  {t('postedBy')}
+                </ThemedText>
+                <ThemedText variant="body" weight="500" style={{ marginTop: 4 }}>
                   {room.owner.firstName} {room.owner.lastName}
-                </Text>
+                </ThemedText>
                 {room.owner.studyProgram && (
-                  <Text className="text-muted-foreground text-sm">{room.owner.studyProgram}</Text>
+                  <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+                    {room.owner.studyProgram}
+                  </ThemedText>
                 )}
-              </CardContent>
-            </Card>
+              </View>
+            </GroupedSection>
           )}
 
           <View style={{ height: 96 }} />
@@ -285,45 +330,106 @@ export default function RoomDetailScreen() {
       </ScrollView>
 
       <View
-        style={{
-          position: 'absolute',
-          right: 0,
-          bottom: 0,
-          left: 0,
-          paddingHorizontal: 16,
-          paddingTop: 12,
-          paddingBottom: Math.max(insets.bottom, 16),
-        }}
-        className="border-border bg-background border-t">
+        style={[
+          styles.bottomBar,
+          {
+            paddingBottom: Math.max(insets.bottom, 16),
+            borderTopColor: colors.border,
+            backgroundColor: colors.background,
+          },
+        ]}>
         {application ? (
-          <Button
+          <ThemedButton
             variant="outline"
             size="lg"
-            style={{ height: 48 }}
-            className="rounded-xl"
+            style={styles.bottomButton}
             onPress={() =>
               router.push({
                 pathname: '/(app)/application/[id]',
                 params: { id: application.id },
               })
             }>
-            <Text className="text-base font-semibold">{t('viewApplication')}</Text>
-          </Button>
+            {t('viewApplication')}
+          </ThemedButton>
         ) : (
-          <Button
+          <ThemedButton
             size="lg"
-            style={{ height: 48 }}
-            className="rounded-xl"
+            style={styles.bottomButton}
             onPress={() =>
               router.push({
                 pathname: '/(app)/(modals)/apply-sheet',
                 params: { roomId: id },
               })
             }>
-            <Text className="text-base font-semibold">{t('apply')}</Text>
-          </Button>
+            {t('apply')}
+          </ThemedButton>
         )}
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    gap: 24,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  locationRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionPadding: {
+    padding: 16,
+  },
+  sectionTitle: {
+    marginBottom: 8,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+  },
+  priceValue: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  totalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  chipRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  featureBadge: {
+    borderRadius: radius.md,
+  },
+  bottomBar: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    left: 0,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  bottomButton: {
+    height: 48,
+    borderRadius: radius.xl,
+  },
+});

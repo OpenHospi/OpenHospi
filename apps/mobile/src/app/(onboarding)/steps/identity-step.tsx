@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { InputOTP } from '@/components/input-otp';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Text } from '@/components/ui/text';
+import { InputOTP } from '@/components/forms/input-otp';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';
 import type { OnboardingStatus, ProfileWithPhotos } from '@openhospi/shared/api-types';
 
@@ -17,6 +17,7 @@ type Props = {
 };
 
 export default function IdentityStep({ onNext, profile, status }: Props) {
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.identity' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -71,15 +72,15 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
   if (verified) {
     return (
       <ScrollView
-        style={{ flex: 1 }}
+        style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ gap: 16 }}>
-        <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 32 }}>
-          <Text className="text-primary font-semibold">{t('verified')}</Text>
+        contentContainerStyle={styles.scrollContent}>
+        <View style={styles.verifiedContainer}>
+          <ThemedText variant="headline" color={colors.primary}>
+            {t('verified')}
+          </ThemedText>
         </View>
-        <Button onPress={onNext}>
-          <Text>{tCommon('next')}</Text>
-        </Button>
+        <ThemedButton onPress={onNext}>{tCommon('next')}</ThemedButton>
       </ScrollView>
     );
   }
@@ -87,45 +88,49 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
   if (showCodeInput) {
     return (
       <ScrollView
-        style={{ flex: 1 }}
+        style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ gap: 16 }}>
+        contentContainerStyle={styles.scrollContent}>
         <View>
-          <Text className="text-foreground font-semibold">{t('enterCodeTitle')}</Text>
-          <Text variant="muted" style={{ marginTop: 4 }} className="text-sm">
+          <ThemedText variant="headline">{t('enterCodeTitle')}</ThemedText>
+          <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.fieldHint}>
             {t('enterCodeDescription', { email })}
-          </Text>
+          </ThemedText>
         </View>
 
-        <View style={{ gap: 8 }}>
-          <Label>{t('verificationCode')}</Label>
+        <View style={styles.field}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('verificationCode')}
+          </ThemedText>
           <InputOTP value={code} onChangeText={setCode} onFilled={handleCodeFilled} autoFocus />
-          <Text variant="muted" className="text-xs">
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('codeHint')}
-          </Text>
+          </ThemedText>
         </View>
 
         {verifyEmail.isPending && (
-          <Text variant="muted" className="text-center text-sm">
+          <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.centered}>
             {tCommon('loading')}
-          </Text>
+          </ThemedText>
         )}
 
-        <Button variant="link" onPress={handleResend} disabled={resendCode.isPending}>
-          <Text>{t('resendCode')}</Text>
-        </Button>
+        <ThemedButton variant="link" onPress={handleResend} disabled={resendCode.isPending}>
+          {t('resendCode')}
+        </ThemedButton>
       </ScrollView>
     );
   }
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ gap: 16 }}>
-      <View style={{ gap: 8 }}>
-        <Label>{t('firstName')}</Label>
-        <Input
+      contentContainerStyle={styles.scrollContent}>
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('firstName')}
+        </ThemedText>
+        <ThemedInput
           value={firstName}
           onChangeText={setFirstName}
           placeholder={t('firstNamePlaceholder')}
@@ -133,9 +138,11 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
         />
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>{t('lastName')}</Label>
-        <Input
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('lastName')}
+        </ThemedText>
+        <ThemedInput
           value={lastName}
           onChangeText={setLastName}
           placeholder={t('lastNamePlaceholder')}
@@ -143,23 +150,48 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
         />
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>{t('email')}</Label>
-        <Input
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('email')}
+        </ThemedText>
+        <ThemedInput
           value={email}
           onChangeText={setEmail}
           placeholder={t('emailPlaceholder')}
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        <Text variant="muted" className="text-xs">
+        <ThemedText variant="caption1" color={colors.tertiaryForeground}>
           {t('emailHint')}
-        </Text>
+        </ThemedText>
       </View>
 
-      <Button onPress={handleSubmitIdentity} disabled={submitIdentity.isPending}>
-        <Text>{tCommon('next')}</Text>
-      </Button>
+      <ThemedButton onPress={handleSubmitIdentity} disabled={submitIdentity.isPending}>
+        {tCommon('next')}
+      </ThemedButton>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    gap: 16,
+  },
+  field: {
+    gap: 8,
+  },
+  fieldHint: {
+    marginTop: 4,
+  },
+  verifiedContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 32,
+  },
+  centered: {
+    textAlign: 'center',
+  },
+});

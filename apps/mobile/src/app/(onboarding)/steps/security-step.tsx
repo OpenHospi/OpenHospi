@@ -1,19 +1,21 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { setupDevice } from '@openhospi/crypto';
-import { Platform, ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { Platform, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { InputOTP } from '@/components/input-otp';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Text } from '@/components/ui/text';
+import { InputOTP } from '@/components/forms/input-otp';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getProtocolStore } from '@/lib/crypto/stores';
 import { api } from '@/lib/api-client';
 import { queryKeys } from '@/services/keys';
 
 export default function SecurityStep() {
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.security' });
   const queryClient = useQueryClient();
 
@@ -68,30 +70,34 @@ export default function SecurityStep() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-        <ActivityIndicator size="large" />
-        <Text variant="muted" className="text-sm">
+      <View style={styles.loadingContainer}>
+        <ThemedSkeleton width="60%" height={24} />
+        <ThemedSkeleton width="80%" height={16} />
+        <ThemedSkeleton width={240} height={48} rounded="lg" />
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('generating_keys')}
-        </Text>
+        </ThemedText>
       </View>
     );
   }
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ gap: 24 }}>
+      contentContainerStyle={styles.scrollContent}>
       <View>
-        <Text className="text-foreground font-semibold">{t('e2ee_title')}</Text>
-        <Text variant="muted" style={{ marginTop: 8 }} className="text-sm">
+        <ThemedText variant="headline">{t('e2ee_title')}</ThemedText>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.description}>
           {t('e2ee_description')}
-        </Text>
+        </ThemedText>
       </View>
 
       {step === 'enter' ? (
-        <View style={{ gap: 16 }}>
-          <Label>{t('enter_pin')}</Label>
+        <View style={styles.pinSection}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('enter_pin')}
+          </ThemedText>
           <InputOTP
             value={pin}
             onChangeText={setPin}
@@ -99,10 +105,10 @@ export default function SecurityStep() {
             secureTextEntry
             autoFocus
           />
-          <Text variant="muted" className="text-xs">
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('pin_hint')}
-          </Text>
-          <Button
+          </ThemedText>
+          <ThemedButton
             onPress={() => {
               if (pin.length !== PIN_LENGTH) {
                 Alert.alert(t('pin_length_error'));
@@ -110,12 +116,14 @@ export default function SecurityStep() {
               }
               setStep('confirm');
             }}>
-            <Text>{t('use_pin')}</Text>
-          </Button>
+            {t('use_pin')}
+          </ThemedButton>
         </View>
       ) : (
-        <View style={{ gap: 16 }}>
-          <Label>{t('confirm_pin')}</Label>
+        <View style={styles.pinSection}>
+          <ThemedText variant="subheadline" weight="500">
+            {t('confirm_pin')}
+          </ThemedText>
           <InputOTP
             value={confirmPin}
             onChangeText={setConfirmPin}
@@ -123,17 +131,38 @@ export default function SecurityStep() {
             secureTextEntry
             autoFocus
           />
-          <Button
+          <ThemedButton
             variant="ghost"
             onPress={() => {
               setStep('enter');
               setPin('');
               setConfirmPin('');
             }}>
-            <Text>{t('change_pin')}</Text>
-          </Button>
+            {t('change_pin')}
+          </ThemedButton>
         </View>
       )}
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    gap: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  description: {
+    marginTop: 8,
+  },
+  pinSection: {
+    gap: 16,
+  },
+});

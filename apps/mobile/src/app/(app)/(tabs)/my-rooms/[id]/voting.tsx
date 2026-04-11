@@ -2,11 +2,12 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useSubmitVotes, useVotableApplicants, useVoteBoard } from '@/services/my-rooms';
 import type { VotableApplicant } from '@openhospi/shared/api-types';
@@ -14,6 +15,7 @@ import type { VotableApplicant } from '@openhospi/shared/api-types';
 export default function VotingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.voting' });
+  const { colors } = useTheme();
 
   const { data: applicants, isLoading: loadingApplicants } = useVotableApplicants(id);
   const { data: board, isLoading: loadingBoard } = useVoteBoard(id);
@@ -31,22 +33,18 @@ export default function VotingScreen() {
 
   if (loadingApplicants || loadingBoard) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   if (!applicants || applicants.length === 0) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}
-        className="bg-background">
-        <Text variant="muted" className="text-center text-base">
+      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
+        <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
           {t('noApplicants')}
-        </Text>
+        </ThemedText>
       </View>
     );
   }
@@ -76,17 +74,19 @@ export default function VotingScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 100 }}>
-        <View style={{ padding: 16, gap: 16 }}>
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
+      <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.contentPadding}>
           {/* Description */}
-          <Text variant="muted" className="text-sm">
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('description')}
-          </Text>
+          </ThemedText>
 
           {/* Your ranking */}
-          <View style={{ gap: 8 }}>
-            <Text className="text-foreground font-semibold">{t('yourRanking')}</Text>
+          <View style={styles.section}>
+            <ThemedText variant="body" weight="600">
+              {t('yourRanking')}
+            </ThemedText>
             {rankings.map((applicant, index) => {
               const avatarUri = applicant.avatarUrl
                 ? getStoragePublicUrl(applicant.avatarUrl, 'profile-photos')
@@ -95,33 +95,22 @@ export default function VotingScreen() {
               return (
                 <View
                   key={applicant.userId}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 12,
-                    paddingVertical: 8,
-                  }}
-                  className="border-border border-b">
-                  <Text className="text-foreground w-6 text-center font-bold">{index + 1}</Text>
-                  <View
-                    className="bg-muted overflow-hidden rounded-full"
-                    style={{ width: 36, height: 36 }}>
-                    {avatarUri && (
-                      <Image source={{ uri: avatarUri }} style={{ width: 36, height: 36 }} />
-                    )}
+                  style={[styles.rankRow, { borderBottomColor: colors.border }]}>
+                  <ThemedText variant="body" weight="bold" style={styles.rankNumber}>
+                    {index + 1}
+                  </ThemedText>
+                  <View style={[styles.avatarCircle, { backgroundColor: colors.muted }]}>
+                    {avatarUri && <Image source={{ uri: avatarUri }} style={styles.avatarImage} />}
                   </View>
-                  <Text className="text-foreground text-sm" style={{ flex: 1 }}>
+                  <ThemedText variant="subheadline" style={styles.flex1}>
                     {applicant.firstName} {applicant.lastName}
-                  </Text>
-                  <View style={{ flexDirection: 'row', gap: 4 }}>
+                  </ThemedText>
+                  <View style={styles.arrowRow}>
                     <Pressable
                       onPress={() => moveUp(index)}
                       disabled={index === 0}
                       accessibilityLabel={t('moveUp')}>
-                      <ChevronUp
-                        size={20}
-                        className={index === 0 ? 'text-muted' : 'text-foreground'}
-                      />
+                      <ChevronUp size={20} color={index === 0 ? colors.muted : colors.foreground} />
                     </Pressable>
                     <Pressable
                       onPress={() => moveDown(index)}
@@ -129,7 +118,7 @@ export default function VotingScreen() {
                       accessibilityLabel={t('moveDown')}>
                       <ChevronDown
                         size={20}
-                        className={index === rankings.length - 1 ? 'text-muted' : 'text-foreground'}
+                        color={index === rankings.length - 1 ? colors.muted : colors.foreground}
                       />
                     </Pressable>
                   </View>
@@ -137,65 +126,52 @@ export default function VotingScreen() {
               );
             })}
 
-            <Button onPress={handleSubmit} disabled={submitVotes.isPending}>
-              <Text>{t('submitVotes')}</Text>
-            </Button>
+            <ThemedButton onPress={handleSubmit} disabled={submitVotes.isPending}>
+              {t('submitVotes')}
+            </ThemedButton>
           </View>
 
           {/* Vote board */}
           {board && (
-            <View style={{ gap: 8 }}>
+            <View style={styles.section}>
               <Pressable onPress={() => setShowBoard(!showBoard)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Text className="text-foreground font-semibold">{t('voteBoard')}</Text>
+                <View style={styles.boardHeader}>
+                  <ThemedText variant="body" weight="600">
+                    {t('voteBoard')}
+                  </ThemedText>
                   {showBoard ? (
-                    <ChevronUp size={16} className="text-foreground" />
+                    <ChevronUp size={16} color={colors.foreground} />
                   ) : (
-                    <ChevronDown size={16} className="text-foreground" />
+                    <ChevronDown size={16} color={colors.foreground} />
                   )}
                 </View>
               </Pressable>
 
               {showBoard && (
-                <View style={{ gap: 4 }}>
+                <View style={styles.boardContent}>
                   {/* Aggregated rankings */}
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      paddingVertical: 8,
-                      paddingHorizontal: 4,
-                    }}
-                    className="border-border border-b">
-                    <Text className="text-foreground text-xs font-semibold" style={{ flex: 1 }}>
+                  <View style={[styles.boardHeaderRow, { borderBottomColor: colors.border }]}>
+                    <ThemedText variant="caption1" weight="600" style={styles.flex1}>
                       {t('applicant')}
-                    </Text>
-                    <Text
-                      className="text-foreground text-xs font-semibold"
-                      style={{ width: 60, textAlign: 'right' }}>
+                    </ThemedText>
+                    <ThemedText variant="caption1" weight="600" style={styles.totalColumn}>
                       {t('total')}
-                    </Text>
+                    </ThemedText>
                   </View>
                   {board.aggregated.map((agg) => {
                     const applicant = board.applicants.find((a) => a.userId === agg.applicantId);
                     return (
                       <View
                         key={agg.applicantId}
-                        style={{
-                          flexDirection: 'row',
-                          paddingVertical: 6,
-                          paddingHorizontal: 4,
-                        }}
-                        className="border-border border-b">
-                        <Text className="text-foreground text-sm" style={{ flex: 1 }}>
+                        style={[styles.boardRow, { borderBottomColor: colors.border }]}>
+                        <ThemedText variant="subheadline" style={styles.flex1}>
                           {applicant
                             ? `${applicant.firstName} ${applicant.lastName}`
                             : agg.applicantId}
-                        </Text>
-                        <Text
-                          className="text-foreground text-sm"
-                          style={{ width: 60, textAlign: 'right' }}>
+                        </ThemedText>
+                        <ThemedText variant="subheadline" style={styles.totalColumn}>
                           {agg.totalRank} ({agg.voteCount})
-                        </Text>
+                        </ThemedText>
                       </View>
                     );
                   })}
@@ -208,3 +184,82 @@ export default function VotingScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  scrollContent: {
+    paddingBottom: 100,
+  },
+  contentPadding: {
+    padding: 16,
+    gap: 16,
+  },
+  section: {
+    gap: 8,
+  },
+  rankRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  rankNumber: {
+    width: 24,
+    textAlign: 'center',
+  },
+  avatarCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 36,
+    height: 36,
+  },
+  arrowRow: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  boardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  boardContent: {
+    gap: 4,
+  },
+  boardHeaderRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  boardRow: {
+    flexDirection: 'row',
+    paddingVertical: 6,
+    paddingHorizontal: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  totalColumn: {
+    width: 60,
+    textAlign: 'right',
+  },
+});

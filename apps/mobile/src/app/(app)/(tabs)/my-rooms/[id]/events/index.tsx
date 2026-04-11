@@ -1,11 +1,12 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { ActivityIndicator, FlatList, Pressable, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useRoomEvents } from '@/services/my-rooms';
 import type { EventSummary } from '@openhospi/shared/api-types';
 
@@ -13,6 +14,7 @@ export default function EventsListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.events' });
+  const { colors } = useTheme();
 
   const { data: events, isLoading } = useRoomEvents(id);
 
@@ -33,31 +35,27 @@ export default function EventsListScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
 
   if (!events || events.length === 0) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 }}
-        className="bg-background">
-        <Text variant="muted" className="text-center text-base">
+      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
+        <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
           {t('empty')}
-        </Text>
-        <Button
+        </ThemedText>
+        <ThemedButton
           onPress={() =>
             router.push({
               pathname: '/(app)/(tabs)/my-rooms/[id]/events/create',
               params: { id },
             })
           }>
-          <Text>{t('create')}</Text>
-        </Button>
+          {t('create')}
+        </ThemedButton>
       </View>
     );
   }
@@ -74,29 +72,28 @@ export default function EventsListScreen() {
           })
         }>
         <View
-          style={{ padding: 16, gap: 4, opacity: isCancelled ? 0.5 : 1 }}
-          className="border-border border-b">
-          <View
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text className="text-foreground font-semibold">{item.title}</Text>
-            {isCancelled && (
-              <Badge variant="destructive">
-                <Text>{t('cancelled')}</Text>
-              </Badge>
-            )}
+          style={[
+            styles.eventRow,
+            { opacity: isCancelled ? 0.5 : 1, borderBottomColor: colors.border },
+          ]}>
+          <View style={styles.eventTitleRow}>
+            <ThemedText variant="body" weight="600">
+              {item.title}
+            </ThemedText>
+            {isCancelled && <ThemedBadge variant="destructive" label={t('cancelled')} />}
           </View>
-          <Text variant="muted" className="text-sm">
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {item.eventDate} {item.timeStart}
             {item.timeEnd ? ` - ${item.timeEnd}` : ''}
-          </Text>
+          </ThemedText>
           {item.location && (
-            <Text variant="muted" className="text-sm">
+            <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {item.location}
-            </Text>
+            </ThemedText>
           )}
-          <Text variant="muted" className="text-xs">
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('attendingCount', { attending: item.attendingCount, total: item.invitedCount })}
-          </Text>
+          </ThemedText>
         </View>
       </Pressable>
     );
@@ -108,14 +105,16 @@ export default function EventsListScreen() {
   ];
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
       <FlatList
         data={sections}
         keyExtractor={(section) => section.title}
         renderItem={({ item: section }) => (
           <View>
-            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }} className="bg-muted/30">
-              <Text className="text-foreground text-sm font-semibold">{section.title}</Text>
+            <View style={[styles.sectionHeader, { backgroundColor: `${colors.muted}4D` }]}>
+              <ThemedText variant="subheadline" weight="600">
+                {section.title}
+              </ThemedText>
             </View>
             {section.data.map((event) => (
               <View key={event.id}>{renderEvent({ item: event })}</View>
@@ -124,18 +123,60 @@ export default function EventsListScreen() {
         )}
       />
       <View
-        style={{ padding: 16, paddingBottom: 32 }}
-        className="border-border bg-background border-t">
-        <Button
+        style={[
+          styles.bottomBar,
+          { borderTopColor: colors.border, backgroundColor: colors.background },
+        ]}>
+        <ThemedButton
           onPress={() =>
             router.push({
               pathname: '/(app)/(tabs)/my-rooms/[id]/events/create',
               params: { id },
             })
           }>
-          <Text>{t('create')}</Text>
-        </Button>
+          {t('create')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  eventRow: {
+    padding: 16,
+    gap: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  eventTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sectionHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  bottomBar: {
+    padding: 16,
+    paddingBottom: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

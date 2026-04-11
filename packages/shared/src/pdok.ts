@@ -7,6 +7,7 @@ export type AddressResult = {
   houseNumber: string;
   postalCode: string;
   city: string;
+  neighborhood: string;
   latitude: number;
   longitude: number;
 };
@@ -64,6 +65,7 @@ export async function lookupAddress(id: string): Promise<AddressResult | null> {
     houseNumber: String(doc.huisnummer ?? ""),
     postalCode: doc.postcode ?? "",
     city: doc.woonplaatsnaam ?? "",
+    neighborhood: doc.buurtnaam ?? "",
     latitude: coords.latitude,
     longitude: coords.longitude,
   };
@@ -79,8 +81,8 @@ export async function searchCities(query: string): Promise<CitySuggestion[]> {
   if (!res.ok) return [];
 
   const data = await res.json();
-  return (data.response?.docs ?? []).map((doc: { id: string; woonplaatsnaam: string }) => ({
+  return (data.response?.docs ?? []).map((doc: { id: string; weergavenaam: string }) => ({
     id: doc.id,
-    name: doc.woonplaatsnaam,
+    name: doc.weergavenaam.split(",")[0].trim(),
   }));
 }

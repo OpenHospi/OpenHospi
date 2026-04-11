@@ -1,9 +1,8 @@
 import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { type PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import * as schema from "./schema";
-import { relations } from "./schema/relations";
+import type * as schema from "./schema";
 
 // Two separate connections: admin (bypasses RLS) and client (for RLS)
 let _adminClient: ReturnType<typeof postgres> | null = null;
@@ -28,7 +27,13 @@ type SupabaseToken = {
   role?: string;
 };
 
-type DB = ReturnType<typeof drizzle<typeof schema, typeof relations>>;
+type DB = PostgresJsDatabase<typeof schema>;
+
+// drizzle-orm v1 beta has broken overload types for the object config form.
+// The runtime handles { client } correctly — this assertion is only needed for TS.
+function createDrizzleClient(client: ReturnType<typeof postgres>): DB {
+  return drizzle({ client } as any);
+}
 
 function createDrizzle(token: SupabaseToken, { admin, client }: { admin: DB; client: DB }) {
   return {
@@ -60,8 +65,8 @@ function createDrizzle(token: SupabaseToken, { admin, client }: { admin: DB; cli
  *   db.rls(tx => tx.select()...) ← enforces RLS (user-scoped operations)
  */
 export function createDrizzleSupabaseClient(userId: string) {
-  const admin = drizzle({ client: getAdminClient(), schema, relations });
-  const client = drizzle({ client: getRlsClient(), schema, relations });
+  const admin = createDrizzleClient(getAdminClient());
+  const client = createDrizzleClient(getRlsClient());
 
   return createDrizzle({ sub: userId, role: "authenticated" }, { admin, client });
 }
@@ -72,18 +77,16 @@ export function createDrizzleSupabaseClient(userId: string) {
  *
  * Lazy-initialized proxy to defer connection until first use (required for Next.js build).
  */
-type AdminDB = ReturnType<typeof drizzle<typeof schema, typeof relations>>;
+let _adminDb: DB | null = null;
 
-let _adminDb: AdminDB | null = null;
-
-function getAdminDb(): AdminDB {
+function getAdminDb(): DB {
   if (!_adminDb) {
-    _adminDb = drizzle({ client: getAdminClient(), schema, relations });
+    _adminDb = createDrizzleClient(getAdminClient());
   }
   return _adminDb;
 }
 
-export const db: AdminDB = new Proxy({} as AdminDB, {
+export const db: DB = new Proxy({} as DB, {
   get(_, prop: string | symbol) {
     return Reflect.get(getAdminDb(), prop);
   },

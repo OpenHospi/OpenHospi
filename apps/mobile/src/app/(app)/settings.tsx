@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
@@ -9,15 +8,18 @@ import { useTranslation } from 'react-i18next';
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
-} from '@/components/bottom-sheet';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import { Text } from '@/components/ui/text';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/components/shared/bottom-sheet';
+import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSwitch } from '@/components/primitives/themed-switch';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
+import { ListSeparator } from '@/components/layout/list-separator';
+import { useTheme } from '@/design';
+import { hapticDelete, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { registerForPushNotifications } from '@/lib/notifications';
@@ -45,42 +47,49 @@ export default function SettingsScreen() {
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tConsent } = useTranslation('translation', { keyPrefix: 'app.consent' });
   const { i18n } = useTranslation();
+  const { colors } = useTheme();
   const locale = i18n.language as Locale;
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background" edges={['bottom']}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }}>
-        <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
-          <Text variant="muted" className="text-sm">
-            {t('description')}
-          </Text>
-        </View>
+    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+      <View style={styles.descriptionWrapper}>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+          {t('description')}
+        </ThemedText>
+      </View>
 
-        <SectionHeader title={t('tabs.general')} />
-        <LanguageSetting locale={locale} changeLanguage={i18n.changeLanguage} t={t} />
-        <PushNotificationSetting t={t} />
+      <SectionTitle title={t('tabs.general')} />
+      <LanguageSetting locale={locale} changeLanguage={i18n.changeLanguage} t={t} />
+      <View style={styles.sectionGap} />
+      <PushNotificationSetting t={t} />
 
-        <SectionHeader title={t('tabs.privacy')} />
-        <ConsentSection t={t} tConsent={tConsent} />
-        <DataExportSetting t={t} />
-        <DataRequestSetting t={t} tCommon={tCommon} />
+      <SectionTitle title={t('tabs.privacy')} />
+      <ConsentSection t={t} tConsent={tConsent} />
+      <View style={styles.sectionGap} />
+      <DataExportSetting t={t} />
+      <View style={styles.sectionGap} />
+      <DataRequestSetting t={t} tCommon={tCommon} />
 
-        <SectionHeader title={t('tabs.account')} />
-        <SessionsSection t={t} tCommon={tCommon} />
+      <SectionTitle title={t('tabs.account')} />
+      <SessionsSection t={t} tCommon={tCommon} />
 
-        <SectionHeader title={t('dangerZone.title')} />
-        <DeleteAccountSetting t={t} tCommon={tCommon} />
-      </ScrollView>
-    </SafeAreaView>
+      <SectionTitle title={t('dangerZone.title')} />
+      <DeleteAccountSetting t={t} tCommon={tCommon} />
+    </ScrollView>
   );
 }
 
-function SectionHeader({ title }: { title: string }) {
+function SectionTitle({ title }: { title: string }) {
+  const { colors } = useTheme();
+
   return (
-    <View style={{ paddingHorizontal: 16, paddingTop: 24, paddingBottom: 8 }}>
-      <Text className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
-        {title}
-      </Text>
+    <View style={styles.sectionTitleWrapper}>
+      <ThemedText
+        variant="footnote"
+        color={colors.tertiaryForeground}
+        style={styles.sectionTitleText}>
+        {title.toUpperCase()}
+      </ThemedText>
     </View>
   );
 }
@@ -94,45 +103,43 @@ function LanguageSetting({
   changeLanguage: (lng: string) => Promise<TFunction>;
   t: TFunction;
 }) {
+  const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
 
   return (
-    <Card className="mx-4">
-      <CardContent>
-        <Pressable
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
-          onPress={() => sheetRef.current?.present()}>
-          <Text className="text-card-foreground">{t('tabs.general')}</Text>
-          <Text variant="muted">{LOCALE_CONFIG[locale].name}</Text>
-        </Pressable>
-      </CardContent>
+    <GroupedSection>
+      <ListCell
+        label={t('tabs.general')}
+        value={LOCALE_CONFIG[locale].name}
+        onPress={() => sheetRef.current?.present()}
+      />
 
       <BottomSheet ref={sheetRef} title={t('tabs.general')} enableDynamicSizing scrollable={false}>
-        <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+        <View style={styles.sheetContent}>
           {SUPPORTED_LOCALES.map((loc) => (
             <Pressable
               key={loc}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                borderRadius: 8,
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-              }}
-              className={locale === loc ? 'bg-primary/10' : ''}
+              style={[
+                styles.localeRow,
+                locale === loc ? { backgroundColor: colors.accent } : undefined,
+              ]}
+              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
               onPress={() => {
+                hapticLight();
                 changeLanguage(loc);
                 sheetRef.current?.dismiss();
               }}>
-              <Text className={locale === loc ? 'text-primary font-semibold' : 'text-foreground'}>
+              <ThemedText
+                variant="body"
+                weight={locale === loc ? '600' : '400'}
+                color={locale === loc ? colors.primary : colors.foreground}>
                 {LOCALE_CONFIG[loc].name}
-              </Text>
+              </ThemedText>
             </Pressable>
           ))}
         </View>
       </BottomSheet>
-    </Card>
+    </GroupedSection>
   );
 }
 
@@ -148,73 +155,66 @@ function PushNotificationSetting({ t }: { t: TFunction }) {
   }, []);
 
   return (
-    <Card style={{ marginTop: 12 }} className="mx-4">
-      <CardContent
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text className="text-card-foreground">{t('pushNotifications.title')}</Text>
-        <Switch checked={enabled} onCheckedChange={handleToggle} />
-      </CardContent>
-    </Card>
+    <GroupedSection>
+      <ListCell
+        label={t('pushNotifications.title')}
+        rightContent={<ThemedSwitch value={enabled} onValueChange={handleToggle} />}
+      />
+    </GroupedSection>
   );
 }
 
 function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) {
+  const { colors } = useTheme();
   const { data: consents, isPending } = useConsent();
   const updateConsent = useUpdateConsent();
 
   if (isPending) {
     return (
-      <Card className="mx-4">
-        <CardContent style={{ alignItems: 'center' }}>
-          <ActivityIndicator />
-        </CardContent>
-      </Card>
+      <GroupedSection>
+        <View style={styles.loadingCell}>
+          <ThemedSkeleton width="60%" height={14} />
+          <ThemedSkeleton width="40%" height={14} />
+          <ThemedSkeleton width="50%" height={14} />
+        </View>
+      </GroupedSection>
     );
   }
 
   const purposes = ['essential', 'functional', 'push_notifications', 'analytics'] as const;
 
   return (
-    <Card className="mx-4">
-      <CardHeader>
-        <CardTitle>{t('privacy.consentManagement.title')}</CardTitle>
-        <Text variant="muted" className="text-sm">
+    <GroupedSection>
+      <View style={styles.consentHeader}>
+        <ThemedText variant="headline">{t('privacy.consentManagement.title')}</ThemedText>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('privacy.consentManagement.description')}
-        </Text>
-      </CardHeader>
-      {purposes.map((purpose) => {
-        const consent = consents?.find((c) => c.purpose === purpose);
+        </ThemedText>
+      </View>
+      {purposes.map((purpose, index) => {
+        const consent = consents?.find((c: { purpose: string }) => c.purpose === purpose);
         const isEssential = purpose === 'essential';
 
         return (
           <View key={purpose}>
-            <Separator />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 24,
-                paddingVertical: 12,
-              }}>
-              <View style={{ flex: 1, paddingRight: 16 }}>
-                <Text className="text-card-foreground text-sm">
-                  {tConsent(`purposes.${purpose}.name`)}
-                </Text>
-                <Text variant="muted" className="text-xs">
+            <ListSeparator />
+            <View style={styles.consentRow}>
+              <View style={styles.consentLabel}>
+                <ThemedText variant="body">{tConsent(`purposes.${purpose}.name`)}</ThemedText>
+                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                   {tConsent(`purposes.${purpose}.description`)}
-                </Text>
+                </ThemedText>
               </View>
-              <Switch
-                checked={isEssential ? true : (consent?.granted ?? false)}
+              <ThemedSwitch
+                value={isEssential ? true : (consent?.granted ?? false)}
                 disabled={isEssential || updateConsent.isPending}
-                onCheckedChange={(granted) => updateConsent.mutate({ purpose, granted })}
+                onValueChange={(granted: boolean) => updateConsent.mutate({ purpose, granted })}
               />
             </View>
           </View>
         );
       })}
-    </Card>
+    </GroupedSection>
   );
 }
 
@@ -222,27 +222,29 @@ function DataExportSetting({ t }: { t: TFunction }) {
   const exportData = useExportData();
 
   return (
-    <Card style={{ marginTop: 12 }} className="mx-4">
-      <CardHeader>
-        <CardTitle>{t('dataExport.title')}</CardTitle>
-        <Text variant="muted" className="text-sm">
+    <GroupedSection>
+      <View style={styles.cardContent}>
+        <ThemedText variant="headline">{t('dataExport.title')}</ThemedText>
+        <ThemedText variant="footnote" color={useTheme().colors.tertiaryForeground}>
           {t('dataExport.description')}
-        </Text>
-      </CardHeader>
-      <CardContent>
-        <Button
+        </ThemedText>
+        <ThemedButton
           size="sm"
-          style={{ alignSelf: 'flex-start' }}
-          onPress={() => exportData.mutate()}
-          disabled={exportData.isPending}>
-          <Text>{exportData.isPending ? '...' : t('dataExport.button')}</Text>
-        </Button>
-      </CardContent>
-    </Card>
+          style={styles.inlineButton}
+          onPress={() => {
+            hapticFormSubmitSuccess();
+            exportData.mutate();
+          }}
+          loading={exportData.isPending}>
+          {t('dataExport.button')}
+        </ThemedButton>
+      </View>
+    </GroupedSection>
   );
 }
 
 function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
+  const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [description, setDescription] = useState('');
@@ -254,6 +256,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
       { type: selectedType, description: description || undefined },
       {
         onSuccess: () => {
+          hapticFormSubmitSuccess();
           sheetRef.current?.dismiss();
           setSelectedType(null);
           setDescription('');
@@ -264,154 +267,156 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
   };
 
   return (
-    <Card style={{ marginTop: 12 }} className="mx-4">
-      <CardHeader>
-        <CardTitle>{t('privacy.dataRequest.title')}</CardTitle>
-        <Text variant="muted" className="text-sm">
+    <GroupedSection>
+      <View style={styles.cardContent}>
+        <ThemedText variant="headline">{t('privacy.dataRequest.title')}</ThemedText>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('privacy.dataRequest.description')}
-        </Text>
-      </CardHeader>
-      <CardContent>
-        <Button
+        </ThemedText>
+        <ThemedButton
           variant="outline"
           size="sm"
-          style={{ alignSelf: 'flex-start' }}
+          style={styles.inlineButton}
           onPress={() => sheetRef.current?.present()}>
-          <Text>{t('privacy.dataRequest.submitButton')}</Text>
-        </Button>
-      </CardContent>
+          {t('privacy.dataRequest.submitButton')}
+        </ThemedButton>
+      </View>
 
       <BottomSheet
         ref={sheetRef}
         title={t('privacy.dataRequest.title')}
         snapPoints={['75%']}
         footer={
-          <View style={{ flexDirection: 'row', gap: 12 }}>
-            <Button
+          <View style={styles.sheetFooter}>
+            <ThemedButton
               variant="outline"
-              style={{ flex: 1 }}
+              style={styles.footerButton}
               onPress={() => sheetRef.current?.dismiss()}>
-              <Text>{tCommon('cancel')}</Text>
-            </Button>
-            <Button
-              style={{ flex: 1 }}
+              {tCommon('cancel')}
+            </ThemedButton>
+            <ThemedButton
+              style={styles.footerButton}
               onPress={handleSubmit}
-              disabled={!selectedType || submitRequest.isPending}>
-              <Text>{submitRequest.isPending ? '...' : tCommon('submit')}</Text>
-            </Button>
+              loading={submitRequest.isPending}
+              disabled={!selectedType}>
+              {tCommon('submit')}
+            </ThemedButton>
           </View>
         }>
-        <View style={{ gap: 16, paddingHorizontal: 16, paddingTop: 16 }}>
-          <View>
-            <Label style={{ marginBottom: 8 }}>{t('privacy.dataRequest.typeLabel')}</Label>
+        <View style={styles.sheetBody}>
+          <View style={styles.sheetSection}>
+            <ThemedText variant="subheadline" weight="500" style={styles.sheetLabel}>
+              {t('privacy.dataRequest.typeLabel')}
+            </ThemedText>
             {DATA_REQUEST_TYPES.map((type) => (
               <Pressable
                 key={type}
-                style={{
-                  marginBottom: 4,
-                  borderRadius: 8,
-                  paddingHorizontal: 12,
-                  paddingVertical: 10,
-                }}
-                className={selectedType === type ? 'bg-primary/10' : ''}
-                onPress={() => setSelectedType(type)}>
-                <Text
-                  className={
-                    selectedType === type ? 'text-primary font-medium' : 'text-foreground'
-                  }>
+                style={[
+                  styles.typeOption,
+                  selectedType === type ? { backgroundColor: colors.accent } : undefined,
+                ]}
+                android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+                onPress={() => {
+                  hapticLight();
+                  setSelectedType(type);
+                }}>
+                <ThemedText
+                  variant="body"
+                  weight={selectedType === type ? '500' : '400'}
+                  color={selectedType === type ? colors.primary : colors.foreground}>
                   {t(`privacy.dataRequest.types.${type}`)}
-                </Text>
+                </ThemedText>
               </Pressable>
             ))}
           </View>
 
-          <View>
-            <Label style={{ marginBottom: 8 }}>{t('privacy.dataRequest.descriptionLabel')}</Label>
-            <Textarea
+          <View style={styles.sheetSection}>
+            <ThemedText variant="subheadline" weight="500" style={styles.sheetLabel}>
+              {t('privacy.dataRequest.descriptionLabel')}
+            </ThemedText>
+            <ThemedTextarea
               placeholder={t('privacy.dataRequest.descriptionPlaceholder')}
               value={description}
               onChangeText={setDescription}
-              numberOfLines={3}
+              minHeight={80}
             />
           </View>
         </View>
       </BottomSheet>
-    </Card>
+    </GroupedSection>
   );
 }
 
 function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
+  const { colors } = useTheme();
   const { data: sessions, isPending } = useSessions();
   const revokeSession = useRevokeSession();
 
   return (
-    <Card className="mx-4">
-      <CardHeader>
-        <CardTitle>{t('account.sessions.title')}</CardTitle>
-        <Text variant="muted" className="text-sm">
+    <GroupedSection>
+      <View style={styles.consentHeader}>
+        <ThemedText variant="headline">{t('account.sessions.title')}</ThemedText>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('account.sessions.description')}
-        </Text>
-      </CardHeader>
+        </ThemedText>
+      </View>
 
       {isPending ? (
-        <CardContent style={{ alignItems: 'center' }}>
-          <ActivityIndicator />
-        </CardContent>
+        <View style={styles.loadingCell}>
+          <ThemedSkeleton width="80%" height={14} />
+          <ThemedSkeleton width="60%" height={14} />
+        </View>
       ) : !sessions?.length ? (
-        <CardContent>
-          <Text variant="muted">{t('account.sessions.empty')}</Text>
-        </CardContent>
+        <View style={styles.emptyCell}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+            {t('account.sessions.empty')}
+          </ThemedText>
+        </View>
       ) : (
-        sessions.map((session) => (
+        sessions.map((session: any) => (
           <View key={session.id}>
-            <Separator />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 24,
-                paddingVertical: 12,
-              }}>
-              <View style={{ flex: 1, paddingRight: 12 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Text className="text-card-foreground text-sm" numberOfLines={1}>
+            <ListSeparator />
+            <View style={styles.sessionRow}>
+              <View style={styles.sessionInfo}>
+                <View style={styles.sessionNameRow}>
+                  <ThemedText variant="body" numberOfLines={1} style={styles.sessionName}>
                     {session.userAgent ?? 'Unknown device'}
-                  </Text>
+                  </ThemedText>
                   {session.isCurrent && (
-                    <Badge variant="secondary" className="rounded-full">
-                      <Text>{t('account.sessions.current')}</Text>
-                    </Badge>
+                    <ThemedBadge variant="secondary" label={t('account.sessions.current')} />
                   )}
                 </View>
-                <Text variant="muted" className="text-xs">
+                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                   {t('account.sessions.lastActive', {
                     date: new Date(session.createdAt).toLocaleDateString(),
                   })}
-                </Text>
+                </ThemedText>
               </View>
               {!session.isCurrent && (
-                <Button
+                <ThemedButton
                   variant="outline"
                   size="sm"
-                  className="border-destructive"
                   onPress={() => revokeSession.mutate(session.id)}
-                  disabled={revokeSession.isPending}>
-                  <Text className="text-destructive">{t('account.sessions.revokeButton')}</Text>
-                </Button>
+                  loading={revokeSession.isPending}>
+                  <ThemedText variant="caption1" weight="500" color={colors.destructive}>
+                    {t('account.sessions.revokeButton')}
+                  </ThemedText>
+                </ThemedButton>
               )}
             </View>
           </View>
         ))
       )}
-    </Card>
+    </GroupedSection>
   );
 }
 
 function DeleteAccountSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
+  const { colors } = useTheme();
   const deleteAccount = useDeleteAccount();
 
   const handleDelete = () => {
+    hapticDelete();
     Alert.alert(t('dangerZone.confirmTitle'), t('dangerZone.confirmDescription'), [
       { text: tCommon('cancel'), style: 'cancel' },
       {
@@ -439,20 +444,133 @@ function DeleteAccountSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction
   };
 
   return (
-    <Card className="border-destructive/30 mx-4">
-      <CardContent>
-        <Text variant="muted" className="text-sm">
+    <GroupedSection>
+      <View style={styles.cardContent}>
+        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('dangerZone.description')}
-        </Text>
-        <Button
+        </ThemedText>
+        <ThemedButton
           variant="destructive"
           size="sm"
-          style={{ marginTop: 12, alignSelf: 'flex-start' }}
+          style={styles.inlineButton}
           onPress={handleDelete}
-          disabled={deleteAccount.isPending}>
-          <Text>{deleteAccount.isPending ? '...' : t('dangerZone.deleteButton')}</Text>
-        </Button>
-      </CardContent>
-    </Card>
+          loading={deleteAccount.isPending}>
+          {t('dangerZone.deleteButton')}
+        </ThemedButton>
+      </View>
+    </GroupedSection>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 32,
+  },
+  descriptionWrapper: {
+    paddingHorizontal: 32,
+    paddingTop: 16,
+  },
+  sectionTitleWrapper: {
+    paddingHorizontal: 32,
+    paddingTop: 24,
+    paddingBottom: 8,
+  },
+  sectionTitleText: {
+    letterSpacing: 0.5,
+  },
+  sectionGap: {
+    height: 12,
+  },
+  sheetContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  localeRow: {
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  consentHeader: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+    gap: 4,
+  },
+  consentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  consentLabel: {
+    flex: 1,
+    paddingRight: 16,
+    gap: 2,
+  },
+  cardContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 8,
+  },
+  inlineButton: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  loadingCell: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 10,
+  },
+  emptyCell: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  sessionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  sessionInfo: {
+    flex: 1,
+    paddingRight: 12,
+    gap: 2,
+  },
+  sessionNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  sessionName: {
+    flex: 1,
+  },
+  sheetFooter: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  footerButton: {
+    flex: 1,
+  },
+  sheetBody: {
+    gap: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  sheetSection: {
+    gap: 8,
+  },
+  sheetLabel: {
+    marginBottom: 4,
+  },
+  typeOption: {
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 4,
+  },
+});

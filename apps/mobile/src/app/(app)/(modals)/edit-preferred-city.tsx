@@ -1,18 +1,21 @@
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { CitySearchInput } from '@/components/city-search';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { CitySearchInput } from '@/components/forms/city-search';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { useTheme } from '@/design';
+import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
 
 export default function EditPreferredCityScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const headerHeight = useHeaderHeight();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
   });
@@ -25,30 +28,52 @@ export default function EditPreferredCityScreen() {
     updateProfile.mutate(
       { preferredCity: city || null },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert('Error'),
+        onSuccess: () => {
+          hapticFormSubmitSuccess();
+          router.back();
+        },
+        onError: () => {
+          hapticFormSubmitError();
+          Alert.alert(tErrors('generic'));
+        },
       }
     );
   }
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <View style={{ paddingHorizontal: 16, paddingTop: headerHeight + 12, gap: 16 }}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.searchArea, { paddingTop: headerHeight + 12 }]}>
         <CitySearchInput
           value={city}
           onSelect={setCity}
           placeholder={tPlaceholders('searchCity')}
-          autoFocus
         />
       </View>
 
-      <View style={{ flex: 1 }} />
+      <View style={styles.spacer} />
 
-      <View style={{ paddingHorizontal: 16, paddingBottom: 24 }}>
-        <Button className="h-14 rounded-xl" onPress={handleSave} disabled={updateProfile.isPending}>
-          <Text>{tCommon('save')}</Text>
-        </Button>
+      <View style={styles.footer}>
+        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
+          {tCommon('save')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  searchArea: {
+    paddingHorizontal: 16,
+    gap: 16,
+  },
+  spacer: {
+    flex: 1,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+});

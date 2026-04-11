@@ -3,22 +3,21 @@ import { APP_NAME } from '@openhospi/shared/constants';
 import { StatusBar } from 'expo-status-bar';
 import { GraduationCap, Loader2 } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Text } from '@/components/ui/text';
-import { LanguagePicker } from '@/components/language-picker';
-import { Logo } from '@/components/logo';
 import { useTranslation } from 'react-i18next';
+
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { LanguagePicker } from '@/components/shared/language-picker';
+import { Logo } from '@/components/shared/logo';
+import { useTheme } from '@/design';
 import { authClient } from '@/lib/auth-client';
 
 export default function LoginScreen() {
-  const { t } = useTranslation('translation', {
-    keyPrefix: 'auth.login',
-  });
+  const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
+  const { colors } = useTheme();
   const [isPending, setIsPending] = useState(false);
 
   async function handleInAcademiaLogin() {
@@ -50,82 +49,136 @@ export default function LoginScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-background">
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
 
-      <View className="items-end px-6 pt-4">
+      <View style={styles.languageRow}>
         <LanguagePicker />
       </View>
 
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
-        <Animated.View
-          entering={FadeInDown.duration(500).springify()}
-          style={{ width: '100%', maxWidth: 448, alignItems: 'center' }}>
-          {/* Logo */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 32 }}>
+      <View style={styles.center}>
+        <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
+          <View style={styles.logoRow}>
             <Logo size={40} />
-            <Text className="text-primary text-2xl font-semibold tracking-tight">{APP_NAME}</Text>
+            <ThemedText variant="title2" color={colors.primary}>
+              {APP_NAME}
+            </ThemedText>
           </View>
 
-          {/* Card */}
-          <View
-            style={{ width: '100%' }}
-            className="bg-card border-border rounded-xl border py-6 shadow-sm shadow-black/5">
-            {/* Header */}
-            <View style={{ alignItems: 'center', gap: 6, paddingHorizontal: 24, marginBottom: 24 }}>
-              <Text className="text-foreground text-2xl font-semibold">{t('title')}</Text>
-              <Text className="text-muted-foreground text-center text-sm">{t('description')}</Text>
-            </View>
+          <View style={styles.headerSection}>
+            <ThemedText variant="largeTitle">{t('title')}</ThemedText>
+            <ThemedText
+              variant="subheadline"
+              color={colors.tertiaryForeground}
+              style={styles.descriptionText}>
+              {t('description')}
+            </ThemedText>
+          </View>
 
-            {/* InAcademia button section */}
-            <View style={{ gap: 16, paddingHorizontal: 24 }}>
-              <Button
+          <View style={styles.buttonSection}>
+            <ThemedButton size="lg" onPress={handleInAcademiaLogin} disabled={isPending}>
+              {isPending ? (
+                <Loader2 size={20} color={colors.primaryForeground} />
+              ) : (
+                <GraduationCap size={20} color={colors.primaryForeground} />
+              )}
+              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
+                {t('inacademiaButton')}
+              </ThemedText>
+            </ThemedButton>
+            <ThemedText
+              variant="caption1"
+              color={colors.tertiaryForeground}
+              style={styles.descriptionText}>
+              {t('inacademiaDescription')}
+            </ThemedText>
+          </View>
+
+          {__DEV__ && (
+            <View style={styles.devSection}>
+              <View style={styles.dividerRow}>
+                <View style={[styles.dividerLine, { backgroundColor: colors.separator }]} />
+                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                  {t('devOrDivider')}
+                </ThemedText>
+                <View style={[styles.dividerLine, { backgroundColor: colors.separator }]} />
+              </View>
+              <ThemedButton
+                variant="outline"
                 size="lg"
-                className="w-full rounded-xl"
-                onPress={handleInAcademiaLogin}
+                onPress={handleGitHubLogin}
                 disabled={isPending}>
                 {isPending ? (
-                  <Loader2 size={20} className="text-primary-foreground" />
+                  <Loader2 size={20} color={colors.foreground} />
                 ) : (
-                  <GraduationCap size={20} className="text-primary-foreground" />
+                  <Ionicons name="logo-github" size={20} color={colors.foreground} />
                 )}
-                <Text>{t('inacademiaButton')}</Text>
-              </Button>
-              <Text className="text-muted-foreground text-center text-xs">
-                {t('inacademiaDescription')}
-              </Text>
+                <ThemedText variant="subheadline" weight="600">
+                  {t('devGithubButton')}
+                </ThemedText>
+              </ThemedButton>
+              <ThemedText
+                variant="caption1"
+                color={colors.tertiaryForeground}
+                style={styles.descriptionText}>
+                {t('devGithubDescription')}
+              </ThemedText>
             </View>
-
-            {/* GitHub button section (dev only) */}
-            {__DEV__ && (
-              <View style={{ gap: 16, paddingHorizontal: 24, marginTop: 24 }}>
-                <View className="flex-row items-center gap-3">
-                  <Separator className="flex-1" />
-                  <Text className="text-muted-foreground text-xs">{t('devOrDivider')}</Text>
-                  <Separator className="flex-1" />
-                </View>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full rounded-xl"
-                  onPress={handleGitHubLogin}
-                  disabled={isPending}>
-                  {isPending ? (
-                    <Loader2 size={20} className="text-foreground" />
-                  ) : (
-                    <Ionicons name="logo-github" size={20} className="text-foreground" />
-                  )}
-                  <Text>{t('devGithubButton')}</Text>
-                </Button>
-                <Text className="text-muted-foreground text-center text-xs">
-                  {t('devGithubDescription')}
-                </Text>
-              </View>
-            )}
-          </View>
+          )}
         </Animated.View>
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  languageRow: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  content: {
+    width: '100%',
+    maxWidth: 448,
+    alignItems: 'center',
+    gap: 32,
+  },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  headerSection: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  descriptionText: {
+    textAlign: 'center',
+  },
+  buttonSection: {
+    width: '100%',
+    gap: 12,
+  },
+  devSection: {
+    width: '100%',
+    gap: 12,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+});

@@ -1,8 +1,7 @@
-const { getDefaultConfig } = require('expo/metro-config');
-const { withUniwindConfig } = require('uniwind/metro');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 
 /** @type {import('expo/metro-config').MetroConfig} */
-const config = getDefaultConfig(__dirname);
+const config = getSentryExpoConfig(__dirname);
 
 config.resolver.sourceExts.push('sql');
 
@@ -12,7 +11,4 @@ config.resolver.extraNodeModules = {
   crypto: require.resolve('react-native-quick-crypto'),
 };
 
-module.exports = withUniwindConfig(config, {
-  cssEntryFile: './src/global.css',
-  dtsFile: './src/uniwind-types.d.ts',
-});
+module.exports = config;

@@ -164,6 +164,7 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                   form.setValue("streetName", result.streetName, { shouldValidate: true });
                   form.setValue("houseNumber", result.houseNumber, { shouldValidate: true });
                   form.setValue("postalCode", result.postalCode, { shouldValidate: true });
+                  form.setValue("neighborhood", result.neighborhood, { shouldValidate: true });
                   form.setValue("latitude", result.latitude, { shouldValidate: true });
                   form.setValue("longitude", result.longitude, { shouldValidate: true });
                 }}

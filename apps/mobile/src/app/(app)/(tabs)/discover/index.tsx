@@ -1,12 +1,19 @@
+import { FlashList } from '@shopify/flash-list';
 import { Stack, useRouter } from 'expo-router';
+import { Search } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { LogoText } from '@/components/logo-text';
-import { Text } from '@/components/ui/text';
-import { RoomCard } from '@/components/room-card';
+import { LogoText } from '@/components/shared/logo-text';
+import { NativeEmptyState } from '@/components/feedback/native-empty-state';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { RoomCard } from '@/components/rooms/room-card';
 import { useDiscoverFilters } from '@/context/discover-filters';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useRooms } from '@/services/rooms';
 import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
@@ -28,7 +35,8 @@ function DiscoverHeader({
       />
       <Stack.SearchBar
         placeholder={searchPlaceholder}
-        hideWhenScrolling={false}
+        hideWhenScrolling
+        obscureBackground
         onChangeText={(event) => onSearchChange(event.nativeEvent.text)}
         onCancelButtonPress={() => onSearchChange('')}
       />
@@ -39,10 +47,30 @@ function DiscoverHeader({
   );
 }
 
+function SkeletonRoomCard() {
+  const { colors } = useTheme();
+
+  return (
+    <View
+      style={[
+        styles.skeletonCard,
+        { backgroundColor: colors.tertiaryBackground, borderRadius: radius.lg },
+      ]}>
+      <ThemedSkeleton width="100%" height={200} rounded="lg" />
+      <View style={styles.skeletonContent}>
+        <ThemedSkeleton width="70%" height={18} />
+        <ThemedSkeleton width="50%" height={14} />
+        <ThemedSkeleton width="30%" height={20} />
+      </View>
+    </View>
+  );
+}
+
 export default function DiscoverScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
+  const { colors } = useTheme();
 
   const { filters } = useDiscoverFilters();
   const [searchText, setSearchText] = useState('');
@@ -57,6 +85,11 @@ export default function DiscoverScreen() {
     ? rooms.filter((r) => r.title.toLowerCase().includes(searchText.toLowerCase()))
     : rooms;
 
+  const handleRefresh = () => {
+    hapticPullToRefreshSnap();
+    refetch();
+  };
+
   if (isPending) {
     return (
       <>
@@ -65,8 +98,10 @@ export default function DiscoverScreen() {
           onSearchChange={setSearchText}
           onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
         />
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator size="large" />
+        <View style={styles.skeletonList}>
+          <SkeletonRoomCard />
+          <SkeletonRoomCard />
+          <SkeletonRoomCard />
         </View>
       </>
     );
@@ -79,46 +114,31 @@ export default function DiscoverScreen() {
         onSearchChange={setSearchText}
         onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
       />
-      <FlatList
+      <FlashList
         data={filteredRooms}
         keyExtractor={(item) => item.id}
-        contentInsetAdjustmentBehavior="automatic"
         renderItem={({ item }: { item: DiscoverRoom }) => (
-          <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+          <View style={styles.cardWrapper}>
             <RoomCard room={item} />
           </View>
         )}
         ListHeaderComponent={
           totalCount > 0 ? (
-            <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-              <Text variant="muted" className="text-xs">
+            <View style={styles.countHeader}>
+              <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                 {searchText
                   ? t('roomCountFiltered', { showing: filteredRooms.length, total: totalCount })
                   : t('roomCount', { count: totalCount })}
-              </Text>
+              </ThemedText>
             </View>
           ) : null
         }
         ListEmptyComponent={
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 32,
-            }}>
-            <View
-              style={{ alignItems: 'center', justifyContent: 'center', padding: 48 }}
-              className="rounded-lg border border-dashed">
-              <Text variant="muted" className="text-center">
-                {t('empty')}
-              </Text>
-            </View>
-          </View>
+          <NativeEmptyState sfSymbol="magnifyingglass" icon={Search} title={t('empty')} />
         }
-        contentContainerStyle={filteredRooms.length === 0 ? { flex: 1 } : { paddingBottom: 16 }}
+        contentContainerStyle={styles.listContent}
         refreshing={isRefetching}
-        onRefresh={refetch}
+        onRefresh={handleRefresh}
         onEndReached={() => {
           if (hasNextPage && !isFetchingNextPage) {
             void fetchNextPage();
@@ -127,7 +147,7 @@ export default function DiscoverScreen() {
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           isFetchingNextPage ? (
-            <View style={{ paddingVertical: 16 }}>
+            <View style={styles.footer}>
               <ActivityIndicator />
             </View>
           ) : null
@@ -136,3 +156,32 @@ export default function DiscoverScreen() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  cardWrapper: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  countHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  listContent: {
+    paddingBottom: 16,
+  },
+  footer: {
+    paddingVertical: 16,
+  },
+  skeletonList: {
+    flex: 1,
+    padding: 16,
+    gap: 16,
+  },
+  skeletonCard: {
+    overflow: 'hidden',
+  },
+  skeletonContent: {
+    padding: 16,
+    gap: 10,
+  },
+});

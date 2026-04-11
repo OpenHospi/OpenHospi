@@ -33,6 +33,7 @@ export async function POST(request: Request) {
     return NextResponse.json(result, { status: 201 });
   } catch (e) {
     if (e instanceof NextResponse) return e;
+    console.error("[POST /api/mobile/my-rooms/houses]", e);
     return apiError("Internal server error", 500);
   }
 }

@@ -467,12 +467,6 @@
               "description": "Mobile App-Builds, Updates & Verteilung",
               "current": "€0/Mo. (Kostenlos)",
               "atScale": "~€19/Mo. (Starter)"
-            },
-            {
-              "name": "Sentry",
-              "description": "Crash-Reporting & Fehlerüberwachung (EU)",
-              "current": "€0/Mo. (Developer)",
-              "atScale": "~€26/Mo. (Team)"
             }
           ]
         },
@@ -494,22 +488,6 @@
               "name": "openhospi.eu",
               "description": ".eu Domain",
               "cost": "€13,30/Jahr"
-            }
-          ]
-        },
-        {
-          "name": "App Stores",
-          "description": "Veröffentlichung in iOS und Android App Stores",
-          "items": [
-            {
-              "name": "Apple Developer Program",
-              "description": "Erforderlich für iOS App Store",
-              "cost": "€99/Jahr"
-            },
-            {
-              "name": "Google Play Developer",
-              "description": "Erforderlich für Play Store",
-              "cost": "€25 (einmalig)"
             }
           ]
         }
@@ -543,29 +521,53 @@
           "atScale": "~€228"
         },
         {
-          "name": "Sentry",
-          "current": "€0",
-          "atScale": "~€312"
-        },
-        {
           "name": "Domains (3x)",
           "current": "~€50",
           "atScale": "~€50"
-        },
-        {
-          "name": "Apple Developer",
-          "current": "€99",
-          "atScale": "€99"
-        },
-        {
-          "name": "Google Play",
-          "current": "€25",
-          "atScale": "—"
         }
       ],
       "totalLabel": "Gesamt pro Jahr",
-      "currentTotal": "~€174/Jahr",
-      "atScaleTotal": "~€1.187/Jahr (~€99/Mo)"
+      "currentTotal": "~€50/Jahr",
+      "atScaleTotal": "~€776/Jahr (~€65/Mo)"
+    },
+    "waived": {
+      "title": "Erlassene Kosten",
+      "subtitle": "Diese Dienste werden gesponsert oder gespendet, wodurch OpenHospi erheblich spart.",
+      "badge": "Gesponsert",
+      "items": [
+        {
+          "name": "Sentry",
+          "description": "Crash-Reporting und Fehlerüberwachung (EU)",
+          "normalCost": "$80/Mo.",
+          "sponsor": "Gesponserter Business-Plan"
+        },
+        {
+          "name": "Apple Developer Program",
+          "description": "Erforderlich für die Veröffentlichung im iOS App Store",
+          "normalCost": "€99/Jahr",
+          "sponsor": "Erlassen für Non-Profits"
+        },
+        {
+          "name": "Google Workspace",
+          "description": "E-Mail, Cloud-Speicher und Kollaborationstools",
+          "normalCost": "~€5,75/Nutzer/Mo.",
+          "sponsor": "Non-Profit-Abonnement"
+        },
+        {
+          "name": "GitHub Team",
+          "description": "Versionskontrolle, CI/CD und Projektverwaltung",
+          "normalCost": "~$4/Nutzer/Mo.",
+          "sponsor": "Erlassen für Non-Profits"
+        },
+        {
+          "name": "Crowdin",
+          "description": "Übersetzungsmanagement für Open-Source-Projekte",
+          "normalCost": "~$100/Mo.",
+          "sponsor": "Kostenlos für Open Source"
+        }
+      ],
+      "totalLabel": "Jährlich eingespart",
+      "totalValue": "~€1.500+/Jahr"
     },
     "keepFree": {
       "title": "Wie halten wir es kostenlos?",

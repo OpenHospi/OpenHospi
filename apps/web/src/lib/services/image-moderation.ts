@@ -1,17 +1,29 @@
-import "@tensorflow/tfjs";
-
-import * as nsfwjs from "nsfwjs";
-import * as tf from "@tensorflow/tfjs";
 import sharp from "sharp";
 
-// Singleton model instance (lazy loaded on first use, like the DB proxy)
-let model: nsfwjs.NSFWJS | null = null;
+// Lazy-loaded references (populated by ensureBackend)
+let tf: typeof import("@tensorflow/tfjs");
+let nsfwModel: import("nsfwjs/core").NSFWJS;
+let backendReady: Promise<void> | null = null;
 
-async function getModel(): Promise<nsfwjs.NSFWJS> {
-  if (!model) {
-    model = await nsfwjs.load();
+function ensureBackend(): Promise<void> {
+  if (!backendReady) {
+    backendReady = (async () => {
+      // Import tfjs and enable prod mode BEFORE nsfwjs registers kernels.
+      // This suppresses all "kernel already registered" warnings and the
+      // "install our node backend" message.
+      tf = await import("@tensorflow/tfjs");
+      tf.enableProdMode();
+
+      // Load nsfwjs with bundled model (no CDN fetch)
+      const { load } = await import("nsfwjs/core");
+      const { MobileNetV2Model } = await import("nsfwjs/models/mobilenet_v2");
+
+      nsfwModel = await load("MobileNetV2", {
+        modelDefinitions: [MobileNetV2Model],
+      });
+    })();
   }
-  return model;
+  return backendReady;
 }
 
 export type ModerationResult = {
@@ -24,9 +36,7 @@ export type ModerationResult = {
 /**
  * Screen an image buffer for inappropriate content using NSFWJS.
  *
- * Uses sharp for image decoding (instead of tfjs-node which is too large
- * for Vercel's 250MB serverless limit). Converts to raw RGB pixels then
- * creates a TF tensor for classification.
+ * Uses sharp for image decoding and the CPU backend for inference.
  *
  * Returns:
  * - `allowed: false` if Porn/Hentai confidence > 0.8 (image should be rejected)
@@ -34,11 +44,10 @@ export type ModerationResult = {
  * - `allowed: true, flagged: false` for clean images (save normally)
  */
 export async function moderateImage(buffer: Buffer): Promise<ModerationResult> {
-  const nsfw = await getModel();
+  await ensureBackend();
 
-  // Decode image to raw RGB pixels using sharp (no native tfjs-node needed)
   const { data, info } = await sharp(buffer)
-    .resize(224, 224) // NSFWJS expects 224x224 input
+    .resize(224, 224)
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -46,7 +55,7 @@ export async function moderateImage(buffer: Buffer): Promise<ModerationResult> {
   const image = tf.tensor3d(new Uint8Array(data), [info.height, info.width, 3]);
 
   try {
-    const predictions = await nsfw.classify(image);
+    const predictions = await nsfwModel.classify(image);
 
     const porn = predictions.find((p) => p.className === "Porn");
     const hentai = predictions.find((p) => p.className === "Hentai");

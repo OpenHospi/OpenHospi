@@ -1,27 +1,19 @@
 import { Gender, StudyLevel, Vereniging } from '@openhospi/shared/enums';
 import { useImperativeHandle, useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ChipPicker } from '@/components/chip-picker';
-import { DatePickerSheet } from '@/components/date-picker-sheet';
-import { SelectPickerSheet } from '@/components/select-picker-sheet';
-import { Input } from '@/components/ui/input';
-import { CitySearchInput } from '@/components/city-search';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  type Option,
-} from '@/components/ui/select';
-import { Text } from '@/components/ui/text';
+import { CitySearchInput } from '@/components/forms/city-search';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { NativeMenuPicker } from '@/components/forms/native-menu-picker';
+import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { useSubmitAbout } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
-import type { StepHandle } from '@/components/onboarding-types';
+import type { StepHandle } from '@/components/shared/onboarding-types';
 
 type Props = {
   ref?: React.Ref<StepHandle>;
@@ -45,25 +37,23 @@ function toISODate(date: Date): string {
 }
 
 export default function AboutStep({ ref, onNext, profile }: Props) {
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.fields' });
+  const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
   });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { t: tCityEnums } = useTranslation('translation', { keyPrefix: 'enums.city' });
   const { t: tVerenigingEnums } = useTranslation('translation', {
     keyPrefix: 'enums.vereniging',
   });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const [gender, setGender] = useState<string | null>(profile?.gender ?? null);
   const [birthDate, setBirthDate] = useState(() => toDateObject(profile?.birthDate));
   const [studyProgram, setStudyProgram] = useState(profile?.studyProgram ?? '');
-  const [studyLevel, setStudyLevel] = useState<Option | undefined>(
-    profile?.studyLevel
-      ? { value: profile.studyLevel, label: tEnums(`study_level.${profile.studyLevel}`) }
-      : undefined
-  );
+  const [studyLevel, setStudyLevel] = useState<string | null>(profile?.studyLevel ?? null);
   const [preferredCity, setPreferredCity] = useState<string | null>(profile?.preferredCity ?? null);
   const [vereniging, setVereniging] = useState<string | null>(profile?.vereniging ?? null);
 
@@ -71,7 +61,7 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
 
   function handleSubmit() {
     if (!gender || !studyProgram.trim() || !preferredCity) {
-      Alert.alert('Please complete all required fields.');
+      Alert.alert(tOnboarding('errors.requiredFields'));
       return;
     }
     submitAbout.mutate(
@@ -79,11 +69,11 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         gender,
         birthDate: toISODate(birthDate),
         studyProgram: studyProgram.trim(),
-        studyLevel: studyLevel?.value || undefined,
+        studyLevel: studyLevel || undefined,
         preferredCity,
         vereniging: vereniging || undefined,
       },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving data') }
+      { onSuccess: onNext, onError: () => Alert.alert(tErrors('generic')) }
     );
   }
 
@@ -91,22 +81,31 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingBottom: 32 }}>
-      <View style={{ gap: 8 }}>
-        <Label>{t('gender')}</Label>
-        <ChipPicker
+      contentContainerStyle={styles.scrollContent}>
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('gender')}
+        </ThemedText>
+        <NativeMenuPicker
           values={Gender.values}
           selected={gender}
           onSelect={setGender}
-          translateKey="gender"
-          t={tEnums}
+          placeholder={t('gender')}
+          t={(v) => tEnums(`gender.${v}`)}
         />
+        {gender === Gender.prefer_not_to_say && (
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+            {tOnboarding('genderPreferNotToSayHint')}
+          </ThemedText>
+        )}
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>{t('birthDate')}</Label>
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('birthDate')}
+        </ThemedText>
         <DatePickerSheet
           value={birthDate}
           onChange={setBirthDate}
@@ -116,33 +115,34 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         />
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>{t('studyProgram')}</Label>
-        <Input
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('studyProgram')}
+        </ThemedText>
+        <ThemedInput
           value={studyProgram}
           onChangeText={setStudyProgram}
           placeholder={tPlaceholders('studyProgram')}
         />
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>{t('studyLevel')}</Label>
-        <Select value={studyLevel} onValueChange={setStudyLevel}>
-          <SelectTrigger className="rounded-xl">
-            <SelectValue placeholder={tPlaceholders('studyLevel')} />
-          </SelectTrigger>
-          <SelectContent>
-            {StudyLevel.values.map((v) => (
-              <SelectItem key={v} value={v} label={tEnums(`study_level.${v}`)}>
-                {tEnums(`study_level.${v}`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('studyLevel')}
+        </ThemedText>
+        <NativeMenuPicker
+          values={StudyLevel.values}
+          selected={studyLevel}
+          onSelect={setStudyLevel}
+          placeholder={tPlaceholders('studyLevel')}
+          t={(v) => tEnums(`study_level.${v}`)}
+        />
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>{t('preferredCity')}</Label>
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('preferredCity')}
+        </ThemedText>
         <CitySearchInput
           value={preferredCity ?? ''}
           onSelect={setPreferredCity}
@@ -150,10 +150,13 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         />
       </View>
 
-      <View style={{ gap: 8 }}>
-        <Label>
-          {t('vereniging')} <Text variant="muted">({tCommon('optional')})</Text>
-        </Label>
+      <View style={styles.field}>
+        <ThemedText variant="subheadline" weight="500">
+          {t('vereniging')}{' '}
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+            ({tCommon('optional')})
+          </ThemedText>
+        </ThemedText>
         <SelectPickerSheet
           values={Vereniging.values}
           selected={vereniging}
@@ -167,3 +170,17 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    gap: 16,
+    paddingBottom: 32,
+  },
+  field: {
+    gap: 8,
+  },
+});

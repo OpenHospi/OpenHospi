@@ -1,7 +1,6 @@
 import {
   RATE_LIMIT_APPLY,
   RATE_LIMIT_CALENDAR_FEED,
-  RATE_LIMIT_CREATE_ROOM,
   RATE_LIMIT_EXPORT_DATA,
   RATE_LIMIT_JOIN_SHARE_LINK,
 } from "@openhospi/shared/constants";
@@ -9,7 +8,12 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
 // Only create Redis client when Upstash is configured (skip in local dev)
-const redis = process.env.UPSTASH_REDIS_REST_URL ? Redis.fromEnv() : null;
+const redis = process.env.KV_REST_API_URL
+  ? new Redis({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN!,
+    })
+  : null;
 
 function limiter(
   requests: number,
@@ -26,7 +30,6 @@ function limiter(
 
 export const rateLimiters = {
   apply: limiter(RATE_LIMIT_APPLY, "1 d", "apply"),
-  createRoom: limiter(RATE_LIMIT_CREATE_ROOM, "1 d", "room"),
   exportData: limiter(RATE_LIMIT_EXPORT_DATA, "1 d", "export"),
   joinShareLink: limiter(RATE_LIMIT_JOIN_SHARE_LINK, "1 d", "join"),
   calendarFeed: limiter(RATE_LIMIT_CALENDAR_FEED, "1 m", "cal"),

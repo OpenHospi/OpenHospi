@@ -1,11 +1,12 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useCloseRoom, useCloseRoomApplicants } from '@/services/my-rooms';
 
@@ -14,6 +15,7 @@ export default function CloseRoomScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.closeRoom' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { colors } = useTheme();
 
   const { data: applicants, isLoading } = useCloseRoomApplicants(id);
   const closeRoom = useCloseRoom();
@@ -22,10 +24,8 @@ export default function CloseRoomScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
@@ -51,16 +51,18 @@ export default function CloseRoomScreen() {
   };
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 16 }}>
-        <Text className="text-foreground text-sm">{t('description')}</Text>
+    <View style={[styles.flex1, { backgroundColor: colors.background }]}>
+      <ScrollView style={styles.flex1} contentContainerStyle={styles.scrollContent}>
+        <ThemedText variant="subheadline">{t('description')}</ThemedText>
 
         {applicants && applicants.length > 0 ? (
-          <View style={{ gap: 8 }}>
-            <Text className="text-foreground font-semibold">{t('chooseApplicant')}</Text>
-            <Text variant="muted" className="text-sm">
+          <View style={styles.applicantSection}>
+            <ThemedText variant="body" weight="600">
+              {t('chooseApplicant')}
+            </ThemedText>
+            <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {t('chooseHint')}
-            </Text>
+            </ThemedText>
 
             {applicants.map((applicant) => {
               const avatarUri = applicant.avatarUrl
@@ -73,32 +75,36 @@ export default function CloseRoomScreen() {
                   key={applicant.applicationId}
                   onPress={() => setSelectedId(isSelected ? null : applicant.applicationId)}>
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      padding: 12,
-                      gap: 12,
-                    }}
-                    className={`rounded-lg border ${isSelected ? 'border-primary bg-primary/10' : 'border-border'}`}>
-                    <View
-                      className="bg-muted overflow-hidden rounded-full"
-                      style={{ width: 40, height: 40 }}>
+                    style={[
+                      styles.applicantCard,
+                      {
+                        borderColor: isSelected ? colors.primary : colors.border,
+                        backgroundColor: isSelected ? `${colors.primary}1A` : 'transparent',
+                      },
+                    ]}>
+                    <View style={[styles.avatarCircle, { backgroundColor: colors.muted }]}>
                       {avatarUri && (
-                        <Image source={{ uri: avatarUri }} style={{ width: 40, height: 40 }} />
+                        <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
                       )}
                     </View>
-                    <View style={{ flex: 1 }}>
-                      <Text className="text-foreground text-sm font-medium">
+                    <View style={styles.flex1}>
+                      <ThemedText variant="subheadline" weight="500">
                         {applicant.firstName} {applicant.lastName}
-                      </Text>
+                      </ThemedText>
                       {applicant.totalRank != null && (
-                        <Text variant="muted" className="text-xs">
+                        <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                           {t('rankScore', { score: applicant.totalRank })}
-                        </Text>
+                        </ThemedText>
                       )}
                     </View>
                     <View
-                      className={`h-5 w-5 rounded-full border-2 ${isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'}`}
+                      style={[
+                        styles.radioCircle,
+                        {
+                          borderColor: isSelected ? colors.primary : colors.tertiaryForeground,
+                          backgroundColor: isSelected ? colors.primary : 'transparent',
+                        },
+                      ]}
                     />
                   </View>
                 </Pressable>
@@ -106,24 +112,74 @@ export default function CloseRoomScreen() {
             })}
           </View>
         ) : (
-          <Text variant="muted" className="text-sm">
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('noApplicants')}
-          </Text>
+          </ThemedText>
         )}
       </ScrollView>
 
       <View
-        style={{ padding: 16, paddingBottom: 32, gap: 8 }}
-        className="border-border bg-background border-t">
+        style={[
+          styles.bottomBar,
+          { borderTopColor: colors.border, backgroundColor: colors.background },
+        ]}>
         {selectedId && (
-          <Button variant="destructive" onPress={() => handleClose(true)}>
-            <Text>{t('closeWithChoice')}</Text>
-          </Button>
+          <ThemedButton variant="destructive" onPress={() => handleClose(true)}>
+            {t('closeWithChoice')}
+          </ThemedButton>
         )}
-        <Button variant="outline" onPress={() => handleClose(false)}>
-          <Text>{t('closeWithoutChoice')}</Text>
-        </Button>
+        <ThemedButton variant="outline" onPress={() => handleClose(false)}>
+          {t('closeWithoutChoice')}
+        </ThemedButton>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContent: {
+    padding: 16,
+    gap: 16,
+  },
+  applicantSection: {
+    gap: 8,
+  },
+  applicantCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    gap: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  avatarCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+  },
+  radioCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+  },
+  bottomBar: {
+    padding: 16,
+    paddingBottom: 32,
+    gap: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+});

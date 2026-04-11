@@ -1,18 +1,28 @@
 import { useRouter } from 'expo-router';
 import { Home, Plus } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Text } from '@/components/ui/text';
+import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/primitives/themed-text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 import { useCreateDraft, useCreateHouse, useOwnerHouses } from '@/services/my-rooms';
 
 export default function HouseGateScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -53,10 +63,8 @@ export default function HouseGateScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        className="bg-background">
-        <ActivityIndicator className="accent-primary" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
@@ -64,84 +72,128 @@ export default function HouseGateScreen() {
   const hasHouses = houses && houses.length > 0;
 
   return (
-    <View style={{ flex: 1 }} className="bg-background">
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 32 }}
-        keyboardShouldPersistTaps="handled">
-        {hasHouses && !showNewForm && (
-          <>
-            <Text className="text-foreground text-lg font-semibold">{t('housePicker.title')}</Text>
-            <Text variant="muted" className="text-sm">
-              {t('housePicker.description')}
-            </Text>
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled">
+      {hasHouses && !showNewForm && (
+        <>
+          <ThemedText variant="headline">{t('housePicker.title')}</ThemedText>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+            {t('housePicker.description')}
+          </ThemedText>
 
-            {houses.map((house) => (
-              <Pressable key={house.id} onPress={() => handleSelectHouse(house.id)}>
-                <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Home size={20} className="text-muted-foreground" />
-                  <View style={{ flex: 1 }}>
-                    <Text className="text-foreground font-semibold">{house.name}</Text>
-                    <Text variant="muted" className="text-xs">
+          {houses.map((house) => (
+            <Pressable
+              key={house.id}
+              onPress={() => {
+                hapticLight();
+                handleSelectHouse(house.id);
+              }}
+              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+              style={({ pressed }) => [
+                pressed && Platform.OS === 'ios' ? { opacity: 0.7 } : undefined,
+              ]}>
+              <GroupedSection>
+                <View style={styles.houseRow}>
+                  <Home size={20} color={colors.tertiaryForeground} />
+                  <View style={styles.houseInfo}>
+                    <ThemedText variant="headline">{house.name}</ThemedText>
+                    <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                       {t('housePicker.roomCount', { count: house.roomCount })}
-                    </Text>
+                    </ThemedText>
                   </View>
-                </Card>
-              </Pressable>
-            ))}
-
-            <Pressable onPress={() => setShowNewForm(true)}>
-              <Card
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 12,
-                  justifyContent: 'center',
-                }}>
-                <Plus size={20} className="text-primary" />
-                <Text className="text-primary font-semibold">{t('housePicker.createNew')}</Text>
-              </Card>
+                </View>
+              </GroupedSection>
             </Pressable>
-          </>
-        )}
+          ))}
 
-        {(!hasHouses || showNewForm) && (
-          <>
-            <Text className="text-foreground text-lg font-semibold">
-              {t('houseSetup.form.title')}
-            </Text>
-            <Text variant="muted" className="text-sm">
-              {t('houseSetup.form.description')}
-            </Text>
+          <Pressable
+            onPress={() => {
+              hapticLight();
+              setShowNewForm(true);
+            }}>
+            <GroupedSection>
+              <View style={styles.createRow}>
+                <Plus size={20} color={colors.primary} />
+                <ThemedText variant="headline" color={colors.primary}>
+                  {t('housePicker.createNew')}
+                </ThemedText>
+              </View>
+            </GroupedSection>
+          </Pressable>
+        </>
+      )}
 
-            <View style={{ gap: 8 }}>
-              <Label>{t('houseSetup.form.nameLabel')}</Label>
-              <Input
-                value={houseName}
-                onChangeText={setHouseName}
-                placeholder={t('houseSetup.form.namePlaceholder')}
-                autoFocus
-              />
-            </View>
+      {(!hasHouses || showNewForm) && (
+        <>
+          <ThemedText variant="headline">{t('houseSetup.form.title')}</ThemedText>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+            {t('houseSetup.form.description')}
+          </ThemedText>
 
-            <Button
-              onPress={handleCreateHouse}
-              disabled={createHouse.isPending || houseName.trim().length < 2}>
-              {createHouse.isPending ? (
-                <ActivityIndicator className="accent-primary-foreground" />
-              ) : (
-                <Text>{t('houseSetup.form.submit')}</Text>
-              )}
-            </Button>
+          <View style={styles.fieldGroup}>
+            <ThemedText variant="subheadline" weight="500">
+              {t('houseSetup.form.nameLabel')}
+            </ThemedText>
+            <ThemedInput
+              value={houseName}
+              onChangeText={setHouseName}
+              placeholder={t('houseSetup.form.namePlaceholder')}
+              autoFocus
+            />
+          </View>
 
-            {hasHouses && (
-              <Button variant="ghost" onPress={() => setShowNewForm(false)}>
-                <Text>{tCommon('back')}</Text>
-              </Button>
-            )}
-          </>
-        )}
-      </ScrollView>
-    </View>
+          <ThemedButton
+            onPress={handleCreateHouse}
+            loading={createHouse.isPending}
+            disabled={houseName.trim().length < 2}>
+            {t('houseSetup.form.submit')}
+          </ThemedButton>
+
+          {hasHouses && (
+            <ThemedButton variant="ghost" onPress={() => setShowNewForm(false)}>
+              {tCommon('back')}
+            </ThemedButton>
+          )}
+        </>
+      )}
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    gap: 16,
+    paddingBottom: 32,
+  },
+  houseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 16,
+  },
+  houseInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  createRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  fieldGroup: {
+    gap: 8,
+  },
+});

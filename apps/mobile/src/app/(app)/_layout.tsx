@@ -8,9 +8,7 @@ import { DiscoverFiltersProvider } from '@/context/discover-filters';
 
 const subScreenOptions = {
   animation: 'slide_from_right' as const,
-  ...(Platform.OS === 'ios'
-    ? { headerTransparent: true, headerBlurEffect: 'regular' as const }
-    : {}),
+  ...(Platform.OS === 'ios' ? { headerTransparent: true } : {}),
 };
 
 export default function AppLayout() {

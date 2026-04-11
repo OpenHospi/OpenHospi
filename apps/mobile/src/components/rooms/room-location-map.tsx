@@ -18,8 +18,8 @@ function offsetCoords(lat: number, lng: number) {
   return { latitude: lat + offsetLat, longitude: lng + offsetLng };
 }
 
-const CIRCLE_FILL = 'rgba(13, 148, 136, 0.15)';
-const CIRCLE_STROKE = 'rgba(13, 148, 136, 0.5)';
+const CIRCLE_FILL = 'rgba(13, 148, 136, 0.06)';
+const CIRCLE_STROKE = 'rgba(13, 148, 136, 0.2)';
 
 export default function RoomLocationMap({ latitude, longitude }: Props) {
   const center = offsetCoords(latitude, longitude);

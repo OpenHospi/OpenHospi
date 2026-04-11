@@ -10,6 +10,7 @@ import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
+import RoomLocationMap from '@/components/rooms/room-location-map';
 import { useTheme } from '@/design';
 import { useMyRoom, useSaveBasicInfo } from '@/services/my-rooms';
 
@@ -153,6 +154,9 @@ export default function BasicInfoScreen() {
                 </ThemedText>
               ) : null}
             </View>
+          ) : null}
+          {latitude && longitude ? (
+            <RoomLocationMap latitude={latitude} longitude={longitude} />
           ) : null}
         </View>
       </ScrollView>

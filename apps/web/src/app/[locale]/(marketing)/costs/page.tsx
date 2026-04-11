@@ -1,5 +1,5 @@
 import type { Locale } from "@openhospi/i18n";
-import { Building2, Cloud, Code, ExternalLink, Globe, Heart, Smartphone } from "lucide-react";
+import { Building2, Cloud, Code, ExternalLink, Globe, Heart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -38,7 +38,7 @@ export async function generateMetadata({
   };
 }
 
-const groupIcons: LucideIcon[] = [Cloud, Globe, Smartphone];
+const groupIcons: LucideIcon[] = [Cloud, Globe];
 const pillarIcons: LucideIcon[] = [Heart, Building2, Code];
 
 export default async function CostsPage({ params }: { params: Promise<{ locale: Locale }> }) {
@@ -88,7 +88,7 @@ export default async function CostsPage({ params }: { params: Promise<{ locale: 
       <section className="bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">{t("breakdown.title")}</h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
             {groups.map((group, groupIndex) => {
               const hasCurrentAtScale = "current" in (group.items[0] as Record<string, unknown>);
 

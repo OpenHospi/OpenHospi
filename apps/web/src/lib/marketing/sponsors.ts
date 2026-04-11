@@ -44,7 +44,8 @@ export const SPONSORS: Sponsor[] = [
   },
   {
     name: "Crowdin",
-    logoLight: "/sponsors/crowdin-logo-with-plate.svg",
+    logoLight: "/sponsors/crowdin/crowdin-core-logo-cDark.svg",
+    logoDark: "/sponsors/crowdin/crowdin-core-logo-cWhite.svg",
     url: "https://crowdin.com",
     waived: true,
   },

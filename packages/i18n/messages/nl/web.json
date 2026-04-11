@@ -467,12 +467,6 @@
               "description": "Mobiele app-builds, updates & distributie",
               "current": "€0/mnd (Gratis)",
               "atScale": "~€19/mnd (Starter)"
-            },
-            {
-              "name": "Sentry",
-              "description": "Crashrapportage & foutmonitoring (EU)",
-              "current": "€0/mnd (Gesponsord Business)",
-              "atScale": "~€26/mnd (Team)"
             }
           ]
         },
@@ -494,17 +488,6 @@
               "name": "openhospi.eu",
               "description": ".eu domein",
               "cost": "€13,30/jr"
-            }
-          ]
-        },
-        {
-          "name": "App Store",
-          "description": "Publicatie in de iOS App Store",
-          "items": [
-            {
-              "name": "Apple Developer Program",
-              "description": "Vereist voor iOS App Store",
-              "cost": "€0/jr (Kwijtgescholden)"
             }
           ]
         }
@@ -538,24 +521,14 @@
           "atScale": "~€228"
         },
         {
-          "name": "Sentry",
-          "current": "€0 (gesponsord)",
-          "atScale": "~€312"
-        },
-        {
           "name": "Domeinen (3x)",
           "current": "~€50",
           "atScale": "~€50"
-        },
-        {
-          "name": "Apple Developer",
-          "current": "€0 (kwijtgescholden)",
-          "atScale": "€0 (kwijtgescholden)"
         }
       ],
       "totalLabel": "Totaal per jaar",
       "currentTotal": "~€50/jr",
-      "atScaleTotal": "~€1.088/jr (~€91/mnd)"
+      "atScaleTotal": "~€776/jr (~€65/mnd)"
     },
     "waived": {
       "title": "Kwijtgescholden kosten",
@@ -565,7 +538,7 @@
         {
           "name": "Sentry",
           "description": "Crashrapportage en foutmonitoring (EU)",
-          "normalCost": "~$80/mnd",
+          "normalCost": "$80/mnd",
           "sponsor": "Gesponsord Business-plan"
         },
         {

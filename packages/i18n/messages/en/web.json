@@ -467,12 +467,6 @@
               "description": "Mobile app builds, updates & distribution",
               "current": "€0/mo (Free)",
               "atScale": "~€19/mo (Starter)"
-            },
-            {
-              "name": "Sentry",
-              "description": "Crash reporting & error monitoring (EU)",
-              "current": "€0/mo (Sponsored Business)",
-              "atScale": "~€26/mo (Team)"
             }
           ]
         },
@@ -494,17 +488,6 @@
               "name": "openhospi.eu",
               "description": ".eu domain",
               "cost": "€13.30/yr"
-            }
-          ]
-        },
-        {
-          "name": "App Store",
-          "description": "Publishing to the iOS App Store",
-          "items": [
-            {
-              "name": "Apple Developer Program",
-              "description": "Required for iOS App Store",
-              "cost": "€0/yr (Waived)"
             }
           ]
         }
@@ -538,24 +521,14 @@
           "atScale": "~€228"
         },
         {
-          "name": "Sentry",
-          "current": "€0 (sponsored)",
-          "atScale": "~€312"
-        },
-        {
           "name": "Domains (3x)",
           "current": "~€50",
           "atScale": "~€50"
-        },
-        {
-          "name": "Apple Developer",
-          "current": "€0 (waived)",
-          "atScale": "€0 (waived)"
         }
       ],
       "totalLabel": "Total per year",
       "currentTotal": "~€50/yr",
-      "atScaleTotal": "~€1,088/yr (~€91/mo)"
+      "atScaleTotal": "~€776/yr (~€65/mo)"
     },
     "waived": {
       "title": "Waived costs",
@@ -565,7 +538,7 @@
         {
           "name": "Sentry",
           "description": "Crash reporting & error monitoring (EU)",
-          "normalCost": "~$80/mo",
+          "normalCost": "$80/mo",
           "sponsor": "Sponsored Business plan"
         },
         {

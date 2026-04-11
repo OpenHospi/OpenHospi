@@ -145,27 +145,15 @@ export default function BasicInfoScreen() {
           {addressDisplay ? (
             <View style={styles.addressDetails}>
               <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                {streetName} {houseNumber}
+                {streetName} {houseNumber}, {postalCode} {city}
               </ThemedText>
-              <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                {postalCode} {city}
-              </ThemedText>
+              {neighborhood ? (
+                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                  {t('fields.neighborhood')}: {neighborhood}
+                </ThemedText>
+              ) : null}
             </View>
           ) : null}
-        </View>
-
-        <View style={styles.fieldGroup}>
-          <ThemedText variant="subheadline" weight="500">
-            {t('fields.neighborhood')}{' '}
-            <ThemedText variant="footnote" color={colors.tertiaryForeground}>
-              ({tCommon('optional')})
-            </ThemedText>
-          </ThemedText>
-          <ThemedInput
-            value={neighborhood}
-            onChangeText={setNeighborhood}
-            placeholder={t('placeholders.neighborhood')}
-          />
         </View>
       </ScrollView>
 

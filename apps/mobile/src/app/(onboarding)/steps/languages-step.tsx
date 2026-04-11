@@ -23,6 +23,7 @@ export default function LanguagesStep({ ref, onNext, profile }: Props) {
   const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.language_enum' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const [selected, setSelected] = useState<string[]>(profile?.languages ?? []);
   const submitLanguages = useSubmitLanguages();
@@ -43,7 +44,7 @@ export default function LanguagesStep({ ref, onNext, profile }: Props) {
     }
     submitLanguages.mutate(
       { languages: selected },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving languages') }
+      { onSuccess: onNext, onError: () => Alert.alert(tErrors('generic')) }
     );
   }
 

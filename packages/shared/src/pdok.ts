@@ -79,8 +79,8 @@ export async function searchCities(query: string): Promise<CitySuggestion[]> {
   if (!res.ok) return [];
 
   const data = await res.json();
-  return (data.response?.docs ?? []).map((doc: { id: string; woonplaatsnaam: string }) => ({
+  return (data.response?.docs ?? []).map((doc: { id: string; weergavenaam: string }) => ({
     id: doc.id,
-    name: doc.woonplaatsnaam,
+    name: doc.weergavenaam.split(",")[0].trim(),
   }));
 }

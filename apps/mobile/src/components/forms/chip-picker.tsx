@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { hapticLight } from '@/lib/haptics';
 
 type ChipPickerProps = {
   values: readonly string[];
@@ -14,7 +15,12 @@ export function ChipPicker({ values, selected, onSelect, translateKey, t }: Chip
   return (
     <View style={styles.container}>
       {values.map((v) => (
-        <Pressable key={v} onPress={() => onSelect(selected === v ? null : v)}>
+        <Pressable
+          key={v}
+          onPress={() => {
+            hapticLight();
+            onSelect(selected === v ? null : v);
+          }}>
           <ThemedBadge
             variant={selected === v ? 'primary' : 'outline'}
             label={t(`${translateKey}.${v}`)}

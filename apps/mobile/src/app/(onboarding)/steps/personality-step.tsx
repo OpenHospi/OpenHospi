@@ -23,6 +23,7 @@ export default function PersonalityStep({ ref, onNext, profile }: Props) {
   const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums.lifestyle_tag' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const [selected, setSelected] = useState<string[]>(profile?.lifestyleTags ?? []);
   const submitPersonality = useSubmitPersonality();
@@ -43,7 +44,7 @@ export default function PersonalityStep({ ref, onNext, profile }: Props) {
     }
     submitPersonality.mutate(
       { lifestyleTags: selected },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving tags') }
+      { onSuccess: onNext, onError: () => Alert.alert(tErrors('generic')) }
     );
   }
 

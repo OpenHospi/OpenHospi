@@ -39,6 +39,7 @@ function toISODate(date: Date): string {
 export default function AboutStep({ ref, onNext, profile }: Props) {
   const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.fields' });
+  const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
   });
@@ -47,6 +48,7 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
     keyPrefix: 'enums.vereniging',
   });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const [gender, setGender] = useState<string | null>(profile?.gender ?? null);
   const [birthDate, setBirthDate] = useState(() => toDateObject(profile?.birthDate));
@@ -59,7 +61,7 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
 
   function handleSubmit() {
     if (!gender || !studyProgram.trim() || !preferredCity) {
-      Alert.alert('Please complete all required fields.');
+      Alert.alert(tOnboarding('errors.requiredFields'));
       return;
     }
     submitAbout.mutate(
@@ -71,7 +73,7 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         preferredCity,
         vereniging: vereniging || undefined,
       },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving data') }
+      { onSuccess: onNext, onError: () => Alert.alert(tErrors('generic')) }
     );
   }
 
@@ -93,6 +95,11 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
           translateKey="gender"
           t={tEnums}
         />
+        {gender === Gender.prefer_not_to_say && (
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+            {tOnboarding('genderPreferNotToSayHint')}
+          </ThemedText>
+        )}
       </View>
 
       <View style={styles.field}>

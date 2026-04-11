@@ -43,6 +43,9 @@ function buildInitialSlots(profile: ProfileWithPhotos | undefined): PhotoSlot[] 
 export default function PhotosStep({ ref, onNext, profile }: Props) {
   const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.photoSlots' });
+  const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
+  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
   const [slots, setSlots] = useState<PhotoSlot[]>(() => buildInitialSlots(profile));
   const uploadPhoto = useUploadProfilePhoto();
@@ -51,7 +54,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
 
   function handleSubmit() {
     if (!hasAtLeastOnePhoto) {
-      Alert.alert('Please upload at least one photo.');
+      Alert.alert(tOnboarding('errors.minPhotos'));
       return;
     }
     onNext();
@@ -99,7 +102,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
             next[slotIndex] = null;
             return next;
           });
-          Alert.alert('Upload failed. Please try again.');
+          Alert.alert(tErrors('uploadFailed'));
         },
       }
     );
@@ -133,12 +136,12 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
                     </ThemedText>
                     {photo?.uploading && (
                       <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                        Uploading...
+                        {tCommon('uploading')}
                       </ThemedText>
                     )}
                     {photo?.uploaded && (
                       <ThemedText variant="caption1" color={colors.primary}>
-                        Uploaded
+                        {tCommon('uploaded')}
                       </ThemedText>
                     )}
                   </View>

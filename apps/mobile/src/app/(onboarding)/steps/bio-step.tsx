@@ -24,10 +24,12 @@ export default function BioStep({ ref, onNext, profile }: Props) {
   const [bio, setBio] = useState(profile?.bio ?? '');
   const submitBio = useSubmitBio();
 
+  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
+
   function handleSubmit() {
     submitBio.mutate(
       { bio: bio.trim() },
-      { onSuccess: onNext, onError: () => Alert.alert('Error saving bio') }
+      { onSuccess: onNext, onError: () => Alert.alert(tErrors('generic')) }
     );
   }
 

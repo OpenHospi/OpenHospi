@@ -1,11 +1,12 @@
 import { ONBOARDING_TOTAL_STEPS } from '@openhospi/shared/constants';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedProgress } from '@/components/primitives/themed-progress';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { useOnboardingStatus } from '@/services/onboarding';
@@ -47,8 +48,17 @@ export default function OnboardingScreen() {
 
   if (statusPending || profilePending) {
     return (
-      <SafeAreaView style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.header}>
+          <ThemedSkeleton width="50%" height={28} />
+          <ThemedSkeleton width="100%" height={8} rounded="full" />
+          <ThemedSkeleton width="40%" height={22} />
+        </View>
+        <View style={styles.skeletonContent}>
+          <ThemedSkeleton width="100%" height={44} rounded="lg" />
+          <ThemedSkeleton width="100%" height={44} rounded="lg" />
+          <ThemedSkeleton width="70%" height={44} rounded="lg" />
+        </View>
       </SafeAreaView>
     );
   }
@@ -144,11 +154,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   header: {
     gap: 24,
     paddingHorizontal: 16,
@@ -164,6 +169,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
+  },
+  skeletonContent: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 32,
+    gap: 16,
   },
   bottomBar: {
     flexDirection: 'row',

@@ -1,12 +1,13 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { setupDevice } from '@openhospi/crypto';
-import { Platform, ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { InputOTP } from '@/components/forms/input-otp';
 import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
 import { getProtocolStore } from '@/lib/crypto/stores';
@@ -70,7 +71,9 @@ export default function SecurityStep() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ThemedSkeleton width="60%" height={24} />
+        <ThemedSkeleton width="80%" height={16} />
+        <ThemedSkeleton width={240} height={48} rounded="lg" />
         <ThemedText variant="footnote" color={colors.tertiaryForeground}>
           {t('generating_keys')}
         </ThemedText>

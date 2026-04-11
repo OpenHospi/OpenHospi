@@ -2,6 +2,7 @@
   "common": {
     "appName": "OpenHospi",
     "loading": "Loading...",
+    "searching": "Searching...",
     "error": "Something went wrong",
     "retry": "Try again",
     "errors": {
@@ -64,7 +65,10 @@
       "notSet": "Not set",
       "email": "Email",
       "total": "Total",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "loading": "Loading...",
+      "uploading": "Uploading...",
+      "uploaded": "Uploaded"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -659,6 +663,15 @@
         "start_fresh_warning": "Starting fresh will generate new encryption keys. You will lose access to old chat messages.",
         "start_fresh_confirm": "Are you sure?",
         "no_backup": "No backup found. Set up new encryption keys."
+      },
+      "errors": {
+        "requiredFields": "Please complete all required fields.",
+        "minPhotos": "Please upload at least one photo."
+      },
+      "citySearch": {
+        "searching": "Searching...",
+        "searchError": "Could not load cities. Check your connection.",
+        "noResults": "No cities found."
       }
     },
     "rooms": {

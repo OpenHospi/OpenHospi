@@ -6,7 +6,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 
 import { ChipPicker } from '@/components/forms/chip-picker';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';

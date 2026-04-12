@@ -5,7 +5,7 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, View } from 'react-nat
 import { useTranslation } from 'react-i18next';
 
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';

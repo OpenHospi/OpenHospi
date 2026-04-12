@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react-native';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 

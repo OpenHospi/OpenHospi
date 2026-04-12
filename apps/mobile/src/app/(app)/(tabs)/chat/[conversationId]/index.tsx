@@ -17,7 +17,7 @@ import { DateSeparator } from '@/components/chat/date-separator';
 import { EncryptionGate } from '@/components/chat/encryption-gate';
 import { MessageBubble } from '@/components/chat/message-bubble';
 import { ScrollToBottomFab } from '@/components/navigation/scroll-to-bottom-fab';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useEncryptionContext } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';

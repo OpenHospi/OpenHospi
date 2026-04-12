@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { showActionSheet } from '@/lib/action-sheet';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 
 type NativeMenuPickerProps = {
   values: readonly string[];

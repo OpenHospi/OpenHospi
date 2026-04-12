@@ -4,7 +4,7 @@ import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { hapticLight } from '@/lib/haptics';
 import { isIOS } from '@/lib/platform';
 

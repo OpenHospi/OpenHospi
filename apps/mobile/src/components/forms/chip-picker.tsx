@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedBadge } from '@/components/native/badge';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 

@@ -7,7 +7,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useNetworkStatus } from '@/lib/network';
 import { useRealtimeStatus } from '@/lib/supabase';

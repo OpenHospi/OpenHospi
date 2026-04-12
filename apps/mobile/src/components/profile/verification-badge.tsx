@@ -2,7 +2,7 @@ import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { isIOS } from '@/lib/platform';
 

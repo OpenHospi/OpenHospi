@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { getProtocolStore } from '@/lib/crypto/stores';

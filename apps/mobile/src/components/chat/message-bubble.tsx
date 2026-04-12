@@ -5,7 +5,7 @@ import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { MESSAGE_OWN_ENTERING, MESSAGE_OTHER_ENTERING } from '@/lib/animations';
 import { hapticSuccess } from '@/lib/haptics';
 import { isIOS } from '@/lib/platform';

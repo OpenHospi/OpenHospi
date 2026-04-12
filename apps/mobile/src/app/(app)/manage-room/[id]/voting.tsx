@@ -13,10 +13,10 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { useTheme } from '@/design';

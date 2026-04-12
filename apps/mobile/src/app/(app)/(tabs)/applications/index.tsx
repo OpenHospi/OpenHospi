@@ -8,9 +8,9 @@ import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';

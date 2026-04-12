@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ConversationListItem } from '@/components/chat/conversation-list-item';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useSession } from '@/lib/auth-client';

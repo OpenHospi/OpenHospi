@@ -8,7 +8,7 @@ import BottomSheet, {
 import { X } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { useTheme } from '@/design';
 import { hapticLight, hapticSheetSnap } from '@/lib/haptics';

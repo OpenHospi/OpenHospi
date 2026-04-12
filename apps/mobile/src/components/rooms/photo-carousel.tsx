@@ -9,7 +9,7 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { SPRING_SNAPPY } from '@/lib/animations';

@@ -7,8 +7,8 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { InputOTP } from '@/components/forms/input-otp';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { getProtocolStore } from '@/lib/crypto/stores';
 import { api } from '@/lib/api-client';

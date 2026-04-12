@@ -1,7 +1,7 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@expo/ui/datetimepicker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { useTheme } from '@/design';
@@ -55,11 +55,11 @@ export default function EditBirthDateScreen() {
         <DateTimePicker
           value={date}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display="inline"
           maximumDate={new Date()}
           minimumDate={new Date(1950, 0, 1)}
-          onChange={(_, selectedDate) => {
-            if (selectedDate) setDate(selectedDate);
+          onValueChange={(_event, selectedDate) => {
+            setDate(selectedDate);
           }}
         />
       </View>

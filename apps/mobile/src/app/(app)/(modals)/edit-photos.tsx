@@ -4,7 +4,7 @@ import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';

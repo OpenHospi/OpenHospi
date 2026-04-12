@@ -4,8 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { useTheme } from '@/design';
 import { useJoinHousePreview, useJoinHouse } from '@/services/house';

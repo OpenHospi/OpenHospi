@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { SPRING_BOUNCY, SPRING_SNAPPY } from '@/lib/animations';
 
 type NotificationBadgeProps = {

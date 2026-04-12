@@ -5,12 +5,12 @@ import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';

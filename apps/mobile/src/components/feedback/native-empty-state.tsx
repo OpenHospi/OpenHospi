@@ -5,7 +5,7 @@ import type { LucideIcon } from 'lucide-react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { isIOS } from '@/lib/platform';
 

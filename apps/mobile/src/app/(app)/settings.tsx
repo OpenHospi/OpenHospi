@@ -9,11 +9,11 @@ import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/shared/bottom-sheet';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedSwitch } from '@/components/primitives/themed-switch';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { ThemedTextarea } from '@/components/primitives/themed-textarea';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';

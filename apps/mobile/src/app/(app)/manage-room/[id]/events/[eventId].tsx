@@ -2,11 +2,11 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { ListSeparator } from '@/components/layout/list-separator';
@@ -15,7 +15,7 @@ import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useCancelEvent, useEventDetail } from '@/services/my-rooms';
 import type { EventInvitee } from '@openhospi/shared/api-types';
-import type { BadgeVariant } from '@/components/primitives/themed-badge';
+import type { BadgeVariant } from '@/components/native/badge';
 
 const RSVP_BADGE_VARIANT: Record<string, BadgeVariant> = {
   attending: 'primary',

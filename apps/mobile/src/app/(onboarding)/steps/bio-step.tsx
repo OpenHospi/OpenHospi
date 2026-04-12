@@ -3,7 +3,7 @@ import { useImperativeHandle, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { ThemedTextarea } from '@/components/primitives/themed-textarea';
 import { useTheme } from '@/design';
 import { useSubmitBio } from '@/services/onboarding';

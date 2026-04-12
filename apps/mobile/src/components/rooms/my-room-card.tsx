@@ -11,7 +11,7 @@ import { RoomStatus } from '@openhospi/shared/enums';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { SwipeableRow } from '@/components/shared/swipeable-row';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { StatusPill } from '@/components/layout/status-pill';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';

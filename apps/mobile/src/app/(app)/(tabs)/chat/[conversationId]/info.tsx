@@ -3,8 +3,8 @@ import { Ban, BellOff, ChevronRight, Flag, Shield } from 'lucide-react-native';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { useSession } from '@/lib/auth-client';

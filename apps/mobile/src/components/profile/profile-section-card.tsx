@@ -1,7 +1,7 @@
 import { Pencil } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';

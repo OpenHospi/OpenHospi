@@ -6,7 +6,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { isIOS } from '@/lib/platform';
 
 type Props = {

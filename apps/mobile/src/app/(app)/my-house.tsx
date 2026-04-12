@@ -4,11 +4,11 @@ import { Alert, Platform, ScrollView, Share, StyleSheet, View } from 'react-nati
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { ListSeparator } from '@/components/layout/list-separator';

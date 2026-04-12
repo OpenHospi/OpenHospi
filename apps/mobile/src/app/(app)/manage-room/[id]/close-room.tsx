@@ -4,10 +4,10 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
+import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';

@@ -1,19 +1,16 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@expo/ui/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Clock } from 'lucide-react-native';
 import { useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedTextarea } from '@/components/primitives/themed-textarea';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
-import { hapticLight } from '@/lib/haptics';
 import { useCreateEvent, useEventDetail, useUpdateEvent } from '@/services/my-rooms';
 
 function parseTimeToDate(timeStr: string): Date {
@@ -36,58 +33,22 @@ function NativeTimePicker({
   onChange: (time: string) => void;
   label: string;
 }) {
-  const { colors } = useTheme();
-  const [showAndroid, setShowAndroid] = useState(false);
   const dateValue = value ? parseTimeToDate(value) : new Date();
 
-  if (Platform.OS === 'ios') {
-    return (
-      <View style={styles.timePickerRow}>
-        <ThemedText variant="subheadline" weight="500" style={styles.flex1}>
-          {label}
-        </ThemedText>
-        <DateTimePicker
-          value={dateValue}
-          mode="time"
-          display="compact"
-          minuteInterval={5}
-          style={styles.iosTimePicker}
-          onChange={(_, selectedDate) => {
-            if (selectedDate) onChange(formatTime(selectedDate));
-          }}
-        />
-      </View>
-    );
-  }
-
   return (
-    <>
-      <Pressable
-        onPress={() => {
-          hapticLight();
-          setShowAndroid(true);
+    <View style={styles.timePickerRow}>
+      <ThemedText variant="subheadline" weight="500" style={styles.flex1}>
+        {label}
+      </ThemedText>
+      <DateTimePicker
+        value={dateValue}
+        mode="time"
+        display="compact"
+        onValueChange={(_event, selectedDate) => {
+          onChange(formatTime(selectedDate));
         }}
-        style={[
-          styles.timeTrigger,
-          { borderColor: colors.input, backgroundColor: colors.background },
-        ]}>
-        <ThemedText variant="body">{value || label}</ThemedText>
-        <Clock size={16} color={colors.tertiaryForeground} />
-      </Pressable>
-
-      {showAndroid && (
-        <DateTimePicker
-          value={dateValue}
-          mode="time"
-          display="default"
-          minuteInterval={5}
-          onChange={(_, selectedDate) => {
-            setShowAndroid(false);
-            if (selectedDate) onChange(formatTime(selectedDate));
-          }}
-        />
-      )}
-    </>
+      />
+    </View>
   );
 }
 
@@ -253,17 +214,5 @@ const styles = StyleSheet.create({
   timePickerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  iosTimePicker: {
-    alignSelf: 'flex-end',
-  },
-  timeTrigger: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: radius.lg,
   },
 });

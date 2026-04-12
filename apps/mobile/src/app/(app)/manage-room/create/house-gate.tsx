@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { ListSeparator } from '@/components/layout/list-separator';

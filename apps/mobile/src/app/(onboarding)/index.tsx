@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedProgress } from '@/components/primitives/themed-progress';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useOnboardingStatus } from '@/services/onboarding';
 import { useProfile } from '@/services/profile';

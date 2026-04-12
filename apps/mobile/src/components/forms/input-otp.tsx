@@ -2,7 +2,7 @@ import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useRef } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticPinEntry } from '@/lib/haptics';

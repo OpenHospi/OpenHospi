@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { MyRoomCard } from '@/components/rooms/my-room-card';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';

@@ -8,12 +8,12 @@ import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedCheckbox } from '@/components/primitives/themed-checkbox';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';

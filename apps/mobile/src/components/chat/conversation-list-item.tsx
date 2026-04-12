@@ -4,8 +4,8 @@ import { Archive } from 'lucide-react-native';
 import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedText } from '@/components/native/text';
 import { NotificationBadge } from '@/components/shared/notification-badge';
 import { SwipeableRow } from '@/components/shared/swipeable-row';
 import { useTheme } from '@/design';

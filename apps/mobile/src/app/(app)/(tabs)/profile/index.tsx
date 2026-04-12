@@ -11,11 +11,11 @@ import { isIOS } from '@/lib/platform';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { ProfileFieldRow } from '@/components/profile/profile-field-row';
 import { ProfileSectionCard } from '@/components/profile/profile-section-card';

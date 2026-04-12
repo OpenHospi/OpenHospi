@@ -9,7 +9,7 @@ import { useTheme } from '@/design';
 
 import { InputOTP } from '@/components/forms/input-otp';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { EncryptionContext, useEncryptionProvider } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
 

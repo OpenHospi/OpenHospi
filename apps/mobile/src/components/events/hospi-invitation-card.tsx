@@ -16,9 +16,9 @@ import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/shared/bottom-sheet';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useRespondToInvitation } from '@/services/invitations';
 import type { UserInvitation } from '@openhospi/shared/api-types';
 

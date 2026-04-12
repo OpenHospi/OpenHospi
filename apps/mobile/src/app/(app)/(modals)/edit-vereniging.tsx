@@ -6,7 +6,7 @@ import { Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';

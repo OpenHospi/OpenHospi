@@ -10,9 +10,9 @@ import { isIOS } from '@/lib/platform';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedBadge } from '@/components/native/badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';

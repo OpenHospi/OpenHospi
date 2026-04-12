@@ -68,7 +68,8 @@
       "confirm": "Bevestigen",
       "loading": "Laden...",
       "uploading": "Uploaden...",
-      "uploaded": "Geupload"
+      "uploaded": "Geupload",
+      "language": "Taal"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",

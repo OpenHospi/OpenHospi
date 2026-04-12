@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
-import { LanguagePicker } from '@/components/shared/language-picker';
 import { Logo } from '@/components/shared/logo';
 import { useTheme } from '@/design';
 import { authClient } from '@/lib/auth-client';
@@ -51,10 +50,6 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
-
-      <View style={styles.languageRow}>
-        <LanguagePicker />
-      </View>
 
       <View style={styles.center}>
         <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
@@ -134,11 +129,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  languageRow: {
-    alignItems: 'flex-end',
-    paddingHorizontal: 24,
-    paddingTop: 16,
   },
   center: {
     flex: 1,

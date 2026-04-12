@@ -68,7 +68,8 @@
       "confirm": "Confirm",
       "loading": "Loading...",
       "uploading": "Uploading...",
-      "uploaded": "Uploaded"
+      "uploaded": "Uploaded",
+      "language": "Language"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",

@@ -8,9 +8,9 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { reset, seed } from "drizzle-seed";
 import postgres from "postgres";
 
-import * as schema from "../src/lib/db/schema/index.js";
-import { profilePhotos, profiles } from "../src/lib/db/schema/profiles.js";
-import { roomPhotos, rooms } from "../src/lib/db/schema/rooms.js";
+import * as schema from "../../../packages/database/src/schema/index.js";
+import { profilePhotos, profiles } from "@openhospi/database/schema";
+import { roomPhotos, rooms } from "@openhospi/database/schema";
 
 async function main() {
   // Safety guard

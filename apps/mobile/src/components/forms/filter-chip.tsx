@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { hapticLight } from '@/lib/haptics';
 
@@ -40,6 +41,6 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 999,
+    borderRadius: radius.full,
   },
 });

@@ -17,6 +17,7 @@ import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { useDiscoverFilters } from '@/context/discover-filters';
 import { hapticLight } from '@/lib/haptics';
 import type { DiscoverFilters } from '@openhospi/shared/api-types';
@@ -64,7 +65,7 @@ const chipStyles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    borderRadius: 999,
+    borderRadius: radius.full,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },

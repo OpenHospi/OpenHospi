@@ -13,6 +13,7 @@ import { ThemedText } from '@/components/primitives/themed-text';
 import { NativeSelect } from '@/components/primitives/native-select';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSavePreferences } from '@/services/my-rooms';
 
@@ -233,5 +234,5 @@ const styles = StyleSheet.create({
   rowFields: { flexDirection: 'row', gap: 8 },
   flex1: { flex: 1 },
   pickerContent: { paddingHorizontal: 16, paddingVertical: 8 },
-  pickerRow: { borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12 },
+  pickerRow: { borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12 },
 });

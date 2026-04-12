@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { HospiInvitationCard } from '@/components/events/hospi-invitation-card';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
@@ -184,7 +185,7 @@ export default function ApplicationDetailScreen() {
             <ThemedBadge
               variant="secondary"
               label={tEnums(`application_status.${app.status}`)}
-              style={{ alignSelf: 'flex-start', borderRadius: 999 }}
+              style={{ alignSelf: 'flex-start', borderRadius: radius.full }}
             />
             <ThemedText
               variant="caption1"
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
   timelineDot: {
     width: 12,
     height: 12,
-    borderRadius: 6,
+    borderRadius: radius.sm,
     marginTop: 4,
   },
   timelineConnector: {

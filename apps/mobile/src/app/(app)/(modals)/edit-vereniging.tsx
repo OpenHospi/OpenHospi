@@ -8,6 +8,7 @@ import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
 import { useTranslation } from 'react-i18next';
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   listItem: {
     paddingVertical: 12,
     paddingHorizontal: 12,
-    borderRadius: 10,
+    borderRadius: radius.md,
   },
   footer: {
     paddingHorizontal: 16,

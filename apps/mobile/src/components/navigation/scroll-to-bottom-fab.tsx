@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
 import { ThemedText } from '@/components/primitives/themed-text';
 
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
   fab: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: radius.xl,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: StyleSheet.hairlineWidth,

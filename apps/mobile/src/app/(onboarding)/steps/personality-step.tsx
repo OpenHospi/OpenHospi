@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 import { useSubmitPersonality } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },

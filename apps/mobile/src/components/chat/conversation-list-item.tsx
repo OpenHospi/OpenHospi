@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/primitives/themed-text';
 import { NotificationBadge } from '@/components/shared/notification-badge';
 import { SwipeableRow } from '@/components/shared/swipeable-row';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
 type Props = {
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     right: -2,
     width: 16,
     height: 16,
-    borderRadius: 8,
+    borderRadius: radius.md,
     justifyContent: 'center',
     alignItems: 'center',
   },

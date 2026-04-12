@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/primitives/themed-text';
+import { radius } from '@/design/tokens/radius';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
@@ -105,7 +106,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
                 layout={LinearTransition.springify()}
                 style={{
                   height: 8,
-                  borderRadius: 4,
+                  borderRadius: radius.sm,
                   width: i === activeIndex ? 24 : 8,
                   backgroundColor: i === activeIndex ? '#fff' : 'rgba(255,255,255,0.5)',
                 }}
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
-    borderRadius: 999,
+    borderRadius: radius.full,
     paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: 'rgba(0,0,0,0.4)',

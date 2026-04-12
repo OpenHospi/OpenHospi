@@ -19,6 +19,7 @@ import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticDelete, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
@@ -492,7 +493,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   localeRow: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -571,7 +572,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   typeOption: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 10,
     marginBottom: 4,

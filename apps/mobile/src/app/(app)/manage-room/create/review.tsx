@@ -11,6 +11,7 @@ import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useMyRoom, usePublishRoom } from '@/services/my-rooms';
 
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { padding: 16, gap: 16, paddingBottom: 100 },
   photoRow: { gap: 8 },
-  photoPreview: { width: 200, aspectRatio: 4 / 3, borderRadius: 12 },
+  photoPreview: { width: 200, aspectRatio: 4 / 3, borderRadius: radius.lg },
   sectionContent: { padding: 16, gap: 8 },
   tagWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   errorText: { textAlign: 'center' },

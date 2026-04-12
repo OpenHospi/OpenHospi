@@ -8,6 +8,7 @@ import { ThemedBadge } from '@/components/primitives/themed-badge';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
 import { useTranslation } from 'react-i18next';
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },

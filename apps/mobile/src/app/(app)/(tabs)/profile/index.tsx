@@ -17,6 +17,7 @@ import { ListSeparator } from '@/components/layout/list-separator';
 import { ProfileFieldRow } from '@/components/profile/profile-field-row';
 import { ProfileSectionCard } from '@/components/profile/profile-section-card';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { STAGGER_DELAY } from '@/lib/animations';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { authClient } from '@/lib/auth-client';
@@ -324,7 +325,7 @@ const styles = StyleSheet.create({
   photoThumb: {
     width: 80,
     height: 80,
-    borderRadius: 8,
+    borderRadius: radius.md,
   },
   tagRow: {
     flexDirection: 'row',

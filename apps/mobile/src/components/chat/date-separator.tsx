@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { ThemedText } from '@/components/primitives/themed-text';
 
 type Props = {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   pill: {
-    borderRadius: 12,
+    borderRadius: radius.lg,
     paddingHorizontal: 12,
     paddingVertical: 4,
   },

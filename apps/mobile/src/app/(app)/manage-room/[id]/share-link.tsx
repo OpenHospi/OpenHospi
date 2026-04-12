@@ -13,6 +13,7 @@ import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { API_BASE_URL } from '@/lib/constants';
 import { useMyRoom, useRegenerateShareLink, useUpdateShareLinkSettings } from '@/services/my-rooms';
 
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     padding: 12,
-    borderRadius: 8,
+    borderRadius: radius.md,
     borderWidth: 1,
   },
   fieldGroup: {

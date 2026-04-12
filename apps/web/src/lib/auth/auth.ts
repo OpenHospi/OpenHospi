@@ -11,7 +11,6 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, bearer, genericOAuth, jwt, multiSession } from "better-auth/plugins";
 import { and, eq, gt } from "drizzle-orm";
 
-
 function deriveOnboardingEmailCode(token: string): string {
   const hash = createHash("sha256").update(token).digest("hex");
   const numeric = Number.parseInt(hash.slice(0, 8), 16) % 1_000_000;
@@ -102,7 +101,9 @@ function createAuth() {
           // Profile may not exist yet during onboarding
         }
 
-        void sendTemplatedEmail(user.email, "verificationCode", { code }, locale);
+        sendTemplatedEmail(user.email, "verificationCode", { code }, locale).catch((err) => {
+          console.error("[email] Failed to send verification code:", err.message);
+        });
       },
       autoSignInAfterVerification: true,
       expiresIn: 3600,

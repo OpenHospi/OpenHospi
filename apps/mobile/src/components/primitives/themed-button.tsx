@@ -10,7 +10,6 @@ import {
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { shadow } from '@/design/tokens/shadows';
 import { hapticLight } from '@/lib/haptics';
 import { ThemedText } from './themed-text';
 
@@ -63,7 +62,6 @@ function ThemedButton({
     borderWidth: variant === 'outline' ? StyleSheet.hairlineWidth : 0,
     borderColor,
     opacity: disabled || loading ? 0.5 : 1,
-    ...(variant !== 'ghost' && variant !== 'link' ? shadow('sm') : {}),
   };
 
   const isTextChild = typeof children === 'string';

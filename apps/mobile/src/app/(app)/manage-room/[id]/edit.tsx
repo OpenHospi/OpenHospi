@@ -25,6 +25,7 @@ import { ThemedText } from '@/components/primitives/themed-text';
 import { NativeSelect } from '@/components/primitives/native-select';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useUpdateRoom } from '@/services/my-rooms';
 
@@ -635,7 +636,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   pickerRow: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },

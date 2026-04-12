@@ -4,6 +4,7 @@ import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-re
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 
 type Props = {
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 40,
     maxHeight: 120,
-    borderRadius: 20,
+    borderRadius: radius.xl,
     paddingHorizontal: 16,
     paddingVertical: 10,
     fontSize: 14,
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
   sendButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: radius.xl,
     justifyContent: 'center',
     alignItems: 'center',
   },

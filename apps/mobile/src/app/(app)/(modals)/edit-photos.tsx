@@ -6,6 +6,7 @@ import { GroupedSection } from '@/components/layout/grouped-section';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useDeleteProfilePhoto, useProfile, useUploadProfilePhoto } from '@/services/profile';
 import { useTranslation } from 'react-i18next';
@@ -135,14 +136,14 @@ const styles = StyleSheet.create({
   thumbnail: {
     width: 64,
     height: 64,
-    borderRadius: 8,
+    borderRadius: radius.md,
   },
   thumbnailPlaceholder: {
     height: 64,
     width: 64,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
+    borderRadius: radius.md,
   },
   slotLabel: {
     flex: 1,

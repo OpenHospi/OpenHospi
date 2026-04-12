@@ -17,6 +17,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getProtocolStore } from '@/lib/crypto/stores';
 import { useSession } from '@/lib/auth-client';
 import { useConversationDetail } from '@/services/chat';
@@ -345,13 +346,13 @@ const styles = StyleSheet.create({
   },
   qrBox: {
     padding: 16,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     alignItems: 'center',
     backgroundColor: 'white',
   },
   safetyNumberBox: {
     marginTop: 28,
-    borderRadius: 10,
+    borderRadius: radius.md,
     paddingVertical: 16,
     paddingHorizontal: 20,
     gap: 8,

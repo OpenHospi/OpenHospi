@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemedAvatar } from '@/components/primitives/themed-avatar';
 import { ThemedText } from '@/components/primitives/themed-text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { useSession } from '@/lib/auth-client';
 import { useConversationDetail } from '@/services/chat';
 
@@ -193,13 +194,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   roomInfoCard: {
-    borderRadius: 12,
+    borderRadius: radius.lg,
     padding: 16,
     gap: 12,
     borderWidth: 1,
   },
   viewListingButton: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingVertical: 10,
     alignItems: 'center',
     borderWidth: 1,

@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 
 type StepIndicatorProps = {
   totalSteps: number;
@@ -19,7 +20,7 @@ export function StepIndicator({ totalSteps, currentStep }: StepIndicatorProps) {
           layout={LinearTransition.springify()}
           style={{
             height: 8,
-            borderRadius: 4,
+            borderRadius: radius.sm,
             width: i === currentStep ? 24 : 8,
             backgroundColor:
               i === currentStep

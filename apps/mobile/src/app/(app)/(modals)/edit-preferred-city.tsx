@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
@@ -128,9 +128,11 @@ export default function EditPreferredCityScreen() {
       />
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <ThemedButton size="lg" onPress={handleSave} loading={updateProfile.isPending}>
-          {tCommon('save')}
-        </ThemedButton>
+        <NativeButton
+          label={tCommon('save')}
+          onPress={handleSave}
+          loading={updateProfile.isPending}
+        />
       </View>
     </View>
   );

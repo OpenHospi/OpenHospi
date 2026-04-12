@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { ActivityIndicator, Platform, View, type ViewStyle } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, type ViewStyle } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
 import { type Colors } from '@/design/tokens/colors';
@@ -54,33 +54,31 @@ function NativeButton({
 
   if (Platform.OS === 'ios') {
     return (
-      <View style={style}>
-        <IOSButton
-          label={label}
-          onPress={handlePress}
-          variant={variant}
-          size={size}
-          disabled={isDisabled}
-          loading={loading}
-          systemImage={systemImage}
-          primaryColor={colors.primary}
-        />
-      </View>
+      <IOSButton
+        label={label}
+        onPress={handlePress}
+        variant={variant}
+        size={size}
+        disabled={isDisabled}
+        loading={loading}
+        systemImage={systemImage}
+        primaryColor={colors.primary}
+        style={style}
+      />
     );
   }
 
   return (
-    <View style={style}>
-      <AndroidButton
-        label={label}
-        onPress={handlePress}
-        variant={variant}
-        disabled={isDisabled}
-        loading={loading}
-        materialIcon={materialIcon}
-        colors={colors}
-      />
-    </View>
+    <AndroidButton
+      label={label}
+      onPress={handlePress}
+      style={style}
+      variant={variant}
+      disabled={isDisabled}
+      loading={loading}
+      materialIcon={materialIcon}
+      colors={colors}
+    />
   );
 }
 
@@ -97,6 +95,7 @@ function IOSButton({
   loading,
   systemImage,
   primaryColor,
+  style,
 }: {
   label: string;
   onPress: () => void;
@@ -106,6 +105,7 @@ function IOSButton({
   loading: boolean;
   systemImage?: SFSymbol;
   primaryColor: string;
+  style?: ViewStyle;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Host, Button } = require('@expo/ui/swift-ui');
@@ -113,6 +113,7 @@ function IOSButton({
     buttonStyle,
     controlSize,
     tint,
+    frame,
     disabled: disabledMod,
     // eslint-disable-next-line @typescript-eslint/no-require-imports
   } = require('@expo/ui/swift-ui/modifiers');
@@ -123,12 +124,13 @@ function IOSButton({
 
   const modifiers = [
     controlSize(IOS_SIZE_MAP[size]),
+    frame({ maxWidth: Infinity }),
     ...getIOSStyleModifiers(variant, primaryColor, buttonStyle, tint),
   ];
   if (disabled) modifiers.push(disabledMod(true));
 
   return (
-    <Host style={{ alignSelf: 'stretch' }}>
+    <Host style={[styles.fullWidth, { height: 50 }, style]}>
       <Button
         label={label}
         systemImage={systemImage}
@@ -172,6 +174,7 @@ function AndroidButton({
   loading,
   materialIcon,
   colors,
+  style,
 }: {
   label: string;
   onPress: () => void;
@@ -180,6 +183,7 @@ function AndroidButton({
   loading: boolean;
   materialIcon?: React.ComponentProps<typeof MaterialIcons>['name'];
   colors: Colors;
+  style?: ViewStyle;
 }) {
   const {
     Host,
@@ -193,7 +197,7 @@ function AndroidButton({
     // eslint-disable-next-line @typescript-eslint/no-require-imports
   } = require('@expo/ui/jetpack-compose');
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { width } = require('@expo/ui/jetpack-compose/modifiers');
+  const { width, fillMaxWidth } = require('@expo/ui/jetpack-compose/modifiers');
 
   if (loading) {
     return <ActivityIndicator color={colors.primary} />;
@@ -209,8 +213,12 @@ function AndroidButton({
   const iconColor = getAndroidIconColor(variant, colors);
 
   return (
-    <Host style={{ alignSelf: 'stretch' }}>
-      <ButtonComponent onClick={onPress} enabled={!disabled} colors={buttonColors}>
+    <Host style={[styles.fullWidth, style]}>
+      <ButtonComponent
+        onClick={onPress}
+        enabled={!disabled}
+        colors={buttonColors}
+        modifiers={[fillMaxWidth()]}>
         {materialIcon && (
           <>
             <RNHostView matchContents>
@@ -262,6 +270,12 @@ function getAndroidIconColor(variant: ButtonVariant, colors: Colors): string {
       return colors.primary;
   }
 }
+
+const styles = StyleSheet.create({
+  fullWidth: {
+    alignSelf: 'stretch',
+  },
+});
 
 export { NativeButton };
 export type { NativeButtonProps, ButtonVariant, ButtonSize };

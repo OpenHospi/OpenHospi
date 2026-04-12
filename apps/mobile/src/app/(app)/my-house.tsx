@@ -11,7 +11,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
 import { useTheme } from '@/design';
@@ -93,7 +93,7 @@ export default function MyHouseScreen() {
 
         <GroupedSection>
           <ListCell label={t('inviteCode')} value={house.inviteCode} onPress={handleCopyCode} />
-          <ListSeparator />
+          <NativeDivider />
           <View style={styles.actionRow}>
             <NativeButton
               label={tCommon('copy')}
@@ -136,7 +136,7 @@ export default function MyHouseScreen() {
         <GroupedSection>
           {members.map((member, index) => (
             <View key={member.userId}>
-              {index > 0 && <ListSeparator insetLeft={72} />}
+              {index > 0 && <NativeDivider />}
               <View style={styles.memberRow}>
                 <ThemedAvatar
                   source={

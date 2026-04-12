@@ -11,7 +11,7 @@ import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedBadge } from '@/components/native/badge';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight, hapticPullToRefreshSnap } from '@/lib/haptics';
@@ -147,7 +147,7 @@ export default function ApplicationsScreen() {
               }
             />
           )}
-          ItemSeparatorComponent={() => <ListSeparator insetLeft={96} />}
+          ItemSeparatorComponent={() => <NativeDivider />}
           ListEmptyComponent={
             <NativeEmptyState sfSymbol="doc.text" icon={FileText} title={t('empty')} />
           }

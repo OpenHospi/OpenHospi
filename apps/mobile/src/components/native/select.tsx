@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedText } from './themed-text';
+import { ThemedText } from '@/components/native/text';
 import { hapticLight } from '@/lib/haptics';
 
 interface SelectOption {

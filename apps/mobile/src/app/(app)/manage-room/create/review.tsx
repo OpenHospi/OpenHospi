@@ -8,7 +8,7 @@ import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -96,7 +96,7 @@ export default function ReviewScreen() {
             {room.serviceCosts != null && (
               <Row label={t('fields.serviceCosts')} value={`€${room.serviceCosts}`} />
             )}
-            <ListSeparator insetLeft={0} />
+            <NativeDivider />
             <Row label={tCommon('total')} value={`€${room.totalCost}`} bold />
           </View>
         </GroupedSection>

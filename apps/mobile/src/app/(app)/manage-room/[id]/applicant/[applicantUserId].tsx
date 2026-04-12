@@ -8,7 +8,7 @@ import { PhotoCarousel } from '@/components/rooms/photo-carousel';
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';

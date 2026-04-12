@@ -14,7 +14,7 @@ import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
 import RoomLocationMap from '@/components/rooms/room-location-map';
 import { useTranslation } from 'react-i18next';
@@ -158,7 +158,7 @@ export default function RoomDetailScreen() {
                 colors={colors}
               />
               <PriceDetailRow label={t('deposit')} amount={room.deposit} colors={colors} />
-              <ListSeparator insetLeft={0} />
+              <NativeDivider />
               <View style={styles.totalRow}>
                 <ThemedText variant="body" weight="600">
                   {t('totalCost')}

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { InputOTP } from '@/components/forms/input-otp';
 import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';

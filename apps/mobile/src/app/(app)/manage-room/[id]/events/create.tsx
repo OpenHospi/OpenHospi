@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { ThemedInput } from '@/components/native/input';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { ThemedText } from '@/components/native/text';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';

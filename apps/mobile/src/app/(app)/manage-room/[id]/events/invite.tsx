@@ -11,10 +11,10 @@ import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
-import { ThemedCheckbox } from '@/components/primitives/themed-checkbox';
+import { ThemedCheckbox } from '@/components/native/checkbox';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
@@ -142,7 +142,7 @@ export default function InviteApplicantsScreen() {
         data={invitable}
         keyExtractor={(item) => item.applicationId}
         renderItem={renderApplicant}
-        ItemSeparatorComponent={ListSeparator}
+        ItemSeparatorComponent={NativeDivider}
       />
 
       <BlurBottomBar>

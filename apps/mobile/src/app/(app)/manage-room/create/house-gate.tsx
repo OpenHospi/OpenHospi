@@ -5,12 +5,12 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { useCreateDraft, useCreateHouse, useOwnerHouses } from '@/services/my-rooms';
 
@@ -89,7 +89,7 @@ export default function HouseGateScreen() {
           <GroupedSection>
             {houses.map((house, index) => (
               <View key={house.id}>
-                {index > 0 && <ListSeparator />}
+                {index > 0 && <NativeDivider />}
                 <ListCell
                   label={house.name}
                   value={t('housePicker.roomCount', { count: house.roomCount })}
@@ -98,7 +98,7 @@ export default function HouseGateScreen() {
                 />
               </View>
             ))}
-            <ListSeparator />
+            <NativeDivider />
             <ListCell
               label={t('housePicker.createNew')}
               leftContent={<Plus size={20} color={colors.primary} />}

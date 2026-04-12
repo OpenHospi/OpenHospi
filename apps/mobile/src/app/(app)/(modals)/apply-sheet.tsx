@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useApplyToRoom } from '@/services/rooms';

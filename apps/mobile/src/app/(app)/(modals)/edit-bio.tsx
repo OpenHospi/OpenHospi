@@ -5,7 +5,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 
 import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';

@@ -11,7 +11,7 @@ import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedBadge } from '@/components/native/badge';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { NativeButton } from '@/components/native/button';
 import { useTheme } from '@/design';
@@ -180,7 +180,7 @@ export default function EventsListScreen() {
         keyExtractor={(item) => (item.type === 'header' ? `h-${item.title}` : item.data.id)}
         renderItem={renderItem}
         getItemType={(item) => item.type}
-        ItemSeparatorComponent={ListSeparator}
+        ItemSeparatorComponent={NativeDivider}
       />
       <BlurBottomBar>
         <NativeButton

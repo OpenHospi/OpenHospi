@@ -14,7 +14,7 @@ import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-s
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 
 const DEBOUNCE_MS = 300;

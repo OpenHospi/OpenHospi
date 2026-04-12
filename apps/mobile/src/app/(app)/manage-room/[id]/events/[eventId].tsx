@@ -9,7 +9,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -85,17 +85,17 @@ export default function EventDetailScreen() {
           {/* Event info */}
           <GroupedSection inset={false}>
             <ListCell label={t('fields.date')} value={event.eventDate} />
-            <ListSeparator />
+            <NativeDivider />
             <ListCell label={t('fields.startTime')} value={timeDisplay} />
             {event.location && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell label={t('fields.location')} value={event.location} />
               </>
             )}
             {event.maxAttendees && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell label={t('fields.maxAttendees')} value={String(event.maxAttendees)} />
               </>
             )}
@@ -149,7 +149,7 @@ export default function EventDetailScreen() {
               ) : (
                 event.invitees.map((invitee, index) => (
                   <View key={invitee.invitationId}>
-                    {index > 0 && <ListSeparator />}
+                    {index > 0 && <NativeDivider />}
                     <InviteeRow invitee={invitee} tEnums={tEnums} />
                   </View>
                 ))

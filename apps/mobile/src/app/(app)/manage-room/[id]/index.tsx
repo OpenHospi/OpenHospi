@@ -10,7 +10,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { useDeleteRoom, useMyRoom, useUpdateRoomStatus } from '@/services/my-rooms';
@@ -121,17 +121,17 @@ export default function MyRoomDetailScreen() {
             <ListCell label={t('fields.rentPrice')} value={`€${room.rentPrice}`} />
             {room.deposit != null && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell label={t('fields.deposit')} value={`€${room.deposit}`} />
               </>
             )}
             {room.serviceCosts != null && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell label={t('fields.serviceCosts')} value={`€${room.serviceCosts}`} />
               </>
             )}
-            <ListSeparator />
+            <NativeDivider />
             <ListCell label={tCommon('total')} value={`€${room.totalCost}`} />
           </GroupedSection>
 
@@ -145,7 +145,7 @@ export default function MyRoomDetailScreen() {
             )}
             {room.furnishing && (
               <>
-                {room.houseType && <ListSeparator />}
+                {room.houseType && <NativeDivider />}
                 <ListCell
                   label={t('fields.furnishing')}
                   value={tEnums(`furnishing.${room.furnishing}`)}
@@ -154,13 +154,13 @@ export default function MyRoomDetailScreen() {
             )}
             {room.roomSizeM2 && (
               <>
-                {(room.houseType || room.furnishing) && <ListSeparator />}
+                {(room.houseType || room.furnishing) && <NativeDivider />}
                 <ListCell label={t('fields.roomSize')} value={`${room.roomSizeM2}m²`} />
               </>
             )}
             {room.rentalType && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell
                   label={t('fields.rentalType')}
                   value={tEnums(`rental_type.${room.rentalType}`)}
@@ -169,7 +169,7 @@ export default function MyRoomDetailScreen() {
             )}
             {room.totalHousemates != null && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell
                   label={t('fields.totalHousemates')}
                   value={String(room.totalHousemates)}
@@ -226,7 +226,7 @@ export default function MyRoomDetailScreen() {
                   })
                 }
               />
-              <ListSeparator />
+              <NativeDivider />
               <ListCell
                 label={t('events.title')}
                 onPress={() =>
@@ -236,7 +236,7 @@ export default function MyRoomDetailScreen() {
                   })
                 }
               />
-              <ListSeparator />
+              <NativeDivider />
               <ListCell
                 label={t('voting.title')}
                 onPress={() =>
@@ -260,7 +260,7 @@ export default function MyRoomDetailScreen() {
                 })
               }
             />
-            <ListSeparator />
+            <NativeDivider />
             <ListCell
               label={t('shareLink.title')}
               onPress={() =>
@@ -272,7 +272,7 @@ export default function MyRoomDetailScreen() {
             />
             {status === RoomStatus.draft && (
               <>
-                <ListSeparator />
+                <NativeDivider />
                 <ListCell label={t('actions.deleteDraft')} destructive onPress={handleDelete} />
               </>
             )}

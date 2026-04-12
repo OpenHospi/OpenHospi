@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';

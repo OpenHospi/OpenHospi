@@ -18,7 +18,7 @@ import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { hapticLight, hapticMedium } from '@/lib/haptics';
@@ -230,7 +230,7 @@ export default function VotingScreen() {
 
               {showBoard && (
                 <View style={styles.boardContent}>
-                  <ListSeparator />
+                  <NativeDivider />
                   <View style={[styles.boardHeaderRow, { borderBottomColor: colors.separator }]}>
                     <ThemedText variant="caption1" weight="600" style={styles.flex1}>
                       {t('applicant')}

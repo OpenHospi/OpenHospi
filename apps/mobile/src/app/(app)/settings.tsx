@@ -11,12 +11,12 @@ import {
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
-import { ThemedSwitch } from '@/components/primitives/themed-switch';
+import { NativeToggle } from '@/components/native/toggle';
 import { ThemedText } from '@/components/native/text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticDelete, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
@@ -65,7 +65,7 @@ export default function SettingsScreen() {
       <SectionHeader title={t('tabs.general')} />
       <GroupedSection>
         <LanguageCell locale={locale} changeLanguage={i18n.changeLanguage} t={t} />
-        <ListSeparator />
+        <NativeDivider />
         <PushNotificationCell t={t} />
       </GroupedSection>
 
@@ -170,7 +170,7 @@ function PushNotificationCell({ t }: { t: ReturnType<typeof useTranslation>['t']
   return (
     <ListCell
       label={t('pushNotifications.title')}
-      rightContent={<ThemedSwitch value={enabled} onValueChange={handleToggle} />}
+      rightContent={<NativeToggle isOn={enabled} onToggle={handleToggle} />}
       chevron={false}
     />
   );
@@ -208,14 +208,14 @@ function ConsentSection({
 
         return (
           <View key={purpose}>
-            {index > 0 && <ListSeparator />}
+            {index > 0 && <NativeDivider />}
             <ListCell
               label={tConsent(`purposes.${purpose}.name`)}
               rightContent={
-                <ThemedSwitch
-                  value={isEssential ? true : (consent?.granted ?? false)}
+                <NativeToggle
+                  isOn={isEssential ? true : (consent?.granted ?? false)}
                   disabled={isEssential || updateConsent.isPending}
-                  onValueChange={(granted: boolean) => updateConsent.mutate({ purpose, granted })}
+                  onToggle={(granted: boolean) => updateConsent.mutate({ purpose, granted })}
                 />
               }
               chevron={false}
@@ -376,7 +376,7 @@ function SessionsSection({
     <GroupedSection>
       {sessions.map((session: any, index: number) => (
         <View key={session.id}>
-          {index > 0 && <ListSeparator />}
+          {index > 0 && <NativeDivider />}
           <ListCell
             label={session.userAgent ?? 'Unknown device'}
             value={t('account.sessions.lastActive', {

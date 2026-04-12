@@ -8,7 +8,7 @@ import {
 } from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 
 type SelectPickerSheetProps = {

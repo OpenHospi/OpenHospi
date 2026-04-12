@@ -12,7 +12,7 @@ import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import {
@@ -227,7 +227,7 @@ export default function ApplicantsScreen() {
         data={applicants}
         keyExtractor={(item) => item.applicationId}
         renderItem={renderApplicant}
-        ItemSeparatorComponent={ListSeparator}
+        ItemSeparatorComponent={NativeDivider}
       />
     </View>
   );

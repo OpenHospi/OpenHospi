@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AddressSearchInput } from '@/components/forms/address-search';
 import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import RoomLocationMap from '@/components/rooms/room-location-map';

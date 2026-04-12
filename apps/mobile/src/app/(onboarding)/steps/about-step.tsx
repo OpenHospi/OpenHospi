@@ -7,7 +7,7 @@ import { CitySearchInput } from '@/components/forms/city-search';
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { NativeMenuPicker } from '@/components/forms/native-menu-picker';
 import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useSubmitAbout } from '@/services/onboarding';

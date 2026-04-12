@@ -14,7 +14,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { isIOS } from '@/lib/platform';
@@ -134,7 +134,7 @@ export default function ProfileScreen() {
                 />
               ))}
             </ScrollView>
-            <ListSeparator />
+            <NativeDivider />
             <ListCell
               label={tCommon('edit')}
               onPress={() => router.push('/(app)/(modals)/edit-photos')}
@@ -159,7 +159,7 @@ export default function ProfileScreen() {
             value={profile.gender ? tEnums(`gender.${profile.gender}`) : tCommon('notSet')}
             onPress={() => router.push('/(app)/(modals)/edit-gender')}
           />
-          <ListSeparator />
+          <NativeDivider />
           <ListCell
             label={t('birthDate')}
             value={
@@ -169,13 +169,13 @@ export default function ProfileScreen() {
             }
             onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
           />
-          <ListSeparator />
+          <NativeDivider />
           <ListCell
             label={t('studyProgram')}
             value={profile.studyProgram || tCommon('notSet')}
             onPress={() => router.push('/(app)/(modals)/edit-study-program')}
           />
-          <ListSeparator />
+          <NativeDivider />
           <ListCell
             label={t('studyLevel')}
             value={
@@ -183,13 +183,13 @@ export default function ProfileScreen() {
             }
             onPress={() => router.push('/(app)/(modals)/edit-study-level')}
           />
-          <ListSeparator />
+          <NativeDivider />
           <ListCell
             label={t('preferredCity')}
             value={profile.preferredCity || tCommon('notSet')}
             onPress={() => router.push('/(app)/(modals)/edit-preferred-city')}
           />
-          <ListSeparator />
+          <NativeDivider />
           <ListCell
             label={t('vereniging')}
             value={profile.vereniging || tCommon('notSet')}
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
               {profile.bio || tCommon('notSet')}
             </ThemedText>
           </View>
-          <ListSeparator />
+          <NativeDivider />
           <ListCell
             label={tCommon('edit')}
             onPress={() => router.push('/(app)/(modals)/edit-bio')}
@@ -298,7 +298,7 @@ function ActivitySection() {
       <GroupedSection>
         {recent.map((item, index) => (
           <View key={item.id}>
-            {index > 0 && <ListSeparator />}
+            {index > 0 && <NativeDivider />}
             <ListCell
               label={item.title}
               value={item.body}

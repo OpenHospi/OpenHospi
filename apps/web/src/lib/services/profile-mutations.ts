@@ -26,21 +26,21 @@ export async function updateProfileForUser(userId: string, data: EditProfileData
   if (!parsed.success) return { error: CommonError.invalid_data };
 
   const d = parsed.data;
+  const updates: Record<string, unknown> = {};
+  if ("gender" in d) updates.gender = d.gender;
+  if ("birthDate" in d) updates.birthDate = d.birthDate;
+  if ("studyProgram" in d) updates.studyProgram = d.studyProgram;
+  if ("studyLevel" in d) updates.studyLevel = d.studyLevel || null;
+  if ("bio" in d) updates.bio = d.bio || null;
+  if ("lifestyleTags" in d) updates.lifestyleTags = d.lifestyleTags;
+  if ("languages" in d) updates.languages = d.languages;
+  if ("preferredCity" in d) updates.preferredCity = d.preferredCity;
+  if ("vereniging" in d) updates.vereniging = d.vereniging || null;
+
+  if (Object.keys(updates).length === 0) return { success: true };
+
   await createDrizzleSupabaseClient(userId).rls((tx) =>
-    tx
-      .update(profiles)
-      .set({
-        gender: d.gender,
-        birthDate: d.birthDate,
-        studyProgram: d.studyProgram,
-        studyLevel: d.studyLevel || null,
-        bio: d.bio || null,
-        lifestyleTags: d.lifestyleTags,
-        languages: d.languages,
-        preferredCity: d.preferredCity,
-        vereniging: d.vereniging || null,
-      })
-      .where(eq(profiles.id, userId)),
+    tx.update(profiles).set(updates).where(eq(profiles.id, userId)),
   );
 
   return { success: true };

@@ -59,6 +59,7 @@ export default function EditPreferredCityScreen() {
   }
 
   function handleSave() {
+    if (updateProfile.isPending) return;
     updateProfile.mutate(
       { preferredCity: selected ?? null },
       {

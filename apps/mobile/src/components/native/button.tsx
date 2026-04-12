@@ -1,10 +1,13 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { ActivityIndicator, Platform, View, type ViewStyle } from 'react-native';
 import type { SFSymbol } from 'sf-symbols-typescript';
 
+import { type Colors } from '@/design/tokens/colors';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'link';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface NativeButtonProps {
   /** Button label text */
@@ -13,6 +16,8 @@ interface NativeButtonProps {
   onPress?: () => void;
   /** Visual variant */
   variant?: ButtonVariant;
+  /** Button size */
+  size?: ButtonSize;
   /** Disabled state */
   disabled?: boolean;
   /** Loading state — disables button and shows spinner */
@@ -20,7 +25,7 @@ interface NativeButtonProps {
   /** SF Symbol name for iOS (e.g. 'graduationcap.fill') */
   systemImage?: SFSymbol;
   /** MaterialIcons name for Android (e.g. 'school') */
-  materialIcon?: string;
+  materialIcon?: React.ComponentProps<typeof MaterialIcons>['name'];
   /** Haptic feedback on press (default: true) */
   haptic?: boolean;
   /** Outer container style (margins, etc.) */
@@ -31,6 +36,7 @@ function NativeButton({
   label,
   onPress,
   variant = 'primary',
+  size = 'lg',
   disabled = false,
   loading = false,
   systemImage,
@@ -53,6 +59,7 @@ function NativeButton({
           label={label}
           onPress={handlePress}
           variant={variant}
+          size={size}
           disabled={isDisabled}
           loading={loading}
           systemImage={systemImage}
@@ -77,10 +84,15 @@ function NativeButton({
   );
 }
 
+// ── iOS ──────────────────────────────────────────────────────
+
+const IOS_SIZE_MAP = { sm: 'small', md: 'regular', lg: 'large' } as const;
+
 function IOSButton({
   label,
   onPress,
   variant,
+  size,
   disabled,
   loading,
   systemImage,
@@ -89,6 +101,7 @@ function IOSButton({
   label: string;
   onPress: () => void;
   variant: ButtonVariant;
+  size: ButtonSize;
   disabled: boolean;
   loading: boolean;
   systemImage?: SFSymbol;
@@ -104,15 +117,15 @@ function IOSButton({
     // eslint-disable-next-line @typescript-eslint/no-require-imports
   } = require('@expo/ui/swift-ui/modifiers');
 
-  const modifiers = [
-    controlSize('large'),
-    ...getIOSModifiers(variant, primaryColor, buttonStyle, tint),
-  ];
-  if (disabled) modifiers.push(disabledMod(true));
-
   if (loading) {
     return <ActivityIndicator color={primaryColor} />;
   }
+
+  const modifiers = [
+    controlSize(IOS_SIZE_MAP[size]),
+    ...getIOSStyleModifiers(variant, primaryColor, buttonStyle, tint),
+  ];
+  if (disabled) modifiers.push(disabledMod(true));
 
   return (
     <Host style={{ alignSelf: 'stretch' }}>
@@ -127,7 +140,7 @@ function IOSButton({
   );
 }
 
-function getIOSModifiers(
+function getIOSStyleModifiers(
   variant: ButtonVariant,
   primaryColor: string,
   buttonStyle: (s: string) => unknown,
@@ -149,6 +162,8 @@ function getIOSModifiers(
   }
 }
 
+// ── Android ──────────────────────────────────────────────────
+
 function AndroidButton({
   label,
   onPress,
@@ -163,8 +178,8 @@ function AndroidButton({
   variant: ButtonVariant;
   disabled: boolean;
   loading: boolean;
-  materialIcon?: string;
-  colors: Record<string, string>;
+  materialIcon?: React.ComponentProps<typeof MaterialIcons>['name'];
+  colors: Colors;
 }) {
   const {
     Host,
@@ -173,53 +188,60 @@ function AndroidButton({
     FilledTonalButton,
     TextButton,
     Text,
+    Spacer,
+    RNHostView,
     // eslint-disable-next-line @typescript-eslint/no-require-imports
   } = require('@expo/ui/jetpack-compose');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { width } = require('@expo/ui/jetpack-compose/modifiers');
 
   if (loading) {
     return <ActivityIndicator color={colors.primary} />;
   }
 
-  const ButtonComponent = getAndroidButtonComponent(
-    variant,
+  const ButtonComponent = getAndroidButtonComponent(variant, {
     Button,
     OutlinedButton,
     FilledTonalButton,
-    TextButton
-  );
+    TextButton,
+  });
   const buttonColors = getAndroidColors(variant, colors);
+  const iconColor = getAndroidIconColor(variant, colors);
 
   return (
     <Host style={{ alignSelf: 'stretch' }}>
       <ButtonComponent onClick={onPress} enabled={!disabled} colors={buttonColors}>
+        {materialIcon && (
+          <>
+            <RNHostView matchContents>
+              <MaterialIcons name={materialIcon} size={18} color={iconColor} />
+            </RNHostView>
+            <Spacer modifiers={[width(8)]} />
+          </>
+        )}
         <Text>{label}</Text>
       </ButtonComponent>
     </Host>
   );
 }
 
-function getAndroidButtonComponent(
-  variant: ButtonVariant,
-  Button: unknown,
-  OutlinedButton: unknown,
-  FilledTonalButton: unknown,
-  TextButton: unknown
-) {
+function getAndroidButtonComponent(variant: ButtonVariant, components: Record<string, any>) {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   switch (variant) {
     case 'primary':
     case 'destructive':
-      return Button;
+      return components.Button;
     case 'secondary':
-      return FilledTonalButton;
+      return components.FilledTonalButton;
     case 'outline':
-      return OutlinedButton;
+      return components.OutlinedButton;
     case 'ghost':
     case 'link':
-      return TextButton;
+      return components.TextButton;
   }
 }
 
-function getAndroidColors(variant: ButtonVariant, colors: Record<string, string>) {
+function getAndroidColors(variant: ButtonVariant, colors: Colors) {
   switch (variant) {
     case 'primary':
       return { containerColor: colors.primary, contentColor: colors.primaryForeground };
@@ -230,5 +252,16 @@ function getAndroidColors(variant: ButtonVariant, colors: Record<string, string>
   }
 }
 
+function getAndroidIconColor(variant: ButtonVariant, colors: Colors): string {
+  switch (variant) {
+    case 'primary':
+      return colors.primaryForeground;
+    case 'destructive':
+      return colors.destructiveForeground;
+    default:
+      return colors.primary;
+  }
+}
+
 export { NativeButton };
-export type { NativeButtonProps, ButtonVariant };
+export type { NativeButtonProps, ButtonVariant, ButtonSize };

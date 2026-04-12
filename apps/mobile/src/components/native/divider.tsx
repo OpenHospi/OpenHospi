@@ -1,33 +1,29 @@
-import { Platform, View } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 interface NativeDividerProps {
-  /** Left inset in points (iOS only, default: 0) */
-  insetLeft?: number;
+  /** Custom color for the divider line */
+  color?: string;
 }
 
-function NativeDivider({ insetLeft = 0 }: NativeDividerProps) {
+function NativeDivider({ color }: NativeDividerProps) {
   if (Platform.OS === 'ios') {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Host, Divider } = require('@expo/ui/swift-ui');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { padding } = require('@expo/ui/swift-ui/modifiers');
 
     return (
       <Host matchContents>
-        <Divider modifiers={insetLeft > 0 ? [padding({ leading: insetLeft })] : undefined} />
+        <Divider />
       </Host>
     );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Host, Divider } = require('@expo/ui/jetpack-compose');
+  const { Host, HorizontalDivider } = require('@expo/ui/jetpack-compose');
 
   return (
-    <View style={insetLeft > 0 ? { marginLeft: insetLeft } : undefined}>
-      <Host matchContents>
-        <Divider />
-      </Host>
-    </View>
+    <Host matchContents>
+      <HorizontalDivider thickness={StyleSheet.hairlineWidth} color={color} />
+    </Host>
   );
 }
 

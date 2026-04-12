@@ -4,15 +4,17 @@ import { useTheme } from '@/design';
 import { hapticToggle } from '@/lib/haptics';
 
 interface NativeToggleProps {
-  value: boolean;
-  onValueChange: (value: boolean) => void;
+  isOn: boolean;
+  onToggle: (value: boolean) => void;
+  label?: string;
   disabled?: boolean;
   haptic?: boolean;
 }
 
 function NativeToggle({
-  value,
-  onValueChange,
+  isOn,
+  onToggle,
+  label,
   disabled = false,
   haptic = true,
 }: NativeToggleProps) {
@@ -20,31 +22,81 @@ function NativeToggle({
 
   const handleChange = (newValue: boolean) => {
     if (haptic) hapticToggle();
-    onValueChange(newValue);
+    onToggle(newValue);
   };
 
   if (Platform.OS === 'ios') {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Host, Toggle } = require('@expo/ui/swift-ui');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { tint, disabled: disabledMod } = require('@expo/ui/swift-ui/modifiers');
-
-    const modifiers = [tint(colors.primary)];
-    if (disabled) modifiers.push(disabledMod(true));
-
     return (
-      <Host matchContents>
-        <Toggle value={value} onValueChange={handleChange} modifiers={modifiers} />
-      </Host>
+      <IOSToggle
+        isOn={isOn}
+        onToggle={handleChange}
+        label={label}
+        disabled={disabled}
+        primaryColor={colors.primary}
+      />
     );
   }
 
+  return (
+    <AndroidSwitch
+      isOn={isOn}
+      onToggle={handleChange}
+      disabled={disabled}
+      primaryColor={colors.primary}
+    />
+  );
+}
+
+function IOSToggle({
+  isOn,
+  onToggle,
+  label,
+  disabled,
+  primaryColor,
+}: {
+  isOn: boolean;
+  onToggle: (value: boolean) => void;
+  label?: string;
+  disabled: boolean;
+  primaryColor: string;
+}) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Host, Toggle } = require('@expo/ui/swift-ui');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { tint, disabled: disabledMod } = require('@expo/ui/swift-ui/modifiers');
+
+  const modifiers = [tint(primaryColor)];
+  if (disabled) modifiers.push(disabledMod(true));
+
+  return (
+    <Host matchContents>
+      <Toggle isOn={isOn} onIsOnChange={onToggle} label={label} modifiers={modifiers} />
+    </Host>
+  );
+}
+
+function AndroidSwitch({
+  isOn,
+  onToggle,
+  disabled,
+  primaryColor,
+}: {
+  isOn: boolean;
+  onToggle: (value: boolean) => void;
+  disabled: boolean;
+  primaryColor: string;
+}) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Host, Switch } = require('@expo/ui/jetpack-compose');
 
   return (
     <Host matchContents>
-      <Switch checked={value} onCheckedChange={handleChange} enabled={!disabled} />
+      <Switch
+        value={isOn}
+        onCheckedChange={onToggle}
+        enabled={!disabled}
+        colors={{ checkedTrackColor: primaryColor }}
+      />
     </Host>
   );
 }

@@ -3,34 +3,26 @@ import { Platform, View, type ViewStyle } from 'react-native';
 import { useTheme } from '@/design';
 
 interface NativeTextFieldProps {
-  /** Current text value */
-  value?: string;
-  /** Default text (iOS uses this for uncontrolled TextField) */
+  /** Initial/default value (iOS is uncontrolled, use key to reset) */
   defaultValue?: string;
   /** Placeholder text */
   placeholder?: string;
+  /** Label text (displayed above/inside the field) */
+  label?: string;
   /** Text change handler */
   onChangeText?: (text: string) => void;
-  /** Focus handler */
-  onFocus?: () => void;
-  /** Blur handler */
-  onBlur?: () => void;
-  /** Submit handler */
-  onSubmitEditing?: () => void;
+  /** Focus change handler */
+  onFocusChange?: (focused: boolean) => void;
   /** Disabled state */
   disabled?: boolean;
   /** Error state */
   error?: boolean;
-  /** Multiline mode */
-  multiline?: boolean;
-  /** Number of lines for multiline (iOS lineLimit) */
-  numberOfLines?: number;
-  /** Secure text entry (password) */
+  /** Error/supporting message text */
+  supportingText?: string;
+  /** Single line mode (default: true) */
+  singleLine?: boolean;
+  /** Secure text entry (password) — iOS only, uses SecureField */
   secureTextEntry?: boolean;
-  /** Keyboard type */
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad' | 'url';
-  /** Auto-capitalize behavior */
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   /** Auto-focus on mount */
   autoFocus?: boolean;
   /** Outer container style */
@@ -38,20 +30,16 @@ interface NativeTextFieldProps {
 }
 
 function NativeTextField({
-  value,
   defaultValue,
   placeholder,
+  label,
   onChangeText,
-  onFocus,
-  onBlur,
-  onSubmitEditing,
+  onFocusChange,
   disabled = false,
   error = false,
-  multiline = false,
-  numberOfLines,
+  supportingText,
+  singleLine = true,
   secureTextEntry = false,
-  keyboardType,
-  autoCapitalize,
   autoFocus = false,
   style,
 }: NativeTextFieldProps) {
@@ -61,17 +49,13 @@ function NativeTextField({
     return (
       <View style={style}>
         <IOSTextField
-          value={value}
           defaultValue={defaultValue}
           placeholder={placeholder}
           onChangeText={onChangeText}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          onSubmitEditing={onSubmitEditing}
+          onFocusChange={onFocusChange}
           disabled={disabled}
           error={error}
-          multiline={multiline}
-          numberOfLines={numberOfLines}
+          singleLine={singleLine}
           secureTextEntry={secureTextEntry}
           autoFocus={autoFocus}
           primaryColor={colors.primary}
@@ -84,47 +68,41 @@ function NativeTextField({
   return (
     <View style={style}>
       <AndroidTextField
-        value={value}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        label={label}
         onChangeText={onChangeText}
         disabled={disabled}
         error={error}
-        multiline={multiline}
-        colors={colors}
+        supportingText={supportingText}
+        singleLine={singleLine}
       />
     </View>
   );
 }
 
+// ── iOS: SwiftUI TextField (uncontrolled) ────────────────────
+
 function IOSTextField({
-  value,
   defaultValue,
   placeholder,
   onChangeText,
-  onFocus,
-  onBlur,
-  onSubmitEditing,
+  onFocusChange,
   disabled,
   error,
-  multiline,
-  numberOfLines,
+  singleLine,
   secureTextEntry,
   autoFocus,
   primaryColor,
   errorColor,
 }: {
-  value?: string;
   defaultValue?: string;
   placeholder?: string;
   onChangeText?: (text: string) => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
-  onSubmitEditing?: () => void;
+  onFocusChange?: (focused: boolean) => void;
   disabled: boolean;
   error: boolean;
-  multiline: boolean;
-  numberOfLines?: number;
+  singleLine: boolean;
   secureTextEntry: boolean;
   autoFocus: boolean;
   primaryColor: string;
@@ -148,9 +126,10 @@ function IOSTextField({
     return (
       <Host style={{ alignSelf: 'stretch' }}>
         <SecureField
-          defaultValue={value ?? defaultValue}
+          defaultValue={defaultValue}
           placeholder={placeholder}
           onValueChange={onChangeText}
+          autoFocus={autoFocus}
           modifiers={modifiers}
         />
       </Host>
@@ -160,47 +139,65 @@ function IOSTextField({
   return (
     <Host style={{ alignSelf: 'stretch' }}>
       <TextField
-        defaultValue={value ?? defaultValue}
+        defaultValue={defaultValue}
         placeholder={placeholder}
         onValueChange={onChangeText}
+        onFocusChange={onFocusChange}
+        autoFocus={autoFocus}
+        axis={singleLine ? 'horizontal' : 'vertical'}
         modifiers={modifiers}
       />
     </Host>
   );
 }
 
+// ── Android: Jetpack Compose OutlinedTextField ───────────────
+
 function AndroidTextField({
-  value,
   defaultValue,
   placeholder,
+  label,
   onChangeText,
   disabled,
   error,
-  multiline,
-  colors,
+  supportingText,
+  singleLine,
 }: {
-  value?: string;
   defaultValue?: string;
   placeholder?: string;
+  label?: string;
   onChangeText?: (text: string) => void;
   disabled: boolean;
   error: boolean;
-  multiline: boolean;
-  colors: Record<string, string>;
+  supportingText?: string;
+  singleLine: boolean;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Host, OutlinedTextField } = require('@expo/ui/jetpack-compose');
+  const { Host, OutlinedTextField, Text } = require('@expo/ui/jetpack-compose');
 
   return (
     <Host style={{ alignSelf: 'stretch' }}>
       <OutlinedTextField
-        value={value ?? defaultValue ?? ''}
         onValueChange={onChangeText}
-        placeholder={placeholder}
-        enabled={!disabled}
         isError={error}
-        singleLine={!multiline}
-      />
+        enabled={!disabled}
+        singleLine={singleLine}>
+        {label && (
+          <OutlinedTextField.Label>
+            <Text>{label}</Text>
+          </OutlinedTextField.Label>
+        )}
+        {placeholder && (
+          <OutlinedTextField.Placeholder>
+            <Text>{placeholder}</Text>
+          </OutlinedTextField.Placeholder>
+        )}
+        {supportingText && (
+          <OutlinedTextField.SupportingText>
+            <Text>{supportingText}</Text>
+          </OutlinedTextField.SupportingText>
+        )}
+      </OutlinedTextField>
     </Host>
   );
 }

@@ -3,8 +3,8 @@ import { Platform, View, type ViewStyle } from 'react-native';
 import { useTheme } from '@/design';
 
 interface NativeProgressProps {
-  /** Progress value from 0 to 1 */
-  value: number;
+  /** Progress value from 0 to 1. Omit for indeterminate. */
+  value?: number | null;
   style?: ViewStyle;
 }
 
@@ -20,19 +20,23 @@ function NativeProgress({ value, style }: NativeProgressProps) {
     return (
       <View style={style}>
         <Host style={{ alignSelf: 'stretch' }}>
-          <ProgressView value={value} modifiers={[tint(colors.primary)]} />
+          <ProgressView value={value ?? undefined} modifiers={[tint(colors.primary)]} />
         </Host>
       </View>
     );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Host, Progress } = require('@expo/ui/jetpack-compose');
+  const { Host, LinearProgressIndicator } = require('@expo/ui/jetpack-compose');
 
   return (
     <View style={style}>
       <Host style={{ alignSelf: 'stretch' }}>
-        <Progress value={value} color={colors.primary} trackColor={colors.muted} />
+        <LinearProgressIndicator
+          progress={value ?? undefined}
+          color={colors.primary}
+          trackColor={colors.muted}
+        />
       </Host>
     </View>
   );

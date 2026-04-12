@@ -4,8 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedProgress } from '@/components/primitives/themed-progress';
+import { NativeButton } from '@/components/native/button';
+import { NativeProgress } from '@/components/native/progress';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
@@ -97,7 +97,7 @@ export default function OnboardingScreen() {
           </ThemedText>
         </View>
 
-        <ThemedProgress value={progress} />
+        <NativeProgress value={progress / 100} />
 
         <View>
           <ThemedText variant="headline">{t(`steps.${stepKey}`)}</ThemedText>
@@ -127,23 +127,26 @@ export default function OnboardingScreen() {
       {showBottomBar && (
         <View style={styles.bottomBar}>
           {clampedStep > 1 ? (
-            <ThemedButton variant="ghost" onPress={handleBack} style={styles.bottomBarButton}>
-              {tCommon('back')}
-            </ThemedButton>
+            <NativeButton
+              label={tCommon('back')}
+              variant="ghost"
+              onPress={handleBack}
+              style={styles.bottomBarButton}
+            />
           ) : (
             <View style={styles.bottomBarButton} />
           )}
-          <ThemedButton onPress={handleNextPress} style={styles.bottomBarButton}>
-            {tCommon('next')}
-          </ThemedButton>
+          <NativeButton
+            label={tCommon('next')}
+            onPress={handleNextPress}
+            style={styles.bottomBarButton}
+          />
         </View>
       )}
 
       {!showBottomBar && clampedStep > 1 && (
         <View style={styles.backOnlyBar}>
-          <ThemedButton variant="ghost" onPress={handleBack}>
-            {tCommon('back')}
-          </ThemedButton>
+          <NativeButton label={tCommon('back')} variant="ghost" onPress={handleBack} />
         </View>
       )}
     </SafeAreaView>

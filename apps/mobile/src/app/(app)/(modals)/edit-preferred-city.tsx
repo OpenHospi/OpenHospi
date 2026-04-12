@@ -1,32 +1,66 @@
+import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { CitySearchInput } from '@/components/forms/city-search';
 import { ThemedButton } from '@/components/primitives/themed-button';
+import { ThemedInput } from '@/components/primitives/themed-input';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
-import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
+import { radius } from '@/design/tokens/radius';
+import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
+
+const DEBOUNCE_MS = 300;
 
 export default function EditPreferredCityScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const headerHeight = useHeaderHeight();
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
   const { t: tPlaceholders } = useTranslation('translation', {
     keyPrefix: 'app.onboarding.placeholders',
+  });
+  const { t: tCitySearch } = useTranslation('translation', {
+    keyPrefix: 'app.onboarding.citySearch',
   });
 
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
-  const [city, setCity] = useState(profile?.preferredCity ?? '');
+  const [selected, setSelected] = useState<string | null>(profile?.preferredCity ?? null);
+  const [search, setSearch] = useState('');
+  const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
+  const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  function handleSearch(text: string) {
+    setSearch(text);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (text.length < 2) {
+      setSuggestions([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const results = await searchCities(text);
+        setSuggestions(results);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoading(false);
+      }
+    }, DEBOUNCE_MS);
+  }
 
   function handleSave() {
     updateProfile.mutate(
-      { preferredCity: city || null },
+      { preferredCity: selected ?? null },
       {
         onSuccess: () => {
           hapticFormSubmitSuccess();
@@ -34,7 +68,7 @@ export default function EditPreferredCityScreen() {
         },
         onError: () => {
           hapticFormSubmitError();
-          Alert.alert(tErrors('generic'));
+          Alert.alert('Error');
         },
       }
     );
@@ -43,17 +77,57 @@ export default function EditPreferredCityScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.searchArea, { paddingTop: headerHeight + 12 }]}>
-        <CitySearchInput
-          value={city}
-          onSelect={setCity}
+        <ThemedInput
+          value={search}
+          onChangeText={handleSearch}
           placeholder={tPlaceholders('searchCity')}
+          autoFocus
         />
       </View>
 
-      <View style={styles.spacer} />
+      {loading && (
+        <View style={styles.statusRow}>
+          <ActivityIndicator size="small" color={colors.tertiaryForeground} />
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+            {tCitySearch('searching')}
+          </ThemedText>
+        </View>
+      )}
 
-      <View style={styles.footer}>
-        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
+      {!loading && search.length >= 2 && suggestions.length === 0 && (
+        <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.statusText}>
+          {tCitySearch('noResults')}
+        </ThemedText>
+      )}
+
+      <FlatList
+        data={suggestions}
+        keyExtractor={(item) => item.id}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+        renderItem={({ item }) => {
+          const isSelected = item.name === selected;
+          return (
+            <Pressable
+              onPress={() => {
+                hapticLight();
+                setSelected(isSelected ? null : item.name);
+              }}
+              style={[styles.listItem, isSelected && { backgroundColor: colors.primary + '1A' }]}>
+              <ThemedText
+                variant="body"
+                weight={isSelected ? '600' : undefined}
+                color={isSelected ? colors.primary : colors.foreground}>
+                {item.name}
+              </ThemedText>
+            </Pressable>
+          );
+        }}
+      />
+
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <ThemedButton size="lg" onPress={handleSave} loading={updateProfile.isPending}>
           {tCommon('save')}
         </ThemedButton>
       </View>
@@ -67,13 +141,35 @@ const styles = StyleSheet.create({
   },
   searchArea: {
     paddingHorizontal: 16,
-    gap: 16,
   },
-  spacer: {
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  statusText: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  list: {
     flex: 1,
+  },
+  listContent: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  listItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: radius.md,
   },
   footer: {
     paddingHorizontal: 16,
+    paddingTop: 12,
     paddingBottom: 24,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
 });

@@ -8,7 +8,7 @@ import { hapticError, hapticSuccess } from '@/lib/haptics';
 import { useTheme } from '@/design';
 
 import { InputOTP } from '@/components/forms/input-otp';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { EncryptionContext, useEncryptionProvider } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
@@ -108,12 +108,12 @@ export function EncryptionGate({ children }: Props) {
         </ThemedText>
       </View>
 
-      <ThemedButton
+      <NativeButton
+        label={tSecurity('setup_pin')}
         onPress={() => handleSetup(pin)}
         disabled={pin.length !== PIN_LENGTH}
-        style={styles.setupButton}>
-        {tSecurity('setup_pin')}
-      </ThemedButton>
+        style={styles.setupButton}
+      />
     </ScrollView>
   );
 }

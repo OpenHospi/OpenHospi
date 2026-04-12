@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedTextarea } from '@/components/primitives/themed-textarea';
 import { ThemedText } from '@/components/native/text';
@@ -181,11 +181,11 @@ export default function CreateEventScreen() {
       </ScrollView>
 
       <BlurBottomBar>
-        <ThemedButton
+        <NativeButton
+          label={isEditing ? tCommon('save') : t('createSubmit')}
           onPress={handleSubmit}
-          disabled={!title || !eventDate || !timeStart || isPending}>
-          {isEditing ? tCommon('save') : t('createSubmit')}
-        </ThemedButton>
+          disabled={!title || !eventDate || !timeStart || isPending}
+        />
       </BlurBottomBar>
     </View>
   );

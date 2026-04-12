@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -89,16 +89,19 @@ export default function EditPhotosScreen() {
                   </ThemedText>
                 </View>
                 <View style={styles.slotActions}>
-                  <ThemedButton variant="outline" size="sm" onPress={() => handlePick(slot)}>
-                    {photoUrl ? tCommon('edit') : 'Add'}
-                  </ThemedButton>
+                  <NativeButton
+                    label={photoUrl ? tCommon('edit') : 'Add'}
+                    variant="outline"
+                    size="sm"
+                    onPress={() => handlePick(slot)}
+                  />
                   {photoUrl && (
-                    <ThemedButton
+                    <NativeButton
+                      label={tCommon('delete')}
                       variant="destructive"
                       size="sm"
-                      onPress={() => handleDelete(slot)}>
-                      {tCommon('delete')}
-                    </ThemedButton>
+                      onPress={() => handleDelete(slot)}
+                    />
                   )}
                 </View>
               </View>

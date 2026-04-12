@@ -13,7 +13,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { ListSeparator } from '@/components/layout/list-separator';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { useTheme } from '@/design';
 import { useCancelEvent, useRoomEvents } from '@/services/my-rooms';
 import type { EventSummary } from '@openhospi/shared/api-types';
@@ -183,15 +183,15 @@ export default function EventsListScreen() {
         ItemSeparatorComponent={ListSeparator}
       />
       <BlurBottomBar>
-        <ThemedButton
+        <NativeButton
+          label={t('create')}
           onPress={() =>
             router.push({
               pathname: '/(app)/manage-room/[id]/events/create',
               params: { id },
             })
-          }>
-          {t('create')}
-        </ThemedButton>
+          }
+        />
       </BlurBottomBar>
     </View>
   );

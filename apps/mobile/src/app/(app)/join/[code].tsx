@@ -3,7 +3,7 @@ import { Home } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
@@ -76,12 +76,12 @@ export default function JoinHouseScreen() {
         )}
 
         <View style={styles.buttonGroup}>
-          <ThemedButton onPress={handleJoin} loading={joinHouse.isPending}>
-            {t('joinButton')}
-          </ThemedButton>
-          <ThemedButton variant="outline" onPress={() => router.back()}>
-            {t('cancel')}
-          </ThemedButton>
+          <NativeButton
+            label={t('joinButton')}
+            onPress={handleJoin}
+            loading={joinHouse.isPending}
+          />
+          <NativeButton label={t('cancel')} variant="outline" onPress={() => router.back()} />
         </View>
       </View>
     </>

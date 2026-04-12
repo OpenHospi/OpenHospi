@@ -6,7 +6,7 @@ import * as Clipboard from 'expo-clipboard';
 
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -95,22 +95,31 @@ export default function MyHouseScreen() {
           <ListCell label={t('inviteCode')} value={house.inviteCode} onPress={handleCopyCode} />
           <ListSeparator />
           <View style={styles.actionRow}>
-            <ThemedButton variant="outline" size="sm" onPress={handleCopyCode}>
-              <Copy size={16} color={colors.foreground} />
-              <ThemedText variant="footnote" weight="500">
-                {tCommon('copy')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton variant="outline" size="sm" onPress={handleShare}>
-              <Share2 size={16} color={colors.foreground} />
-              <ThemedText variant="footnote" weight="500">
-                {tCommon('share')}
-              </ThemedText>
-            </ThemedButton>
+            <NativeButton
+              label={tCommon('copy')}
+              variant="outline"
+              size="sm"
+              onPress={handleCopyCode}
+              systemImage="doc.on.doc"
+              materialIcon="content-copy"
+            />
+            <NativeButton
+              label={tCommon('share')}
+              variant="outline"
+              size="sm"
+              onPress={handleShare}
+              systemImage="square.and.arrow.up"
+              materialIcon="share"
+            />
             {isOwner && (
-              <ThemedButton variant="ghost" size="sm" onPress={() => regenerateCode.mutate()}>
-                <RefreshCw size={16} color={colors.tertiaryForeground} />
-              </ThemedButton>
+              <NativeButton
+                label={t('regenerate')}
+                variant="ghost"
+                size="sm"
+                onPress={() => regenerateCode.mutate()}
+                systemImage="arrow.clockwise"
+                materialIcon="refresh"
+              />
             )}
           </View>
         </GroupedSection>

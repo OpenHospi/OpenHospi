@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -161,18 +161,16 @@ export default function EventDetailScreen() {
 
       {!isCancelled && (
         <BlurBottomBar>
-          <ThemedButton
+          <NativeButton
+            label={t('invitees')}
             onPress={() =>
               router.push({
                 pathname: '/(app)/manage-room/[id]/events/invite',
                 params: { id, eventId },
               })
-            }>
-            {t('invitees')}
-          </ThemedButton>
-          <ThemedButton variant="destructive" onPress={handleCancel}>
-            {t('cancelEvent')}
-          </ThemedButton>
+            }
+          />
+          <NativeButton label={t('cancelEvent')} variant="destructive" onPress={handleCancel} />
         </BlurBottomBar>
       )}
     </View>

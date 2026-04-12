@@ -12,7 +12,7 @@ import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { HospiInvitationCard } from '@/components/events/hospi-invitation-card';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTranslation } from 'react-i18next';
@@ -231,13 +231,13 @@ export default function ApplicationDetailScreen() {
             </View>
           )}
 
-          <ThemedButton
+          <NativeButton
+            label={t('viewRoom')}
             variant="outline"
             onPress={() =>
               router.push({ pathname: '/(app)/room/[id]', params: { id: app.roomId } })
-            }>
-            {t('viewRoom')}
-          </ThemedButton>
+            }
+          />
         </View>
       </ScrollView>
 
@@ -250,12 +250,12 @@ export default function ApplicationDetailScreen() {
               backgroundColor: colors.background,
             },
           ]}>
-          <ThemedButton
+          <NativeButton
+            label={withdrawMutation.isPending ? '...' : t('withdraw')}
             variant="destructive"
             onPress={handleWithdraw}
-            disabled={withdrawMutation.isPending}>
-            {withdrawMutation.isPending ? '...' : t('withdraw')}
-          </ThemedButton>
+            disabled={withdrawMutation.isPending}
+          />
         </View>
       )}
     </SafeAreaView>

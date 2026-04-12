@@ -556,7 +556,9 @@
       "preferredCity": "Bevorzugte Stadt",
       "lifestyleTags": "Lebensstil",
       "languages": "Gesprochene Sprachen",
-      "vereniging": "Verein"
+      "vereniging": "Verein",
+      "activity": "Aktivität",
+      "account": "Konto"
     },
     "onboarding": {
       "title": "Vervollständige dein Profil",

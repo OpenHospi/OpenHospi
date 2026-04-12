@@ -5,7 +5,7 @@ import { Camera, Trash2 } from 'lucide-react-native';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
@@ -111,7 +111,7 @@ export default function PhotosScreen() {
       </ScrollView>
 
       <BlurBottomBar>
-        <ThemedButton onPress={handleNext}>{tCommon('next')}</ThemedButton>
+        <NativeButton label={tCommon('next')} onPress={handleNext} />
       </BlurBottomBar>
     </View>
   );

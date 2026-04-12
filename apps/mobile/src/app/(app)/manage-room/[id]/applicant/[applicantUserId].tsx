@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -225,12 +225,12 @@ export default function ApplicantDetailScreen() {
                 placeholder={t('notesPlaceholder')}
               />
 
-              <ThemedButton
+              <NativeButton
+                label={t('submitReview')}
                 onPress={handleSubmitReview}
                 loading={submitReview.isPending}
-                disabled={!decision}>
-                {t('submitReview')}
-              </ThemedButton>
+                disabled={!decision}
+              />
             </View>
           </GroupedSection>
 
@@ -263,16 +263,17 @@ export default function ApplicantDetailScreen() {
       {applicant.status !== 'accepted' && applicant.status !== 'rejected' && (
         <BlurBottomBar style={styles.bottomRow}>
           <View style={styles.flex1}>
-            <ThemedButton
+            <NativeButton
+              label={t('rejected')}
               variant="outline"
-              onPress={() => handleStatusAction('rejected', t('rejected'))}>
-              {t('rejected')}
-            </ThemedButton>
+              onPress={() => handleStatusAction('rejected', t('rejected'))}
+            />
           </View>
           <View style={styles.flex1}>
-            <ThemedButton onPress={() => handleStatusAction('accepted', t('accept'))}>
-              {t('accept')}
-            </ThemedButton>
+            <NativeButton
+              label={t('accept')}
+              onPress={() => handleStatusAction('accepted', t('accept'))}
+            />
           </View>
         </BlurBottomBar>
       )}

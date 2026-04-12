@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -77,11 +77,11 @@ export default function EditLifestyleScreen() {
       </View>
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <ThemedButton
+        <NativeButton
+          label={tCommon('save')}
           onPress={handleSave}
-          disabled={updateProfile.isPending || selected.length < MIN_LIFESTYLE_TAGS}>
-          {tCommon('save')}
-        </ThemedButton>
+          disabled={updateProfile.isPending || selected.length < MIN_LIFESTYLE_TAGS}
+        />
       </View>
     </View>
   );

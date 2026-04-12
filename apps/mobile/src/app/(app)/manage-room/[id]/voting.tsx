@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedAvatar } from '@/components/native/avatar';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -204,9 +204,11 @@ export default function VotingScreen() {
             ))}
           </GroupedSection>
 
-          <ThemedButton onPress={handleSubmit} disabled={submitVotes.isPending}>
-            {t('submitVotes')}
-          </ThemedButton>
+          <NativeButton
+            label={t('submitVotes')}
+            onPress={handleSubmit}
+            disabled={submitVotes.isPending}
+          />
 
           {/* Vote board */}
           {board && (

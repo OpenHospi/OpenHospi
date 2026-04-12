@@ -19,7 +19,7 @@ import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { MultiChipPicker } from '@/components/forms/multi-chip-picker';
 import { CitySearchInput } from '@/components/forms/city-search';
 import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -551,9 +551,12 @@ export default function EditRoomScreen() {
       </ScrollView>
 
       <BlurBottomBar>
-        <ThemedButton onPress={handleSave} loading={updateRoom.isPending} disabled={!title.trim()}>
-          {tCommon('save')}
-        </ThemedButton>
+        <NativeButton
+          label={tCommon('save')}
+          onPress={handleSave}
+          loading={updateRoom.isPending}
+          disabled={!title.trim()}
+        />
       </BlurBottomBar>
 
       {/* Picker sheets */}

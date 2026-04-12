@@ -6,22 +6,18 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useMemo } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { isIOS } from '@/lib/platform';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
 import { ListSeparator } from '@/components/layout/list-separator';
-import { ProfileFieldRow } from '@/components/profile/profile-field-row';
-import { ProfileSectionCard } from '@/components/profile/profile-section-card';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { STAGGER_DELAY } from '@/lib/animations';
+import { isIOS } from '@/lib/platform';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
@@ -101,11 +97,12 @@ export default function ProfileScreen() {
         }}
       />
       <ScrollView
-        style={{ flex: 1 }}
+        style={styles.scroll}
         contentContainerStyle={{ paddingBottom: bottom + 16 }}
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />}>
-        <Animated.View entering={FadeInDown.duration(300)} style={styles.avatarSection}>
+        {/* Avatar Header */}
+        <View style={styles.avatarSection}>
           <ThemedAvatar source={avatarUrl} fallback={profile.firstName} size={96} />
           <ThemedText variant="title2" style={styles.nameText}>
             {profile.firstName} {profile.lastName}
@@ -118,140 +115,168 @@ export default function ProfileScreen() {
               <ThemedBadge variant="outline" label={tEnums(`vereniging.${profile.vereniging}`)} />
             )}
           </View>
-        </Animated.View>
-
-        <View style={styles.sections}>
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY).duration(300)}>
-            <ProfileSectionCard
-              title={t('title')}
-              onEdit={() => router.push('/(app)/(modals)/edit-photos')}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={styles.photoRow}>
-                  {profile.photos.map((photo) => (
-                    <Image
-                      key={photo.id}
-                      source={{ uri: getStoragePublicUrl(photo.url, 'profile-photos') }}
-                      style={styles.photoThumb}
-                      contentFit="cover"
-                      cachePolicy="disk"
-                    />
-                  ))}
-                </View>
-              </ScrollView>
-            </ProfileSectionCard>
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 2).duration(300)}>
-            <ProfileSectionCard title={t('studyInfo')}>
-              <View>
-                <ProfileFieldRow
-                  label={t('gender')}
-                  value={profile.gender ? tEnums(`gender.${profile.gender}`) : null}
-                  placeholder={tCommon('notSet')}
-                  onPress={() => router.push('/(app)/(modals)/edit-gender')}
-                />
-                <ListSeparator insetLeft={0} />
-                <ProfileFieldRow
-                  label={t('birthDate')}
-                  value={
-                    profile.birthDate ? new Date(profile.birthDate).toLocaleDateString() : null
-                  }
-                  placeholder={tCommon('notSet')}
-                  onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
-                />
-                <ListSeparator insetLeft={0} />
-                <ProfileFieldRow
-                  label={t('studyProgram')}
-                  value={profile.studyProgram || null}
-                  placeholder={tCommon('notSet')}
-                  onPress={() => router.push('/(app)/(modals)/edit-study-program')}
-                />
-                <ListSeparator insetLeft={0} />
-                <ProfileFieldRow
-                  label={t('studyLevel')}
-                  value={profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : null}
-                  placeholder={tCommon('notSet')}
-                  onPress={() => router.push('/(app)/(modals)/edit-study-level')}
-                />
-                <ListSeparator insetLeft={0} />
-                <ProfileFieldRow
-                  label={t('preferredCity')}
-                  value={profile.preferredCity ? tEnums(`city.${profile.preferredCity}`) : null}
-                  placeholder={tCommon('notSet')}
-                  onPress={() => router.push('/(app)/(modals)/edit-preferred-city')}
-                />
-                <ListSeparator insetLeft={0} />
-                <ProfileFieldRow
-                  label={t('vereniging')}
-                  value={profile.vereniging || null}
-                  placeholder={tCommon('notSet')}
-                  onPress={() => router.push('/(app)/(modals)/edit-vereniging')}
-                />
-              </View>
-            </ProfileSectionCard>
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 3).duration(300)}>
-            <ProfileSectionCard
-              title={t('bio')}
-              onEdit={() => router.push('/(app)/(modals)/edit-bio')}>
-              <ThemedText variant="body" color={colors.secondaryForeground}>
-                {profile.bio || '-'}
-              </ThemedText>
-            </ProfileSectionCard>
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 4).duration(300)}>
-            <ProfileSectionCard
-              title={t('languages')}
-              onEdit={() => router.push('/(app)/(modals)/edit-languages')}>
-              <View style={styles.tagRow}>
-                {(profile.languages ?? []).map((lang) => (
-                  <ThemedBadge
-                    key={lang}
-                    variant="secondary"
-                    label={tEnums(`language_enum.${lang}`)}
-                  />
-                ))}
-              </View>
-            </ProfileSectionCard>
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 5).duration(300)}>
-            <ProfileSectionCard
-              title={t('lifestyleTags')}
-              onEdit={() => router.push('/(app)/(modals)/edit-lifestyle')}>
-              <View style={styles.tagRow}>
-                {(profile.lifestyleTags ?? []).map((tag) => (
-                  <ThemedBadge
-                    key={tag}
-                    variant="secondary"
-                    label={tEnums(`lifestyle_tag.${tag}`)}
-                  />
-                ))}
-              </View>
-            </ProfileSectionCard>
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 6).duration(300)}>
-            <ActivitySection />
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(STAGGER_DELAY * 7).duration(300)}>
-            <View style={styles.logoutWrapper}>
-              <ThemedButton
-                variant="destructive"
-                onPress={() => {
-                  queryClient.clear();
-                  authClient.signOut();
-                }}>
-                {tCommon('logout')}
-              </ThemedButton>
-            </View>
-          </Animated.View>
         </View>
+
+        {/* Photos */}
+        {profile.photos.length > 0 && (
+          <GroupedSection>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.photoRow}>
+              {profile.photos.map((photo) => (
+                <Image
+                  key={photo.id}
+                  source={{ uri: getStoragePublicUrl(photo.url, 'profile-photos') }}
+                  style={styles.photoThumb}
+                  contentFit="cover"
+                  cachePolicy="disk"
+                />
+              ))}
+            </ScrollView>
+            <ListSeparator />
+            <ListCell
+              label={tCommon('edit')}
+              onPress={() => router.push('/(app)/(modals)/edit-photos')}
+            />
+          </GroupedSection>
+        )}
+        {profile.photos.length === 0 && (
+          <GroupedSection>
+            <ListCell
+              label={t('title')}
+              value={tCommon('notSet')}
+              onPress={() => router.push('/(app)/(modals)/edit-photos')}
+            />
+          </GroupedSection>
+        )}
+
+        {/* Study & Personal */}
+        <SectionHeader title={t('studyInfo')} />
+        <GroupedSection>
+          <ListCell
+            label={t('gender')}
+            value={profile.gender ? tEnums(`gender.${profile.gender}`) : tCommon('notSet')}
+            onPress={() => router.push('/(app)/(modals)/edit-gender')}
+          />
+          <ListSeparator />
+          <ListCell
+            label={t('birthDate')}
+            value={
+              profile.birthDate
+                ? new Date(profile.birthDate).toLocaleDateString()
+                : tCommon('notSet')
+            }
+            onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
+          />
+          <ListSeparator />
+          <ListCell
+            label={t('studyProgram')}
+            value={profile.studyProgram || tCommon('notSet')}
+            onPress={() => router.push('/(app)/(modals)/edit-study-program')}
+          />
+          <ListSeparator />
+          <ListCell
+            label={t('studyLevel')}
+            value={
+              profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : tCommon('notSet')
+            }
+            onPress={() => router.push('/(app)/(modals)/edit-study-level')}
+          />
+          <ListSeparator />
+          <ListCell
+            label={t('preferredCity')}
+            value={profile.preferredCity || tCommon('notSet')}
+            onPress={() => router.push('/(app)/(modals)/edit-preferred-city')}
+          />
+          <ListSeparator />
+          <ListCell
+            label={t('vereniging')}
+            value={profile.vereniging || tCommon('notSet')}
+            onPress={() => router.push('/(app)/(modals)/edit-vereniging')}
+          />
+        </GroupedSection>
+
+        {/* Bio */}
+        <SectionHeader title={t('bio')} />
+        <GroupedSection>
+          <View style={styles.bioContent}>
+            <ThemedText
+              variant="body"
+              color={profile.bio ? colors.foreground : colors.tertiaryForeground}
+              numberOfLines={4}>
+              {profile.bio || tCommon('notSet')}
+            </ThemedText>
+          </View>
+          <ListSeparator />
+          <ListCell
+            label={tCommon('edit')}
+            onPress={() => router.push('/(app)/(modals)/edit-bio')}
+          />
+        </GroupedSection>
+
+        {/* Languages */}
+        <SectionHeader title={t('languages')} />
+        <GroupedSection>
+          <ListCell
+            label={t('languages')}
+            value={
+              (profile.languages ?? []).length > 0
+                ? (profile.languages ?? []).map((l) => tEnums(`language_enum.${l}`)).join(', ')
+                : tCommon('notSet')
+            }
+            onPress={() => router.push('/(app)/(modals)/edit-languages')}
+          />
+        </GroupedSection>
+
+        {/* Lifestyle */}
+        <SectionHeader title={t('lifestyleTags')} />
+        <GroupedSection>
+          <ListCell
+            label={t('lifestyleTags')}
+            value={
+              (profile.lifestyleTags ?? []).length > 0
+                ? (profile.lifestyleTags ?? [])
+                    .map((tag) => tEnums(`lifestyle_tag.${tag}`))
+                    .join(', ')
+                : tCommon('notSet')
+            }
+            onPress={() => router.push('/(app)/(modals)/edit-lifestyle')}
+          />
+        </GroupedSection>
+
+        {/* Activity */}
+        <ActivitySection />
+
+        {/* Account */}
+        <SectionHeader title={t('account')} />
+        <GroupedSection>
+          <ListCell
+            label={tCommon('logout')}
+            destructive
+            onPress={() => {
+              queryClient.clear();
+              authClient.signOut();
+            }}
+          />
+        </GroupedSection>
       </ScrollView>
     </>
+  );
+}
+
+function SectionHeader({ title }: { title: string }) {
+  const { colors } = useTheme();
+
+  return (
+    <View style={styles.sectionHeader}>
+      <ThemedText
+        variant="footnote"
+        color={colors.tertiaryForeground}
+        style={styles.sectionHeaderText}>
+        {title.toUpperCase()}
+      </ThemedText>
+    </View>
   );
 }
 
@@ -268,47 +293,46 @@ function ActivitySection() {
   const recent = notifications.slice(0, 5);
 
   return (
-    <ProfileSectionCard title={t('activity')}>
-      <View style={styles.activityList}>
-        {recent.map((item) => (
-          <Pressable
-            key={item.id}
-            onPress={() => {
-              if (!item.readAt) markRead.mutate(item.id);
-            }}
-            style={styles.activityRow}>
-            {isIOS ? (
-              <SymbolView
-                name={item.readAt ? 'bell' : 'bell.fill'}
-                size={16}
-                tintColor={item.readAt ? colors.tertiaryForeground : colors.primary}
-              />
-            ) : (
-              <MaterialIcons
-                name="notifications"
-                size={16}
-                color={item.readAt ? colors.tertiaryForeground : colors.primary}
-              />
-            )}
-            <View style={styles.activityText}>
-              <ThemedText
-                variant="subheadline"
-                weight={item.readAt ? '400' : '500'}
-                color={item.readAt ? colors.tertiaryForeground : colors.foreground}>
-                {item.title}
-              </ThemedText>
-              <ThemedText variant="caption1" color={colors.tertiaryForeground} numberOfLines={2}>
-                {item.body}
-              </ThemedText>
-            </View>
-          </Pressable>
+    <>
+      <SectionHeader title={t('activity')} />
+      <GroupedSection>
+        {recent.map((item, index) => (
+          <View key={item.id}>
+            {index > 0 && <ListSeparator />}
+            <ListCell
+              label={item.title}
+              value={item.body}
+              leftContent={
+                isIOS ? (
+                  <SymbolView
+                    name={item.readAt ? 'bell' : 'bell.fill'}
+                    size={16}
+                    tintColor={item.readAt ? colors.tertiaryForeground : colors.primary}
+                  />
+                ) : (
+                  <MaterialIcons
+                    name="notifications"
+                    size={16}
+                    color={item.readAt ? colors.tertiaryForeground : colors.primary}
+                  />
+                )
+              }
+              onPress={() => {
+                if (!item.readAt) markRead.mutate(item.id);
+              }}
+              chevron={false}
+            />
+          </View>
         ))}
-      </View>
-    </ProfileSectionCard>
+      </GroupedSection>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
@@ -333,36 +357,26 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 8,
   },
-  sections: {
-    gap: 16,
-    paddingBottom: 16,
-  },
   photoRow: {
     flexDirection: 'row',
     gap: 12,
+    padding: 16,
   },
   photoThumb: {
     width: 80,
     height: 80,
     borderRadius: radius.md,
   },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  logoutWrapper: {
+  bioContent: {
     paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  activityList: {
-    gap: 8,
+  sectionHeader: {
+    paddingHorizontal: 32,
+    paddingTop: 24,
+    paddingBottom: 8,
   },
-  activityRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-  },
-  activityText: {
-    flex: 1,
+  sectionHeaderText: {
+    letterSpacing: 0.5,
   },
 });

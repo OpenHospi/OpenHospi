@@ -10,7 +10,7 @@ import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedCheckbox } from '@/components/primitives/themed-checkbox';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -129,9 +129,12 @@ export default function InviteApplicantsScreen() {
         <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('selected', { count: selected.size })}
         </ThemedText>
-        <ThemedButton variant="outline" size="sm" onPress={selectAllLiked}>
-          {t('selectAllLiked')}
-        </ThemedButton>
+        <NativeButton
+          label={t('selectAllLiked')}
+          variant="outline"
+          size="sm"
+          onPress={selectAllLiked}
+        />
       </View>
 
       <FlashList
@@ -143,11 +146,11 @@ export default function InviteApplicantsScreen() {
       />
 
       <BlurBottomBar>
-        <ThemedButton
+        <NativeButton
+          label={t('submit', { count: selected.size })}
           onPress={handleInvite}
-          disabled={selected.size === 0 || batchInvite.isPending}>
-          {t('submit', { count: selected.size })}
-        </ThemedButton>
+          disabled={selected.size === 0 || batchInvite.isPending}
+        />
       </BlurBottomBar>
     </View>
   );

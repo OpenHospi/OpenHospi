@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 
@@ -17,7 +17,7 @@ export default function KeyRecoveryScreen() {
       <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.description}>
         {t('e2ee_description')}
       </ThemedText>
-      <ThemedButton onPress={() => router.back()}>{t('use_pin')}</ThemedButton>
+      <NativeButton label={t('use_pin')} onPress={() => router.back()} />
     </View>
   );
 }

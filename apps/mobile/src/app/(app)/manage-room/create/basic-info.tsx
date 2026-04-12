@@ -5,7 +5,7 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AddressSearchInput } from '@/components/forms/address-search';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -162,12 +162,12 @@ export default function BasicInfoScreen() {
       </ScrollView>
 
       <BlurBottomBar>
-        <ThemedButton
+        <NativeButton
+          label={tCommon('next')}
           onPress={handleNext}
           loading={saveBasicInfo.isPending}
-          disabled={!title.trim()}>
-          {tCommon('next')}
-        </ThemedButton>
+          disabled={!title.trim()}
+        />
       </BlurBottomBar>
     </View>
   );

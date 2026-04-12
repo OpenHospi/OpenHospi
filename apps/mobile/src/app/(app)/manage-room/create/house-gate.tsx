@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -127,17 +127,19 @@ export default function HouseGateScreen() {
             />
           </View>
 
-          <ThemedButton
+          <NativeButton
+            label={t('houseSetup.form.submit')}
             onPress={handleCreateHouse}
             loading={createHouse.isPending}
-            disabled={houseName.trim().length < 2}>
-            {t('houseSetup.form.submit')}
-          </ThemedButton>
+            disabled={houseName.trim().length < 2}
+          />
 
           {hasHouses && (
-            <ThemedButton variant="ghost" onPress={() => setShowNewForm(false)}>
-              {tCommon('back')}
-            </ThemedButton>
+            <NativeButton
+              label={tCommon('back')}
+              variant="ghost"
+              onPress={() => setShowNewForm(false)}
+            />
           )}
         </>
       )}

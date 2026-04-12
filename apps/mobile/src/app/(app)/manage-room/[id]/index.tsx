@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -283,50 +283,54 @@ export default function MyRoomDetailScreen() {
       {/* Bottom Status Action */}
       {status === RoomStatus.draft && (
         <BlurBottomBar>
-          <ThemedButton onPress={() => handleStatusChange(RoomStatus.active)}>
-            {t('actions.publish')}
-          </ThemedButton>
+          <NativeButton
+            label={t('actions.publish')}
+            onPress={() => handleStatusChange(RoomStatus.active)}
+          />
         </BlurBottomBar>
       )}
       {status === RoomStatus.active && (
         <BlurBottomBar style={styles.bottomRow}>
           <View style={styles.flex1}>
-            <ThemedButton variant="outline" onPress={() => handleStatusChange(RoomStatus.paused)}>
-              {t('actions.pause')}
-            </ThemedButton>
+            <NativeButton
+              label={t('actions.pause')}
+              variant="outline"
+              onPress={() => handleStatusChange(RoomStatus.paused)}
+            />
           </View>
           <View style={styles.flex1}>
-            <ThemedButton
+            <NativeButton
+              label={t('actions.close')}
               variant="destructive"
               onPress={() =>
                 router.push({
                   pathname: '/(app)/manage-room/[id]/close-room',
                   params: { id },
                 })
-              }>
-              {t('actions.close')}
-            </ThemedButton>
+              }
+            />
           </View>
         </BlurBottomBar>
       )}
       {status === RoomStatus.paused && (
         <BlurBottomBar style={styles.bottomRow}>
           <View style={styles.flex1}>
-            <ThemedButton onPress={() => handleStatusChange(RoomStatus.active)}>
-              {t('actions.activate')}
-            </ThemedButton>
+            <NativeButton
+              label={t('actions.activate')}
+              onPress={() => handleStatusChange(RoomStatus.active)}
+            />
           </View>
           <View style={styles.flex1}>
-            <ThemedButton
+            <NativeButton
+              label={t('actions.close')}
               variant="destructive"
               onPress={() =>
                 router.push({
                   pathname: '/(app)/manage-room/[id]/close-room',
                   params: { id },
                 })
-              }>
-              {t('actions.close')}
-            </ThemedButton>
+              }
+            />
           </View>
         </BlurBottomBar>
       )}

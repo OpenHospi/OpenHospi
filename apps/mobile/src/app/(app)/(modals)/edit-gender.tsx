@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { ChipPicker } from '@/components/forms/chip-picker';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
@@ -57,11 +57,7 @@ export default function EditGenderScreen() {
         )}
       </View>
 
-      <View style={styles.footer}>
-        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
-          {tCommon('save')}
-        </ThemedButton>
-      </View>
+      <View style={styles.footer}></View>
     </View>
   );
 }

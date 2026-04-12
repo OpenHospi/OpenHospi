@@ -17,7 +17,7 @@ import {
   type BottomSheetModal,
 } from '@/components/shared/bottom-sheet';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { useRespondToInvitation } from '@/services/invitations';
 import type { UserInvitation } from '@openhospi/shared/api-types';
@@ -179,88 +179,76 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
         {/* RSVP buttons -- pending */}
         {!isCancelled && invitation.status === InvitationStatus.pending && (
           <View style={styles.buttonRow}>
-            <ThemedButton
+            <NativeButton
+              label={t('attend')}
               size="sm"
               onPress={() => handleRsvp(InvitationStatus.attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              {respondMutation.isPending ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Check size={14} color="white" />
-              )}
-              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
-                {t('attend')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton
+              loading={respondMutation.isPending}
+              style={styles.rsvpButton}
+              systemImage="checkmark"
+              materialIcon="check"
+            />
+            <NativeButton
+              label={t('maybe')}
               size="sm"
               variant="outline"
               onPress={() => handleRsvp(InvitationStatus.maybe)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              <HelpCircle size={14} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('maybe')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton
+              style={styles.rsvpButton}
+              systemImage="questionmark"
+              materialIcon="help-outline"
+            />
+            <NativeButton
+              label={t('decline')}
               size="sm"
               variant="outline"
               onPress={() => handleRsvp(InvitationStatus.not_attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              <X size={14} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('decline')}
-              </ThemedText>
-            </ThemedButton>
+              style={styles.rsvpButton}
+              systemImage="xmark"
+              materialIcon="close"
+            />
           </View>
         )}
 
         {/* Change response -- attending: can decline */}
         {!isCancelled && invitation.status === InvitationStatus.attending && (
-          <ThemedButton
+          <NativeButton
+            label={t('decline')}
             size="sm"
             variant="ghost"
             onPress={() => handleRsvp(InvitationStatus.not_attending)}
             disabled={respondMutation.isPending}
-            style={[styles.rsvpButton, { alignSelf: 'flex-start' }]}>
-            <X size={14} color={colors.foreground} />
-            <ThemedText variant="subheadline" weight="600">
-              {t('decline')}
-            </ThemedText>
-          </ThemedButton>
+            style={[styles.rsvpButton, { alignSelf: 'flex-start' }]}
+            systemImage="xmark"
+            materialIcon="close"
+          />
         )}
 
         {/* Change response -- maybe: can attend or decline */}
         {!isCancelled && invitation.status === InvitationStatus.maybe && (
           <View style={styles.buttonRow}>
-            <ThemedButton
+            <NativeButton
+              label={t('attend')}
               size="sm"
               onPress={() => handleRsvp(InvitationStatus.attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              {respondMutation.isPending ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Check size={14} color="white" />
-              )}
-              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
-                {t('attend')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton
+              loading={respondMutation.isPending}
+              style={styles.rsvpButton}
+              systemImage="checkmark"
+              materialIcon="check"
+            />
+            <NativeButton
+              label={t('decline')}
               size="sm"
               variant="ghost"
               onPress={() => handleRsvp(InvitationStatus.not_attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              <X size={14} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('decline')}
-              </ThemedText>
-            </ThemedButton>
+              style={styles.rsvpButton}
+              systemImage="xmark"
+              materialIcon="close"
+            />
           </View>
         )}
       </View>
@@ -272,26 +260,21 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
         onDismiss={() => setDeclineReason('')}
         footer={
           <View style={styles.buttonRow}>
-            <ThemedButton
+            <NativeButton
+              label={t('confirmDecline')}
               variant="destructive"
               onPress={handleDeclineSubmit}
               disabled={respondMutation.isPending || !declineReason.trim()}
-              style={{ flex: 1 }}>
-              {respondMutation.isPending ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <ThemedText variant="subheadline" weight="600" color={colors.destructiveForeground}>
-                  {t('confirmDecline')}
-                </ThemedText>
-              )}
-            </ThemedButton>
-            <ThemedButton
+              loading={respondMutation.isPending}
+              style={{ flex: 1 }}
+            />
+            <NativeButton
+              label={tCommon('cancel')}
               variant="ghost"
               onPress={() => bottomSheetRef.current?.dismiss()}
               disabled={respondMutation.isPending}
-              style={{ flex: 1 }}>
-              {tCommon('cancel')}
-            </ThemedButton>
+              style={{ flex: 1 }}
+            />
           </View>
         }>
         <View style={styles.sheetContent}>

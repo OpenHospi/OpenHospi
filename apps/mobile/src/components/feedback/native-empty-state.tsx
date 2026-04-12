@@ -6,7 +6,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { ThemedText } from '@/components/native/text';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { isIOS } from '@/lib/platform';
 
 interface NativeEmptyStateProps {
@@ -78,13 +78,7 @@ function NativeEmptyState({
       </View>
 
       {actionLabel && onAction && (
-        <ThemedButton
-          variant="primary"
-          size="md"
-          onPress={onAction}
-          style={{ marginTop: spacing.sm }}>
-          {actionLabel}
-        </ThemedButton>
+        <NativeButton label={actionLabel} onPress={onAction} style={{ marginTop: spacing.sm }} />
       )}
     </Animated.View>
   );

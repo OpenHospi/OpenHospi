@@ -4,7 +4,7 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -179,12 +179,12 @@ export default function ReviewScreen() {
       </ScrollView>
 
       <BlurBottomBar>
-        <ThemedButton
+        <NativeButton
+          label={t('actions.publish')}
           onPress={handlePublish}
           loading={publishRoom.isPending}
-          disabled={!canPublish}>
-          {t('actions.publish')}
-        </ThemedButton>
+          disabled={!canPublish}
+        />
       </BlurBottomBar>
     </View>
   );

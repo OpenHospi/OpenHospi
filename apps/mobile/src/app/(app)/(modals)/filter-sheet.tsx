@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import { CitySearchInput } from '@/components/forms/city-search';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
@@ -274,10 +274,8 @@ export default function FilterSheetScreen() {
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
         <View style={styles.footerButtons}>
-          <ThemedButton onPress={handleApply}>{tCommon('apply')}</ThemedButton>
-          <ThemedButton variant="ghost" onPress={handleClear}>
-            {tFilters('clearFilters')}
-          </ThemedButton>
+          <NativeButton label={tCommon('apply')} onPress={handleApply} />
+          <NativeButton label={tFilters('clearFilters')} variant="ghost" onPress={handleClear} />
         </View>
       </View>
     </View>

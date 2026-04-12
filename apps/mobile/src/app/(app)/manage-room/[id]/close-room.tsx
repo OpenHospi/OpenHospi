@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedAvatar } from '@/components/native/avatar';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
@@ -145,13 +145,17 @@ export default function CloseRoomScreen() {
 
       <BlurBottomBar>
         {selectedId && (
-          <ThemedButton variant="destructive" onPress={() => handleClose(true)}>
-            {t('closeWithChoice')}
-          </ThemedButton>
+          <NativeButton
+            label={t('closeWithChoice')}
+            variant="destructive"
+            onPress={() => handleClose(true)}
+          />
         )}
-        <ThemedButton variant="outline" onPress={() => handleClose(false)}>
-          {t('closeWithoutChoice')}
-        </ThemedButton>
+        <NativeButton
+          label={t('closeWithoutChoice')}
+          variant="outline"
+          onPress={() => handleClose(false)}
+        />
       </BlurBottomBar>
     </View>
   );

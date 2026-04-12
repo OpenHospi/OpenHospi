@@ -2,13 +2,13 @@ import * as Clipboard from 'expo-clipboard';
 import { useLocalSearchParams } from 'expo-router';
 import { Copy, RefreshCw } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedSkeleton } from '@/components/native/skeleton';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -98,9 +98,9 @@ export default function ShareLinkScreen() {
                 <ThemedText variant="caption1" numberOfLines={1} style={styles.flex1}>
                   {shareUrl}
                 </ThemedText>
-                <ThemedButton variant="ghost" size="icon" onPress={handleCopy}>
+                <Pressable onPress={handleCopy} hitSlop={8}>
                   <Copy size={16} color={colors.foreground} />
-                </ThemedButton>
+                </Pressable>
               </View>
             ) : (
               <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
@@ -150,14 +150,14 @@ export default function ShareLinkScreen() {
         </GroupedSection>
 
         {/* Regenerate */}
-        <ThemedButton variant="outline" onPress={handleRegenerate} loading={regenerate.isPending}>
-          <View style={styles.regenerateContent}>
-            <RefreshCw size={16} color={colors.foreground} />
-            <ThemedText variant="subheadline" weight="600">
-              {t('regenerate')}
-            </ThemedText>
-          </View>
-        </ThemedButton>
+        <NativeButton
+          label={t('regenerate')}
+          variant="outline"
+          onPress={handleRegenerate}
+          loading={regenerate.isPending}
+          systemImage="arrow.clockwise"
+          materialIcon="refresh"
+        />
       </ScrollView>
     </View>
   );

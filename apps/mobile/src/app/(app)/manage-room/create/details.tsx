@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/primitives/themed-input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -285,9 +285,11 @@ export default function DetailsScreen() {
       </ScrollView>
 
       <BlurBottomBar>
-        <ThemedButton onPress={handleNext} loading={saveDetails.isPending}>
-          {tCommon('next')}
-        </ThemedButton>
+        <NativeButton
+          label={tCommon('next')}
+          onPress={handleNext}
+          loading={saveDetails.isPending}
+        />
       </BlurBottomBar>
 
       {/* Picker sheets */}

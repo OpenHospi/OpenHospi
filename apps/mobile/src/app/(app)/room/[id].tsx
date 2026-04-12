@@ -11,7 +11,7 @@ import { isIOS } from '@/lib/platform';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { ThemedBadge } from '@/components/native/badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListSeparator } from '@/components/layout/list-separator';
@@ -105,9 +105,12 @@ export default function RoomDetailScreen() {
         <ThemedText variant="body" color={colors.tertiaryForeground}>
           {t('notFound')}
         </ThemedText>
-        <ThemedButton variant="link" style={{ marginTop: 16 }} onPress={() => router.back()}>
-          {t('backToDiscover')}
-        </ThemedButton>
+        <NativeButton
+          label={t('backToDiscover')}
+          variant="link"
+          style={{ marginTop: 16 }}
+          onPress={() => router.back()}
+        />
       </SafeAreaView>
     );
   }
@@ -351,30 +354,28 @@ export default function RoomDetailScreen() {
           },
         ]}>
         {application ? (
-          <ThemedButton
+          <NativeButton
+            label={t('viewApplication')}
             variant="outline"
-            size="lg"
             style={styles.bottomButton}
             onPress={() =>
               router.push({
                 pathname: '/(app)/application/[id]',
                 params: { id: application.id },
               })
-            }>
-            {t('viewApplication')}
-          </ThemedButton>
+            }
+          />
         ) : (
-          <ThemedButton
-            size="lg"
+          <NativeButton
+            label={t('apply')}
             style={styles.bottomButton}
             onPress={() =>
               router.push({
                 pathname: '/(app)/(modals)/apply-sheet',
                 params: { roomId: id },
               })
-            }>
-            {t('apply')}
-          </ThemedButton>
+            }
+          />
         )}
       </View>
     </SafeAreaView>

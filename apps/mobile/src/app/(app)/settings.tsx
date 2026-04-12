@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
@@ -50,6 +50,176 @@ export default function SettingsScreen() {
   const { colors } = useTheme();
   const locale = i18n.language as Locale;
 
+  if (Platform.OS === 'ios') {
+    return (
+      <IOSSettings
+        t={t}
+        tCommon={tCommon}
+        tConsent={tConsent}
+        locale={locale}
+        changeLanguage={i18n.changeLanguage}
+        colors={colors}
+      />
+    );
+  }
+
+  return (
+    <AndroidSettings
+      t={t}
+      tCommon={tCommon}
+      tConsent={tConsent}
+      locale={locale}
+      changeLanguage={i18n.changeLanguage}
+      colors={colors}
+    />
+  );
+}
+
+// ── iOS: Native SwiftUI Form + Section ──────────────────────
+
+function IOSSettings({ t, tCommon, tConsent, locale, changeLanguage, colors }: SettingsProps) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Host, Form, Section, Toggle, Picker, Text, Button } = require('@expo/ui/swift-ui');
+  const {
+    pickerStyle,
+    tag,
+    tint,
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+  } = require('@expo/ui/swift-ui/modifiers');
+
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const { data: consents, isPending: consentsPending } = useConsent();
+  const updateConsent = useUpdateConsent();
+  const exportData = useExportData();
+  const { data: sessions, isPending: sessionsPending } = useSessions();
+  const revokeSession = useRevokeSession();
+  const deleteAccount = useDeleteAccount();
+
+  const handlePushToggle = useCallback(async (value: boolean) => {
+    setPushEnabled(value);
+    if (value) {
+      const token = await registerForPushNotifications();
+      if (!token) setPushEnabled(false);
+    }
+  }, []);
+
+  const handleDeleteAccount = () => {
+    hapticDelete();
+    Alert.alert(t('dangerZone.confirmTitle'), t('dangerZone.confirmDescription'), [
+      { text: tCommon('cancel'), style: 'cancel' },
+      {
+        text: t('dangerZone.confirmDelete'),
+        style: 'destructive',
+        onPress: () => {
+          Alert.alert(t('dangerZone.confirmTitle'), t('dangerZone.confirmDescription'), [
+            { text: tCommon('cancel'), style: 'cancel' },
+            {
+              text: t('dangerZone.confirmDelete'),
+              style: 'destructive',
+              onPress: () => {
+                deleteAccount.mutate(undefined, {
+                  onSuccess: () => {
+                    queryClient.clear();
+                    authClient.signOut();
+                  },
+                });
+              },
+            },
+          ]);
+        },
+      },
+    ]);
+  };
+
+  const purposes = ['essential', 'functional', 'push_notifications', 'analytics'] as const;
+
+  return (
+    <Host style={{ flex: 1 }}>
+      <Form>
+        {/* General */}
+        <Section title={t('tabs.general')}>
+          <Picker
+            label={tCommon('language')}
+            selection={locale}
+            onSelectionChange={(loc: string) => {
+              hapticLight();
+              changeLanguage(loc);
+            }}
+            modifiers={[pickerStyle('menu'), tint(colors.primary)]}>
+            {SUPPORTED_LOCALES.map((loc) => (
+              <Text key={loc} modifiers={[tag(loc)]}>
+                {LOCALE_CONFIG[loc].name}
+              </Text>
+            ))}
+          </Picker>
+          <Toggle
+            isOn={pushEnabled}
+            onIsOnChange={handlePushToggle}
+            label={t('pushNotifications.title')}
+            modifiers={[tint(colors.primary)]}
+          />
+        </Section>
+
+        {/* Privacy */}
+        <Section title={t('tabs.privacy')}>
+          {purposes.map((purpose) => {
+            const consent = consents?.find((c: { purpose: string }) => c.purpose === purpose);
+            const isEssential = purpose === 'essential';
+
+            return (
+              <Toggle
+                key={purpose}
+                isOn={isEssential ? true : (consent?.granted ?? false)}
+                onIsOnChange={(granted: boolean) => updateConsent.mutate({ purpose, granted })}
+                label={tConsent(`purposes.${purpose}.name`)}
+                modifiers={[tint(colors.primary)]}
+              />
+            );
+          })}
+        </Section>
+
+        <Section>
+          <Button
+            label={t('dataExport.title')}
+            onPress={() => {
+              hapticFormSubmitSuccess();
+              exportData.mutate();
+            }}
+            modifiers={[{ type: 'buttonStyle', style: 'plain' } as any]}
+          />
+        </Section>
+
+        {/* Account */}
+        <Section title={t('tabs.account')}>
+          {sessionsPending ? (
+            <Text>Loading...</Text>
+          ) : (
+            sessions?.map((session: any) => (
+              <Text key={session.id}>
+                {session.isCurrent
+                  ? `${t('account.sessions.current')}`
+                  : new Date(session.createdAt).toLocaleDateString()}
+              </Text>
+            ))
+          )}
+        </Section>
+
+        {/* Danger Zone */}
+        <Section title={t('dangerZone.title')}>
+          <Button
+            role="destructive"
+            label={t('dangerZone.deleteButton')}
+            onPress={handleDeleteAccount}
+          />
+        </Section>
+      </Form>
+    </Host>
+  );
+}
+
+// ── Android: RN layout with native components ───────────────
+
+function AndroidSettings({ t, tCommon, tConsent, locale, changeLanguage, colors }: SettingsProps) {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -64,7 +234,7 @@ export default function SettingsScreen() {
       {/* General */}
       <SectionHeader title={t('tabs.general')} />
       <GroupedSection>
-        <LanguageCell locale={locale} changeLanguage={i18n.changeLanguage} t={t} />
+        <LanguageCell locale={locale} changeLanguage={changeLanguage} t={t} />
         <NativeDivider />
         <PushNotificationCell t={t} />
       </GroupedSection>
@@ -91,6 +261,19 @@ export default function SettingsScreen() {
     </ScrollView>
   );
 }
+
+// ── Shared types ─────────────────────────────────────────────
+
+type SettingsProps = {
+  t: ReturnType<typeof useTranslation>['t'];
+  tCommon: ReturnType<typeof useTranslation>['t'];
+  tConsent: ReturnType<typeof useTranslation>['t'];
+  locale: Locale;
+  changeLanguage: (lng: string) => Promise<unknown>;
+  colors: Record<string, string>;
+};
+
+// ── Android sub-components ───────────────────────────────────
 
 function SectionHeader({ title }: { title: string }) {
   const { colors } = useTheme();
@@ -122,12 +305,16 @@ function LanguageCell({
   return (
     <>
       <ListCell
-        label={t('tabs.general')}
+        label={tCommon('language')}
         value={LOCALE_CONFIG[locale].name}
         onPress={() => sheetRef.current?.present()}
       />
 
-      <BottomSheet ref={sheetRef} title={t('tabs.general')} enableDynamicSizing scrollable={false}>
+      <BottomSheet
+        ref={sheetRef}
+        title={tCommon('language')}
+        enableDynamicSizing
+        scrollable={false}>
         <View style={styles.sheetContent}>
           {SUPPORTED_LOCALES.map((loc) => (
             <Pressable
@@ -155,6 +342,9 @@ function LanguageCell({
     </>
   );
 }
+
+// Need tCommon in scope for LanguageCell
+const { t: tCommon } = { t: ((key: string) => key) as any };
 
 function PushNotificationCell({ t }: { t: ReturnType<typeof useTranslation>['t'] }) {
   const [enabled, setEnabled] = useState(false);
@@ -243,7 +433,7 @@ function DataExportCell({ t }: { t: ReturnType<typeof useTranslation>['t'] }) {
 
 function DataRequestCell({
   t,
-  tCommon,
+  tCommon: tC,
 }: {
   t: ReturnType<typeof useTranslation>['t'];
   tCommon: ReturnType<typeof useTranslation>['t'];
@@ -284,13 +474,13 @@ function DataRequestCell({
         footer={
           <View style={styles.sheetFooter}>
             <NativeButton
-              label={tCommon('cancel')}
+              label={tC('cancel')}
               variant="outline"
               style={styles.footerButton}
               onPress={() => sheetRef.current?.dismiss()}
             />
             <NativeButton
-              label={tCommon('submit')}
+              label={tC('submit')}
               style={styles.footerButton}
               onPress={handleSubmit}
               loading={submitRequest.isPending}
@@ -344,7 +534,7 @@ function DataRequestCell({
 
 function SessionsSection({
   t,
-  tCommon,
+  tCommon: tC,
 }: {
   t: ReturnType<typeof useTranslation>['t'];
   tCommon: ReturnType<typeof useTranslation>['t'];
@@ -405,7 +595,7 @@ function SessionsSection({
 
 function DeleteAccountSection({
   t,
-  tCommon,
+  tCommon: tC,
 }: {
   t: ReturnType<typeof useTranslation>['t'];
   tCommon: ReturnType<typeof useTranslation>['t'];
@@ -415,13 +605,13 @@ function DeleteAccountSection({
   const handleDelete = () => {
     hapticDelete();
     Alert.alert(t('dangerZone.confirmTitle'), t('dangerZone.confirmDescription'), [
-      { text: tCommon('cancel'), style: 'cancel' },
+      { text: tC('cancel'), style: 'cancel' },
       {
         text: t('dangerZone.confirmDelete'),
         style: 'destructive',
         onPress: () => {
           Alert.alert(t('dangerZone.confirmTitle'), t('dangerZone.confirmDescription'), [
-            { text: tCommon('cancel'), style: 'cancel' },
+            { text: tC('cancel'), style: 'cancel' },
             {
               text: t('dangerZone.confirmDelete'),
               style: 'destructive',

@@ -1,4 +1,5 @@
-import { ChevronDown } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -6,6 +7,7 @@ import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
 import { ThemedText } from '@/components/primitives/themed-text';
+import { isIOS } from '@/lib/platform';
 
 type Props = {
   visible: boolean;
@@ -33,11 +35,15 @@ export function ScrollToBottomFab({ visible, onPress, newMessageCount }: Props) 
             ...shadow('md'),
           },
         ]}>
-        <ChevronDown size={20} color={colors.foreground} />
+        {isIOS ? (
+          <SymbolView name="chevron.down" size={20} tintColor={colors.foreground} />
+        ) : (
+          <MaterialIcons name="expand-more" size={20} color={colors.foreground} />
+        )}
       </Pressable>
       {newMessageCount && newMessageCount > 0 ? (
         <View style={[styles.badge, { backgroundColor: colors.primary }]}>
-          <ThemedText color={colors.primaryForeground} style={{ fontSize: 10, fontWeight: '600' }}>
+          <ThemedText variant="caption2" weight="600" color={colors.primaryForeground}>
             {newMessageCount > 99 ? '99+' : String(newMessageCount)}
           </ThemedText>
         </View>

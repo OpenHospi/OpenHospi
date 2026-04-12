@@ -9,7 +9,8 @@ import {
   UtilitiesIncluded,
 } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Euro } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +28,7 @@ import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 import { useMyRoom, useUpdateRoom } from '@/services/my-rooms';
 
 function SkeletonEditRoom() {
@@ -288,7 +290,11 @@ export default function EditRoomScreen() {
             {t('wizard.sections.pricing')}
           </ThemedText>
           <View style={styles.iconInputRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            {isIOS ? (
+              <SymbolView name="eurosign" size={16} tintColor={colors.tertiaryForeground} />
+            ) : (
+              <MaterialIcons name="euro" size={16} color={colors.tertiaryForeground} />
+            )}
             <View style={styles.flex1}>
               <ThemedInput
                 value={rentPrice}
@@ -299,7 +305,11 @@ export default function EditRoomScreen() {
             </View>
           </View>
           <View style={styles.iconInputRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            {isIOS ? (
+              <SymbolView name="eurosign" size={16} tintColor={colors.tertiaryForeground} />
+            ) : (
+              <MaterialIcons name="euro" size={16} color={colors.tertiaryForeground} />
+            )}
             <View style={styles.flex1}>
               <ThemedInput
                 value={deposit}
@@ -310,7 +320,11 @@ export default function EditRoomScreen() {
             </View>
           </View>
           <View style={styles.iconInputRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            {isIOS ? (
+              <SymbolView name="eurosign" size={16} tintColor={colors.tertiaryForeground} />
+            ) : (
+              <MaterialIcons name="euro" size={16} color={colors.tertiaryForeground} />
+            )}
             <View style={styles.flex1}>
               <ThemedInput
                 value={serviceCosts}
@@ -340,7 +354,11 @@ export default function EditRoomScreen() {
 
         {utilitiesIncluded === UtilitiesIncluded.estimated && (
           <View style={styles.iconInputRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            {isIOS ? (
+              <SymbolView name="eurosign" size={16} tintColor={colors.tertiaryForeground} />
+            ) : (
+              <MaterialIcons name="euro" size={16} color={colors.tertiaryForeground} />
+            )}
             <View style={styles.flex1}>
               <ThemedInput
                 value={estimatedUtilitiesCosts}

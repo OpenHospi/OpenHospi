@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/primitives/themed-text';
+import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -78,6 +79,7 @@ function ZoomableImage({ uri }: { uri: string }) {
 }
 
 export function PhotoCarousel({ photos, bucket }: Props) {
+  const { colors } = useTheme();
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (photos.length === 0) return null;
@@ -115,7 +117,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
           </View>
 
           <View style={styles.counterBadge}>
-            <ThemedText color="#ffffff" style={styles.counterText}>
+            <ThemedText color={colors.primaryForeground} style={styles.counterText}>
               {activeIndex + 1}/{photos.length}
             </ThemedText>
           </View>

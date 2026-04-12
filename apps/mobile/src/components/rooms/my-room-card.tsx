@@ -1,6 +1,8 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Euro, Home, Pause, Play, Trash2, Users } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Pause, Play, Trash2 } from 'lucide-react-native';
 import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +18,7 @@ import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
 import { LIST_ITEM_ENTERING } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import { isAndroid } from '@/lib/platform';
+import { isAndroid, isIOS } from '@/lib/platform';
 import type { MyRoomSummary } from '@openhospi/shared/api-types';
 
 const STATUS_PILL_COLOR: Record<
@@ -76,7 +78,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
   if (room.status === RoomStatus.draft && onDelete) {
     swipeActions.push({
       icon: Trash2,
-      color: '#fff',
+      color: colors.destructiveForeground,
       backgroundColor: colors.destructive,
       onPress: handleDelete,
     });
@@ -84,15 +86,15 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
   if (room.status === RoomStatus.active && onStatusChange) {
     swipeActions.push({
       icon: Pause,
-      color: '#fff',
-      backgroundColor: '#f59e0b',
+      color: colors.primaryForeground,
+      backgroundColor: colors.warning,
       onPress: handleTogglePause,
     });
   }
   if (room.status === RoomStatus.paused && onStatusChange) {
     swipeActions.push({
       icon: Play,
-      color: '#fff',
+      color: colors.primaryForeground,
       backgroundColor: colors.success,
       onPress: handleTogglePause,
     });
@@ -134,7 +136,11 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
                   borderTopRightRadius: radius.lg,
                 },
               ]}>
-              <Home size={32} color={colors.tertiaryForeground} />
+              {isIOS ? (
+                <SymbolView name="house" size={32} tintColor={colors.tertiaryForeground} />
+              ) : (
+                <MaterialIcons name="home" size={32} color={colors.tertiaryForeground} />
+              )}
             </View>
           )}
 
@@ -155,14 +161,22 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
 
             <View style={styles.priceRow}>
               <View style={styles.priceLeft}>
-                <Euro size={18} color={colors.primary} />
+                {isIOS ? (
+                  <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
+                ) : (
+                  <MaterialIcons name="euro" size={18} color={colors.primary} />
+                )}
                 <ThemedText variant="title3" color={colors.primary}>
                   {room.totalCost}
                   {tCommon('perMonth')}
                 </ThemedText>
               </View>
               <View style={styles.applicantCount}>
-                <Users size={14} color={colors.tertiaryForeground} />
+                {isIOS ? (
+                  <SymbolView name="person.2" size={14} tintColor={colors.tertiaryForeground} />
+                ) : (
+                  <MaterialIcons name="people" size={14} color={colors.tertiaryForeground} />
+                )}
                 <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                   {room.applicantCount}
                 </ThemedText>

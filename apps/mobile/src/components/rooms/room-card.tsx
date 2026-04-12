@@ -1,6 +1,8 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Dot, Euro, Home } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Dot } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +14,7 @@ import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
 import { LIST_ITEM_ENTERING } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import { isAndroid } from '@/lib/platform';
+import { isAndroid, isIOS } from '@/lib/platform';
 import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
 type Props = {
@@ -65,7 +67,11 @@ export function RoomCard({ room }: Props) {
                   borderTopRightRadius: radius.lg,
                 },
               ]}>
-              <Home size={32} color={colors.tertiaryForeground} />
+              {isIOS ? (
+                <SymbolView name="house" size={32} tintColor={colors.tertiaryForeground} />
+              ) : (
+                <MaterialIcons name="home" size={32} color={colors.tertiaryForeground} />
+              )}
             </View>
           )}
 
@@ -98,7 +104,11 @@ export function RoomCard({ room }: Props) {
 
             <View style={styles.priceRow}>
               <View style={styles.priceLeft}>
-                <Euro size={18} color={colors.primary} />
+                {isIOS ? (
+                  <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
+                ) : (
+                  <MaterialIcons name="euro" size={18} color={colors.primary} />
+                )}
                 <ThemedText variant="title3" color={colors.primary}>
                   {room.totalCost}
                   {tCommon('perMonth')}

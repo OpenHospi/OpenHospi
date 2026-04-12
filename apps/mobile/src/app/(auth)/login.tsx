@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { APP_NAME } from '@openhospi/shared/constants';
 import { SymbolView } from 'expo-symbols';
-import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -83,8 +82,6 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
-
       <View style={styles.center}>
         <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
           <View style={styles.logoRow}>

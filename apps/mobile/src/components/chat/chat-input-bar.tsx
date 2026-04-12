@@ -1,4 +1,6 @@
-import { Paperclip, Send } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Paperclip } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput } from 'react-native';
 import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-reanimated';
 
@@ -6,6 +8,7 @@ import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 
 type Props = {
   value: string;
@@ -16,7 +19,7 @@ type Props = {
 };
 
 export function ChatInputBar({ value, onChangeText, onSend, isSending, placeholder }: Props) {
-  const { colors } = useTheme();
+  const { colors, typography } = useTheme();
   const keyboard = useAnimatedKeyboard();
   const trimmed = value.trim();
 
@@ -47,7 +50,14 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
         placeholder={placeholder}
         placeholderTextColor={colors.tertiaryForeground}
         multiline
-        style={[styles.input, { backgroundColor: colors.muted, color: colors.foreground }]}
+        style={[
+          styles.input,
+          {
+            backgroundColor: colors.muted,
+            color: colors.foreground,
+            fontSize: typography.subheadline.fontSize,
+          },
+        ]}
         returnKeyType="send"
         onSubmitEditing={handleSend}
         blurOnSubmit={false}
@@ -62,8 +72,10 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
         ]}>
         {isSending ? (
           <ActivityIndicator size="small" color={colors.primaryForeground} />
+        ) : isIOS ? (
+          <SymbolView name="paperplane.fill" size={18} tintColor={colors.primaryForeground} />
         ) : (
-          <Send size={18} color={colors.primaryForeground} />
+          <MaterialIcons name="send" size={18} color={colors.primaryForeground} />
         )}
       </AnimatedPressable>
     </Animated.View>
@@ -93,7 +105,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    fontSize: 14,
   },
   sendButton: {
     width: 40,

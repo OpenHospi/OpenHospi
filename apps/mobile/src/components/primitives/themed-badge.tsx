@@ -81,9 +81,9 @@ function getBadgeText(variant: BadgeVariant, colors: any): string {
     case 'destructive':
       return colors.destructiveForeground;
     case 'success':
-      return '#ffffff';
+      return colors.primaryForeground;
     case 'warning':
-      return '#ffffff';
+      return colors.primaryForeground;
   }
 }
 

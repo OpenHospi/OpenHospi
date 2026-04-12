@@ -1,5 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
-import { GripVertical } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -21,6 +22,7 @@ import { ListSeparator } from '@/components/layout/list-separator';
 import { useTheme } from '@/design';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { hapticLight, hapticMedium } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useSubmitVotes, useVotableApplicants, useVoteBoard } from '@/services/my-rooms';
 import type { VotableApplicant } from '@openhospi/shared/api-types';
@@ -106,7 +108,15 @@ function DraggableItem({
         </ThemedText>
         <GestureDetector gesture={pan}>
           <Animated.View style={styles.dragHandle}>
-            <GripVertical size={20} color={colors.tertiaryForeground} />
+            {isIOS ? (
+              <SymbolView
+                name="line.3.horizontal"
+                size={20}
+                tintColor={colors.tertiaryForeground}
+              />
+            ) : (
+              <MaterialIcons name="drag-indicator" size={20} color={colors.tertiaryForeground} />
+            )}
           </Animated.View>
         </GestureDetector>
       </View>

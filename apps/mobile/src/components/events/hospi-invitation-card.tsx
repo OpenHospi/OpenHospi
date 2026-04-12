@@ -1,6 +1,8 @@
 import { MAX_DECLINE_REASON_LENGTH } from '@openhospi/shared/constants';
 import { InvitationStatus } from '@openhospi/shared/enums';
-import { Calendar, Check, Clock, HelpCircle, MapPin, X } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Check, HelpCircle, X } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { hapticSuccess, hapticError } from '@/lib/haptics';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { isIOS } from '@/lib/platform';
 
 import {
   AppBottomSheetModal as BottomSheet,
@@ -28,7 +31,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { colors, typography } = useTheme();
 
   const respondMutation = useRespondToInvitation();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -132,13 +135,21 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
             {invitation.eventTitle}
           </ThemedText>
           <View style={styles.detailRow}>
-            <Calendar size={14} color={colors.mutedForeground} />
+            {isIOS ? (
+              <SymbolView name="calendar" size={14} tintColor={colors.mutedForeground} />
+            ) : (
+              <MaterialIcons name="calendar-today" size={14} color={colors.mutedForeground} />
+            )}
             <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {new Date(invitation.eventDate + 'T00:00:00').toLocaleDateString()}
             </ThemedText>
           </View>
           <View style={styles.detailRow}>
-            <Clock size={14} color={colors.mutedForeground} />
+            {isIOS ? (
+              <SymbolView name="clock" size={14} tintColor={colors.mutedForeground} />
+            ) : (
+              <MaterialIcons name="schedule" size={14} color={colors.mutedForeground} />
+            )}
             <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {invitation.timeStart.slice(0, 5)}
               {invitation.timeEnd ? ` – ${invitation.timeEnd.slice(0, 5)}` : ''}
@@ -146,7 +157,11 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
           </View>
           {invitation.location && (
             <View style={styles.detailRow}>
-              <MapPin size={14} color={colors.mutedForeground} />
+              {isIOS ? (
+                <SymbolView name="mappin" size={14} tintColor={colors.mutedForeground} />
+              ) : (
+                <MaterialIcons name="place" size={14} color={colors.mutedForeground} />
+              )}
               <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                 {invitation.location}
               </ThemedText>
@@ -156,7 +171,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
 
         {/* Deadline warning */}
         {deadlineText && (
-          <ThemedText variant="subheadline" weight="500" style={{ color: '#ea580c' }}>
+          <ThemedText variant="subheadline" weight="500" style={{ color: colors.warning }}>
             {deadlineText}
           </ThemedText>
         )}
@@ -298,6 +313,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
                 borderColor: colors.input,
                 backgroundColor: colors.background,
                 color: colors.foreground,
+                fontSize: typography.subheadline.fontSize,
               },
             ]}
           />
@@ -347,6 +363,5 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radius.md,
-    fontSize: 14,
   },
 });

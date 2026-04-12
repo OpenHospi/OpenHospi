@@ -1,4 +1,6 @@
-import { Archive, Lock, Shield } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Archive } from 'lucide-react-native';
 import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
@@ -8,6 +10,7 @@ import { NotificationBadge } from '@/components/shared/notification-badge';
 import { SwipeableRow } from '@/components/shared/swipeable-row';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { isIOS } from '@/lib/platform';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
 type Props = {
@@ -61,8 +64,8 @@ export function ConversationListItem({
     ? [
         {
           icon: Archive,
-          color: '#fff',
-          backgroundColor: '#6b7280',
+          color: colors.primaryForeground,
+          backgroundColor: colors.mutedForeground,
           onPress: onArchive,
         },
       ]
@@ -86,7 +89,11 @@ export function ConversationListItem({
         <View>
           <ThemedAvatar source={avatarUri} fallback={roomTitle} size={48} />
           <View style={[styles.lockBadge, { backgroundColor: colors.background }]}>
-            <Lock size={10} color={colors.primary} />
+            {isIOS ? (
+              <SymbolView name="lock" size={10} tintColor={colors.primary} />
+            ) : (
+              <MaterialIcons name="lock" size={10} color={colors.primary} />
+            )}
           </View>
         </View>
 
@@ -105,7 +112,11 @@ export function ConversationListItem({
           </View>
           <View style={styles.bottomRow}>
             <View style={styles.memberRow}>
-              <Shield size={10} color={colors.primary} />
+              {isIOS ? (
+                <SymbolView name="shield" size={10} tintColor={colors.primary} />
+              ) : (
+                <MaterialIcons name="shield" size={10} color={colors.primary} />
+              )}
               <ThemedText
                 variant="footnote"
                 color={colors.tertiaryForeground}

@@ -1,10 +1,13 @@
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { getInstitution } from '@openhospi/inacademia';
-import { Bell, Settings } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useMemo } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { isIOS } from '@/lib/platform';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
@@ -88,7 +91,11 @@ export default function ProfileScreen() {
           headerTitle: t('title'),
           headerRight: () => (
             <Pressable onPress={() => router.push('/(app)/settings')} hitSlop={8}>
-              <Settings size={22} color={colors.tertiaryForeground} />
+              {isIOS ? (
+                <SymbolView name="gearshape" size={22} tintColor={colors.tertiaryForeground} />
+              ) : (
+                <MaterialIcons name="settings" size={22} color={colors.tertiaryForeground} />
+              )}
             </Pressable>
           ),
         }}
@@ -270,7 +277,19 @@ function ActivitySection() {
               if (!item.readAt) markRead.mutate(item.id);
             }}
             style={styles.activityRow}>
-            <Bell size={16} color={item.readAt ? colors.tertiaryForeground : colors.primary} />
+            {isIOS ? (
+              <SymbolView
+                name={item.readAt ? 'bell' : 'bell.fill'}
+                size={16}
+                tintColor={item.readAt ? colors.tertiaryForeground : colors.primary}
+              />
+            ) : (
+              <MaterialIcons
+                name="notifications"
+                size={16}
+                color={item.readAt ? colors.tertiaryForeground : colors.primary}
+              />
+            )}
             <View style={styles.activityText}>
               <ThemedText
                 variant="subheadline"

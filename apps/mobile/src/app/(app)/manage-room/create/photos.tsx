@@ -143,10 +143,10 @@ function PhotoSlot({
             contentFit="cover"
           />
           <View style={[styles.deleteButton, { backgroundColor: colors.destructive }]}>
-            <Trash2 size={14} color="#ffffff" />
+            <Trash2 size={14} color={colors.primaryForeground} />
           </View>
           <View style={styles.slotLabelOverlay}>
-            <ThemedText variant="caption2" color="#ffffff">
+            <ThemedText variant="caption2" color={colors.primaryForeground}>
               {slotLabel}
             </ThemedText>
           </View>

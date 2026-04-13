@@ -5,7 +5,6 @@ import {
   activeConsents,
   applications,
   blocks,
-  calendarTokens,
   consentRecords,
   conversationMembers,
   dataRequests,
@@ -33,6 +32,7 @@ import { eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/server";
 import { deletePhotoFromStorage } from "@/lib/services/photos";
 import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
+import { regenerateCalendarTokenForUser } from "@/lib/services/settings-mutations";
 
 export async function exportData() {
   const session = await requireSession();
@@ -225,22 +225,7 @@ export async function updatePreferredLocale(locale: Locale) {
 
 export async function regenerateCalendarToken(): Promise<string> {
   const session = await requireSession();
-  const newToken = crypto.randomUUID();
-  const [row] = await db
-    .update(calendarTokens)
-    .set({ token: newToken })
-    .where(eq(calendarTokens.userId, session.user.id))
-    .returning({ token: calendarTokens.token });
-
-  if (row) return row.token;
-
-  // Token row doesn't exist yet — create it
-  const [created] = await db
-    .insert(calendarTokens)
-    .values({ userId: session.user.id, token: newToken })
-    .returning({ token: calendarTokens.token });
-
-  return created.token;
+  return regenerateCalendarTokenForUser(session.user.id);
 }
 
 export async function deleteAccount() {

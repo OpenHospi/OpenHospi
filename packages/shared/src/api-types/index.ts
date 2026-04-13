@@ -12,7 +12,13 @@ export type { UserApplication, ApplicationDetail } from "./applications";
 export type { ApplicantReview, RoomApplicant } from "./applicants";
 export type { UserInvitation } from "./invitations";
 export type { OnboardingStatus } from "./onboarding";
-export type { ActiveConsent, SessionInfo } from "./settings";
+export type {
+  ActiveConsent,
+  CalendarTokenInfo,
+  ConsentHistoryRecord,
+  ProcessingRestrictionInfo,
+  SessionInfo,
+} from "./settings";
 export type { OwnerHouse } from "./houses";
 export type { EventSummary, EventInvitee, EventDetail } from "./events";
 export type { VotableApplicant, VoteBallot, VoteBoard, CloseRoomApplicant } from "./voting";

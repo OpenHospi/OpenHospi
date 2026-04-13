@@ -35,6 +35,9 @@ export const queryKeys = {
   settings: {
     consent: () => ['settings', 'consent'] as const,
     sessions: () => ['settings', 'sessions'] as const,
+    processingRestriction: () => ['settings', 'processingRestriction'] as const,
+    consentHistory: () => ['settings', 'consentHistory'] as const,
+    calendarToken: () => ['settings', 'calendarToken'] as const,
   },
   chat: {
     conversations: () => ['chat', 'conversations'] as const,

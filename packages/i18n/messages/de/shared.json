@@ -1121,6 +1121,8 @@
         "urlCopied": "Kalender-URL in die Zwischenablage kopiert",
         "regenerated": "Kalender-Link erneuert",
         "regenerateButton": "Link erneuern",
+        "subscribeButton": "Im Kalender abonnieren",
+        "regenerateConfirm": "Dadurch wird dein aktueller Kalenderlink ungültig. Kalender-Apps, die den Link verwenden, erhalten keine Updates mehr. Fortfahren?",
         "warning": "Jeder mit diesem Link kann deine Hospi-Veranstaltungen sehen. Wenn du vermutest, dass der Link kompromittiert wurde, erneuere ihn."
       },
       "exportSuccess": "Daten erfolgreich exportiert",
@@ -1157,6 +1159,9 @@
           "90days": "90 Tage nach Abschluss",
           "contract": "Vertrag",
           "legitimateInterest": "Berechtigtes Interesse"
+        },
+        "dataRights": {
+          "title": "Deine Rechte"
         },
         "consentHistory": {
           "title": "Einwilligungsverlauf",

@@ -1121,6 +1121,8 @@
         "urlCopied": "Kalender-URL gekopieerd naar klembord",
         "regenerated": "Kalenderlink vernieuwd",
         "regenerateButton": "Link vernieuwen",
+        "subscribeButton": "Abonneren in agenda",
+        "regenerateConfirm": "Dit maakt je huidige kalenderlink ongeldig. Agenda-apps die de link gebruiken ontvangen geen updates meer. Doorgaan?",
         "warning": "Iedereen met deze link kan je hospi-evenementen zien. Als je vermoedt dat de link is gelekt, vernieuw deze dan."
       },
       "exportSuccess": "Gegevens succesvol geëxporteerd",
@@ -1157,6 +1159,9 @@
           "90days": "90 dagen na afhandeling",
           "contract": "Overeenkomst",
           "legitimateInterest": "Gerechtvaardigd belang"
+        },
+        "dataRights": {
+          "title": "Jouw rechten"
         },
         "consentHistory": {
           "title": "Toestemmingsgeschiedenis",

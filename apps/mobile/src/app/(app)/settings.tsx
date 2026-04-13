@@ -241,22 +241,22 @@ function LanguageCell({
             return (
               <Pressable
                 key={loc}
-                style={styles.languageRow}
+                style={[
+                  styles.optionRow,
+                  isSelected ? { backgroundColor: colors.accent } : undefined,
+                ]}
                 android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
                 onPress={() => {
                   hapticLight();
                   changeLanguage(loc);
                   dismiss();
                 }}>
-                <ThemedText variant="body" color={colors.foreground}>
+                <ThemedText
+                  variant="body"
+                  weight={isSelected ? '500' : '400'}
+                  color={isSelected ? colors.primary : colors.foreground}>
                   {LOCALE_CONFIG[loc].name}
                 </ThemedText>
-                {isSelected &&
-                  (isIOS ? (
-                    <SymbolView name="checkmark" size={18} tintColor={colors.primary} />
-                  ) : (
-                    <MaterialIcons name="check" size={18} color={colors.primary} />
-                  ))}
               </Pressable>
             );
           })}
@@ -591,25 +591,28 @@ function ProcessingRestrictionCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
       <BottomSheet
         ref={sheetRef}
         title={t('privacy.processingRestriction.title')}
-        enableDynamicSizing
-        scrollable={false}>
-        <View style={styles.sheetBody}>
-          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+        onClose={() => sheetRef.current?.dismiss()}
+        snapPoints={[isRestricted ? '38%' : '50%']}
+        enableDynamicSizing={false}>
+        <View style={styles.restrictionSheet}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('privacy.processingRestriction.description')}
           </ThemedText>
 
           {isRestricted ? (
-            <>
+            <View style={styles.restrictionActions}>
               <ThemedBadge variant="warning" label={t('privacy.processingRestriction.active')} />
               <NativeButton
                 label={t('privacy.processingRestriction.liftButton')}
                 variant="outline"
+                systemImage="checkmark.circle"
+                materialIcon="check-circle"
                 onPress={handleLift}
                 loading={liftRestriction.isPending}
               />
-            </>
+            </View>
           ) : (
-            <>
+            <View style={styles.restrictionActions}>
               <ThemedTextarea
                 placeholder={t('privacy.processingRestriction.reasonPlaceholder')}
                 value={reason}
@@ -619,11 +622,13 @@ function ProcessingRestrictionCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
               <NativeButton
                 label={t('privacy.processingRestriction.activateButton')}
                 variant="destructive"
+                systemImage="pause.circle"
+                materialIcon="pause-circle-outline"
                 onPress={handleActivate}
                 loading={activateRestriction.isPending}
                 disabled={reason.length < 10}
               />
-            </>
+            </View>
           )}
         </View>
       </BottomSheet>
@@ -862,6 +867,15 @@ const styles = StyleSheet.create({
   calendarActions: {
     gap: 10,
   },
+  restrictionSheet: {
+    gap: 20,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  restrictionActions: {
+    gap: 12,
+  },
   sheetBody: {
     gap: 16,
     paddingHorizontal: 16,
@@ -894,14 +908,6 @@ const styles = StyleSheet.create({
   languageList: {
     paddingHorizontal: 4,
     paddingBottom: 16,
-  },
-  languageRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderRadius: radius.md,
   },
   optionRow: {
     borderRadius: radius.md,

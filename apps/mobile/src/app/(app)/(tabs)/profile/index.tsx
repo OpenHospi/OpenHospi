@@ -1,15 +1,21 @@
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
+import DateTimePicker from '@expo/ui/datetimepicker';
 import { getInstitution } from '@openhospi/inacademia';
+import { Gender, StudyLevel } from '@openhospi/shared/enums';
 import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useMemo } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import type { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
+import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-sheet';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -18,11 +24,16 @@ import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { isIOS } from '@/lib/platform';
-import { hapticPullToRefreshSnap } from '@/lib/haptics';
+import { showActionSheet } from '@/lib/action-sheet';
+import {
+  hapticFormSubmitSuccess,
+  hapticFormSubmitError,
+  hapticPullToRefreshSnap,
+} from '@/lib/haptics';
 import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import { useProfile } from '@/services/profile';
+import { useProfile, useUpdateProfile } from '@/services/profile';
 import { useNotifications, useMarkNotificationRead } from '@/services/notifications';
 
 export default function ProfileScreen() {
@@ -34,7 +45,20 @@ export default function ProfileScreen() {
   const { bottom } = useSafeAreaInsets();
 
   const { data: profile, isPending, refetch, isRefetching } = useProfile();
+  const updateProfile = useUpdateProfile();
   const { i18n } = useTranslation();
+
+  // Inline edit state
+  const birthDateSheetRef = useRef<BottomSheetModal>(null);
+  const studyProgramSheetRef = useRef<BottomSheetModal>(null);
+  const [birthDateDraft, setBirthDateDraft] = useState<Date>(() => {
+    if (profile?.birthDate) {
+      const parsed = new Date(profile.birthDate);
+      if (!isNaN(parsed.getTime())) return parsed;
+    }
+    return new Date(2000, 0, 1);
+  });
+  const [studyProgramDraft, setStudyProgramDraft] = useState('');
   const institution = useMemo(
     () => (profile ? getInstitution(profile.institutionDomain) : null),
     [profile]
@@ -157,7 +181,17 @@ export default function ProfileScreen() {
           <ListCell
             label={t('gender')}
             value={profile.gender ? tEnums(`gender.${profile.gender}`) : tCommon('notSet')}
-            onPress={() => router.push('/(app)/(modals)/edit-gender')}
+            onPress={() => {
+              showActionSheet(
+                t('gender'),
+                Gender.values.map((g) => ({
+                  label: tEnums(`gender.${g}`),
+                  onPress: () =>
+                    updateProfile.mutate({ gender: g }, { onSuccess: hapticFormSubmitSuccess }),
+                })),
+                tCommon('cancel')
+              );
+            }}
           />
           <NativeDivider />
           <ListCell
@@ -167,13 +201,21 @@ export default function ProfileScreen() {
                 ? new Date(profile.birthDate).toLocaleDateString()
                 : tCommon('notSet')
             }
-            onPress={() => router.push('/(app)/(modals)/edit-birth-date')}
+            onPress={() => {
+              setBirthDateDraft(
+                profile.birthDate ? new Date(profile.birthDate) : new Date(2000, 0, 1)
+              );
+              birthDateSheetRef.current?.present();
+            }}
           />
           <NativeDivider />
           <ListCell
             label={t('studyProgram')}
             value={profile.studyProgram || tCommon('notSet')}
-            onPress={() => router.push('/(app)/(modals)/edit-study-program')}
+            onPress={() => {
+              setStudyProgramDraft(profile.studyProgram || '');
+              studyProgramSheetRef.current?.present();
+            }}
           />
           <NativeDivider />
           <ListCell
@@ -181,7 +223,20 @@ export default function ProfileScreen() {
             value={
               profile.studyLevel ? tEnums(`study_level.${profile.studyLevel}`) : tCommon('notSet')
             }
-            onPress={() => router.push('/(app)/(modals)/edit-study-level')}
+            onPress={() => {
+              showActionSheet(
+                t('studyLevel'),
+                StudyLevel.values.map((sl) => ({
+                  label: tEnums(`study_level.${sl}`),
+                  onPress: () =>
+                    updateProfile.mutate(
+                      { studyLevel: sl },
+                      { onSuccess: hapticFormSubmitSuccess }
+                    ),
+                })),
+                tCommon('cancel')
+              );
+            }}
           />
           <NativeDivider />
           <ListCell
@@ -261,6 +316,112 @@ export default function ProfileScreen() {
           />
         </GroupedSection>
       </ScrollView>
+
+      {/* Birth Date Sheet */}
+      <BottomSheet
+        ref={birthDateSheetRef}
+        title={t('birthDate')}
+        onClose={() => birthDateSheetRef.current?.dismiss()}
+        snapPoints={['60%']}
+        enableDynamicSizing={false}
+        footer={
+          <View style={styles.sheetFooter}>
+            <NativeButton
+              label={tCommon('cancel')}
+              variant="outline"
+              style={styles.footerButton}
+              onPress={() => birthDateSheetRef.current?.dismiss()}
+            />
+            <NativeButton
+              label={tCommon('save')}
+              style={styles.footerButton}
+              loading={updateProfile.isPending}
+              onPress={() => {
+                const y = birthDateDraft.getFullYear();
+                const m = String(birthDateDraft.getMonth() + 1).padStart(2, '0');
+                const d = String(birthDateDraft.getDate()).padStart(2, '0');
+                updateProfile.mutate(
+                  { birthDate: `${y}-${m}-${d}` },
+                  {
+                    onSuccess: () => {
+                      hapticFormSubmitSuccess();
+                      birthDateSheetRef.current?.dismiss();
+                    },
+                    onError: () => hapticFormSubmitError(),
+                  }
+                );
+              }}
+            />
+          </View>
+        }>
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            value={birthDateDraft}
+            mode="date"
+            display="inline"
+            maximumDate={new Date()}
+            minimumDate={new Date(1950, 0, 1)}
+            onValueChange={(_event, selectedDate) => setBirthDateDraft(selectedDate)}
+          />
+        </View>
+      </BottomSheet>
+
+      {/* Study Program Sheet */}
+      <BottomSheet
+        ref={studyProgramSheetRef}
+        title={t('studyProgram')}
+        onClose={() => studyProgramSheetRef.current?.dismiss()}
+        snapPoints={['35%']}
+        enableDynamicSizing={false}
+        footer={
+          <View style={styles.sheetFooter}>
+            <NativeButton
+              label={tCommon('cancel')}
+              variant="outline"
+              style={styles.footerButton}
+              onPress={() => studyProgramSheetRef.current?.dismiss()}
+            />
+            <NativeButton
+              label={tCommon('save')}
+              style={styles.footerButton}
+              loading={updateProfile.isPending}
+              onPress={() => {
+                const trimmed = studyProgramDraft.trim();
+                updateProfile.mutate(
+                  { studyProgram: trimmed || null },
+                  {
+                    onSuccess: () => {
+                      hapticFormSubmitSuccess();
+                      studyProgramSheetRef.current?.dismiss();
+                    },
+                    onError: () => hapticFormSubmitError(),
+                  }
+                );
+              }}
+            />
+          </View>
+        }>
+        <View style={styles.studyProgramSheet}>
+          <BottomSheetTextInput
+            placeholder={t('studyProgram')}
+            value={studyProgramDraft}
+            onChangeText={setStudyProgramDraft}
+            autoFocus
+            autoCapitalize="words"
+            autoCorrect={false}
+            clearButtonMode="while-editing"
+            placeholderTextColor={colors.tertiaryForeground}
+            style={[
+              styles.studyProgramInput,
+              {
+                color: colors.foreground,
+                backgroundColor: colors.secondaryBackground,
+                borderColor: colors.separator,
+              },
+            ]}
+          />
+        </View>
+      </BottomSheet>
     </>
   );
 }
@@ -378,5 +539,41 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     letterSpacing: 0.5,
+  },
+  datePickerContainer: {
+    paddingHorizontal: 8,
+  },
+  birthDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: 44,
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  birthDateLabel: {
+    flexShrink: 1,
+  },
+  birthDatePicker: {
+    minWidth: 180,
+    alignItems: 'flex-end',
+  },
+  sheetFooter: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  footerButton: {
+    flex: 1,
+  },
+  studyProgramSheet: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  studyProgramInput: {
+    height: 44,
+    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    fontSize: 16,
   },
 });

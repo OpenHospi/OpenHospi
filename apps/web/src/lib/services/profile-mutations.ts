@@ -9,6 +9,7 @@ import { and, eq } from "drizzle-orm";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
 
 type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];
+type PhotoSwap = { photoId: string; newSlot: number };
 
 async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
   const [slot1] = await tx
@@ -111,5 +112,78 @@ export async function deleteProfilePhotoForUser(userId: string, slot: number) {
   } catch (e: unknown) {
     console.error(e);
     return { error: CommonError.delete_failed };
+  }
+}
+
+export async function reorderProfilePhotosForUser(userId: string, order: string[]) {
+  const swaps = order.map((photoId, index) => ({ photoId, newSlot: index + 1 }));
+  return reorderProfilePhotosBySwapsForUser(userId, swaps);
+}
+
+export async function reorderProfilePhotosBySwapsForUser(userId: string, swaps: PhotoSwap[]) {
+  if (swaps.length === 0 || swaps.length > 5) return { error: CommonError.invalid_data };
+  if (swaps.some((s) => s.newSlot < 1 || s.newSlot > 5 || !s.photoId)) {
+    return { error: CommonError.invalid_data };
+  }
+
+  const uniquePhotoIds = new Set(swaps.map((s) => s.photoId));
+  const uniqueSlots = new Set(swaps.map((s) => s.newSlot));
+  if (uniquePhotoIds.size !== swaps.length || uniqueSlots.size !== swaps.length) {
+    return { error: CommonError.invalid_data };
+  }
+
+  let invalid = false;
+
+  try {
+    await createDrizzleSupabaseClient(userId).rls(async (tx) => {
+      const allPhotos = await tx
+        .select({ id: profilePhotos.id, slot: profilePhotos.slot })
+        .from(profilePhotos)
+        .where(eq(profilePhotos.userId, userId));
+
+      const allPhotoIds = new Set(allPhotos.map((p) => p.id));
+      for (const id of uniquePhotoIds) {
+        if (!allPhotoIds.has(id)) {
+          invalid = true;
+          return;
+        }
+      }
+
+      const movedPhotoIds = uniquePhotoIds;
+      const currentOwnerBySlot = new Map<number, string>();
+      for (const photo of allPhotos) {
+        currentOwnerBySlot.set(photo.slot, photo.id);
+      }
+
+      for (const swap of swaps) {
+        const currentOwner = currentOwnerBySlot.get(swap.newSlot);
+        if (currentOwner && !movedPhotoIds.has(currentOwner)) {
+          invalid = true;
+          return;
+        }
+      }
+
+      for (const swap of swaps) {
+        await tx
+          .update(profilePhotos)
+          .set({ slot: -swap.newSlot })
+          .where(and(eq(profilePhotos.id, swap.photoId), eq(profilePhotos.userId, userId)));
+      }
+
+      for (const swap of swaps) {
+        await tx
+          .update(profilePhotos)
+          .set({ slot: swap.newSlot })
+          .where(and(eq(profilePhotos.id, swap.photoId), eq(profilePhotos.userId, userId)));
+      }
+
+      await syncAvatarUrl(tx, userId);
+    });
+
+    if (invalid) return { error: CommonError.invalid_data };
+    return { success: true };
+  } catch (e: unknown) {
+    console.error(e);
+    return { error: CommonError.upload_failed };
   }
 }

@@ -1,32 +1,16 @@
 "use server";
 
-import { createDrizzleSupabaseClient } from "@openhospi/database";
-import { profilePhotos } from "@openhospi/database/schema";
 import { CommonError } from "@openhospi/shared/error-codes";
 import type { EditProfileData } from "@openhospi/validators";
-import { and, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { requireNotRestricted, requireSession } from "@/lib/auth/server";
 import {
   deleteProfilePhotoForUser,
+  reorderProfilePhotosBySwapsForUser,
   saveProfilePhotoForUser,
   updateProfileForUser,
 } from "@/lib/services/profile-mutations";
-
-type Tx = Parameters<Parameters<ReturnType<typeof createDrizzleSupabaseClient>["rls"]>[0]>[0];
-
-async function syncAvatarUrl(tx: Tx, userId: string): Promise<void> {
-  const { profiles } = await import("@openhospi/database/schema");
-  const [slot1] = await tx
-    .select({ url: profilePhotos.url })
-    .from(profilePhotos)
-    .where(and(eq(profilePhotos.userId, userId), eq(profilePhotos.slot, 1)));
-  await tx
-    .update(profiles)
-    .set({ avatarUrl: slot1?.url ?? null })
-    .where(eq(profiles.id, userId));
-}
 
 export async function updateProfile(data: EditProfileData) {
   const session = await requireSession();
@@ -63,32 +47,8 @@ export async function reorderProfilePhotos(swaps: { photoId: string; newSlot: nu
     return { error: CommonError.upload_failed };
 
   try {
-    const ids = swaps.map((s) => s.photoId);
-
-    await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
-      const existing = await tx
-        .select({ id: profilePhotos.id })
-        .from(profilePhotos)
-        .where(and(eq(profilePhotos.userId, session.user.id), inArray(profilePhotos.id, ids)));
-
-      if (existing.length !== swaps.length) throw new Error("Photo not found");
-
-      for (const swap of swaps) {
-        await tx
-          .update(profilePhotos)
-          .set({ slot: -swap.newSlot })
-          .where(eq(profilePhotos.id, swap.photoId));
-      }
-
-      for (const swap of swaps) {
-        await tx
-          .update(profilePhotos)
-          .set({ slot: swap.newSlot })
-          .where(eq(profilePhotos.id, swap.photoId));
-      }
-
-      await syncAvatarUrl(tx, session.user.id);
-    });
+    const result = await reorderProfilePhotosBySwapsForUser(session.user.id, swaps);
+    if ("error" in result) return { error: result.error };
 
     revalidatePath("/profile");
     return {};

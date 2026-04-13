@@ -44,6 +44,8 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
       title: defaultValues.title ?? "",
       description: defaultValues.description ?? "",
       city: defaultValues.city,
+      municipality: defaultValues.municipality ?? "",
+      province: defaultValues.province ?? "",
       neighborhood: defaultValues.neighborhood ?? "",
       streetName: defaultValues.streetName ?? "",
       houseNumber: defaultValues.houseNumber ?? "",
@@ -165,6 +167,8 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                   form.setValue("houseNumber", result.houseNumber, { shouldValidate: true });
                   form.setValue("postalCode", result.postalCode, { shouldValidate: true });
                   form.setValue("neighborhood", result.neighborhood, { shouldValidate: true });
+                  form.setValue("municipality", result.municipality, { shouldValidate: true });
+                  form.setValue("province", result.province, { shouldValidate: true });
                   form.setValue("latitude", result.latitude, { shouldValidate: true });
                   form.setValue("longitude", result.longitude, { shouldValidate: true });
                 }}
@@ -172,6 +176,8 @@ export function BasicInfoStep({ roomId, defaultValues, onNext }: Props) {
                   form.setValue("streetName", "", { shouldValidate: true });
                   form.setValue("houseNumber", "", { shouldValidate: true });
                   form.setValue("postalCode", "", { shouldValidate: true });
+                  form.setValue("municipality", "", { shouldValidate: true });
+                  form.setValue("province", "", { shouldValidate: true });
                   form.setValue("latitude", undefined, { shouldValidate: true });
                   form.setValue("longitude", undefined, { shouldValidate: true });
                 }}

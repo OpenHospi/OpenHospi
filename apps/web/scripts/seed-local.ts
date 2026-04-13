@@ -651,6 +651,70 @@ async function main() {
             4.3735,
           ],
         }),
+        province: f.valuesFromArray({
+          values: [
+            // Groningen (7)
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            // Amsterdam (3)
+            "Noord-Holland",
+            "Noord-Holland",
+            "Noord-Holland",
+            // Utrecht (3)
+            "Utrecht",
+            "Utrecht",
+            "Utrecht",
+            // Rotterdam (2)
+            "Zuid-Holland",
+            "Zuid-Holland",
+            // Leiden (2)
+            "Zuid-Holland",
+            "Zuid-Holland",
+            // Eindhoven (1)
+            "Noord-Brabant",
+            // Nijmegen (1)
+            "Gelderland",
+            // Delft (1)
+            "Zuid-Holland",
+          ],
+        }),
+        municipality: f.valuesFromArray({
+          values: [
+            // Groningen (7)
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            "Groningen",
+            // Amsterdam (3)
+            "Amsterdam",
+            "Amsterdam",
+            "Amsterdam",
+            // Utrecht (3)
+            "Utrecht",
+            "Utrecht",
+            "Utrecht",
+            // Rotterdam (2)
+            "Rotterdam",
+            "Rotterdam",
+            // Leiden (2)
+            "Leiden",
+            "Leiden",
+            // Eindhoven (1)
+            "Eindhoven",
+            // Nijmegen (1)
+            "Nijmegen",
+            // Delft (1)
+            "Delft",
+          ],
+        }),
         rentPrice: f.valuesFromArray({
           values: [
             // Groningen (affordable)

@@ -5,6 +5,8 @@ import {
   searchAddresses,
 } from '@openhospi/shared/pdok';
 import { ChevronRight } from 'lucide-react-native';
+
+import { PDOK_PROXY_BASE } from '@/lib/constants';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { type BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -53,7 +55,7 @@ export function AddressSearchInput({ displayValue, onSelect, placeholder }: Prop
     setLoading(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const results = await searchAddresses(text);
+        const results = await searchAddresses(text, PDOK_PROXY_BASE);
         setSuggestions(results);
       } catch {
         setSuggestions([]);
@@ -69,7 +71,7 @@ export function AddressSearchInput({ displayValue, onSelect, placeholder }: Prop
     setResolving(true);
 
     try {
-      const address = await lookupAddress(suggestion.id);
+      const address = await lookupAddress(suggestion.id, PDOK_PROXY_BASE);
       if (address) {
         onSelect(address);
         sheetRef.current?.dismiss();

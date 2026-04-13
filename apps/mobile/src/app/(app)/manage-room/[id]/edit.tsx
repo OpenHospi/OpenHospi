@@ -109,6 +109,8 @@ export default function EditRoomScreen() {
   const [streetName, setStreetName] = useState('');
   const [houseNumber, setHouseNumber] = useState('');
   const [postalCode, setPostalCode] = useState('');
+  const [municipality, setMunicipality] = useState('');
+  const [province, setProvince] = useState('');
   const [rentPrice, setRentPrice] = useState('');
   const [deposit, setDeposit] = useState('');
   const [utilitiesIncluded, setUtilitiesIncluded] = useState<string>(UtilitiesIncluded.included);
@@ -145,6 +147,8 @@ export default function EditRoomScreen() {
     setStreetName(room.streetName || '');
     setHouseNumber(room.houseNumber || '');
     setPostalCode(room.postalCode || '');
+    setMunicipality(room.municipality || '');
+    setProvince(room.province || '');
     setRentPrice(room.rentPrice ? String(room.rentPrice) : '');
     setDeposit(room.deposit ? String(room.deposit) : '');
     setUtilitiesIncluded(room.utilitiesIncluded || UtilitiesIncluded.included);
@@ -181,6 +185,8 @@ export default function EditRoomScreen() {
           streetName: streetName || undefined,
           houseNumber: houseNumber || undefined,
           postalCode: postalCode || undefined,
+          municipality: municipality || undefined,
+          province: province || undefined,
           rentPrice: Number(rentPrice) || 0,
           deposit: deposit ? Number(deposit) : undefined,
           utilitiesIncluded: utilitiesIncluded || undefined,

@@ -3,6 +3,8 @@
 import type { CitySuggestion } from "@openhospi/shared/pdok";
 import { searchCities } from "@openhospi/shared/pdok";
 import { MapPin } from "lucide-react";
+
+const PDOK_PROXY_BASE = "/api/pdok";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
@@ -30,7 +32,7 @@ export function CitySearchInput({ value, onSelect, placeholder }: Props) {
       setIsOpen(false);
       return;
     }
-    const items = await searchCities(q);
+    const items = await searchCities(q, PDOK_PROXY_BASE);
     setSuggestions(items);
     setIsOpen(items.length > 0);
     setHighlightedIndex(-1);

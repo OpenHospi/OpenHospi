@@ -11,7 +11,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data: https://*.supabase.co http://127.0.0.1:54321 https://*.tile.openstreetmap.org;
   font-src 'self';
-  connect-src 'self' ${supabaseUrl} ${supabaseWsUrl} https://op.srv.inacademia.org https://api.pdok.nl https://va.vercel-scripts.com;
+  connect-src 'self' ${supabaseUrl} ${supabaseWsUrl} https://op.srv.inacademia.org https://va.vercel-scripts.com;
   frame-ancestors 'none';
   form-action 'self';
   base-uri 'self';

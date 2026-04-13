@@ -1,5 +1,7 @@
 import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
 import { ChevronRight } from 'lucide-react-native';
+
+import { PDOK_PROXY_BASE } from '@/lib/constants';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { type BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -47,7 +49,7 @@ export function CitySearchInput({ value, onSelect, placeholder }: Props) {
     setLoading(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const results = await searchCities(text);
+        const results = await searchCities(text, PDOK_PROXY_BASE);
         setSuggestions(results);
       } catch {
         setSuggestions([]);

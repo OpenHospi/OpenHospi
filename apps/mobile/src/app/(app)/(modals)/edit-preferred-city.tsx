@@ -1,4 +1,5 @@
 import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
+import { PDOK_PROXY_BASE } from '@/lib/constants';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -48,7 +49,7 @@ export default function EditPreferredCityScreen() {
     setLoading(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const results = await searchCities(text);
+        const results = await searchCities(text, PDOK_PROXY_BASE);
         setSuggestions(results);
       } catch {
         setSuggestions([]);

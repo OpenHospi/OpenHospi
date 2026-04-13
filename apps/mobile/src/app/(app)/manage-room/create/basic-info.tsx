@@ -32,6 +32,8 @@ export default function BasicInfoScreen() {
   const [streetName, setStreetName] = useState('');
   const [houseNumber, setHouseNumber] = useState('');
   const [postalCode, setPostalCode] = useState('');
+  const [municipality, setMunicipality] = useState('');
+  const [province, setProvince] = useState('');
   const [latitude, setLatitude] = useState<number | undefined>();
   const [longitude, setLongitude] = useState<number | undefined>();
   const [initialized, setInitialized] = useState(false);
@@ -53,6 +55,8 @@ export default function BasicInfoScreen() {
     setHouseNumber(address.houseNumber);
     setPostalCode(address.postalCode);
     setNeighborhood(address.neighborhood);
+    setMunicipality(address.municipality);
+    setProvince(address.province);
     setLatitude(address.latitude);
     setLongitude(address.longitude);
   }
@@ -73,6 +77,8 @@ export default function BasicInfoScreen() {
           streetName: streetName || undefined,
           houseNumber: houseNumber || undefined,
           postalCode: postalCode || undefined,
+          municipality: municipality || undefined,
+          province: province || undefined,
           latitude,
           longitude,
         },

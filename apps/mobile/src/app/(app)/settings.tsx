@@ -18,6 +18,7 @@ import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
 import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-sheet';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
@@ -187,44 +188,78 @@ function LanguageCell({
   changeLanguage: (lng: string) => Promise<unknown>;
   tCommon: TFn;
 }) {
-  const { colors } = useTheme();
+  const { colors, typography } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
+  const [search, setSearch] = useState('');
+
+  const dismiss = () => sheetRef.current?.dismiss();
+
+  const filtered = SUPPORTED_LOCALES.filter((loc) =>
+    LOCALE_CONFIG[loc].name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <>
       <ListCell
         label={tCommon('language')}
         value={LOCALE_CONFIG[locale].name}
-        onPress={() => sheetRef.current?.present()}
+        onPress={() => {
+          setSearch('');
+          sheetRef.current?.present();
+        }}
       />
 
       <BottomSheet
         ref={sheetRef}
         title={tCommon('language')}
-        enableDynamicSizing
-        scrollable={false}>
-        <View style={styles.sheetContent}>
-          {SUPPORTED_LOCALES.map((loc) => (
-            <Pressable
-              key={loc}
-              style={[
-                styles.optionRow,
-                locale === loc ? { backgroundColor: colors.accent } : undefined,
-              ]}
-              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
-              onPress={() => {
-                hapticLight();
-                changeLanguage(loc);
-                sheetRef.current?.dismiss();
-              }}>
-              <ThemedText
-                variant="body"
-                weight={locale === loc ? '600' : '400'}
-                color={locale === loc ? colors.primary : colors.foreground}>
-                {LOCALE_CONFIG[loc].name}
-              </ThemedText>
-            </Pressable>
-          ))}
+        onClose={dismiss}
+        snapPoints={['38%']}
+        enableDynamicSizing={false}>
+        <View style={styles.searchContainer}>
+          <BottomSheetTextInput
+            placeholder={tCommon('search')}
+            value={search}
+            onChangeText={setSearch}
+            autoCapitalize="none"
+            autoCorrect={false}
+            clearButtonMode="while-editing"
+            placeholderTextColor={colors.tertiaryForeground}
+            style={[
+              styles.searchInput,
+              typography.body,
+              {
+                color: colors.foreground,
+                backgroundColor: colors.secondaryBackground,
+                borderColor: colors.separator,
+              },
+            ]}
+          />
+        </View>
+        <View style={styles.languageList}>
+          {filtered.map((loc) => {
+            const isSelected = locale === loc;
+            return (
+              <Pressable
+                key={loc}
+                style={styles.languageRow}
+                android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+                onPress={() => {
+                  hapticLight();
+                  changeLanguage(loc);
+                  dismiss();
+                }}>
+                <ThemedText variant="body" color={colors.foreground}>
+                  {LOCALE_CONFIG[loc].name}
+                </ThemedText>
+                {isSelected &&
+                  (isIOS ? (
+                    <SymbolView name="checkmark" size={18} tintColor={colors.primary} />
+                  ) : (
+                    <MaterialIcons name="check" size={18} color={colors.primary} />
+                  ))}
+              </Pressable>
+            );
+          })}
         </View>
       </BottomSheet>
     </>
@@ -257,14 +292,18 @@ function CalendarCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
   const { data: tokenData, isPending } = useCalendarToken();
   const regenerateToken = useRegenerateCalendarToken();
 
+  const dismiss = () => sheetRef.current?.dismiss();
+
   const handleSubscribe = () => {
     if (!tokenData?.token) return;
     const httpsUrl = `${API_BASE_URL}/api/calendar/${tokenData.token}`;
     const webcalUrl = httpsUrl.replace(/^https?:\/\//, 'webcal://');
     Linking.openURL(webcalUrl);
+    dismiss();
   };
 
   const handleRegenerate = () => {
+    dismiss();
     Alert.alert(t('calendar.regenerateButton'), t('calendar.regenerateConfirm'), [
       { text: tCommon('cancel'), style: 'cancel' },
       {
@@ -285,29 +324,37 @@ function CalendarCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
       <BottomSheet
         ref={sheetRef}
         title={t('calendar.title')}
-        enableDynamicSizing
-        scrollable={false}>
-        <View style={styles.sheetBody}>
-          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+        onClose={dismiss}
+        snapPoints={['45%']}
+        enableDynamicSizing={false}>
+        <View style={styles.calendarSheet}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('calendar.description')}
           </ThemedText>
 
           {isPending ? (
-            <ThemedSkeleton width="100%" height={44} />
+            <View style={styles.calendarActions}>
+              <ThemedSkeleton width="100%" height={50} />
+              <ThemedSkeleton width="100%" height={50} />
+            </View>
           ) : (
-            <>
+            <View style={styles.calendarActions}>
               <NativeButton
                 label={t('calendar.subscribeButton')}
+                systemImage="calendar.badge.plus"
+                materialIcon="event"
                 onPress={handleSubscribe}
                 disabled={!tokenData?.token}
               />
               <NativeButton
                 label={t('calendar.regenerateButton')}
                 variant="outline"
+                systemImage="arrow.clockwise"
+                materialIcon="refresh"
                 onPress={handleRegenerate}
                 loading={regenerateToken.isPending}
               />
-            </>
+            </View>
           )}
 
           <ThemedText variant="caption1" color={colors.tertiaryForeground}>
@@ -806,9 +853,14 @@ const styles = StyleSheet.create({
   sectionHeaderText: {
     letterSpacing: 0.5,
   },
-  sheetContent: {
+  calendarSheet: {
+    gap: 20,
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  calendarActions: {
+    gap: 10,
   },
   sheetBody: {
     gap: 16,
@@ -827,6 +879,29 @@ const styles = StyleSheet.create({
   },
   footerButton: {
     flex: 1,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  searchInput: {
+    height: 40,
+    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  languageList: {
+    paddingHorizontal: 4,
+    paddingBottom: 16,
+  },
+  languageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderRadius: radius.md,
   },
   optionRow: {
     borderRadius: radius.md,

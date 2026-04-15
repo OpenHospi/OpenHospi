@@ -1,6 +1,6 @@
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import { houseMembers, houses, roomPhotos, rooms } from "@openhospi/database/schema";
-import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
+import { MAX_ROOMS_PER_USER, STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import {
   GenderPreference,
   HouseMemberRole,
@@ -30,8 +30,6 @@ import { and, count, eq, inArray, sql } from "drizzle-orm";
 import { requireRoomOwnership } from "@/lib/auth/server";
 import { createDraftRoom, getExistingDraft } from "@/lib/queries/rooms";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
-import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
-import { MAX_ROOMS_PER_USER } from "@openhospi/shared/constants";
 
 // ── Room limit (database-checked, not time-based) ─────────
 

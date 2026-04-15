@@ -3,13 +3,13 @@
 import { ADDRESS_DEBOUNCE_MS } from "@openhospi/shared/constants";
 import type { AddressResult, AddressSuggestion } from "@openhospi/shared/pdok";
 import { lookupAddress, searchAddresses } from "@openhospi/shared/pdok";
-
-const PDOK_PROXY_BASE = "/api/pdok";
 import { MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
+const PDOK_PROXY_BASE = "/api/pdok";
 
 export type { AddressResult };
 

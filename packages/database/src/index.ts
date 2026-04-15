@@ -32,6 +32,7 @@ type DB = PostgresJsDatabase<typeof schema>;
 // drizzle-orm v1 beta has broken overload types for the object config form.
 // The runtime handles { client } correctly — this assertion is only needed for TS.
 function createDrizzleClient(client: ReturnType<typeof postgres>): DB {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- drizzle-orm v1 beta has broken overload types for the object config form
   return drizzle({ client } as any);
 }
 

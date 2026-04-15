@@ -388,7 +388,7 @@ export default function ProfileScreen() {
               onPress={() => {
                 const trimmed = studyProgramDraft.trim();
                 updateProfile.mutate(
-                  { studyProgram: trimmed || null },
+                  { studyProgram: trimmed || undefined },
                   {
                     onSuccess: () => {
                       hapticFormSubmitSuccess();

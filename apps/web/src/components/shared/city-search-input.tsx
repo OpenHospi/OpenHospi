@@ -3,12 +3,12 @@
 import type { CitySuggestion } from "@openhospi/shared/pdok";
 import { searchCities } from "@openhospi/shared/pdok";
 import { MapPin } from "lucide-react";
-
-const PDOK_PROXY_BASE = "/api/pdok";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
+const PDOK_PROXY_BASE = "/api/pdok";
 
 const DEBOUNCE_MS = 300;
 

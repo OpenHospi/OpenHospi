@@ -220,7 +220,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
             variant="ghost"
             onPress={() => handleRsvp(InvitationStatus.not_attending)}
             disabled={respondMutation.isPending}
-            style={[styles.rsvpButton, { alignSelf: 'flex-start' }]}
+            style={{ ...styles.rsvpButton, alignSelf: 'flex-start' }}
             systemImage="xmark"
             materialIcon="close"
           />

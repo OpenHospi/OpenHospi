@@ -8,8 +8,8 @@ import BottomSheet, {
 import { X } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { ThemedText } from '@/components/native/text';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { hapticLight, hapticSheetSnap } from '@/lib/haptics';
 
@@ -58,7 +58,7 @@ export function AppBottomSheet({
           <View style={styles.header}>
             <ThemedText variant="headline">{title}</ThemedText>
           </View>
-          <ListSeparator insetLeft={0} />
+          <NativeDivider />
         </>
       )}
       {scrollable ? (
@@ -134,7 +134,7 @@ export function AppBottomSheetModal({
               <X size={20} color={colors.tertiaryForeground} />
             </Pressable>
           </View>
-          <ListSeparator insetLeft={0} />
+          <NativeDivider />
         </>
       )}
       {scrollable ? (

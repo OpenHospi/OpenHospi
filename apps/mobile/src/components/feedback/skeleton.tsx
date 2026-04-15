@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/design';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { radius } from '@/design/tokens/radius';
 
 // ── Primitives ──────────────────────────────────────────────

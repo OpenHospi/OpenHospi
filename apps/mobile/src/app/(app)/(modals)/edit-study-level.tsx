@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { ChipPicker } from '@/components/forms/chip-picker';
-import { ThemedButton } from '@/components/primitives/themed-button';
+import { NativeButton } from '@/components/native/button';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
@@ -50,11 +50,7 @@ export default function EditStudyLevelScreen() {
         />
       </View>
 
-      <View style={styles.footer}>
-        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
-          {tCommon('save')}
-        </ThemedButton>
-      </View>
+      <View style={styles.footer}></View>
     </View>
   );
 }

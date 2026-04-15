@@ -9,7 +9,9 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
@@ -77,6 +79,7 @@ function ZoomableImage({ uri }: { uri: string }) {
 }
 
 export function PhotoCarousel({ photos, bucket }: Props) {
+  const { colors } = useTheme();
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (photos.length === 0) return null;
@@ -105,7 +108,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
                 layout={LinearTransition.springify()}
                 style={{
                   height: 8,
-                  borderRadius: 4,
+                  borderRadius: radius.sm,
                   width: i === activeIndex ? 24 : 8,
                   backgroundColor: i === activeIndex ? '#fff' : 'rgba(255,255,255,0.5)',
                 }}
@@ -114,7 +117,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
           </View>
 
           <View style={styles.counterBadge}>
-            <ThemedText color="#ffffff" style={styles.counterText}>
+            <ThemedText color={colors.primaryForeground} style={styles.counterText}>
               {activeIndex + 1}/{photos.length}
             </ThemedText>
           </View>
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
-    borderRadius: 999,
+    borderRadius: radius.full,
     paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: 'rgba(0,0,0,0.4)',

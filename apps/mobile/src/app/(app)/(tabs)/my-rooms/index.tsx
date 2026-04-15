@@ -1,16 +1,15 @@
-import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { Home } from 'lucide-react-native';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { MyRoomCard } from '@/components/rooms/my-room-card';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
-import { useMyRooms } from '@/services/my-rooms';
+import { useDeleteRoom, useMyRooms, useUpdateRoomStatus } from '@/services/my-rooms';
 
 function SkeletonRoomCard() {
   const { colors } = useTheme();
@@ -35,10 +34,20 @@ export default function MyRoomsListScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const router = useRouter();
   const { data: rooms, isLoading, refetch, isRefetching } = useMyRooms();
+  const deleteRoom = useDeleteRoom();
+  const updateStatus = useUpdateRoomStatus();
 
   const handleRefresh = () => {
     hapticPullToRefreshSnap();
     refetch();
+  };
+
+  const handleDelete = (roomId: string) => {
+    deleteRoom.mutate(roomId);
+  };
+
+  const handleStatusChange = (roomId: string, newStatus: string) => {
+    updateStatus.mutate({ roomId, status: newStatus });
   };
 
   if (isLoading) {
@@ -59,18 +68,19 @@ export default function MyRoomsListScreen() {
         title={t('title')}
         subtitle={t('empty')}
         actionLabel={t('createFirst')}
-        onAction={() => router.push('/(app)/(tabs)/my-rooms/create/house-gate')}
+        onAction={() => router.push('/(app)/manage-room/create/house-gate')}
       />
     );
   }
 
   return (
-    <FlashList
+    <FlatList
+      contentInsetAdjustmentBehavior="automatic"
       data={rooms}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <View style={styles.cardWrapper}>
-          <MyRoomCard room={item} />
+          <MyRoomCard room={item} onDelete={handleDelete} onStatusChange={handleStatusChange} />
         </View>
       )}
       contentContainerStyle={styles.listContent}

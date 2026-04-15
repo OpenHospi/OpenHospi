@@ -66,9 +66,10 @@
       "react": "19.2.0",
       "react-dom": "19.2.0",
       "drizzle-orm": "catalog:",
+      "next": ">=16.2.3",
       "rollup": ">=4.59.0",
-      "hono": ">=4.12.7",
-      "@hono/node-server": ">=1.19.10",
+      "hono": ">=4.12.12",
+      "@hono/node-server": ">=1.19.13",
       "minimatch@3": "3.1.4",
       "minimatch@9": "9.0.7",
       "minimatch@10": "10.2.3",
@@ -96,6 +97,7 @@
       "@expo/dom-webview": "55.0.5",
       "@expo/log-box": "55.0.8",
       "tar": ">=7.5.7",
+      "unhead": ">=2.1.13",
       "vite": ">=7.3.2"
     },
     "ignoredBuiltDependencies": [
@@ -113,9 +115,6 @@
     },
     "configDependencies": {
       "@pnpm/plugin-types-fixer": "0.1.0+sha512-bLww63gRHi7siYTqFJb5qNdcXadU0jv20Et6z5AryMZ7FlLolbEJOrXLpg8+amQZNHHNW1dfFUBGVw/9ezQbFg=="
-    },
-    "patchedDependencies": {
-      "expo-dev-launcher@55.0.27": "patches/expo-dev-launcher@55.0.27.patch"
     }
   },
   "devDependencies": {

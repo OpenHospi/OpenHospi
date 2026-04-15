@@ -68,7 +68,8 @@
       "confirm": "Confirm",
       "loading": "Loading...",
       "uploading": "Uploading...",
-      "uploaded": "Uploaded"
+      "uploaded": "Uploaded",
+      "language": "Language"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -556,7 +557,9 @@
       "preferredCity": "Preferred city",
       "lifestyleTags": "Lifestyle",
       "languages": "Spoken languages",
-      "vereniging": "Association"
+      "vereniging": "Association",
+      "activity": "Activity",
+      "account": "Account"
     },
     "onboarding": {
       "title": "Complete your profile",
@@ -1119,6 +1122,8 @@
         "urlCopied": "Calendar URL copied to clipboard",
         "regenerated": "Calendar link regenerated",
         "regenerateButton": "Regenerate link",
+        "subscribeButton": "Subscribe in Calendar",
+        "regenerateConfirm": "This will invalidate your current calendar link. Any calendar apps using it will stop receiving updates. Continue?",
         "warning": "Anyone with this link can see your hospi events. If you suspect it has been compromised, regenerate it."
       },
       "exportSuccess": "Data exported successfully",
@@ -1155,6 +1160,9 @@
           "90days": "90 days after resolution",
           "contract": "Contract",
           "legitimateInterest": "Legitimate interest"
+        },
+        "dataRights": {
+          "title": "Your rights"
         },
         "consentHistory": {
           "title": "Consent history",

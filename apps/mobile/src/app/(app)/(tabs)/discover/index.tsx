@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import { LogoText } from '@/components/shared/logo-text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
+import { ThemedText } from '@/components/native/text';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { RoomCard } from '@/components/rooms/room-card';
 import { useDiscoverFilters } from '@/context/discover-filters';
 import { useTheme } from '@/design';
@@ -115,6 +115,7 @@ export default function DiscoverScreen() {
         onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
       />
       <FlashList
+        contentInsetAdjustmentBehavior="automatic"
         data={filteredRooms}
         keyExtractor={(item) => item.id}
         renderItem={({ item }: { item: DiscoverRoom }) => (

@@ -3,8 +3,8 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedInput } from '@/components/primitives/themed-input';
+import { NativeButton } from '@/components/native/button';
+import { ThemedInput } from '@/components/native/input';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
@@ -42,11 +42,7 @@ export default function EditStudyProgramScreen() {
         <ThemedInput value={studyProgram} onChangeText={setStudyProgram} autoFocus />
       </View>
 
-      <View style={styles.footer}>
-        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
-          {tCommon('save')}
-        </ThemedButton>
-      </View>
+      <View style={styles.footer}></View>
     </View>
   );
 }

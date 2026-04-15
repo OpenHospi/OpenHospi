@@ -2,6 +2,7 @@ import Constants from 'expo-constants';
 
 // ── Environment ──────────────────────────────────────────────
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://openhospi.nl';
+export const PDOK_PROXY_BASE = `${API_BASE_URL}/api/pdok`;
 export const EXPO_PUBLIC_SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 export const EXPO_PUBLIC_SUPABASE_KEY = process.env.EXPO_PUBLIC_SUPABASE_KEY ?? '';
 

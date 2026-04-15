@@ -1,10 +1,12 @@
 import React from 'react';
 import { Pressable, Platform, View, type ViewStyle } from 'react-native';
-import { ChevronRight } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 
 interface ListCellProps {
   /** Primary label text */
@@ -69,9 +71,12 @@ function ListCell({
           {value}
         </ThemedText>
       )}
-      {showChevron && (
-        <ChevronRight size={16} color={colors.tertiaryForeground} strokeWidth={2.5} />
-      )}
+      {showChevron &&
+        (isIOS ? (
+          <SymbolView name="chevron.right" size={16} tintColor={colors.tertiaryForeground} />
+        ) : (
+          <MaterialIcons name="chevron-right" size={16} color={colors.tertiaryForeground} />
+        ))}
     </View>
   );
 

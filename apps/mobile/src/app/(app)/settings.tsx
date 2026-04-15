@@ -1,32 +1,52 @@
-import { useCallback, useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  Alert,
+  Linking,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { Stack } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { LOCALE_CONFIG, SUPPORTED_LOCALES, type Locale } from '@openhospi/i18n';
 
-import type { TFunction } from 'i18next';
-import { useTranslation } from 'react-i18next';
-import {
-  AppBottomSheetModal as BottomSheet,
-  type BottomSheetModal,
-} from '@/components/shared/bottom-sheet';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedSwitch } from '@/components/primitives/themed-switch';
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-sheet';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { NativeToggle } from '@/components/native/toggle';
+import { ThemedText } from '@/components/native/text';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticDelete, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
+import { showActionSheet } from '@/lib/action-sheet';
 import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { registerForPushNotifications } from '@/lib/notifications';
+import { API_BASE_URL } from '@/lib/constants';
 import {
+  useActivateProcessingRestriction,
+  useCalendarToken,
   useConsent,
+  useConsentHistory,
   useDeleteAccount,
   useExportData,
+  useLiftProcessingRestriction,
+  useProcessingRestriction,
+  useRegenerateCalendarToken,
   useRevokeSession,
   useSessions,
   useSubmitDataRequest,
@@ -42,175 +62,341 @@ const DATA_REQUEST_TYPES = [
   'objection',
 ] as const;
 
+const DATA_OVERVIEW_CATEGORIES = [
+  { key: 'profile', basis: 'contract', retention: 'untilDeletion' },
+  { key: 'photos', basis: 'contract', retention: 'untilDeletion' },
+  { key: 'housing', basis: 'contract', retention: 'untilDeletion' },
+  { key: 'applications', basis: 'contract', retention: 'untilDeletion' },
+  { key: 'chat', basis: 'contract', retention: 'untilDeletion' },
+  { key: 'sessions', basis: 'legitimateInterest', retention: '30days' },
+  { key: 'moderation', basis: 'legitimateInterest', retention: '90days' },
+] as const;
+
+const CONSENT_PURPOSES = ['essential', 'functional', 'push_notifications', 'analytics'] as const;
+
 export default function SettingsScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.settings' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tConsent } = useTranslation('translation', { keyPrefix: 'app.consent' });
   const { i18n } = useTranslation();
   const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
   const locale = i18n.language as Locale;
 
+  const {
+    data: consents,
+    refetch: refetchConsent,
+    isRefetching: isRefetchingConsent,
+  } = useConsent();
+  const {
+    data: sessions,
+    refetch: refetchSessions,
+    isRefetching: isRefetchingSessions,
+  } = useSessions();
+  const { refetch: refetchRestriction, isRefetching: isRefetchingRestriction } =
+    useProcessingRestriction();
+
+  const isRefetching = isRefetchingConsent || isRefetchingSessions || isRefetchingRestriction;
+
+  const handleRefresh = () => {
+    refetchConsent();
+    refetchSessions();
+    refetchRestriction();
+  };
+
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-      <View style={styles.descriptionWrapper}>
-        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
-          {t('description')}
-        </ThemedText>
-      </View>
+    <>
+      <Stack.Screen options={{ headerTitle: t('title') }} />
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: bottom + 16 }}
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />}>
+        <View style={styles.descriptionWrapper}>
+          <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+            {t('description')}
+          </ThemedText>
+        </View>
 
-      <SectionTitle title={t('tabs.general')} />
-      <LanguageSetting locale={locale} changeLanguage={i18n.changeLanguage} t={t} />
-      <View style={styles.sectionGap} />
-      <PushNotificationSetting t={t} />
+        {/* General */}
+        <SectionHeader title={t('tabs.general')} />
+        <GroupedSection>
+          <LanguageCell locale={locale} changeLanguage={i18n.changeLanguage} tCommon={tCommon} />
+          <NativeDivider />
+          <PushNotificationCell t={t} />
+          <NativeDivider />
+          <CalendarCell t={t} tCommon={tCommon} />
+        </GroupedSection>
 
-      <SectionTitle title={t('tabs.privacy')} />
-      <ConsentSection t={t} tConsent={tConsent} />
-      <View style={styles.sectionGap} />
-      <DataExportSetting t={t} />
-      <View style={styles.sectionGap} />
-      <DataRequestSetting t={t} tCommon={tCommon} />
+        {/* Privacy */}
+        <SectionHeader title={t('tabs.privacy')} />
+        <ConsentSection consents={consents} tConsent={tConsent} />
 
-      <SectionTitle title={t('tabs.account')} />
-      <SessionsSection t={t} tCommon={tCommon} />
+        <SectionHeader title={t('privacy.dataOverview.title')} />
+        <DataOverviewSection t={t} />
 
-      <SectionTitle title={t('dangerZone.title')} />
-      <DeleteAccountSetting t={t} tCommon={tCommon} />
-    </ScrollView>
+        <SectionHeader title={t('privacy.dataRights.title')} />
+        <GroupedSection>
+          <DataExportCell t={t} />
+          <NativeDivider />
+          <DataRequestCell t={t} tCommon={tCommon} />
+          <NativeDivider />
+          <ProcessingRestrictionCell t={t} tCommon={tCommon} />
+          <NativeDivider />
+          <ConsentHistoryCell t={t} />
+        </GroupedSection>
+
+        {/* Account */}
+        <SectionHeader title={t('tabs.account')} />
+        <SessionsSection t={t} tCommon={tCommon} sessions={sessions} />
+
+        {/* Danger Zone */}
+        <SectionHeader title={t('dangerZone.title')} />
+        <DeleteAccountSection t={t} tCommon={tCommon} />
+      </ScrollView>
+    </>
   );
 }
 
-function SectionTitle({ title }: { title: string }) {
+// ── Shared sub-components ──────────────────────────────────
+
+type TFn = ReturnType<typeof useTranslation>['t'];
+
+function SectionHeader({ title }: { title: string }) {
   const { colors } = useTheme();
 
   return (
-    <View style={styles.sectionTitleWrapper}>
+    <View style={styles.sectionHeader}>
       <ThemedText
         variant="footnote"
         color={colors.tertiaryForeground}
-        style={styles.sectionTitleText}>
+        style={styles.sectionHeaderText}>
         {title.toUpperCase()}
       </ThemedText>
     </View>
   );
 }
 
-function LanguageSetting({
+// ── General ────────────────────────────────────────────────
+
+function LanguageCell({
   locale,
   changeLanguage,
-  t,
+  tCommon,
 }: {
   locale: Locale;
-  changeLanguage: (lng: string) => Promise<TFunction>;
-  t: TFunction;
+  changeLanguage: (lng: string) => Promise<unknown>;
+  tCommon: TFn;
 }) {
-  const { colors } = useTheme();
+  const { colors, typography } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
+  const [search, setSearch] = useState('');
+
+  const dismiss = () => sheetRef.current?.dismiss();
+
+  const filtered = SUPPORTED_LOCALES.filter((loc) =>
+    LOCALE_CONFIG[loc].name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <GroupedSection>
+    <>
       <ListCell
-        label={t('tabs.general')}
+        label={tCommon('language')}
         value={LOCALE_CONFIG[locale].name}
-        onPress={() => sheetRef.current?.present()}
+        onPress={() => {
+          setSearch('');
+          sheetRef.current?.present();
+        }}
       />
 
-      <BottomSheet ref={sheetRef} title={t('tabs.general')} enableDynamicSizing scrollable={false}>
-        <View style={styles.sheetContent}>
-          {SUPPORTED_LOCALES.map((loc) => (
-            <Pressable
-              key={loc}
-              style={[
-                styles.localeRow,
-                locale === loc ? { backgroundColor: colors.accent } : undefined,
-              ]}
-              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
-              onPress={() => {
-                hapticLight();
-                changeLanguage(loc);
-                sheetRef.current?.dismiss();
-              }}>
-              <ThemedText
-                variant="body"
-                weight={locale === loc ? '600' : '400'}
-                color={locale === loc ? colors.primary : colors.foreground}>
-                {LOCALE_CONFIG[loc].name}
-              </ThemedText>
-            </Pressable>
-          ))}
+      <BottomSheet
+        ref={sheetRef}
+        title={tCommon('language')}
+        onClose={dismiss}
+        snapPoints={['38%']}
+        enableDynamicSizing={false}>
+        <View style={styles.searchContainer}>
+          <BottomSheetTextInput
+            placeholder={tCommon('search')}
+            value={search}
+            onChangeText={setSearch}
+            autoCapitalize="none"
+            autoCorrect={false}
+            clearButtonMode="while-editing"
+            placeholderTextColor={colors.tertiaryForeground}
+            style={[
+              styles.searchInput,
+              typography.body,
+              {
+                color: colors.foreground,
+                backgroundColor: colors.secondaryBackground,
+                borderColor: colors.separator,
+              },
+            ]}
+          />
+        </View>
+        <View style={styles.languageList}>
+          {filtered.map((loc) => {
+            const isSelected = locale === loc;
+            return (
+              <Pressable
+                key={loc}
+                style={[
+                  styles.optionRow,
+                  isSelected ? { backgroundColor: colors.accent } : undefined,
+                ]}
+                android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+                onPress={() => {
+                  hapticLight();
+                  changeLanguage(loc);
+                  dismiss();
+                }}>
+                <ThemedText
+                  variant="body"
+                  weight={isSelected ? '500' : '400'}
+                  color={isSelected ? colors.primary : colors.foreground}>
+                  {LOCALE_CONFIG[loc].name}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
         </View>
       </BottomSheet>
-    </GroupedSection>
+    </>
   );
 }
 
-function PushNotificationSetting({ t }: { t: TFunction }) {
+function PushNotificationCell({ t }: { t: TFn }) {
   const [enabled, setEnabled] = useState(false);
 
-  const handleToggle = useCallback(async (value: boolean) => {
+  const handleToggle = async (value: boolean) => {
     setEnabled(value);
     if (value) {
       const token = await registerForPushNotifications();
       if (!token) setEnabled(false);
     }
-  }, []);
+  };
 
   return (
-    <GroupedSection>
-      <ListCell
-        label={t('pushNotifications.title')}
-        rightContent={<ThemedSwitch value={enabled} onValueChange={handleToggle} />}
-      />
-    </GroupedSection>
+    <ListCell
+      label={t('pushNotifications.title')}
+      rightContent={<NativeToggle isOn={enabled} onToggle={handleToggle} />}
+      chevron={false}
+    />
   );
 }
 
-function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) {
+function CalendarCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
   const { colors } = useTheme();
-  const { data: consents, isPending } = useConsent();
-  const updateConsent = useUpdateConsent();
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const { data: tokenData, isPending } = useCalendarToken();
+  const regenerateToken = useRegenerateCalendarToken();
 
-  if (isPending) {
-    return (
-      <GroupedSection>
-        <View style={styles.loadingCell}>
-          <ThemedSkeleton width="60%" height={14} />
-          <ThemedSkeleton width="40%" height={14} />
-          <ThemedSkeleton width="50%" height={14} />
+  const dismiss = () => sheetRef.current?.dismiss();
+
+  const handleSubscribe = () => {
+    if (!tokenData?.token) return;
+    const httpsUrl = `${API_BASE_URL}/api/calendar/${tokenData.token}`;
+    const webcalUrl = httpsUrl.replace(/^https?:\/\//, 'webcal://');
+    Linking.openURL(webcalUrl);
+    dismiss();
+  };
+
+  const handleRegenerate = () => {
+    dismiss();
+    Alert.alert(t('calendar.regenerateButton'), t('calendar.regenerateConfirm'), [
+      { text: tCommon('cancel'), style: 'cancel' },
+      {
+        text: tCommon('confirm'),
+        onPress: () => {
+          regenerateToken.mutate(undefined, {
+            onSuccess: () => hapticFormSubmitSuccess(),
+          });
+        },
+      },
+    ]);
+  };
+
+  return (
+    <>
+      <ListCell label={t('calendar.title')} onPress={() => sheetRef.current?.present()} />
+
+      <BottomSheet
+        ref={sheetRef}
+        title={t('calendar.title')}
+        onClose={dismiss}
+        snapPoints={['45%']}
+        enableDynamicSizing={false}>
+        <View style={styles.calendarSheet}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+            {t('calendar.description')}
+          </ThemedText>
+
+          {isPending ? (
+            <View style={styles.calendarActions}>
+              <ThemedSkeleton width="100%" height={50} />
+              <ThemedSkeleton width="100%" height={50} />
+            </View>
+          ) : (
+            <View style={styles.calendarActions}>
+              <NativeButton
+                label={t('calendar.subscribeButton')}
+                systemImage="calendar.badge.plus"
+                materialIcon="event"
+                onPress={handleSubscribe}
+                disabled={!tokenData?.token}
+              />
+              <NativeButton
+                label={t('calendar.regenerateButton')}
+                variant="outline"
+                systemImage="arrow.clockwise"
+                materialIcon="refresh"
+                onPress={handleRegenerate}
+                loading={regenerateToken.isPending}
+              />
+            </View>
+          )}
+
+          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+            {t('calendar.warning')}
+          </ThemedText>
         </View>
-      </GroupedSection>
-    );
-  }
+      </BottomSheet>
+    </>
+  );
+}
 
-  const purposes = ['essential', 'functional', 'push_notifications', 'analytics'] as const;
+// ── Privacy ────────────────────────────────────────────────
+
+function ConsentSection({
+  consents,
+  tConsent,
+}: {
+  consents: { purpose: string; granted: boolean }[] | undefined;
+  tConsent: TFn;
+}) {
+  const updateConsent = useUpdateConsent();
 
   return (
     <GroupedSection>
-      <View style={styles.consentHeader}>
-        <ThemedText variant="headline">{t('privacy.consentManagement.title')}</ThemedText>
-        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
-          {t('privacy.consentManagement.description')}
-        </ThemedText>
-      </View>
-      {purposes.map((purpose, index) => {
-        const consent = consents?.find((c: { purpose: string }) => c.purpose === purpose);
+      {CONSENT_PURPOSES.map((purpose, index) => {
+        const consent = consents?.find((c) => c.purpose === purpose);
         const isEssential = purpose === 'essential';
 
         return (
           <View key={purpose}>
-            <ListSeparator />
-            <View style={styles.consentRow}>
-              <View style={styles.consentLabel}>
-                <ThemedText variant="body">{tConsent(`purposes.${purpose}.name`)}</ThemedText>
-                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                  {tConsent(`purposes.${purpose}.description`)}
-                </ThemedText>
-              </View>
-              <ThemedSwitch
-                value={isEssential ? true : (consent?.granted ?? false)}
-                disabled={isEssential || updateConsent.isPending}
-                onValueChange={(granted: boolean) => updateConsent.mutate({ purpose, granted })}
-              />
-            </View>
+            {index > 0 && <NativeDivider />}
+            <ListCell
+              label={tConsent(`purposes.${purpose}.name`)}
+              rightContent={
+                <NativeToggle
+                  isOn={isEssential ? true : (consent?.granted ?? false)}
+                  disabled={isEssential || updateConsent.isPending}
+                  onToggle={(granted: boolean) => updateConsent.mutate({ purpose, granted })}
+                />
+              }
+              chevron={false}
+            />
           </View>
         );
       })}
@@ -218,32 +404,44 @@ function ConsentSection({ t, tConsent }: { t: TFunction; tConsent: TFunction }) 
   );
 }
 
-function DataExportSetting({ t }: { t: TFunction }) {
-  const exportData = useExportData();
+function DataOverviewSection({ t }: { t: TFn }) {
+  const { colors } = useTheme();
 
   return (
     <GroupedSection>
-      <View style={styles.cardContent}>
-        <ThemedText variant="headline">{t('dataExport.title')}</ThemedText>
-        <ThemedText variant="footnote" color={useTheme().colors.tertiaryForeground}>
-          {t('dataExport.description')}
-        </ThemedText>
-        <ThemedButton
-          size="sm"
-          style={styles.inlineButton}
-          onPress={() => {
-            hapticFormSubmitSuccess();
-            exportData.mutate();
-          }}
-          loading={exportData.isPending}>
-          {t('dataExport.button')}
-        </ThemedButton>
-      </View>
+      {DATA_OVERVIEW_CATEGORIES.map((cat, index) => (
+        <View key={cat.key}>
+          {index > 0 && <NativeDivider />}
+          <View style={styles.dataOverviewRow}>
+            <ThemedText variant="body">
+              {t(`privacy.dataOverview.categories.${cat.key}`)}
+            </ThemedText>
+            <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+              {t(`privacy.dataOverview.${cat.basis}`)} ·{' '}
+              {t(`privacy.dataOverview.${cat.retention}`)}
+            </ThemedText>
+          </View>
+        </View>
+      ))}
     </GroupedSection>
   );
 }
 
-function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
+function DataExportCell({ t }: { t: TFn }) {
+  const exportData = useExportData();
+
+  return (
+    <ListCell
+      label={t('dataExport.title')}
+      onPress={() => {
+        hapticFormSubmitSuccess();
+        exportData.mutate();
+      }}
+    />
+  );
+}
+
+function DataRequestCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
   const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -267,40 +465,32 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
   };
 
   return (
-    <GroupedSection>
-      <View style={styles.cardContent}>
-        <ThemedText variant="headline">{t('privacy.dataRequest.title')}</ThemedText>
-        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
-          {t('privacy.dataRequest.description')}
-        </ThemedText>
-        <ThemedButton
-          variant="outline"
-          size="sm"
-          style={styles.inlineButton}
-          onPress={() => sheetRef.current?.present()}>
-          {t('privacy.dataRequest.submitButton')}
-        </ThemedButton>
-      </View>
+    <>
+      <ListCell
+        label={t('privacy.dataRequest.title')}
+        onPress={() => sheetRef.current?.present()}
+      />
 
       <BottomSheet
         ref={sheetRef}
         title={t('privacy.dataRequest.title')}
         snapPoints={['75%']}
+        enableDynamicSizing={false}
         footer={
           <View style={styles.sheetFooter}>
-            <ThemedButton
+            <NativeButton
+              label={tCommon('cancel')}
               variant="outline"
               style={styles.footerButton}
-              onPress={() => sheetRef.current?.dismiss()}>
-              {tCommon('cancel')}
-            </ThemedButton>
-            <ThemedButton
+              onPress={() => sheetRef.current?.dismiss()}
+            />
+            <NativeButton
+              label={tCommon('submit')}
               style={styles.footerButton}
               onPress={handleSubmit}
               loading={submitRequest.isPending}
-              disabled={!selectedType}>
-              {tCommon('submit')}
-            </ThemedButton>
+              disabled={!selectedType}
+            />
           </View>
         }>
         <View style={styles.sheetBody}>
@@ -312,7 +502,7 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
               <Pressable
                 key={type}
                 style={[
-                  styles.typeOption,
+                  styles.optionRow,
                   selectedType === type ? { backgroundColor: colors.accent } : undefined,
                 ]}
                 android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
@@ -343,76 +533,276 @@ function DataRequestSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }
           </View>
         </View>
       </BottomSheet>
-    </GroupedSection>
+    </>
   );
 }
 
-function SessionsSection({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
+function ProcessingRestrictionCell({ t, tCommon }: { t: TFn; tCommon: TFn }) {
   const { colors } = useTheme();
-  const { data: sessions, isPending } = useSessions();
-  const revokeSession = useRevokeSession();
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const [reason, setReason] = useState('');
+  const { data: restriction, isPending } = useProcessingRestriction();
+  const activateRestriction = useActivateProcessingRestriction();
+  const liftRestriction = useLiftProcessingRestriction();
+
+  const isRestricted = !!restriction;
+
+  const handleActivate = () => {
+    if (reason.length < 10) return;
+    activateRestriction.mutate(
+      { reason },
+      {
+        onSuccess: () => {
+          hapticFormSubmitSuccess();
+          sheetRef.current?.dismiss();
+          setReason('');
+          Alert.alert(t('privacy.processingRestriction.activateSuccess'));
+        },
+      }
+    );
+  };
+
+  const handleLift = () => {
+    liftRestriction.mutate(undefined, {
+      onSuccess: () => {
+        hapticFormSubmitSuccess();
+        sheetRef.current?.dismiss();
+        Alert.alert(t('privacy.processingRestriction.liftSuccess'));
+      },
+    });
+  };
+
+  if (isPending) {
+    return (
+      <View style={styles.loadingCell}>
+        <ThemedSkeleton width="60%" height={14} />
+      </View>
+    );
+  }
 
   return (
-    <GroupedSection>
-      <View style={styles.consentHeader}>
-        <ThemedText variant="headline">{t('account.sessions.title')}</ThemedText>
-        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
-          {t('account.sessions.description')}
-        </ThemedText>
-      </View>
+    <>
+      <ListCell
+        label={t('privacy.processingRestriction.title')}
+        value={isRestricted ? t('privacy.processingRestriction.active') : undefined}
+        onPress={() => sheetRef.current?.present()}
+      />
 
-      {isPending ? (
+      <BottomSheet
+        ref={sheetRef}
+        title={t('privacy.processingRestriction.title')}
+        onClose={() => sheetRef.current?.dismiss()}
+        snapPoints={[isRestricted ? '38%' : '50%']}
+        enableDynamicSizing={false}>
+        <View style={styles.restrictionSheet}>
+          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
+            {t('privacy.processingRestriction.description')}
+          </ThemedText>
+
+          {isRestricted ? (
+            <View style={styles.restrictionActions}>
+              <ThemedBadge variant="warning" label={t('privacy.processingRestriction.active')} />
+              <NativeButton
+                label={t('privacy.processingRestriction.liftButton')}
+                variant="outline"
+                systemImage="checkmark.circle"
+                materialIcon="check-circle"
+                onPress={handleLift}
+                loading={liftRestriction.isPending}
+              />
+            </View>
+          ) : (
+            <View style={styles.restrictionActions}>
+              <ThemedTextarea
+                placeholder={t('privacy.processingRestriction.reasonPlaceholder')}
+                value={reason}
+                onChangeText={setReason}
+                minHeight={80}
+              />
+              <NativeButton
+                label={t('privacy.processingRestriction.activateButton')}
+                variant="destructive"
+                systemImage="pause.circle"
+                materialIcon="pause-circle-outline"
+                onPress={handleActivate}
+                loading={activateRestriction.isPending}
+                disabled={reason.length < 10}
+              />
+            </View>
+          )}
+        </View>
+      </BottomSheet>
+    </>
+  );
+}
+
+function ConsentHistoryCell({ t }: { t: TFn }) {
+  const { colors } = useTheme();
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const { data: history, isPending } = useConsentHistory();
+
+  return (
+    <>
+      <ListCell
+        label={t('privacy.consentHistory.title')}
+        onPress={() => sheetRef.current?.present()}
+      />
+
+      <BottomSheet
+        ref={sheetRef}
+        title={t('privacy.consentHistory.title')}
+        snapPoints={['60%']}
+        enableDynamicSizing={false}>
+        <View style={styles.sheetBody}>
+          {isPending ? (
+            <View style={styles.loadingCell}>
+              <ThemedSkeleton width="80%" height={14} />
+              <ThemedSkeleton width="60%" height={14} />
+              <ThemedSkeleton width="70%" height={14} />
+            </View>
+          ) : !history?.length ? (
+            <ThemedText variant="footnote" color={colors.tertiaryForeground}>
+              {t('privacy.consentHistory.empty')}
+            </ThemedText>
+          ) : (
+            history.map((record, index) => (
+              <View key={record.id ?? index}>
+                {index > 0 && <NativeDivider />}
+                <View style={styles.historyRow}>
+                  <View style={styles.historyInfo}>
+                    <ThemedText variant="body">{record.purpose}</ThemedText>
+                    <ThemedText variant="caption1" color={colors.tertiaryForeground}>
+                      {new Date(record.createdAt).toLocaleDateString()}
+                    </ThemedText>
+                  </View>
+                  <ThemedBadge
+                    variant={record.granted ? 'success' : 'secondary'}
+                    label={
+                      record.granted
+                        ? t('privacy.consentHistory.granted')
+                        : t('privacy.consentHistory.revoked')
+                    }
+                  />
+                </View>
+              </View>
+            ))
+          )}
+        </View>
+      </BottomSheet>
+    </>
+  );
+}
+
+// ── Account ────────────────────────────────────────────────
+
+function parseUserAgent(ua: string | null): { isMobile: boolean; label: string } {
+  if (!ua) return { isMobile: true, label: 'OpenHospi App' };
+  const isMobile = /mobile|android|iphone|ipad|expo|react.?native|okhttp/i.test(ua);
+
+  // React Native / Expo app sessions
+  if (/expo|react.?native|okhttp/i.test(ua)) return { isMobile: true, label: 'OpenHospi App' };
+
+  // Browsers
+  if (/safari/i.test(ua) && !/chrome/i.test(ua))
+    return { isMobile, label: isMobile ? 'Safari (Mobile)' : 'Safari' };
+  if (/firefox/i.test(ua)) return { isMobile, label: isMobile ? 'Firefox (Mobile)' : 'Firefox' };
+  if (/edg/i.test(ua)) return { isMobile, label: isMobile ? 'Edge (Mobile)' : 'Edge' };
+  if (/chrome/i.test(ua)) return { isMobile, label: isMobile ? 'Chrome (Mobile)' : 'Chrome' };
+
+  return { isMobile, label: isMobile ? 'Mobile device' : 'Desktop' };
+}
+
+function SessionsSection({
+  t,
+  tCommon,
+  sessions,
+}: {
+  t: TFn;
+  tCommon: TFn;
+  sessions: any[] | undefined;
+}) {
+  const { colors } = useTheme();
+  const revokeSession = useRevokeSession();
+
+  if (!sessions) {
+    return (
+      <GroupedSection>
         <View style={styles.loadingCell}>
           <ThemedSkeleton width="80%" height={14} />
           <ThemedSkeleton width="60%" height={14} />
         </View>
-      ) : !sessions?.length ? (
-        <View style={styles.emptyCell}>
-          <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
-            {t('account.sessions.empty')}
-          </ThemedText>
-        </View>
-      ) : (
-        sessions.map((session: any) => (
+      </GroupedSection>
+    );
+  }
+
+  if (sessions.length === 0) {
+    return (
+      <GroupedSection>
+        <ListCell label={t('account.sessions.empty')} chevron={false} />
+      </GroupedSection>
+    );
+  }
+
+  return (
+    <GroupedSection>
+      {sessions.map((session: any, index: number) => {
+        const { isMobile, label: deviceLabel } = parseUserAgent(session.userAgent);
+        const icon = isIOS ? (
+          <SymbolView
+            name={isMobile ? 'iphone' : 'desktopcomputer'}
+            size={18}
+            tintColor={colors.tertiaryForeground}
+          />
+        ) : (
+          <MaterialIcons
+            name={isMobile ? 'smartphone' : 'computer'}
+            size={18}
+            color={colors.tertiaryForeground}
+          />
+        );
+
+        const handleRevoke = session.isCurrent
+          ? undefined
+          : () => {
+              showActionSheet(
+                deviceLabel,
+                [
+                  {
+                    label: t('account.sessions.revokeButton'),
+                    destructive: true,
+                    onPress: () => revokeSession.mutate(session.id),
+                  },
+                ],
+                tCommon('cancel')
+              );
+            };
+
+        return (
           <View key={session.id}>
-            <ListSeparator />
-            <View style={styles.sessionRow}>
-              <View style={styles.sessionInfo}>
-                <View style={styles.sessionNameRow}>
-                  <ThemedText variant="body" numberOfLines={1} style={styles.sessionName}>
-                    {session.userAgent ?? 'Unknown device'}
-                  </ThemedText>
-                  {session.isCurrent && (
-                    <ThemedBadge variant="secondary" label={t('account.sessions.current')} />
-                  )}
-                </View>
-                <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                  {t('account.sessions.lastActive', {
-                    date: new Date(session.createdAt).toLocaleDateString(),
-                  })}
-                </ThemedText>
-              </View>
-              {!session.isCurrent && (
-                <ThemedButton
-                  variant="outline"
-                  size="sm"
-                  onPress={() => revokeSession.mutate(session.id)}
-                  loading={revokeSession.isPending}>
-                  <ThemedText variant="caption1" weight="500" color={colors.destructive}>
-                    {t('account.sessions.revokeButton')}
-                  </ThemedText>
-                </ThemedButton>
-              )}
-            </View>
+            {index > 0 && <NativeDivider />}
+            <ListCell
+              label={deviceLabel}
+              value={
+                session.isCurrent
+                  ? t('account.sessions.current')
+                  : t('account.sessions.lastActive', {
+                      date: new Date(session.createdAt).toLocaleDateString(),
+                    })
+              }
+              leftContent={icon}
+              onPress={handleRevoke}
+              chevron={!session.isCurrent}
+            />
           </View>
-        ))
-      )}
+        );
+      })}
     </GroupedSection>
   );
 }
 
-function DeleteAccountSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction }) {
-  const { colors } = useTheme();
+// ── Danger Zone ────────────────────────────────────────────
+
+function DeleteAccountSection({ t, tCommon }: { t: TFn; tCommon: TFn }) {
   const deleteAccount = useDeleteAccount();
 
   const handleDelete = () => {
@@ -445,116 +835,46 @@ function DeleteAccountSetting({ t, tCommon }: { t: TFunction; tCommon: TFunction
 
   return (
     <GroupedSection>
-      <View style={styles.cardContent}>
-        <ThemedText variant="footnote" color={colors.tertiaryForeground}>
-          {t('dangerZone.description')}
-        </ThemedText>
-        <ThemedButton
-          variant="destructive"
-          size="sm"
-          style={styles.inlineButton}
-          onPress={handleDelete}
-          loading={deleteAccount.isPending}>
-          {t('dangerZone.deleteButton')}
-        </ThemedButton>
-      </View>
+      <ListCell label={t('dangerZone.deleteButton')} destructive onPress={handleDelete} />
     </GroupedSection>
   );
 }
+
+// ── Styles ─────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
-  scrollContent: {
-    paddingBottom: 32,
-  },
   descriptionWrapper: {
     paddingHorizontal: 32,
     paddingTop: 16,
   },
-  sectionTitleWrapper: {
+  sectionHeader: {
     paddingHorizontal: 32,
     paddingTop: 24,
     paddingBottom: 8,
   },
-  sectionTitleText: {
+  sectionHeaderText: {
     letterSpacing: 0.5,
   },
-  sectionGap: {
-    height: 12,
-  },
-  sheetContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  localeRow: {
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  consentHeader: {
+  calendarSheet: {
+    gap: 20,
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
-    gap: 4,
   },
-  consentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  consentLabel: {
-    flex: 1,
-    paddingRight: 16,
-    gap: 2,
-  },
-  cardContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    gap: 8,
-  },
-  inlineButton: {
-    alignSelf: 'flex-start',
-    marginTop: 4,
-  },
-  loadingCell: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+  calendarActions: {
     gap: 10,
   },
-  emptyCell: {
+  restrictionSheet: {
+    gap: 20,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 16,
+    paddingBottom: 8,
   },
-  sessionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  sessionInfo: {
-    flex: 1,
-    paddingRight: 12,
-    gap: 2,
-  },
-  sessionNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  sessionName: {
-    flex: 1,
-  },
-  sheetFooter: {
-    flexDirection: 'row',
+  restrictionActions: {
     gap: 12,
-  },
-  footerButton: {
-    flex: 1,
   },
   sheetBody: {
     gap: 16,
@@ -567,10 +887,53 @@ const styles = StyleSheet.create({
   sheetLabel: {
     marginBottom: 4,
   },
-  typeOption: {
-    borderRadius: 8,
+  sheetFooter: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  footerButton: {
+    flex: 1,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  searchInput: {
+    height: 40,
+    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  languageList: {
+    paddingHorizontal: 4,
+    paddingBottom: 16,
+  },
+  optionRow: {
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 10,
     marginBottom: 4,
+  },
+  dataOverviewRow: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 2,
+  },
+  loadingCell: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 10,
+  },
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  historyInfo: {
+    flex: 1,
+    gap: 2,
   },
 });

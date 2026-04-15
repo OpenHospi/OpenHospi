@@ -12,11 +12,12 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { CitySearchInput } from '@/components/forms/city-search';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedInput } from '@/components/native/input';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { useDiscoverFilters } from '@/context/discover-filters';
 import { hapticLight } from '@/lib/haptics';
 import type { DiscoverFilters } from '@openhospi/shared/api-types';
@@ -64,7 +65,7 @@ const chipStyles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    borderRadius: 999,
+    borderRadius: radius.full,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
@@ -111,6 +112,7 @@ export default function FilterSheetScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         contentContainerStyle={[styles.scrollContent, { paddingTop: headerHeight }]}
         keyboardShouldPersistTaps="handled">
@@ -272,10 +274,8 @@ export default function FilterSheetScreen() {
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
         <View style={styles.footerButtons}>
-          <ThemedButton onPress={handleApply}>{tCommon('apply')}</ThemedButton>
-          <ThemedButton variant="ghost" onPress={handleClear}>
-            {tFilters('clearFilters')}
-          </ThemedButton>
+          <NativeButton label={tCommon('apply')} onPress={handleApply} />
+          <NativeButton label={tFilters('clearFilters')} variant="ghost" onPress={handleClear} />
         </View>
       </View>
     </View>

@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 
 type Props = {
   conversationId: string;

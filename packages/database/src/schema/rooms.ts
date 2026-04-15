@@ -54,6 +54,8 @@ export const rooms = pgTable(
     streetName: text("street_name"),
     houseNumber: text("house_number"),
     postalCode: text("postal_code"),
+    province: text("province"),
+    municipality: text("municipality"),
     latitude: doublePrecision("latitude"),
     longitude: doublePrecision("longitude"),
     rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),

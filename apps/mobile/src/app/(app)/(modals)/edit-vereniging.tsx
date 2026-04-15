@@ -4,10 +4,11 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeButton } from '@/components/native/button';
+import { ThemedInput } from '@/components/native/input';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
 import { useTranslation } from 'react-i18next';
@@ -86,11 +87,7 @@ export default function EditVerenigingScreen() {
         }}
       />
 
-      <View style={styles.footer}>
-        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
-          {tCommon('save')}
-        </ThemedButton>
-      </View>
+      <View style={styles.footer}></View>
     </View>
   );
 }
@@ -113,7 +110,7 @@ const styles = StyleSheet.create({
   listItem: {
     paddingVertical: 12,
     paddingHorizontal: 12,
-    borderRadius: 10,
+    borderRadius: radius.md,
   },
   footer: {
     paddingHorizontal: 16,

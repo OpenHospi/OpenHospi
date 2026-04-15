@@ -19,11 +19,11 @@
   "dependencies": {
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
-    "next-intl": "^4.8.3",
-    "nodemailer": "^8.0.5",
     "@react-email/components": "^1.0.10",
     "@react-email/render": "^2.0.4",
-    "next": "16.1.7",
+    "next": "16.2.3",
+    "next-intl": "^4.9.1",
+    "nodemailer": "^8.0.5",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -36,7 +36,5 @@
     "prettier": "catalog:",
     "react-email": "^5.2.10",
     "typescript": "catalog:"
-  },
-  "peerDependencies": {},
-  "optionalDependencies": {}
+  }
 }

@@ -33,6 +33,8 @@ export type RoomDetail = {
   title: string;
   description: string | null;
   city: string;
+  municipality: string | null;
+  province: string | null;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;
@@ -88,6 +90,8 @@ export type MyRoomDetail = {
   title: string;
   description: string | null;
   city: string;
+  municipality: string | null;
+  province: string | null;
   neighborhood: string | null;
   streetName: string | null;
   houseNumber: string | null;

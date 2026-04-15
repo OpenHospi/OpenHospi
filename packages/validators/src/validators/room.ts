@@ -22,10 +22,16 @@ const baseRoomSchema = z.object({
   title: z.string().min(1).max(MAX_ROOM_TITLE_LENGTH),
   description: z.string().max(MAX_ROOM_DESCRIPTION_LENGTH).optional(),
   city: z.string().min(1).max(255),
+  municipality: z.string().max(100).optional(),
+  province: z.string().max(50).optional(),
   neighborhood: z.string().max(100).optional(),
   streetName: z.string().max(100).optional(),
   houseNumber: z.string().max(20).optional(),
-  postalCode: z.string().regex(DUTCH_POSTAL_CODE_REGEX, "Invalid postal code").optional(),
+  postalCode: z
+    .string()
+    .regex(DUTCH_POSTAL_CODE_REGEX, "Invalid postal code")
+    .transform((v) => v.replace(/\s/g, "").toUpperCase())
+    .optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
   rentPrice: z.coerce.number().min(0).max(99999),
@@ -51,17 +57,31 @@ const baseRoomSchema = z.object({
   shareLinkMaxUses: z.coerce.number().int().min(1).max(10000).optional(),
 });
 
-export const roomBasicInfoSchema = baseRoomSchema.pick({
-  title: true,
-  description: true,
-  city: true,
-  neighborhood: true,
-  streetName: true,
-  houseNumber: true,
-  postalCode: true,
-  latitude: true,
-  longitude: true,
-});
+const coordPairRefinement = {
+  refine: (data: { latitude?: number; longitude?: number }) =>
+    (data.latitude != null) === (data.longitude != null),
+  message: "Both latitude and longitude must be provided together",
+  path: ["latitude"] as string[],
+};
+
+export const roomBasicInfoSchema = baseRoomSchema
+  .pick({
+    title: true,
+    description: true,
+    city: true,
+    municipality: true,
+    province: true,
+    neighborhood: true,
+    streetName: true,
+    houseNumber: true,
+    postalCode: true,
+    latitude: true,
+    longitude: true,
+  })
+  .refine(coordPairRefinement.refine, {
+    message: coordPairRefinement.message,
+    path: coordPairRefinement.path,
+  });
 
 export const roomDetailsSchema = baseRoomSchema
   .pick({
@@ -101,6 +121,8 @@ export const editRoomSchema = baseRoomSchema
     title: true,
     description: true,
     city: true,
+    municipality: true,
+    province: true,
     neighborhood: true,
     streetName: true,
     houseNumber: true,
@@ -126,6 +148,10 @@ export const editRoomSchema = baseRoomSchema
     preferredAgeMax: true,
     acceptedLanguages: true,
     roomVereniging: true,
+  })
+  .refine(coordPairRefinement.refine, {
+    message: coordPairRefinement.message,
+    path: coordPairRefinement.path,
   })
   .refine(
     (data) => {

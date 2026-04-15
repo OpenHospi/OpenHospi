@@ -3,9 +3,9 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { InputOTP } from '@/components/forms/input-otp';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeButton } from '@/components/native/button';
+import { ThemedInput } from '@/components/native/input';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useSubmitIdentity, useVerifyEmail, useResendCode } from '@/services/onboarding';
 import type { OnboardingStatus, ProfileWithPhotos } from '@openhospi/shared/api-types';
@@ -72,6 +72,7 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
   if (verified) {
     return (
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scrollContent}>
@@ -80,7 +81,7 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
             {t('verified')}
           </ThemedText>
         </View>
-        <ThemedButton onPress={onNext}>{tCommon('next')}</ThemedButton>
+        <NativeButton label={tCommon('next')} onPress={onNext} />
       </ScrollView>
     );
   }
@@ -88,6 +89,7 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
   if (showCodeInput) {
     return (
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scrollContent}>
@@ -114,15 +116,19 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
           </ThemedText>
         )}
 
-        <ThemedButton variant="link" onPress={handleResend} disabled={resendCode.isPending}>
-          {t('resendCode')}
-        </ThemedButton>
+        <NativeButton
+          label={t('resendCode')}
+          variant="link"
+          onPress={handleResend}
+          disabled={resendCode.isPending}
+        />
       </ScrollView>
     );
   }
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent}>
@@ -166,9 +172,11 @@ export default function IdentityStep({ onNext, profile, status }: Props) {
         </ThemedText>
       </View>
 
-      <ThemedButton onPress={handleSubmitIdentity} disabled={submitIdentity.isPending}>
-        {tCommon('next')}
-      </ThemedButton>
+      <NativeButton
+        label={tCommon('next')}
+        onPress={handleSubmitIdentity}
+        disabled={submitIdentity.isPending}
+      />
     </ScrollView>
   );
 }

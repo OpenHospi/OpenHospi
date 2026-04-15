@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { SPRING_BOUNCY, SPRING_SNAPPY } from '@/lib/animations';
 
 type NotificationBadgeProps = {
@@ -26,7 +26,7 @@ export function NotificationBadge({ count }: NotificationBadgeProps) {
 
   return (
     <Animated.View style={[styles.badge, { backgroundColor: colors.destructive }, animatedStyle]}>
-      <ThemedText color="#ffffff" style={styles.text}>
+      <ThemedText variant="caption2" weight="700" color={colors.primaryForeground}>
         {count > 99 ? '99+' : String(count)}
       </ThemedText>
     </Animated.View>
@@ -44,9 +44,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: '700',
   },
 });

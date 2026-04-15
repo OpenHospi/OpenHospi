@@ -1,6 +1,8 @@
 import { MAX_DECLINE_REASON_LENGTH } from '@openhospi/shared/constants';
 import { InvitationStatus } from '@openhospi/shared/enums';
-import { Calendar, Check, Clock, HelpCircle, MapPin, X } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Check, HelpCircle, X } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,14 +10,15 @@ import { useTranslation } from 'react-i18next';
 import { hapticSuccess, hapticError } from '@/lib/haptics';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { isIOS } from '@/lib/platform';
 
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/shared/bottom-sheet';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
 import { useRespondToInvitation } from '@/services/invitations';
 import type { UserInvitation } from '@openhospi/shared/api-types';
 
@@ -28,7 +31,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.invitations' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { colors, typography } = useTheme();
 
   const respondMutation = useRespondToInvitation();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -132,13 +135,21 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
             {invitation.eventTitle}
           </ThemedText>
           <View style={styles.detailRow}>
-            <Calendar size={14} color={colors.mutedForeground} />
+            {isIOS ? (
+              <SymbolView name="calendar" size={14} tintColor={colors.mutedForeground} />
+            ) : (
+              <MaterialIcons name="calendar-today" size={14} color={colors.mutedForeground} />
+            )}
             <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {new Date(invitation.eventDate + 'T00:00:00').toLocaleDateString()}
             </ThemedText>
           </View>
           <View style={styles.detailRow}>
-            <Clock size={14} color={colors.mutedForeground} />
+            {isIOS ? (
+              <SymbolView name="clock" size={14} tintColor={colors.mutedForeground} />
+            ) : (
+              <MaterialIcons name="schedule" size={14} color={colors.mutedForeground} />
+            )}
             <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
               {invitation.timeStart.slice(0, 5)}
               {invitation.timeEnd ? ` – ${invitation.timeEnd.slice(0, 5)}` : ''}
@@ -146,7 +157,11 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
           </View>
           {invitation.location && (
             <View style={styles.detailRow}>
-              <MapPin size={14} color={colors.mutedForeground} />
+              {isIOS ? (
+                <SymbolView name="mappin" size={14} tintColor={colors.mutedForeground} />
+              ) : (
+                <MaterialIcons name="place" size={14} color={colors.mutedForeground} />
+              )}
               <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                 {invitation.location}
               </ThemedText>
@@ -156,7 +171,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
 
         {/* Deadline warning */}
         {deadlineText && (
-          <ThemedText variant="subheadline" weight="500" style={{ color: '#ea580c' }}>
+          <ThemedText variant="subheadline" weight="500" style={{ color: colors.warning }}>
             {deadlineText}
           </ThemedText>
         )}
@@ -164,88 +179,76 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
         {/* RSVP buttons -- pending */}
         {!isCancelled && invitation.status === InvitationStatus.pending && (
           <View style={styles.buttonRow}>
-            <ThemedButton
+            <NativeButton
+              label={t('attend')}
               size="sm"
               onPress={() => handleRsvp(InvitationStatus.attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              {respondMutation.isPending ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Check size={14} color="white" />
-              )}
-              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
-                {t('attend')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton
+              loading={respondMutation.isPending}
+              style={styles.rsvpButton}
+              systemImage="checkmark"
+              materialIcon="check"
+            />
+            <NativeButton
+              label={t('maybe')}
               size="sm"
               variant="outline"
               onPress={() => handleRsvp(InvitationStatus.maybe)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              <HelpCircle size={14} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('maybe')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton
+              style={styles.rsvpButton}
+              systemImage="questionmark"
+              materialIcon="help-outline"
+            />
+            <NativeButton
+              label={t('decline')}
               size="sm"
               variant="outline"
               onPress={() => handleRsvp(InvitationStatus.not_attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              <X size={14} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('decline')}
-              </ThemedText>
-            </ThemedButton>
+              style={styles.rsvpButton}
+              systemImage="xmark"
+              materialIcon="close"
+            />
           </View>
         )}
 
         {/* Change response -- attending: can decline */}
         {!isCancelled && invitation.status === InvitationStatus.attending && (
-          <ThemedButton
+          <NativeButton
+            label={t('decline')}
             size="sm"
             variant="ghost"
             onPress={() => handleRsvp(InvitationStatus.not_attending)}
             disabled={respondMutation.isPending}
-            style={[styles.rsvpButton, { alignSelf: 'flex-start' }]}>
-            <X size={14} color={colors.foreground} />
-            <ThemedText variant="subheadline" weight="600">
-              {t('decline')}
-            </ThemedText>
-          </ThemedButton>
+            style={{ ...styles.rsvpButton, alignSelf: 'flex-start' }}
+            systemImage="xmark"
+            materialIcon="close"
+          />
         )}
 
         {/* Change response -- maybe: can attend or decline */}
         {!isCancelled && invitation.status === InvitationStatus.maybe && (
           <View style={styles.buttonRow}>
-            <ThemedButton
+            <NativeButton
+              label={t('attend')}
               size="sm"
               onPress={() => handleRsvp(InvitationStatus.attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              {respondMutation.isPending ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Check size={14} color="white" />
-              )}
-              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
-                {t('attend')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton
+              loading={respondMutation.isPending}
+              style={styles.rsvpButton}
+              systemImage="checkmark"
+              materialIcon="check"
+            />
+            <NativeButton
+              label={t('decline')}
               size="sm"
               variant="ghost"
               onPress={() => handleRsvp(InvitationStatus.not_attending)}
               disabled={respondMutation.isPending}
-              style={styles.rsvpButton}>
-              <X size={14} color={colors.foreground} />
-              <ThemedText variant="subheadline" weight="600">
-                {t('decline')}
-              </ThemedText>
-            </ThemedButton>
+              style={styles.rsvpButton}
+              systemImage="xmark"
+              materialIcon="close"
+            />
           </View>
         )}
       </View>
@@ -257,26 +260,21 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
         onDismiss={() => setDeclineReason('')}
         footer={
           <View style={styles.buttonRow}>
-            <ThemedButton
+            <NativeButton
+              label={t('confirmDecline')}
               variant="destructive"
               onPress={handleDeclineSubmit}
               disabled={respondMutation.isPending || !declineReason.trim()}
-              style={{ flex: 1 }}>
-              {respondMutation.isPending ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <ThemedText variant="subheadline" weight="600" color={colors.destructiveForeground}>
-                  {t('confirmDecline')}
-                </ThemedText>
-              )}
-            </ThemedButton>
-            <ThemedButton
+              loading={respondMutation.isPending}
+              style={{ flex: 1 }}
+            />
+            <NativeButton
+              label={tCommon('cancel')}
               variant="ghost"
               onPress={() => bottomSheetRef.current?.dismiss()}
               disabled={respondMutation.isPending}
-              style={{ flex: 1 }}>
-              {tCommon('cancel')}
-            </ThemedButton>
+              style={{ flex: 1 }}
+            />
           </View>
         }>
         <View style={styles.sheetContent}>
@@ -298,6 +296,7 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
                 borderColor: colors.input,
                 backgroundColor: colors.background,
                 color: colors.foreground,
+                fontSize: typography.subheadline.fontSize,
               },
             ]}
           />
@@ -311,7 +310,7 @@ const styles = StyleSheet.create({
   card: {
     borderLeftWidth: 4,
     borderLeftColor: '#a855f7',
-    borderRadius: 12,
+    borderRadius: radius.lg,
     padding: 16,
     gap: 12,
     borderWidth: StyleSheet.hairlineWidth,
@@ -347,6 +346,5 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radius.md,
-    fontSize: 14,
   },
 });

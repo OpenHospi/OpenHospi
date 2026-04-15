@@ -1,19 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { APP_NAME } from '@openhospi/shared/constants';
-import { StatusBar } from 'expo-status-bar';
-import { GraduationCap, Loader2 } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
-import { LanguagePicker } from '@/components/shared/language-picker';
+import { ThemedText } from '@/components/native/text';
 import { Logo } from '@/components/shared/logo';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { authClient } from '@/lib/auth-client';
+import { hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 
 export default function LoginScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
@@ -48,14 +56,32 @@ export default function LoginScreen() {
     }
   }
 
+  const primaryButtonStyle: ViewStyle = {
+    height: isIOS ? 50 : 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    borderRadius: isIOS ? radius.lg : radius.md,
+    backgroundColor: colors.primary,
+    opacity: isPending ? 0.6 : 1,
+  };
+
+  const outlineButtonStyle: ViewStyle = {
+    height: isIOS ? 50 : 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    borderRadius: isIOS ? radius.lg : radius.md,
+    backgroundColor: colors.tertiaryBackground,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    opacity: isPending ? 0.6 : 1,
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
-
-      <View style={styles.languageRow}>
-        <LanguagePicker />
-      </View>
-
       <View style={styles.center}>
         <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
           <View style={styles.logoRow}>
@@ -70,26 +96,40 @@ export default function LoginScreen() {
             <ThemedText
               variant="subheadline"
               color={colors.tertiaryForeground}
-              style={styles.descriptionText}>
+              style={styles.centered}>
               {t('description')}
             </ThemedText>
           </View>
 
           <View style={styles.buttonSection}>
-            <ThemedButton size="lg" onPress={handleInAcademiaLogin} disabled={isPending}>
+            <Pressable
+              onPress={() => {
+                hapticLight();
+                handleInAcademiaLogin();
+              }}
+              disabled={isPending}
+              android_ripple={{ color: 'rgba(255,255,255,0.2)', borderless: false }}
+              style={({ pressed }) => [primaryButtonStyle, pressed && isIOS && { opacity: 0.75 }]}>
               {isPending ? (
-                <Loader2 size={20} color={colors.primaryForeground} />
+                <ActivityIndicator size="small" color={colors.primaryForeground} />
+              ) : isIOS ? (
+                <SymbolView
+                  name="graduationcap.fill"
+                  size={20}
+                  tintColor={colors.primaryForeground}
+                />
               ) : (
-                <GraduationCap size={20} color={colors.primaryForeground} />
+                <Ionicons name="school" size={20} color={colors.primaryForeground} />
               )}
-              <ThemedText variant="subheadline" weight="600" color={colors.primaryForeground}>
+              <ThemedText variant="body" weight="600" color={colors.primaryForeground}>
                 {t('inacademiaButton')}
               </ThemedText>
-            </ThemedButton>
+            </Pressable>
+
             <ThemedText
               variant="caption1"
               color={colors.tertiaryForeground}
-              style={styles.descriptionText}>
+              style={styles.centered}>
               {t('inacademiaDescription')}
             </ThemedText>
           </View>
@@ -103,24 +143,32 @@ export default function LoginScreen() {
                 </ThemedText>
                 <View style={[styles.dividerLine, { backgroundColor: colors.separator }]} />
               </View>
-              <ThemedButton
-                variant="outline"
-                size="lg"
-                onPress={handleGitHubLogin}
-                disabled={isPending}>
+
+              <Pressable
+                onPress={() => {
+                  hapticLight();
+                  handleGitHubLogin();
+                }}
+                disabled={isPending}
+                android_ripple={{ color: 'rgba(0,0,0,0.08)', borderless: false }}
+                style={({ pressed }) => [
+                  outlineButtonStyle,
+                  pressed && isIOS && { opacity: 0.75 },
+                ]}>
                 {isPending ? (
-                  <Loader2 size={20} color={colors.foreground} />
+                  <ActivityIndicator size="small" color={colors.foreground} />
                 ) : (
                   <Ionicons name="logo-github" size={20} color={colors.foreground} />
                 )}
-                <ThemedText variant="subheadline" weight="600">
+                <ThemedText variant="body" weight="600">
                   {t('devGithubButton')}
                 </ThemedText>
-              </ThemedButton>
+              </Pressable>
+
               <ThemedText
                 variant="caption1"
                 color={colors.tertiaryForeground}
-                style={styles.descriptionText}>
+                style={styles.centered}>
                 {t('devGithubDescription')}
               </ThemedText>
             </View>
@@ -135,11 +183,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  languageRow: {
-    alignItems: 'flex-end',
-    paddingHorizontal: 24,
-    paddingTop: 16,
-  },
   center: {
     flex: 1,
     justifyContent: 'center',
@@ -148,9 +191,9 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    maxWidth: 448,
+    maxWidth: 400,
     alignItems: 'center',
-    gap: 32,
+    gap: Platform.select({ ios: 28, android: 24 }),
   },
   logoRow: {
     flexDirection: 'row',
@@ -161,24 +204,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  descriptionText: {
+  centered: {
     textAlign: 'center',
   },
   buttonSection: {
     width: '100%',
-    gap: 12,
+    gap: 10,
   },
   devSection: {
     width: '100%',
-    gap: 12,
+    gap: 10,
   },
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    paddingVertical: 4,
   },
   dividerLine: {
     flex: 1,
-    height: 1,
+    height: StyleSheet.hairlineWidth,
   },
 });

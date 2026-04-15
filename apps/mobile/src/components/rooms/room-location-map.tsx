@@ -6,6 +6,8 @@ import {
 import { AppleMaps, GoogleMaps } from 'expo-maps';
 import { Platform, View } from 'react-native';
 
+import { radius } from '@/design/tokens/radius';
+
 type Props = {
   latitude: number;
   longitude: number;
@@ -38,7 +40,7 @@ export default function RoomLocationMap({ latitude, longitude }: Props) {
   };
 
   return (
-    <View style={{ height: 256, borderRadius: 12, overflow: 'hidden' }} pointerEvents="none">
+    <View style={{ height: 256, borderRadius: radius.lg, overflow: 'hidden' }} pointerEvents="none">
       {Platform.OS === 'ios' ? (
         <AppleMaps.View
           style={{ flex: 1 }}

@@ -5,8 +5,9 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, View } from 'react-nat
 import { useTranslation } from 'react-i18next';
 
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
@@ -109,7 +110,10 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
   }
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}>
       <View style={styles.slotList}>
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];
@@ -179,14 +183,14 @@ const styles = StyleSheet.create({
   thumbnail: {
     height: 64,
     width: 64,
-    borderRadius: 8,
+    borderRadius: radius.md,
   },
   thumbnailPlaceholder: {
     height: 64,
     width: 64,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
+    borderRadius: radius.md,
   },
   slotLabel: {
     flex: 1,

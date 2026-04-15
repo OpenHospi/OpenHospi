@@ -14,9 +14,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { getProtocolStore } from '@/lib/crypto/stores';
 import { useSession } from '@/lib/auth-client';
 import { useConversationDetail } from '@/services/chat';
@@ -144,9 +145,7 @@ export default function VerifyScreen() {
             style={styles.textCenter}>
             {t('unavailable')}
           </ThemedText>
-          <ThemedButton variant="outline" onPress={() => router.back()}>
-            {t('close')}
-          </ThemedButton>
+          <NativeButton label={t('close')} variant="outline" onPress={() => router.back()} />
         </View>
       )}
 
@@ -188,20 +187,17 @@ export default function VerifyScreen() {
           </ThemedText>
 
           {/* Scan button */}
-          <ThemedButton
+          <NativeButton
+            label={t('scan_tab')}
             style={styles.scanButton}
+            systemImage="qrcode.viewfinder"
+            materialIcon="qr-code-scanner"
             onPress={() => {
               scanProcessedRef.current = false;
               setScanResult(null);
               setScanning(true);
-            }}>
-            <View style={styles.scanButtonContent}>
-              <ScanLine size={18} color={colors.primaryForeground} />
-              <ThemedText variant="subheadline" weight="500" color={colors.primaryForeground}>
-                {t('scan_tab')}
-              </ThemedText>
-            </View>
-          </ThemedButton>
+            }}
+          />
         </ScrollView>
       )}
 
@@ -250,15 +246,15 @@ function CameraSection({
           {permission.canAskAgain ? t('camera_permission') : t('camera_permission_settings')}
         </ThemedText>
         {permission.canAskAgain ? (
-          <ThemedButton onPress={requestPermission}>{t('grant_camera')}</ThemedButton>
+          <NativeButton label={t('grant_camera')} onPress={requestPermission} />
         ) : (
-          <ThemedButton variant="outline" onPress={() => Linking.openSettings()}>
-            {t('open_settings')}
-          </ThemedButton>
+          <NativeButton
+            label={t('open_settings')}
+            variant="outline"
+            onPress={() => Linking.openSettings()}
+          />
         )}
-        <ThemedButton variant="ghost" onPress={onClose}>
-          {t('close')}
-        </ThemedButton>
+        <NativeButton label={t('close')} variant="ghost" onPress={onClose} />
       </View>
     );
   }
@@ -301,9 +297,7 @@ function CameraSection({
           style={[styles.textCenter, styles.scanInstructions]}>
           {t('scan_instructions')}
         </ThemedText>
-        <ThemedButton variant="secondary" onPress={onClose}>
-          {t('close')}
-        </ThemedButton>
+        <NativeButton label={t('close')} variant="secondary" onPress={onClose} />
       </View>
     </View>
   );
@@ -345,13 +339,13 @@ const styles = StyleSheet.create({
   },
   qrBox: {
     padding: 16,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     alignItems: 'center',
     backgroundColor: 'white',
   },
   safetyNumberBox: {
     marginTop: 28,
-    borderRadius: 10,
+    borderRadius: radius.md,
     paddingVertical: 16,
     paddingHorizontal: 20,
     gap: 8,

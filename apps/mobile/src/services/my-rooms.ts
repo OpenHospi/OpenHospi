@@ -24,6 +24,8 @@ import type {
 type SaveBasicInfoPayload = {
   title: string;
   city: string;
+  municipality?: string;
+  province?: string;
   neighborhood?: string;
   streetName?: string;
   houseNumber?: string;

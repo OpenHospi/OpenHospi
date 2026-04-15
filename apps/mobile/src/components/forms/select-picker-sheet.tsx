@@ -8,8 +8,8 @@ import {
 } from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedInput } from '@/components/primitives/themed-input';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedInput } from '@/components/native/input';
+import { ThemedText } from '@/components/native/text';
 
 type SelectPickerSheetProps = {
   values: readonly string[];

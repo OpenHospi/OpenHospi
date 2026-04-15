@@ -3,7 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { radius } from '@/design/tokens/radius';
+import { ThemedText } from '@/components/native/text';
 
 type ToastType = 'success' | 'error' | 'info';
 
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

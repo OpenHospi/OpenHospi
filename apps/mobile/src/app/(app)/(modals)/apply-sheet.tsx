@@ -7,9 +7,9 @@ import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useApplyToRoom } from '@/services/rooms';
@@ -65,11 +65,11 @@ export default function ApplySheetScreen() {
       </View>
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <ThemedButton
+        <NativeButton
+          label={tCommon('submit')}
           onPress={handleSubmit}
-          disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}>
-          {tCommon('submit')}
-        </ThemedButton>
+          disabled={applyToRoom.isPending || message.trim().length < MIN_PERSONAL_MESSAGE_LENGTH}
+        />
       </View>
     </View>
   );

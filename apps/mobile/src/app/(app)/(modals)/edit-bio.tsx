@@ -3,9 +3,9 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError, hapticFormSubmitSuccess } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
@@ -53,9 +53,11 @@ export default function EditBioScreen() {
       </View>
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <ThemedButton onPress={handleSave} disabled={updateProfile.isPending}>
-          {tCommon('save')}
-        </ThemedButton>
+        <NativeButton
+          label={tCommon('save')}
+          onPress={handleSave}
+          disabled={updateProfile.isPending}
+        />
       </View>
     </View>
   );

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { useNetworkStatus } from '@/lib/network';
 
 type ErrorStateProps = {

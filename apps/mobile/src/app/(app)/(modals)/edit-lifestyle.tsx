@@ -4,10 +4,11 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
 import { useTranslation } from 'react-i18next';
@@ -76,11 +77,11 @@ export default function EditLifestyleScreen() {
       </View>
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <ThemedButton
+        <NativeButton
+          label={tCommon('save')}
           onPress={handleSave}
-          disabled={updateProfile.isPending || selected.length < MIN_LIFESTYLE_TAGS}>
-          {tCommon('save')}
-        </ThemedButton>
+          disabled={updateProfile.isPending || selected.length < MIN_LIFESTYLE_TAGS}
+        />
       </View>
     </View>
   );
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },

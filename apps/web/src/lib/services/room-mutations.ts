@@ -1,6 +1,6 @@
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import { houseMembers, houses, roomPhotos, rooms } from "@openhospi/database/schema";
-import { STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
+import { MAX_ROOMS_PER_USER, STORAGE_BUCKET_ROOM_PHOTOS } from "@openhospi/shared/constants";
 import {
   GenderPreference,
   HouseMemberRole,
@@ -30,8 +30,6 @@ import { and, count, eq, inArray, sql } from "drizzle-orm";
 import { requireRoomOwnership } from "@/lib/auth/server";
 import { createDraftRoom, getExistingDraft } from "@/lib/queries/rooms";
 import { deletePhotoFromStorage, uploadPhotoToStorage } from "@/lib/services/photos";
-import { checkRateLimit, rateLimiters } from "@/lib/services/rate-limit";
-import { MAX_ROOMS_PER_USER } from "@openhospi/shared/constants";
 
 // ── Room limit (database-checked, not time-based) ─────────
 
@@ -131,6 +129,8 @@ export async function saveRoomBasicInfo(userId: string, roomId: string, data: Ro
     title,
     description,
     city,
+    municipality,
+    province,
     neighborhood,
     streetName,
     houseNumber,
@@ -146,6 +146,8 @@ export async function saveRoomBasicInfo(userId: string, roomId: string, data: Ro
         title,
         description: description || null,
         city,
+        municipality: municipality || null,
+        province: province || null,
         neighborhood: neighborhood || null,
         streetName: streetName || null,
         houseNumber: houseNumber || null,
@@ -258,6 +260,8 @@ export async function updateRoomForUser(userId: string, roomId: string, data: Ed
         title: d.title,
         description: d.description || null,
         city: d.city,
+        municipality: d.municipality || null,
+        province: d.province || null,
         neighborhood: d.neighborhood || null,
         streetName: d.streetName || null,
         houseNumber: d.houseNumber || null,

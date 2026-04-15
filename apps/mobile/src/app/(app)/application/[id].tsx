@@ -1,14 +1,19 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Dot, Euro, Home } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Dot } from 'lucide-react-native';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { isIOS } from '@/lib/platform';
+
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { HospiInvitationCard } from '@/components/events/hospi-invitation-card';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTranslation } from 'react-i18next';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -136,13 +141,18 @@ export default function ApplicationDetailScreen() {
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         style={styles.flex}
         contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}>
         {coverUrl ? (
           <Image source={{ uri: coverUrl }} style={styles.coverImage} contentFit="cover" />
         ) : (
           <View style={[styles.placeholderCover, { backgroundColor: colors.muted }]}>
-            <Home size={48} color={colors.mutedForeground} />
+            {isIOS ? (
+              <SymbolView name="house" size={48} tintColor={colors.mutedForeground} />
+            ) : (
+              <MaterialIcons name="home" size={48} color={colors.mutedForeground} />
+            )}
           </View>
         )}
 
@@ -171,7 +181,11 @@ export default function ApplicationDetailScreen() {
               )}
             </View>
             <View style={styles.priceRow}>
-              <Euro size={18} color={colors.primary} />
+              {isIOS ? (
+                <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
+              ) : (
+                <MaterialIcons name="euro" size={18} color={colors.primary} />
+              )}
               <ThemedText variant="headline" color={colors.primary}>
                 {app.roomRentPrice}
                 {tCommon('perMonth')}
@@ -183,7 +197,7 @@ export default function ApplicationDetailScreen() {
             <ThemedBadge
               variant="secondary"
               label={tEnums(`application_status.${app.status}`)}
-              style={{ alignSelf: 'flex-start', borderRadius: 999 }}
+              style={{ alignSelf: 'flex-start', borderRadius: radius.full }}
             />
             <ThemedText
               variant="caption1"
@@ -217,13 +231,13 @@ export default function ApplicationDetailScreen() {
             </View>
           )}
 
-          <ThemedButton
+          <NativeButton
+            label={t('viewRoom')}
             variant="outline"
             onPress={() =>
               router.push({ pathname: '/(app)/room/[id]', params: { id: app.roomId } })
-            }>
-            {t('viewRoom')}
-          </ThemedButton>
+            }
+          />
         </View>
       </ScrollView>
 
@@ -236,12 +250,12 @@ export default function ApplicationDetailScreen() {
               backgroundColor: colors.background,
             },
           ]}>
-          <ThemedButton
+          <NativeButton
+            label={withdrawMutation.isPending ? '...' : t('withdraw')}
             variant="destructive"
             onPress={handleWithdraw}
-            disabled={withdrawMutation.isPending}>
-            {withdrawMutation.isPending ? '...' : t('withdraw')}
-          </ThemedButton>
+            disabled={withdrawMutation.isPending}
+          />
         </View>
       )}
     </SafeAreaView>
@@ -295,7 +309,7 @@ const styles = StyleSheet.create({
   timelineDot: {
     width: 12,
     height: 12,
-    borderRadius: 6,
+    borderRadius: radius.sm,
     marginTop: 4,
   },
   timelineConnector: {

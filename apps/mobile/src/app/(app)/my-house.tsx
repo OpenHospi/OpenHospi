@@ -4,14 +4,14 @@ import { Alert, Platform, ScrollView, Share, StyleSheet, View } from 'react-nati
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 
-import { ThemedAvatar } from '@/components/primitives/themed-avatar';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedAvatar } from '@/components/native/avatar';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
 import { useTheme } from '@/design';
@@ -80,7 +80,10 @@ export default function MyHouseScreen() {
   return (
     <>
       <Stack.Screen options={{ title: t('title') }} />
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
           <ThemedText variant="title2">{house.name}</ThemedText>
           <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
@@ -90,24 +93,33 @@ export default function MyHouseScreen() {
 
         <GroupedSection>
           <ListCell label={t('inviteCode')} value={house.inviteCode} onPress={handleCopyCode} />
-          <ListSeparator />
+          <NativeDivider />
           <View style={styles.actionRow}>
-            <ThemedButton variant="outline" size="sm" onPress={handleCopyCode}>
-              <Copy size={16} color={colors.foreground} />
-              <ThemedText variant="footnote" weight="500">
-                {tCommon('copy')}
-              </ThemedText>
-            </ThemedButton>
-            <ThemedButton variant="outline" size="sm" onPress={handleShare}>
-              <Share2 size={16} color={colors.foreground} />
-              <ThemedText variant="footnote" weight="500">
-                {tCommon('share')}
-              </ThemedText>
-            </ThemedButton>
+            <NativeButton
+              label={tCommon('copy')}
+              variant="outline"
+              size="sm"
+              onPress={handleCopyCode}
+              systemImage="doc.on.doc"
+              materialIcon="content-copy"
+            />
+            <NativeButton
+              label={tCommon('share')}
+              variant="outline"
+              size="sm"
+              onPress={handleShare}
+              systemImage="square.and.arrow.up"
+              materialIcon="share"
+            />
             {isOwner && (
-              <ThemedButton variant="ghost" size="sm" onPress={() => regenerateCode.mutate()}>
-                <RefreshCw size={16} color={colors.tertiaryForeground} />
-              </ThemedButton>
+              <NativeButton
+                label={t('regenerate')}
+                variant="ghost"
+                size="sm"
+                onPress={() => regenerateCode.mutate()}
+                systemImage="arrow.clockwise"
+                materialIcon="refresh"
+              />
             )}
           </View>
         </GroupedSection>
@@ -124,7 +136,7 @@ export default function MyHouseScreen() {
         <GroupedSection>
           {members.map((member, index) => (
             <View key={member.userId}>
-              {index > 0 && <ListSeparator insetLeft={72} />}
+              {index > 0 && <NativeDivider />}
               <View style={styles.memberRow}>
                 <ThemedAvatar
                   source={

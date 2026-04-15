@@ -8,6 +8,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+const PDOK_PROXY_BASE = "/api/pdok";
+
 const DEBOUNCE_MS = 300;
 
 type Props = {
@@ -30,7 +32,7 @@ export function CitySearchInput({ value, onSelect, placeholder }: Props) {
       setIsOpen(false);
       return;
     }
-    const items = await searchCities(q);
+    const items = await searchCities(q, PDOK_PROXY_BASE);
     setSuggestions(items);
     setIsOpen(items.length > 0);
     setHighlightedIndex(-1);

@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { InputOTP } from '@/components/forms/input-otp';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { NativeButton } from '@/components/native/button';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { getProtocolStore } from '@/lib/crypto/stores';
 import { api } from '@/lib/api-client';
@@ -83,6 +83,7 @@ export default function SecurityStep() {
 
   return (
     <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.scrollContent}>
@@ -108,16 +109,16 @@ export default function SecurityStep() {
           <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('pin_hint')}
           </ThemedText>
-          <ThemedButton
+          <NativeButton
+            label={t('use_pin')}
             onPress={() => {
               if (pin.length !== PIN_LENGTH) {
                 Alert.alert(t('pin_length_error'));
                 return;
               }
               setStep('confirm');
-            }}>
-            {t('use_pin')}
-          </ThemedButton>
+            }}
+          />
         </View>
       ) : (
         <View style={styles.pinSection}>
@@ -131,15 +132,15 @@ export default function SecurityStep() {
             secureTextEntry
             autoFocus
           />
-          <ThemedButton
+          <NativeButton
+            label={t('change_pin')}
             variant="ghost"
             onPress={() => {
               setStep('enter');
               setPin('');
               setConfirmPin('');
-            }}>
-            {t('change_pin')}
-          </ThemedButton>
+            }}
+          />
         </View>
       )}
     </ScrollView>

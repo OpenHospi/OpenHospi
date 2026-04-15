@@ -1,6 +1,7 @@
 import { createDrizzleSupabaseClient, db } from "@openhospi/database";
 import {
   activeConsents,
+  calendarTokens,
   consentRecords,
   dataRequests,
   processingRestrictions,
@@ -136,6 +137,60 @@ export async function getUserDataRequestsForUser(userId: string) {
       .orderBy(desc(dataRequests.createdAt))
       .limit(20),
   );
+}
+
+export async function getConsentHistoryForUser(userId: string) {
+  return createDrizzleSupabaseClient(userId).rls((tx) =>
+    tx
+      .select()
+      .from(consentRecords)
+      .where(eq(consentRecords.userId, userId))
+      .orderBy(desc(consentRecords.createdAt))
+      .limit(50),
+  );
+}
+
+export async function liftProcessingRestrictionForUser(userId: string) {
+  await db
+    .update(processingRestrictions)
+    .set({ liftedAt: new Date(), liftedBy: userId })
+    .where(and(eq(processingRestrictions.userId, userId), isNull(processingRestrictions.liftedAt)));
+  return { success: true };
+}
+
+export async function getCalendarTokenForUser(userId: string): Promise<string | null> {
+  const [row] = await db
+    .select({ token: calendarTokens.token })
+    .from(calendarTokens)
+    .where(eq(calendarTokens.userId, userId));
+
+  if (row) return row.token;
+
+  const [created] = await db
+    .insert(calendarTokens)
+    .values({ userId })
+    .onConflictDoNothing()
+    .returning({ token: calendarTokens.token });
+
+  return created?.token ?? null;
+}
+
+export async function regenerateCalendarTokenForUser(userId: string): Promise<string> {
+  const newToken = crypto.randomUUID();
+  const [row] = await db
+    .update(calendarTokens)
+    .set({ token: newToken })
+    .where(eq(calendarTokens.userId, userId))
+    .returning({ token: calendarTokens.token });
+
+  if (row) return row.token;
+
+  const [created] = await db
+    .insert(calendarTokens)
+    .values({ userId, token: newToken })
+    .returning({ token: calendarTokens.token });
+
+  return created.token;
 }
 
 export async function deleteAccountForUser(userId: string) {

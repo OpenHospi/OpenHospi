@@ -51,17 +51,19 @@ export const languagesStepSchema = baseProfileSchema.pick({
   languages: true,
 });
 
-export const editProfileSchema = baseProfileSchema.pick({
-  gender: true,
-  birthDate: true,
-  studyProgram: true,
-  studyLevel: true,
-  bio: true,
-  lifestyleTags: true,
-  languages: true,
-  preferredCity: true,
-  vereniging: true,
-});
+export const editProfileSchema = baseProfileSchema
+  .pick({
+    gender: true,
+    birthDate: true,
+    studyProgram: true,
+    studyLevel: true,
+    bio: true,
+    lifestyleTags: true,
+    languages: true,
+    preferredCity: true,
+    vereniging: true,
+  })
+  .partial();
 
 export type IdentityStepData = z.infer<typeof identityStepSchema>;
 export type AboutStepData = z.infer<typeof aboutStepSchema>;

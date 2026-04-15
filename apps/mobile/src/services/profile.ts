@@ -100,3 +100,14 @@ export function useDeleteProfilePhoto() {
     onError,
   });
 }
+
+export function useReorderProfilePhotos() {
+  const queryClient = useQueryClient();
+  const { showToast } = useToast();
+  const onError = createMutationErrorHandler(showToast);
+  return useMutation({
+    mutationFn: (order: string[]) => api.patch('/api/mobile/profile/photos/reorder', { order }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.profile.detail() }),
+    onError,
+  });
+}

@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ConversationListItem } from '@/components/chat/conversation-list-item';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { ThemedSkeleton } from '@/components/primitives/themed-skeleton';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { NativeDivider } from '@/components/native/divider';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useSession } from '@/lib/auth-client';
 import { useConversations } from '@/services/chat';
@@ -95,6 +95,7 @@ export default function ChatTab() {
         onSearchChange={setSearchText}
       />
       <FlashList
+        contentInsetAdjustmentBehavior="automatic"
         data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
@@ -122,7 +123,7 @@ export default function ChatTab() {
             />
           );
         }}
-        ItemSeparatorComponent={() => <ListSeparator insetLeft={76} />}
+        ItemSeparatorComponent={() => <NativeDivider />}
         ListEmptyComponent={
           <NativeEmptyState
             sfSymbol="bubble.left.and.bubble.right"

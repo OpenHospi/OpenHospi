@@ -3,8 +3,8 @@ import { useImperativeHandle, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ThemedTextarea } from '@/components/primitives/themed-textarea';
+import { ThemedText } from '@/components/native/text';
+import { ThemedTextarea } from '@/components/native/textarea';
 import { useTheme } from '@/design';
 import { useSubmitBio } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';

@@ -9,6 +9,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+const PDOK_PROXY_BASE = "/api/pdok";
+
 export type { AddressResult };
 
 type Props = {
@@ -42,7 +44,7 @@ export function AddressAutocomplete({
 
     setIsLoading(true);
     try {
-      const items = await searchAddresses(q);
+      const items = await searchAddresses(q, PDOK_PROXY_BASE);
       setSuggestions(items);
       setIsOpen(items.length > 0);
       setHighlightedIndex(-1);
@@ -62,7 +64,7 @@ export function AddressAutocomplete({
     setSuggestions([]);
 
     try {
-      const result = await lookupAddress(suggestion.id);
+      const result = await lookupAddress(suggestion.id, PDOK_PROXY_BASE);
       if (!result) return;
 
       setSelectedDisplay(suggestion.displayName);

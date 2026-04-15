@@ -20,7 +20,7 @@ export function getTransporter(): Transporter {
     // Local dev: generic SMTP (Inbucket, Mailpit, etc.)
     _transporter = createTransport({
       host: SMTP_HOST,
-      port: 2500,
+      port: Number(process.env.SMTP_PORT || 54325),
       secure: false,
     });
   } else {

@@ -4,9 +4,10 @@ import { useImperativeHandle, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 import { useSubmitLanguages } from '@/services/onboarding';
 import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
@@ -51,7 +52,10 @@ export default function LanguagesStep({ ref, onNext, profile }: Props) {
   useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}>
       <ThemedText variant="footnote" color={colors.tertiaryForeground}>
         {t('languageCounter', { count: selected.length, min: MIN_LANGUAGES, max: MAX_LANGUAGES })}
       </ThemedText>
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },

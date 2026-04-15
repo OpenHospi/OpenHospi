@@ -1,16 +1,20 @@
 import { STORAGE_BUCKET_ROOM_PHOTOS } from '@openhospi/shared/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Dot, Euro } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Dot } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { isIOS } from '@/lib/platform';
+
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedBadge } from '@/components/primitives/themed-badge';
-import { ThemedButton } from '@/components/primitives/themed-button';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedBadge } from '@/components/native/badge';
+import { NativeButton } from '@/components/native/button';
+import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { ListSeparator } from '@/components/layout/list-separator';
+import { NativeDivider } from '@/components/native/divider';
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
 import RoomLocationMap from '@/components/rooms/room-location-map';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +49,11 @@ function PriceValue({
 }) {
   return (
     <View style={styles.priceValue}>
-      <Euro size={12} color={colors.foreground} />
+      {isIOS ? (
+        <SymbolView name="eurosign" size={12} tintColor={colors.foreground} />
+      ) : (
+        <MaterialIcons name="euro" size={12} color={colors.foreground} />
+      )}
       <ThemedText variant="subheadline">{amount}</ThemedText>
     </View>
   );
@@ -97,9 +105,12 @@ export default function RoomDetailScreen() {
         <ThemedText variant="body" color={colors.tertiaryForeground}>
           {t('notFound')}
         </ThemedText>
-        <ThemedButton variant="link" style={{ marginTop: 16 }} onPress={() => router.back()}>
-          {t('backToDiscover')}
-        </ThemedButton>
+        <NativeButton
+          label={t('backToDiscover')}
+          variant="link"
+          style={{ marginTop: 16 }}
+          onPress={() => router.back()}
+        />
       </SafeAreaView>
     );
   }
@@ -108,7 +119,7 @@ export default function RoomDetailScreen() {
 
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
-      <ScrollView style={styles.flex}>
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.flex}>
         <PhotoCarousel photos={room.photos} bucket={STORAGE_BUCKET_ROOM_PHOTOS} />
 
         <View style={styles.content}>
@@ -147,13 +158,17 @@ export default function RoomDetailScreen() {
                 colors={colors}
               />
               <PriceDetailRow label={t('deposit')} amount={room.deposit} colors={colors} />
-              <ListSeparator insetLeft={0} />
+              <NativeDivider />
               <View style={styles.totalRow}>
                 <ThemedText variant="body" weight="600">
                   {t('totalCost')}
                 </ThemedText>
                 <View style={styles.priceValue}>
-                  <Euro size={18} color={colors.primary} />
+                  {isIOS ? (
+                    <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
+                  ) : (
+                    <MaterialIcons name="euro" size={18} color={colors.primary} />
+                  )}
                   <ThemedText variant="headline" color={colors.primary}>
                     {room.totalCost}
                     {tCommon('perMonth')}
@@ -339,30 +354,28 @@ export default function RoomDetailScreen() {
           },
         ]}>
         {application ? (
-          <ThemedButton
+          <NativeButton
+            label={t('viewApplication')}
             variant="outline"
-            size="lg"
             style={styles.bottomButton}
             onPress={() =>
               router.push({
                 pathname: '/(app)/application/[id]',
                 params: { id: application.id },
               })
-            }>
-            {t('viewApplication')}
-          </ThemedButton>
+            }
+          />
         ) : (
-          <ThemedButton
-            size="lg"
+          <NativeButton
+            label={t('apply')}
             style={styles.bottomButton}
             onPress={() =>
               router.push({
                 pathname: '/(app)/(modals)/apply-sheet',
                 params: { roomId: id },
               })
-            }>
-            {t('apply')}
-          </ThemedButton>
+            }
+          />
         )}
       </View>
     </SafeAreaView>

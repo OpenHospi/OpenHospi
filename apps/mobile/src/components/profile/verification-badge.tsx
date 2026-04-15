@@ -1,7 +1,10 @@
-import { ShieldCheck } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
+import { MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
+import { useTheme } from '@/design';
+import { isIOS } from '@/lib/platform';
 
 type Props = {
   isVerified: boolean;
@@ -9,16 +12,26 @@ type Props = {
 };
 
 export function VerificationBadge({ isVerified, compact = true }: Props) {
+  const { colors } = useTheme();
+
   if (!isVerified) return null;
 
   if (compact) {
-    return <ShieldCheck size={14} color="#22c55e" />;
+    return isIOS ? (
+      <SymbolView name="checkmark.shield" size={14} tintColor={colors.success} />
+    ) : (
+      <MaterialIcons name="verified-user" size={14} color={colors.success} />
+    );
   }
 
   return (
     <View style={styles.container}>
-      <ShieldCheck size={14} color="#22c55e" />
-      <ThemedText variant="caption1" weight="500" color="#16a34a">
+      {isIOS ? (
+        <SymbolView name="checkmark.shield" size={14} tintColor={colors.success} />
+      ) : (
+        <MaterialIcons name="verified-user" size={14} color={colors.success} />
+      )}
+      <ThemedText variant="caption1" weight="500" color={colors.success}>
         Verified
       </ThemedText>
     </View>

@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedBadge } from '@/components/primitives/themed-badge';
+import { ThemedBadge } from '@/components/native/badge';
+import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 
 type ChipPickerProps = {
@@ -41,6 +42,6 @@ const styles = StyleSheet.create({
   chip: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 10,
+    borderRadius: radius.md,
   },
 });

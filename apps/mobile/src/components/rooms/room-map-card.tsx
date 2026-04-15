@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { ThemedText } from '@/components/native/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
 type RoomMapCardRoom = {

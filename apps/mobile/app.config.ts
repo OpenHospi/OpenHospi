@@ -329,6 +329,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         url: 'https://sentry.io/',
         project: 'mobile',
         organization: 'stichting-openhospi',
+        useNativeInit: true,
       },
     ],
   ],

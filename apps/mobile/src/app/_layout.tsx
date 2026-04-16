@@ -11,7 +11,6 @@ import { hideSplash } from '@/lib/splash';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { isRunningInExpoGo } from 'expo';
 import { Stack } from 'expo-router';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -33,12 +32,10 @@ import { initializeNotificationListeners } from '@/lib/notifications';
 Sentry.init({
   dsn: 'https://a93aab45c6f5e6cc68cacf09fa300ff7@o4511172188438528.ingest.de.sentry.io/4511172379934800',
   sendDefaultPii: false,
-  enableAutoSessionTracking: true,
   tracesSampleRate: 0.2,
   attachScreenshot: false,
   attachViewHierarchy: false,
   enabled: !__DEV__,
-  enableNativeFramesTracking: !isRunningInExpoGo(),
 });
 
 // ── Error Boundary ────────────────────────────────────────��─

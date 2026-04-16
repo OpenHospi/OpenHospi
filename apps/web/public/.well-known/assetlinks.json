@@ -1,10 +1,16 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "nl.openhospi.app",
-      "sha256_cert_fingerprints": ["TODO:REPLACE_WITH_SHA256_FROM_EAS_CREDENTIALS"]
+      "sha256_cert_fingerprints": [
+        "F9:4A:E5:FE:ED:B1:E1:29:3A:C8:E5:E2:B1:C3:98:41:0C:16:75:49:55:08:CE:DF:39:84:B5:3C:EA:C4:52:41",
+        "8C:F8:E9:EA:58:F5:95:1B:DF:ED:78:88:8A:D2:C9:10:67:14:3F:D5:F1:77:52:CE:A1:CA:C6:DB:1E:32:4B:F3"
+      ]
     }
   }
 ]

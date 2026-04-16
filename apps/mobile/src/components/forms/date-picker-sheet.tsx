@@ -1,4 +1,4 @@
-import DateTimePicker from '@expo/ui/datetimepicker';
+import { DateTimePicker } from '@expo/ui/datetimepicker';
 
 type DatePickerSheetProps = {
   value: Date;

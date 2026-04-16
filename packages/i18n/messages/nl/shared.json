@@ -468,9 +468,8 @@
       "inacademiaButton": "Inloggen met InAcademia",
       "inacademiaDescription": "Verifieer je studentstatus via je onderwijsinstelling.",
       "error": "Inloggen mislukt. Probeer het opnieuw.",
-      "devOrDivider": "of",
-      "devGithubButton": "Inloggen met GitHub (Dev)",
-      "devGithubDescription": "Alleen voor ontwikkeling. Gebruikt GitHub voor lokaal testen."
+      "reviewerDivider": "reviewer-toegang",
+      "reviewerDescription": "Alleen voor app store review."
     },
     "errors": {
       "INVALID_EMAIL": "Ongeldig e-mailadres",

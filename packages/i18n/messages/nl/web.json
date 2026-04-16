@@ -70,7 +70,7 @@
     },
     "anbi": {
       "title": "ANBI | Stichting OpenHospi",
-      "description": "Stichting OpenHospi is een ANBI. Bekijk onze doelstelling, bestuurssamenstelling, beloningsbeleid en financiele verantwoording."
+      "description": "Stichting OpenHospi heeft ANBI-status aangevraagd. Bekijk onze doelstelling, bestuurssamenstelling, beloningsbeleid en financiele verantwoording."
     },
     "breadcrumbs": {
       "home": "Home",
@@ -178,7 +178,7 @@
       "anbi": "ANBI"
     },
     "tagline": "Gratis, open-source platform om studentenkamers te vinden en aan te bieden in Nederland.",
-    "anbiStatus": "Erkende ANBI-instelling",
+    "anbiStatus": "ANBI-status aangevraagd",
     "license": "Gelicentieerd onder AGPL-3.0",
     "rights": "Alle rechten voorbehouden."
   },

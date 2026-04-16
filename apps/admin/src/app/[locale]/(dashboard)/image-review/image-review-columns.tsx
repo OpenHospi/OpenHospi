@@ -5,6 +5,7 @@ import {
   STORAGE_BUCKET_ROOM_PHOTOS,
 } from "@openhospi/shared/constants";
 import type { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
 
 import { DataTableColumnHeader } from "@/components/data-table";
@@ -28,7 +29,14 @@ export function useImageReviewColumns(): ColumnDef<FlaggedPhoto>[] {
           photo.type === "profile" ? STORAGE_BUCKET_PROFILE_PHOTOS : STORAGE_BUCKET_ROOM_PHOTOS;
         const fullUrl = getStoragePublicUrl(photo.url, bucket);
         return (
-          <img src={fullUrl} alt="Flagged content" className="h-20 w-20 rounded-md object-cover" />
+          <Image
+            src={fullUrl}
+            alt="Flagged content"
+            width={80}
+            height={80}
+            className="rounded-md object-cover"
+            unoptimized
+          />
         );
       },
       enableSorting: false,

@@ -469,9 +469,8 @@
       "inacademiaButton": "Log in with InAcademia",
       "inacademiaDescription": "Verify your student status via your educational institution.",
       "error": "Login failed. Please try again.",
-      "devOrDivider": "or",
-      "devGithubButton": "Log in with GitHub (Dev)",
-      "devGithubDescription": "Development only. Uses GitHub for local testing."
+      "reviewerDivider": "reviewer access",
+      "reviewerDescription": "App store review only."
     },
     "errors": {
       "INVALID_EMAIL": "Invalid email address",

@@ -1,7 +1,6 @@
 import { Stack } from 'expo-router';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
 
 import { ConnectionStatusBar } from '@/components/feedback/connection-status-bar';
 import { DiscoverFiltersProvider } from '@/context/discover-filters';

@@ -70,7 +70,7 @@
     },
     "anbi": {
       "title": "ANBI | Stichting OpenHospi",
-      "description": "Stichting OpenHospi ist eine niederländische gemeinnützige Organisation (ANBI). Sehen Sie unsere Zielsetzung, Vorstandszusammensetzung, Vergütungspolitik und finanzielle Rechenschaftspflicht."
+      "description": "Stichting OpenHospi hat den ANBI-Status (niederländische Gemeinnützigkeit) beantragt. Sehen Sie unsere Zielsetzung, Vorstandszusammensetzung, Vergütungspolitik und finanzielle Rechenschaftspflicht."
     },
     "breadcrumbs": {
       "home": "Startseite",
@@ -178,7 +178,7 @@
       "anbi": "ANBI"
     },
     "tagline": "Kostenlose, Open-Source-Plattform zum Finden und Anbieten von Studentenzimmern in den Niederlanden.",
-    "anbiStatus": "Anerkannte ANBI-Einrichtung",
+    "anbiStatus": "ANBI-Status beantragt",
     "license": "Lizenziert unter AGPL-3.0",
     "rights": "Alle Rechte vorbehalten."
   },

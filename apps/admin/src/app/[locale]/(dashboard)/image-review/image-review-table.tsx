@@ -27,6 +27,7 @@ export function ImageReviewTable({ data }: { data: FlaggedPhoto[] }) {
   const columns = useImageReviewColumns();
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table is not React Compiler compatible
   const table = useReactTable({
     data,
     columns,

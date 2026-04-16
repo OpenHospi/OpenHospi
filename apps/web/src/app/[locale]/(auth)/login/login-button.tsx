@@ -1,6 +1,5 @@
 "use client";
 
-import { SiGithub } from "@icons-pack/react-simple-icons";
 import { GraduationCap, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -26,50 +25,12 @@ export function LoginButton() {
     });
   }
 
-  function handleGitHubLogin() {
-    startTransition(async () => {
-      const result = await authClient.signIn.social({
-        provider: "github",
-        callbackURL: `/${locale}/discover`,
-      });
-      if (result.error) {
-        toast.error(t("error"));
-      }
-    });
-  }
-
-  const showInAcademia = false;
-
   return (
     <div className="w-full space-y-4">
-      {showInAcademia && (
-        <Button onClick={handleLogin} disabled={isPending} size="lg" className="w-full">
-          {isPending ? <Loader2 className="animate-spin" /> : <GraduationCap />}
-          {t("inacademiaButton")}
-        </Button>
-      )}
-
-      {process.env.NODE_ENV === "development" && (
-        <>
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-xs text-muted-foreground">{t("devOrDivider")}</span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-
-          <Button
-            variant="outline"
-            onClick={handleGitHubLogin}
-            disabled={isPending}
-            size="lg"
-            className="w-full"
-          >
-            {isPending ? <Loader2 className="animate-spin" /> : <SiGithub color="currentColor" />}
-            {t("devGithubButton")}
-          </Button>
-          <p className="text-center text-xs text-muted-foreground">{t("devGithubDescription")}</p>
-        </>
-      )}
+      <Button onClick={handleLogin} disabled={isPending} size="lg" className="w-full">
+        {isPending ? <Loader2 className="animate-spin" /> : <GraduationCap />}
+        {t("inacademiaButton")}
+      </Button>
     </div>
   );
 }

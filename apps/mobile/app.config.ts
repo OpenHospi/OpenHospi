@@ -27,6 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     appleTeamId: 'K937444566',
     supportsTablet: true,
     bundleIdentifier: 'nl.openhospi.app',
+    usesAppleSignIn: true,
     associatedDomains: ['applinks:openhospi.nl', 'webcredentials:openhospi.nl'],
     splash: {
       image: './assets/images/splash-icon.png',
@@ -262,6 +263,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     'expo-maps',
+    'expo-apple-authentication',
+    '@react-native-google-signin/google-signin',
     [
       'expo-splash-screen',
       {

@@ -54,6 +54,7 @@ function createAuth() {
     trustedOrigins: [
       "https://*.openhospi.nl",
       "https://op.srv.inacademia.org",
+      "https://appleid.apple.com",
       "openhospi://",
       ...(process.env.NODE_ENV === "development"
         ? [
@@ -62,6 +63,7 @@ function createAuth() {
             "exp+openhospi://",
             "exp://",
             "exp://**",
+            "exp://192.168.*.*:*/**",
           ]
         : []),
     ],
@@ -109,20 +111,20 @@ function createAuth() {
       expiresIn: 3600,
     },
     socialProviders: {
-      github: {
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        disableSignUp: process.env.GITHUB_DISABLE_SIGNUP !== "false",
+      apple: {
+        clientId: "nl.openhospi.app",
+        appBundleIdentifier: "nl.openhospi.app",
+      },
+      google: {
+        // eslint-disable-next-line no-secrets/no-secrets -- public OAuth client ID, not a secret
+        clientId: "116054357130-ou4gbhgss2pntbij1lm634ss1betorn5.apps.googleusercontent.com",
       },
     },
-    accountLinking: { enabled: true, trustedProviders: ["github"] },
     databaseHooks: {
       user: {
         create: {
           before: async (user) => {
-            const keepRealEmail =
-              process.env.GITHUB_DISABLE_SIGNUP === "false" ||
-              process.env.NODE_ENV === "development";
+            const keepRealEmail = process.env.NODE_ENV === "development";
             return {
               data: {
                 ...user,
@@ -151,6 +153,72 @@ function createAuth() {
                     "https://sts.windows.net/a3b39014-7adc-48fa-a114-37c2434dbd69/",
                 })
                 .onConflictDoNothing();
+              return;
+            }
+
+            // Apple/Google reviewer accounts: auto-complete onboarding
+            const [accountRecord] = await db
+              .select({ providerId: schema.account.providerId })
+              .from(schema.account)
+              .where(eq(schema.account.userId, user.id));
+
+            if (accountRecord?.providerId === "apple" || accountRecord?.providerId === "google") {
+              const nameParts = (user.name ?? "App Reviewer").split(" ");
+
+              await db
+                .update(schema.user)
+                .set({ emailVerified: true })
+                .where(eq(schema.user.id, user.id));
+
+              await db
+                .insert(schema.profiles)
+                .values({
+                  id: user.id,
+                  firstName: nameParts[0] || "App",
+                  lastName: nameParts.slice(1).join(" ") || "Reviewer",
+                  email: user.email,
+                  institutionDomain: "reviewer.openhospi.nl",
+                  gender: "male",
+                  birthDate: "2001-01-15",
+                  studyProgram: "Computer Science",
+                  preferredCity: "Amsterdam",
+                  bio: "App store reviewer account.",
+                  lifestyleTags: ["sociable", "cooking", "sports"],
+                  languages: ["nl", "en"],
+                  preferredLocale: "en",
+                })
+                .onConflictDoNothing();
+
+              await db
+                .insert(schema.profilePhotos)
+                .values({
+                  userId: user.id,
+                  url: "profile-photos/reviewer-placeholder.jpg",
+                  slot: 0,
+                })
+                .onConflictDoNothing();
+
+              await db
+                .insert(schema.privateKeyBackups)
+                .values({
+                  userId: user.id,
+                  encryptedData: "reviewer-placeholder",
+                  iv: "reviewer-placeholder",
+                  salt: "reviewer-placeholder",
+                })
+                .onConflictDoNothing();
+
+              await db
+                .insert(schema.devices)
+                .values({
+                  userId: user.id,
+                  registrationId: 1,
+                  identityKeyPublic: "reviewer-placeholder",
+                  signingKeyPublic: "reviewer-placeholder",
+                  platform: accountRecord.providerId === "apple" ? "ios" : "android",
+                })
+                .onConflictDoNothing();
+
               return;
             }
 

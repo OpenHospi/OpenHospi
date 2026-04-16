@@ -1,7 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  isSuccessResponse,
+} from '@react-native-google-signin/google-signin';
 import { APP_NAME } from '@openhospi/shared/constants';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -9,6 +15,7 @@ import {
   Pressable,
   StyleSheet,
   View,
+  type GestureResponderEvent,
   type ViewStyle,
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -23,10 +30,64 @@ import { authClient } from '@/lib/auth-client';
 import { hapticLight } from '@/lib/haptics';
 import { isIOS } from '@/lib/platform';
 
+GoogleSignin.configure({
+  webClientId: '116054357130-ou4gbhgss2pntbij1lm634ss1betorn5.apps.googleusercontent.com',
+});
+
 export default function LoginScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
   const { colors } = useTheme();
   const [isPending, setIsPending] = useState(false);
+  const [showReviewerLogin, setShowReviewerLogin] = useState(false);
+
+  // 3-step hidden gesture state (refs to avoid re-renders)
+  const activationStep = useRef(0); // 0 = idle, 1 = first long-press done, 2 = taps done
+  const descTapCount = useRef(0);
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const gestureTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  function resetGesture() {
+    activationStep.current = 0;
+    descTapCount.current = 0;
+    clearTimeout(tapTimerRef.current);
+    clearTimeout(gestureTimerRef.current);
+  }
+
+  function handleLogoLongPress() {
+    if (showReviewerLogin) return;
+
+    if (activationStep.current === 0) {
+      activationStep.current = 1;
+      hapticLight();
+      clearTimeout(gestureTimerRef.current);
+      gestureTimerRef.current = setTimeout(resetGesture, 10_000);
+    } else if (activationStep.current === 2) {
+      clearTimeout(gestureTimerRef.current);
+      resetGesture();
+      hapticLight();
+      setShowReviewerLogin(true);
+    }
+  }
+
+  function handleDescriptionTap(_e: GestureResponderEvent) {
+    if (showReviewerLogin || activationStep.current !== 1) return;
+
+    clearTimeout(tapTimerRef.current);
+    descTapCount.current += 1;
+
+    if (descTapCount.current >= 5) {
+      activationStep.current = 2;
+      descTapCount.current = 0;
+      hapticLight();
+      clearTimeout(gestureTimerRef.current);
+      gestureTimerRef.current = setTimeout(resetGesture, 10_000);
+      return;
+    }
+
+    tapTimerRef.current = setTimeout(() => {
+      descTapCount.current = 0;
+    }, 3000);
+  }
 
   async function handleInAcademiaLogin() {
     setIsPending(true);
@@ -42,12 +103,48 @@ export default function LoginScreen() {
     }
   }
 
-  async function handleGitHubLogin() {
+  async function handleAppleLogin() {
     setIsPending(true);
     try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      if (!credential.identityToken) {
+        Alert.alert(t('error'));
+        return;
+      }
       await authClient.signIn.social({
-        provider: 'github',
-        callbackURL: 'openhospi://',
+        provider: 'apple',
+        idToken: {
+          token: credential.identityToken,
+        },
+        callbackURL: '/',
+      });
+    } catch {
+      Alert.alert(t('error'));
+    } finally {
+      setIsPending(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setIsPending(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (!isSuccessResponse(response) || !response.data.idToken) {
+        Alert.alert(t('error'));
+        return;
+      }
+      await authClient.signIn.social({
+        provider: 'google',
+        idToken: {
+          token: response.data.idToken,
+        },
+        callbackURL: '/',
       });
     } catch {
       Alert.alert(t('error'));
@@ -67,36 +164,24 @@ export default function LoginScreen() {
     opacity: isPending ? 0.6 : 1,
   };
 
-  const outlineButtonStyle: ViewStyle = {
-    height: isIOS ? 50 : 52,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    borderRadius: isIOS ? radius.lg : radius.md,
-    backgroundColor: colors.tertiaryBackground,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    opacity: isPending ? 0.6 : 1,
-  };
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.center}>
         <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
-          <View style={styles.logoRow}>
+          <Pressable onLongPress={handleLogoLongPress} delayLongPress={3000} style={styles.logoRow}>
             <Logo size={40} />
             <ThemedText variant="title2" color={colors.primary}>
               {APP_NAME}
             </ThemedText>
-          </View>
+          </Pressable>
 
           <View style={styles.headerSection}>
             <ThemedText variant="largeTitle">{t('title')}</ThemedText>
             <ThemedText
               variant="subheadline"
               color={colors.tertiaryForeground}
-              style={styles.centered}>
+              style={styles.centered}
+              onPress={handleDescriptionTap}>
               {t('description')}
             </ThemedText>
           </View>
@@ -105,7 +190,7 @@ export default function LoginScreen() {
             <Pressable
               onPress={() => {
                 hapticLight();
-                handleInAcademiaLogin();
+                void handleInAcademiaLogin();
               }}
               disabled={isPending}
               android_ripple={{ color: 'rgba(255,255,255,0.2)', borderless: false }}
@@ -134,44 +219,53 @@ export default function LoginScreen() {
             </ThemedText>
           </View>
 
-          {__DEV__ && (
-            <View style={styles.devSection}>
+          {showReviewerLogin && (
+            <Animated.View
+              entering={FadeInDown.duration(400).springify()}
+              style={styles.reviewerSection}>
               <View style={styles.dividerRow}>
                 <View style={[styles.dividerLine, { backgroundColor: colors.separator }]} />
                 <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                  {t('devOrDivider')}
+                  {t('reviewerDivider')}
                 </ThemedText>
                 <View style={[styles.dividerLine, { backgroundColor: colors.separator }]} />
               </View>
 
-              <Pressable
-                onPress={() => {
-                  hapticLight();
-                  handleGitHubLogin();
-                }}
-                disabled={isPending}
-                android_ripple={{ color: 'rgba(0,0,0,0.08)', borderless: false }}
-                style={({ pressed }) => [
-                  outlineButtonStyle,
-                  pressed && isIOS && { opacity: 0.75 },
-                ]}>
-                {isPending ? (
-                  <ActivityIndicator size="small" color={colors.foreground} />
-                ) : (
-                  <Ionicons name="logo-github" size={20} color={colors.foreground} />
-                )}
-                <ThemedText variant="body" weight="600">
-                  {t('devGithubButton')}
-                </ThemedText>
-              </Pressable>
+              {isIOS ? (
+                <AppleAuthentication.AppleAuthenticationButton
+                  buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                  buttonStyle={
+                    colors.background === '#FFFFFF'
+                      ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+                      : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                  }
+                  cornerRadius={radius.lg}
+                  onPress={() => {
+                    hapticLight();
+                    void handleAppleLogin();
+                  }}
+                  style={styles.nativeButton}
+                />
+              ) : (
+                <GoogleSigninButton
+                  size={GoogleSigninButton.Size.Wide}
+                  color={GoogleSigninButton.Color.Dark}
+                  onPress={() => {
+                    hapticLight();
+                    void handleGoogleLogin();
+                  }}
+                  disabled={isPending}
+                  style={styles.nativeButton}
+                />
+              )}
 
               <ThemedText
                 variant="caption1"
                 color={colors.tertiaryForeground}
                 style={styles.centered}>
-                {t('devGithubDescription')}
+                {t('reviewerDescription')}
               </ThemedText>
-            </View>
+            </Animated.View>
           )}
         </Animated.View>
       </View>
@@ -211,7 +305,7 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
   },
-  devSection: {
+  reviewerSection: {
     width: '100%',
     gap: 10,
   },
@@ -220,6 +314,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     paddingVertical: 4,
+  },
+  nativeButton: {
+    width: '100%',
+    height: 50,
   },
   dividerLine: {
     flex: 1,

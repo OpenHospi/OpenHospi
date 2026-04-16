@@ -468,9 +468,8 @@
       "inacademiaButton": "Anmelden mit InAcademia",
       "inacademiaDescription": "Verifiziere deinen Studentenstatus über deine Bildungseinrichtung.",
       "error": "Anmeldung fehlgeschlagen. Bitte versuche es erneut.",
-      "devOrDivider": "oder",
-      "devGithubButton": "Anmelden mit GitHub (Dev)",
-      "devGithubDescription": "Nur für Entwicklung. Verwendet GitHub zum lokalen Testen."
+      "reviewerDivider": "Reviewer-Zugang",
+      "reviewerDescription": "Nur für App-Store-Review."
     },
     "errors": {
       "INVALID_EMAIL": "Ungültige E-Mail-Adresse",

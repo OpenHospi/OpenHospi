@@ -330,6 +330,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         project: 'mobile',
         organization: 'stichting-openhospi',
         useNativeInit: true,
+        options: {
+          dsn: 'https://a93aab45c6f5e6cc68cacf09fa300ff7@o4511172188438528.ingest.de.sentry.io/4511172379934800',
+          tracesSampleRate: 0.2,
+        },
       },
     ],
   ],

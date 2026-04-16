@@ -11,7 +11,8 @@ import { hideSplash } from '@/lib/splash';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { Stack } from 'expo-router';
+import { isRunningInExpoGo } from 'expo';
+import { Stack, useNavigationContainerRef } from 'expo-router';
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -29,13 +30,24 @@ import { initializeNotificationListeners } from '@/lib/notifications';
 
 // ── Sentry ──────────────────────────────────────────────────
 
+const navigationIntegration = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: !isRunningInExpoGo(),
+  ignoreEmptyBackNavigationTransactions: true,
+});
+
 Sentry.init({
   dsn: 'https://a93aab45c6f5e6cc68cacf09fa300ff7@o4511172188438528.ingest.de.sentry.io/4511172379934800',
+  enabled: !__DEV__,
   sendDefaultPii: false,
+  environment: __DEV__ ? 'development' : 'production',
+
+  // Performance: navigation tracing with Expo Router
   tracesSampleRate: 0.2,
+  integrations: [navigationIntegration],
+
+  // Privacy: no screenshots, no view hierarchy, no session replay, no user tracking
   attachScreenshot: false,
   attachViewHierarchy: false,
-  enabled: !__DEV__,
 });
 
 // ── Error Boundary ────────────────────────────────────────��─
@@ -120,6 +132,14 @@ function RootNavigator() {
 // ── Root Layout ─────────────────────────────────────────────
 
 let RootLayout = function RootLayout() {
+  const ref = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    if (ref) {
+      navigationIntegration.registerNavigationContainer(ref);
+    }
+  }, [ref]);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>

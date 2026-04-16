@@ -23,9 +23,12 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
 
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [profile] = await tx
-      .select({ bio: profiles.bio })
+      .select({ bio: profiles.bio, institutionDomain: profiles.institutionDomain })
       .from(profiles)
       .where(eq(profiles.id, userId));
+    if (profile?.institutionDomain === "reviewer.openhospi.nl") {
+      return { error: CommonError.invalid_data };
+    }
     if (!profile?.bio) {
       return { error: ApplicationError.bio_required };
     }

@@ -28,6 +28,7 @@ import {
   isNull,
   lt,
   lte,
+  notInArray,
   or,
   sql,
   type SQL,
@@ -140,9 +141,23 @@ function buildDiscoverConditions(
   userVereniging: string | null,
   userGender: string | null,
   userId: string,
+  isReviewer: boolean,
   cursor?: DiscoverCursor,
 ): SQL[] {
   const conditions: SQL[] = [eq(rooms.status, RoomStatus.active)];
+
+  // Hide reviewer rooms from real users (reviewers can see their own)
+  if (!isReviewer) {
+    conditions.push(
+      notInArray(
+        rooms.ownerId,
+        db
+          .select({ id: profiles.id })
+          .from(profiles)
+          .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+      ),
+    );
+  }
 
   // Exclude rooms from blocked/blocking users
   conditions.push(notBlockedBy(rooms.ownerId, userId));
@@ -197,9 +212,15 @@ export async function getDiscoverRooms(
 ): Promise<DiscoverResult> {
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
     const [userProfile] = await tx
-      .select({ vereniging: profiles.vereniging, gender: profiles.gender })
+      .select({
+        vereniging: profiles.vereniging,
+        gender: profiles.gender,
+        institutionDomain: profiles.institutionDomain,
+      })
       .from(profiles)
       .where(eq(profiles.id, userId));
+
+    const isReviewer = userProfile?.institutionDomain === "reviewer.openhospi.nl";
 
     const conditions = buildDiscoverConditions(
       filters,
@@ -207,6 +228,7 @@ export async function getDiscoverRooms(
       userProfile?.vereniging ?? null,
       userProfile?.gender ?? null,
       userId,
+      isReviewer,
       cursor,
     );
     const where = and(...conditions);
@@ -354,7 +376,18 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
     })
     .from(rooms)
     .where(
-      and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging)),
+      and(
+        eq(rooms.id, roomId),
+        eq(rooms.status, RoomStatus.active),
+        isNull(rooms.roomVereniging),
+        notInArray(
+          rooms.ownerId,
+          db
+            .select({ id: profiles.id })
+            .from(profiles)
+            .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+        ),
+      ),
     );
 
   if (!room) return null;
@@ -416,7 +449,18 @@ export async function getPublicRoomsByCity(city: string, limit: number): Promise
       ),
     )
     .where(
-      and(eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging), eq(rooms.city, city)),
+      and(
+        eq(rooms.status, RoomStatus.active),
+        isNull(rooms.roomVereniging),
+        eq(rooms.city, city),
+        notInArray(
+          rooms.ownerId,
+          db
+            .select({ id: profiles.id })
+            .from(profiles)
+            .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+        ),
+      ),
     )
     .orderBy(desc(rooms.createdAt))
     .limit(limit);
@@ -438,7 +482,19 @@ export async function getCitiesWithRoomCount(): Promise<CityWithCount[]> {
       count: count(),
     })
     .from(rooms)
-    .where(and(eq(rooms.status, RoomStatus.active), isNull(rooms.roomVereniging)))
+    .where(
+      and(
+        eq(rooms.status, RoomStatus.active),
+        isNull(rooms.roomVereniging),
+        notInArray(
+          rooms.ownerId,
+          db
+            .select({ id: profiles.id })
+            .from(profiles)
+            .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+        ),
+      ),
+    )
     .groupBy(rooms.city)
     .orderBy(desc(count()), asc(rooms.city));
 

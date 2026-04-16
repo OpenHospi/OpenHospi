@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
-import DateTimePicker from '@expo/ui/datetimepicker';
+import { DateTimePicker } from '@expo/ui/datetimepicker';
 import { getInstitution } from '@openhospi/inacademia';
 import { Gender, StudyLevel } from '@openhospi/shared/enums';
 import { SymbolView } from 'expo-symbols';

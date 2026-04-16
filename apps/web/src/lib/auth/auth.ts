@@ -5,6 +5,11 @@ import { db } from "@openhospi/database";
 import * as schema from "@openhospi/database/schema";
 import { sendTemplatedEmail } from "@openhospi/email/send";
 import { DEFAULT_LOCALE, type Locale } from "@openhospi/i18n";
+import {
+  APPLE_BUNDLE_ID,
+  GOOGLE_WEB_CLIENT_ID,
+  REVIEWER_INSTITUTION_DOMAIN,
+} from "@openhospi/shared/constants";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -112,12 +117,11 @@ function createAuth() {
     },
     socialProviders: {
       apple: {
-        clientId: "nl.openhospi.app",
-        appBundleIdentifier: "nl.openhospi.app",
+        clientId: APPLE_BUNDLE_ID,
+        appBundleIdentifier: APPLE_BUNDLE_ID,
       },
       google: {
-        // eslint-disable-next-line no-secrets/no-secrets -- public OAuth client ID, not a secret
-        clientId: "116054357130-ou4gbhgss2pntbij1lm634ss1betorn5.apps.googleusercontent.com",
+        clientId: GOOGLE_WEB_CLIENT_ID,
       },
     },
     databaseHooks: {
@@ -177,7 +181,7 @@ function createAuth() {
                   firstName: nameParts[0] || "App",
                   lastName: nameParts.slice(1).join(" ") || "Reviewer",
                   email: user.email,
-                  institutionDomain: "reviewer.openhospi.nl",
+                  institutionDomain: REVIEWER_INSTITUTION_DOMAIN,
                   gender: "male",
                   birthDate: "2001-01-15",
                   studyProgram: "Computer Science",

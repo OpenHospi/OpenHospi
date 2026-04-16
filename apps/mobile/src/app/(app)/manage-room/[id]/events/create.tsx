@@ -1,4 +1,4 @@
-import DateTimePicker from '@expo/ui/datetimepicker';
+import { DateTimePicker } from '@expo/ui/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';

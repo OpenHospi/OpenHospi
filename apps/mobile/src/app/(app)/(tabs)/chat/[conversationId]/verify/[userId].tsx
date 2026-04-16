@@ -7,7 +7,7 @@ import {
   generateSafetyNumber,
   verifySafetyNumberQR,
 } from '@openhospi/crypto';
-import { CircleCheck, ScanLine, ShieldAlert, ShieldCheck } from 'lucide-react-native';
+import { CircleCheck, ShieldAlert, ShieldCheck } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

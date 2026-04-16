@@ -4,7 +4,7 @@ import {
   GoogleSigninButton,
   isSuccessResponse,
 } from '@react-native-google-signin/google-signin';
-import { APP_NAME } from '@openhospi/shared/constants';
+import { APP_NAME, GOOGLE_WEB_CLIENT_ID } from '@openhospi/shared/constants';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { SymbolView } from 'expo-symbols';
 import { useRef, useState } from 'react';
@@ -30,77 +30,116 @@ import { hapticLight } from '@/lib/haptics';
 import { mmkv } from '@/lib/mmkv';
 import { isIOS } from '@/lib/platform';
 
+const REVIEWER_STORAGE_KEY = 'reviewer-login-active';
+const GESTURE_TIMEOUT = 10_000;
+const TAP_RESET_TIMEOUT = 3_000;
+const REQUIRED_TAPS = 5;
+
 if (!isIOS) {
-  GoogleSignin.configure({
-    webClientId: '116054357130-ou4gbhgss2pntbij1lm634ss1betorn5.apps.googleusercontent.com',
+  GoogleSignin.configure({ webClientId: GOOGLE_WEB_CLIENT_ID });
+}
+
+// ── Login handlers ──
+
+async function signInWithInAcademia() {
+  await authClient.signIn.social({
+    provider: 'generic-oidc',
+    callbackURL: 'openhospi://',
   });
 }
+
+async function signInWithApple() {
+  const credential = await AppleAuthentication.signInAsync({
+    requestedScopes: [
+      AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+      AppleAuthentication.AppleAuthenticationScope.EMAIL,
+    ],
+  });
+  if (!credential.identityToken) throw new Error('No identity token');
+  await authClient.signIn.social({
+    provider: 'apple',
+    idToken: { token: credential.identityToken },
+    callbackURL: '/',
+  });
+}
+
+async function signInWithGoogle() {
+  await GoogleSignin.hasPlayServices();
+  const response = await GoogleSignin.signIn();
+  if (!isSuccessResponse(response) || !response.data.idToken) {
+    throw new Error('No ID token');
+  }
+  await authClient.signIn.social({
+    provider: 'google',
+    idToken: { token: response.data.idToken },
+    callbackURL: '/',
+  });
+}
+
+// ── Component ──
 
 export default function LoginScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
   const { colors, isDark } = useTheme();
   const [isPending, setIsPending] = useState(false);
   const [showReviewerLogin, setShowReviewerLogin] = useState(
-    () => mmkv.getBoolean('reviewer-login-active') ?? false
+    () => mmkv.getBoolean(REVIEWER_STORAGE_KEY) ?? false
   );
 
-  // 3-step hidden gesture state (refs to avoid re-renders)
-  const activationStep = useRef(0); // 0 = idle, 1 = first long-press done, 2 = taps done
-  const descTapCount = useRef(0);
-  const tapTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const gestureTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // ── 3-step hidden gesture ──
+  const step = useRef(0);
+  const taps = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const gestureTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   function resetGesture() {
-    activationStep.current = 0;
-    descTapCount.current = 0;
-    clearTimeout(tapTimerRef.current);
-    clearTimeout(gestureTimerRef.current);
+    step.current = 0;
+    taps.current = 0;
+    clearTimeout(tapTimer.current);
+    clearTimeout(gestureTimer.current);
   }
 
   function handleLogoLongPress() {
     if (showReviewerLogin) return;
 
-    if (activationStep.current === 0) {
-      activationStep.current = 1;
+    if (step.current === 0) {
+      step.current = 1;
       hapticLight();
-      clearTimeout(gestureTimerRef.current);
-      gestureTimerRef.current = setTimeout(resetGesture, 10_000);
-    } else if (activationStep.current === 2) {
-      clearTimeout(gestureTimerRef.current);
+      clearTimeout(gestureTimer.current);
+      gestureTimer.current = setTimeout(resetGesture, GESTURE_TIMEOUT);
+    } else if (step.current === 2) {
       resetGesture();
       hapticLight();
-      mmkv.setBoolean('reviewer-login-active', true);
+      mmkv.setBoolean(REVIEWER_STORAGE_KEY, true);
       setShowReviewerLogin(true);
     }
   }
 
   function handleDescriptionTap() {
-    if (showReviewerLogin || activationStep.current !== 1) return;
+    if (showReviewerLogin || step.current !== 1) return;
 
-    clearTimeout(tapTimerRef.current);
-    descTapCount.current += 1;
+    clearTimeout(tapTimer.current);
+    taps.current += 1;
 
-    if (descTapCount.current >= 5) {
-      activationStep.current = 2;
-      descTapCount.current = 0;
+    if (taps.current >= REQUIRED_TAPS) {
+      step.current = 2;
+      taps.current = 0;
       hapticLight();
-      clearTimeout(gestureTimerRef.current);
-      gestureTimerRef.current = setTimeout(resetGesture, 10_000);
+      clearTimeout(gestureTimer.current);
+      gestureTimer.current = setTimeout(resetGesture, GESTURE_TIMEOUT);
       return;
     }
 
-    tapTimerRef.current = setTimeout(() => {
-      descTapCount.current = 0;
-    }, 3000);
+    tapTimer.current = setTimeout(() => {
+      taps.current = 0;
+    }, TAP_RESET_TIMEOUT);
   }
 
-  async function handleInAcademiaLogin() {
+  // ── Shared login wrapper ──
+  async function handleLogin(provider: () => Promise<void>) {
     setIsPending(true);
     try {
-      await authClient.signIn.social({
-        provider: 'generic-oidc',
-        callbackURL: 'openhospi://',
-      });
+      await provider();
     } catch {
       Alert.alert(t('error'));
     } finally {
@@ -108,56 +147,7 @@ export default function LoginScreen() {
     }
   }
 
-  async function handleAppleLogin() {
-    setIsPending(true);
-    try {
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
-      if (!credential.identityToken) {
-        Alert.alert(t('error'));
-        return;
-      }
-      await authClient.signIn.social({
-        provider: 'apple',
-        idToken: {
-          token: credential.identityToken,
-        },
-        callbackURL: '/',
-      });
-    } catch {
-      Alert.alert(t('error'));
-    } finally {
-      setIsPending(false);
-    }
-  }
-
-  async function handleGoogleLogin() {
-    setIsPending(true);
-    try {
-      await GoogleSignin.hasPlayServices();
-      const response = await GoogleSignin.signIn();
-      if (!isSuccessResponse(response) || !response.data.idToken) {
-        Alert.alert(t('error'));
-        return;
-      }
-      await authClient.signIn.social({
-        provider: 'google',
-        idToken: {
-          token: response.data.idToken,
-        },
-        callbackURL: '/',
-      });
-    } catch {
-      Alert.alert(t('error'));
-    } finally {
-      setIsPending(false);
-    }
-  }
-
+  // ── Styles ──
   const primaryButtonStyle: ViewStyle = {
     height: isIOS ? 50 : 52,
     flexDirection: 'row',
@@ -173,6 +163,7 @@ export default function LoginScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.center}>
         <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
+          {/* Logo — step 1 & 3 of hidden gesture (long press) */}
           <Pressable onLongPress={handleLogoLongPress} delayLongPress={3000} style={styles.logoRow}>
             <Logo size={40} />
             <ThemedText variant="title2" color={colors.primary}>
@@ -182,11 +173,8 @@ export default function LoginScreen() {
 
           <View style={styles.headerSection}>
             <ThemedText variant="largeTitle">{t('title')}</ThemedText>
-            <View
-              onStartShouldSetResponder={() => {
-                handleDescriptionTap();
-                return false;
-              }}>
+            {/* Description — step 2 of hidden gesture (5 taps) */}
+            <View onStartShouldSetResponder={() => (handleDescriptionTap(), false)}>
               <ThemedText
                 variant="subheadline"
                 color={colors.tertiaryForeground}
@@ -200,7 +188,7 @@ export default function LoginScreen() {
             <Pressable
               onPress={() => {
                 hapticLight();
-                void handleInAcademiaLogin();
+                void handleLogin(signInWithInAcademia);
               }}
               disabled={isPending}
               android_ripple={{ color: 'rgba(255,255,255,0.2)', borderless: false }}
@@ -252,7 +240,7 @@ export default function LoginScreen() {
                   cornerRadius={radius.lg}
                   onPress={() => {
                     hapticLight();
-                    void handleAppleLogin();
+                    void handleLogin(signInWithApple);
                   }}
                   style={styles.nativeButton}
                 />
@@ -262,7 +250,7 @@ export default function LoginScreen() {
                   color={GoogleSigninButton.Color.Dark}
                   onPress={() => {
                     hapticLight();
-                    void handleGoogleLogin();
+                    void handleLogin(signInWithGoogle);
                   }}
                   disabled={isPending}
                   style={styles.nativeButton}
@@ -284,9 +272,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   center: {
     flex: 1,
     justifyContent: 'center',
@@ -299,38 +285,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Platform.select({ ios: 28, android: 24 }),
   },
-  logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  headerSection: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  centered: {
-    textAlign: 'center',
-  },
-  buttonSection: {
-    width: '100%',
-    gap: 10,
-  },
-  reviewerSection: {
-    width: '100%',
-    gap: 10,
-  },
+  logoRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  headerSection: { alignItems: 'center', gap: 8 },
+  centered: { textAlign: 'center' },
+  buttonSection: { width: '100%', gap: 10 },
+  reviewerSection: { width: '100%', gap: 10 },
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     paddingVertical: 4,
   },
-  nativeButton: {
-    width: '100%',
-    height: 50,
-  },
-  dividerLine: {
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-  },
+  nativeButton: { width: '100%', height: 50 },
+  dividerLine: { flex: 1, height: StyleSheet.hairlineWidth },
 });

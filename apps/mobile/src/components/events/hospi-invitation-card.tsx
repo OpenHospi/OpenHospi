@@ -2,9 +2,8 @@ import { MAX_DECLINE_REASON_LENGTH } from '@openhospi/shared/constants';
 import { InvitationStatus } from '@openhospi/shared/enums';
 import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Check, HelpCircle, X } from 'lucide-react-native';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { hapticSuccess, hapticError } from '@/lib/haptics';

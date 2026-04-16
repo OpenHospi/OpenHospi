@@ -50,7 +50,13 @@ export default function EditStudyLevelScreen() {
         />
       </View>
 
-      <View style={styles.footer}></View>
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <NativeButton
+          label={tCommon('save')}
+          onPress={handleSave}
+          disabled={updateProfile.isPending}
+        />
+      </View>
     </View>
   );
 }
@@ -65,6 +71,8 @@ const styles = StyleSheet.create({
   },
   footer: {
     paddingHorizontal: 16,
+    paddingTop: 12,
     paddingBottom: 24,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
 });

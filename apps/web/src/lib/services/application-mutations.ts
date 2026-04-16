@@ -1,5 +1,6 @@
 import { createDrizzleSupabaseClient } from "@openhospi/database";
 import { applications, houseMembers, houses, profiles, rooms } from "@openhospi/database/schema";
+import { REVIEWER_INSTITUTION_DOMAIN } from "@openhospi/shared/constants";
 import {
   ApplicationStatus,
   RoomStatus,
@@ -26,7 +27,7 @@ export async function applyToRoomForUser(userId: string, roomId: string, data: A
       .select({ bio: profiles.bio, institutionDomain: profiles.institutionDomain })
       .from(profiles)
       .where(eq(profiles.id, userId));
-    if (profile?.institutionDomain === "reviewer.openhospi.nl") {
+    if (profile?.institutionDomain === REVIEWER_INSTITUTION_DOMAIN) {
       return { error: CommonError.invalid_data };
     }
     if (!profile?.bio) {

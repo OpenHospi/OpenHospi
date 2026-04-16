@@ -1,7 +1,7 @@
 import { db, createDrizzleSupabaseClient } from "@openhospi/database";
 import { processingRestrictions, profiles, roomPhotos, rooms } from "@openhospi/database/schema";
 import type { RoomPhoto } from "@openhospi/database/types";
-import { ROOMS_PER_PAGE } from "@openhospi/shared/constants";
+import { REVIEWER_INSTITUTION_DOMAIN, ROOMS_PER_PAGE } from "@openhospi/shared/constants";
 import type {
   Furnishing,
   HouseType,
@@ -154,7 +154,7 @@ function buildDiscoverConditions(
         db
           .select({ id: profiles.id })
           .from(profiles)
-          .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+          .where(eq(profiles.institutionDomain, REVIEWER_INSTITUTION_DOMAIN)),
       ),
     );
   }
@@ -220,7 +220,7 @@ export async function getDiscoverRooms(
       .from(profiles)
       .where(eq(profiles.id, userId));
 
-    const isReviewer = userProfile?.institutionDomain === "reviewer.openhospi.nl";
+    const isReviewer = userProfile?.institutionDomain === REVIEWER_INSTITUTION_DOMAIN;
 
     const conditions = buildDiscoverConditions(
       filters,
@@ -385,7 +385,7 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
           db
             .select({ id: profiles.id })
             .from(profiles)
-            .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+            .where(eq(profiles.institutionDomain, REVIEWER_INSTITUTION_DOMAIN)),
         ),
       ),
     );
@@ -458,7 +458,7 @@ export async function getPublicRoomsByCity(city: string, limit: number): Promise
           db
             .select({ id: profiles.id })
             .from(profiles)
-            .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+            .where(eq(profiles.institutionDomain, REVIEWER_INSTITUTION_DOMAIN)),
         ),
       ),
     )
@@ -491,7 +491,7 @@ export async function getCitiesWithRoomCount(): Promise<CityWithCount[]> {
           db
             .select({ id: profiles.id })
             .from(profiles)
-            .where(eq(profiles.institutionDomain, "reviewer.openhospi.nl")),
+            .where(eq(profiles.institutionDomain, REVIEWER_INSTITUTION_DOMAIN)),
         ),
       ),
     )

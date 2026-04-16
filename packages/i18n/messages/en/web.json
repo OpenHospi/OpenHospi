@@ -70,7 +70,7 @@
     },
     "anbi": {
       "title": "ANBI | Stichting OpenHospi",
-      "description": "Stichting OpenHospi is a Dutch public benefit organisation (ANBI). View our objectives, board composition, remuneration policy and financial accountability."
+      "description": "Stichting OpenHospi has applied for Dutch public benefit organisation (ANBI) status. View our objectives, board composition, remuneration policy and financial accountability."
     },
     "breadcrumbs": {
       "home": "Home",
@@ -178,7 +178,7 @@
       "anbi": "ANBI"
     },
     "tagline": "Free, open-source platform to find and list student rooms in the Netherlands.",
-    "anbiStatus": "Recognized ANBI institution",
+    "anbiStatus": "ANBI status pending",
     "license": "Licensed under AGPL-3.0",
     "rights": "All rights reserved."
   },

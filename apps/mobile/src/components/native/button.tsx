@@ -234,7 +234,6 @@ function AndroidButton({
 }
 
 function getAndroidButtonComponent(variant: ButtonVariant, components: Record<string, any>) {
-  // eslint-disable-line @typescript-eslint/no-explicit-any
   switch (variant) {
     case 'primary':
     case 'destructive':

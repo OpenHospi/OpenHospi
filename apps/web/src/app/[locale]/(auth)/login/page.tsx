@@ -50,9 +50,7 @@ export default async function LoginPage({ params }: Props) {
           <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <LoginButton />
-        </CardContent>
+        <CardContent>{/*<LoginButton />*/}</CardContent>
       </Card>
     </>
   );

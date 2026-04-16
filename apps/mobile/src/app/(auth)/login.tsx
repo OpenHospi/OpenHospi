@@ -15,7 +15,6 @@ import {
   Pressable,
   StyleSheet,
   View,
-  type GestureResponderEvent,
   type ViewStyle,
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -28,17 +27,22 @@ import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { authClient } from '@/lib/auth-client';
 import { hapticLight } from '@/lib/haptics';
+import { mmkv } from '@/lib/mmkv';
 import { isIOS } from '@/lib/platform';
 
-GoogleSignin.configure({
-  webClientId: '116054357130-ou4gbhgss2pntbij1lm634ss1betorn5.apps.googleusercontent.com',
-});
+if (!isIOS) {
+  GoogleSignin.configure({
+    webClientId: '116054357130-ou4gbhgss2pntbij1lm634ss1betorn5.apps.googleusercontent.com',
+  });
+}
 
 export default function LoginScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const [isPending, setIsPending] = useState(false);
-  const [showReviewerLogin, setShowReviewerLogin] = useState(false);
+  const [showReviewerLogin, setShowReviewerLogin] = useState(
+    () => mmkv.getBoolean('reviewer-login-active') ?? false
+  );
 
   // 3-step hidden gesture state (refs to avoid re-renders)
   const activationStep = useRef(0); // 0 = idle, 1 = first long-press done, 2 = taps done
@@ -65,11 +69,12 @@ export default function LoginScreen() {
       clearTimeout(gestureTimerRef.current);
       resetGesture();
       hapticLight();
+      mmkv.setBoolean('reviewer-login-active', true);
       setShowReviewerLogin(true);
     }
   }
 
-  function handleDescriptionTap(_e: GestureResponderEvent) {
+  function handleDescriptionTap() {
     if (showReviewerLogin || activationStep.current !== 1) return;
 
     clearTimeout(tapTimerRef.current);
@@ -177,13 +182,18 @@ export default function LoginScreen() {
 
           <View style={styles.headerSection}>
             <ThemedText variant="largeTitle">{t('title')}</ThemedText>
-            <ThemedText
-              variant="subheadline"
-              color={colors.tertiaryForeground}
-              style={styles.centered}
-              onPress={handleDescriptionTap}>
-              {t('description')}
-            </ThemedText>
+            <View
+              onStartShouldSetResponder={() => {
+                handleDescriptionTap();
+                return false;
+              }}>
+              <ThemedText
+                variant="subheadline"
+                color={colors.tertiaryForeground}
+                style={styles.centered}>
+                {t('description')}
+              </ThemedText>
+            </View>
           </View>
 
           <View style={styles.buttonSection}>
@@ -235,9 +245,9 @@ export default function LoginScreen() {
                 <AppleAuthentication.AppleAuthenticationButton
                   buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
                   buttonStyle={
-                    colors.background === '#FFFFFF'
-                      ? AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-                      : AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                    isDark
+                      ? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
+                      : AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
                   }
                   cornerRadius={radius.lg}
                   onPress={() => {

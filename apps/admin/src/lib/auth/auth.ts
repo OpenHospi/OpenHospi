@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import { sso } from "@better-auth/sso";
 import { db } from "@openhospi/database";
 import * as schema from "@openhospi/database/schema";
@@ -10,6 +7,8 @@ import { APIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { admin, organization } from "better-auth/plugins";
 import { and, eq } from "drizzle-orm";
+
+import { GOOGLE_SAML_IDP_CERT } from "./google-saml-idp-cert";
 
 const ALLOWED_EMAIL_DOMAIN = "openhospi.nl";
 const OWNER_GROUP = "bestuur@openhospi.nl";
@@ -22,15 +21,6 @@ const SSO_PROVIDER_ID = "google-workspace";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const IS_BUILD_PHASE = process.env.NEXT_PHASE === "phase-production-build";
-
-// Google IdP signing certificate (PUBLIC — verification key, not a secret).
-// Published by Google at the IdP metadata URL above. Rotate by downloading a
-// new cert from the Google Admin Console. Current cert valid until 2031-04-01.
-const GOOGLE_SAML_CERT_FILENAME = "Google_2031-4-1-10645_SAML2_0.pem";
-const GOOGLE_SAML_CERT = readFileSync(
-  join(process.cwd(), "src/lib/auth", GOOGLE_SAML_CERT_FILENAME),
-  "utf8",
-);
 
 function resolveOrgRole(groups: string[]): "owner" | "admin" | "member" {
   if (groups.includes(OWNER_GROUP)) return "owner";
@@ -65,7 +55,7 @@ async function ensureAdminSetup() {
   const samlConfig = JSON.stringify({
     issuer: GOOGLE_SAML_ENTITY_ID,
     entryPoint: GOOGLE_SAML_SSO_URL,
-    cert: GOOGLE_SAML_CERT,
+    cert: GOOGLE_SAML_IDP_CERT,
     callbackUrl: expectedCallbackUrl,
     audience: baseUrl,
     wantAssertionsSigned: true,

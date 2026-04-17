@@ -20,6 +20,7 @@ catalog:
   better-auth: 1.6.5
   "@better-auth/expo": 1.6.5
   "@better-auth/drizzle-adapter": 1.6.5
+  "@better-auth/sso": 1.6.5
   "@supabase/supabase-js": 2.103.0
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1

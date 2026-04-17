@@ -19,6 +19,7 @@ const cspHeader = `
   .trim();
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["dev-admin.openhospi.nl"],
   images: {
     dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
     remotePatterns: [
@@ -35,7 +36,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  transpilePackages: ["@openhospi/shared", "@openhospi/database", "@openhospi/i18n", "@openhospi/inacademia"],
+  transpilePackages: [
+    "@openhospi/shared",
+    "@openhospi/database",
+    "@openhospi/i18n",
+    "@openhospi/inacademia",
+  ],
   async headers() {
     return [
       {

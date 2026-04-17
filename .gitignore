@@ -19,6 +19,8 @@
 # misc
 .DS_Store
 *.pem
+# Google IdP public SAML signing cert (verification key — public by design)
+!apps/admin/src/lib/auth/*.pem
 
 # debug
 npm-debug.log*

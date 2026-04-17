@@ -100,7 +100,9 @@ export const jwks = pgTable("jwks", {
 // ── Organization plugin tables ─────────────────────────────────────────────
 
 export const organization = pgTable("organization", {
-  id: text("id").primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   slug: text("slug").unique(),
   logo: text("logo"),
@@ -111,7 +113,9 @@ export const organization = pgTable("organization", {
 export const member = pgTable(
   "member",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     organizationId: text("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
@@ -130,7 +134,9 @@ export const member = pgTable(
 export const invitation = pgTable(
   "invitation",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     organizationId: text("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
@@ -153,7 +159,9 @@ export const invitation = pgTable(
 export const ssoProvider = pgTable(
   "ssoProvider",
   {
-    id: text("id").primaryKey(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     issuer: text("issuer").notNull(),
     domain: text("domain").notNull(),
     oidcConfig: text("oidc_config"),

@@ -4,7 +4,11 @@
       "title": "Admin-Anmeldung",
       "description": "Melde dich mit deinem OpenHospi Google Workspace-Konto an.",
       "googleButton": "Mit Google anmelden",
-      "error": "Anmeldung fehlgeschlagen. Nur openhospi.nl-Konten haben Zugang.",
+      "errors": {
+        "forbidden": "Anmeldung fehlgeschlagen. Nur openhospi.nl-Konten haben Zugang zum Admin-Panel.",
+        "noOrg": "Dein Konto ist authentifiziert, aber kein Mitglied der OpenHospi-Organisation. Bitte wende dich an eine Administratorin oder einen Administrator.",
+        "samlFailed": "Single Sign-On fehlgeschlagen. Bitte erneut versuchen oder eine Administratorin bzw. einen Administrator kontaktieren."
+      },
       "footer": "Nur autorisierte OpenHospi-Teammitglieder haben Zugang zu diesem Panel."
     },
     "sidebar": {

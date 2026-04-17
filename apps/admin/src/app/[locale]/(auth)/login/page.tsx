@@ -13,9 +13,24 @@ import { LoginButton } from "./login-button";
 
 type Props = {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ error?: string }>;
 };
 
-export default async function AdminLoginPage({ params }: Props) {
+const ERROR_KEYS = ["forbidden", "noOrg", "samlFailed"] as const;
+type ErrorKey = (typeof ERROR_KEYS)[number];
+
+const ERROR_ALIASES: Record<string, ErrorKey> = {
+  no_org: "noOrg",
+  saml_failed: "samlFailed",
+};
+
+function toErrorKey(value: string | undefined): ErrorKey | null {
+  if (!value) return null;
+  const normalized = ERROR_ALIASES[value] ?? value;
+  return (ERROR_KEYS as readonly string[]).includes(normalized) ? (normalized as ErrorKey) : null;
+}
+
+export default async function AdminLoginPage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return null;
   setRequestLocale(locale);
@@ -24,6 +39,9 @@ export default async function AdminLoginPage({ params }: Props) {
   if (session?.session.activeOrganizationId) {
     redirect({ href: "/", locale });
   }
+
+  const { error } = await searchParams;
+  const errorKey = toErrorKey(error);
 
   const t = await getTranslations({ locale, namespace: "admin.login" });
 
@@ -42,6 +60,14 @@ export default async function AdminLoginPage({ params }: Props) {
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
+          {errorKey ? (
+            <p
+              className="border-destructive/30 bg-destructive/10 text-destructive mb-4 rounded-md border px-3 py-2 text-sm"
+              role="alert"
+            >
+              {t(`errors.${errorKey}`)}
+            </p>
+          ) : null}
           <LoginButton />
         </CardContent>
       </Card>

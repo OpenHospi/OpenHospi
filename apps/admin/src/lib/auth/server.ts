@@ -22,23 +22,8 @@ export async function requireSession() {
 export async function requireOrgMember() {
   const session = await requireSession();
   if (!session.session.activeOrganizationId) {
-    // Try to auto-activate the user's org
-    const orgs = await auth.api.listOrganizations({
-      headers: await headers(),
-    });
-    if (orgs && orgs.length > 0) {
-      await auth.api.setActiveOrganization({
-        headers: await headers(),
-        body: { organizationId: orgs[0].id },
-      });
-      // Re-fetch session with active org
-      const updatedSession = await getSession();
-      if (updatedSession?.session.activeOrganizationId) {
-        return updatedSession;
-      }
-    }
     const locale = (await getLocale()) as Locale;
-    redirect({ href: "/login", locale });
+    return redirect({ href: "/login", locale });
   }
   return session;
 }

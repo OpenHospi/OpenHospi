@@ -24,7 +24,7 @@ export function proxy(request: Parameters<typeof i18nMiddleware>[0]) {
   const { pathname } = request.nextUrl;
   const barePath = getBarePath(pathname);
   const isAuthRoute = matchesPaths(barePath, authPaths);
-  const hasSession = !!getSessionCookie(request);
+  const hasSession = !!getSessionCookie(request, { cookiePrefix: "openhospi-admin" });
 
   if (!isAuthRoute && !hasSession) {
     return NextResponse.redirect(new URL("/login", request.url));

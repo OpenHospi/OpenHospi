@@ -39,9 +39,78 @@ function parseVerificationToken(url: string, token?: string): string | null {
   }
 }
 
+/**
+ * Extracts the `idp_hint` claim from the newly-minted user's InAcademia ID
+ * token. Returns an empty string on any failure (missing account row,
+ * malformed JWT, missing claim) — the caller still inserts a profile, and
+ * institutionDomain can be filled in later during onboarding.
+ */
+async function extractInacademiaEntityId(userId: string): Promise<string> {
+  const [account] = await db
+    .select({ idToken: schema.account.idToken })
+    .from(schema.account)
+    .where(eq(schema.account.userId, userId));
+
+  if (!account?.idToken) {
+    console.warn("[auth] No ID token found for newly created user", { userId });
+    return "";
+  }
+
+  try {
+    const parts = account.idToken.split(".");
+    if (parts.length !== 3 || !parts[1]) {
+      throw new Error(`malformed JWT (${parts.length} parts)`);
+    }
+    const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString());
+    const entityId = (payload.idp_hint as string) ?? "";
+    if (!entityId) {
+      console.warn("[auth] InAcademia ID token missing idp_hint claim", { userId });
+    }
+    return entityId;
+  } catch (err) {
+    console.error("[auth] Failed to decode InAcademia ID token:", {
+      userId,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return "";
+  }
+}
+
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const IS_BUILD_PHASE = process.env.NEXT_PHASE === "phase-production-build";
+
+function resolveAuthSecret(): string {
+  const secret = process.env.BETTER_AUTH_SECRET;
+  if (secret) return secret;
+  if (IS_PRODUCTION && !IS_BUILD_PHASE) {
+    throw new Error(
+      "BETTER_AUTH_SECRET is required in production. Generate one with: openssl rand -base64 32",
+    );
+  }
+  return "build-placeholder-secret-not-for-production-use";
+}
+
+function resolveInacademiaCredentials(): { clientId: string; clientSecret: string } {
+  const clientId = process.env.INACADEMIA_CLIENT_ID;
+  const clientSecret = process.env.INACADEMIA_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    if (IS_PRODUCTION && !IS_BUILD_PHASE) {
+      throw new Error(
+        "INACADEMIA_CLIENT_ID and INACADEMIA_CLIENT_SECRET are required in production.",
+      );
+    }
+    return {
+      clientId: clientId ?? "dev-placeholder",
+      clientSecret: clientSecret ?? "dev-placeholder",
+    };
+  }
+  return { clientId, clientSecret };
+}
+
 function createAuth() {
+  const inacademia = resolveInacademiaCredentials();
   return betterAuth({
-    secret: process.env.BETTER_AUTH_SECRET ?? "build-placeholder-secret-not-for-production-use",
+    secret: resolveAuthSecret(),
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: { ...schema },
@@ -56,8 +125,33 @@ function createAuth() {
       expiresIn: 60 * 60 * 24 * 30, // 30 days
       updateAge: 60 * 60 * 24, // Extend session if last refresh was > 1 day ago
     },
+    account: {
+      accountLinking: {
+        enabled: true,
+        // Apple and Google are first-party IdPs that sign emails. Safe to
+        // auto-link a returning user's Apple login to an existing Google
+        // account with the same email (or vice versa) — relevant for app
+        // store reviewers who may switch platforms.
+        trustedProviders: ["apple", "google"],
+      },
+    },
+    rateLimit: {
+      enabled: true,
+      window: 60,
+      max: 60,
+      customRules: {
+        "/sign-in/social": { window: 60, max: 10 },
+        "/sign-in/email": { window: 60, max: 5 },
+        "/sign-up/email": { window: 60, max: 5 },
+        "/oauth2/callback/:providerId": { window: 60, max: 10 },
+        "/verify-email": { window: 60, max: 10 },
+        "/forget-password": { window: 60, max: 3 },
+      },
+    },
     trustedOrigins: [
-      "https://*.openhospi.nl",
+      "https://openhospi.nl",
+      "https://www.openhospi.nl",
+      "https://app.openhospi.nl",
       "https://op.srv.inacademia.org",
       "https://appleid.apple.com",
       "openhospi://",
@@ -129,12 +223,19 @@ function createAuth() {
       user: {
         create: {
           before: async (user) => {
+            // Privacy: store a synthetic internal email in auth.user. The real
+            // email from InAcademia is never released (profile.sub@inacademia.…
+            // is already synthetic via mapProfileToUser); Apple/Google reviewer
+            // accounts are throwaway so we rewrite those too. In development
+            // we keep the real email for local debugging.
+            // emailVerified is intentionally NOT touched — let each provider
+            // set it: Apple/Google = true, InAcademia = false (per its
+            // mapProfileToUser), email signup = false (verified via code).
             const keepRealEmail = process.env.NODE_ENV === "development";
             return {
               data: {
                 ...user,
                 email: keepRealEmail ? user.email : `${user.id}@id.openhospi.nl`,
-                emailVerified: false,
               },
             };
           },
@@ -169,11 +270,6 @@ function createAuth() {
 
             if (accountRecord?.providerId === "apple" || accountRecord?.providerId === "google") {
               const nameParts = (user.name ?? "App Reviewer").split(" ");
-
-              await db
-                .update(schema.user)
-                .set({ emailVerified: true })
-                .where(eq(schema.user.id, user.id));
 
               await db
                 .insert(schema.profiles)
@@ -227,22 +323,7 @@ function createAuth() {
               return;
             }
 
-            let entityId = "";
-            try {
-              const [account] = await db
-                .select({ idToken: schema.account.idToken })
-                .from(schema.account)
-                .where(eq(schema.account.userId, user.id));
-              if (account?.idToken) {
-                const payload = JSON.parse(
-                  Buffer.from(account.idToken.split(".")[1]!, "base64url").toString(),
-                );
-                entityId = (payload.idp_hint as string) ?? "";
-              }
-            } catch {
-              // ID token decode failed
-            }
-
+            const entityId = await extractInacademiaEntityId(user.id);
             await db
               .insert(schema.profiles)
               .values({
@@ -262,8 +343,8 @@ function createAuth() {
         config: [
           {
             providerId: "inacademia",
-            clientId: process.env.INACADEMIA_CLIENT_ID!,
-            clientSecret: process.env.INACADEMIA_CLIENT_SECRET!,
+            clientId: inacademia.clientId,
+            clientSecret: inacademia.clientSecret,
             discoveryUrl: "https://op.srv.inacademia.org/.well-known/openid-configuration",
             scopes: ["openid", "student", "persistent"],
             pkce: true,

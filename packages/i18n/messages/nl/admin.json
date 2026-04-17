@@ -2,10 +2,10 @@
   "admin": {
     "login": {
       "title": "Admin inloggen",
-      "description": "Log in met je GitHub-account om toegang te krijgen tot het beheerpaneel.",
-      "githubButton": "Inloggen met GitHub",
-      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
-      "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
+      "description": "Log in met je OpenHospi Google Workspace-account.",
+      "googleButton": "Inloggen met Google",
+      "error": "Inloggen mislukt. Alleen openhospi.nl-accounts hebben toegang.",
+      "footer": "Alleen geautoriseerde OpenHospi-teamleden hebben toegang tot dit paneel."
     },
     "sidebar": {
       "dashboard": "Dashboard",

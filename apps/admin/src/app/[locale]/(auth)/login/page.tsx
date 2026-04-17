@@ -21,7 +21,7 @@ export default async function AdminLoginPage({ params }: Props) {
   setRequestLocale(locale);
 
   const session = await getSession();
-  if ((session?.user as { role?: string } | undefined)?.role === "admin") {
+  if (session?.session.activeOrganizationId) {
     redirect({ href: "/", locale });
   }
 

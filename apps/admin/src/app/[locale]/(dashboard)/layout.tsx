@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { routing } from "@/i18n/routing";
-import { requireAdmin } from "@/lib/auth/server";
+import { requireOrgMember } from "@/lib/auth/server";
 
 type Props = {
   children: React.ReactNode;
@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await requireAdmin();
+  const session = await requireOrgMember();
 
   return (
     <SidebarProvider>

@@ -4,7 +4,7 @@
   "private": true,
   "license": "AGPL-3.0-only",
   "scripts": {
-    "dev": "next dev --port 3001",
+    "dev": "next dev --port 3001 --experimental-https --experimental-https-cert ./certs/cert.pem --experimental-https-key ./certs/key.pem",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
+    "@better-auth/sso": "1.6.5",
     "@icons-pack/react-simple-icons": "^13.13.0",
     "@openhospi/database": "workspace:*",
     "@openhospi/email": "workspace:*",

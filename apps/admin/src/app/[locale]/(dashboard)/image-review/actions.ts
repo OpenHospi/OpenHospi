@@ -12,7 +12,7 @@ import { AdminAction } from "@openhospi/shared/enums";
 import { count, desc, eq, gte, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireAdmin } from "@/lib/auth/server";
+import { requireOrgAdmin, requireOrgMember } from "@/lib/auth/server";
 
 // ── Types ───────────────────────────────────────────────────
 
@@ -36,7 +36,7 @@ export type ReviewStats = {
 // ── Queries ─────────────────────────────────────────────────
 
 export async function getFlaggedPhotos(): Promise<FlaggedPhoto[]> {
-  await requireAdmin();
+  await requireOrgMember();
 
   const profileResults = await db
     .select({
@@ -98,7 +98,7 @@ export async function getFlaggedPhotos(): Promise<FlaggedPhoto[]> {
 }
 
 export async function getReviewStats(): Promise<ReviewStats> {
-  await requireAdmin();
+  await requireOrgMember();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -132,7 +132,7 @@ export async function getReviewStats(): Promise<ReviewStats> {
 // ── Mutations ───────────────────────────────────────────────
 
 export async function approvePhoto(photoId: string, type: "profile" | "room") {
-  const session = await requireAdmin();
+  const session = await requireOrgAdmin();
 
   const table = type === "profile" ? profilePhotos : roomPhotos;
   await db.update(table).set({ moderationStatus: "approved" }).where(eq(table.id, photoId));
@@ -150,7 +150,7 @@ export async function approvePhoto(photoId: string, type: "profile" | "room") {
 }
 
 export async function rejectPhoto(photoId: string, type: "profile" | "room") {
-  const session = await requireAdmin();
+  const session = await requireOrgAdmin();
 
   const table = type === "profile" ? profilePhotos : roomPhotos;
   await db.update(table).set({ moderationStatus: "rejected" }).where(eq(table.id, photoId));

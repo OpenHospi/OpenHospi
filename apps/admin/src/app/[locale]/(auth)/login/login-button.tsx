@@ -1,6 +1,6 @@
 "use client";
 
-import { SiGithub } from "@icons-pack/react-simple-icons";
+import { SiGoogle } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -15,8 +15,8 @@ export function LoginButton() {
 
   function handleLogin() {
     startTransition(async () => {
-      const result = await authClient.signIn.social({
-        provider: "github",
+      const result = await authClient.signIn.sso({
+        providerId: "google-workspace",
         callbackURL: "/",
       });
       if (result.error) {
@@ -27,8 +27,8 @@ export function LoginButton() {
 
   return (
     <Button onClick={handleLogin} disabled={isPending} className="w-full" size="lg">
-      {isPending ? <Loader2 className="animate-spin" /> : <SiGithub color="currentColor" />}
-      {t("githubButton")}
+      {isPending ? <Loader2 className="animate-spin" /> : <SiGoogle />}
+      {t("googleButton")}
     </Button>
   );
 }

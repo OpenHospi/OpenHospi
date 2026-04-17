@@ -17,9 +17,9 @@ catalog:
   drizzle-orm: 1.0.0-beta.21
   drizzle-kit: 1.0.0-beta.21
   drizzle-seed: 1.0.0-beta.21
-  better-auth: 1.6.2
-  "@better-auth/expo": 1.6.2
-  "@better-auth/drizzle-adapter": 1.6.2
+  better-auth: 1.6.5
+  "@better-auth/expo": 1.6.5
+  "@better-auth/drizzle-adapter": 1.6.5
   "@supabase/supabase-js": 2.103.0
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1

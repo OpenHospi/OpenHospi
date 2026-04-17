@@ -2,10 +2,10 @@
   "admin": {
     "login": {
       "title": "Admin login",
-      "description": "Log in with your GitHub account to access the admin panel.",
-      "githubButton": "Log in with GitHub",
-      "error": "Login failed. Check that your account has admin privileges.",
-      "footer": "Only authorized administrators can access this panel."
+      "description": "Log in with your OpenHospi Google Workspace account.",
+      "googleButton": "Log in with Google",
+      "error": "Login failed. Only openhospi.nl accounts have access.",
+      "footer": "Only authorized OpenHospi team members can access this panel."
     },
     "sidebar": {
       "dashboard": "Dashboard",

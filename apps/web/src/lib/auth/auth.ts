@@ -65,6 +65,7 @@ function createAuth() {
         ? [
             "http://localhost:3000",
             "http://localhost:3001",
+            "https://dev-admin.openhospi.nl:3001",
             "exp+openhospi://",
             "exp://",
             "exp://**",

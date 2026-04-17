@@ -1,5 +1,8 @@
 # dependencies
 **/node_modules
+
+# local TLS certs (mkcert)
+**/certs/
 /.pnp
 .pnp.js
 

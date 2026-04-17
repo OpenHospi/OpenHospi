@@ -116,10 +116,23 @@ printf "\n${BOLD}Setting up database…${NC}\n\n"
 pnpm supabase:reset
 ok "Database schema pushed, storage configured, and seed data loaded"
 
+# ── Admin HTTPS certs (mkcert) ─────────────────────────────────────────────
+
+printf "\n${BOLD}Setting up local HTTPS certs for admin panel…${NC}\n\n"
+if command -v mkcert &> /dev/null; then
+  mkcert -install 2>/dev/null
+  mkdir -p apps/admin/certs
+  mkcert -cert-file apps/admin/certs/cert.pem -key-file apps/admin/certs/key.pem dev-admin.openhospi.nl
+  ok "Local HTTPS certs generated for dev-admin.openhospi.nl"
+else
+  printf "  ${YELLOW}⚠ mkcert not installed. Install with: brew install mkcert${NC}\n"
+  printf "  ${YELLOW}  Then run: mkcert -install && mkcert -cert-file apps/admin/certs/cert.pem -key-file apps/admin/certs/key.pem dev-admin.openhospi.nl${NC}\n\n"
+fi
+
 # ── Done ────────────────────────────────────────────────────────────────────
 
 printf "\n${GREEN}${BOLD}Setup complete!${NC}\n\n"
 printf "  Start the web app:       ${CYAN}pnpm dev:web${NC}   → ${CYAN}http://localhost:3000${NC}\n"
-printf "  Start the admin panel:   ${CYAN}pnpm dev:admin${NC} → ${CYAN}http://localhost:3001${NC}\n"
+printf "  Start the admin panel:   ${CYAN}pnpm dev:admin${NC} → ${CYAN}https://dev-admin.openhospi.nl:3001${NC}\n"
 printf "  Supabase Studio:         ${CYAN}http://127.0.0.1:54323${NC}\n"
 printf "  Mailpit (email testing): ${CYAN}http://127.0.0.1:54324${NC}\n\n"

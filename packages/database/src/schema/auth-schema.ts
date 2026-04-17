@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, uuid, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, uuid, index, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: uuid("id")
@@ -38,6 +38,7 @@ export const session = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     impersonatedBy: text("impersonated_by"),
+    activeOrganizationId: text("active_organization_id"),
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
@@ -95,3 +96,79 @@ export const jwks = pgTable("jwks", {
   createdAt: timestamp("created_at").notNull(),
   expiresAt: timestamp("expires_at"),
 });
+
+// ── Organization plugin tables ─────────────────────────────────────────────
+
+export const organization = pgTable("organization", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  slug: text("slug").unique(),
+  logo: text("logo"),
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const member = pgTable(
+  "member",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    role: text("role").default("member").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("member_userId_idx").on(table.userId),
+    index("member_organizationId_idx").on(table.organizationId),
+  ],
+);
+
+export const invitation = pgTable(
+  "invitation",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    role: text("role"),
+    status: text("status").default("pending").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    inviterId: uuid("inviter_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    index("invitation_email_idx").on(table.email),
+    index("invitation_organizationId_idx").on(table.organizationId),
+  ],
+);
+
+// ── SSO plugin table ───────────────────────────────────────────────────────
+
+export const ssoProvider = pgTable(
+  "ssoProvider",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    issuer: text("issuer").notNull(),
+    domain: text("domain").notNull(),
+    oidcConfig: text("oidc_config"),
+    samlConfig: text("saml_config"),
+    userId: text("user_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    organizationId: text("organization_id"),
+  },
+  (table) => [uniqueIndex("ssoProvider_providerId_idx").on(table.providerId)],
+);

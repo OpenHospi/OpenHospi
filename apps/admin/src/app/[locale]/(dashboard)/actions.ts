@@ -20,7 +20,7 @@ import { revalidatePath } from "next/cache";
 
 import { parseUUID } from "@/lib/action-result";
 import { auth } from "@/lib/auth/auth";
-import { requireAdmin } from "@/lib/auth/server";
+import { requireOrgAdmin, requireOrgMember } from "@/lib/auth/server";
 
 export type AggregateStats = {
   totalUsers: number;
@@ -34,7 +34,7 @@ export type AggregateStats = {
 };
 
 export async function getAggregateStats(): Promise<AggregateStats> {
-  await requireAdmin();
+  await requireOrgMember();
 
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -110,7 +110,7 @@ export async function getReports(
   status?: ReportStatus,
   type?: ReportType,
 ): Promise<ReportListItem[]> {
-  await requireAdmin();
+  await requireOrgMember();
 
   const conditions = [];
   if (status) conditions.push(eq(reports.status, status));
@@ -153,7 +153,7 @@ export type ReportDetail = ReportListItem & {
 };
 
 export async function getReportDetail(reportId: string): Promise<ReportDetail | null> {
-  await requireAdmin();
+  await requireOrgMember();
   parseUUID(reportId);
 
   const [row] = await db
@@ -212,7 +212,7 @@ export type RoomDetail = {
 };
 
 export async function getRoomDetail(roomId: string): Promise<RoomDetail | null> {
-  await requireAdmin();
+  await requireOrgMember();
   parseUUID(roomId);
 
   const [row] = await db
@@ -266,7 +266,7 @@ export type UserDetail = {
 };
 
 export async function getUserDetail(userId: string): Promise<UserDetail | null> {
-  await requireAdmin();
+  await requireOrgMember();
   parseUUID(userId);
 
   const [row] = await db
@@ -303,7 +303,7 @@ export async function getUserDetail(userId: string): Promise<UserDetail | null> 
 }
 
 export async function resolveReport(reportId: string, action: AdminAction, reason: string) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   parseUUID(reportId);
   const adminUserId = adminSession.user.id;
 
@@ -333,7 +333,7 @@ export async function updateReportStatus(
   newStatus: ReportStatus,
   notes?: string,
 ) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   parseUUID(reportId);
   const adminUserId = adminSession.user.id;
 
@@ -363,7 +363,7 @@ export async function updateReportStatus(
 }
 
 export async function dismissReport(reportId: string, reason: string) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   parseUUID(reportId);
   const adminUserId = adminSession.user.id;
 
@@ -389,7 +389,7 @@ export async function dismissReport(reportId: string, reason: string) {
 }
 
 export async function banUser(reportId: string, userId: string, reason: string) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   parseUUID(reportId);
   parseUUID(userId);
   const adminUserId = adminSession.user.id;
@@ -441,7 +441,7 @@ export async function banUser(reportId: string, userId: string, reason: string) 
 }
 
 export async function unbanUser(userId: string, reason: string) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   parseUUID(userId);
   const adminUserId = adminSession.user.id;
 
@@ -462,7 +462,7 @@ export async function unbanUser(userId: string, reason: string) {
 }
 
 export async function removeListing(reportId: string, roomId: string, reason: string) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   parseUUID(reportId);
   parseUUID(roomId);
   const adminUserId = adminSession.user.id;
@@ -526,7 +526,7 @@ export async function getAuditLog(
   page: number = 1,
   pageSize: number = 25,
 ): Promise<{ entries: AuditLogEntry[]; total: number }> {
-  await requireAdmin();
+  await requireOrgMember();
 
   const [totalRow] = await db.select({ count: count() }).from(adminAuditLog);
   const total = totalRow?.count ?? 0;

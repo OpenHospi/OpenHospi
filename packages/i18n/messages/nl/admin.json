@@ -2,10 +2,14 @@
   "admin": {
     "login": {
       "title": "Admin inloggen",
-      "description": "Log in met je GitHub-account om toegang te krijgen tot het beheerpaneel.",
-      "githubButton": "Inloggen met GitHub",
-      "error": "Inloggen mislukt. Controleer of je account beheerdersrechten heeft.",
-      "footer": "Alleen geautoriseerde beheerders hebben toegang tot dit paneel."
+      "description": "Log in met je OpenHospi Google Workspace-account.",
+      "googleButton": "Inloggen met Google",
+      "errors": {
+        "forbidden": "Inloggen mislukt. Alleen openhospi.nl-accounts hebben toegang tot het adminpaneel.",
+        "noOrg": "Je account is geverifieerd, maar geen lid van de OpenHospi-organisatie. Neem contact op met een beheerder.",
+        "samlFailed": "Single sign-on is mislukt. Probeer het opnieuw of neem contact op met een beheerder."
+      },
+      "footer": "Alleen geautoriseerde OpenHospi-teamleden hebben toegang tot dit paneel."
     },
     "sidebar": {
       "dashboard": "Dashboard",

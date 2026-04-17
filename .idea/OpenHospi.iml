@@ -9,6 +9,8 @@
       <excludeFolder url="file://$MODULE_DIR$/apps/mobile/.expo" />
       <excludeFolder url="file://$MODULE_DIR$/apps/mobile/android" />
       <excludeFolder url="file://$MODULE_DIR$/apps/mobile/ios" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/admin/certs" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/docs/.source" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

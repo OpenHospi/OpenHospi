@@ -2,10 +2,14 @@
   "admin": {
     "login": {
       "title": "Admin login",
-      "description": "Log in with your GitHub account to access the admin panel.",
-      "githubButton": "Log in with GitHub",
-      "error": "Login failed. Check that your account has admin privileges.",
-      "footer": "Only authorized administrators can access this panel."
+      "description": "Log in with your OpenHospi Google Workspace account.",
+      "googleButton": "Log in with Google",
+      "errors": {
+        "forbidden": "Login failed. Only openhospi.nl accounts have access to the admin panel.",
+        "noOrg": "Your account is authenticated but not a member of the OpenHospi organization. Contact an administrator.",
+        "samlFailed": "Single sign-on failed. Please try again or contact an administrator."
+      },
+      "footer": "Only authorized OpenHospi team members can access this panel."
     },
     "sidebar": {
       "dashboard": "Dashboard",

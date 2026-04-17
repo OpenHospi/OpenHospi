@@ -11,7 +11,7 @@ import { AdminAction, type DataRequestStatus, type DataRequestType } from "@open
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { requireAdmin } from "@/lib/auth/server";
+import { requireOrgAdmin, requireOrgMember } from "@/lib/auth/server";
 
 export type DataRequestListItem = {
   id: string;
@@ -25,7 +25,7 @@ export type DataRequestListItem = {
 };
 
 export async function getDataRequests(status?: DataRequestStatus): Promise<DataRequestListItem[]> {
-  await requireAdmin();
+  await requireOrgMember();
 
   const conditions = [];
   if (status) conditions.push(eq(dataRequests.status, status));
@@ -54,7 +54,7 @@ export async function getDataRequests(status?: DataRequestStatus): Promise<DataR
 }
 
 export async function getDataRequestDetail(requestId: string) {
-  await requireAdmin();
+  await requireOrgMember();
 
   const [row] = await db
     .select({
@@ -88,7 +88,7 @@ export async function updateDataRequestStatus(
   newStatus: DataRequestStatus,
   notes?: string,
 ) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   const adminUserId = adminSession.user.id;
 
   const updateData: Record<string, unknown> = { status: newStatus };
@@ -114,7 +114,7 @@ export async function updateDataRequestStatus(
 }
 
 export async function liftUserRestriction(userId: string, reason: string) {
-  const adminSession = await requireAdmin();
+  const adminSession = await requireOrgAdmin();
   const adminUserId = adminSession.user.id;
 
   await db
@@ -135,7 +135,7 @@ export async function liftUserRestriction(userId: string, reason: string) {
 }
 
 export async function getDataRequestStats() {
-  await requireAdmin();
+  await requireOrgMember();
 
   const [pendingRow] = await db
     .select({ count: count() })

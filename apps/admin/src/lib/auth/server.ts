@@ -19,12 +19,23 @@ export async function requireSession() {
   return session;
 }
 
-export async function requireAdmin() {
+export async function requireOrgMember() {
   const session = await requireSession();
-  const userWithRole = session.user as typeof session.user & { role?: string };
-  if (userWithRole.role !== "admin") {
+  if (!session.session.activeOrganizationId) {
     const locale = (await getLocale()) as Locale;
-    redirect({ href: "/login", locale });
+    return redirect({ href: "/login", locale });
+  }
+  return session;
+}
+
+export async function requireOrgAdmin() {
+  const session = await requireOrgMember();
+  const member = await auth.api.getActiveMember({
+    headers: await headers(),
+  });
+  if (!member || (member.role !== "owner" && member.role !== "admin")) {
+    const locale = (await getLocale()) as Locale;
+    redirect({ href: "/", locale });
   }
   return session;
 }

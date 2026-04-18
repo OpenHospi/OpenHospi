@@ -13,6 +13,7 @@ export default function ModalsLayout() {
   const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tProfile } = useTranslation('translation', { keyPrefix: 'app.profile' });
   const { t: tSettings } = useTranslation('translation', { keyPrefix: 'app.settings' });
+  const { t: tInvitations } = useTranslation('translation', { keyPrefix: 'app.invitations' });
 
   return (
     <Stack
@@ -150,6 +151,13 @@ export default function ModalsLayout() {
         options={{
           sheetAllowedDetents: [0.7, 1],
           title: tSettings('privacy.consentHistory.title'),
+        }}
+      />
+      <Stack.Screen
+        name="decline-invitation"
+        options={{
+          sheetAllowedDetents: [0.55],
+          title: tInvitations('declineReasonLabel'),
         }}
       />
     </Stack>

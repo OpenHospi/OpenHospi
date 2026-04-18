@@ -24,7 +24,6 @@
     "@expo/ui": "^55.0.11",
     "@expo/vector-icons": "^15.1.1",
     "@formatjs/intl-pluralrules": "^6.3.2",
-    "@gorhom/bottom-sheet": "^5.2.9",
     "@hookform/resolvers": "catalog:",
     "@openhospi/crypto": "workspace:*",
     "@openhospi/i18n": "workspace:*",

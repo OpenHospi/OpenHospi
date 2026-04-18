@@ -1,22 +1,19 @@
 import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
-import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
+import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
 import { NativeButton } from '@/components/native/button';
 import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { NativeSelect } from '@/components/native/select';
 import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
-import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSaveDetails } from '@/services/my-rooms';
 
 export default function DetailsScreen() {
@@ -25,7 +22,6 @@ export default function DetailsScreen() {
   const { bottom } = useSafeAreaInsets();
   const { colors, spacing } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
-  const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data: room, isLoading } = useMyRoom(roomId);
@@ -44,12 +40,6 @@ export default function DetailsScreen() {
   const [furnishing, setFurnishing] = useState<string | null>(null);
   const [totalHousemates, setTotalHousemates] = useState('');
   const [initialized, setInitialized] = useState(false);
-
-  // Sheet refs for pickers
-  const utilitiesSheetRef = useRef<BottomSheetModal>(null);
-  const houseTypeSheetRef = useRef<BottomSheetModal>(null);
-  const furnishingSheetRef = useRef<BottomSheetModal>(null);
-  const rentalTypeSheetRef = useRef<BottomSheetModal>(null);
 
   if (room && !initialized) {
     setRentPrice(room.rentPrice ? String(room.rentPrice) : '');
@@ -155,14 +145,13 @@ export default function DetailsScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.utilitiesIncluded')}
           </ThemedText>
-          <NativeSelect
-            value={utilitiesIncluded}
-            options={UtilitiesIncluded.values.map((v: string) => ({
-              value: v,
-              label: t(`utilities.${v}` as never),
-            }))}
-            onValueChange={setUtilitiesIncluded}
-            onPress={() => utilitiesSheetRef.current?.present()}
+          <SelectPickerSheet
+            values={UtilitiesIncluded.values}
+            selected={utilitiesIncluded}
+            onSelect={(v) => setUtilitiesIncluded(v ?? UtilitiesIncluded.included)}
+            placeholder={t('fields.utilitiesIncluded')}
+            searchPlaceholder={t('fields.utilitiesIncluded')}
+            translationKeyPrefix="app.rooms.utilities"
           />
         </View>
 
@@ -218,15 +207,13 @@ export default function DetailsScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.houseType')}
           </ThemedText>
-          <NativeSelect
-            value={houseType ?? undefined}
+          <SelectPickerSheet
+            values={HouseType.values}
+            selected={houseType}
+            onSelect={setHouseType}
             placeholder={t('fields.houseType')}
-            options={HouseType.values.map((v: string) => ({
-              value: v,
-              label: tEnums(`house_type.${v}`),
-            }))}
-            onValueChange={(v) => setHouseType(v)}
-            onPress={() => houseTypeSheetRef.current?.present()}
+            searchPlaceholder={t('fields.houseType')}
+            translationKeyPrefix="enums.house_type"
           />
         </View>
 
@@ -235,15 +222,13 @@ export default function DetailsScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.furnishing')}
           </ThemedText>
-          <NativeSelect
-            value={furnishing ?? undefined}
+          <SelectPickerSheet
+            values={Furnishing.values}
+            selected={furnishing}
+            onSelect={setFurnishing}
             placeholder={t('fields.furnishing')}
-            options={Furnishing.values.map((v: string) => ({
-              value: v,
-              label: tEnums(`furnishing.${v}`),
-            }))}
-            onValueChange={(v) => setFurnishing(v)}
-            onPress={() => furnishingSheetRef.current?.present()}
+            searchPlaceholder={t('fields.furnishing')}
+            translationKeyPrefix="enums.furnishing"
           />
         </View>
 
@@ -252,15 +237,13 @@ export default function DetailsScreen() {
           <ThemedText variant="subheadline" weight="500">
             {t('fields.rentalType')}
           </ThemedText>
-          <NativeSelect
-            value={rentalType ?? undefined}
+          <SelectPickerSheet
+            values={RentalType.values}
+            selected={rentalType}
+            onSelect={setRentalType}
             placeholder={t('fields.rentalType')}
-            options={RentalType.values.map((v: string) => ({
-              value: v,
-              label: tEnums(`rental_type.${v}`),
-            }))}
-            onValueChange={(v) => setRentalType(v)}
-            onPress={() => rentalTypeSheetRef.current?.present()}
+            searchPlaceholder={t('fields.rentalType')}
+            translationKeyPrefix="enums.rental_type"
           />
         </View>
 
@@ -302,98 +285,7 @@ export default function DetailsScreen() {
           loading={saveDetails.isPending}
         />
       </PlatformSurface>
-
-      {/* Picker sheets */}
-      <PickerSheet
-        ref={utilitiesSheetRef}
-        options={UtilitiesIncluded.values.map((v: string) => ({
-          value: v,
-          label: t(`utilities.${v}` as never),
-        }))}
-        selected={utilitiesIncluded}
-        onSelect={(v) => {
-          setUtilitiesIncluded(v);
-          utilitiesSheetRef.current?.dismiss();
-        }}
-      />
-      <PickerSheet
-        ref={houseTypeSheetRef}
-        options={HouseType.values.map((v: string) => ({
-          value: v,
-          label: tEnums(`house_type.${v}`),
-        }))}
-        selected={houseType}
-        onSelect={(v) => {
-          setHouseType(v);
-          houseTypeSheetRef.current?.dismiss();
-        }}
-      />
-      <PickerSheet
-        ref={furnishingSheetRef}
-        options={Furnishing.values.map((v: string) => ({
-          value: v,
-          label: tEnums(`furnishing.${v}`),
-        }))}
-        selected={furnishing}
-        onSelect={(v) => {
-          setFurnishing(v);
-          furnishingSheetRef.current?.dismiss();
-        }}
-      />
-      <PickerSheet
-        ref={rentalTypeSheetRef}
-        options={RentalType.values.map((v: string) => ({
-          value: v,
-          label: tEnums(`rental_type.${v}`),
-        }))}
-        selected={rentalType}
-        onSelect={(v) => {
-          setRentalType(v);
-          rentalTypeSheetRef.current?.dismiss();
-        }}
-      />
     </View>
-  );
-}
-
-function PickerSheet({
-  ref,
-  options,
-  selected,
-  onSelect,
-}: {
-  ref: React.Ref<BottomSheetModal>;
-  options: { value: string; label: string }[];
-  selected: string | null;
-  onSelect: (value: string) => void;
-}) {
-  const { colors } = useTheme();
-
-  return (
-    <AppBottomSheetModal ref={ref} enableDynamicSizing scrollable={false}>
-      <View style={styles.pickerContent}>
-        {options.map((opt) => (
-          <Pressable
-            key={opt.value}
-            onPress={() => {
-              hapticLight();
-              onSelect(opt.value);
-            }}
-            android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
-            style={[
-              styles.pickerRow,
-              selected === opt.value ? { backgroundColor: colors.accent } : undefined,
-            ]}>
-            <ThemedText
-              variant="body"
-              weight={selected === opt.value ? '600' : '400'}
-              color={selected === opt.value ? colors.primary : colors.foreground}>
-              {opt.label}
-            </ThemedText>
-          </Pressable>
-        ))}
-      </View>
-    </AppBottomSheetModal>
   );
 }
 
@@ -405,13 +297,4 @@ const styles = StyleSheet.create({
   fieldGroup: { gap: 8 },
   euroRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   flex1: { flex: 1 },
-  pickerContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  pickerRow: {
-    borderRadius: radius.md,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
 });

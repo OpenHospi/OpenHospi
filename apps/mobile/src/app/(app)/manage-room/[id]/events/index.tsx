@@ -1,6 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -47,9 +46,8 @@ export default function EventsListScreen() {
 
   const today = new Date().toISOString().split('T')[0];
 
-  const listItems = useMemo(() => {
-    if (!events) return [];
-
+  const listItems: ListItem[] = [];
+  if (events) {
     const upcoming: EventSummary[] = [];
     const past: EventSummary[] = [];
     for (const event of events) {
@@ -60,17 +58,15 @@ export default function EventsListScreen() {
       }
     }
 
-    const items: ListItem[] = [];
     if (upcoming.length > 0) {
-      items.push({ type: 'header', title: t('upcoming') });
-      for (const e of upcoming) items.push({ type: 'event', data: e });
+      listItems.push({ type: 'header', title: t('upcoming') });
+      for (const e of upcoming) listItems.push({ type: 'event', data: e });
     }
     if (past.length > 0) {
-      items.push({ type: 'header', title: t('past') });
-      for (const e of past) items.push({ type: 'event', data: e });
+      listItems.push({ type: 'header', title: t('past') });
+      for (const e of past) listItems.push({ type: 'event', data: e });
     }
-    return items;
-  }, [events, today, t]);
+  }
 
   if (isLoading) {
     return <SkeletonEventsList />;

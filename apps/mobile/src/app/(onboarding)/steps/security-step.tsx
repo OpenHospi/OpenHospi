@@ -1,17 +1,18 @@
-import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { setupDevice } from '@openhospi/crypto';
-import { Platform, Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { PIN_LENGTH } from '@openhospi/shared/constants';
 import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { InputOTP } from '@/components/forms/input-otp';
 import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
-import { getProtocolStore } from '@/lib/crypto/stores';
 import { api } from '@/lib/api-client';
+import { getProtocolStore } from '@/lib/crypto/stores';
+import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticPinEntry } from '@/lib/haptics';
 import { queryKeys } from '@/services/keys';
 
 export default function SecurityStep() {
@@ -25,6 +26,7 @@ export default function SecurityStep() {
   const [loading, setLoading] = useState(false);
 
   function handlePinFilled(value: string) {
+    hapticPinEntry();
     if (value.length === PIN_LENGTH) {
       setStep('confirm');
     }
@@ -32,6 +34,7 @@ export default function SecurityStep() {
 
   async function handleConfirmFilled(value: string) {
     if (value !== pin) {
+      hapticFormSubmitError();
       Alert.alert(t('pin_mismatch'));
       setConfirmPin('');
       return;
@@ -42,7 +45,6 @@ export default function SecurityStep() {
       const store = getProtocolStore();
       const result = await setupDevice(store, value);
 
-      // Register device on server
       await api.post<{ id: string }>('/api/mobile/chat/register-device', {
         registrationId: result.registrationId,
         identityKeyPublic: result.identityKeyPublic,
@@ -52,16 +54,17 @@ export default function SecurityStep() {
         oneTimePreKeys: result.oneTimePreKeys,
       });
 
-      // Upload encrypted backup
       await api.post('/api/mobile/chat/backup', {
         encryptedData: result.encryptedBackup.ciphertext,
         iv: result.encryptedBackup.iv,
         salt: result.encryptedBackup.salt,
       });
 
+      hapticFormSubmitSuccess();
       await queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.status() });
     } catch (error) {
       console.error('[SecurityStep] Setup failed:', error);
+      hapticFormSubmitError();
       Alert.alert(t('setup_error'));
       setConfirmPin('');
       setLoading(false);
@@ -113,6 +116,7 @@ export default function SecurityStep() {
             label={t('use_pin')}
             onPress={() => {
               if (pin.length !== PIN_LENGTH) {
+                hapticFormSubmitError();
                 Alert.alert(t('pin_length_error'));
                 return;
               }

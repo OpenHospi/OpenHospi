@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -6,21 +5,13 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { APP_NAME, GOOGLE_WEB_CLIENT_ID } from '@openhospi/shared/constants';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { SymbolView } from 'expo-symbols';
 import { useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-  type ViewStyle,
-} from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
+import { NativeButton } from '@/components/native/button';
 import { ThemedText } from '@/components/native/text';
 import { Logo } from '@/components/shared/logo';
 import { useTheme } from '@/design';
@@ -38,8 +29,6 @@ const REQUIRED_TAPS = 5;
 if (!isIOS) {
   GoogleSignin.configure({ webClientId: GOOGLE_WEB_CLIENT_ID });
 }
-
-// ── Login handlers ──
 
 async function signInWithInAcademia() {
   await authClient.signIn.social({
@@ -76,8 +65,6 @@ async function signInWithGoogle() {
   });
 }
 
-// ── Component ──
-
 export default function LoginScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'auth.login' });
   const { colors, isDark } = useTheme();
@@ -86,7 +73,7 @@ export default function LoginScreen() {
     () => mmkv.getBoolean(REVIEWER_STORAGE_KEY) ?? false
   );
 
-  // ── 3-step hidden gesture ──
+  // Hidden 3-step gesture to reveal reviewer providers (Apple/Google).
   const step = useRef(0);
   const taps = useRef(0);
   const tapTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -101,7 +88,6 @@ export default function LoginScreen() {
 
   function handleLogoLongPress() {
     if (showReviewerLogin) return;
-
     if (step.current === 0) {
       step.current = 1;
       hapticLight();
@@ -135,7 +121,6 @@ export default function LoginScreen() {
     }, TAP_RESET_TIMEOUT);
   }
 
-  // ── Shared login wrapper ──
   async function handleLogin(provider: () => Promise<void>) {
     setIsPending(true);
     try {
@@ -147,24 +132,16 @@ export default function LoginScreen() {
     }
   }
 
-  // ── Styles ──
-  const primaryButtonStyle: ViewStyle = {
-    height: isIOS ? 50 : 52,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    borderRadius: isIOS ? radius.lg : radius.md,
-    backgroundColor: colors.primary,
-    opacity: isPending ? 0.6 : 1,
-  };
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.center}>
         <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
-          {/* Logo — step 1 & 3 of hidden gesture (long press) */}
-          <Pressable onLongPress={handleLogoLongPress} delayLongPress={3000} style={styles.logoRow}>
+          <Pressable
+            onLongPress={handleLogoLongPress}
+            delayLongPress={3000}
+            style={styles.logoRow}
+            accessibilityRole="image"
+            accessibilityLabel={APP_NAME}>
             <Logo size={40} />
             <ThemedText variant="title2" color={colors.primary}>
               {APP_NAME}
@@ -172,8 +149,9 @@ export default function LoginScreen() {
           </Pressable>
 
           <View style={styles.headerSection}>
-            <ThemedText variant="largeTitle">{t('title')}</ThemedText>
-            {/* Description — step 2 of hidden gesture (5 taps) */}
+            <ThemedText variant="largeTitle" style={styles.centered}>
+              {t('title')}
+            </ThemedText>
             <View onStartShouldSetResponder={() => (handleDescriptionTap(), false)}>
               <ThemedText
                 variant="subheadline"
@@ -185,29 +163,17 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.buttonSection}>
-            <Pressable
-              onPress={() => {
-                hapticLight();
-                void handleLogin(signInWithInAcademia);
-              }}
+            <NativeButton
+              label={t('inacademiaButton')}
+              variant="primary"
+              systemImage="graduationcap.fill"
+              materialIcon="school"
+              loading={isPending}
               disabled={isPending}
-              android_ripple={{ color: 'rgba(255,255,255,0.2)', borderless: false }}
-              style={({ pressed }) => [primaryButtonStyle, pressed && isIOS && { opacity: 0.75 }]}>
-              {isPending ? (
-                <ActivityIndicator size="small" color={colors.primaryForeground} />
-              ) : isIOS ? (
-                <SymbolView
-                  name="graduationcap.fill"
-                  size={20}
-                  tintColor={colors.primaryForeground}
-                />
-              ) : (
-                <Ionicons name="school" size={20} color={colors.primaryForeground} />
-              )}
-              <ThemedText variant="body" weight="600" color={colors.primaryForeground}>
-                {t('inacademiaButton')}
-              </ThemedText>
-            </Pressable>
+              onPress={() => void handleLogin(signInWithInAcademia)}
+              accessibilityLabel={t('inacademiaButton')}
+              accessibilityHint={t('inacademiaDescription')}
+            />
 
             <ThemedText
               variant="caption1"
@@ -283,7 +249,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
     alignItems: 'center',
-    gap: Platform.select({ ios: 28, android: 24 }),
+    gap: 28,
   },
   logoRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   headerSection: { alignItems: 'center', gap: 8 },

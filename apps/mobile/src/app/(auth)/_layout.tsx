@@ -22,10 +22,10 @@ function LanguageHeaderPicker() {
   const [search, setSearch] = useState('');
   const locale = i18n.language;
 
-  const filtered = SUPPORTED_LOCALES.filter((loc) => {
-    if (!search.trim()) return true;
-    return LOCALE_CONFIG[loc].name.toLowerCase().includes(search.trim().toLowerCase());
-  });
+  const query = search.trim().toLowerCase();
+  const filtered = query
+    ? SUPPORTED_LOCALES.filter((loc) => LOCALE_CONFIG[loc].name.toLowerCase().includes(query))
+    : SUPPORTED_LOCALES;
 
   return (
     <>
@@ -34,7 +34,9 @@ function LanguageHeaderPicker() {
           hapticLight();
           sheetRef.current?.present();
         }}
-        hitSlop={8}>
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={t('language')}>
         <NativeIcon name="globe" size={22} color={colors.primary} />
       </Pressable>
 
@@ -47,7 +49,12 @@ function LanguageHeaderPicker() {
         onDismiss={() => setSearch('')}>
         <View style={styles.sheetBody}>
           <View style={styles.searchContainer}>
-            <ThemedInput value={search} onChangeText={setSearch} placeholder={t('search')} />
+            <ThemedInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder={t('search')}
+              accessibilityLabel={t('search')}
+            />
           </View>
 
           <FlatList
@@ -62,11 +69,14 @@ function LanguageHeaderPicker() {
                 <Pressable
                   onPress={() => {
                     hapticLight();
-                    i18n.changeLanguage(item);
+                    void i18n.changeLanguage(item);
                     sheetRef.current?.dismiss();
                     setSearch('');
                   }}
                   android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isSelected }}
+                  accessibilityLabel={LOCALE_CONFIG[item].name}
                   style={[
                     styles.localeRow,
                     isSelected && { backgroundColor: colors.primary + '1A' },

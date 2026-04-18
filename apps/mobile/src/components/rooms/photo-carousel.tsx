@@ -1,18 +1,13 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  LinearTransition,
-} from 'react-native-reanimated';
+import PagerView, { type PagerViewOnPageSelectedEvent } from 'react-native-pager-view';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { SPRING_SNAPPY } from '@/lib/animations';
+import { hapticLight } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -28,106 +23,83 @@ type Props = {
   bucket: 'profile-photos' | 'room-photos';
 };
 
-function ZoomableImage({ uri }: { uri: string }) {
-  const scale = useSharedValue(1);
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-
-  const pinch = Gesture.Pinch()
-    .onUpdate((e) => {
-      scale.value = Math.max(1, Math.min(3, e.scale));
-    })
-    .onEnd(() => {
-      scale.value = withSpring(1, SPRING_SNAPPY);
-    });
-
-  const pan = Gesture.Pan()
-    .onUpdate((e) => {
-      if (scale.value > 1) {
-        translateX.value = e.translationX;
-        translateY.value = e.translationY;
-      }
-    })
-    .onEnd(() => {
-      translateX.value = withSpring(0, SPRING_SNAPPY);
-      translateY.value = withSpring(0, SPRING_SNAPPY);
-    });
-
-  const composed = Gesture.Simultaneous(pinch, pan);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: scale.value },
-    ],
-  }));
-
-  return (
-    <GestureDetector gesture={composed}>
-      <Animated.View style={[{ width: SCREEN_WIDTH, height: CAROUSEL_HEIGHT }, animatedStyle]}>
-        <Image
-          source={{ uri }}
-          style={{ width: SCREEN_WIDTH, height: CAROUSEL_HEIGHT }}
-          contentFit="cover"
-          cachePolicy="disk"
-          transition={200}
-        />
-      </Animated.View>
-    </GestureDetector>
-  );
-}
-
 export function PhotoCarousel({ photos, bucket }: Props) {
   const { colors } = useTheme();
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (photos.length === 0) return null;
 
-  return (
-    <View>
-      <Animated.FlatList
-        data={photos}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={(e) => {
-          const index = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
-          setActiveIndex(index);
-        }}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ZoomableImage uri={getStoragePublicUrl(item.url, bucket)} />}
-      />
+  const count = photos.length;
 
-      {photos.length > 1 && (
+  function handlePageSelected(event: PagerViewOnPageSelectedEvent) {
+    const next = event.nativeEvent.position;
+    if (next !== activeIndex) {
+      hapticLight();
+      setActiveIndex(next);
+    }
+  }
+
+  return (
+    <View
+      accessibilityRole="adjustable"
+      accessibilityLabel={`Photo ${activeIndex + 1} of ${count}`}
+      accessibilityValue={{ min: 0, max: Math.max(count - 1, 0), now: activeIndex }}>
+      <PagerView style={styles.pager} initialPage={0} onPageSelected={handlePageSelected} overdrag>
+        {photos.map((photo) => (
+          <View key={photo.id} collapsable={false} style={styles.page}>
+            <Image
+              source={{ uri: getStoragePublicUrl(photo.url, bucket) }}
+              style={styles.image}
+              contentFit="cover"
+              cachePolicy="disk"
+              transition={200}
+            />
+          </View>
+        ))}
+      </PagerView>
+
+      {count > 1 ? (
         <>
-          <View style={styles.dotsContainer}>
-            {photos.map((_, i) => (
+          <View style={styles.dotsContainer} pointerEvents="none">
+            {photos.map((photo, i) => (
               <Animated.View
-                key={i}
+                key={photo.id}
                 layout={LinearTransition.springify()}
-                style={{
-                  height: 8,
-                  borderRadius: radius.sm,
-                  width: i === activeIndex ? 24 : 8,
-                  backgroundColor: i === activeIndex ? '#fff' : 'rgba(255,255,255,0.5)',
-                }}
+                style={[
+                  styles.dot,
+                  {
+                    width: i === activeIndex ? 24 : 8,
+                    backgroundColor: i === activeIndex ? '#ffffff' : 'rgba(255,255,255,0.5)',
+                  },
+                ]}
               />
             ))}
           </View>
 
-          <View style={styles.counterBadge}>
+          <View style={styles.counterBadge} pointerEvents="none">
             <ThemedText color={colors.primaryForeground} style={styles.counterText}>
-              {activeIndex + 1}/{photos.length}
+              {activeIndex + 1}/{count}
             </ThemedText>
           </View>
         </>
-      )}
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  pager: {
+    width: SCREEN_WIDTH,
+    height: CAROUSEL_HEIGHT,
+  },
+  page: {
+    width: SCREEN_WIDTH,
+    height: CAROUSEL_HEIGHT,
+  },
+  image: {
+    width: SCREEN_WIDTH,
+    height: CAROUSEL_HEIGHT,
+  },
   dotsContainer: {
     position: 'absolute',
     bottom: 16,
@@ -136,6 +108,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 8,
+  },
+  dot: {
+    height: 8,
+    borderRadius: radius.sm,
   },
   counterBadge: {
     position: 'absolute',

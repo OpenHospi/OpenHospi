@@ -1,40 +1,93 @@
-import { Image } from 'expo-image';
-import { Stack, useRouter } from 'expo-router';
 import { DateTimePicker } from '@expo/ui/datetimepicker';
+import { BottomSheetTextInput, type BottomSheetModal } from '@gorhom/bottom-sheet';
 import { getInstitution } from '@openhospi/inacademia';
 import { Gender, StudyLevel } from '@openhospi/shared/enums';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useRef, useState, useMemo } from 'react';
+import { Image } from 'expo-image';
+import { Stack, useRouter } from 'expo-router';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import type { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
-import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-sheet';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
+import { NativeDivider } from '@/components/native/divider';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { GroupedSection } from '@/components/layout/grouped-section';
-import { ListCell } from '@/components/layout/list-cell';
-import { NativeDivider } from '@/components/native/divider';
+import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { isIOS } from '@/lib/platform';
+import { authClient } from '@/lib/auth-client';
 import { showActionSheet } from '@/lib/action-sheet';
 import {
-  hapticFormSubmitSuccess,
   hapticFormSubmitError,
+  hapticFormSubmitSuccess,
+  hapticLight,
   hapticPullToRefreshSnap,
 } from '@/lib/haptics';
-import { authClient } from '@/lib/auth-client';
 import { queryClient } from '@/lib/query-client';
 import { getStoragePublicUrl } from '@/lib/storage-url';
+import { useMarkNotificationRead, useNotifications } from '@/services/notifications';
 import { useProfile, useUpdateProfile } from '@/services/profile';
-import { useNotifications, useMarkNotificationRead } from '@/services/notifications';
+
+function SectionHeader({ title }: { title: string }) {
+  const { colors } = useTheme();
+  return (
+    <View style={styles.sectionHeader}>
+      <ThemedText
+        variant="footnote"
+        color={colors.tertiaryForeground}
+        style={styles.sectionHeaderText}>
+        {title.toUpperCase()}
+      </ThemedText>
+    </View>
+  );
+}
+
+function ActivitySection() {
+  const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
+  const { colors } = useTheme();
+  const { data, isLoading } = useNotifications();
+  const markRead = useMarkNotificationRead();
+
+  const notifications = data?.pages.flatMap((p) => p.notifications) ?? [];
+
+  if (isLoading || notifications.length === 0) return null;
+
+  const recent = notifications.slice(0, 5);
+
+  return (
+    <>
+      <SectionHeader title={t('activity')} />
+      <GroupedSection>
+        {recent.map((item, index) => (
+          <View key={item.id}>
+            {index > 0 && <NativeDivider />}
+            <ListCell
+              label={item.title}
+              value={item.body}
+              leftContent={
+                <NativeIcon
+                  name={item.readAt ? 'bell' : 'bell.fill'}
+                  size={16}
+                  color={item.readAt ? colors.tertiaryForeground : colors.primary}
+                />
+              }
+              onPress={() => {
+                if (!item.readAt) markRead.mutate(item.id);
+              }}
+              chevron={false}
+            />
+          </View>
+        ))}
+      </GroupedSection>
+    </>
+  );
+}
 
 export default function ProfileScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
@@ -43,12 +96,11 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
+  const { i18n } = useTranslation();
 
   const { data: profile, isPending, refetch, isRefetching } = useProfile();
   const updateProfile = useUpdateProfile();
-  const { i18n } = useTranslation();
 
-  // Inline edit state
   const birthDateSheetRef = useRef<BottomSheetModal>(null);
   const studyProgramSheetRef = useRef<BottomSheetModal>(null);
   const [birthDateDraft, setBirthDateDraft] = useState<Date>(() => {
@@ -59,6 +111,7 @@ export default function ProfileScreen() {
     return new Date(2000, 0, 1);
   });
   const [studyProgramDraft, setStudyProgramDraft] = useState('');
+
   const institution = useMemo(
     () => (profile ? getInstitution(profile.institutionDomain) : null),
     [profile]
@@ -72,10 +125,31 @@ export default function ProfileScreen() {
     refetch();
   };
 
+  const headerOptions = {
+    headerTitle: t('title'),
+    headerRight: () => (
+      <Pressable
+        onPress={() => {
+          hapticLight();
+          router.push('/(app)/settings');
+        }}
+        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={tCommon('settings')}>
+        <NativeIcon
+          name="gearshape"
+          androidName="settings"
+          size={22}
+          color={colors.tertiaryForeground}
+        />
+      </Pressable>
+    ),
+  };
+
   if (isPending) {
     return (
       <>
-        <Stack.Screen options={{ headerTitle: t('title') }} />
+        <Stack.Screen options={headerOptions} />
         <View style={styles.loadingContainer}>
           <ThemedSkeleton width={96} height={96} circle />
           <View style={styles.loadingLines}>
@@ -90,10 +164,10 @@ export default function ProfileScreen() {
   if (!profile) {
     return (
       <>
-        <Stack.Screen options={{ headerTitle: t('title') }} />
+        <Stack.Screen options={headerOptions} />
         <View style={styles.loadingContainer}>
           <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
-            Profile not found
+            {t('title')}
           </ThemedText>
         </View>
       </>
@@ -106,43 +180,28 @@ export default function ProfileScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerTitle: t('title'),
-          headerRight: () => (
-            <Pressable onPress={() => router.push('/(app)/settings')} hitSlop={8}>
-              {isIOS ? (
-                <SymbolView name="gearshape" size={22} tintColor={colors.tertiaryForeground} />
-              ) : (
-                <MaterialIcons name="settings" size={22} color={colors.tertiaryForeground} />
-              )}
-            </Pressable>
-          ),
-        }}
-      />
+      <Stack.Screen options={headerOptions} />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: bottom + 16 }}
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />}>
-        {/* Avatar Header */}
         <View style={styles.avatarSection}>
           <ThemedAvatar source={avatarUrl} fallback={profile.firstName} size={96} />
           <ThemedText variant="title2" style={styles.nameText}>
             {profile.firstName} {profile.lastName}
           </ThemedText>
           <View style={styles.badgeRow}>
-            {institution && institutionName && (
+            {institution && institutionName ? (
               <ThemedBadge variant="secondary" label={institution.short} />
-            )}
-            {profile.vereniging && (
+            ) : null}
+            {profile.vereniging ? (
               <ThemedBadge variant="outline" label={tEnums(`vereniging.${profile.vereniging}`)} />
-            )}
+            ) : null}
           </View>
         </View>
 
-        {/* Photos */}
-        {profile.photos.length > 0 && (
+        {profile.photos.length > 0 ? (
           <GroupedSection>
             <ScrollView
               horizontal
@@ -164,8 +223,7 @@ export default function ProfileScreen() {
               onPress={() => router.push('/(app)/(modals)/edit-photos')}
             />
           </GroupedSection>
-        )}
-        {profile.photos.length === 0 && (
+        ) : (
           <GroupedSection>
             <ListCell
               label={t('title')}
@@ -175,7 +233,6 @@ export default function ProfileScreen() {
           </GroupedSection>
         )}
 
-        {/* Study & Personal */}
         <SectionHeader title={t('studyInfo')} />
         <GroupedSection>
           <ListCell
@@ -252,7 +309,6 @@ export default function ProfileScreen() {
           />
         </GroupedSection>
 
-        {/* Bio */}
         <SectionHeader title={t('bio')} />
         <GroupedSection>
           <View style={styles.bioContent}>
@@ -270,7 +326,6 @@ export default function ProfileScreen() {
           />
         </GroupedSection>
 
-        {/* Languages */}
         <SectionHeader title={t('languages')} />
         <GroupedSection>
           <ListCell
@@ -284,7 +339,6 @@ export default function ProfileScreen() {
           />
         </GroupedSection>
 
-        {/* Lifestyle */}
         <SectionHeader title={t('lifestyleTags')} />
         <GroupedSection>
           <ListCell
@@ -300,10 +354,8 @@ export default function ProfileScreen() {
           />
         </GroupedSection>
 
-        {/* Activity */}
         <ActivitySection />
 
-        {/* Account */}
         <SectionHeader title={t('account')} />
         <GroupedSection>
           <ListCell
@@ -317,7 +369,6 @@ export default function ProfileScreen() {
         </GroupedSection>
       </ScrollView>
 
-      {/* Birth Date Sheet */}
       <BottomSheet
         ref={birthDateSheetRef}
         title={t('birthDate')}
@@ -366,7 +417,6 @@ export default function ProfileScreen() {
         </View>
       </BottomSheet>
 
-      {/* Study Program Sheet */}
       <BottomSheet
         ref={studyProgramSheetRef}
         title={t('studyProgram')}
@@ -426,70 +476,6 @@ export default function ProfileScreen() {
   );
 }
 
-function SectionHeader({ title }: { title: string }) {
-  const { colors } = useTheme();
-
-  return (
-    <View style={styles.sectionHeader}>
-      <ThemedText
-        variant="footnote"
-        color={colors.tertiaryForeground}
-        style={styles.sectionHeaderText}>
-        {title.toUpperCase()}
-      </ThemedText>
-    </View>
-  );
-}
-
-function ActivitySection() {
-  const { t } = useTranslation('translation', { keyPrefix: 'app.profile' });
-  const { colors } = useTheme();
-  const { data, isLoading } = useNotifications();
-  const markRead = useMarkNotificationRead();
-
-  const notifications = data?.pages.flatMap((p) => p.notifications) ?? [];
-
-  if (isLoading || notifications.length === 0) return null;
-
-  const recent = notifications.slice(0, 5);
-
-  return (
-    <>
-      <SectionHeader title={t('activity')} />
-      <GroupedSection>
-        {recent.map((item, index) => (
-          <View key={item.id}>
-            {index > 0 && <NativeDivider />}
-            <ListCell
-              label={item.title}
-              value={item.body}
-              leftContent={
-                isIOS ? (
-                  <SymbolView
-                    name={item.readAt ? 'bell' : 'bell.fill'}
-                    size={16}
-                    tintColor={item.readAt ? colors.tertiaryForeground : colors.primary}
-                  />
-                ) : (
-                  <MaterialIcons
-                    name="notifications"
-                    size={16}
-                    color={item.readAt ? colors.tertiaryForeground : colors.primary}
-                  />
-                )
-              }
-              onPress={() => {
-                if (!item.readAt) markRead.mutate(item.id);
-              }}
-              chevron={false}
-            />
-          </View>
-        ))}
-      </GroupedSection>
-    </>
-  );
-}
-
 const styles = StyleSheet.create({
   scroll: {
     flex: 1,
@@ -542,21 +528,6 @@ const styles = StyleSheet.create({
   },
   datePickerContainer: {
     paddingHorizontal: 8,
-  },
-  birthDateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 44,
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  birthDateLabel: {
-    flexShrink: 1,
-  },
-  birthDatePicker: {
-    minWidth: 180,
-    alignItems: 'flex-end',
   },
   sheetFooter: {
     flexDirection: 'row',

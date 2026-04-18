@@ -1,45 +1,43 @@
 import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
-import { useHeaderHeight } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
-import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { PDOK_PROXY_BASE } from '@/lib/constants';
-import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
-import { useProfile, useUpdateProfile } from '@/services/profile';
+import { hapticLight } from '@/lib/haptics';
+import { clearPickerCallback, firePickerCallback } from '@/lib/picker-callbacks';
 
 const DEBOUNCE_MS = 300;
 
-export default function EditPreferredCityScreen() {
+export default function PickCityScreen() {
   const router = useRouter();
+  const { callbackId, current } = useLocalSearchParams<{ callbackId: string; current?: string }>();
   const { colors } = useTheme();
-  const headerHeight = useHeaderHeight();
+  const { t } = useTranslation('translation', { keyPrefix: 'app.onboarding.citySearch' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { t: tPlaceholders } = useTranslation('translation', {
-    keyPrefix: 'app.onboarding.placeholders',
-  });
-  const { t: tCitySearch } = useTranslation('translation', {
-    keyPrefix: 'app.onboarding.citySearch',
-  });
 
-  const { data: profile } = useProfile();
-  const updateProfile = useUpdateProfile();
-  const [selected, setSelected] = useState<string | null>(profile?.preferredCity ?? null);
   const [search, setSearch] = useState('');
   const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  useEffect(() => {
+    return () => {
+      if (callbackId) clearPickerCallback(callbackId);
+    };
+  }, [callbackId]);
 
   function handleSearch(text: string) {
     setSearch(text);
+    setError(false);
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     if (text.length < 2) {
@@ -55,38 +53,29 @@ export default function EditPreferredCityScreen() {
         setSuggestions(results);
       } catch {
         setSuggestions([]);
+        setError(true);
       } finally {
         setLoading(false);
       }
     }, DEBOUNCE_MS);
   }
 
-  function handleSave() {
-    if (updateProfile.isPending) return;
-    updateProfile.mutate(
-      { preferredCity: selected ?? null },
-      {
-        onSuccess: () => {
-          hapticFormSubmitSuccess();
-          router.back();
-        },
-        onError: () => {
-          hapticFormSubmitError();
-          Alert.alert('Error');
-        },
-      }
-    );
+  function handleSelect(item: CitySuggestion) {
+    hapticLight();
+    firePickerCallback(callbackId, item.name);
+    clearPickerCallback(callbackId);
+    router.back();
   }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.searchArea, { paddingTop: headerHeight + 12 }]}>
+      <View style={styles.searchArea}>
         <ThemedInput
           value={search}
           onChangeText={handleSearch}
-          placeholder={tPlaceholders('searchCity')}
+          placeholder={t('searching')}
           autoFocus
-          accessibilityLabel={tPlaceholders('searchCity')}
+          accessibilityLabel={tCommon('search')}
         />
       </View>
 
@@ -96,9 +85,13 @@ export default function EditPreferredCityScreen() {
             <ThemedSkeleton key={i} height={44} rounded="md" />
           ))}
         </View>
+      ) : error ? (
+        <ThemedText variant="caption1" color={colors.destructive} style={styles.statusText}>
+          {t('searchError')}
+        </ThemedText>
       ) : search.length >= 2 && suggestions.length === 0 ? (
         <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.statusText}>
-          {tCitySearch('noResults')}
+          {t('noResults')}
         </ThemedText>
       ) : (
         <FlashList
@@ -107,20 +100,17 @@ export default function EditPreferredCityScreen() {
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => {
-            const isSelected = item.name === selected;
+            const isSelected = item.name === current;
             return (
               <Pressable
-                onPress={() => {
-                  hapticLight();
-                  setSelected(isSelected ? null : item.name);
-                }}
+                onPress={() => handleSelect(item)}
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={item.name}
                 style={[styles.listItem, isSelected && { backgroundColor: colors.primary + '1A' }]}>
                 <ThemedText
                   variant="body"
-                  weight={isSelected ? '600' : undefined}
+                  weight={isSelected ? '600' : '400'}
                   color={isSelected ? colors.primary : colors.foreground}>
                   {item.name}
                 </ThemedText>
@@ -129,15 +119,6 @@ export default function EditPreferredCityScreen() {
           }}
         />
       )}
-
-      <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <NativeButton
-          label={tCommon('save')}
-          onPress={handleSave}
-          loading={updateProfile.isPending}
-          accessibilityLabel={tCommon('save')}
-        />
-      </View>
     </View>
   );
 }
@@ -148,6 +129,8 @@ const styles = StyleSheet.create({
   },
   searchArea: {
     paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   skeletonList: {
     paddingHorizontal: 16,
@@ -160,18 +143,11 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingBottom: 32,
   },
   listItem: {
     paddingVertical: 12,
     paddingHorizontal: 12,
     borderRadius: radius.md,
-  },
-  footer: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 24,
-    borderTopWidth: StyleSheet.hairlineWidth,
   },
 });

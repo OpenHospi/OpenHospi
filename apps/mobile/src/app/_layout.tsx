@@ -8,7 +8,6 @@ setCryptoProvider(createNativeCryptoProvider());
 
 import { hideSplash } from '@/lib/splash';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isRunningInExpoGo } from 'expo';
@@ -145,13 +144,11 @@ let RootLayout = function RootLayout() {
       <ThemeProvider>
         <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
           <I18nextProvider i18n={i18n}>
-            <BottomSheetModalProvider>
-              <SessionProvider>
-                <ToastProvider>
-                  <RootNavigator />
-                </ToastProvider>
-              </SessionProvider>
-            </BottomSheetModalProvider>
+            <SessionProvider>
+              <ToastProvider>
+                <RootNavigator />
+              </ToastProvider>
+            </SessionProvider>
           </I18nextProvider>
         </PersistQueryClientProvider>
       </ThemeProvider>

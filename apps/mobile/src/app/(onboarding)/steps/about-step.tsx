@@ -59,9 +59,6 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
     keyPrefix: 'app.onboarding.placeholders',
   });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { t: tVerenigingEnums } = useTranslation('translation', {
-    keyPrefix: 'enums.vereniging',
-  });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
@@ -244,10 +241,9 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
               values={Vereniging.values}
               selected={field.value}
               onSelect={field.onChange}
-              title={t('vereniging')}
               placeholder={tPlaceholders('vereniging')}
               searchPlaceholder={tPlaceholders('searchVereniging')}
-              t={tVerenigingEnums}
+              translationKeyPrefix="enums.vereniging"
             />
           )}
         />

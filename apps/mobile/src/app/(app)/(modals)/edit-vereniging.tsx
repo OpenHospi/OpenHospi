@@ -1,8 +1,10 @@
 import { Vereniging } from '@openhospi/shared/enums';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/native/input';
@@ -11,7 +13,6 @@ import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
-import { useTranslation } from 'react-i18next';
 
 export default function EditVerenigingScreen() {
   const router = useRouter();
@@ -58,29 +59,33 @@ export default function EditVerenigingScreen() {
           onChangeText={setSearch}
           placeholder={tPlaceholders('searchVereniging')}
           autoFocus
+          accessibilityLabel={tPlaceholders('searchVereniging')}
         />
       </View>
 
-      <FlatList
+      <FlashList
         data={filtered}
         keyExtractor={(item) => item}
-        style={styles.list}
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => {
           const isSelected = item === selected;
+          const label = tEnums(item);
           return (
             <Pressable
               onPress={() => {
                 hapticLight();
                 setSelected(isSelected ? null : item);
               }}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isSelected }}
+              accessibilityLabel={label}
               style={[styles.listItem, isSelected && { backgroundColor: colors.primary + '1A' }]}>
               <ThemedText
                 variant="body"
                 weight={isSelected ? '600' : undefined}
                 color={isSelected ? colors.primary : colors.foreground}>
-                {tEnums(item)}
+                {label}
               </ThemedText>
             </Pressable>
           );
@@ -92,6 +97,7 @@ export default function EditVerenigingScreen() {
           label={tCommon('save')}
           onPress={handleSave}
           disabled={updateProfile.isPending}
+          accessibilityLabel={tCommon('save')}
         />
       </View>
     </View>
@@ -104,9 +110,6 @@ const styles = StyleSheet.create({
   },
   searchArea: {
     paddingHorizontal: 16,
-  },
-  list: {
-    flex: 1,
   },
   listContent: {
     paddingHorizontal: 16,

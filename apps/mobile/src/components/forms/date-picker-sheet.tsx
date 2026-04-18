@@ -1,5 +1,5 @@
 import { DateTimePicker } from '@expo/ui/datetimepicker';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 type DatePickerSheetProps = {
   value: Date;

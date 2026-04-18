@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 
 import { isTerminalApplicationStatus } from '@openhospi/shared/enums';
 
-import { isGlassEffectAPIAvailable } from '@/lib/platform-capabilities';
 import { useApplications } from '@/services/applications';
 import { useConversations } from '@/services/chat';
 
@@ -62,9 +61,6 @@ export default function TabLayout() {
         />
         <NativeTabs.Trigger.Label>{t('profile')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
-      {isGlassEffectAPIAvailable() ? (
-        <NativeTabs.BottomAccessory>{null}</NativeTabs.BottomAccessory>
-      ) : null}
     </NativeTabs>
   );
 }

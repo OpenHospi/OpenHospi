@@ -517,6 +517,8 @@
         "city": "City",
         "cityPlaceholder": "All cities",
         "priceRange": "Price range",
+        "minPrice": "Min",
+        "maxPrice": "Max",
         "houseType": "House type",
         "houseTypePlaceholder": "All types",
         "furnishing": "Furnishing",

@@ -1,20 +1,18 @@
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import { RefreshControl, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { LogoText } from '@/components/shared/logo-text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
-import { NativeIcon } from '@/components/native/icon';
-import { ThemedBadge } from '@/components/native/badge';
 import { ThemedText } from '@/components/native/text';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { RoomCard } from '@/components/rooms/room-card';
 import { useDiscoverFilters } from '@/context/discover-filters';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { hapticLight, hapticPullToRefreshSnap } from '@/lib/haptics';
+import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useRooms } from '@/services/rooms';
 import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
@@ -34,53 +32,6 @@ function SkeletonRoomCard() {
         <ThemedSkeleton width="30%" height={20} />
       </View>
     </View>
-  );
-}
-
-function FilterPill({
-  label,
-  count,
-  onPress,
-  accessibilityLabel,
-}: {
-  label: string;
-  count: number;
-  onPress: () => void;
-  accessibilityLabel: string;
-}) {
-  const { colors } = useTheme();
-  const active = count > 0;
-
-  return (
-    <Pressable
-      onPress={() => {
-        hapticLight();
-        onPress();
-      }}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      android_ripple={{ color: colors.muted, borderless: false }}
-      style={({ pressed }) => [
-        styles.filterPill,
-        {
-          backgroundColor: active ? colors.primary : colors.secondaryBackground,
-          borderColor: active ? colors.primary : colors.separator,
-          opacity: pressed ? 0.8 : 1,
-        },
-      ]}>
-      <NativeIcon
-        name="line.3.horizontal.decrease"
-        androidName="filter-list"
-        size={16}
-        color={active ? colors.primaryForeground : colors.foreground}
-      />
-      <ThemedText
-        variant="subheadline"
-        color={active ? colors.primaryForeground : colors.foreground}>
-        {label}
-      </ThemedText>
-      {active ? <ThemedBadge variant="secondary" label={String(count)} /> : null}
-    </Pressable>
   );
 }
 
@@ -117,17 +68,9 @@ export default function DiscoverScreen() {
     headerTitle: () => <LogoText height={40} />,
   };
 
-  const listHeader = (
-    <View style={styles.listHeader}>
-      <View style={styles.pillBar}>
-        <FilterPill
-          label={tFilters('title')}
-          count={activeFilterCount}
-          onPress={openFilters}
-          accessibilityLabel={tFilters('showFilters')}
-        />
-      </View>
-      {totalCount > 0 ? (
+  const listHeader =
+    totalCount > 0 ? (
+      <View style={styles.listHeader}>
         <ThemedText
           variant="caption1"
           color={colors.tertiaryForeground}
@@ -136,9 +79,8 @@ export default function DiscoverScreen() {
             ? t('roomCountFiltered', { showing: filteredRooms.length, total: totalCount })
             : t('roomCount', { count: totalCount })}
         </ThemedText>
-      ) : null}
-    </View>
-  );
+      </View>
+    ) : null;
 
   return (
     <>
@@ -150,6 +92,19 @@ export default function DiscoverScreen() {
         onChangeText={(event) => setSearchText(event.nativeEvent.text)}
         onCancelButtonPress={() => setSearchText('')}
       />
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={openFilters}
+          accessibilityLabel={tFilters('showFilters')}
+          selected={activeFilterCount > 0}
+          tintColor={colors.primary}>
+          <Stack.Toolbar.Icon sf="line.3.horizontal.decrease" />
+          <Stack.Toolbar.Label>{tFilters('title')}</Stack.Toolbar.Label>
+          {activeFilterCount > 0 ? (
+            <Stack.Toolbar.Badge>{String(activeFilterCount)}</Stack.Toolbar.Badge>
+          ) : null}
+        </Stack.Toolbar.Button>
+      </Stack.Toolbar>
 
       {isPending ? (
         <View style={styles.skeletonList}>
@@ -196,23 +151,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   listHeader: {
-    gap: 8,
     paddingTop: 8,
     paddingBottom: 4,
-  },
-  pillBar: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 16,
-  },
-  filterPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: radius.full,
-    borderWidth: StyleSheet.hairlineWidth,
   },
   listContent: {
     paddingBottom: 16,

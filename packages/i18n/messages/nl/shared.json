@@ -516,6 +516,8 @@
         "city": "Stad",
         "cityPlaceholder": "Alle steden",
         "priceRange": "Prijsbereik",
+        "minPrice": "Min",
+        "maxPrice": "Max",
         "houseType": "Woningtype",
         "houseTypePlaceholder": "Alle types",
         "furnishing": "Inrichting",

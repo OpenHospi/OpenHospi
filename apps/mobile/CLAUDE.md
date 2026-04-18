@@ -5,47 +5,58 @@ covers mobile-specific details.
 
 ## Stack
 
-| Layer      | Technology                                                                            |
-| ---------- | ------------------------------------------------------------------------------------- |
-| Framework  | Expo SDK 55, React Native 0.83, Expo Router v4                                        |
-| Styling    | `StyleSheet.create` + `useTheme()` hook — NO Tailwind, NO className                   |
-| Design     | `src/design/` — tokens (colors, spacing, typography, radius, shadows) + ThemeProvider |
-| UI         | Custom native components in `components/primitives/` + `components/layout/`           |
-| Animations | react-native-reanimated v4                                                            |
-| Icons      | `lucide-react-native` + SF Symbols (`expo-symbols`) + `@expo/vector-icons` fallback   |
-| Menus      | `@expo/ui` — SwiftUI ContextMenu/Menu (iOS), Jetpack Compose DropdownMenu (Android)   |
-| i18n       | react-i18next + i18next-icu — NOT next-intl                                           |
-| Auth       | Better Auth Expo client (`@better-auth/expo`)                                         |
-| Data       | React Query (`@tanstack/react-query` v5) + REST to Next.js backend                    |
-| Lists      | `@shopify/flash-list` v2 — NOT FlatList                                               |
-| Local DB   | expo-sqlite + Drizzle ORM (cache + E2EE protocol state)                               |
-| E2EE       | `@openhospi/crypto` + `react-native-quick-crypto` (Signal Protocol)                   |
-| Realtime   | Supabase Broadcast (WebSocket) — chat only                                            |
-| Backend    | **Next.js API** (apps/web) — NOT Expo API routes                                      |
-| Monitoring | Sentry (`@sentry/react-native`)                                                       |
-| Compiler   | React Compiler (enabled via `experiments.reactCompiler`)                              |
+| Layer      | Technology                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| Framework  | Expo SDK 55, React Native 0.83, Expo Router v4, New Architecture                                |
+| Styling    | `StyleSheet.create` + `useTheme()` hook — NO Tailwind, NO className                             |
+| Design     | `src/design/` — tokens (colors, spacing, typography, radius, shadows, glass) + ThemeProvider    |
+| UI         | `@expo/ui` (SwiftUI iOS / Jetpack Compose Android) + custom in `components/native/` + `layout/` |
+| Glass      | iOS 26 Liquid Glass via `expo-glass-effect` with `expo-blur` fallback on iOS 16.1–25            |
+| Dyn color  | Material You on Android 12+ via `@pchmn/expo-material3-theme` with Soft Teal fallback           |
+| Animations | react-native-reanimated v4 + `useReducedMotion()` gates decorative animations                   |
+| Icons      | SF Symbols (`expo-symbols`) iOS + `@expo/vector-icons/MaterialSymbols` Android                  |
+| Menus      | `@expo/ui` — SwiftUI ContextMenu/Menu (iOS), Jetpack Compose DropdownMenu (Android)             |
+| Sheets     | Expo Router `presentation: 'formSheet'` (iOS detents + grabber). No `@gorhom/bottom-sheet`.     |
+| i18n       | react-i18next + i18next-icu — NOT next-intl                                                     |
+| Auth       | Better Auth Expo client (`@better-auth/expo`)                                                   |
+| Data       | React Query (`@tanstack/react-query` v5) + REST to Next.js backend                              |
+| Lists      | `@shopify/flash-list` v2 — NOT FlatList                                                         |
+| Chat UI    | `react-native-gifted-chat` with custom `renderBubble`/`renderMessageText`                       |
+| Photo pgr  | `react-native-pager-view` (native `UIPageViewController` + Android `ViewPager`)                 |
+| Local DB   | expo-sqlite + Drizzle ORM (cache + E2EE protocol state)                                         |
+| E2EE       | `@openhospi/crypto` + `react-native-quick-crypto` (Signal Protocol)                             |
+| Realtime   | Supabase Broadcast (WebSocket) — chat only                                                      |
+| Backend    | **Next.js API** (apps/web) — NOT Expo API routes                                                |
+| Monitoring | Sentry (`@sentry/react-native`)                                                                 |
+| Compiler   | React Compiler (enabled via `experiments.reactCompiler`)                                        |
+
+## Platform floors
+
+- iOS 16.1+ (`ios.deploymentTarget: '16.1'` in `app.config.ts` via `expo-build-properties`)
+- Android API 24+ (Android 7)
+- iOS 26 Liquid Glass is layered on top via `isGlassEffectAPIAvailable()` runtime check
+- Android 12+ gets Material You dynamic color overlay; earlier Android falls back to Soft Teal
 
 ## Styling
 
 ### All styles via `StyleSheet.create` + `useTheme()`
 
-Every component uses `StyleSheet.create` for static styles at the bottom of the file, and `useTheme()` from `@/design`
-for dynamic theme-dependent values (colors, spacing, typography).
+Every component uses `StyleSheet.create` for static styles and `useTheme()` for dynamic theme-dependent values.
 
 ```tsx
 import { StyleSheet, View } from 'react-native';
 import { useTheme } from '@/design';
-import { ThemedText } from '@/components/primitives/themed-text';
+import { Text } from '@/components/native/text';
 
 export function MyComponent() {
-  const { colors, spacing, typography } = useTheme();
+  const { colors, spacing } = useTheme();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <ThemedText variant="headline">Title</ThemedText>
-      <ThemedText variant="body" color={colors.tertiaryForeground}>
+      <Text variant="headline">Title</Text>
+      <Text variant="body" color={colors.tertiaryForeground}>
         Subtitle
-      </ThemedText>
+      </Text>
     </View>
   );
 }
@@ -57,251 +68,251 @@ const styles = StyleSheet.create({
 
 ### Design tokens
 
-All design values come from `src/design/tokens/`:
+- **Colors:** `useTheme().colors` — semantic tokens (background hierarchy, foreground hierarchy, primary, destructive, muted, accent, separator, border, ring, notification, and glass-on-surface tokens: `primaryGlass`, `primaryGlassForeground`, `separatorOnGlass`)
+- **Glass:** `useTheme().glass` — fallback blur intensity, overlay opacity, `borderOnGlass`, `primaryOnGlass`, `foregroundOnGlass`, `separatorOnGlass` (see `tokens/glass.ts`)
+- **Typography:** `useTheme().typography` — iOS semantic scale
+- **Spacing:** `useTheme().spacing` — base-4 scale
+- **Radius:** `useTheme().radius` — platform-specific
+- **Shadows:** `shadow()` from `@/design/tokens/shadows`
 
-- **Colors:** `useTheme().colors` — semantic tokens (background, foreground, primary, destructive, muted, etc.) with light/dark variants
-- **Typography:** `useTheme().typography` — iOS semantic scale (largeTitle, title1, title2, title3, headline, body, callout, subheadline, footnote, caption1, caption2)
-- **Spacing:** `useTheme().spacing` — base-4 scale (xs=4, sm=8, md=12, lg=16, xl=20, 2xl=24, 3xl=32, 4xl=40, 5xl=48)
-- **Radius:** `radius` from `@/design/tokens/radius` — platform-specific (iOS slightly larger than Android)
-- **Shadows:** `shadow()` from `@/design/tokens/shadows` — iOS shadow props vs Android elevation
+### Theme preferences
+
+```tsx
+const { colorSchemePreference, setColorSchemePreference, useDynamicColor, setUseDynamicColor } =
+  useTheme();
+
+setColorSchemePreference('dark'); // 'light' | 'dark' | 'system' — persisted to MMKV
+setUseDynamicColor(false); // Android 12+ Material You toggle — persisted to MMKV
+```
+
+Dynamic-color overlay only touches brand tokens (`primary`, `primaryForeground`, `accent`, `accentForeground`, `ring`). Semantic tokens `destructive`, `success`, `warning` stay fixed across themes.
 
 ### Platform differences
 
-Use `Platform.select`, `isIOS`, or `isAndroid` from `@/lib/platform`:
+`Platform.select`, `isIOS`, `isAndroid`, `platformSelect()` from `@/lib/platform`. Runtime capability flags from `@/lib/platform-capabilities`:
 
 ```tsx
-import { isIOS } from '@/lib/platform';
-
-// iOS: ripple doesn't exist, use opacity feedback
-// Android: use android_ripple prop
+import { isGlassEffectAPIAvailable, isMaterialYouAvailable } from '@/lib/platform-capabilities';
 ```
+
+## `@expo/ui` primitive pattern (Metro platform extensions)
+
+Platform-specific primitives use Metro's `.ios.tsx` / `.android.tsx` resolution so screens import from one path without `Platform.OS` branching:
+
+```
+components/native/button/
+  index.tsx            // re-exports types + component (Metro picks platform file)
+  button.types.ts      // shared prop types
+  button.ios.tsx       // @expo/ui/swift-ui Button in Host
+  button.android.tsx   // @expo/ui/jetpack-compose Button in Host
+```
+
+**Never write `if (Platform.OS === 'ios')` branches inside screens.** Always resolve at the primitive layer via Metro extensions.
+
+### `Host` sizing and touch rules
+
+- `@expo/ui` primitives mount SwiftUI/Compose content inside a `Host` view. Parents must pin a concrete `height` (single-line controls) or set `matchContents` (multi-line / auto-growing content).
+- **Wrapping a `Host` in an outer `Pressable` does not forward touches.** Either use the primitive's built-in press handler or render an overlay `Pressable` sibling inside the Host content.
+- Inside `FlashList`: give each row a stable `key`. If recycling flickers a Host-based cell, fall back to an RN implementation for that specific cell.
+
+### Accessibility props
+
+Every primitive's prop types must expose:
+
+- `accessibilityRole`
+- `accessibilityLabel`
+- `accessibilityState` (for toggles, buttons, selected items)
+- `accessibilityValue` (sliders, progress, steppers)
+- `accessibilityHint` (when action isn't obvious from the label)
+
+Baked into primitive prop types from Phase B onward — never retrofitted later.
 
 ## Native Design Patterns
 
 ### iOS patterns
 
-- **GroupedSection** (`components/layout/grouped-section.tsx`) for iOS Settings-style grouped lists — replaces Card
-- **ListCell** (`components/layout/list-cell.tsx`) for standard list rows with label, value, and chevron
-- **ListSeparator** (`components/layout/list-separator.tsx`) for hairline separators (0.5px on iOS, 1px on Android)
-- **Background hierarchy** for depth — NOT borders and shadows. Depth comes from background color differences (background → secondaryBackground → tertiaryBackground)
-- **Large titles** on main tab screens via `headerLargeTitle: true`
-- **Blur headers** via `headerTransparent: true` + `headerBlurEffect: 'regular'`
-- **SF Symbols** via `expo-symbols` for native iOS icons
-- **Native sheets** via `presentation: 'formSheet'` — NOT custom dialog overlays
-- **Native alerts** via `Alert.alert()` — NOT custom alert dialog components
-- **Action sheets** via `showActionSheet()` from `@/lib/action-sheet` for destructive choices
+- **Large titles** on all 5 main tabs + top-level details (Settings, Room detail, My House, Application detail)
+- **Transparent glass headers** on iOS 26 via `headerTransparent: true` + `headerBlurEffect: 'regular'`. On iOS <26 the same config renders standard blur.
+- **`Stack.SearchBar`** — fragment root + `contentInsetAdjustmentBehavior="automatic"` (see feedback memory)
+- **Native sheets** via Expo Router `presentation: 'formSheet'` (detents, grabber, native corner radius)
+- **Native alerts** via `Alert.alert()` — NOT custom dialog overlays
+- **SF Symbols** via `expo-symbols`
+- **Background hierarchy** for depth — NOT borders and shadows
 
 ### Android patterns
 
-- **Elevation** via `shadow()` from design tokens — NOT CSS shadow classes
-- **Material ripple** via `android_ripple` prop on Pressable
-- **1px separators** (full-width) instead of iOS hairline with inset
+- **Edge-to-edge** is the default in Expo SDK 54+ (no config key required). `android.predictiveBackGestureEnabled: true` is set in `app.config.ts`.
+- **Material ripple** via `android_ripple` prop on Pressable (theme-aware color)
+- **Elevation** via `shadow()` tokens
+- **Material Symbols** via `@expo/vector-icons/MaterialSymbols`
+- **Material You dynamic color** when wallpaper seed available (Android 12+) — toggleable in Settings
 
-### Context menus
+### Predictive back gesture (Android 13+ / full animations Android 14-15+)
 
-Use `@expo/ui` for native menus — platform-specific imports:
+Opt-in is **app-wide** via `android.predictiveBackGestureEnabled: true` in `app.config.ts`, which sets `android:enableOnBackInvokedCallback="true"` in the AndroidManifest. This unlocks the system back-to-home, cross-task, and cross-activity animations on supported devices.
+
+Rules for screens that intercept back:
+
+- **Never** call `BackHandler.addEventListener('hardwareBackPress', …)` for new code — that API predates predictive back and blocks the gesture preview. Use React Navigation's `useFocusEffect` + `beforeRemove` listener, or Expo Router's `useNavigation().addListener('beforeRemove', …)`.
+- For modal screens that need a "discard changes?" confirm, prefer the navigation `beforeRemove` pattern so the system preview still animates toward the underlying screen.
+- Runtime availability: `isPredictiveBackAvailable()` from `@/lib/platform-capabilities` returns `true` on Android 13+.
+
+### PlatformSurface
+
+Unified surface component at `components/layout/platform-surface.tsx` — one import, variant drives output:
 
 ```tsx
-// iOS — SwiftUI ContextMenu (long-press) and Menu (tap)
-import { ContextMenu, Menu, Button } from '@expo/ui/swift-ui';
-
-// Android — Jetpack Compose DropdownMenu
-import { DropdownMenu, DropdownMenuItem } from '@expo/ui/jetpack-compose';
+<PlatformSurface variant="chrome" edge="top" glass="regular">
+  <NavHeader />
+</PlatformSurface>
 ```
 
-Use `Platform.OS` to pick the right implementation per platform. Never import SwiftUI components on Android or Jetpack Compose components on iOS.
+| Platform | Variant | Impl                                                  |
+| -------- | ------- | ----------------------------------------------------- |
+| iOS 26+  | chrome  | `GlassView` with `glassEffectStyle`                   |
+| iOS <26  | chrome  | `expo-blur` BlurView + overlay + hairline             |
+| iOS any  | card    | solid `colors.card` + `shadow('sm')`                  |
+| iOS any  | grouped | `colors.secondaryBackground` + `radius.lg`            |
+| iOS any  | modal   | `colors.background`                                   |
+| Android  | chrome  | solid `colors.background` + hairline + `elevation: 2` |
+| Android  | card    | `colors.card` + `shadow('md')`                        |
+| Android  | grouped | `colors.secondaryBackground` + `radius.lg`            |
+| Android  | modal   | `colors.background`                                   |
 
 ### Haptics
 
-Every interactive element should have haptic feedback. Use contextual helpers from `@/lib/haptics`:
-
-- `hapticLight` — button taps, selections
-- `hapticToggle` — switch/checkbox toggles
-- `hapticPullToRefreshSnap` — pull-to-refresh snap
-- `hapticSheetSnap` — bottom sheet snap
-- `hapticDelete` — destructive actions
-- `hapticFormSubmitSuccess/Error` — form submission results
-- `hapticPinEntry` — PIN digit entry
-- `hapticZoom` — pinch zoom thresholds
+Conservative — meaningful actions only. Helpers in `@/lib/haptics`: `hapticLight`, `hapticToggle`, `hapticPullToRefreshSnap`, `hapticSheetSnap`, `hapticDelete`, `hapticFormSubmitSuccess`, `hapticFormSubmitError`, `hapticPinEntry`, `hapticZoom`, etc.
 
 ### Lists
 
-Always use `FlashList` from `@shopify/flash-list`, never `FlatList`. FlashList v2 does NOT use `estimatedItemSize` (removed in v2).
+Always `FlashList` from `@shopify/flash-list` v2. No `estimatedItemSize`.
 
 ### Loading states
 
-Use skeleton placeholders (`ThemedSkeleton` from `components/primitives/`), never full-screen `ActivityIndicator`. Match skeleton dimensions to the real content layout.
+Shimmer skeletons (`Skeleton` from `components/native/skeleton.tsx`) for list placeholders. `@expo/ui` `ProgressView` for indeterminate spinners + pull-to-refresh overlays. Never a full-screen `ActivityIndicator`.
 
 ### Empty states
 
-Use `NativeEmptyState` from `components/feedback/native-empty-state.tsx` with SF Symbols on iOS and Lucide icons on Android.
+`NativeEmptyState` from `components/feedback/native-empty-state.tsx` with SF Symbols iOS + Material Symbols Android.
 
 ## Navigation
 
-- **Expo Router v4** with file-based routing in `src/app/`
-- **NativeTabs** from `expo-router/unstable-native-tabs` with `blurEffect="systemMaterial"` for frosted glass tab bar
-- Route groups:
-  - `(auth)/` — Login screen
-  - `(onboarding)/` — Onboarding flow
-  - `(app)/` — Authenticated app shell
-    - `(tabs)/` — Bottom tabs: discover, my-rooms, chat, applications, profile
-    - `(modals)/` — Modal screens (edit-\*, filter-sheet, apply-sheet, key-recovery)
-    - `room/[id].tsx`, `application/[id].tsx`, `settings.tsx`
-- Icons: SF Symbols via `expo-symbols` (iOS), `@expo/vector-icons` Material (Android)
-- Typed routes enabled (`experiments.typedRoutes: true`)
-- Screen transitions: `animation: 'slide_from_right'` on detail screens
+- Expo Router v4, file-based routing in `src/app/`
+- `NativeTabs` from `expo-router/unstable-native-tabs` with `blurEffect="systemMaterial"` + iOS 26 `NativeTabs.BottomAccessory` where applicable
+- Route groups: `(auth)/`, `(onboarding)/`, `(app)/` → `(tabs)/` + `(modals)/` + detail screens
+- Typed routes enabled
 
 ### Typed Routes
 
 ```tsx
-// CORRECT — typed pathname + params
-router.push({ pathname: '/(app)/room/[id]', params: { id } });
-
-// CORRECT — string form for static routes
-router.push('/(app)/(modals)/filter-sheet');
-
-// WRONG — string interpolation bypasses type checking
-router.push(`/(app)/room/${id}`);
+router.push({ pathname: '/(app)/room/[id]', params: { id } }); // ✓ typed params
+router.push('/(app)/(modals)/filter-sheet'); // ✓ static route
+router.push(`/(app)/room/${id}`); // ✗ bypasses types
 ```
 
 ## Component Conventions
 
-### Primitives (`components/primitives/`)
+### `components/native/` — primitives
 
-Base native components that replace the old @rn-primitives registry:
+Platform-split via Metro `.ios.tsx` / `.android.tsx` directories: `button/`, `text-field/`, `textarea/`, `toggle/`, `picker/`, `select/`, `progress/`, `checkbox/`.
 
-- `ThemedText` — typography with semantic variants (body, headline, title2, caption1, etc.)
-- `ThemedButton` — pressable with variants (primary, secondary, outline, ghost, destructive), haptic, loading state
-- `ThemedInput` — styled TextInput with focus/error states
-- `ThemedTextarea` — multiline input
-- `ThemedBadge` — native pill/chip
-- `ThemedAvatar` — circular image with initials fallback
-- `ThemedSwitch` — native RN Switch with theme colors + haptic
-- `ThemedProgress` — Reanimated animated progress bar
-- `ThemedSkeleton` — Reanimated shimmer placeholder
-- `ThemedCheckbox` — custom checkbox with haptic
-- `NativeSelect` — trigger that opens a bottom sheet picker
+Single-file RN primitives: `text.tsx`, `divider.tsx`, `badge.tsx`, `skeleton.tsx`, `avatar.tsx`, `input.tsx` (RN-fallback input; `text-field/` is the `@expo/ui` variant).
 
-### Layout (`components/layout/`)
+### `components/layout/` — structural
 
-iOS-native structural components:
-
-- `GroupedSection` — iOS Settings-style rounded section container (replaces Card)
-- `ListCell` — standard row with label, value, chevron, haptic
-- `ListSeparator` — platform-aware hairline
-- `StatusPill` — small tinted status indicator
+- `platform-surface.tsx` — unified glass/card/grouped/modal surface
+- `grouped-section.tsx` — iOS Settings-style rounded section
+- `list-cell.tsx` — standard row (label, value, chevron)
+- `status-pill.tsx` — tinted status indicator
 
 ### Domain components
 
-Organized by feature domain:
+`components/{chat,rooms,profile,forms,events,feedback,navigation,shared}/`
 
-- `components/chat/` — MessageBubble, ChatInputBar, ConversationListItem, etc.
-- `components/rooms/` — RoomCard, MyRoomCard, PhotoCarousel, etc.
-- `components/profile/` — ProfileFieldRow, ProfileSectionCard, VerificationBadge
-- `components/forms/` — ChipPicker, CitySearch, DatePickerSheet, InputOTP, etc.
-- `components/events/` — HospiInvitationCard
-- `components/feedback/` — NativeEmptyState, ErrorState, Skeleton, Toast, ConnectionStatusBar
-- `components/navigation/` — ScrollToBottomFab
-- `components/shared/` — AnimatedPressable, BottomSheet, Logo, SwipeableRow, etc.
+### Form bridge pattern
+
+`@expo/ui` SwiftUI `TextField` is uncontrolled. Bridge via `react-hook-form` `Controller`:
+
+```tsx
+<Controller
+  control={control}
+  name="email"
+  render={({ field }) => (
+    <TextField
+      defaultValue={field.value ?? ''}
+      onChangeText={field.onChange}
+      onFocusChange={(focused) => !focused && field.onBlur()}
+    />
+  )}
+/>
+```
+
+For `form.reset()`, bump a `formResetCounter` in state and pass `key={formResetCounter}` to the form subtree to remount. Gate edit-form render on `query.isSuccess` so the initial `defaultValue` is correct.
 
 ## Import Conventions
 
 ```tsx
-// Design system
 import { useTheme } from '@/design';
-import { spacing } from '@/design/tokens/spacing';
-import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
 
-// Primitives
-import { ThemedText } from '@/components/primitives/themed-text';
-import { ThemedButton } from '@/components/primitives/themed-button';
-
-// Layout
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
+import { Text } from '@/components/native/text';
+import { Button } from '@/components/native/button';
 
-// Domain components
 import { RoomCard } from '@/components/rooms/room-card';
 import { MessageBubble } from '@/components/chat/message-bubble';
 
-// Utilities
 import { hapticLight } from '@/lib/haptics';
 import { isIOS } from '@/lib/platform';
+import { isGlassEffectAPIAvailable } from '@/lib/platform-capabilities';
 ```
 
 ## Data Fetching & Services
 
-### API Client
-
-REST wrapper in `src/lib/api-client.ts` — thin `fetch` wrapper with `ApiError` class. All requests go to Next.js backend.
-
-### React Query
-
-All server state via `@tanstack/react-query` v5. Query client in `src/lib/query-client.ts`.
-
-### Query Key Factory
-
-Centralized in `src/services/keys.ts`.
-
-### Service Layer
-
-Each file in `src/services/` exports React Query hooks (useConversations, useRooms, useProfile, etc.).
+REST wrapper in `src/lib/api-client.ts`. React Query v5 (`src/lib/query-client.ts`). Query keys in `src/services/keys.ts`. Hooks per domain in `src/services/`.
 
 ## Auth
 
-- **Better Auth Expo** client via `@better-auth/expo` in `src/lib/auth-client.ts`
-- Token storage: `expo-secure-store`
-- Login: InAcademia OIDC (SURFconext)
-- Auth guard in root `_layout.tsx`
+Better Auth Expo client in `src/lib/auth-client.ts`. Token storage via `expo-secure-store`. Login via InAcademia OIDC. Auth guard in root `_layout.tsx`.
 
 ## i18n
 
-- **react-i18next** with `i18next-icu` plugin — NOT next-intl
-- Resources from `@openhospi/i18n/app` (merges `shared.json` + `app.json`)
-- Shared labels in `common.labels`
+`react-i18next` + `i18next-icu`. Resources from `@openhospi/i18n/app` (merges `shared.json` + `app.json`). Shared labels in `common.labels`.
 
 ## E2EE Chat
 
-- `@openhospi/crypto` — Signal Protocol (ECDH P-256, HKDF, AES-256-GCM, Sender Keys)
-- Key storage: SQLite + SecureStore
-- Protocol store: `src/lib/crypto/stores/index.ts`
-- Encryption hooks: `src/hooks/use-encryption.ts`
-- Realtime: Supabase Broadcast per `chat:${conversationId}` channel
+Signal Protocol via `@openhospi/crypto`. Key storage: SQLite + SecureStore. Realtime: Supabase Broadcast per `chat:${conversationId}` channel. Chat UI via `react-native-gifted-chat` with custom `renderBubble`/`renderMessageText`/`renderMessageImage` — encrypt before `onSend`, decrypt before building the message prop.
 
 ## Local Database (SQLite + Drizzle)
 
-- `expo-sqlite` + Drizzle ORM, schema in `src/lib/db/schema.ts`
-- `babel.config.js` MUST stay — `babel-plugin-inline-import` required for Drizzle migrations
-- Never create migration files manually — use `pnpm db:mobile:generate`
+`expo-sqlite` + Drizzle ORM, schema in `src/lib/db/schema.ts`. `babel-plugin-inline-import` required for Drizzle migrations. Never hand-edit migration files — run `pnpm db:mobile:generate`.
 
 ## Environment Variables
 
-All client-exposed use `EXPO_PUBLIC_` prefix: `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_KEY`, `EXPO_PUBLIC_SENTRY_DSN`.
+All client-exposed use `EXPO_PUBLIC_` prefix.
 
 ## Don'ts
 
-- **`className` prop** — app uses StyleSheet, not Tailwind
-- **`cn()` utility** — deleted, does not exist
-- **Hardcoded colors** — use `useTheme().colors`
-- **Hardcoded font sizes** — use `useTheme().typography` variants
-- **`FlatList`** — use FlashList from `@shopify/flash-list`
-- **`ActivityIndicator` for full-screen loading** — use ThemedSkeleton placeholders
-- **`Card`, `Badge`, `Select` from old ui/** — those files are deleted. Use primitives/layout components
-- **`@rn-primitives/*`** — removed entirely. Use native components
-- **`as` type assertions** — fix types properly (except `as const` and `Platform.select() as number`)
-- **Web-style shadows** — use `shadow()` from design/tokens/shadows
-- **Bordered cards for sections** — use GroupedSection with background hierarchy
-- **Custom dialog overlays** — use `Alert.alert()` or formSheet
-- **Dashed-border empty states** — use NativeEmptyState with SF Symbols
-- **`forwardRef`** — React 19 passes ref as a prop
+- **`className` prop / Tailwind / Uniwind** — mobile uses StyleSheet only
+- **`cn()` utility** — does not exist on mobile
+- **Hardcoded colors / font sizes** — always `useTheme()`
+- **`FlatList`** — use FlashList
+- **`ActivityIndicator` for full-screen loading** — use Skeleton
+- **`@gorhom/bottom-sheet`** — removed; use Expo Router formSheet
+- **`lucide-react-native`** — removed; SF Symbols + Material Symbols only
+- **`forwardRef`** — React 19 passes `ref` as a prop
 - **Manual `useMemo`/`useCallback`** — React Compiler handles memoization
+- **`if (Platform.OS === 'ios')` inside screens** — resolve at the primitive layer via Metro `.ios.tsx` / `.android.tsx`
+- **Wrapping a `Host` in outer `Pressable`** — touches won't forward; use the primitive's own press handler
+- **`@rn-primitives/*`** — removed entirely
+- **`as` type assertions** — fix types properly (except `as const` and `Platform.select() as number`)
+- **Custom dialog overlays** — use `Alert.alert()` or formSheet
 - **Hardcoded enum strings** — use companion objects from `@openhospi/shared/enums`
 - **next-intl imports** — mobile uses react-i18next
 - **TODO comments** — fix it now or create an issue
 - **Direct Supabase data queries** — all data goes through Next.js REST API
-- **`as never` on route paths** — use proper typed pathnames
-- **Components in `components/` root** — all components live in domain subdirectories
 
 ## Project Structure
 
@@ -315,15 +326,15 @@ src/
     +not-found.tsx
     (auth)/login.tsx
     (onboarding)/
-      index.tsx              # Onboarding flow
+      index.tsx
       steps/                 # about, bio, identity, languages, personality, photos, security
     (app)/
       _layout.tsx            # App shell with ConnectionStatusBar
       (tabs)/
         _layout.tsx          # NativeTabs with blurEffect
-        discover/            # Room discovery
-        my-rooms/            # Room management + creation wizard
-        chat/                # Conversations + threads
+        discover/
+        my-rooms/
+        chat/
         applications.tsx
         profile.tsx
       (modals)/              # FormSheet modals (edit-*, filter-sheet, apply-sheet)
@@ -334,45 +345,50 @@ src/
       join/[code].tsx
   design/
     tokens/
-      colors.ts              # Semantic color tokens (light/dark)
-      spacing.ts             # Base-4 spacing scale
-      typography.ts          # iOS semantic type scale
-      radius.ts              # Platform-specific corner radii
-      shadows.ts             # Native shadow helpers
-    theme.ts                 # ThemeProvider + useTheme() hook
-    index.ts                 # Re-exports
+      colors.ts              # Semantic color tokens (light/dark) + glass tokens
+      glass.ts               # iOS 26 glass + fallback blur tokens
+      dynamic-color.ts       # Material You overlay hook
+      spacing.ts
+      typography.ts
+      radius.ts
+      shadows.ts
+    theme.tsx                # ThemeProvider + useTheme() + preference state + MMKV
+    index.ts
   components/
-    primitives/              # ThemedText, ThemedButton, ThemedInput, etc.
-    layout/                  # GroupedSection, ListCell, ListSeparator, StatusPill
+    native/                  # Text, Button, TextField, Input, Toggle, Picker, Select,
+                             # Progress, Checkbox, Badge, Divider, Avatar, Skeleton, Textarea
+                             # (platform-split via Metro .ios.tsx / .android.tsx where applicable)
+    layout/                  # PlatformSurface, GroupedSection, ListCell, StatusPill
     feedback/                # NativeEmptyState, ErrorState, Skeleton, Toast
-    navigation/              # ScrollToBottomFab
+    navigation/
     chat/                    # MessageBubble, ChatInputBar, ConversationListItem
     rooms/                   # RoomCard, MyRoomCard, PhotoCarousel
-    profile/                 # ProfileFieldRow, ProfileSectionCard
-    forms/                   # ChipPicker, CitySearch, DatePickerSheet, InputOTP
-    events/                  # HospiInvitationCard
-    shared/                  # AnimatedPressable, BottomSheet, Logo, SwipeableRow
+    profile/
+    forms/
+    events/
+    shared/
   context/
-    session.tsx              # Auth + onboarding state
-    discover-filters.tsx     # Discovery filters (MMKV)
-    toast.tsx                # Toast notifications
+    session.tsx
+    discover-filters.tsx
+    toast.tsx
   hooks/
-    use-encryption.ts        # E2EE encryption context
+    use-encryption.ts
     use-toast.ts
-  i18n/index.ts              # react-i18next setup
+  i18n/index.ts
   lib/
-    api-client.ts            # REST API wrapper
-    auth-client.ts           # Better Auth Expo client
-    supabase.ts              # Realtime only
-    query-client.ts          # React Query config
+    api-client.ts
+    auth-client.ts
+    supabase.ts
+    query-client.ts
     platform.ts              # isIOS, isAndroid, platformSelect()
-    haptics.ts               # Haptic feedback helpers (15 exports)
-    animations.ts            # Reanimated presets (20 exports)
-    action-sheet.ts          # Native action sheet (iOS/Android)
+    platform-capabilities.ts # isGlassEffectAPIAvailable, isMaterialYouAvailable, isEdgeToEdgeNative
+    haptics.ts
+    animations.ts
+    action-sheet.ts
     biometric.ts, mmkv.ts, network.ts, constants.ts, mutation-error.ts
-    crypto/                  # E2EE key storage
-    db/                      # SQLite + Drizzle
-  services/                  # API query hooks (chat, rooms, profile, etc.)
+    crypto/
+    db/
+  services/
 ```
 
 ## Verification
@@ -380,5 +396,5 @@ src/
 ```bash
 pnpm --filter @openhospi/mobile lint
 pnpm --filter @openhospi/mobile typecheck
-pnpm dev:mobile  # start Expo dev server
+pnpm dev:mobile
 ```

@@ -44,6 +44,11 @@ export interface Colors {
 
   // ── Notification ──
   notification: string;
+
+  // ── Glass surfaces (iOS 26 Liquid Glass + pre-26 blur fallback) ──
+  primaryGlass: string;
+  primaryGlassForeground: string;
+  separatorOnGlass: string;
 }
 
 export const lightColors: Colors = {
@@ -85,6 +90,11 @@ export const lightColors: Colors = {
 
   // Notification
   notification: '#dc2626',
+
+  // Glass surfaces
+  primaryGlass: '#0d9488',
+  primaryGlassForeground: '#134e4a',
+  separatorOnGlass: 'rgba(19, 78, 74, 0.08)',
 };
 
 export const darkColors: Colors = {
@@ -126,4 +136,9 @@ export const darkColors: Colors = {
 
   // Notification
   notification: '#ef4444',
+
+  // Glass surfaces
+  primaryGlass: '#2dd4bf',
+  primaryGlassForeground: '#e2f0f0',
+  separatorOnGlass: 'rgba(255, 255, 255, 0.1)',
 };

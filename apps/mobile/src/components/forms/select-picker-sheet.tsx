@@ -15,6 +15,8 @@ type SelectPickerSheetProps = {
   onSelect: (value: string | null) => void;
   placeholder: string;
   searchPlaceholder: string;
+  /** Screen title in the picker sheet. Falls back to `placeholder`. */
+  title?: string;
   /**
    * i18n key prefix used to translate each value into its display label.
    * Omit to render raw values.
@@ -28,6 +30,7 @@ export function SelectPickerSheet({
   onSelect,
   placeholder,
   searchPlaceholder,
+  title,
   translationKeyPrefix,
 }: SelectPickerSheetProps) {
   const { colors } = useTheme();
@@ -38,12 +41,13 @@ export function SelectPickerSheet({
     hapticLight();
     const callbackId = registerPickerCallback<string | null>(onSelect);
     router.push({
-      pathname: '/(app)/(modals)/pick-option',
+      pathname: '/(pickers)/pick-option',
       params: {
         callbackId,
         values: JSON.stringify(values),
         current: selected ?? '',
         searchPlaceholder,
+        title: title ?? placeholder,
         ...(translationKeyPrefix ? { translationKeyPrefix } : {}),
       },
     });

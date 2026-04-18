@@ -25,7 +25,7 @@ export function AddressSearchInput({ displayValue, onSelect, placeholder }: Prop
     hapticLight();
     const callbackId = registerPickerCallback<AddressResult>(onSelect);
     router.push({
-      pathname: '/(app)/(modals)/pick-address',
+      pathname: '/(pickers)/pick-address',
       params: { callbackId },
     });
   }

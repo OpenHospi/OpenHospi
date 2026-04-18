@@ -5,12 +5,11 @@ import {
   searchAddresses,
 } from '@openhospi/shared/pdok';
 import { FlashList } from '@shopify/flash-list';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
@@ -26,7 +25,6 @@ export default function PickAddressScreen() {
   const { callbackId } = useLocalSearchParams<{ callbackId: string }>();
   const { colors } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
-  const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const [search, setSearch] = useState('');
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
@@ -86,35 +84,53 @@ export default function PickAddressScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.searchArea}>
-        <ThemedInput
-          value={search}
-          onChangeText={handleSearch}
-          placeholder={t('placeholders.searchAddress')}
-          autoFocus
-          accessibilityLabel={tCommon('search')}
-        />
-      </View>
-
+    <>
+      <Stack.Screen
+        options={{
+          title: t('fields.address'),
+          headerSearchBarOptions: {
+            placeholder: t('placeholders.searchAddress'),
+            autoCapitalize: 'none',
+            autoFocus: true,
+            hideWhenScrolling: false,
+            onChangeText: (e) => handleSearch(e.nativeEvent.text),
+            onCancelButtonPress: () => handleSearch(''),
+          },
+        }}
+      />
       {loading || resolving ? (
-        <View style={styles.skeletonList}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={styles.skeletonList}
+          style={{ backgroundColor: colors.background }}>
           {Array.from({ length: 6 }, (_, i) => (
             <ThemedSkeleton key={i} height={56} rounded="md" />
           ))}
-        </View>
+        </ScrollView>
       ) : error ? (
-        <ThemedText variant="caption1" color={colors.destructive} style={styles.statusText}>
-          {t('addressSearch.searchError')}
-        </ThemedText>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={{ backgroundColor: colors.background }}>
+          <ThemedText variant="caption1" color={colors.destructive} style={styles.statusText}>
+            {t('addressSearch.searchError')}
+          </ThemedText>
+        </ScrollView>
       ) : search.length >= 2 && suggestions.length === 0 ? (
-        <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.statusText}>
-          {t('addressSearch.noResults')}
-        </ThemedText>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={{ backgroundColor: colors.background }}>
+          <ThemedText
+            variant="caption1"
+            color={colors.tertiaryForeground}
+            style={styles.statusText}>
+            {t('addressSearch.noResults')}
+          </ThemedText>
+        </ScrollView>
       ) : (
         <FlashList
           data={suggestions}
           keyExtractor={(item) => item.id}
+          contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
@@ -135,19 +151,11 @@ export default function PickAddressScreen() {
           )}
         />
       )}
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  searchArea: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
   skeletonList: {
     paddingHorizontal: 16,
     paddingTop: 12,

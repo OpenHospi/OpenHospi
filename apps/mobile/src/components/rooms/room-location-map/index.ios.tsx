@@ -1,15 +1,10 @@
 import { MAP_DEFAULT_ZOOM, MAP_PRIVACY_RADIUS } from '@openhospi/shared/constants';
-import { GoogleMaps } from 'expo-maps';
+import { AppleMaps } from 'expo-maps';
 import { View } from 'react-native';
 
 import { radius } from '@/design/tokens/radius';
 
-import {
-  CIRCLE_FILL,
-  CIRCLE_STROKE,
-  offsetCoords,
-  type RoomLocationMapProps,
-} from './room-location-map.shared';
+import { CIRCLE_FILL, CIRCLE_STROKE, offsetCoords, type RoomLocationMapProps } from './shared';
 
 export default function RoomLocationMap({ latitude, longitude }: RoomLocationMapProps) {
   const center = offsetCoords(latitude, longitude);
@@ -29,7 +24,7 @@ export default function RoomLocationMap({ latitude, longitude }: RoomLocationMap
 
   return (
     <View style={{ height: 256, borderRadius: radius.lg, overflow: 'hidden' }} pointerEvents="none">
-      <GoogleMaps.View
+      <AppleMaps.View
         style={{ flex: 1 }}
         cameraPosition={cameraPosition}
         circles={[circleOverlay]}

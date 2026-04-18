@@ -9,9 +9,9 @@ import { z } from 'zod';
 
 import { CitySearchInput } from '@/components/forms/city-search';
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
-import { NativeMenuPicker } from '@/components/forms/native-menu-picker';
 import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
 import { ThemedInput } from '@/components/native/input';
+import { NativePicker } from '@/components/native/picker';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { hapticFormSubmitError } from '@/lib/haptics';
@@ -135,12 +135,12 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
           control={control}
           name="gender"
           render={({ field }) => (
-            <NativeMenuPicker
-              values={Gender.values}
-              selected={field.value || null}
-              onSelect={(v) => field.onChange(v ?? '')}
+            <NativePicker
+              value={field.value ?? ''}
+              options={Gender.values.map((v) => ({ value: v, label: tEnums(`gender.${v}`) }))}
+              onValueChange={field.onChange}
               placeholder={t('gender')}
-              t={(v) => tEnums(`gender.${v}`)}
+              label={t('gender')}
             />
           )}
         />
@@ -198,12 +198,15 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
           control={control}
           name="studyLevel"
           render={({ field }) => (
-            <NativeMenuPicker
-              values={StudyLevel.values}
-              selected={field.value}
-              onSelect={field.onChange}
+            <NativePicker
+              value={field.value ?? ''}
+              options={StudyLevel.values.map((v) => ({
+                value: v,
+                label: tEnums(`study_level.${v}`),
+              }))}
+              onValueChange={(v) => field.onChange(v || null)}
               placeholder={tPlaceholders('studyLevel')}
-              t={(v) => tEnums(`study_level.${v}`)}
+              label={t('studyLevel')}
             />
           )}
         />

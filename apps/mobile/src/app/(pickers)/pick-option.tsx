@@ -1,10 +1,9 @@
 import { FlashList } from '@shopify/flash-list';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -17,6 +16,7 @@ type Params = {
   translationKeyPrefix?: string;
   searchPlaceholder?: string;
   current?: string;
+  title?: string;
 };
 
 function parseStringArray(json: string | undefined): readonly string[] {
@@ -64,20 +64,23 @@ export default function PickOptionScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.searchArea}>
-        <ThemedInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder={params.searchPlaceholder ?? tCommon('search')}
-          autoFocus
-          accessibilityLabel={tCommon('search')}
-        />
-      </View>
-
+    <>
+      <Stack.Screen
+        options={{
+          title: params.title ?? '',
+          headerSearchBarOptions: {
+            placeholder: params.searchPlaceholder ?? tCommon('search'),
+            autoCapitalize: 'none',
+            hideWhenScrolling: false,
+            onChangeText: (e) => setSearch(e.nativeEvent.text),
+            onCancelButtonPress: () => setSearch(''),
+          },
+        }}
+      />
       <FlashList
         data={filtered}
         keyExtractor={(item) => item}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => {
@@ -100,19 +103,11 @@ export default function PickOptionScreen() {
           );
         }}
       />
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  searchArea: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
   listContent: {
     paddingHorizontal: 16,
     paddingBottom: 32,

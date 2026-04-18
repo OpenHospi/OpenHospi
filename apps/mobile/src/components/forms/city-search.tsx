@@ -24,7 +24,7 @@ export function CitySearchInput({ value, onSelect, placeholder }: Props) {
     hapticLight();
     const callbackId = registerPickerCallback<string>(onSelect);
     router.push({
-      pathname: '/(app)/(modals)/pick-city',
+      pathname: '/(pickers)/pick-city',
       params: { callbackId, current: value ?? '' },
     });
   }

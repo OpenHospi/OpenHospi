@@ -85,7 +85,7 @@ initializeNotificationListeners();
 function RootNavigator() {
   const [i18nLoaded, setI18nLoaded] = React.useState(false);
   const { success: migrationsSuccess, error: migrationsError } = useRunMigrations();
-  const { isLoading, isAuthenticated, needsOnboarding } = useAppSession();
+  const { session, isLoading, isAuthenticated, needsOnboarding } = useAppSession();
 
   React.useEffect(() => {
     i18nReady.then(() => setI18nLoaded(true));
@@ -119,6 +119,9 @@ function RootNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={needsOnboarding}>
         <Stack.Screen name="(onboarding)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!!session}>
+        <Stack.Screen name="(pickers)" options={{ presentation: 'formSheet' }} />
       </Stack.Protected>
       <Stack.Protected guard={!isAuthenticated && !needsOnboarding}>
         <Stack.Screen name="(auth)" />

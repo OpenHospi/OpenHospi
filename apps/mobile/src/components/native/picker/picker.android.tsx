@@ -19,6 +19,7 @@ function NativePicker({
   options,
   onValueChange,
   label,
+  placeholder,
   style,
   variant = 'menu',
   accessibilityRole,
@@ -34,7 +35,7 @@ function NativePicker({
     onValueChange(newValue);
   };
 
-  const selectedLabel = options.find((o) => o.value === value)?.label ?? '';
+  const selectedLabel = options.find((o) => o.value === value)?.label ?? placeholder ?? '';
 
   if (variant === 'segmented') {
     return (
@@ -67,7 +68,7 @@ function NativePicker({
     <View
       style={style}
       accessibilityRole={accessibilityRole ?? 'combobox'}
-      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityLabel={accessibilityLabel ?? label ?? placeholder}
       accessibilityHint={accessibilityHint}
       accessibilityState={accessibilityState}
       accessibilityValue={accessibilityValue ?? { text: selectedLabel }}>

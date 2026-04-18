@@ -8,13 +8,14 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { useTheme } from '@/design';
-import { useJoinHousePreview, useJoinHouse } from '@/services/house';
+import { hapticFormSubmitSuccess } from '@/lib/haptics';
+import { useJoinHouse, useJoinHousePreview } from '@/services/house';
 
 export default function JoinHouseScreen() {
   const { code } = useLocalSearchParams<{ code: string }>();
   const { t } = useTranslation('translation', { keyPrefix: 'app.joinHouse' });
   const router = useRouter();
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
   const { data, isPending, isError } = useJoinHousePreview(code);
   const joinHouse = useJoinHouse();
@@ -22,10 +23,11 @@ export default function JoinHouseScreen() {
   async function handleJoin() {
     try {
       await joinHouse.mutateAsync(code);
+      hapticFormSubmitSuccess();
       router.dismissAll();
       router.replace('/(app)/(tabs)/my-rooms');
     } catch {
-      // Error handled by mutation state
+      // Error handled by mutation state; rendered inline below.
     }
   }
 
@@ -33,7 +35,7 @@ export default function JoinHouseScreen() {
     return (
       <>
         <Stack.Screen options={{ title: t('title') }} />
-        <View style={styles.center}>
+        <View style={[styles.center, { padding: spacing['2xl'], gap: spacing['2xl'] }]}>
           <ThemedSkeleton width={80} height={80} circle />
           <ThemedSkeleton width="50%" height={20} />
           <ThemedSkeleton width="60%" height={28} />
@@ -48,6 +50,7 @@ export default function JoinHouseScreen() {
         <Stack.Screen options={{ title: t('title') }} />
         <NativeEmptyState
           sfSymbol="exclamationmark.triangle"
+          androidIcon="warning"
           title={t('notFound')}
           actionLabel={t('cancel')}
           onAction={() => router.back()}
@@ -60,27 +63,43 @@ export default function JoinHouseScreen() {
     <>
       <Stack.Screen options={{ title: t('title') }} />
 
-      <View style={styles.center}>
-        <NativeIcon name="house.fill" size={48} color={colors.primary} />
+      <View style={[styles.center, { padding: spacing['2xl'], gap: spacing['2xl'] }]}>
+        <NativeIcon
+          name="house.fill"
+          androidName="home"
+          size={48}
+          color={colors.primary}
+          accessibilityLabel={t('title')}
+        />
 
-        <View style={styles.textGroup}>
+        <View style={[styles.textGroup, { gap: spacing.xs }]}>
           <ThemedText variant="title3">{t('joinPrompt')}</ThemedText>
           <ThemedText variant="title1">{data.house.name}</ThemedText>
         </View>
 
-        {joinHouse.isError && (
-          <ThemedText variant="footnote" color={colors.destructive} style={styles.errorText}>
+        {joinHouse.isError ? (
+          <ThemedText
+            variant="footnote"
+            color={colors.destructive}
+            style={styles.errorText}
+            accessibilityLiveRegion="polite">
             {joinHouse.error?.message ?? t('joinError')}
           </ThemedText>
-        )}
+        ) : null}
 
-        <View style={styles.buttonGroup}>
+        <View style={[styles.buttonGroup, { gap: spacing.sm }]}>
           <NativeButton
             label={t('joinButton')}
             onPress={handleJoin}
             loading={joinHouse.isPending}
+            accessibilityHint={t('joinPrompt')}
           />
-          <NativeButton label={t('cancel')} variant="outline" onPress={() => router.back()} />
+          <NativeButton
+            label={t('cancel')}
+            variant="outline"
+            onPress={() => router.back()}
+            accessibilityHint={t('cancel')}
+          />
         </View>
       </View>
     </>
@@ -92,18 +111,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    gap: 24,
   },
   textGroup: {
     alignItems: 'center',
-    gap: 8,
   },
   errorText: {
     textAlign: 'center',
   },
   buttonGroup: {
     width: '100%',
-    gap: 12,
   },
 });

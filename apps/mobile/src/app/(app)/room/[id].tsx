@@ -1,19 +1,20 @@
 import { STORAGE_BUCKET_ROOM_PHOTOS } from '@openhospi/shared/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
+import { GroupedSection } from '@/components/layout/grouped-section';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
-import { NativeIcon } from '@/components/native/icon';
-import { ThemedText } from '@/components/native/text';
-import { GroupedSection } from '@/components/layout/grouped-section';
 import { NativeDivider } from '@/components/native/divider';
+import { NativeIcon } from '@/components/native/icon';
+import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
 import RoomLocationMap from '@/components/rooms/room-location-map';
-import { useTranslation } from 'react-i18next';
+import { useTheme, type Colors } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { useRoom } from '@/services/rooms';
 
 function DetailRow({
@@ -23,7 +24,7 @@ function DetailRow({
 }: {
   label: string;
   value: string | null | undefined;
-  colors: ReturnType<typeof useTheme>['colors'];
+  colors: Colors;
 }) {
   if (!value) return null;
   return (
@@ -36,16 +37,10 @@ function DetailRow({
   );
 }
 
-function PriceValue({
-  amount,
-  colors,
-}: {
-  amount: string | number;
-  colors: ReturnType<typeof useTheme>['colors'];
-}) {
+function PriceValue({ amount, colors }: { amount: string | number; colors: Colors }) {
   return (
     <View style={styles.priceValue}>
-      <NativeIcon name="eurosign" size={12} color={colors.foreground} />
+      <NativeIcon name="eurosign" androidName="euro-symbol" size={12} color={colors.foreground} />
       <ThemedText variant="subheadline">{amount}</ThemedText>
     </View>
   );
@@ -58,7 +53,7 @@ function PriceDetailRow({
 }: {
   label: string;
   amount: string | number | null | undefined;
-  colors: ReturnType<typeof useTheme>['colors'];
+  colors: Colors;
 }) {
   if (!amount) return null;
   return (
@@ -71,6 +66,24 @@ function PriceDetailRow({
   );
 }
 
+function LoadingState() {
+  const { colors, spacing } = useTheme();
+  return (
+    <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
+      <ScrollView style={styles.flex} contentInsetAdjustmentBehavior="automatic">
+        <ThemedSkeleton width="100%" height={300} rounded="sm" />
+        <View style={[styles.content, { gap: spacing['2xl'], paddingHorizontal: spacing.lg }]}>
+          <ThemedSkeleton width="70%" height={28} />
+          <ThemedSkeleton width="50%" height={18} />
+          <ThemedSkeleton width="100%" height={180} rounded="lg" />
+          <ThemedSkeleton width="100%" height={220} rounded="lg" />
+          <ThemedSkeleton width="100%" height={160} rounded="lg" />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
 export default function RoomDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -78,17 +91,13 @@ export default function RoomDetailScreen() {
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tRoomFields } = useTranslation('translation', { keyPrefix: 'app.rooms.fields' });
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
   const insets = useSafeAreaInsets();
   const { data, isPending } = useRoom(id);
 
   if (isPending) {
-    return (
-      <SafeAreaView style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
-    );
+    return <LoadingState />;
   }
 
   if (!data) {
@@ -100,7 +109,7 @@ export default function RoomDetailScreen() {
         <NativeButton
           label={t('backToDiscover')}
           variant="link"
-          style={{ marginTop: 16 }}
+          style={{ marginTop: spacing.lg }}
           onPress={() => router.back()}
         />
       </SafeAreaView>
@@ -114,25 +123,37 @@ export default function RoomDetailScreen() {
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.flex}>
         <PhotoCarousel photos={room.photos} bucket={STORAGE_BUCKET_ROOM_PHOTOS} />
 
-        <View style={styles.content}>
+        <View
+          style={[
+            styles.content,
+            { gap: spacing['2xl'], paddingHorizontal: spacing.lg, paddingTop: spacing.lg },
+          ]}>
           <View>
-            <ThemedText variant="title2">{room.title}</ThemedText>
-            <View style={styles.locationRow}>
+            <ThemedText variant="title2" accessibilityRole="header">
+              {room.title}
+            </ThemedText>
+            <View style={[styles.locationRow, { gap: 6 }]}>
               <ThemedText variant="body" color={colors.tertiaryForeground}>
                 {tEnums(`city.${room.city}`)}
               </ThemedText>
-              {room.neighborhood && (
+              {room.neighborhood ? (
                 <>
-                  <NativeIcon name="dot" size={16} color={colors.mutedForeground} />
+                  <NativeIcon
+                    name="circle.fill"
+                    iosName="circle.fill"
+                    androidName="fiber-manual-record"
+                    size={4}
+                    color={colors.mutedForeground}
+                  />
                   <ThemedText variant="body" color={colors.tertiaryForeground}>
                     {room.neighborhood}
                   </ThemedText>
                 </>
-              )}
+              ) : null}
             </View>
           </View>
 
-          <GroupedSection>
+          <GroupedSection inset={false}>
             <View style={styles.sectionPadding}>
               <PriceDetailRow label={t('rent')} amount={room.rentPrice} colors={colors} />
               <PriceDetailRow
@@ -156,7 +177,12 @@ export default function RoomDetailScreen() {
                   {t('totalCost')}
                 </ThemedText>
                 <View style={styles.priceValue}>
-                  <NativeIcon name="eurosign" size={18} color={colors.primary} />
+                  <NativeIcon
+                    name="eurosign"
+                    androidName="euro-symbol"
+                    size={18}
+                    color={colors.primary}
+                  />
                   <ThemedText variant="headline" color={colors.primary}>
                     {room.totalCost}
                     {tCommon('perMonth')}
@@ -166,11 +192,8 @@ export default function RoomDetailScreen() {
             </View>
           </GroupedSection>
 
-          <GroupedSection>
+          <GroupedSection inset={false} header={t('details')}>
             <View style={styles.sectionPadding}>
-              <ThemedText variant="headline" style={styles.sectionTitle}>
-                {t('details')}
-              </ThemedText>
               <DetailRow
                 label={tRoomFields('roomSize')}
                 value={room.roomSizeM2 ? t('roomSize', { size: String(room.roomSizeM2) }) : null}
@@ -191,7 +214,7 @@ export default function RoomDetailScreen() {
                 value={room.rentalType ? tEnums(`rental_type.${room.rentalType}`) : null}
                 colors={colors}
               />
-              {room.availableFrom && (
+              {room.availableFrom ? (
                 <DetailRow
                   label={t('availability')}
                   value={
@@ -202,23 +225,23 @@ export default function RoomDetailScreen() {
                   }
                   colors={colors}
                 />
-              )}
-              {room.totalHousemates != null && (
+              ) : null}
+              {room.totalHousemates != null ? (
                 <DetailRow
                   label={tRoomFields('totalHousemates')}
                   value={tCommon('housemates', { count: Number(room.totalHousemates) })}
                   colors={colors}
                 />
-              )}
+              ) : null}
             </View>
           </GroupedSection>
 
-          {room.features.length > 0 && (
+          {room.features.length > 0 ? (
             <View>
               <ThemedText variant="body" weight="600">
                 {t('features')}
               </ThemedText>
-              <View style={styles.chipRow}>
+              <View style={[styles.chipRow, { marginTop: spacing.sm, gap: spacing.sm }]}>
                 {room.features.map((f) => (
                   <ThemedBadge
                     key={f}
@@ -229,14 +252,14 @@ export default function RoomDetailScreen() {
                 ))}
               </View>
             </View>
-          )}
+          ) : null}
 
-          {room.locationTags.length > 0 && (
+          {room.locationTags.length > 0 ? (
             <View>
               <ThemedText variant="body" weight="600">
                 {t('locationTags')}
               </ThemedText>
-              <View style={styles.chipRow}>
+              <View style={[styles.chipRow, { marginTop: spacing.sm, gap: spacing.sm }]}>
                 {room.locationTags.map((tag) => (
                   <ThemedBadge
                     key={tag}
@@ -247,30 +270,27 @@ export default function RoomDetailScreen() {
                 ))}
               </View>
             </View>
-          )}
+          ) : null}
 
-          {room.latitude != null && room.longitude != null && (
+          {room.latitude != null && room.longitude != null ? (
             <View>
               <ThemedText variant="body" weight="600">
                 {t('location')}
               </ThemedText>
-              <View style={{ marginTop: 8 }}>
+              <View style={{ marginTop: spacing.sm }}>
                 <RoomLocationMap latitude={room.latitude} longitude={room.longitude} />
               </View>
               <ThemedText
                 variant="caption1"
                 color={colors.mutedForeground}
-                style={{ marginTop: 8 }}>
+                style={{ marginTop: spacing.sm }}>
                 {t('approximateLocation')}
               </ThemedText>
             </View>
-          )}
+          ) : null}
 
-          <GroupedSection>
+          <GroupedSection inset={false} header={t('whoWereLookingFor')}>
             <View style={styles.sectionPadding}>
-              <ThemedText variant="headline" style={styles.sectionTitle}>
-                {t('whoWereLookingFor')}
-              </ThemedText>
               {room.preferredGender && room.preferredGender !== 'no_preference' ? (
                 <DetailRow
                   label={tEnums('gender._label')}
@@ -282,36 +302,36 @@ export default function RoomDetailScreen() {
                   {t('everyoneWelcome')}
                 </ThemedText>
               )}
-              {(room.preferredAgeMin || room.preferredAgeMax) && (
+              {room.preferredAgeMin || room.preferredAgeMax ? (
                 <DetailRow
                   label={t('ageRange')}
                   value={`${room.preferredAgeMin ?? '?'} - ${room.preferredAgeMax ?? '?'}`}
                   colors={colors}
                 />
-              )}
-              {room.acceptedLanguages.length > 0 && (
+              ) : null}
+              {room.acceptedLanguages.length > 0 ? (
                 <DetailRow
                   label={t('acceptedLanguages')}
                   value={room.acceptedLanguages.map((l) => tEnums(`language_enum.${l}`)).join(', ')}
                   colors={colors}
                 />
-              )}
+              ) : null}
             </View>
           </GroupedSection>
 
-          {room.description && (
+          {room.description ? (
             <View>
               <ThemedText variant="body" weight="600">
                 {t('description')}
               </ThemedText>
-              <ThemedText variant="subheadline" style={{ marginTop: 8, lineHeight: 20 }}>
+              <ThemedText variant="subheadline" style={{ marginTop: spacing.sm, lineHeight: 20 }}>
                 {room.description}
               </ThemedText>
             </View>
-          )}
+          ) : null}
 
-          {room.owner && (
-            <GroupedSection>
+          {room.owner ? (
+            <GroupedSection inset={false}>
               <View style={styles.sectionPadding}>
                 <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                   {t('postedBy')}
@@ -319,14 +339,14 @@ export default function RoomDetailScreen() {
                 <ThemedText variant="body" weight="500" style={{ marginTop: 4 }}>
                   {room.owner.firstName} {room.owner.lastName}
                 </ThemedText>
-                {room.owner.studyProgram && (
+                {room.owner.studyProgram ? (
                   <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                     {room.owner.studyProgram}
                   </ThemedText>
-                )}
+                ) : null}
               </View>
             </GroupedSection>
-          )}
+          ) : null}
 
           <View style={{ height: 96 }} />
         </View>
@@ -336,7 +356,9 @@ export default function RoomDetailScreen() {
         style={[
           styles.bottomBar,
           {
-            paddingBottom: Math.max(insets.bottom, 16),
+            paddingBottom: Math.max(insets.bottom, spacing.lg),
+            paddingHorizontal: spacing.lg,
+            paddingTop: spacing.md,
             borderTopColor: colors.border,
             backgroundColor: colors.background,
           },
@@ -345,6 +367,8 @@ export default function RoomDetailScreen() {
           <NativeButton
             label={t('viewApplication')}
             variant="outline"
+            systemImage="doc.text"
+            materialIcon="description"
             style={styles.bottomButton}
             onPress={() =>
               router.push({
@@ -352,10 +376,13 @@ export default function RoomDetailScreen() {
                 params: { id: application.id },
               })
             }
+            accessibilityHint={t('viewApplication')}
           />
         ) : (
           <NativeButton
             label={t('apply')}
+            systemImage="paperplane.fill"
+            materialIcon="send"
             style={styles.bottomButton}
             onPress={() =>
               router.push({
@@ -363,6 +390,7 @@ export default function RoomDetailScreen() {
                 params: { roomId: id },
               })
             }
+            accessibilityHint={room.title}
           />
         )}
       </View>
@@ -379,11 +407,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
-    gap: 24,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
+  content: {},
   locationRow: {
     marginTop: 4,
     flexDirection: 'row',
@@ -391,9 +415,6 @@ const styles = StyleSheet.create({
   },
   sectionPadding: {
     padding: 16,
-  },
-  sectionTitle: {
-    marginBottom: 8,
   },
   detailRow: {
     flexDirection: 'row',
@@ -404,6 +425,7 @@ const styles = StyleSheet.create({
   priceValue: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 2,
   },
   totalRow: {
     flexDirection: 'row',
@@ -412,10 +434,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   chipRow: {
-    marginTop: 8,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
   },
   featureBadge: {
     borderRadius: radius.md,
@@ -425,8 +445,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    paddingHorizontal: 16,
-    paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   bottomButton: {

@@ -1,29 +1,29 @@
+import { HouseMemberRole } from '@openhospi/shared/enums';
 import { Stack } from 'expo-router';
-import { Alert, Platform, ScrollView, Share, StyleSheet, View } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
+import { Alert, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
+import { NativeDivider } from '@/components/native/divider';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
-import { NativeDivider } from '@/components/native/divider';
-import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ErrorState } from '@/components/feedback/error-state';
+import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { useTheme } from '@/design';
 import { hapticSuccess } from '@/lib/haptics';
-import { useMyHouse, useRegenerateInviteCode } from '@/services/house';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import { HouseMemberRole } from '@openhospi/shared/enums';
+import { useMyHouse, useRegenerateInviteCode } from '@/services/house';
 
 export default function MyHouseScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.myHouse' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
   const { data, isPending, isError, refetch } = useMyHouse();
   const regenerateCode = useRegenerateInviteCode();
 
@@ -31,14 +31,21 @@ export default function MyHouseScreen() {
     return (
       <>
         <Stack.Screen options={{ title: t('title') }} />
-        <View style={styles.loadingContainer}>
+        <ScrollView
+          style={styles.flex}
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={[styles.loadingContainer, { gap: spacing.md }]}>
           <ThemedSkeleton width="50%" height={24} />
           <ThemedSkeleton width="30%" height={16} />
-          <View style={styles.skeletonCards}>
+          <View
+            style={[
+              styles.skeletonCards,
+              { paddingHorizontal: spacing.lg, gap: spacing.lg, marginTop: spacing['2xl'] },
+            ]}>
             <ThemedSkeleton width="100%" height={80} rounded="lg" />
             <ThemedSkeleton width="100%" height={120} rounded="lg" />
           </View>
-        </View>
+        </ScrollView>
       </>
     );
   }
@@ -56,7 +63,7 @@ export default function MyHouseScreen() {
     return (
       <>
         <Stack.Screen options={{ title: t('title') }} />
-        <NativeEmptyState sfSymbol="person.2" title={t('noHouse')} />
+        <NativeEmptyState sfSymbol="person.2" androidIcon="group" title={t('noHouse')} />
       </>
     );
   }
@@ -80,10 +87,10 @@ export default function MyHouseScreen() {
     <>
       <Stack.Screen options={{ title: t('title') }} />
       <ScrollView
+        style={styles.flex}
         contentInsetAdjustmentBehavior="automatic"
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}>
-        <View style={styles.headerSection}>
+        contentContainerStyle={{ paddingBottom: spacing['3xl'] }}>
+        <View style={[styles.headerSection, { paddingVertical: spacing['2xl'], gap: spacing.xs }]}>
           <ThemedText variant="title2">{house.name}</ThemedText>
           <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('memberCount', { count: members.length })}
@@ -91,9 +98,22 @@ export default function MyHouseScreen() {
         </View>
 
         <GroupedSection>
-          <ListCell label={t('inviteCode')} value={house.inviteCode} onPress={handleCopyCode} />
+          <ListCell
+            label={t('inviteCode')}
+            value={house.inviteCode}
+            onPress={handleCopyCode}
+            accessibilityHint={tCommon('copy')}
+          />
           <NativeDivider />
-          <View style={styles.actionRow}>
+          <View
+            style={[
+              styles.actionRow,
+              {
+                gap: spacing.sm,
+                paddingHorizontal: spacing.lg,
+                paddingVertical: spacing.md,
+              },
+            ]}>
             <NativeButton
               label={tCommon('copy')}
               variant="outline"
@@ -101,6 +121,7 @@ export default function MyHouseScreen() {
               onPress={handleCopyCode}
               systemImage="doc.on.doc"
               materialIcon="content-copy"
+              accessibilityHint={t('inviteCode')}
             />
             <NativeButton
               label={tCommon('share')}
@@ -109,34 +130,35 @@ export default function MyHouseScreen() {
               onPress={handleShare}
               systemImage="square.and.arrow.up"
               materialIcon="share"
+              accessibilityHint={t('inviteCode')}
             />
-            {isOwner && (
+            {isOwner ? (
               <NativeButton
                 label={t('regenerate')}
                 variant="ghost"
                 size="sm"
                 onPress={() => regenerateCode.mutate()}
+                loading={regenerateCode.isPending}
                 systemImage="arrow.clockwise"
                 materialIcon="refresh"
               />
-            )}
+            ) : null}
           </View>
         </GroupedSection>
 
-        <View style={styles.membersHeader}>
-          <ThemedText
-            variant="footnote"
-            color={colors.tertiaryForeground}
-            style={styles.sectionTitle}>
-            {t('members').toUpperCase()}
-          </ThemedText>
-        </View>
-
-        <GroupedSection>
+        <GroupedSection header={t('members')} style={{ marginTop: spacing['2xl'] }}>
           {members.map((member, index) => (
             <View key={member.userId}>
-              {index > 0 && <NativeDivider />}
-              <View style={styles.memberRow}>
+              {index > 0 ? <NativeDivider /> : null}
+              <View
+                style={[
+                  styles.memberRow,
+                  {
+                    gap: spacing.md,
+                    paddingHorizontal: spacing.lg,
+                    paddingVertical: spacing.md,
+                  },
+                ]}>
                 <ThemedAvatar
                   source={
                     member.avatarUrl
@@ -165,50 +187,26 @@ export default function MyHouseScreen() {
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
+  flex: {
     flex: 1,
+  },
+  loadingContainer: {
     alignItems: 'center',
     paddingTop: 48,
-    gap: 12,
   },
   skeletonCards: {
     width: '100%',
-    paddingHorizontal: 16,
-    gap: 16,
-    marginTop: 24,
-  },
-  scroll: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 32,
   },
   headerSection: {
     alignItems: 'center',
-    paddingVertical: 24,
-    gap: 4,
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  membersHeader: {
-    paddingHorizontal: 32,
-    paddingTop: 24,
-    paddingBottom: 8,
-  },
-  sectionTitle: {
-    letterSpacing: 0.5,
   },
   memberRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    minHeight: Platform.select({ ios: 44, android: 48 }),
+    minHeight: 48,
   },
   memberInfo: {
     flex: 1,

@@ -69,7 +69,12 @@
       "loading": "Loading...",
       "uploading": "Uploading...",
       "uploaded": "Uploaded",
-      "language": "Language"
+      "language": "Language",
+      "appearance": "Appearance",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark",
+      "dynamicColor": "Dynamic color"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -655,7 +660,7 @@
         "pin_hint": "This PIN protects your encryption key. You'll need it to recover your chats on a new device.",
         "setup_success": "Chat encryption set up successfully",
         "setup_error": "Could not set up encryption. Please try again.",
-        "generating_keys": "Generating encryption keys\u2026",
+        "generating_keys": "Generating encryption keys…",
         "change_pin": "Change PIN",
         "recovery_title": "Recover your encryption keys",
         "recovery_description": "Enter the PIN you chose during onboarding to restore your encryption keys.",
@@ -1366,7 +1371,7 @@
       "safety_number": {
         "title": "Safety number",
         "description": "Compare this number with {name} to verify your conversation is end-to-end encrypted.",
-        "loading": "Generating safety number\u2026",
+        "loading": "Generating safety number…",
         "instructions": "If this number matches on both devices, your conversation is secure. Meet in person or use a trusted channel to compare.",
         "unavailable": "Safety number unavailable. Both users must have encryption set up.",
         "qr_tab": "Your Code",

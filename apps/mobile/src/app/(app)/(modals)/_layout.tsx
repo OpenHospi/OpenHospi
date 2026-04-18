@@ -12,6 +12,7 @@ export default function ModalsLayout() {
   const { t: tDiscover } = useTranslation('translation', { keyPrefix: 'app.discover' });
   const { t: tOnboarding } = useTranslation('translation', { keyPrefix: 'app.onboarding' });
   const { t: tProfile } = useTranslation('translation', { keyPrefix: 'app.profile' });
+  const { t: tSettings } = useTranslation('translation', { keyPrefix: 'app.settings' });
 
   return (
     <Stack
@@ -114,6 +115,41 @@ export default function ModalsLayout() {
         options={{
           sheetAllowedDetents: [0.7, 1],
           title: tOnboarding('steps.security'),
+        }}
+      />
+      <Stack.Screen
+        name="settings-language"
+        options={{
+          sheetAllowedDetents: [0.45],
+          title: tCommon('language'),
+        }}
+      />
+      <Stack.Screen
+        name="settings-calendar"
+        options={{
+          sheetAllowedDetents: [0.55],
+          title: tSettings('calendar.title'),
+        }}
+      />
+      <Stack.Screen
+        name="settings-data-request"
+        options={{
+          sheetAllowedDetents: [0.85, 1],
+          title: tSettings('privacy.dataRequest.title'),
+        }}
+      />
+      <Stack.Screen
+        name="settings-processing-restriction"
+        options={{
+          sheetAllowedDetents: [0.6],
+          title: tSettings('privacy.processingRestriction.title'),
+        }}
+      />
+      <Stack.Screen
+        name="settings-consent-history"
+        options={{
+          sheetAllowedDetents: [0.7, 1],
+          title: tSettings('privacy.consentHistory.title'),
         }}
       />
     </Stack>

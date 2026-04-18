@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router';
-import { Home, Plus } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -93,7 +93,9 @@ export default function HouseGateScreen() {
                 <ListCell
                   label={house.name}
                   value={t('housePicker.roomCount', { count: house.roomCount })}
-                  leftContent={<Home size={20} color={colors.tertiaryForeground} />}
+                  leftContent={
+                    <NativeIcon name="house" size={20} color={colors.tertiaryForeground} />
+                  }
                   onPress={() => handleSelectHouse(house.id)}
                 />
               </View>
@@ -101,7 +103,7 @@ export default function HouseGateScreen() {
             <NativeDivider />
             <ListCell
               label={t('housePicker.createNew')}
-              leftContent={<Plus size={20} color={colors.primary} />}
+              leftContent={<NativeIcon name="plus" size={20} color={colors.primary} />}
               onPress={() => setShowNewForm(true)}
             />
           </GroupedSection>

@@ -1,6 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Calendar, X } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -79,7 +78,6 @@ export default function EventsListScreen() {
     return (
       <NativeEmptyState
         sfSymbol="calendar"
-        icon={Calendar}
         title={t('title')}
         subtitle={t('empty')}
         actionLabel={t('create')}
@@ -121,7 +119,7 @@ export default function EventsListScreen() {
     const swipeActions = !isCancelled
       ? [
           {
-            icon: X,
+            iconName: 'xmark',
             color: '#fff',
             backgroundColor: colors.destructive,
             onPress: () => handleCancel(event),

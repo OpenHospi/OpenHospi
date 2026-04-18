@@ -1,6 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Check, Users, X } from 'lucide-react-native';
 import { useEffect, useRef } from 'react';
 import { Alert, Platform, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -87,7 +86,6 @@ export default function ApplicantsScreen() {
     return (
       <NativeEmptyState
         sfSymbol="person.crop.rectangle.stack"
-        icon={Users}
         title={t('title')}
         subtitle={t('empty')}
       />
@@ -142,13 +140,13 @@ export default function ApplicantsScreen() {
     const swipeActions = canAction
       ? [
           {
-            icon: Check,
+            iconName: 'checkmark',
             color: '#fff',
             backgroundColor: '#16a34a',
             onPress: () => handleAccept(item),
           },
           {
-            icon: X,
+            iconName: 'xmark',
             color: '#fff',
             backgroundColor: '#ef4444',
             onPress: () => handleReject(item),

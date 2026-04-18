@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { Home } from 'lucide-react-native';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -64,7 +63,6 @@ export default function MyRoomsListScreen() {
     return (
       <NativeEmptyState
         sfSymbol="house"
-        icon={Home}
         title={t('title')}
         subtitle={t('empty')}
         actionLabel={t('createFirst')}

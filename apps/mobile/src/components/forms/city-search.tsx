@@ -1,5 +1,4 @@
 import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
-import { ChevronRight } from 'lucide-react-native';
 
 import { PDOK_PROXY_BASE } from '@/lib/constants';
 import { useRef, useState } from 'react';
@@ -11,6 +10,7 @@ import { AppBottomSheetModal as BottomSheet } from '@/components/shared/bottom-s
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 
@@ -88,7 +88,7 @@ export function CitySearchInput({ value, onSelect, placeholder }: Props) {
         <ThemedText variant="body" color={value ? colors.foreground : colors.tertiaryForeground}>
           {value || placeholder || tCommon('city')}
         </ThemedText>
-        <ChevronRight size={16} color={colors.mutedForeground} />
+        <NativeIcon name="chevron.right" size={16} color={colors.mutedForeground} />
       </Pressable>
 
       <BottomSheet

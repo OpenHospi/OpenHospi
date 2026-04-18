@@ -1,5 +1,11 @@
-import React from 'react';
-import { StyleSheet, View, type ViewProps, type ViewStyle } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  type AccessibilityRole,
+  type AccessibilityState,
+  type ViewProps,
+  type ViewStyle,
+} from 'react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -11,6 +17,10 @@ interface ThemedBadgeProps extends ViewProps {
   variant?: BadgeVariant;
   /** Shortcut: pass a string to render as badge text */
   label?: string;
+  accessibilityRole?: AccessibilityRole;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityState?: AccessibilityState;
 }
 
 function ThemedBadge({
@@ -18,6 +28,8 @@ function ThemedBadge({
   label,
   children,
   style,
+  accessibilityRole,
+  accessibilityLabel,
   ...props
 }: ThemedBadgeProps) {
   const { colors } = useTheme();
@@ -41,7 +53,11 @@ function ThemedBadge({
   };
 
   return (
-    <View style={[badgeStyle, style]} {...props}>
+    <View
+      style={[badgeStyle, style]}
+      accessibilityRole={accessibilityRole ?? 'text'}
+      accessibilityLabel={accessibilityLabel ?? label}
+      {...props}>
       {label ? (
         <ThemedText variant="caption1" weight="500" color={textColor}>
           {label}

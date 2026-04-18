@@ -1,23 +1,22 @@
-import React from 'react';
 import { Pressable, View, type ViewStyle } from 'react-native';
-import { Check } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticToggle } from '@/lib/haptics';
 
-interface ThemedCheckboxProps {
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-  disabled?: boolean;
-  size?: number;
-}
+import type { ThemedCheckboxProps } from './checkbox.types';
 
 function ThemedCheckbox({
   checked,
   onCheckedChange,
   disabled = false,
   size = 22,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityState,
+  accessibilityValue,
 }: ThemedCheckboxProps) {
   const { colors } = useTheme();
 
@@ -40,17 +39,26 @@ function ThemedCheckbox({
 
   return (
     <Pressable
-      role="checkbox"
-      aria-checked={checked}
+      accessibilityRole={accessibilityRole ?? 'checkbox'}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled, checked, ...(accessibilityState ?? {}) }}
+      accessibilityValue={accessibilityValue}
       disabled={disabled}
       onPress={handlePress}
       hitSlop={8}>
       <View style={boxStyle}>
-        {checked && <Check size={size - 6} color={colors.primaryForeground} strokeWidth={3} />}
+        {checked && (
+          <SymbolView
+            name="checkmark"
+            size={size - 8}
+            tintColor={colors.primaryForeground}
+            weight="bold"
+          />
+        )}
       </View>
     </Pressable>
   );
 }
 
 export { ThemedCheckbox };
-export type { ThemedCheckboxProps };

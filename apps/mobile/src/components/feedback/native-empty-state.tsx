@@ -1,19 +1,17 @@
 import React from 'react';
 import { View, type ViewStyle } from 'react-native';
-import { SymbolView, type SymbolViewProps } from 'expo-symbols';
-import type { LucideIcon } from 'lucide-react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { ThemedText } from '@/components/native/text';
 import { NativeButton } from '@/components/native/button';
-import { isIOS } from '@/lib/platform';
+import { NativeIcon } from '@/components/native/icon';
 
 interface NativeEmptyStateProps {
-  /** SF Symbol name for iOS (e.g. 'magnifyingglass', 'house', 'doc.text') */
-  sfSymbol?: SymbolViewProps['name'];
-  /** Fallback Lucide icon for Android (and iOS if no sfSymbol) */
-  icon?: LucideIcon;
+  /** SF Symbol name. On Android, falls back to the built-in sf→material mapping or `androidIcon` override. */
+  sfSymbol: string;
+  /** Optional Material icon override for Android. */
+  androidIcon?: string;
   /** Icon/symbol size (default: 48) */
   iconSize?: number;
   /** Primary title text */
@@ -26,13 +24,9 @@ interface NativeEmptyStateProps {
   onAction?: () => void;
 }
 
-/**
- * Native-feeling empty state with SF Symbols on iOS and Lucide on Android.
- * Centered layout with generous spacing, fade-in animation.
- */
 function NativeEmptyState({
   sfSymbol,
-  icon: LucideIconComponent,
+  androidIcon,
   iconSize = 48,
   title,
   subtitle,
@@ -51,17 +45,12 @@ function NativeEmptyState({
 
   return (
     <Animated.View entering={FadeIn.duration(300)} style={containerStyle}>
-      {isIOS && sfSymbol ? (
-        <SymbolView name={sfSymbol} size={iconSize} tintColor={colors.tertiaryForeground} />
-      ) : (
-        LucideIconComponent && (
-          <LucideIconComponent
-            size={iconSize}
-            color={colors.tertiaryForeground}
-            strokeWidth={1.5}
-          />
-        )
-      )}
+      <NativeIcon
+        name={sfSymbol}
+        androidName={androidIcon}
+        size={iconSize}
+        color={colors.tertiaryForeground}
+      />
 
       <View style={{ gap: spacing.xs, alignItems: 'center' }}>
         <ThemedText variant="title3" color={colors.foreground} style={{ textAlign: 'center' }}>

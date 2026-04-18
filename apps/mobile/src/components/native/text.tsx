@@ -1,5 +1,10 @@
-import React from 'react';
-import { Text as RNText, type TextProps, type TextStyle } from 'react-native';
+import {
+  Text as RNText,
+  type AccessibilityRole,
+  type AccessibilityState,
+  type TextProps,
+  type TextStyle,
+} from 'react-native';
 
 import { useTheme } from '@/design';
 import type { TypographyVariant } from '@/design/tokens/typography';
@@ -11,6 +16,10 @@ interface ThemedTextProps extends TextProps {
   color?: string;
   /** Font weight override */
   weight?: TextStyle['fontWeight'];
+  accessibilityRole?: AccessibilityRole;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityState?: AccessibilityState;
 }
 
 function ThemedText({

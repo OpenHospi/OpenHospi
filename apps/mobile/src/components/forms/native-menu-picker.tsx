@@ -1,10 +1,10 @@
-import { ChevronDown } from 'lucide-react-native';
 import { Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { showActionSheet } from '@/lib/action-sheet';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 
 type NativeMenuPickerProps = {
@@ -53,7 +53,7 @@ export function NativeMenuPicker({
         color={selectedLabel ? colors.foreground : colors.tertiaryForeground}>
         {selectedLabel ?? placeholder}
       </ThemedText>
-      <ChevronDown size={16} color={colors.mutedForeground} />
+      <NativeIcon name="chevron.down" size={16} color={colors.mutedForeground} />
     </Pressable>
   );
 }

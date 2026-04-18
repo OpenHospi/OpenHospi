@@ -1,4 +1,3 @@
-import { ChevronRight } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
@@ -8,6 +7,7 @@ import {
 } from '@/components/shared/bottom-sheet';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 
@@ -60,7 +60,7 @@ export function SelectPickerSheet({
         <ThemedText variant="body" color={selected ? colors.foreground : colors.tertiaryForeground}>
           {selected ? t(selected) : placeholder}
         </ThemedText>
-        <ChevronRight size={16} color={colors.mutedForeground} />
+        <NativeIcon name="chevron.right" size={16} color={colors.mutedForeground} />
       </Pressable>
 
       <BottomSheet

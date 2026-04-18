@@ -1,4 +1,3 @@
-import type { LucideIcon } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -8,11 +7,13 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
+import { NativeIcon } from '@/components/native/icon';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { hapticMedium } from '@/lib/haptics';
 
 type SwipeAction = {
-  icon: LucideIcon;
+  /** SF Symbol name — mapped automatically to Material on Android via NativeIcon. */
+  iconName: string;
   color: string;
   backgroundColor: string;
   onPress: () => void;
@@ -70,25 +71,22 @@ export function SwipeableRow({ children, rightActions }: SwipeableRowProps) {
           },
           actionsStyle,
         ]}>
-        {rightActions.map((action, index) => {
-          const Icon = action.icon;
-          return (
-            <Pressable
-              key={index}
-              onPress={() => {
-                translateX.value = withSpring(0, SPRING_SNAPPY);
-                action.onPress();
-              }}
-              style={{
-                width: SWIPE_THRESHOLD,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: action.backgroundColor,
-              }}>
-              <Icon size={20} color={action.color} />
-            </Pressable>
-          );
-        })}
+        {rightActions.map((action, index) => (
+          <Pressable
+            key={index}
+            onPress={() => {
+              translateX.value = withSpring(0, SPRING_SNAPPY);
+              action.onPress();
+            }}
+            style={{
+              width: SWIPE_THRESHOLD,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: action.backgroundColor,
+            }}>
+            <NativeIcon name={action.iconName} size={20} color={action.color} />
+          </Pressable>
+        ))}
       </Animated.View>
 
       <GestureDetector gesture={pan}>
@@ -97,3 +95,5 @@ export function SwipeableRow({ children, rightActions }: SwipeableRowProps) {
     </View>
   );
 }
+
+export type { SwipeAction, SwipeableRowProps };

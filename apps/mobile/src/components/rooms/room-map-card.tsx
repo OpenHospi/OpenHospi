@@ -1,10 +1,10 @@
 import { Image } from 'expo-image';
-import { Euro } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 
@@ -54,7 +54,7 @@ export function RoomMapCard({ room, onPress }: Props) {
             {room.city}
           </ThemedText>
           <View style={styles.priceRow}>
-            <Euro size={14} color={colors.primary} />
+            <NativeIcon name="eurosign" size={14} color={colors.primary} />
             <ThemedText variant="subheadline" weight="700" color={colors.primary}>
               {room.totalCost}
             </ThemedText>

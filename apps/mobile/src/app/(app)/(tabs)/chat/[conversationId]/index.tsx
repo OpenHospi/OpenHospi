@@ -1,6 +1,5 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { eq } from 'drizzle-orm';
-import { Lock, AlertCircle } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
   FlatList,
@@ -17,6 +16,7 @@ import { DateSeparator } from '@/components/chat/date-separator';
 import { EncryptionGate } from '@/components/chat/encryption-gate';
 import { MessageBubble } from '@/components/chat/message-bubble';
 import { ScrollToBottomFab } from '@/components/navigation/scroll-to-bottom-fab';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { useEncryptionContext } from '@/hooks/use-encryption';
@@ -366,7 +366,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
       <View style={styles.flex1}>
         {allMessages.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Lock size={32} color={colors.tertiaryForeground} />
+            <NativeIcon name="lock" size={32} color={colors.tertiaryForeground} />
             <ThemedText
               variant="subheadline"
               color={colors.tertiaryForeground}
@@ -374,7 +374,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
               {t('say_hello')}
             </ThemedText>
             <View style={styles.e2eRow}>
-              <Lock size={12} color={colors.tertiaryForeground} />
+              <NativeIcon name="lock" size={12} color={colors.tertiaryForeground} />
               <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                 {t('e2e_info')}
               </ThemedText>
@@ -399,7 +399,7 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
             ListHeaderComponent={
               <View style={styles.listHeader}>
                 <View style={styles.e2eRow}>
-                  <Lock size={12} color={colors.tertiaryForeground} />
+                  <NativeIcon name="lock" size={12} color={colors.tertiaryForeground} />
                   <ThemedText variant="caption1" color={colors.tertiaryForeground}>
                     {t('e2e_info')}
                   </ThemedText>
@@ -436,7 +436,11 @@ function ConversationChat({ conversationId }: { conversationId: string }) {
                   />
                   {deliveryStatus === 'failed' && (
                     <Pressable onPress={() => handleRetry(msg.id)} style={styles.failedRow}>
-                      <AlertCircle size={12} color={colors.destructive} />
+                      <NativeIcon
+                        name="exclamationmark.circle.fill"
+                        size={12}
+                        color={colors.destructive}
+                      />
                       <ThemedText variant="caption1" color={colors.destructive}>
                         {t('send_failed')}
                       </ThemedText>

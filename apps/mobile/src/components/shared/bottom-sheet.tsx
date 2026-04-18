@@ -5,9 +5,9 @@ import BottomSheet, {
   BottomSheetScrollView,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import { X } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
@@ -131,7 +131,7 @@ export function AppBottomSheetModal({
                 (onClose ?? onDismiss)?.();
               }}
               hitSlop={8}>
-              <X size={20} color={colors.tertiaryForeground} />
+              <NativeIcon name="xmark" size={20} color={colors.tertiaryForeground} />
             </Pressable>
           </View>
           <NativeDivider />

@@ -1,7 +1,6 @@
 import { INVITABLE_APPLICATION_STATUSES } from '@openhospi/shared/enums';
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Users } from 'lucide-react-native';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -89,7 +88,6 @@ export default function InviteApplicantsScreen() {
     return (
       <NativeEmptyState
         sfSymbol="person.crop.rectangle.stack"
-        icon={Users}
         title={t('inviteApplicants')}
         subtitle={t('noInvitable')}
       />

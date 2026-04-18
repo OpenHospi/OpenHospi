@@ -1,21 +1,18 @@
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Dot, FileText } from 'lucide-react-native';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { ThemedBadge } from '@/components/native/badge';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight, hapticPullToRefreshSnap } from '@/lib/haptics';
-import { isIOS } from '@/lib/platform';
 import { useApplications } from '@/services/applications';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import type { UserApplication } from '@openhospi/shared/api-types';
@@ -57,11 +54,7 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
             styles.applicationPlaceholder,
             { backgroundColor: colors.muted, borderRadius: radius.md },
           ]}>
-          {isIOS ? (
-            <SymbolView name="house" size={24} tintColor={colors.tertiaryForeground} />
-          ) : (
-            <MaterialIcons name="home" size={24} color={colors.tertiaryForeground} />
-          )}
+          <NativeIcon name="house" size={24} color={colors.tertiaryForeground} />
         </View>
       )}
       <View style={styles.applicationContent}>
@@ -72,12 +65,8 @@ function ApplicationCard({ item, onPress }: { item: UserApplication; onPress: ()
           <ThemedText variant="footnote" color={colors.tertiaryForeground}>
             {tEnums(`city.${item.roomCity}`)}
           </ThemedText>
-          <Dot size={14} color={colors.tertiaryForeground} />
-          {isIOS ? (
-            <SymbolView name="eurosign" size={12} tintColor={colors.tertiaryForeground} />
-          ) : (
-            <MaterialIcons name="euro" size={12} color={colors.tertiaryForeground} />
-          )}
+          <NativeIcon name="dot" size={14} color={colors.tertiaryForeground} />
+          <NativeIcon name="eurosign" size={12} color={colors.tertiaryForeground} />
           <ThemedText variant="footnote" color={colors.tertiaryForeground}>
             {item.roomRentPrice}
             {tCommon('perMonth')}
@@ -148,9 +137,7 @@ export default function ApplicationsScreen() {
             />
           )}
           ItemSeparatorComponent={() => <NativeDivider />}
-          ListEmptyComponent={
-            <NativeEmptyState sfSymbol="doc.text" icon={FileText} title={t('empty')} />
-          }
+          ListEmptyComponent={<NativeEmptyState sfSymbol="doc.text" title={t('empty')} />}
           refreshing={isRefetching}
           onRefresh={handleRefresh}
         />

@@ -1,6 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useRouter } from 'expo-router';
-import { Search } from 'lucide-react-native';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -134,9 +133,7 @@ export default function DiscoverScreen() {
             </View>
           ) : null
         }
-        ListEmptyComponent={
-          <NativeEmptyState sfSymbol="magnifyingglass" icon={Search} title={t('empty')} />
-        }
+        ListEmptyComponent={<NativeEmptyState sfSymbol="magnifyingglass" title={t('empty')} />}
         contentContainerStyle={styles.listContent}
         refreshing={isRefetching}
         onRefresh={handleRefresh}

@@ -1,8 +1,8 @@
 import { Stack, useRouter } from 'expo-router';
-import { X } from 'lucide-react-native';
 import { Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { NativeIcon } from '@/components/native/icon';
 import { useTheme } from '@/design';
 
 export default function ModalsLayout() {
@@ -21,7 +21,7 @@ export default function ModalsLayout() {
         sheetCornerRadius: 16,
         headerRight: () => (
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <X size={22} color={colors.tertiaryForeground} />
+            <NativeIcon name="xmark" size={22} color={colors.tertiaryForeground} />
           </Pressable>
         ),
       }}>

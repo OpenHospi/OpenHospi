@@ -1,9 +1,9 @@
-import { AlertCircle, CheckCircle2, Info } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 
 type ToastType = 'success' | 'error' | 'info';
@@ -14,11 +14,11 @@ type Toast = {
   message: string;
 };
 
-const ICON_MAP = {
-  success: CheckCircle2,
-  error: AlertCircle,
-  info: Info,
-} as const;
+const ICON_MAP: Record<ToastType, string> = {
+  success: 'checkmark.circle.fill',
+  error: 'exclamationmark.circle.fill',
+  info: 'info.circle.fill',
+};
 
 function getToastColors(type: ToastType, colors: ReturnType<typeof useTheme>['colors']) {
   switch (type) {
@@ -33,7 +33,7 @@ function getToastColors(type: ToastType, colors: ReturnType<typeof useTheme>['co
 
 function ToastItem({ toast }: { toast: Toast }) {
   const { colors } = useTheme();
-  const Icon = ICON_MAP[toast.type];
+  const iconName = ICON_MAP[toast.type];
   const toastColors = getToastColors(toast.type, colors);
 
   return (
@@ -41,7 +41,7 @@ function ToastItem({ toast }: { toast: Toast }) {
       entering={FadeIn.duration(200)}
       exiting={FadeOut.duration(200)}
       style={[styles.toastItem, { backgroundColor: toastColors.bg }]}>
-      <Icon size={18} color={toastColors.icon} />
+      <NativeIcon name={iconName} size={18} color={toastColors.icon} />
       <ThemedText variant="subheadline" weight="500" color={toastColors.text} style={{ flex: 1 }}>
         {toast.message}
       </ThemedText>

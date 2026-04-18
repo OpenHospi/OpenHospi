@@ -1,18 +1,14 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Dot } from 'lucide-react-native';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { isIOS } from '@/lib/platform';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { HospiInvitationCard } from '@/components/events/hospi-invitation-card';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { useTranslation } from 'react-i18next';
@@ -148,11 +144,7 @@ export default function ApplicationDetailScreen() {
           <Image source={{ uri: coverUrl }} style={styles.coverImage} contentFit="cover" />
         ) : (
           <View style={[styles.placeholderCover, { backgroundColor: colors.muted }]}>
-            {isIOS ? (
-              <SymbolView name="house" size={48} tintColor={colors.mutedForeground} />
-            ) : (
-              <MaterialIcons name="home" size={48} color={colors.mutedForeground} />
-            )}
+            <NativeIcon name="house" size={48} color={colors.mutedForeground} />
           </View>
         )}
 
@@ -165,7 +157,7 @@ export default function ApplicationDetailScreen() {
               </ThemedText>
               {app.roomHouseType && (
                 <>
-                  <Dot size={16} color={colors.mutedForeground} />
+                  <NativeIcon name="dot" size={16} color={colors.mutedForeground} />
                   <ThemedText variant="body" color={colors.tertiaryForeground}>
                     {tEnums(`house_type.${app.roomHouseType}`)}
                   </ThemedText>
@@ -173,7 +165,7 @@ export default function ApplicationDetailScreen() {
               )}
               {app.roomSizeM2 && (
                 <>
-                  <Dot size={16} color={colors.mutedForeground} />
+                  <NativeIcon name="dot" size={16} color={colors.mutedForeground} />
                   <ThemedText variant="body" color={colors.tertiaryForeground}>
                     {app.roomSizeM2}m²
                   </ThemedText>
@@ -181,11 +173,7 @@ export default function ApplicationDetailScreen() {
               )}
             </View>
             <View style={styles.priceRow}>
-              {isIOS ? (
-                <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
-              ) : (
-                <MaterialIcons name="euro" size={18} color={colors.primary} />
-              )}
+              <NativeIcon name="eurosign" size={18} color={colors.primary} />
               <ThemedText variant="headline" color={colors.primary}>
                 {app.roomRentPrice}
                 {tCommon('perMonth')}

@@ -1,14 +1,11 @@
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Paperclip } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput } from 'react-native';
 import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-reanimated';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
+import { NativeIcon } from '@/components/native/icon';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
-import { isIOS } from '@/lib/platform';
 
 type Props = {
   value: string;
@@ -41,7 +38,7 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
         animatedStyle,
       ]}>
       <Pressable disabled style={styles.attachButton}>
-        <Paperclip size={20} color={colors.tertiaryForeground} />
+        <NativeIcon name="paperclip" size={20} color={colors.tertiaryForeground} />
       </Pressable>
 
       <TextInput
@@ -72,10 +69,8 @@ export function ChatInputBar({ value, onChangeText, onSend, isSending, placehold
         ]}>
         {isSending ? (
           <ActivityIndicator size="small" color={colors.primaryForeground} />
-        ) : isIOS ? (
-          <SymbolView name="paperplane.fill" size={18} tintColor={colors.primaryForeground} />
         ) : (
-          <MaterialIcons name="send" size={18} color={colors.primaryForeground} />
+          <NativeIcon name="paperplane.fill" size={18} color={colors.primaryForeground} />
         )}
       </AnimatedPressable>
     </Animated.View>

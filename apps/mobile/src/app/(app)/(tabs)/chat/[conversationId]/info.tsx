@@ -1,9 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ban, BellOff, ChevronRight, Flag, Shield } from 'lucide-react-native';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedAvatar } from '@/components/native/avatar';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -67,7 +67,7 @@ export default function ConversationInfoScreen() {
         <ThemedAvatar fallback={initial} size={80} />
         <ThemedText variant="headline">{detail.roomTitle}</ThemedText>
         <View style={styles.encryptedRow}>
-          <Shield size={14} color={colors.primary} />
+          <NativeIcon name="shield" size={14} color={colors.primary} />
           <ThemedText variant="caption1" color={colors.tertiaryForeground}>
             {t('encrypted')}
           </ThemedText>
@@ -125,7 +125,9 @@ export default function ConversationInfoScreen() {
                   </ThemedText>
                 )}
               </View>
-              {!isCurrentUser && <ChevronRight size={16} color={colors.tertiaryForeground} />}
+              {!isCurrentUser && (
+                <NativeIcon name="chevron.right" size={16} color={colors.tertiaryForeground} />
+              )}
             </View>
           );
 
@@ -149,19 +151,19 @@ export default function ConversationInfoScreen() {
       {/* Actions */}
       <View style={styles.actionsSection}>
         <Pressable style={styles.actionRow} onPress={() => Alert.alert(t('mute_conversation'))}>
-          <BellOff size={20} color={colors.tertiaryForeground} />
+          <NativeIcon name="bell.slash" size={20} color={colors.tertiaryForeground} />
           <ThemedText variant="subheadline">{t('mute_conversation')}</ThemedText>
         </Pressable>
 
         <Pressable style={styles.actionRow} onPress={handleBlock}>
-          <Ban size={20} color={colors.destructive} />
+          <NativeIcon name="hand.raised" size={20} color={colors.destructive} />
           <ThemedText variant="subheadline" color={colors.destructive}>
             {t('block_user')}
           </ThemedText>
         </Pressable>
 
         <Pressable style={styles.actionRow} onPress={handleReport}>
-          <Flag size={20} color={colors.destructive} />
+          <NativeIcon name="flag" size={20} color={colors.destructive} />
           <ThemedText variant="subheadline" color={colors.destructive}>
             {t('report_message')}
           </ThemedText>

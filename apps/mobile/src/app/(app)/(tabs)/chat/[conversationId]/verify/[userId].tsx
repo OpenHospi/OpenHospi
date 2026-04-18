@@ -7,7 +7,6 @@ import {
   generateSafetyNumber,
   verifySafetyNumberQR,
 } from '@openhospi/crypto';
-import { CircleCheck, ShieldAlert, ShieldCheck } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -128,7 +128,7 @@ export default function VerifyScreen() {
 
       {state.type === 'loading' && (
         <View style={[styles.centeredGap, { backgroundColor: colors.background }]}>
-          <ShieldCheck size={48} color={colors.tertiaryForeground} />
+          <NativeIcon name="checkmark.shield.fill" size={48} color={colors.tertiaryForeground} />
           <ActivityIndicator />
           <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('loading')}
@@ -138,7 +138,11 @@ export default function VerifyScreen() {
 
       {state.type === 'error' && (
         <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
-          <ShieldAlert size={48} color={colors.tertiaryForeground} />
+          <NativeIcon
+            name="exclamationmark.shield.fill"
+            size={48}
+            color={colors.tertiaryForeground}
+          />
           <ThemedText
             variant="subheadline"
             color={colors.tertiaryForeground}
@@ -279,9 +283,9 @@ function CameraSection({
             },
           ]}>
           {scanResult === 'match' ? (
-            <CircleCheck size={64} color="white" />
+            <NativeIcon name="checkmark.circle.fill" size={64} color="white" />
           ) : (
-            <ShieldAlert size={64} color="white" />
+            <NativeIcon name="exclamationmark.shield.fill" size={64} color="white" />
           )}
           <ThemedText variant="headline" color="white" style={styles.scanResultText}>
             {scanResult === 'match' ? t('verified') : t('mismatch')}

@@ -1,17 +1,30 @@
 import { Platform, StyleSheet } from 'react-native';
+import type { AccessibilityRole } from 'react-native';
 
 interface NativeDividerProps {
   /** Custom color for the divider line */
   color?: string;
+  accessibilityRole?: AccessibilityRole;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
-function NativeDivider({ color }: NativeDividerProps) {
+function NativeDivider({
+  color,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityHint,
+}: NativeDividerProps) {
   if (Platform.OS === 'ios') {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Host, Divider } = require('@expo/ui/swift-ui');
 
     return (
-      <Host matchContents>
+      <Host
+        matchContents
+        accessibilityRole={accessibilityRole}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}>
         <Divider />
       </Host>
     );
@@ -21,7 +34,11 @@ function NativeDivider({ color }: NativeDividerProps) {
   const { Host, HorizontalDivider } = require('@expo/ui/jetpack-compose');
 
   return (
-    <Host matchContents>
+    <Host
+      matchContents
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}>
       <HorizontalDivider thickness={StyleSheet.hairlineWidth} color={color} />
     </Host>
   );

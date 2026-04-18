@@ -1,6 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useRouter } from 'expo-router';
-import { MessageSquare } from 'lucide-react-native';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -127,7 +126,6 @@ export default function ChatTab() {
         ListEmptyComponent={
           <NativeEmptyState
             sfSymbol="bubble.left.and.bubble.right"
-            icon={MessageSquare}
             title={searchText ? t('no_conversations') : t('empty')}
           />
         }

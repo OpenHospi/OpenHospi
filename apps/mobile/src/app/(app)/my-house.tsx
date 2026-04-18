@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import { Users } from 'lucide-react-native';
 import { Alert, Platform, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
@@ -57,7 +56,7 @@ export default function MyHouseScreen() {
     return (
       <>
         <Stack.Screen options={{ title: t('title') }} />
-        <NativeEmptyState sfSymbol="person.2" icon={Users} title={t('noHouse')} />
+        <NativeEmptyState sfSymbol="person.2" title={t('noHouse')} />
       </>
     );
   }

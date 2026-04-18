@@ -1,17 +1,13 @@
 import { STORAGE_BUCKET_ROOM_PHOTOS } from '@openhospi/shared/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Dot } from 'lucide-react-native';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { isIOS } from '@/lib/platform';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { NativeDivider } from '@/components/native/divider';
@@ -49,11 +45,7 @@ function PriceValue({
 }) {
   return (
     <View style={styles.priceValue}>
-      {isIOS ? (
-        <SymbolView name="eurosign" size={12} tintColor={colors.foreground} />
-      ) : (
-        <MaterialIcons name="euro" size={12} color={colors.foreground} />
-      )}
+      <NativeIcon name="eurosign" size={12} color={colors.foreground} />
       <ThemedText variant="subheadline">{amount}</ThemedText>
     </View>
   );
@@ -131,7 +123,7 @@ export default function RoomDetailScreen() {
               </ThemedText>
               {room.neighborhood && (
                 <>
-                  <Dot size={16} color={colors.mutedForeground} />
+                  <NativeIcon name="dot" size={16} color={colors.mutedForeground} />
                   <ThemedText variant="body" color={colors.tertiaryForeground}>
                     {room.neighborhood}
                   </ThemedText>
@@ -164,11 +156,7 @@ export default function RoomDetailScreen() {
                   {t('totalCost')}
                 </ThemedText>
                 <View style={styles.priceValue}>
-                  {isIOS ? (
-                    <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
-                  ) : (
-                    <MaterialIcons name="euro" size={18} color={colors.primary} />
-                  )}
+                  <NativeIcon name="eurosign" size={18} color={colors.primary} />
                   <ThemedText variant="headline" color={colors.primary}>
                     {room.totalCost}
                     {tCommon('perMonth')}

@@ -1,6 +1,5 @@
 import * as Clipboard from 'expo-clipboard';
 import { useLocalSearchParams } from 'expo-router';
-import { Copy } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +8,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -99,7 +99,7 @@ export default function ShareLinkScreen() {
                   {shareUrl}
                 </ThemedText>
                 <Pressable onPress={handleCopy} hitSlop={8}>
-                  <Copy size={16} color={colors.foreground} />
+                  <NativeIcon name="doc.on.doc" size={16} color={colors.foreground} />
                 </Pressable>
               </View>
             ) : (

@@ -1,19 +1,21 @@
 import React from 'react';
-import { StyleSheet, TextInput, type TextInputProps, type TextStyle } from 'react-native';
+import { TextInput, type TextStyle } from 'react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 
-interface ThemedTextareaProps extends TextInputProps {
-  error?: boolean;
-  minHeight?: number;
-}
+import type { ThemedTextareaProps } from './textarea.types';
 
 function ThemedTextarea({
   error,
   minHeight = 120,
   editable = true,
   style,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityState,
+  accessibilityValue,
   ...props
 }: ThemedTextareaProps) {
   const { colors, typography } = useTheme();
@@ -21,11 +23,11 @@ function ThemedTextarea({
 
   const inputStyle: TextStyle = {
     minHeight,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: radius.md,
     backgroundColor: colors.secondaryBackground,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: focused ? 2 : 1,
     borderColor: error ? colors.destructive : focused ? colors.primary : colors.separator,
     opacity: editable ? 1 : 0.5,
     ...typography.body,
@@ -39,6 +41,11 @@ function ThemedTextarea({
       placeholderTextColor={colors.tertiaryForeground}
       editable={editable}
       multiline
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={accessibilityLabel ?? props.placeholder}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: !editable, ...(accessibilityState ?? {}) }}
+      accessibilityValue={accessibilityValue}
       onFocus={(e) => {
         setFocused(true);
         props.onFocus?.(e);
@@ -53,4 +60,3 @@ function ThemedTextarea({
 }
 
 export { ThemedTextarea };
-export type { ThemedTextareaProps };

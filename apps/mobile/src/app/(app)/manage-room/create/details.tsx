@@ -1,6 +1,5 @@
 import { Furnishing, HouseType, RentalType, UtilitiesIncluded } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Euro } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
 import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
@@ -125,7 +125,7 @@ export default function DetailsScreen() {
             {t('wizard.sections.pricing')}
           </ThemedText>
           <View style={styles.euroRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            <NativeIcon name="eurosign" size={16} color={colors.tertiaryForeground} />
             <View style={styles.flex1}>
               <ThemedInput
                 value={rentPrice}
@@ -136,7 +136,7 @@ export default function DetailsScreen() {
             </View>
           </View>
           <View style={styles.euroRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            <NativeIcon name="eurosign" size={16} color={colors.tertiaryForeground} />
             <View style={styles.flex1}>
               <ThemedInput
                 value={deposit}
@@ -166,7 +166,7 @@ export default function DetailsScreen() {
 
         {utilitiesIncluded !== UtilitiesIncluded.included && (
           <View style={styles.euroRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            <NativeIcon name="eurosign" size={16} color={colors.tertiaryForeground} />
             <View style={styles.flex1}>
               <ThemedInput
                 value={serviceCosts}
@@ -180,7 +180,7 @@ export default function DetailsScreen() {
 
         {utilitiesIncluded === UtilitiesIncluded.estimated && (
           <View style={styles.euroRow}>
-            <Euro size={16} color={colors.tertiaryForeground} />
+            <NativeIcon name="eurosign" size={16} color={colors.tertiaryForeground} />
             <View style={styles.flex1}>
               <ThemedInput
                 value={estimatedUtilitiesCosts}

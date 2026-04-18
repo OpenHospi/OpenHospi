@@ -1,15 +1,14 @@
 import { LOCALE_CONFIG, SUPPORTED_LOCALES } from '@openhospi/i18n';
 import { Stack } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { Check, Globe } from 'lucide-react-native';
 import { useRef, useState } from 'react';
-import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
   AppBottomSheetModal as BottomSheet,
   type BottomSheetModal,
 } from '@/components/shared/bottom-sheet';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
@@ -36,11 +35,7 @@ function LanguageHeaderPicker() {
           sheetRef.current?.present();
         }}
         hitSlop={8}>
-        {Platform.OS === 'ios' ? (
-          <SymbolView name="globe" size={22} tintColor={colors.primary} />
-        ) : (
-          <Globe size={22} color={colors.primary} />
-        )}
+        <NativeIcon name="globe" size={22} color={colors.primary} />
       </Pressable>
 
       <BottomSheet
@@ -82,7 +77,7 @@ function LanguageHeaderPicker() {
                     color={isSelected ? colors.primary : colors.foreground}>
                     {LOCALE_CONFIG[item].name}
                   </ThemedText>
-                  {isSelected && <Check size={18} color={colors.primary} strokeWidth={2.5} />}
+                  {isSelected && <NativeIcon name="checkmark" size={18} color={colors.primary} />}
                 </Pressable>
               );
             }}

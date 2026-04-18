@@ -1,9 +1,9 @@
 import { useRouter } from 'expo-router';
-import { ShieldAlert } from 'lucide-react-native';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/design';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 
 type Props = {
@@ -37,7 +37,7 @@ export function KeyChangeBanner({ conversationId, peerUserId, peerName, hasChang
           backgroundColor: colors.destructive + '1A',
         },
       ]}>
-      <ShieldAlert size={20} color={colors.destructive} />
+      <NativeIcon name="exclamationmark.shield.fill" size={20} color={colors.destructive} />
       <View style={{ flex: 1 }}>
         <ThemedText variant="subheadline" weight="500" color={colors.destructive}>
           {t('key_changed')}

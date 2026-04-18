@@ -1,20 +1,18 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Dot } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { shadow } from '@/design/tokens/shadows';
 import { LIST_ITEM_ENTERING } from '@/lib/animations';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-import { isAndroid, isIOS } from '@/lib/platform';
+import { isAndroid } from '@/lib/platform';
 import type { DiscoverRoom } from '@openhospi/shared/api-types';
 
 type Props = {
@@ -67,11 +65,7 @@ export function RoomCard({ room }: Props) {
                   borderTopRightRadius: radius.lg,
                 },
               ]}>
-              {isIOS ? (
-                <SymbolView name="house" size={32} tintColor={colors.tertiaryForeground} />
-              ) : (
-                <MaterialIcons name="home" size={32} color={colors.tertiaryForeground} />
-              )}
+              <NativeIcon name="house" size={32} color={colors.tertiaryForeground} />
             </View>
           )}
 
@@ -86,7 +80,7 @@ export function RoomCard({ room }: Props) {
               </ThemedText>
               {room.houseType && (
                 <>
-                  <Dot size={16} color={colors.tertiaryForeground} />
+                  <NativeIcon name="dot" size={16} color={colors.tertiaryForeground} />
                   <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                     {tEnums(`house_type.${room.houseType}`)}
                   </ThemedText>
@@ -94,7 +88,7 @@ export function RoomCard({ room }: Props) {
               )}
               {room.roomSizeM2 && (
                 <>
-                  <Dot size={16} color={colors.tertiaryForeground} />
+                  <NativeIcon name="dot" size={16} color={colors.tertiaryForeground} />
                   <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
                     {room.roomSizeM2}m²
                   </ThemedText>
@@ -104,11 +98,7 @@ export function RoomCard({ room }: Props) {
 
             <View style={styles.priceRow}>
               <View style={styles.priceLeft}>
-                {isIOS ? (
-                  <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
-                ) : (
-                  <MaterialIcons name="euro" size={18} color={colors.primary} />
-                )}
+                <NativeIcon name="eurosign" size={18} color={colors.primary} />
                 <ThemedText variant="title3" color={colors.primary}>
                   {room.totalCost}
                   {tCommon('perMonth')}

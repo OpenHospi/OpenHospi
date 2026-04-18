@@ -2,7 +2,6 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Pause, Play, Trash2 } from 'lucide-react-native';
 import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
@@ -77,7 +76,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
   const swipeActions = [];
   if (room.status === RoomStatus.draft && onDelete) {
     swipeActions.push({
-      icon: Trash2,
+      iconName: 'trash',
       color: colors.destructiveForeground,
       backgroundColor: colors.destructive,
       onPress: handleDelete,
@@ -85,7 +84,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
   }
   if (room.status === RoomStatus.active && onStatusChange) {
     swipeActions.push({
-      icon: Pause,
+      iconName: 'pause',
       color: colors.primaryForeground,
       backgroundColor: colors.warning,
       onPress: handleTogglePause,
@@ -93,7 +92,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
   }
   if (room.status === RoomStatus.paused && onStatusChange) {
     swipeActions.push({
-      icon: Play,
+      iconName: 'play',
       color: colors.primaryForeground,
       backgroundColor: colors.success,
       onPress: handleTogglePause,

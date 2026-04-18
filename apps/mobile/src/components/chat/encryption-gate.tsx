@@ -1,5 +1,4 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
-import { ShieldCheck } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +8,7 @@ import { useTheme } from '@/design';
 
 import { InputOTP } from '@/components/forms/input-otp';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
 import { EncryptionContext, useEncryptionProvider } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
@@ -32,7 +32,7 @@ export function EncryptionGate({ children }: Props) {
   if (status === 'initializing') {
     return (
       <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ShieldCheck size={56} color={colors.primary} />
+        <NativeIcon name="checkmark.shield.fill" size={56} color={colors.primary} />
         <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {tSecurity('generating_keys')}
         </ThemedText>
@@ -63,7 +63,7 @@ export function EncryptionGate({ children }: Props) {
   if (loading) {
     return (
       <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ShieldCheck size={56} color={colors.primary} />
+        <NativeIcon name="checkmark.shield.fill" size={56} color={colors.primary} />
         <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {tSecurity('generating_keys')}
         </ThemedText>
@@ -77,7 +77,7 @@ export function EncryptionGate({ children }: Props) {
       contentContainerStyle={styles.scrollContent}
       keyboardShouldPersistTaps="handled">
       <View style={styles.headerSection}>
-        <ShieldCheck size={56} color={colors.primary} />
+        <NativeIcon name="checkmark.shield.fill" size={56} color={colors.primary} />
         <ThemedText variant="headline">{tSecurity('e2ee_title')}</ThemedText>
         <ThemedText
           variant="subheadline"

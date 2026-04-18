@@ -1,9 +1,9 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { Home } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
@@ -48,7 +48,6 @@ export default function JoinHouseScreen() {
         <Stack.Screen options={{ title: t('title') }} />
         <NativeEmptyState
           sfSymbol="exclamationmark.triangle"
-          icon={Home}
           title={t('notFound')}
           actionLabel={t('cancel')}
           onAction={() => router.back()}
@@ -62,7 +61,7 @@ export default function JoinHouseScreen() {
       <Stack.Screen options={{ title: t('title') }} />
 
       <View style={styles.center}>
-        <Home size={48} color={colors.primary} />
+        <NativeIcon name="house.fill" size={48} color={colors.primary} />
 
         <View style={styles.textGroup}>
           <ThemedText variant="title3">{t('joinPrompt')}</ThemedText>

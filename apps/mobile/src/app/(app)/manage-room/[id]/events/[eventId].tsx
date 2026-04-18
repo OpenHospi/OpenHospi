@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedAvatar } from '@/components/native/avatar';
@@ -10,7 +11,7 @@ import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { NativeDivider } from '@/components/native/divider';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useCancelEvent, useEventDetail } from '@/services/my-rooms';
@@ -42,7 +43,8 @@ export default function EventDetailScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.events' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: event, isLoading } = useEventDetail(id, eventId);
   const cancelEvent = useCancelEvent();
@@ -160,7 +162,16 @@ export default function EventDetailScreen() {
       </ScrollView>
 
       {!isCancelled && (
-        <BlurBottomBar>
+        <PlatformSurface
+          variant="chrome"
+          edge="bottom"
+          glass="regular"
+          style={{
+            paddingHorizontal: spacing.lg,
+            paddingTop: spacing.md,
+            paddingBottom: Math.max(bottom, spacing.lg),
+            gap: spacing.sm,
+          }}>
           <NativeButton
             label={t('invitees')}
             onPress={() =>
@@ -171,7 +182,7 @@ export default function EventDetailScreen() {
             }
           />
           <NativeButton label={t('cancelEvent')} variant="destructive" onPress={handleCancel} />
-        </BlurBottomBar>
+        </PlatformSurface>
       )}
     </View>
   );

@@ -1,6 +1,7 @@
 import { RoomStatus } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
@@ -11,7 +12,7 @@ import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
 import { NativeDivider } from '@/components/native/divider';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { useDeleteRoom, useMyRoom, useUpdateRoomStatus } from '@/services/my-rooms';
 import type { BadgeVariant } from '@/components/native/badge';
@@ -47,7 +48,8 @@ export default function MyRoomDetailScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: room, isLoading } = useMyRoom(id);
   const updateStatus = useUpdateRoomStatus();
@@ -280,17 +282,37 @@ export default function MyRoomDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* Bottom Status Action */}
       {status === RoomStatus.draft && (
-        <BlurBottomBar>
+        <PlatformSurface
+          variant="chrome"
+          edge="bottom"
+          glass="regular"
+          style={{
+            paddingHorizontal: spacing.lg,
+            paddingTop: spacing.md,
+            paddingBottom: Math.max(bottom, spacing.lg),
+            gap: spacing.sm,
+          }}>
           <NativeButton
             label={t('actions.publish')}
             onPress={() => handleStatusChange(RoomStatus.active)}
           />
-        </BlurBottomBar>
+        </PlatformSurface>
       )}
       {status === RoomStatus.active && (
-        <BlurBottomBar style={styles.bottomRow}>
+        <PlatformSurface
+          variant="chrome"
+          edge="bottom"
+          glass="regular"
+          style={[
+            styles.bottomRow,
+            {
+              paddingHorizontal: spacing.lg,
+              paddingTop: spacing.md,
+              paddingBottom: Math.max(bottom, spacing.lg),
+              gap: spacing.sm,
+            },
+          ]}>
           <View style={styles.flex1}>
             <NativeButton
               label={t('actions.pause')}
@@ -310,10 +332,22 @@ export default function MyRoomDetailScreen() {
               }
             />
           </View>
-        </BlurBottomBar>
+        </PlatformSurface>
       )}
       {status === RoomStatus.paused && (
-        <BlurBottomBar style={styles.bottomRow}>
+        <PlatformSurface
+          variant="chrome"
+          edge="bottom"
+          glass="regular"
+          style={[
+            styles.bottomRow,
+            {
+              paddingHorizontal: spacing.lg,
+              paddingTop: spacing.md,
+              paddingBottom: Math.max(bottom, spacing.lg),
+              gap: spacing.sm,
+            },
+          ]}>
           <View style={styles.flex1}>
             <NativeButton
               label={t('actions.activate')}
@@ -332,7 +366,7 @@ export default function MyRoomDetailScreen() {
               }
             />
           </View>
-        </BlurBottomBar>
+        </PlatformSurface>
       )}
     </View>
   );

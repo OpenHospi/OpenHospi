@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ThemedBadge } from '@/components/native/badge';
@@ -9,7 +10,7 @@ import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { NativeDivider } from '@/components/native/divider';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -18,7 +19,8 @@ import { useMyRoom, usePublishRoom } from '@/services/my-rooms';
 export default function ReviewScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
@@ -178,14 +180,23 @@ export default function ReviewScreen() {
         )}
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={t('actions.publish')}
           onPress={handlePublish}
           loading={publishRoom.isPending}
           disabled={!canPublish}
         />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

@@ -2,6 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
@@ -11,7 +12,7 @@ import { ThemedBadge } from '@/components/native/badge';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeDivider } from '@/components/native/divider';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { NativeButton } from '@/components/native/button';
 import { useTheme } from '@/design';
 import { useCancelEvent, useRoomEvents } from '@/services/my-rooms';
@@ -38,7 +39,8 @@ export default function EventsListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.events' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: events, isLoading } = useRoomEvents(id);
   const cancelEvent = useCancelEvent();
@@ -180,7 +182,16 @@ export default function EventsListScreen() {
         getItemType={(item) => item.type}
         ItemSeparatorComponent={NativeDivider}
       />
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={t('create')}
           onPress={() =>
@@ -190,7 +201,7 @@ export default function EventsListScreen() {
             })
           }
         />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

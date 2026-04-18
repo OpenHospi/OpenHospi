@@ -2,6 +2,7 @@ import { ReviewDecision } from '@openhospi/shared/enums';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { PhotoCarousel } from '@/components/rooms/photo-carousel';
@@ -12,7 +13,7 @@ import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
@@ -55,7 +56,8 @@ export default function ApplicantDetailScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.applicants' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: applicants, isLoading } = useRoomApplicants(id);
   const submitReview = useSubmitReview();
@@ -261,7 +263,19 @@ export default function ApplicantDetailScreen() {
       </ScrollView>
 
       {applicant.status !== 'accepted' && applicant.status !== 'rejected' && (
-        <BlurBottomBar style={styles.bottomRow}>
+        <PlatformSurface
+          variant="chrome"
+          edge="bottom"
+          glass="regular"
+          style={[
+            styles.bottomRow,
+            {
+              paddingHorizontal: spacing.lg,
+              paddingTop: spacing.md,
+              paddingBottom: Math.max(bottom, spacing.lg),
+              gap: spacing.sm,
+            },
+          ]}>
           <View style={styles.flex1}>
             <NativeButton
               label={t('rejected')}
@@ -275,7 +289,7 @@ export default function ApplicantDetailScreen() {
               onPress={() => handleStatusAction('accepted', t('accept'))}
             />
           </View>
-        </BlurBottomBar>
+        </PlatformSurface>
       )}
     </View>
   );

@@ -1,4 +1,11 @@
-import { type AccessibilityRole, Platform, StyleSheet, View, type ViewStyle } from 'react-native';
+import {
+  type AccessibilityRole,
+  Platform,
+  type StyleProp,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import { BlurView } from 'expo-blur';
 import { GlassView, type GlassStyle } from 'expo-glass-effect';
 
@@ -17,7 +24,7 @@ export interface PlatformSurfaceProps {
   /** iOS 26 only; controls `GlassView.glassEffectStyle` and fallback BlurView intensity. */
   glass?: SurfaceGlass;
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   accessibilityRole?: AccessibilityRole;
 }
 

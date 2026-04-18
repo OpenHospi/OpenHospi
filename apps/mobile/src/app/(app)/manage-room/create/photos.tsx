@@ -2,13 +2,14 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
 import { NativeIcon } from '@/components/native/icon';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -20,7 +21,8 @@ const MAX_SLOTS = 10;
 export default function PhotosScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
@@ -110,9 +112,18 @@ export default function PhotosScreen() {
         </View>
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton label={tCommon('next')} onPress={handleNext} />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

@@ -13,6 +13,7 @@ import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
@@ -24,7 +25,7 @@ import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeSelect } from '@/components/native/select';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
@@ -94,10 +95,11 @@ function PickerSheet({
 export default function EditRoomScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
   const { data: room, isLoading } = useMyRoom(id);
   const updateRoom = useUpdateRoom();
@@ -556,14 +558,23 @@ export default function EditRoomScreen() {
         </View>
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={tCommon('save')}
           onPress={handleSave}
           loading={updateRoom.isPending}
           disabled={!title.trim()}
         />
-      </BlurBottomBar>
+      </PlatformSurface>
 
       {/* Picker sheets */}
       <PickerSheet

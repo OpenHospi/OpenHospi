@@ -2,6 +2,7 @@ import { DateTimePicker } from '@expo/ui/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
@@ -9,7 +10,7 @@ import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedTextarea } from '@/components/native/textarea';
 import { ThemedText } from '@/components/native/text';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { useCreateEvent, useEventDetail, useUpdateEvent } from '@/services/my-rooms';
 
@@ -57,7 +58,8 @@ export default function CreateEventScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.events' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: existingEvent } = useEventDetail(id, eventId ?? '');
   const createEvent = useCreateEvent();
@@ -180,13 +182,22 @@ export default function CreateEventScreen() {
         </View>
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={isEditing ? tCommon('save') : t('createSubmit')}
           onPress={handleSubmit}
           disabled={!title || !eventDate || !timeStart || isPending}
         />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

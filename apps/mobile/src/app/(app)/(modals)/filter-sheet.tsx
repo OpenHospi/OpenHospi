@@ -38,17 +38,21 @@ function MultiChipSelect({
   return (
     <View style={chipStyles.grid}>
       {values.map((v) => {
-        const isSelected = selected?.includes(v);
+        const isSelected = selected?.includes(v) ?? false;
+        const label = t(`${translateKey}.${v}`);
         return (
           <Pressable
             key={v}
+            accessibilityRole="checkbox"
+            accessibilityLabel={label}
+            accessibilityState={{ checked: isSelected }}
             onPress={() => {
               hapticLight();
               onToggle(v);
             }}>
             <ThemedBadge
               variant={isSelected ? 'primary' : 'outline'}
-              label={t(`${translateKey}.${v}`)}
+              label={label}
               style={chipStyles.chip}
             />
           </Pressable>
@@ -125,16 +129,20 @@ export default function FilterSheetScreen() {
             <View style={chipStyles.grid}>
               {DiscoverSort.values.map((v) => {
                 const isSelected = filters.sort === v;
+                const label = tFilters(SORT_LABEL_KEYS[v]);
                 return (
                   <Pressable
                     key={v}
+                    accessibilityRole="radio"
+                    accessibilityLabel={label}
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
                     onPress={() => {
                       hapticLight();
                       update({ sort: isSelected ? undefined : v });
                     }}>
                     <ThemedBadge
                       variant={isSelected ? 'primary' : 'outline'}
-                      label={tFilters(SORT_LABEL_KEYS[v])}
+                      label={label}
                       style={chipStyles.chip}
                     />
                   </Pressable>
@@ -186,16 +194,20 @@ export default function FilterSheetScreen() {
             <View style={chipStyles.grid}>
               {HouseType.values.map((v) => {
                 const isSelected = filters.houseType === v;
+                const label = tEnums(`house_type.${v}`);
                 return (
                   <Pressable
                     key={v}
+                    accessibilityRole="radio"
+                    accessibilityLabel={label}
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
                     onPress={() => {
                       hapticLight();
                       update({ houseType: isSelected ? undefined : v });
                     }}>
                     <ThemedBadge
                       variant={isSelected ? 'primary' : 'outline'}
-                      label={tEnums(`house_type.${v}`)}
+                      label={label}
                       style={chipStyles.chip}
                     />
                   </Pressable>
@@ -212,16 +224,20 @@ export default function FilterSheetScreen() {
             <View style={chipStyles.grid}>
               {Furnishing.values.map((v) => {
                 const isSelected = filters.furnishing === v;
+                const label = tEnums(`furnishing.${v}`);
                 return (
                   <Pressable
                     key={v}
+                    accessibilityRole="radio"
+                    accessibilityLabel={label}
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
                     onPress={() => {
                       hapticLight();
                       update({ furnishing: isSelected ? undefined : v });
                     }}>
                     <ThemedBadge
                       variant={isSelected ? 'primary' : 'outline'}
-                      label={tEnums(`furnishing.${v}`)}
+                      label={label}
                       style={chipStyles.chip}
                     />
                   </Pressable>

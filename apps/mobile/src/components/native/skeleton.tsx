@@ -2,6 +2,7 @@ import React from 'react';
 import { type AccessibilityRole, type ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
   withRepeat,
   withTiming,
@@ -36,11 +37,16 @@ function ThemedSkeleton({
   accessibilityHint,
 }: ThemedSkeletonProps) {
   const { colors } = useTheme();
+  const reduceMotion = useReducedMotion();
   const opacity = useSharedValue(1);
 
   React.useEffect(() => {
+    if (reduceMotion) {
+      opacity.value = 0.7;
+      return;
+    }
     opacity.value = withRepeat(withTiming(0.4, { duration: 1000 }), -1, true);
-  }, [opacity]);
+  }, [opacity, reduceMotion]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,

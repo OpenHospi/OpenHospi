@@ -79,6 +79,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
       iconName: 'trash',
       color: colors.destructiveForeground,
       backgroundColor: colors.destructive,
+      accessibilityLabel: tCommon('delete'),
       onPress: handleDelete,
     });
   }
@@ -87,6 +88,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
       iconName: 'pause',
       color: colors.primaryForeground,
       backgroundColor: colors.warning,
+      accessibilityLabel: t('actions.pause'),
       onPress: handleTogglePause,
     });
   }
@@ -95,6 +97,7 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
       iconName: 'play',
       color: colors.primaryForeground,
       backgroundColor: colors.success,
+      accessibilityLabel: t('actions.activate'),
       onPress: handleTogglePause,
     });
   }

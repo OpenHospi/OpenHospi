@@ -58,7 +58,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
     <View style={errorStyles.container}>
       <Text style={errorStyles.title}>Something went wrong</Text>
       <Text style={errorStyles.message}>{error.message}</Text>
-      <Pressable onPress={retry}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Try Again" onPress={retry}>
         <Text style={errorStyles.retry}>Try Again</Text>
       </Pressable>
     </View>

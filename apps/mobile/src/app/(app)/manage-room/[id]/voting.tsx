@@ -209,6 +209,9 @@ export default function VotingScreen() {
           {board && (
             <GroupedSection inset={false}>
               <AnimatedPressable
+                accessibilityRole="button"
+                accessibilityLabel={t('voteBoard')}
+                accessibilityState={{ expanded: showBoard }}
                 onPress={() => {
                   hapticLight();
                   setShowBoard(!showBoard);

@@ -8,14 +8,14 @@ import { ConversationListItem } from '@/components/chat/conversation-list-item';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
 import { NativeDivider } from '@/components/native/divider';
 import { ThemedSkeleton } from '@/components/native/skeleton';
-import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useSession } from '@/lib/auth-client';
+import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useConversations } from '@/services/chat';
 
 function SkeletonRow() {
   return (
-    <View style={styles.skeletonRow}>
-      <ThemedSkeleton width={48} height={48} circle />
+    <View style={styles.skeletonRow} accessibilityRole="progressbar" accessibilityLabel="Loading">
+      <ThemedSkeleton width={52} height={52} circle />
       <View style={styles.skeletonLines}>
         <ThemedSkeleton width="60%" height={14} />
         <ThemedSkeleton width="40%" height={12} />
@@ -42,10 +42,10 @@ export default function ChatTab() {
       })
     : (conversations ?? []);
 
-  const handleRefresh = () => {
+  function handleRefresh() {
     hapticPullToRefreshSnap();
     refetch();
-  };
+  }
 
   return (
     <>
@@ -60,7 +60,7 @@ export default function ChatTab() {
 
       {isLoading ? (
         <View style={styles.skeletonContainer}>
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4, 5].map((i) => (
             <SkeletonRow key={i} />
           ))}
         </View>
@@ -94,7 +94,7 @@ export default function ChatTab() {
               />
             );
           }}
-          ItemSeparatorComponent={() => <NativeDivider />}
+          ItemSeparatorComponent={SeparatorInset}
           ListEmptyComponent={
             <NativeEmptyState
               sfSymbol="bubble.left.and.bubble.right"
@@ -109,9 +109,18 @@ export default function ChatTab() {
   );
 }
 
+function SeparatorInset() {
+  return (
+    <View style={styles.separatorWrap}>
+      <NativeDivider />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   skeletonContainer: {
     flex: 1,
+    paddingTop: 8,
   },
   skeletonRow: {
     flexDirection: 'row',
@@ -123,5 +132,8 @@ const styles = StyleSheet.create({
   skeletonLines: {
     flex: 1,
     gap: 6,
+  },
+  separatorWrap: {
+    marginStart: 80,
   },
 });

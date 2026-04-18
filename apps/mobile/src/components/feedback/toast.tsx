@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, ReduceMotion } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -38,8 +38,8 @@ function ToastItem({ toast }: { toast: Toast }) {
 
   return (
     <Animated.View
-      entering={FadeIn.duration(200)}
-      exiting={FadeOut.duration(200)}
+      entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)}
+      exiting={FadeOut.duration(200).reduceMotion(ReduceMotion.System)}
       style={[styles.toastItem, { backgroundColor: toastColors.bg }]}>
       <NativeIcon name={iconName} size={18} color={toastColors.icon} />
       <ThemedText variant="subheadline" weight="500" color={toastColors.text} style={{ flex: 1 }}>

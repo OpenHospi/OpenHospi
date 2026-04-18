@@ -7,7 +7,7 @@ import { APP_NAME, GOOGLE_WEB_CLIENT_ID } from '@openhospi/shared/constants';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useRef, useState } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, ReduceMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -135,7 +135,9 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.center}>
-        <Animated.View entering={FadeInDown.duration(500).springify()} style={styles.content}>
+        <Animated.View
+          entering={FadeInDown.duration(500).springify().reduceMotion(ReduceMotion.System)}
+          style={styles.content}>
           <Pressable
             onLongPress={handleLogoLongPress}
             delayLongPress={3000}
@@ -185,7 +187,7 @@ export default function LoginScreen() {
 
           {showReviewerLogin && (
             <Animated.View
-              entering={FadeInDown.duration(400).springify()}
+              entering={FadeInDown.duration(400).springify().reduceMotion(ReduceMotion.System)}
               style={styles.reviewerSection}>
               <View style={styles.dividerRow}>
                 <View style={[styles.dividerLine, { backgroundColor: colors.separator }]} />

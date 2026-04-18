@@ -5,6 +5,9 @@ export default function ChatLayout() {
     <Stack
       screenOptions={{
         headerLargeTitle: true,
+        headerTransparent: true,
+        headerBlurEffect: 'regular',
+        headerShadowVisible: false,
       }}
     />
   );

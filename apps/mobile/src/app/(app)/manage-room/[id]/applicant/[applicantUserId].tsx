@@ -198,6 +198,9 @@ export default function ApplicantDetailScreen() {
                   return (
                     <AnimatedPressable
                       key={d}
+                      accessibilityRole="radio"
+                      accessibilityLabel={t(d)}
+                      accessibilityState={{ selected: isSelected, checked: isSelected }}
                       onPress={() => {
                         hapticLight();
                         setDecision(d);

@@ -15,20 +15,27 @@ type ChipPickerProps = {
 export function ChipPicker({ values, selected, onSelect, translateKey, t }: ChipPickerProps) {
   return (
     <View style={styles.container}>
-      {values.map((v) => (
-        <Pressable
-          key={v}
-          onPress={() => {
-            hapticLight();
-            onSelect(selected === v ? null : v);
-          }}>
-          <ThemedBadge
-            variant={selected === v ? 'primary' : 'outline'}
-            label={t(`${translateKey}.${v}`)}
-            style={styles.chip}
-          />
-        </Pressable>
-      ))}
+      {values.map((v) => {
+        const label = t(`${translateKey}.${v}`);
+        const isSelected = selected === v;
+        return (
+          <Pressable
+            key={v}
+            accessibilityRole="checkbox"
+            accessibilityLabel={label}
+            accessibilityState={{ checked: isSelected }}
+            onPress={() => {
+              hapticLight();
+              onSelect(isSelected ? null : v);
+            }}>
+            <ThemedBadge
+              variant={isSelected ? 'primary' : 'outline'}
+              label={label}
+              style={styles.chip}
+            />
+          </Pressable>
+        );
+      })}
     </View>
   );
 }

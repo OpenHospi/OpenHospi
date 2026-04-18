@@ -17,6 +17,8 @@ type SwipeAction = {
   color: string;
   backgroundColor: string;
   onPress: () => void;
+  /** Accessibility label describing the action (e.g. "Delete", "Archive"). */
+  accessibilityLabel: string;
 };
 
 type SwipeableRowProps = {
@@ -74,6 +76,8 @@ export function SwipeableRow({ children, rightActions }: SwipeableRowProps) {
         {rightActions.map((action, index) => (
           <Pressable
             key={index}
+            accessibilityRole="button"
+            accessibilityLabel={action.accessibilityLabel}
             onPress={() => {
               translateX.value = withSpring(0, SPRING_SNAPPY);
               action.onPress();

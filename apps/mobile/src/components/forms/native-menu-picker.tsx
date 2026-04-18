@@ -40,6 +40,10 @@ export function NativeMenuPicker({
 
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={selectedLabel ?? placeholder}
+      accessibilityHint={placeholder}
+      accessibilityValue={selectedLabel ? { text: selectedLabel } : undefined}
       onPress={handlePress}
       style={[
         styles.trigger,

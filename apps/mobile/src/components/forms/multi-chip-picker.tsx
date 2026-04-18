@@ -30,11 +30,17 @@ export function MultiChipPicker({
     <View style={styles.container}>
       {values.map((v) => {
         const isSelected = selected.includes(v);
+        const label = t(`${translateKey}.${v}`);
         return (
-          <Pressable key={v} onPress={() => toggle(v)}>
+          <Pressable
+            key={v}
+            accessibilityRole="checkbox"
+            accessibilityLabel={label}
+            accessibilityState={{ checked: isSelected }}
+            onPress={() => toggle(v)}>
             <ThemedBadge
               variant={isSelected ? 'primary' : 'outline'}
-              label={t(`${translateKey}.${v}`)}
+              label={label}
               style={styles.chip}
             />
           </Pressable>

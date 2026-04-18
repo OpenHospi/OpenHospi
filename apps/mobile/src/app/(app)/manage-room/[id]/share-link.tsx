@@ -98,7 +98,11 @@ export default function ShareLinkScreen() {
                 <ThemedText variant="caption1" numberOfLines={1} style={styles.flex1}>
                   {shareUrl}
                 </ThemedText>
-                <Pressable onPress={handleCopy} hitSlop={8}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('copy')}
+                  onPress={handleCopy}
+                  hitSlop={8}>
                   <NativeIcon name="doc.on.doc" size={16} color={colors.foreground} />
                 </Pressable>
               </View>

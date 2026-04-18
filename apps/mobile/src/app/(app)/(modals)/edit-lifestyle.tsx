@@ -63,11 +63,17 @@ export default function EditLifestyleScreen() {
         <View style={styles.chipGrid}>
           {LifestyleTag.values.map((tag) => {
             const isSelected = selected.includes(tag);
+            const label = tEnums(tag);
             return (
-              <Pressable key={tag} onPress={() => toggle(tag)}>
+              <Pressable
+                key={tag}
+                accessibilityRole="checkbox"
+                accessibilityLabel={label}
+                accessibilityState={{ checked: isSelected }}
+                onPress={() => toggle(tag)}>
                 <ThemedBadge
                   variant={isSelected ? 'primary' : 'outline'}
-                  label={tEnums(tag)}
+                  label={label}
                   style={styles.chip}
                 />
               </Pressable>

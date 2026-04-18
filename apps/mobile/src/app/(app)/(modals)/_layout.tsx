@@ -22,7 +22,11 @@ export default function ModalsLayout() {
         sheetGrabberVisible: true,
         sheetCornerRadius: 16,
         headerRight: () => (
-          <Pressable onPress={() => router.back()} hitSlop={8}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={tCommon('close')}
+            onPress={() => router.back()}
+            hitSlop={8}>
             <NativeIcon name="xmark" size={22} color={colors.tertiaryForeground} />
           </Pressable>
         ),

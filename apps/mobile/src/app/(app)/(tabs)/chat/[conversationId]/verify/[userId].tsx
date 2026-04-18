@@ -1,25 +1,27 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as Haptics from 'expo-haptics';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import {
   encodeSafetyNumberQR,
   fromBase64,
   generateSafetyNumber,
   verifySafetyNumberQR,
 } from '@openhospi/crypto';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { NativeButton } from '@/components/native/button';
 import { NativeIcon } from '@/components/native/icon';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { getProtocolStore } from '@/lib/crypto/stores';
 import { useSession } from '@/lib/auth-client';
+import { getProtocolStore } from '@/lib/crypto/stores';
+import { hapticError, hapticLight, hapticSuccess } from '@/lib/haptics';
 import { useConversationDetail } from '@/services/chat';
 import { fetchIdentityKeysApi } from '@/services/verification';
 
@@ -109,10 +111,10 @@ export default function VerifyScreen() {
     const { valid, remoteUserId } = verifySafetyNumberQR(data, state.safetyNumber);
 
     if (remoteUserId === localUserId || !valid) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      hapticError();
       setScanResult('mismatch');
     } else {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      hapticSuccess();
       setScanResult('match');
     }
 
@@ -126,20 +128,34 @@ export default function VerifyScreen() {
     <>
       <Stack.Screen options={{ title: peerName, headerBackTitle: t('close') }} />
 
-      {state.type === 'loading' && (
-        <View style={[styles.centeredGap, { backgroundColor: colors.background }]}>
-          <NativeIcon name="checkmark.shield.fill" size={48} color={colors.tertiaryForeground} />
-          <ActivityIndicator />
+      {state.type === 'loading' ? (
+        <View
+          style={[styles.centeredGap, { backgroundColor: colors.background }]}
+          accessibilityRole="progressbar"
+          accessibilityLabel={t('loading')}>
+          <NativeIcon
+            name="checkmark.shield.fill"
+            androidName="verified-user"
+            size={48}
+            color={colors.tertiaryForeground}
+          />
+          <View style={styles.skeletonGroup}>
+            <ThemedSkeleton width={180} height={180} />
+            <ThemedSkeleton width={220} height={14} />
+          </View>
           <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
             {t('loading')}
           </ThemedText>
         </View>
-      )}
+      ) : null}
 
-      {state.type === 'error' && (
-        <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+      {state.type === 'error' ? (
+        <View
+          style={[styles.errorContainer, { backgroundColor: colors.background }]}
+          accessibilityRole="alert">
           <NativeIcon
             name="exclamationmark.shield.fill"
+            androidName="gpp-maybe"
             size={48}
             color={colors.tertiaryForeground}
           />
@@ -151,38 +167,46 @@ export default function VerifyScreen() {
           </ThemedText>
           <NativeButton label={t('close')} variant="outline" onPress={() => router.back()} />
         </View>
-      )}
+      ) : null}
 
-      {state.type === 'ready' && !scanning && (
+      {state.type === 'ready' && !scanning ? (
         <ScrollView
           style={[styles.flex1, { backgroundColor: colors.background }]}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.readyScrollContent}>
-          {/* Description */}
           <ThemedText
             variant="subheadline"
-            color={colors.tertiaryForeground}
+            color={colors.secondaryForeground}
             style={styles.textCenter}>
             {t('description', { name: peerName })}
           </ThemedText>
 
-          {/* QR Code */}
           <View style={styles.qrContainer}>
-            <View style={styles.qrBox}>
-              <QRCode value={state.qrPayload} size={180} />
-            </View>
+            <PlatformSurface variant="card" style={styles.qrBox}>
+              <QRCode value={state.qrPayload} size={200} backgroundColor="white" />
+            </PlatformSurface>
           </View>
 
-          {/* Safety number */}
-          <View style={[styles.safetyNumberBox, { backgroundColor: colors.muted }]}>
+          <PlatformSurface variant="card" style={styles.safetyNumberBox}>
+            <ThemedText
+              variant="caption1"
+              weight="600"
+              color={colors.tertiaryForeground}
+              style={styles.safetyLabel}>
+              {t('title').toUpperCase()}
+            </ThemedText>
             {formatSafetyNumber(state.safetyNumber).map((row, i) => (
-              <ThemedText key={i} variant="body" weight="600" style={styles.safetyNumberRow}>
+              <ThemedText
+                key={i}
+                variant="body"
+                weight="600"
+                color={colors.foreground}
+                style={styles.safetyNumberRow}>
                 {row}
               </ThemedText>
             ))}
-          </View>
+          </PlatformSurface>
 
-          {/* Instructions */}
           <ThemedText
             variant="caption1"
             color={colors.tertiaryForeground}
@@ -190,22 +214,24 @@ export default function VerifyScreen() {
             {t('instructions')}
           </ThemedText>
 
-          {/* Scan button */}
           <NativeButton
             label={t('scan_tab')}
             style={styles.scanButton}
             systemImage="qrcode.viewfinder"
             materialIcon="qr-code-scanner"
             onPress={() => {
+              hapticLight();
               scanProcessedRef.current = false;
               setScanResult(null);
               setScanning(true);
             }}
+            accessibilityLabel={t('scan_tab')}
+            accessibilityHint={t('scan_instructions')}
           />
         </ScrollView>
-      )}
+      ) : null}
 
-      {state.type === 'ready' && scanning && (
+      {state.type === 'ready' && scanning ? (
         <View style={[styles.flex1, { backgroundColor: colors.background }]}>
           <CameraSection
             onScan={handleScanResult}
@@ -213,7 +239,7 @@ export default function VerifyScreen() {
             onClose={() => setScanning(false)}
           />
         </View>
-      )}
+      ) : null}
     </>
   );
 }
@@ -234,8 +260,8 @@ function CameraSection({
 
   if (!permission) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator />
+      <View style={styles.centered} accessibilityRole="progressbar">
+        <ThemedSkeleton width={240} height={240} />
       </View>
     );
   }
@@ -243,9 +269,15 @@ function CameraSection({
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
+        <NativeIcon
+          name="camera.fill"
+          androidName="photo-camera"
+          size={48}
+          color={colors.tertiaryForeground}
+        />
         <ThemedText
           variant="subheadline"
-          color={colors.tertiaryForeground}
+          color={colors.secondaryForeground}
           style={styles.textCenter}>
           {permission.canAskAgain ? t('camera_permission') : t('camera_permission_settings')}
         </ThemedText>
@@ -263,6 +295,13 @@ function CameraSection({
     );
   }
 
+  const overlayBg =
+    scanResult === 'match'
+      ? 'rgba(34,197,94,0.8)'
+      : scanResult === 'mismatch'
+        ? 'rgba(239,68,68,0.8)'
+        : 'transparent';
+
   return (
     <View style={styles.flex1}>
       <CameraView
@@ -272,28 +311,23 @@ function CameraSection({
         onBarcodeScanned={({ data }) => onScan(data)}
       />
 
-      {/* Scan result overlay */}
-      {scanResult && (
+      {scanResult ? (
         <View
-          style={[
-            styles.scanOverlay,
-            {
-              backgroundColor:
-                scanResult === 'match' ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)',
-            },
-          ]}>
-          {scanResult === 'match' ? (
-            <NativeIcon name="checkmark.circle.fill" size={64} color="white" />
-          ) : (
-            <NativeIcon name="exclamationmark.shield.fill" size={64} color="white" />
-          )}
+          style={[styles.scanOverlay, { backgroundColor: overlayBg }]}
+          accessibilityRole="alert"
+          accessibilityLabel={scanResult === 'match' ? t('verified') : t('mismatch')}>
+          <NativeIcon
+            name={scanResult === 'match' ? 'checkmark.circle.fill' : 'exclamationmark.shield.fill'}
+            androidName={scanResult === 'match' ? 'check-circle' : 'gpp-maybe'}
+            size={64}
+            color="white"
+          />
           <ThemedText variant="headline" color="white" style={styles.scanResultText}>
             {scanResult === 'match' ? t('verified') : t('mismatch')}
           </ThemedText>
         </View>
-      )}
+      ) : null}
 
-      {/* Bottom bar */}
       <View style={[styles.cameraBottom, { paddingBottom: insets.bottom + 60 }]}>
         <ThemedText
           variant="subheadline"
@@ -321,6 +355,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 16,
+    paddingHorizontal: 24,
+  },
+  skeletonGroup: {
+    alignItems: 'center',
+    gap: 12,
   },
   errorContainer: {
     flex: 1,
@@ -334,41 +373,37 @@ const styles = StyleSheet.create({
   },
   readyScrollContent: {
     paddingHorizontal: 24,
-    paddingTop: 32,
+    paddingTop: 24,
     paddingBottom: 40,
+    gap: 20,
   },
   qrContainer: {
     alignItems: 'center',
-    marginTop: 28,
   },
   qrBox: {
-    padding: 16,
-    borderRadius: radius.lg,
+    padding: 20,
     alignItems: 'center',
     backgroundColor: 'white',
   },
   safetyNumberBox: {
-    marginTop: 28,
-    borderRadius: radius.md,
-    paddingVertical: 16,
+    paddingVertical: 18,
     paddingHorizontal: 20,
     gap: 8,
     alignItems: 'center',
+  },
+  safetyLabel: {
+    marginBottom: 4,
+    letterSpacing: 1,
   },
   safetyNumberRow: {
     fontFamily: 'Courier',
     letterSpacing: 3,
   },
   instructions: {
-    marginTop: 24,
+    paddingHorizontal: 8,
   },
   scanButton: {
-    marginTop: 32,
-  },
-  scanButtonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    marginTop: 12,
   },
   permissionContainer: {
     flex: 1,
@@ -396,6 +431,9 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 24,
     paddingTop: 16,
+    borderTopLeftRadius: radius.lg,
+    borderTopRightRadius: radius.lg,
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
   scanInstructions: {
     marginBottom: 16,

@@ -1,11 +1,11 @@
-import { ActivityIndicator, Pressable, StyleSheet, TextInput } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedKeyboard, useAnimatedStyle } from 'react-native-reanimated';
 
-import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { NativeIcon } from '@/components/native/icon';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { hapticLight } from '@/lib/haptics';
+import { showActionSheet } from '@/lib/action-sheet';
+import { hapticLight, hapticSelection } from '@/lib/haptics';
 
 type Props = {
   value: string;
@@ -13,66 +13,117 @@ type Props = {
   onSend: () => void;
   isSending: boolean;
   placeholder: string;
+  onPickCamera?: () => void;
+  onPickLibrary?: () => void;
 };
 
-export function ChatInputBar({ value, onChangeText, onSend, isSending, placeholder }: Props) {
+export function ChatInputBar({
+  value,
+  onChangeText,
+  onSend,
+  isSending,
+  placeholder,
+  onPickCamera,
+  onPickLibrary,
+}: Props) {
   const { colors, typography } = useTheme();
   const keyboard = useAnimatedKeyboard();
   const trimmed = value.trim();
+  const canSend = trimmed.length > 0 && !isSending;
 
-  const animatedStyle = useAnimatedStyle(() => ({
+  const containerAnimated = useAnimatedStyle(() => ({
     paddingBottom: 12 + keyboard.height.value,
   }));
 
   function handleSend() {
-    if (!trimmed || isSending) return;
+    if (!canSend) return;
     hapticLight();
     onSend();
   }
+
+  function handleAttach() {
+    hapticSelection();
+    const options = [];
+    if (onPickCamera) options.push({ label: 'Camera', onPress: onPickCamera });
+    if (onPickLibrary) options.push({ label: 'Photo Library', onPress: onPickLibrary });
+    if (options.length === 0) return;
+    showActionSheet('Attach', options);
+  }
+
+  const sendButtonStyle: ViewStyle = {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: canSend ? colors.primary : colors.muted,
+    opacity: canSend ? 1 : 0.7,
+  };
 
   return (
     <Animated.View
       style={[
         styles.container,
-        { borderTopColor: colors.separator, backgroundColor: colors.background },
-        animatedStyle,
+        { backgroundColor: colors.background, borderTopColor: colors.separator },
+        containerAnimated,
       ]}>
-      <Pressable disabled style={styles.attachButton}>
-        <NativeIcon name="paperclip" size={20} color={colors.tertiaryForeground} />
-      </Pressable>
+      {onPickCamera || onPickLibrary ? (
+        <Pressable
+          onPress={handleAttach}
+          hitSlop={8}
+          style={styles.iconButton}
+          accessibilityRole="button"
+          accessibilityLabel="Attach"
+          accessibilityHint="Attach camera or photo">
+          <NativeIcon
+            name="plus.circle.fill"
+            androidName="add-circle"
+            size={28}
+            color={colors.primary}
+          />
+        </Pressable>
+      ) : null}
 
-      <TextInput
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        placeholderTextColor={colors.tertiaryForeground}
-        multiline
+      <View
         style={[
-          styles.input,
+          styles.pill,
           {
-            backgroundColor: colors.muted,
-            color: colors.foreground,
-            fontSize: typography.subheadline.fontSize,
+            backgroundColor: colors.secondaryBackground,
+            borderColor: colors.separator,
           },
-        ]}
-        returnKeyType="send"
-        onSubmitEditing={handleSend}
-        blurOnSubmit={false}
-      />
-
-      <AnimatedPressable
-        onPress={handleSend}
-        disabled={!trimmed || isSending}
-        style={[
-          styles.sendButton,
-          { backgroundColor: colors.primary, opacity: trimmed ? 1 : 0.5 },
         ]}>
-        {isSending ? (
-          <ActivityIndicator size="small" color={colors.primaryForeground} />
-        ) : (
-          <NativeIcon name="paperplane.fill" size={18} color={colors.primaryForeground} />
-        )}
-      </AnimatedPressable>
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor={colors.tertiaryForeground}
+          multiline
+          style={[
+            styles.input,
+            { color: colors.foreground, fontSize: typography.subheadline.fontSize },
+          ]}
+          accessibilityLabel={placeholder}
+          returnKeyType="default"
+          blurOnSubmit={false}
+          submitBehavior="newline"
+        />
+      </View>
+
+      <Pressable
+        onPress={handleSend}
+        disabled={!canSend}
+        hitSlop={6}
+        style={sendButtonStyle}
+        accessibilityRole="button"
+        accessibilityLabel="Send message"
+        accessibilityState={{ disabled: !canSend, busy: isSending }}>
+        <NativeIcon
+          name="arrow.up"
+          androidName="arrow-upward"
+          size={18}
+          color={canSend ? colors.primaryForeground : colors.tertiaryForeground}
+        />
+      </Pressable>
     </Animated.View>
   );
 }
@@ -82,30 +133,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: 8,
-    paddingHorizontal: 12,
-    paddingTop: 12,
+    paddingHorizontal: 10,
+    paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
-  attachButton: {
-    width: 40,
-    height: 40,
+  iconButton: {
+    width: 34,
+    height: 34,
     justifyContent: 'center',
     alignItems: 'center',
-    opacity: 0.3,
+  },
+  pill: {
+    flex: 1,
+    minHeight: 36,
+    maxHeight: 140,
+    borderRadius: radius.xl,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
   },
   input: {
-    flex: 1,
-    minHeight: 40,
-    maxHeight: 120,
-    borderRadius: radius.xl,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.xl,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingHorizontal: 0,
+    lineHeight: 20,
   },
 });

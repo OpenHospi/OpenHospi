@@ -232,8 +232,8 @@ export function HospiInvitationCard({ invitation, applicationId }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#a855f7',
+    borderStartWidth: 4,
+    borderStartColor: '#a855f7',
     borderRadius: radius.lg,
     padding: 16,
     gap: 12,

@@ -1,17 +1,14 @@
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import PagerView, { type PagerViewOnPageSelectedEvent } from 'react-native-pager-view';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated, { LinearTransition, ReduceMotion } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CAROUSEL_HEIGHT = (SCREEN_WIDTH * 3) / 4;
 
 type Photo = {
   id: string;
@@ -25,11 +22,14 @@ type Props = {
 
 export function PhotoCarousel({ photos, bucket }: Props) {
   const { colors } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
+  const carouselHeight = (screenWidth * 3) / 4;
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (photos.length === 0) return null;
 
   const count = photos.length;
+  const pagerSize = { width: screenWidth, height: carouselHeight };
 
   function handlePageSelected(event: PagerViewOnPageSelectedEvent) {
     const next = event.nativeEvent.position;
@@ -44,12 +44,12 @@ export function PhotoCarousel({ photos, bucket }: Props) {
       accessibilityRole="adjustable"
       accessibilityLabel={`Photo ${activeIndex + 1} of ${count}`}
       accessibilityValue={{ min: 0, max: Math.max(count - 1, 0), now: activeIndex }}>
-      <PagerView style={styles.pager} initialPage={0} onPageSelected={handlePageSelected} overdrag>
+      <PagerView style={pagerSize} initialPage={0} onPageSelected={handlePageSelected} overdrag>
         {photos.map((photo) => (
-          <View key={photo.id} collapsable={false} style={styles.page}>
+          <View key={photo.id} collapsable={false} style={pagerSize}>
             <Image
               source={{ uri: getStoragePublicUrl(photo.url, bucket) }}
-              style={styles.image}
+              style={pagerSize}
               contentFit="cover"
               cachePolicy="disk"
               transition={200}
@@ -64,7 +64,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
             {photos.map((photo, i) => (
               <Animated.View
                 key={photo.id}
-                layout={LinearTransition.springify()}
+                layout={LinearTransition.springify().reduceMotion(ReduceMotion.System)}
                 style={[
                   styles.dot,
                   {
@@ -77,7 +77,7 @@ export function PhotoCarousel({ photos, bucket }: Props) {
           </View>
 
           <View style={styles.counterBadge} pointerEvents="none">
-            <ThemedText color={colors.primaryForeground} style={styles.counterText}>
+            <ThemedText variant="caption1" weight="500" color={colors.primaryForeground}>
               {activeIndex + 1}/{count}
             </ThemedText>
           </View>
@@ -88,18 +88,6 @@ export function PhotoCarousel({ photos, bucket }: Props) {
 }
 
 const styles = StyleSheet.create({
-  pager: {
-    width: SCREEN_WIDTH,
-    height: CAROUSEL_HEIGHT,
-  },
-  page: {
-    width: SCREEN_WIDTH,
-    height: CAROUSEL_HEIGHT,
-  },
-  image: {
-    width: SCREEN_WIDTH,
-    height: CAROUSEL_HEIGHT,
-  },
   dotsContainer: {
     position: 'absolute',
     bottom: 16,
@@ -116,14 +104,10 @@ const styles = StyleSheet.create({
   counterBadge: {
     position: 'absolute',
     top: 16,
-    right: 16,
+    end: 16,
     borderRadius: radius.full,
     paddingHorizontal: 10,
     paddingVertical: 4,
     backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  counterText: {
-    fontSize: 12,
-    fontWeight: '500',
   },
 });

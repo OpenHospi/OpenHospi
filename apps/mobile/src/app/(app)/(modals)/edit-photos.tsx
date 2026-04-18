@@ -536,8 +536,8 @@ const styles = StyleSheet.create({
   separator: {
     position: 'absolute',
     top: 0,
-    left: 12 + 24 + 12,
-    right: 0,
+    start: 12 + 24 + 12,
+    end: 0,
     height: 1,
   },
   gripContainer: {

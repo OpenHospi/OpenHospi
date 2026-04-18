@@ -35,9 +35,7 @@ function ThemedInput({ error, editable = true, style, ...props }: ThemedInputPro
     opacity: editable ? 1 : 0.5,
     ...typography.body,
     color: colors.foreground,
-    padding: 0,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingVertical: 0,
   };
 
   return (

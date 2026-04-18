@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 16,
+    end: 16,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,

@@ -63,11 +63,17 @@ export default function EditLanguagesScreen() {
         <View style={styles.chipGrid}>
           {Language.values.map((lang) => {
             const isSelected = selected.includes(lang);
+            const label = tEnums(lang);
             return (
-              <Pressable key={lang} onPress={() => toggle(lang)}>
+              <Pressable
+                key={lang}
+                accessibilityRole="checkbox"
+                accessibilityLabel={label}
+                accessibilityState={{ checked: isSelected }}
+                onPress={() => toggle(lang)}>
                 <ThemedBadge
                   variant={isSelected ? 'primary' : 'outline'}
-                  label={tEnums(lang)}
+                  label={label}
                   style={styles.chip}
                 />
               </Pressable>

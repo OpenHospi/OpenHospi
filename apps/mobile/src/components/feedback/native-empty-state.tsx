@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, type ViewStyle } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { ThemedText } from '@/components/native/text';
@@ -44,7 +44,9 @@ function NativeEmptyState({
   };
 
   return (
-    <Animated.View entering={FadeIn.duration(300)} style={containerStyle}>
+    <Animated.View
+      entering={FadeIn.duration(300).reduceMotion(ReduceMotion.System)}
+      style={containerStyle}>
       <NativeIcon
         name={sfSymbol}
         androidName={androidIcon}

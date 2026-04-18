@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     minHeight: 24,
   },
   timelineLabel: {
-    marginLeft: 8,
+    marginStart: 8,
     paddingBottom: 16,
   },
   bottomBar: {

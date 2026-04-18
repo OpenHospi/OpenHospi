@@ -28,7 +28,11 @@ export function RoomMapCard({ room, onPress }: Props) {
     : null;
 
   return (
-    <AnimatedPressable onPress={onPress}>
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityLabel={`${room.title}, ${room.city}, ${room.totalCost} euro`}
+      accessibilityHint="Opens room details"
+      onPress={onPress}>
       <View
         style={[
           styles.card,

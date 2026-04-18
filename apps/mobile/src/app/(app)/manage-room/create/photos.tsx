@@ -147,7 +147,11 @@ function PhotoSlot({
   return (
     <View style={styles.slotWrapper}>
       {photoUrl ? (
-        <Pressable onPress={onDelete} style={styles.slotFill}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Remove ${slotLabel} photo`}
+          onPress={onDelete}
+          style={styles.slotFill}>
           <Image
             source={{ uri: photoUrl }}
             style={[styles.slotFill, { borderRadius: radius.lg }]}
@@ -164,6 +168,9 @@ function PhotoSlot({
         </Pressable>
       ) : (
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Add ${slotLabel} photo`}
+          accessibilityState={{ busy: isUploading, disabled: isUploading }}
           onPress={onPick}
           disabled={isUploading}
           style={[
@@ -194,7 +201,7 @@ const styles = StyleSheet.create({
   deleteButton: {
     position: 'absolute',
     top: 8,
-    right: 8,
+    end: 8,
     width: 28,
     height: 28,
     borderRadius: 14,

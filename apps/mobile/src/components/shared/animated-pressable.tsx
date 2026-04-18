@@ -1,5 +1,10 @@
 import { Pressable } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { hapticLight } from '@/lib/haptics';
@@ -15,6 +20,7 @@ export function AnimatedPressable({
   onPressOut,
   ...props
 }: AnimatedPressableProps) {
+  const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -22,14 +28,18 @@ export function AnimatedPressable({
 
   function handlePressIn(e: Parameters<NonNullable<typeof onPressIn>>[0]) {
     if (!disabled) {
-      scale.value = withSpring(scaleValue, SPRING_SNAPPY);
+      if (!reduceMotion) {
+        scale.value = withSpring(scaleValue, SPRING_SNAPPY);
+      }
       hapticLight();
     }
     onPressIn?.(e);
   }
 
   function handlePressOut(e: Parameters<NonNullable<typeof onPressOut>>[0]) {
-    scale.value = withSpring(1, SPRING_SNAPPY);
+    if (!reduceMotion) {
+      scale.value = withSpring(1, SPRING_SNAPPY);
+    }
     onPressOut?.(e);
   }
 

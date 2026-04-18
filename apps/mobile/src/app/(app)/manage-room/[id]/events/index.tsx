@@ -120,6 +120,7 @@ export default function EventsListScreen() {
             iconName: 'xmark',
             color: '#fff',
             backgroundColor: colors.destructive,
+            accessibilityLabel: t('cancelEvent'),
             onPress: () => handleCancel(event),
           },
         ]

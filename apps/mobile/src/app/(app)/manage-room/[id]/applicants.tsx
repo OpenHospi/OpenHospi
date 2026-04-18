@@ -144,12 +144,14 @@ export default function ApplicantsScreen() {
             iconName: 'checkmark',
             color: '#fff',
             backgroundColor: '#16a34a',
+            accessibilityLabel: t('accept'),
             onPress: () => handleAccept(item),
           },
           {
             iconName: 'xmark',
             color: '#fff',
             backgroundColor: '#ef4444',
+            accessibilityLabel: t('rejected'),
             onPress: () => handleReject(item),
           },
         ]

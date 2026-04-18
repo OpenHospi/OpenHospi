@@ -96,6 +96,9 @@ export default function CloseRoomScreen() {
               return (
                 <AnimatedPressable
                   key={applicant.applicationId}
+                  accessibilityRole="radio"
+                  accessibilityLabel={`${applicant.firstName} ${applicant.lastName}`}
+                  accessibilityState={{ selected: isSelected, checked: isSelected }}
                   onPress={() => {
                     hapticLight();
                     setSelectedId(isSelected ? null : applicant.applicationId);

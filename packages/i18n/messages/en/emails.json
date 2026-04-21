@@ -1,0 +1,58 @@
+{
+  "common": {
+    "footer": "OpenHospi | Free platform for student rooms in the Netherlands",
+    "doNotReply": "This is an automated message. Please do not reply to this email.",
+    "viewInApp": "View in app"
+  },
+  "verificationCode": {
+    "subject": "Your OpenHospi verification code",
+    "heading": "Verify your email",
+    "codeLabel": "Your verification code:",
+    "expiresIn": "This code expires in 60 minutes."
+  },
+  "eventInvitation": {
+    "subject": "You're invited to a hospi event: {eventTitle}",
+    "heading": "You're invited!",
+    "body": "You've been invited to the hospi event \"{eventTitle}\" for the room \"{roomTitle}\".",
+    "cta": "View invitation"
+  },
+  "eventReminder": {
+    "subject": "Reminder: {eventTitle} is coming up",
+    "heading": "Event reminder",
+    "body": "Just a reminder that \"{eventTitle}\" starts at {time}.",
+    "cta": "View event"
+  },
+  "eventCancelled": {
+    "subject": "Event cancelled: {eventTitle}",
+    "heading": "Event cancelled",
+    "body": "The hospi event \"{eventTitle}\" has been cancelled by the organiser."
+  },
+  "rsvpReceived": {
+    "subject": "RSVP received from {name}",
+    "heading": "New RSVP",
+    "body": "{name} has responded with: {status}."
+  },
+  "applicationAccepted": {
+    "subject": "Congratulations! Your application for \"{roomTitle}\" was accepted",
+    "heading": "Application accepted!",
+    "body": "Great news! You've been chosen for the room \"{roomTitle}\". The room owner will be in touch with next steps.",
+    "cta": "View room"
+  },
+  "applicationNotChosen": {
+    "subject": "Update on your application for \"{roomTitle}\"",
+    "heading": "Application update",
+    "body": "Unfortunately, the room \"{roomTitle}\" has been filled. Don't give up, there are plenty of other rooms available!"
+  },
+  "userBanned": {
+    "subject": "Your OpenHospi account has been suspended",
+    "heading": "Account suspended",
+    "body": "Your account has been suspended for the following reason: {reason}.",
+    "contact": "If you believe this is a mistake, please contact us at support@openhospi.nl."
+  },
+  "listingRemoved": {
+    "subject": "Your listing has been removed",
+    "heading": "Listing removed",
+    "body": "Your listing has been removed for the following reason: {reason}.",
+    "contact": "If you believe this is a mistake, please contact us at support@openhospi.nl."
+  }
+}

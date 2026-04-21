@@ -1,7 +1,8 @@
 import type { Locale } from "@openhospi/i18n";
-import { getMessages } from "@openhospi/i18n/web";
-import { render } from "@react-email/render";
+import { getMessages } from "@openhospi/i18n/email";
+import { createTranslator } from "next-intl";
 import { createElement } from "react";
+import { pretty, render, toPlainText } from "react-email";
 
 import { ApplicationAccepted } from "../emails/application-accepted";
 import { ApplicationNotChosen } from "../emails/application-not-chosen";
@@ -56,18 +57,20 @@ export async function renderEmail<T extends EmailTemplateName>(
   baseUrl: string,
 ): Promise<{ html: string; text: string; subject: string }> {
   const messages = await getMessages(locale);
-
-  // Resolve subject line with parameter interpolation
-  const emailMessages = messages.emails[template] as Record<string, string>;
-  let subject = emailMessages.subject ?? template;
-  for (const [k, v] of Object.entries(props as Record<string, string>)) {
-    subject = subject.replaceAll(`{${k}}`, v);
-  }
+  // Every template namespace shares the `{ subject, ... }` shape — narrowing
+  // to one representative lets the ICU-typed translator type-check uniformly.
+  const t = createTranslator({
+    locale,
+    messages,
+    namespace: template as "verificationCode",
+  });
+  const subject = t("subject", props as Record<string, string>);
 
   const Component = TEMPLATE_COMPONENTS[template];
-  const element = createElement(Component, { ...props, locale, baseUrl, messages });
+  const element = createElement(Component, { ...props, locale, baseUrl });
 
-  const [html, text] = await Promise.all([render(element), render(element, { plainText: true })]);
+  const html = await pretty(await render(element));
+  const text = toPlainText(html);
 
   return { html, text, subject };
 }

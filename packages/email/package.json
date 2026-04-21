@@ -10,31 +10,33 @@
   },
   "scripts": {
     "dev": "email dev -p 3080",
+    "build": "email build",
+    "start": "email start",
+    "export": "email export --outDir dist-html --pretty",
+    "smoke": "tsx scripts/smoke.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "format": "prettier --write \"{src,emails}/**/*.{ts,tsx,json}\"",
-    "format:check": "prettier --check \"{src,emails}/**/*.{ts,tsx,json}\"",
+    "format": "prettier --write \"{src,emails,scripts}/**/*.{ts,tsx,json}\"",
+    "format:check": "prettier --check \"{src,emails,scripts}/**/*.{ts,tsx,json}\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@openhospi/i18n": "workspace:*",
     "@openhospi/shared": "workspace:*",
-    "@react-email/components": "^1.0.10",
-    "@react-email/render": "^2.0.4",
-    "next": "16.2.3",
     "next-intl": "^4.9.1",
     "nodemailer": "^8.0.5",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "react-email": "^6.0.0"
   },
   "devDependencies": {
     "@openhospi/eslint-config": "workspace:*",
-    "@react-email/preview-server": "5.2.10",
+    "@react-email/ui": "6.0.0",
     "@types/nodemailer": "^8.0.0",
     "@types/react": "^19.2.14",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "react-email": "^5.2.10",
+    "tsx": "^4.21.0",
     "typescript": "catalog:"
   }
 }

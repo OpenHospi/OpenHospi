@@ -1,9 +1,10 @@
-import { EMAIL_FOOTER } from "@openhospi/shared/constants";
-import { Text } from "@react-email/components";
+import { getMessages } from "@openhospi/i18n/email";
 import { createTranslator } from "next-intl";
+import { Heading, Text } from "react-email";
 
 import { BaseLayout } from "./_components/base-layout";
 import { CtaButton } from "./_components/cta-button";
+import { heading, text } from "./_components/styles";
 import type { BaseEmailProps } from "./_types";
 
 type EventReminderProps = BaseEmailProps & {
@@ -12,19 +13,21 @@ type EventReminderProps = BaseEmailProps & {
   eventUrl: string;
 };
 
-export function EventReminder({
+export async function EventReminder({
   eventTitle,
   time,
   eventUrl,
   locale,
   baseUrl,
-  messages,
 }: EventReminderProps) {
-  const t = createTranslator({ locale, messages, namespace: "emails.eventReminder" });
+  const messages = await getMessages(locale);
+  const t = createTranslator({ locale, messages, namespace: "eventReminder" });
 
   return (
-    <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl} messages={messages}>
-      <Text style={heading}>{t("heading")}</Text>
+    <BaseLayout previewText={t("heading")} locale={locale} baseUrl={baseUrl}>
+      <Heading as="h1" style={heading}>
+        {t("heading")}
+      </Heading>
       <Text style={text}>{t("body", { eventTitle, time })}</Text>
       <CtaButton href={eventUrl}>{t("cta")}</CtaButton>
     </BaseLayout>
@@ -36,34 +39,7 @@ EventReminder.PreviewProps = {
   time: "19:00",
   eventUrl: "http://localhost:3000/applications",
   baseUrl: "http://localhost:3000",
-  locale: "en",
-  messages: {
-    emails: {
-      common: {
-        footer: EMAIL_FOOTER,
-        doNotReply: "This is an automated message. Please do not reply to this email.",
-      },
-      eventReminder: {
-        heading: "Event reminder",
-        body: 'Just a reminder that "{eventTitle}" starts at {time}.',
-        cta: "View event",
-      },
-    },
-  },
+  locale: "nl",
 };
 
 export default EventReminder;
-
-const heading = {
-  fontSize: "24px",
-  fontWeight: "bold" as const,
-  color: "#1a1a1a",
-  margin: "0 0 16px",
-};
-
-const text = {
-  fontSize: "16px",
-  color: "#333",
-  lineHeight: "24px",
-  margin: "0 0 8px",
-};

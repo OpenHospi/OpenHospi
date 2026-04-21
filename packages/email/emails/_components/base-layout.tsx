@@ -1,32 +1,20 @@
 import type { Locale } from "@openhospi/i18n";
+import { getMessages } from "@openhospi/i18n/email";
 import { APP_NAME, BRAND_COLOR } from "@openhospi/shared/constants";
-import {
-  Body,
-  Container,
-  Font,
-  Head,
-  Hr,
-  Html,
-  Img,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
 import { createTranslator } from "next-intl";
 import type { ReactNode } from "react";
-
-import type { EmailMessages } from "../_types";
+import { Body, Container, Font, Head, Hr, Html, Img, Preview, Section, Text } from "react-email";
 
 type BaseLayoutProps = {
   children: ReactNode;
   previewText?: string;
   baseUrl: string;
   locale: Locale;
-  messages: EmailMessages;
 };
 
-export function BaseLayout({ children, previewText, baseUrl, locale, messages }: BaseLayoutProps) {
-  const t = createTranslator({ locale, messages, namespace: "emails.common" });
+export async function BaseLayout({ children, previewText, baseUrl, locale }: BaseLayoutProps) {
+  const messages = await getMessages(locale);
+  const t = createTranslator({ locale, messages, namespace: "common" });
   const logoUrl = `${baseUrl}/logo.png`;
 
   return (

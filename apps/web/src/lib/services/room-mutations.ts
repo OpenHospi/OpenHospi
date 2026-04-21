@@ -172,13 +172,13 @@ export async function saveRoomDetails(userId: string, roomId: string, data: Room
     tx
       .update(rooms)
       .set({
-        rentPrice: String(d.rentPrice),
-        deposit: d.deposit != null ? String(d.deposit) : null,
+        rentPrice: d.rentPrice,
+        deposit: d.deposit ?? null,
         utilitiesIncluded: d.utilitiesIncluded ?? UtilitiesIncluded.included,
-        serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
+        serviceCosts: d.serviceCosts ?? null,
         estimatedUtilitiesCosts:
           d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
-            ? String(d.estimatedUtilitiesCosts)
+            ? d.estimatedUtilitiesCosts
             : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,
@@ -268,13 +268,13 @@ export async function updateRoomForUser(userId: string, roomId: string, data: Ed
         postalCode: d.postalCode || null,
         latitude: d.latitude ?? null,
         longitude: d.longitude ?? null,
-        rentPrice: String(d.rentPrice),
-        deposit: d.deposit != null ? String(d.deposit) : null,
+        rentPrice: d.rentPrice,
+        deposit: d.deposit ?? null,
         utilitiesIncluded: d.utilitiesIncluded ?? UtilitiesIncluded.included,
-        serviceCosts: d.serviceCosts != null ? String(d.serviceCosts) : null,
+        serviceCosts: d.serviceCosts ?? null,
         estimatedUtilitiesCosts:
           d.utilitiesIncluded === UtilitiesIncluded.estimated && d.estimatedUtilitiesCosts != null
-            ? String(d.estimatedUtilitiesCosts)
+            ? d.estimatedUtilitiesCosts
             : null,
         roomSizeM2: d.roomSizeM2 || null,
         availableFrom: d.availableFrom,

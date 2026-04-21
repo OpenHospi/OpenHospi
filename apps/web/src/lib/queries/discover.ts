@@ -118,16 +118,12 @@ export type CityWithCount = {
 
 function buildCursorCondition(sort: DiscoverSort, cursor: DiscoverCursor) {
   if (sort === DiscoverSort.cheapest) {
-    return or(
-      gt(rooms.totalCost, cursor.createdAt),
-      and(eq(rooms.totalCost, cursor.createdAt), gt(rooms.id, cursor.id)),
-    );
+    const cost = Number(cursor.createdAt);
+    return or(gt(rooms.totalCost, cost), and(eq(rooms.totalCost, cost), gt(rooms.id, cursor.id)));
   }
   if (sort === DiscoverSort.most_expensive) {
-    return or(
-      lt(rooms.totalCost, cursor.createdAt),
-      and(eq(rooms.totalCost, cursor.createdAt), lt(rooms.id, cursor.id)),
-    );
+    const cost = Number(cursor.createdAt);
+    return or(lt(rooms.totalCost, cost), and(eq(rooms.totalCost, cost), lt(rooms.id, cursor.id)));
   }
   return or(
     lt(rooms.createdAt, new Date(cursor.createdAt)),
@@ -189,8 +185,8 @@ function buildDiscoverConditions(
   }
 
   if (filters.city) conditions.push(eq(rooms.city, filters.city));
-  if (filters.minPrice != null) conditions.push(gte(rooms.totalCost, String(filters.minPrice)));
-  if (filters.maxPrice != null) conditions.push(lte(rooms.totalCost, String(filters.maxPrice)));
+  if (filters.minPrice != null) conditions.push(gte(rooms.totalCost, filters.minPrice));
+  if (filters.maxPrice != null) conditions.push(lte(rooms.totalCost, filters.maxPrice));
   if (filters.houseType) conditions.push(eq(rooms.houseType, filters.houseType));
   if (filters.furnishing) conditions.push(eq(rooms.furnishing, filters.furnishing));
   if (filters.availableFrom) conditions.push(lte(rooms.availableFrom, filters.availableFrom));
@@ -280,9 +276,6 @@ export async function getDiscoverRooms(
 
     const mappedRooms = resultRows.map((r) => ({
       ...r,
-      rentPrice: Number(r.rentPrice),
-      serviceCosts: r.serviceCosts ? Number(r.serviceCosts) : null,
-      totalCost: Number(r.totalCost),
       features: r.features ?? [],
       locationTags: r.locationTags ?? [],
     }));
@@ -335,10 +328,7 @@ export async function getRoomMetadata(roomId: string): Promise<RoomMetadata | nu
 
   if (!row) return null;
 
-  return {
-    ...row,
-    totalCost: Number(row.totalCost),
-  };
+  return row;
 }
 
 export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> {
@@ -405,13 +395,6 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
 
   return {
     ...room,
-    rentPrice: Number(room.rentPrice),
-    deposit: room.deposit ? Number(room.deposit) : null,
-    serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
-    estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
-      ? Number(room.estimatedUtilitiesCosts)
-      : null,
-    totalCost: Number(room.totalCost),
     features: room.features ?? [],
     locationTags: room.locationTags ?? [],
     photos,
@@ -467,9 +450,6 @@ export async function getPublicRoomsByCity(city: string, limit: number): Promise
 
   return rows.map((r) => ({
     ...r,
-    rentPrice: Number(r.rentPrice),
-    serviceCosts: r.serviceCosts ? Number(r.serviceCosts) : null,
-    totalCost: Number(r.totalCost),
     features: r.features ?? [],
     locationTags: r.locationTags ?? [],
   }));

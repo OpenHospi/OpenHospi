@@ -2,7 +2,6 @@ import { createDrizzleSupabaseClient } from "@openhospi/database";
 import {
   applications,
   applicationStatusHistory,
-  profiles,
   roomPhotos,
   rooms,
 } from "@openhospi/database/schema";
@@ -18,7 +17,7 @@ import type {
   UtilitiesIncluded,
 } from "@openhospi/shared/enums";
 import { RoomStatus, ApplicationStatus } from "@openhospi/shared/enums";
-import { and, asc, count, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 
 import { notBlockedBy } from "@/lib/queries/block-filter";
 
@@ -180,10 +179,10 @@ export async function getApplicationForRoom(
   userId: string,
 ): Promise<{ id: string; status: ApplicationStatus } | null> {
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
-    const [row] = await tx
-      .select({ id: applications.id, status: applications.status })
-      .from(applications)
-      .where(and(eq(applications.roomId, roomId), eq(applications.userId, userId)));
+    const row = await tx.query.applications.findFirst({
+      columns: { id: true, status: true },
+      where: { roomId, userId },
+    });
     return row ?? null;
   });
 }
@@ -193,94 +192,79 @@ export async function getRoomDetailForApply(
   userId: string,
 ): Promise<RoomDetailForApply | null> {
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
-    const [userProfile] = await tx
-      .select({ vereniging: profiles.vereniging })
-      .from(profiles)
-      .where(eq(profiles.id, userId));
+    const userProfile = await tx.query.profiles.findFirst({
+      columns: { vereniging: true },
+      where: { id: userId },
+    });
 
-    const verenigingCondition = userProfile?.vereniging
-      ? or(isNull(rooms.roomVereniging), eq(rooms.roomVereniging, userProfile.vereniging))!
-      : isNull(rooms.roomVereniging);
-
-    const [room] = await tx
-      .select({
-        id: rooms.id,
-        title: rooms.title,
-        description: rooms.description,
-        city: rooms.city,
-        neighborhood: rooms.neighborhood,
-        streetName: rooms.streetName,
-        houseNumber: rooms.houseNumber,
-        postalCode: rooms.postalCode,
-        latitude: rooms.latitude,
-        longitude: rooms.longitude,
-        rentPrice: rooms.rentPrice,
-        deposit: rooms.deposit,
-        utilitiesIncluded: rooms.utilitiesIncluded,
-        serviceCosts: rooms.serviceCosts,
-        estimatedUtilitiesCosts: rooms.estimatedUtilitiesCosts,
-        totalCost: rooms.totalCost,
-        roomSizeM2: rooms.roomSizeM2,
-        availableFrom: rooms.availableFrom,
-        availableUntil: rooms.availableUntil,
-        rentalType: rooms.rentalType,
-        houseType: rooms.houseType,
-        furnishing: rooms.furnishing,
-        totalHousemates: rooms.totalHousemates,
-        features: rooms.features,
-        locationTags: rooms.locationTags,
-        roomVereniging: rooms.roomVereniging,
-        preferredGender: rooms.preferredGender,
-        preferredAgeMin: rooms.preferredAgeMin,
-        preferredAgeMax: rooms.preferredAgeMax,
-
-        acceptedLanguages: rooms.acceptedLanguages,
-        ownerId: rooms.ownerId,
-        createdAt: rooms.createdAt,
-      })
-      .from(rooms)
-      .where(and(eq(rooms.id, roomId), eq(rooms.status, RoomStatus.active), verenigingCondition));
+    const room = await tx.query.rooms.findFirst({
+      where: {
+        id: roomId,
+        status: RoomStatus.active,
+        ...(userProfile?.vereniging
+          ? ({
+              OR: [
+                { roomVereniging: { isNull: true as const } },
+                { roomVereniging: userProfile.vereniging },
+              ],
+            } as const)
+          : { roomVereniging: { isNull: true as const } }),
+      },
+      with: {
+        photos: {
+          columns: { id: true, slot: true, url: true, caption: true },
+          orderBy: { slot: "asc" },
+        },
+        owner: {
+          columns: {
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+            studyProgram: true,
+            studyLevel: true,
+            institutionDomain: true,
+          },
+        },
+      },
+    });
 
     if (!room) return null;
 
-    const photos = await tx
-      .select({
-        id: roomPhotos.id,
-        slot: roomPhotos.slot,
-        url: roomPhotos.url,
-        caption: roomPhotos.caption,
-      })
-      .from(roomPhotos)
-      .where(eq(roomPhotos.roomId, roomId))
-      .orderBy(roomPhotos.slot);
-
-    const [ownerProfile] = await tx
-      .select({
-        firstName: profiles.firstName,
-        lastName: profiles.lastName,
-        avatarUrl: profiles.avatarUrl,
-        studyProgram: profiles.studyProgram,
-        studyLevel: profiles.studyLevel,
-        institutionDomain: profiles.institutionDomain,
-      })
-      .from(profiles)
-      .where(eq(profiles.id, room.ownerId));
-
     return {
-      ...room,
-      rentPrice: Number(room.rentPrice),
-      deposit: room.deposit ? Number(room.deposit) : null,
-      serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
-      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
-        ? Number(room.estimatedUtilitiesCosts)
-        : null,
-      totalCost: Number(room.totalCost),
+      id: room.id,
+      title: room.title,
+      description: room.description,
+      city: room.city,
+      neighborhood: room.neighborhood,
+      streetName: room.streetName,
+      houseNumber: room.houseNumber,
+      postalCode: room.postalCode,
+      latitude: room.latitude,
+      longitude: room.longitude,
+      rentPrice: room.rentPrice,
+      deposit: room.deposit,
+      utilitiesIncluded: room.utilitiesIncluded,
+      serviceCosts: room.serviceCosts,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts,
+      totalCost: room.totalCost,
+      roomSizeM2: room.roomSizeM2,
+      availableFrom: room.availableFrom,
+      availableUntil: room.availableUntil,
+      rentalType: room.rentalType,
+      houseType: room.houseType,
+      furnishing: room.furnishing,
+      totalHousemates: room.totalHousemates,
       features: room.features ?? [],
       locationTags: room.locationTags ?? [],
-
+      roomVereniging: room.roomVereniging,
+      preferredGender: room.preferredGender,
+      preferredAgeMin: room.preferredAgeMin,
+      preferredAgeMax: room.preferredAgeMax,
       acceptedLanguages: room.acceptedLanguages ?? [],
-      photos,
-      owner: ownerProfile ?? null,
+      ownerId: room.ownerId,
+      createdAt: room.createdAt,
+      photos: room.photos,
+      owner: room.owner ?? null,
     };
   });
 }

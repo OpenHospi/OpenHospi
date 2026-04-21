@@ -56,7 +56,7 @@ export function RoomDetailDialog({ room, children }: Props) {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("rentPrice")}</p>
-              <p className="font-medium">&euro;{Number(room.rentPrice).toFixed(2)}</p>
+              <p className="font-medium">&euro;{room.rentPrice.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">{tCommon("status")}</p>

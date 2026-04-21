@@ -49,7 +49,7 @@ export async function createDraftRoom(userId: string, houseId: string): Promise<
       houseId,
       title: "",
       city: "",
-      rentPrice: "0",
+      rentPrice: 0,
       status: RoomStatus.draft,
     });
   });
@@ -62,20 +62,11 @@ export const getRoom = cache(async function getRoom(
   userId: string,
 ): Promise<RoomWithPhotos | null> {
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
-    const [room] = await tx
-      .select()
-      .from(rooms)
-      .where(and(eq(rooms.id, roomId), eq(rooms.ownerId, userId)));
-
-    if (!room) return null;
-
-    const photos = await tx
-      .select()
-      .from(roomPhotos)
-      .where(eq(roomPhotos.roomId, roomId))
-      .orderBy(roomPhotos.slot);
-
-    return { ...room, photos };
+    const room = await tx.query.rooms.findFirst({
+      where: { id: roomId, ownerId: userId },
+      with: { photos: { orderBy: { slot: "asc" } } },
+    });
+    return room ?? null;
   });
 });
 
@@ -110,9 +101,6 @@ export async function getUserRooms(userId: string): Promise<RoomSummary[]> {
 
     return rows.map((r) => ({
       ...r,
-      rentPrice: Number(r.rentPrice),
-      serviceCosts: r.serviceCosts ? Number(r.serviceCosts) : null,
-      totalCost: Number(r.totalCost),
       applicantCount: countMap.get(r.id) ?? 0,
     }));
   });

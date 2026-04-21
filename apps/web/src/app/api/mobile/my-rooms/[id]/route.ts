@@ -13,18 +13,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const room = await getRoom(id, session.user.id);
     if (!room) return apiError("Room not found", 404);
 
-    return NextResponse.json({
-      room: {
-        ...room,
-        rentPrice: Number(room.rentPrice),
-        deposit: room.deposit ? Number(room.deposit) : null,
-        serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : null,
-        estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
-          ? Number(room.estimatedUtilitiesCosts)
-          : null,
-        totalCost: Number(room.totalCost),
-      },
-    });
+    return NextResponse.json({ room });
   } catch (e) {
     if (e instanceof NextResponse) return e;
     return apiError("Internal server error", 500);

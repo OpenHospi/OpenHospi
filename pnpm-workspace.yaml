@@ -5,7 +5,7 @@ catalog:
   # ── Build tools ──
   typescript: ^5.9.3
   eslint: ^9.39.4
-  prettier: ^3.8.1
+  prettier: ^3.8.3
   # ── ESLint plugins (shared via @openhospi/eslint-config) ──
   eslint-config-prettier: ^10.1.8
   eslint-import-resolver-typescript: ^4.4.4
@@ -14,21 +14,21 @@ catalog:
   typescript-eslint: ^8
   # ── Core shared deps ──
   zod: ^4.3.6
-  drizzle-orm: 1.0.0-beta.21
-  drizzle-kit: 1.0.0-beta.21
-  drizzle-seed: 1.0.0-beta.21
+  drizzle-orm: 1.0.0-beta.22
+  drizzle-kit: 1.0.0-beta.22
+  drizzle-seed: 1.0.0-beta.22
   better-auth: 1.6.5
   "@better-auth/expo": 1.6.5
   "@better-auth/drizzle-adapter": 1.6.5
   "@better-auth/sso": 1.6.5
-  "@supabase/supabase-js": 2.103.0
+  "@supabase/supabase-js": 2.104.0
   # ── UI shared deps ──
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   tailwind-merge: ^3.5.0
-  tailwindcss: ^4.2.2
+  tailwindcss: ^4.2.3
   # ── Forms ──
-  react-hook-form: 7.72.1
+  react-hook-form: 7.73.1
   "@hookform/resolvers": ^5.2.2
   # ── Types ──
   "@types/node": 25.6.0

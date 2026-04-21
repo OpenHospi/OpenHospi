@@ -88,14 +88,12 @@ export function EditRoomDialog({ room }: Props) {
       postalCode: room.postalCode ?? "",
       latitude: room.latitude ?? undefined,
       longitude: room.longitude ?? undefined,
-      rentPrice: Number(room.rentPrice),
-      deposit: room.deposit ? Number(room.deposit) : undefined,
+      rentPrice: room.rentPrice,
+      deposit: room.deposit ?? undefined,
       utilitiesIncluded:
         (room.utilitiesIncluded as EditRoomData["utilitiesIncluded"]) ?? UtilitiesIncluded.included,
-      serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
-      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
-        ? Number(room.estimatedUtilitiesCosts)
-        : undefined,
+      serviceCosts: room.serviceCosts ?? undefined,
+      estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ?? undefined,
       roomSizeM2: room.roomSizeM2 ?? undefined,
       availableFrom: room.availableFrom ?? "",
       availableUntil: room.availableUntil ?? "",

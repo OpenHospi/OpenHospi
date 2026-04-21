@@ -12,6 +12,7 @@
   "scripts": {
     "db:push": "drizzle-kit push",
     "db:push:local": "drizzle-kit push --config=drizzle.local.config.ts",
+    "db:check": "drizzle-kit check",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",

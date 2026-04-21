@@ -31,6 +31,7 @@
     "test:e2e:db": "vitest run apps/web/src/lib/db/__tests__/e2e.test.ts",
     "db:push": "pnpm --filter @openhospi/database db:push",
     "db:push:local": "pnpm --filter @openhospi/database db:push:local",
+    "db:check": "pnpm --filter @openhospi/database db:check",
     "db:generate": "pnpm --filter @openhospi/database db:generate",
     "db:migrate": "pnpm --filter @openhospi/database db:migrate",
     "db:studio": "pnpm --filter @openhospi/database db:studio",

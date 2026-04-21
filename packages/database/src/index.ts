@@ -1,60 +1,78 @@
 import { sql } from "drizzle-orm";
-import { type PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
-import type * as schema from "./schema";
+import * as schema from "./schema";
+import { relations } from "./schema/relations";
 
-// Two separate connections: admin (bypasses RLS) and client (for RLS)
-let _adminClient: ReturnType<typeof postgres> | null = null;
-let _rlsClient: ReturnType<typeof postgres> | null = null;
-
-function getAdminClient() {
-  if (!_adminClient) {
-    _adminClient = postgres(process.env.POSTGRES_URL!, { prepare: false });
-  }
-  return _adminClient;
-}
-
-function getRlsClient() {
-  if (!_rlsClient) {
-    _rlsClient = postgres(process.env.POSTGRES_URL!, { prepare: false });
-  }
-  return _rlsClient;
-}
+export type DB = PostgresJsDatabase<typeof schema, typeof relations>;
 
 type SupabaseToken = {
   sub?: string;
   role?: string;
 };
 
-type DB = PostgresJsDatabase<typeof schema>;
+// Supabase role names that set_local can switch to. Validated against an
+// allow-list before being spliced into the `SET LOCAL ROLE` statement.
+const ALLOWED_SUPABASE_ROLES = new Set(["anon", "authenticated", "service_role", "postgres"]);
 
-// drizzle-orm v1 beta has broken overload types for the object config form.
-// The runtime handles { client } correctly — this assertion is only needed for TS.
-function createDrizzleClient(client: ReturnType<typeof postgres>): DB {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- drizzle-orm v1 beta has broken overload types for the object config form
-  return drizzle({ client } as any);
+function requireUrl(): string {
+  const url = process.env.POSTGRES_URL;
+  if (!url) throw new Error("POSTGRES_URL is required");
+  return url;
+}
+
+function createDb(): DB {
+  return drizzle({
+    connection: { url: requireUrl(), prepare: false },
+    schema,
+    relations,
+  });
 }
 
 function createDrizzle(token: SupabaseToken, { admin, client }: { admin: DB; client: DB }) {
+  const role = token.role ?? "anon";
+  if (!ALLOWED_SUPABASE_ROLES.has(role)) {
+    throw new Error(`Refusing to switch to unknown Postgres role: ${JSON.stringify(role)}`);
+  }
+
   return {
     admin,
     rls: (async (transaction, ...rest) => {
       return await client.transaction(
         async (tx) => {
-          // set_config with TRUE = transaction-local, auto-reverts on COMMIT/ROLLBACK
-          // SET LOCAL ROLE also auto-reverts — no manual cleanup needed
-          await tx.execute(sql`
-            select set_config('request.jwt.claims', '${sql.raw(JSON.stringify(token))}', TRUE);
-            select set_config('request.jwt.claim.sub', '${sql.raw(token.sub ?? "")}', TRUE);
-            set local role ${sql.raw(token.role ?? "anon")};
-          `);
+          // set_config third-arg TRUE = transaction-local, auto-reverts on COMMIT/ROLLBACK.
+          // SET LOCAL ROLE auto-reverts for the same reason — no manual cleanup needed.
+          await tx.execute(
+            sql`select set_config('request.jwt.claims', ${JSON.stringify(token)}, true)`,
+          );
+          await tx.execute(
+            sql`select set_config('request.jwt.claim.sub', ${token.sub ?? ""}, true)`,
+          );
+          // Role is an identifier, not a bindable parameter. Safe because we validated
+          // against ALLOWED_SUPABASE_ROLES above.
+          await tx.execute(sql`set local role ${sql.identifier(role)}`);
           return await transaction(tx);
         },
         ...rest,
       );
     }) as typeof client.transaction,
   };
+}
+
+// Two independent drizzle instances: one for bypass-RLS admin ops, one for
+// RLS-enforced per-request transactions. Both lazily initialized so importing
+// this module does not open a connection (required for Next.js build).
+let _adminDb: DB | null = null;
+let _rlsDb: DB | null = null;
+
+function getAdminDb(): DB {
+  if (!_adminDb) _adminDb = createDb();
+  return _adminDb;
+}
+
+function getRlsDb(): DB {
+  if (!_rlsDb) _rlsDb = createDb();
+  return _rlsDb;
 }
 
 /**
@@ -66,29 +84,20 @@ function createDrizzle(token: SupabaseToken, { admin, client }: { admin: DB; cli
  *   db.rls(tx => tx.select()...) ← enforces RLS (user-scoped operations)
  */
 export function createDrizzleSupabaseClient(userId: string) {
-  const admin = createDrizzleClient(getAdminClient());
-  const client = createDrizzleClient(getRlsClient());
-
-  return createDrizzle({ sub: userId, role: "authenticated" }, { admin, client });
+  return createDrizzle(
+    { sub: userId, role: "authenticated" },
+    { admin: getAdminDb(), client: getRlsDb() },
+  );
 }
 
 /**
  * Direct admin database connection (bypasses RLS).
  * Use for Better Auth provisioning, admin operations, cron jobs.
- *
- * Lazy-initialized proxy to defer connection until first use (required for Next.js build).
  */
-let _adminDb: DB | null = null;
-
-function getAdminDb(): DB {
-  if (!_adminDb) {
-    _adminDb = createDrizzleClient(getAdminClient());
-  }
-  return _adminDb;
-}
-
 export const db: DB = new Proxy({} as DB, {
   get(_, prop: string | symbol) {
     return Reflect.get(getAdminDb(), prop);
   },
 });
+
+export { withRLS } from "./rls";

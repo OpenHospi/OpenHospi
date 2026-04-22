@@ -1115,7 +1115,8 @@
       "tabs": {
         "general": "Allgemein",
         "privacy": "Datenschutz",
-        "account": "Konto"
+        "account": "Konto",
+        "about": "Info"
       },
       "pushNotifications": {
         "title": "Push-Benachrichtigungen",
@@ -1215,6 +1216,13 @@
           "revokeButton": "Widerrufen",
           "revoked": "Sitzung widerrufen",
           "empty": "Keine aktiven Sitzungen gefunden."
+        }
+      },
+      "about": {
+        "title": "Info",
+        "openSourceLicenses": {
+          "title": "Open-Source-Lizenzen",
+          "screenTitle": "OSS Notice"
         }
       },
       "dangerZone": {

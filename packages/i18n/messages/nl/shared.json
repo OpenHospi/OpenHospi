@@ -1115,7 +1115,8 @@
       "tabs": {
         "general": "Algemeen",
         "privacy": "Privacy",
-        "account": "Account"
+        "account": "Account",
+        "about": "Over"
       },
       "pushNotifications": {
         "title": "Pushmeldingen",
@@ -1215,6 +1216,13 @@
           "revokeButton": "Intrekken",
           "revoked": "Sessie ingetrokken",
           "empty": "Geen actieve sessies gevonden."
+        }
+      },
+      "about": {
+        "title": "Over",
+        "openSourceLicenses": {
+          "title": "Open-source licenties",
+          "screenTitle": "OSS Notice"
         }
       },
       "dangerZone": {

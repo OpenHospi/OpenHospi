@@ -327,6 +327,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'react-native-quick-crypto',
+    'react-native-legal',
     [
       '@sentry/react-native/expo',
       {

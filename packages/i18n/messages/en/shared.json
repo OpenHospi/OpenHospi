@@ -1116,7 +1116,8 @@
       "tabs": {
         "general": "General",
         "privacy": "Privacy",
-        "account": "Account"
+        "account": "Account",
+        "about": "About"
       },
       "pushNotifications": {
         "title": "Push notifications",
@@ -1216,6 +1217,13 @@
           "revokeButton": "Revoke",
           "revoked": "Session revoked",
           "empty": "No active sessions found."
+        }
+      },
+      "about": {
+        "title": "About",
+        "openSourceLicenses": {
+          "title": "Open source licenses",
+          "screenTitle": "OSS Notice"
         }
       },
       "dangerZone": {

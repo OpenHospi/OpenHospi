@@ -3,6 +3,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { ReactNativeLegal } from 'react-native-legal';
 
 import { GroupedSection } from '@/components/layout/grouped-section';
 import { ListCell } from '@/components/layout/list-cell';
@@ -115,6 +116,10 @@ export default function SettingsScreen() {
         </GroupedSection>
 
         <SessionsSection header={t('tabs.account')} t={t} tCommon={tCommon} sessions={sessions} />
+
+        <GroupedSection header={t('tabs.about')}>
+          <OpenSourceLicensesCell t={t} />
+        </GroupedSection>
 
         <GroupedSection header={t('dangerZone.title')} footer={t('dangerZone.description')}>
           <DeleteAccountCell t={t} tCommon={tCommon} />
@@ -451,6 +456,22 @@ function SessionsSection({
         );
       })}
     </GroupedSection>
+  );
+}
+
+// ── About ────────────────────────────────────────────────────
+
+function OpenSourceLicensesCell({ t }: { t: TFn }) {
+  return (
+    <ListCell
+      label={t('about.openSourceLicenses.title')}
+      onPress={() => {
+        hapticLight();
+        ReactNativeLegal.launchLicenseListScreen(t('about.openSourceLicenses.screenTitle'));
+      }}
+      leftContent={<NativeIcon name="doc.text.fill" androidName="description" size={22} />}
+      accessibilityHint={t('about.openSourceLicenses.title')}
+    />
   );
 }
 

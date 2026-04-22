@@ -1,16 +1,18 @@
 import { type CitySuggestion, searchCities } from '@openhospi/shared/pdok';
-import { PDOK_PROXY_BASE } from '@/lib/constants';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/native/input';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { PDOK_PROXY_BASE } from '@/lib/constants';
 import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { useProfile, useUpdateProfile } from '@/services/profile';
 
@@ -84,55 +86,56 @@ export default function EditPreferredCityScreen() {
           onChangeText={handleSearch}
           placeholder={tPlaceholders('searchCity')}
           autoFocus
+          accessibilityLabel={tPlaceholders('searchCity')}
         />
       </View>
 
-      {loading && (
-        <View style={styles.statusRow}>
-          <ActivityIndicator size="small" color={colors.tertiaryForeground} />
-          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-            {tCitySearch('searching')}
-          </ThemedText>
+      {loading ? (
+        <View style={styles.skeletonList}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <ThemedSkeleton key={i} height={44} rounded="md" />
+          ))}
         </View>
-      )}
-
-      {!loading && search.length >= 2 && suggestions.length === 0 && (
+      ) : search.length >= 2 && suggestions.length === 0 ? (
         <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.statusText}>
           {tCitySearch('noResults')}
         </ThemedText>
+      ) : (
+        <FlashList
+          data={suggestions}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          keyboardShouldPersistTaps="handled"
+          renderItem={({ item }) => {
+            const isSelected = item.name === selected;
+            return (
+              <Pressable
+                onPress={() => {
+                  hapticLight();
+                  setSelected(isSelected ? null : item.name);
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
+                accessibilityLabel={item.name}
+                style={[styles.listItem, isSelected && { backgroundColor: colors.primary + '1A' }]}>
+                <ThemedText
+                  variant="body"
+                  weight={isSelected ? '600' : undefined}
+                  color={isSelected ? colors.primary : colors.foreground}>
+                  {item.name}
+                </ThemedText>
+              </Pressable>
+            );
+          }}
+        />
       )}
-
-      <FlatList
-        data={suggestions}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) => {
-          const isSelected = item.name === selected;
-          return (
-            <Pressable
-              onPress={() => {
-                hapticLight();
-                setSelected(isSelected ? null : item.name);
-              }}
-              style={[styles.listItem, isSelected && { backgroundColor: colors.primary + '1A' }]}>
-              <ThemedText
-                variant="body"
-                weight={isSelected ? '600' : undefined}
-                color={isSelected ? colors.primary : colors.foreground}>
-                {item.name}
-              </ThemedText>
-            </Pressable>
-          );
-        }}
-      />
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
         <NativeButton
           label={tCommon('save')}
           onPress={handleSave}
           loading={updateProfile.isPending}
+          accessibilityLabel={tCommon('save')}
         />
       </View>
     </View>
@@ -146,19 +149,14 @@ const styles = StyleSheet.create({
   searchArea: {
     paddingHorizontal: 16,
   },
-  statusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+  skeletonList: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingTop: 12,
+    gap: 8,
   },
   statusText: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-  },
-  list: {
-    flex: 1,
   },
   listContent: {
     paddingHorizontal: 16,

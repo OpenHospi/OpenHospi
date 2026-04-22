@@ -1,5 +1,5 @@
 import { BRAND_COLOR } from "@openhospi/shared/constants";
-import { Button } from "@react-email/components";
+import { Button } from "react-email";
 
 type CtaButtonProps = {
   href: string;

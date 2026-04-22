@@ -69,7 +69,12 @@
       "loading": "Loading...",
       "uploading": "Uploading...",
       "uploaded": "Uploaded",
-      "language": "Language"
+      "language": "Language",
+      "appearance": "Appearance",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark",
+      "dynamicColor": "Dynamic color"
     },
     "gallery": {
       "lightboxTitle": "Photo gallery",
@@ -512,6 +517,8 @@
         "city": "City",
         "cityPlaceholder": "All cities",
         "priceRange": "Price range",
+        "minPrice": "Min",
+        "maxPrice": "Max",
         "houseType": "House type",
         "houseTypePlaceholder": "All types",
         "furnishing": "Furnishing",
@@ -655,7 +662,7 @@
         "pin_hint": "This PIN protects your encryption key. You'll need it to recover your chats on a new device.",
         "setup_success": "Chat encryption set up successfully",
         "setup_error": "Could not set up encryption. Please try again.",
-        "generating_keys": "Generating encryption keys\u2026",
+        "generating_keys": "Generating encryption keys…",
         "change_pin": "Change PIN",
         "recovery_title": "Recover your encryption keys",
         "recovery_description": "Enter the PIN you chose during onboarding to restore your encryption keys.",
@@ -1366,7 +1373,7 @@
       "safety_number": {
         "title": "Safety number",
         "description": "Compare this number with {name} to verify your conversation is end-to-end encrypted.",
-        "loading": "Generating safety number\u2026",
+        "loading": "Generating safety number…",
         "instructions": "If this number matches on both devices, your conversation is secure. Meet in person or use a trusted channel to compare.",
         "unavailable": "Safety number unavailable. Both users must have encryption set up.",
         "qr_tab": "Your Code",
@@ -1449,64 +1456,6 @@
       "submit": "Submit report",
       "success": "Report submitted. Thank you.",
       "error": "Failed to submit report. Please try again."
-    }
-  },
-  "emails": {
-    "common": {
-      "footer": "OpenHospi | Free platform for student rooms in the Netherlands",
-      "doNotReply": "This is an automated message. Please do not reply to this email.",
-      "viewInApp": "View in app"
-    },
-    "verificationCode": {
-      "subject": "Your OpenHospi verification code",
-      "heading": "Verify your email",
-      "codeLabel": "Your verification code:",
-      "expiresIn": "This code expires in 60 minutes."
-    },
-    "eventInvitation": {
-      "subject": "You're invited to a hospi event: {eventTitle}",
-      "heading": "You're invited!",
-      "body": "You've been invited to the hospi event \"{eventTitle}\" for the room \"{roomTitle}\".",
-      "cta": "View invitation"
-    },
-    "eventReminder": {
-      "subject": "Reminder: {eventTitle} is coming up",
-      "heading": "Event reminder",
-      "body": "Just a reminder that \"{eventTitle}\" starts at {time}.",
-      "cta": "View event"
-    },
-    "eventCancelled": {
-      "subject": "Event cancelled: {eventTitle}",
-      "heading": "Event cancelled",
-      "body": "The hospi event \"{eventTitle}\" has been cancelled by the organiser."
-    },
-    "rsvpReceived": {
-      "subject": "RSVP received from {name}",
-      "heading": "New RSVP",
-      "body": "{name} has responded with: {status}."
-    },
-    "applicationAccepted": {
-      "subject": "Congratulations! Your application for \"{roomTitle}\" was accepted",
-      "heading": "Application accepted!",
-      "body": "Great news! You've been chosen for the room \"{roomTitle}\". The room owner will be in touch with next steps.",
-      "cta": "View room"
-    },
-    "applicationNotChosen": {
-      "subject": "Update on your application for \"{roomTitle}\"",
-      "heading": "Application update",
-      "body": "Unfortunately, the room \"{roomTitle}\" has been filled. Don't give up, there are plenty of other rooms available!"
-    },
-    "userBanned": {
-      "subject": "Your OpenHospi account has been suspended",
-      "heading": "Account suspended",
-      "body": "Your account has been suspended for the following reason: {reason}.",
-      "contact": "If you believe this is a mistake, please contact us at support@openhospi.nl."
-    },
-    "listingRemoved": {
-      "subject": "Your listing has been removed",
-      "heading": "Listing removed",
-      "body": "Your listing has been removed for the following reason: {reason}.",
-      "contact": "If you believe this is a mistake, please contact us at support@openhospi.nl."
     }
   }
 }

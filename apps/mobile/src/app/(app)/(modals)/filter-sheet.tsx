@@ -5,71 +5,22 @@ import {
   LocationTag,
   RoomFeature,
 } from '@openhospi/shared/enums';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { CitySearchInput } from '@/components/forms/city-search';
-import { ThemedBadge } from '@/components/native/badge';
-import { NativeButton } from '@/components/native/button';
-import { ThemedInput } from '@/components/native/input';
+import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
-import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
 import { useDiscoverFilters } from '@/context/discover-filters';
+import { useTheme } from '@/design';
+import { registerPickerCallback } from '@/lib/picker-callbacks';
 import { hapticLight } from '@/lib/haptics';
+import { isIOS } from '@/lib/platform';
 import type { DiscoverFilters } from '@openhospi/shared/api-types';
-
-function MultiChipSelect({
-  values,
-  selected,
-  onToggle,
-  translateKey,
-  t,
-}: {
-  values: readonly string[];
-  selected: string[] | undefined;
-  onToggle: (v: string) => void;
-  translateKey: string;
-  t: (key: string) => string;
-}) {
-  return (
-    <View style={chipStyles.grid}>
-      {values.map((v) => {
-        const isSelected = selected?.includes(v);
-        return (
-          <Pressable
-            key={v}
-            onPress={() => {
-              hapticLight();
-              onToggle(v);
-            }}>
-            <ThemedBadge
-              variant={isSelected ? 'primary' : 'outline'}
-              label={t(`${translateKey}.${v}`)}
-              style={chipStyles.chip}
-            />
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
-const chipStyles = StyleSheet.create({
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    borderRadius: radius.full,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-});
 
 const SORT_LABEL_KEYS: Record<DiscoverSort, string> = {
   [DiscoverSort.newest]: 'sortNewest',
@@ -77,243 +28,430 @@ const SORT_LABEL_KEYS: Record<DiscoverSort, string> = {
   [DiscoverSort.most_expensive]: 'sortMostExpensive',
 };
 
+function toISODate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function fromISODate(value: string | undefined): Date | undefined {
+  if (!value) return undefined;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+}
+
+function Divider() {
+  const { colors, spacing } = useTheme();
+  return (
+    <View
+      style={{
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: colors.separator,
+        marginLeft: spacing.lg,
+      }}
+    />
+  );
+}
+
+type PriceRowProps = {
+  label: string;
+  value: number | undefined;
+  placeholder: string;
+  onChange: (v: number | undefined) => void;
+};
+
+function PriceRow({ label, value, placeholder, onChange }: PriceRowProps) {
+  const { colors, typography } = useTheme();
+
+  return (
+    <View style={styles.priceRow}>
+      <ThemedText variant="body" style={styles.priceLabel}>
+        {label}
+      </ThemedText>
+      <TextInput
+        style={[styles.priceInput, typography.body, { color: colors.foreground }]}
+        value={value != null ? String(value) : ''}
+        onChangeText={(v) => {
+          const digits = v.replace(/[^0-9]/g, '');
+          onChange(digits ? Number(digits) : undefined);
+        }}
+        placeholder={placeholder}
+        placeholderTextColor={colors.tertiaryForeground}
+        keyboardType="numeric"
+        returnKeyType="done"
+        inputMode="numeric"
+        accessibilityLabel={label}
+      />
+    </View>
+  );
+}
+
 export default function FilterSheetScreen() {
   const router = useRouter();
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tFilters } = useTranslation('translation', { keyPrefix: 'app.discover.filters' });
 
-  const headerHeight = useHeaderHeight();
   const { filters: contextFilters, setFilters: setContextFilters } = useDiscoverFilters();
   const [filters, setFilters] = useState<DiscoverFilters>(contextFilters);
+
+  const isDirty = JSON.stringify(filters) !== JSON.stringify(contextFilters);
+  const activeCount = Object.values(filters).filter(
+    (v) => v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && v.length === 0)
+  ).length;
 
   function update(partial: Partial<DiscoverFilters>) {
     setFilters((prev) => ({ ...prev, ...partial }));
   }
 
   function toggleArrayItem(key: 'features' | 'locationTags', value: string) {
-    const current = filters[key] ?? [];
-    const next = (current as string[]).includes(value)
-      ? (current as string[]).filter((v) => v !== value)
-      : [...(current as string[]), value];
+    const current = (filters[key] ?? []) as string[];
+    const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
     update({ [key]: next.length > 0 ? next : undefined });
   }
 
-  function handleClear() {
-    setFilters({});
-  }
-
   function handleApply() {
+    hapticLight();
     setContextFilters(filters);
     router.back();
   }
 
+  function handleClear() {
+    hapticLight();
+    setFilters({});
+  }
+
+  function openCityPicker() {
+    hapticLight();
+    const callbackId = registerPickerCallback<string>((city) =>
+      update({ city: city || undefined })
+    );
+    router.push({
+      pathname: '/(pickers)/pick-city',
+      params: { callbackId, current: filters.city ?? '' },
+    });
+  }
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <>
+      <Stack.Screen
+        options={{
+          headerLeft:
+            activeCount > 0
+              ? () => (
+                  <Pressable
+                    onPress={handleClear}
+                    accessibilityRole="button"
+                    accessibilityLabel={tFilters('clearFilters')}
+                    hitSlop={8}>
+                    <ThemedText variant="body" color={colors.primary}>
+                      {tCommon('reset')}
+                    </ThemedText>
+                  </Pressable>
+                )
+              : undefined,
+          headerRight: () => (
+            <Pressable
+              onPress={handleApply}
+              disabled={!isDirty}
+              accessibilityRole="button"
+              accessibilityLabel={tCommon('apply')}
+              hitSlop={8}>
+              <ThemedText
+                variant="body"
+                weight="600"
+                color={isDirty ? colors.primary : colors.tertiaryForeground}>
+                {tCommon('apply')}
+              </ThemedText>
+            </Pressable>
+          ),
+        }}
+      />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingTop: headerHeight }]}
-        keyboardShouldPersistTaps="handled">
-        <View style={styles.sections}>
+        style={[styles.scroll, { backgroundColor: colors.background }]}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag">
+        <View style={[styles.groups, { gap: spacing.xl }]}>
           {/* Sort */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('sort')}
-            </ThemedText>
-            <View style={chipStyles.grid}>
-              {DiscoverSort.values.map((v) => {
-                const isSelected = filters.sort === v;
-                return (
-                  <Pressable
-                    key={v}
+          <GroupedSection header={tFilters('sort')}>
+            {DiscoverSort.values.map((v, i) => {
+              const isSelected = filters.sort === v;
+              const label = tFilters(SORT_LABEL_KEYS[v]);
+              return (
+                <View key={v}>
+                  {i > 0 ? <Divider /> : null}
+                  <ListCell
+                    label={label}
                     onPress={() => {
                       hapticLight();
                       update({ sort: isSelected ? undefined : v });
-                    }}>
-                    <ThemedBadge
-                      variant={isSelected ? 'primary' : 'outline'}
-                      label={tFilters(SORT_LABEL_KEYS[v])}
-                      style={chipStyles.chip}
-                    />
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
+                    }}
+                    chevron={false}
+                    rightContent={
+                      isSelected ? (
+                        <NativeIcon
+                          name="checkmark"
+                          androidName="check"
+                          size={18}
+                          color={colors.primary}
+                        />
+                      ) : null
+                    }
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
+                  />
+                </View>
+              );
+            })}
+          </GroupedSection>
 
-          {/* City */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('city')}
-            </ThemedText>
-            <CitySearchInput
-              value={filters.city ?? ''}
-              onSelect={(v) => update({ city: v || undefined })}
-              placeholder={tFilters('cityPlaceholder')}
+          {/* Location */}
+          <GroupedSection header={tFilters('city')}>
+            <ListCell
+              label={tFilters('city')}
+              value={filters.city || tFilters('cityPlaceholder')}
+              onPress={openCityPicker}
             />
-          </View>
+          </GroupedSection>
 
           {/* Price range */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('priceRange')}
-            </ThemedText>
-            <View style={styles.priceRow}>
-              <ThemedInput
-                style={styles.priceInput}
-                value={filters.minPrice != null ? String(filters.minPrice) : ''}
-                onChangeText={(v) => update({ minPrice: v ? Number(v) : undefined })}
-                placeholder="Min €"
-                keyboardType="numeric"
-              />
-              <ThemedInput
-                style={styles.priceInput}
-                value={filters.maxPrice != null ? String(filters.maxPrice) : ''}
-                onChangeText={(v) => update({ maxPrice: v ? Number(v) : undefined })}
-                placeholder="Max €"
-                keyboardType="numeric"
-              />
-            </View>
-          </View>
+          <GroupedSection header={tFilters('priceRange')}>
+            <PriceRow
+              label={tFilters('minPrice')}
+              value={filters.minPrice}
+              placeholder="€ 0"
+              onChange={(n) => update({ minPrice: n })}
+            />
+            <Divider />
+            <PriceRow
+              label={tFilters('maxPrice')}
+              value={filters.maxPrice}
+              placeholder="€ ∞"
+              onChange={(n) => update({ maxPrice: n })}
+            />
+          </GroupedSection>
 
-          {/* House type */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('houseType')}
-            </ThemedText>
-            <View style={chipStyles.grid}>
-              {HouseType.values.map((v) => {
-                const isSelected = filters.houseType === v;
-                return (
-                  <Pressable
-                    key={v}
+          {/* Property */}
+          <GroupedSection header={tFilters('houseType')}>
+            {HouseType.values.map((v, i) => {
+              const isSelected = filters.houseType === v;
+              const label = tEnums(`house_type.${v}`);
+              return (
+                <View key={v}>
+                  {i > 0 ? <Divider /> : null}
+                  <ListCell
+                    label={label}
                     onPress={() => {
                       hapticLight();
                       update({ houseType: isSelected ? undefined : v });
-                    }}>
-                    <ThemedBadge
-                      variant={isSelected ? 'primary' : 'outline'}
-                      label={tEnums(`house_type.${v}`)}
-                      style={chipStyles.chip}
-                    />
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
+                    }}
+                    chevron={false}
+                    rightContent={
+                      isSelected ? (
+                        <NativeIcon
+                          name="checkmark"
+                          androidName="check"
+                          size={18}
+                          color={colors.primary}
+                        />
+                      ) : null
+                    }
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
+                  />
+                </View>
+              );
+            })}
+          </GroupedSection>
 
-          {/* Furnishing */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('furnishing')}
-            </ThemedText>
-            <View style={chipStyles.grid}>
-              {Furnishing.values.map((v) => {
-                const isSelected = filters.furnishing === v;
-                return (
-                  <Pressable
-                    key={v}
+          <GroupedSection header={tFilters('furnishing')}>
+            {Furnishing.values.map((v, i) => {
+              const isSelected = filters.furnishing === v;
+              const label = tEnums(`furnishing.${v}`);
+              return (
+                <View key={v}>
+                  {i > 0 ? <Divider /> : null}
+                  <ListCell
+                    label={label}
                     onPress={() => {
                       hapticLight();
                       update({ furnishing: isSelected ? undefined : v });
-                    }}>
-                    <ThemedBadge
-                      variant={isSelected ? 'primary' : 'outline'}
-                      label={tEnums(`furnishing.${v}`)}
-                      style={chipStyles.chip}
-                    />
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
+                    }}
+                    chevron={false}
+                    rightContent={
+                      isSelected ? (
+                        <NativeIcon
+                          name="checkmark"
+                          androidName="check"
+                          size={18}
+                          color={colors.primary}
+                        />
+                      ) : null
+                    }
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
+                  />
+                </View>
+              );
+            })}
+          </GroupedSection>
 
           {/* Available from */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('availableFrom')}
-            </ThemedText>
-            <ThemedInput
-              value={filters.availableFrom ?? ''}
-              onChangeText={(v) => update({ availableFrom: v || undefined })}
-              placeholder="YYYY-MM-DD"
-            />
-          </View>
+          <GroupedSection header={tFilters('availableFrom')}>
+            <View style={styles.dateRow}>
+              <ThemedText variant="body" style={styles.dateLabel}>
+                {tFilters('availableFrom')}
+              </ThemedText>
+              <View style={styles.dateActions}>
+                <DatePickerSheet
+                  value={fromISODate(filters.availableFrom) ?? new Date()}
+                  onChange={(d) => update({ availableFrom: toISODate(d) })}
+                  title={tFilters('availableFrom')}
+                  minimumDate={new Date()}
+                />
+                {filters.availableFrom ? (
+                  <Pressable
+                    onPress={() => {
+                      hapticLight();
+                      update({ availableFrom: undefined });
+                    }}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel={tFilters('clearFilters')}>
+                    <NativeIcon
+                      name="xmark.circle.fill"
+                      androidName="cancel"
+                      size={20}
+                      color={colors.tertiaryForeground}
+                    />
+                  </Pressable>
+                ) : null}
+              </View>
+            </View>
+          </GroupedSection>
 
           {/* Features */}
-          <View style={styles.section}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('features')}
-            </ThemedText>
-            <MultiChipSelect
-              values={RoomFeature.values}
-              selected={filters.features}
-              onToggle={(v) => toggleArrayItem('features', v)}
-              translateKey="room_feature"
-              t={tEnums}
-            />
-          </View>
+          <GroupedSection
+            header={tFilters('features')}
+            footer={
+              (filters.features?.length ?? 0) > 0
+                ? tFilters('selectedCount', { count: filters.features!.length })
+                : undefined
+            }>
+            {RoomFeature.values.map((v, i) => {
+              const isSelected = (filters.features ?? []).includes(v);
+              const label = tEnums(`room_feature.${v}`);
+              return (
+                <View key={v}>
+                  {i > 0 ? <Divider /> : null}
+                  <ListCell
+                    label={label}
+                    onPress={() => {
+                      hapticLight();
+                      toggleArrayItem('features', v);
+                    }}
+                    chevron={false}
+                    rightContent={
+                      isSelected ? (
+                        <NativeIcon
+                          name="checkmark"
+                          androidName="check"
+                          size={18}
+                          color={colors.primary}
+                        />
+                      ) : null
+                    }
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
+                  />
+                </View>
+              );
+            })}
+          </GroupedSection>
 
           {/* Location tags */}
-          <View style={[styles.section, { marginBottom: 16 }]}>
-            <ThemedText variant="subheadline" weight="500">
-              {tFilters('locationTags')}
-            </ThemedText>
-            <MultiChipSelect
-              values={LocationTag.values}
-              selected={filters.locationTags}
-              onToggle={(v) => toggleArrayItem('locationTags', v)}
-              translateKey="location_tag"
-              t={tEnums}
-            />
-          </View>
+          <GroupedSection
+            header={tFilters('locationTags')}
+            footer={
+              (filters.locationTags?.length ?? 0) > 0
+                ? tFilters('selectedCount', { count: filters.locationTags!.length })
+                : undefined
+            }>
+            {LocationTag.values.map((v, i) => {
+              const isSelected = (filters.locationTags ?? []).includes(v);
+              const label = tEnums(`location_tag.${v}`);
+              return (
+                <View key={v}>
+                  {i > 0 ? <Divider /> : null}
+                  <ListCell
+                    label={label}
+                    onPress={() => {
+                      hapticLight();
+                      toggleArrayItem('locationTags', v);
+                    }}
+                    chevron={false}
+                    rightContent={
+                      isSelected ? (
+                        <NativeIcon
+                          name="checkmark"
+                          androidName="check"
+                          size={18}
+                          color={colors.primary}
+                        />
+                      ) : null
+                    }
+                    accessibilityState={{ selected: isSelected, checked: isSelected }}
+                  />
+                </View>
+              );
+            })}
+          </GroupedSection>
         </View>
       </ScrollView>
-
-      <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <View style={styles.footerButtons}>
-          <NativeButton label={tCommon('apply')} onPress={handleApply} />
-          <NativeButton label={tFilters('clearFilters')} variant="ghost" onPress={handleClear} />
-        </View>
-      </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
+  scroll: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: 48,
   },
-  sections: {
-    gap: 20,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
-  section: {
-    gap: 8,
+  groups: {
+    paddingTop: 8,
   },
   priceRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: isIOS ? 44 : 48,
+    paddingHorizontal: 16,
     gap: 12,
+  },
+  priceLabel: {
+    width: 56,
   },
   priceInput: {
     flex: 1,
+    textAlign: 'right',
+    paddingVertical: 0,
+    height: isIOS ? 44 : 48,
   },
-  footer: {
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: isIOS ? 44 : 48,
     paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 24,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    gap: 12,
   },
-  footerButtons: {
+  dateLabel: {
+    flex: 1,
+  },
+  dateActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
 });

@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
@@ -8,7 +9,7 @@ import { ThemedAvatar } from '@/components/native/avatar';
 import { NativeButton } from '@/components/native/button';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { hapticLight } from '@/lib/haptics';
@@ -37,7 +38,8 @@ export default function CloseRoomScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.closeRoom' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: applicants, isLoading } = useCloseRoomApplicants(id);
   const closeRoom = useCloseRoom();
@@ -94,6 +96,9 @@ export default function CloseRoomScreen() {
               return (
                 <AnimatedPressable
                   key={applicant.applicationId}
+                  accessibilityRole="radio"
+                  accessibilityLabel={`${applicant.firstName} ${applicant.lastName}`}
+                  accessibilityState={{ selected: isSelected, checked: isSelected }}
                   onPress={() => {
                     hapticLight();
                     setSelectedId(isSelected ? null : applicant.applicationId);
@@ -143,7 +148,16 @@ export default function CloseRoomScreen() {
         )}
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         {selectedId && (
           <NativeButton
             label={t('closeWithChoice')}
@@ -156,7 +170,7 @@ export default function CloseRoomScreen() {
           variant="outline"
           onPress={() => handleClose(false)}
         />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

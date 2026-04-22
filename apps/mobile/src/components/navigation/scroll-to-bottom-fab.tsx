@@ -1,7 +1,7 @@
 import { SymbolView } from 'expo-symbols';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, ReduceMotion } from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -22,10 +22,14 @@ export function ScrollToBottomFab({ visible, onPress, newMessageCount }: Props) 
 
   return (
     <Animated.View
-      entering={FadeIn.duration(200)}
-      exiting={FadeOut.duration(150)}
+      entering={FadeIn.duration(200).reduceMotion(ReduceMotion.System)}
+      exiting={FadeOut.duration(150).reduceMotion(ReduceMotion.System)}
       style={styles.wrapper}>
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Scroll to latest messages"
+        accessibilityHint={newMessageCount ? `${newMessageCount} new messages below` : undefined}
+        hitSlop={8}
         onPress={onPress}
         style={[
           styles.fab,
@@ -55,7 +59,7 @@ export function ScrollToBottomFab({ visible, onPress, newMessageCount }: Props) 
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    right: 16,
+    end: 16,
     bottom: 16,
   },
   fab: {
@@ -69,7 +73,7 @@ const styles = StyleSheet.create({
   badge: {
     position: 'absolute',
     top: -6,
-    right: -6,
+    end: -6,
     minWidth: 18,
     height: 18,
     borderRadius: 9,

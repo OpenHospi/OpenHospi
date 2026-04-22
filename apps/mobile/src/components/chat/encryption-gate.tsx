@@ -1,17 +1,18 @@
 import { PIN_LENGTH } from '@openhospi/shared/constants';
-import { ShieldCheck } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { hapticError, hapticSuccess } from '@/lib/haptics';
-import { useTheme } from '@/design';
-
 import { InputOTP } from '@/components/forms/input-otp';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
 import { EncryptionContext, useEncryptionProvider } from '@/hooks/use-encryption';
 import { useSession } from '@/lib/auth-client';
+import { hapticError, hapticSuccess } from '@/lib/haptics';
 
 type Props = {
   children: React.ReactNode;
@@ -29,10 +30,22 @@ export function EncryptionGate({ children }: Props) {
   const [error, setError] = useState<string | null>(null);
   const { colors } = useTheme();
 
-  if (status === 'initializing') {
+  if (status === 'initializing' || loading) {
     return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ShieldCheck size={56} color={colors.primary} />
+      <View
+        style={[styles.centered, { backgroundColor: colors.background }]}
+        accessibilityRole="progressbar"
+        accessibilityLabel={tSecurity('generating_keys')}>
+        <View
+          style={[styles.iconBadge, { backgroundColor: colors.primary + '1A' }]}
+          accessibilityElementsHidden>
+          <NativeIcon
+            name="checkmark.shield.fill"
+            androidName="verified-user"
+            size={40}
+            color={colors.primary}
+          />
+        </View>
         <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {tSecurity('generating_keys')}
         </ThemedText>
@@ -60,35 +73,34 @@ export function EncryptionGate({ children }: Props) {
     }
   }
 
-  if (loading) {
-    return (
-      <View style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ShieldCheck size={56} color={colors.primary} />
-        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
-          {tSecurity('generating_keys')}
-        </ThemedText>
-      </View>
-    );
-  }
-
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={[styles.flex1, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.scrollContent}
-      keyboardShouldPersistTaps="handled">
-      <View style={styles.headerSection}>
-        <ShieldCheck size={56} color={colors.primary} />
-        <ThemedText variant="headline">{tSecurity('e2ee_title')}</ThemedText>
+      keyboardShouldPersistTaps="handled"
+      accessibilityRole="none">
+      <PlatformSurface variant="card" style={styles.heroCard}>
+        <View style={[styles.iconBadge, { backgroundColor: colors.primary + '1A' }]}>
+          <NativeIcon
+            name="checkmark.shield.fill"
+            androidName="verified-user"
+            size={44}
+            color={colors.primary}
+          />
+        </View>
+        <ThemedText variant="title3" weight="700" style={styles.textCenter}>
+          {tSecurity('e2ee_title')}
+        </ThemedText>
         <ThemedText
           variant="subheadline"
-          color={colors.tertiaryForeground}
+          color={colors.secondaryForeground}
           style={styles.textCenter}>
           {t('setup_required')}
         </ThemedText>
-      </View>
+      </PlatformSurface>
 
       <View style={styles.pinSection}>
-        <ThemedText variant="subheadline" weight="500" color={colors.tertiaryForeground}>
+        <ThemedText variant="subheadline" weight="600" color={colors.secondaryForeground}>
           {tSecurity('enter_pin')}
         </ThemedText>
         <InputOTP
@@ -98,11 +110,11 @@ export function EncryptionGate({ children }: Props) {
           secureTextEntry
           autoFocus
         />
-        {error && (
+        {error ? (
           <ThemedText variant="caption1" color={colors.destructive} style={styles.textCenter}>
             {error}
           </ThemedText>
-        )}
+        ) : null}
         <ThemedText variant="caption1" color={colors.tertiaryForeground} style={styles.textCenter}>
           {tSecurity('pin_hint')}
         </ThemedText>
@@ -113,17 +125,28 @@ export function EncryptionGate({ children }: Props) {
         onPress={() => handleSetup(pin)}
         disabled={pin.length !== PIN_LENGTH}
         style={styles.setupButton}
+        accessibilityLabel={tSecurity('setup_pin')}
       />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+  },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,
+  },
+  iconBadge: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollContent: {
     flexGrow: 1,
@@ -132,16 +155,19 @@ const styles = StyleSheet.create({
     padding: 24,
     gap: 32,
   },
-  headerSection: {
+  heroCard: {
     alignItems: 'center',
+    padding: 24,
     gap: 12,
+    width: '100%',
+    maxWidth: 360,
+  },
+  textCenter: {
+    textAlign: 'center',
   },
   pinSection: {
     alignItems: 'center',
     gap: 16,
-  },
-  textCenter: {
-    textAlign: 'center',
   },
   setupButton: {
     width: '100%',

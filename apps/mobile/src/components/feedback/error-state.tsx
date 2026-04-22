@@ -25,6 +25,8 @@ export function ErrorState({ onRetry, message }: ErrorStateProps) {
         {subtitle}
       </ThemedText>
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Try again"
         onPress={onRetry}
         style={[styles.retryButton, { backgroundColor: colors.primary }]}>
         <ThemedText variant="subheadline" weight="500" color={colors.primaryForeground}>

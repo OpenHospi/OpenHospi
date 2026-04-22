@@ -41,7 +41,11 @@ export function InputOTP({
   }
 
   return (
-    <Pressable onPress={() => inputRef.current?.focus()} accessibilityLabel="Enter PIN">
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Enter PIN"
+      accessibilityHint="Opens numeric keypad to enter PIN"
+      onPress={() => inputRef.current?.focus()}>
       <TextInput
         ref={inputRef}
         value={value}

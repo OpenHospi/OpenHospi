@@ -1,7 +1,8 @@
 import React from 'react';
-import { type ViewStyle } from 'react-native';
+import { type AccessibilityRole, type ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
   withRepeat,
   withTiming,
@@ -20,6 +21,9 @@ interface ThemedSkeletonProps {
   /** Make it circular (sets border radius to half of size) */
   circle?: boolean;
   style?: ViewStyle;
+  accessibilityRole?: AccessibilityRole;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 function ThemedSkeleton({
@@ -28,13 +32,21 @@ function ThemedSkeleton({
   rounded = 'md',
   circle,
   style,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityHint,
 }: ThemedSkeletonProps) {
   const { colors } = useTheme();
+  const reduceMotion = useReducedMotion();
   const opacity = useSharedValue(1);
 
   React.useEffect(() => {
+    if (reduceMotion) {
+      opacity.value = 0.7;
+      return;
+    }
     opacity.value = withRepeat(withTiming(0.4, { duration: 1000 }), -1, true);
-  }, [opacity]);
+  }, [opacity, reduceMotion]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -47,7 +59,15 @@ function ThemedSkeleton({
     backgroundColor: colors.muted,
   };
 
-  return <Animated.View style={[skeletonStyle, animatedStyle, style]} />;
+  return (
+    <Animated.View
+      style={[skeletonStyle, animatedStyle, style]}
+      accessibilityRole={accessibilityRole ?? 'progressbar'}
+      accessibilityLabel={accessibilityLabel ?? 'Loading'}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ busy: true }}
+    />
+  );
 }
 
 export { ThemedSkeleton };

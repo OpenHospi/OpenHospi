@@ -97,6 +97,9 @@ export const relations = defineRelations(
       rooms: r.many.rooms(),
       houseMembers: r.many.houseMembers(),
       applications: r.many.applications(),
+      reviewsReceived: r.many.reviews({
+        alias: "applicant",
+      }),
     },
     profilePhotos: {
       profile: r.one.profiles({
@@ -118,10 +121,12 @@ export const relations = defineRelations(
       house: r.one.houses({
         from: r.houseMembers.houseId,
         to: r.houses.id,
+        optional: false,
       }),
       user: r.one.profiles({
         from: r.houseMembers.userId,
         to: r.profiles.id,
+        optional: false,
       }),
     },
 
@@ -153,10 +158,12 @@ export const relations = defineRelations(
       room: r.one.rooms({
         from: r.applications.roomId,
         to: r.rooms.id,
+        optional: false,
       }),
       user: r.one.profiles({
         from: r.applications.userId,
         to: r.profiles.id,
+        optional: false,
       }),
       statusHistory: r.many.applicationStatusHistory(),
     },
@@ -170,16 +177,19 @@ export const relations = defineRelations(
       room: r.one.rooms({
         from: r.reviews.roomId,
         to: r.rooms.id,
+        optional: false,
       }),
       reviewer: r.one.profiles({
         from: r.reviews.reviewerId,
         to: r.profiles.id,
         alias: "reviewer",
+        optional: false,
       }),
       applicant: r.one.profiles({
         from: r.reviews.applicantId,
         to: r.profiles.id,
         alias: "applicant",
+        optional: false,
       }),
     },
 

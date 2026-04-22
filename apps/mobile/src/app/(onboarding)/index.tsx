@@ -4,11 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
+import { KeyboardAware } from '@/components/shared/keyboard-aware';
 import { NativeButton } from '@/components/native/button';
 import { NativeProgress } from '@/components/native/progress';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { hapticLight } from '@/lib/haptics';
 import { useOnboardingStatus } from '@/services/onboarding';
 import { useProfile } from '@/services/profile';
 
@@ -31,7 +33,7 @@ const STEP_KEYS = [
   'security',
 ] as const;
 
-// Steps 1 (identity) and 7 (security) manage their own buttons
+// Steps 1 (identity) and 7 (security) render their own CTAs.
 const SELF_MANAGED_STEPS = new Set([1, 7]);
 
 export default function OnboardingScreen() {
@@ -70,12 +72,14 @@ export default function OnboardingScreen() {
   }
 
   function handleBack() {
+    hapticLight();
     if (clampedStep > 1) {
       setCurrentStep(clampedStep - 1);
     }
   }
 
   function handleNextPress() {
+    hapticLight();
     if (stepRef.current) {
       stepRef.current.submit();
     } else {
@@ -84,71 +88,84 @@ export default function OnboardingScreen() {
   }
 
   const stepKey = STEP_KEYS[clampedStep - 1];
-  const progress = (clampedStep / ONBOARDING_TOTAL_STEPS) * 100;
+  const progress = clampedStep / ONBOARDING_TOTAL_STEPS;
   const showBottomBar = !SELF_MANAGED_STEPS.has(clampedStep);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
-        <View>
-          <ThemedText variant="title2">{t('title')}</ThemedText>
-          <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.stepOf}>
-            {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
-          </ThemedText>
-        </View>
+      <KeyboardAware>
+        <View style={styles.header}>
+          <View>
+            <ThemedText variant="title2">{t('title')}</ThemedText>
+            <ThemedText variant="footnote" color={colors.tertiaryForeground} style={styles.stepOf}>
+              {t('stepOf', { current: clampedStep, total: ONBOARDING_TOTAL_STEPS })}
+            </ThemedText>
+          </View>
 
-        <NativeProgress value={progress / 100} />
-
-        <View>
-          <ThemedText variant="headline">{t(`steps.${stepKey}`)}</ThemedText>
-          <ThemedText
-            variant="footnote"
-            color={colors.tertiaryForeground}
-            style={styles.stepDescription}>
-            {t(`stepDescriptions.step${clampedStep}`)}
-          </ThemedText>
-        </View>
-      </View>
-
-      <View style={styles.stepContent}>
-        {clampedStep === 1 && (
-          <IdentityStep onNext={handleNext} profile={profile} status={status} />
-        )}
-        {clampedStep === 2 && <AboutStep ref={stepRef} onNext={handleNext} profile={profile} />}
-        {clampedStep === 3 && <BioStep ref={stepRef} onNext={handleNext} profile={profile} />}
-        {clampedStep === 4 && (
-          <PersonalityStep ref={stepRef} onNext={handleNext} profile={profile} />
-        )}
-        {clampedStep === 5 && <LanguagesStep ref={stepRef} onNext={handleNext} profile={profile} />}
-        {clampedStep === 6 && <PhotosStep ref={stepRef} onNext={handleNext} profile={profile} />}
-        {clampedStep === 7 && <SecurityStep />}
-      </View>
-
-      {showBottomBar && (
-        <View style={styles.bottomBar}>
-          {clampedStep > 1 ? (
-            <NativeButton
-              label={tCommon('back')}
-              variant="ghost"
-              onPress={handleBack}
-              style={styles.bottomBarButton}
-            />
-          ) : (
-            <View style={styles.bottomBarButton} />
-          )}
-          <NativeButton
-            label={tCommon('next')}
-            onPress={handleNextPress}
-            style={styles.bottomBarButton}
+          <NativeProgress
+            value={progress}
+            accessibilityLabel={t('stepOf', {
+              current: clampedStep,
+              total: ONBOARDING_TOTAL_STEPS,
+            })}
+            accessibilityValue={{ min: 0, max: ONBOARDING_TOTAL_STEPS, now: clampedStep }}
           />
-        </View>
-      )}
 
-      {!showBottomBar && clampedStep > 1 && (
-        <View style={styles.backOnlyBar}>
-          <NativeButton label={tCommon('back')} variant="ghost" onPress={handleBack} />
+          <View>
+            <ThemedText variant="headline">{t(`steps.${stepKey}`)}</ThemedText>
+            <ThemedText
+              variant="footnote"
+              color={colors.tertiaryForeground}
+              style={styles.stepDescription}>
+              {t(`stepDescriptions.step${clampedStep}`)}
+            </ThemedText>
+          </View>
         </View>
-      )}
+
+        <View style={styles.stepContent}>
+          {clampedStep === 1 && (
+            <IdentityStep onNext={handleNext} profile={profile} status={status} />
+          )}
+          {clampedStep === 2 && <AboutStep ref={stepRef} onNext={handleNext} profile={profile} />}
+          {clampedStep === 3 && <BioStep ref={stepRef} onNext={handleNext} profile={profile} />}
+          {clampedStep === 4 && (
+            <PersonalityStep ref={stepRef} onNext={handleNext} profile={profile} />
+          )}
+          {clampedStep === 5 && (
+            <LanguagesStep ref={stepRef} onNext={handleNext} profile={profile} />
+          )}
+          {clampedStep === 6 && <PhotosStep ref={stepRef} onNext={handleNext} profile={profile} />}
+          {clampedStep === 7 && <SecurityStep />}
+        </View>
+
+        {showBottomBar && (
+          <View style={styles.bottomBar}>
+            {clampedStep > 1 ? (
+              <NativeButton
+                label={tCommon('back')}
+                variant="ghost"
+                onPress={handleBack}
+                style={styles.bottomBarButton}
+                accessibilityHint={t('steps.' + STEP_KEYS[clampedStep - 2])}
+              />
+            ) : (
+              <View style={styles.bottomBarButton} />
+            )}
+            <NativeButton
+              label={tCommon('next')}
+              onPress={handleNextPress}
+              style={styles.bottomBarButton}
+              accessibilityHint={t('steps.' + STEP_KEYS[clampedStep])}
+            />
+          </View>
+        )}
+
+        {!showBottomBar && clampedStep > 1 && (
+          <View style={styles.backOnlyBar}>
+            <NativeButton label={tCommon('back')} variant="ghost" onPress={handleBack} />
+          </View>
+        )}
+      </KeyboardAware>
     </SafeAreaView>
   );
 }

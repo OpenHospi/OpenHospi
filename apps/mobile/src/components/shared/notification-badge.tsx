@@ -1,6 +1,11 @@
 import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 import { useTheme } from '@/design';
 import { ThemedText } from '@/components/native/text';
@@ -12,11 +17,16 @@ type NotificationBadgeProps = {
 
 export function NotificationBadge({ count }: NotificationBadgeProps) {
   const { colors } = useTheme();
+  const reduceMotion = useReducedMotion();
   const scale = useSharedValue(0);
 
   useEffect(() => {
+    if (reduceMotion) {
+      scale.value = count > 0 ? 1 : 0;
+      return;
+    }
     scale.value = count > 0 ? withSpring(1, SPRING_BOUNCY) : withSpring(0, SPRING_SNAPPY);
-  }, [count, scale]);
+  }, [count, scale, reduceMotion]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

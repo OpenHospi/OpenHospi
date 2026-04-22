@@ -11,6 +11,8 @@
       <excludeFolder url="file://$MODULE_DIR$/apps/mobile/ios" />
       <excludeFolder url="file://$MODULE_DIR$/apps/admin/certs" />
       <excludeFolder url="file://$MODULE_DIR$/apps/docs/.source" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/email/.react-email" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/email/dist-html" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

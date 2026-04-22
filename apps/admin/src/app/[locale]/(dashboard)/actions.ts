@@ -203,7 +203,7 @@ export type RoomDetail = {
   id: string;
   title: string;
   city: string;
-  rentPrice: string;
+  rentPrice: number;
   status: RoomStatus;
   description: string | null;
   ownerName: string;

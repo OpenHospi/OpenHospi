@@ -1,13 +1,13 @@
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Check, Users, X } from 'lucide-react-native';
 import { useEffect, useRef } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { SwipeableRow } from '@/components/shared/swipeable-row';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
+import { AppContextMenu } from '@/components/native/context-menu';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedBadge } from '@/components/native/badge';
 import { ThemedSkeleton } from '@/components/native/skeleton';
@@ -87,7 +87,6 @@ export default function ApplicantsScreen() {
     return (
       <NativeEmptyState
         sfSymbol="person.crop.rectangle.stack"
-        icon={Users}
         title={t('title')}
         subtitle={t('empty')}
       />
@@ -142,15 +141,17 @@ export default function ApplicantsScreen() {
     const swipeActions = canAction
       ? [
           {
-            icon: Check,
+            iconName: 'checkmark',
             color: '#fff',
             backgroundColor: '#16a34a',
+            accessibilityLabel: t('accept'),
             onPress: () => handleAccept(item),
           },
           {
-            icon: X,
+            iconName: 'xmark',
             color: '#fff',
             backgroundColor: '#ef4444',
+            accessibilityLabel: t('rejected'),
             onPress: () => handleReject(item),
           },
         ]
@@ -186,34 +187,32 @@ export default function ApplicantsScreen() {
       </SwipeableRow>
     );
 
-    if (Platform.OS === 'ios' && canAction) {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { Host, ContextMenu, Button: ExpoButton } = require('@expo/ui/swift-ui');
-
+    if (canAction) {
       return (
-        <Host matchContents>
-          <ContextMenu>
-            <ContextMenu.Items>
-              <ExpoButton
-                label={t('viewProfile')}
-                systemImage="person.circle"
-                onPress={() => navigateToProfile(item)}
-              />
-              <ExpoButton
-                label={t('accept')}
-                systemImage="checkmark.circle"
-                onPress={() => handleAccept(item)}
-              />
-              <ExpoButton
-                label={t('rejected')}
-                systemImage="xmark.circle"
-                role="destructive"
-                onPress={() => handleReject(item)}
-              />
-            </ContextMenu.Items>
-            <ContextMenu.Trigger>{row}</ContextMenu.Trigger>
-          </ContextMenu>
-        </Host>
+        <AppContextMenu
+          actions={[
+            {
+              key: 'view',
+              label: t('viewProfile'),
+              systemImage: 'person.circle',
+              onPress: () => navigateToProfile(item),
+            },
+            {
+              key: 'accept',
+              label: t('accept'),
+              systemImage: 'checkmark.circle',
+              onPress: () => handleAccept(item),
+            },
+            {
+              key: 'reject',
+              label: t('rejected'),
+              systemImage: 'xmark.circle',
+              destructive: true,
+              onPress: () => handleReject(item),
+            },
+          ]}>
+          {row}
+        </AppContextMenu>
       );
     }
 

@@ -1,9 +1,7 @@
 import { createDrizzleSupabaseClient } from "@openhospi/database";
-import { applications, profilePhotos, profiles, reviews } from "@openhospi/database/schema";
 import { MAX_APPLICANTS_PER_PAGE } from "@openhospi/shared/constants";
 import type { Gender, LifestyleTag, StudyLevel, Vereniging } from "@openhospi/shared/enums";
 import { ApplicationStatus, ReviewDecision } from "@openhospi/shared/enums";
-import { and, asc, eq, inArray, ne } from "drizzle-orm";
 
 export type ApplicantReview = {
   reviewerId: string;
@@ -35,92 +33,82 @@ export type RoomApplicant = {
 
 export async function getRoomApplicants(roomId: string, userId: string): Promise<RoomApplicant[]> {
   return createDrizzleSupabaseClient(userId).rls(async (tx) => {
-    const rows = await tx
-      .select({
-        applicationId: applications.id,
-        userId: applications.userId,
-        personalMessage: applications.personalMessage,
-        status: applications.status,
-        appliedAt: applications.appliedAt,
-        firstName: profiles.firstName,
-        lastName: profiles.lastName,
-        avatarUrl: profiles.avatarUrl,
-        gender: profiles.gender,
-        birthDate: profiles.birthDate,
-        studyProgram: profiles.studyProgram,
-        studyLevel: profiles.studyLevel,
-        bio: profiles.bio,
-        lifestyleTags: profiles.lifestyleTags,
-        vereniging: profiles.vereniging,
-        institutionDomain: profiles.institutionDomain,
-      })
-      .from(applications)
-      .innerJoin(profiles, eq(profiles.id, applications.userId))
-      .where(
-        and(eq(applications.roomId, roomId), ne(applications.status, ApplicationStatus.withdrawn)),
-      )
-      .orderBy(asc(applications.appliedAt))
-      .limit(MAX_APPLICANTS_PER_PAGE);
-
-    if (rows.length === 0) return [];
-
-    const userIds = rows.map((r) => r.userId);
-
-    // Batch fetch photos for all applicants
-    const allPhotos = await tx
-      .select({
-        userId: profilePhotos.userId,
-        id: profilePhotos.id,
-        slot: profilePhotos.slot,
-        url: profilePhotos.url,
-        caption: profilePhotos.caption,
-      })
-      .from(profilePhotos)
-      .where(inArray(profilePhotos.userId, userIds))
-      .orderBy(profilePhotos.slot);
-
-    // Batch fetch reviews for all applicants
-    const allReviews = await tx
-      .select({
-        applicantId: reviews.applicantId,
-        reviewerId: reviews.reviewerId,
-        decision: reviews.decision,
-        notes: reviews.notes,
-        reviewerName: profiles.firstName,
-      })
-      .from(reviews)
-      .innerJoin(profiles, eq(profiles.id, reviews.reviewerId))
-      .where(and(eq(reviews.roomId, roomId), inArray(reviews.applicantId, userIds)));
-
-    // Group photos by userId
-    const photosByUser = new Map<
-      string,
-      { id: string; slot: number; url: string; caption: string | null }[]
-    >();
-    for (const photo of allPhotos) {
-      const list = photosByUser.get(photo.userId) ?? [];
-      list.push({ id: photo.id, slot: photo.slot, url: photo.url, caption: photo.caption });
-      photosByUser.set(photo.userId, list);
-    }
-
-    // Group reviews by applicantId
-    const reviewsByUser = new Map<string, ApplicantReview[]>();
-    for (const rv of allReviews) {
-      const list = reviewsByUser.get(rv.applicantId) ?? [];
-      list.push({
-        reviewerId: rv.reviewerId,
-        reviewerName: rv.reviewerName,
-        decision: rv.decision,
-        notes: rv.notes,
-      });
-      reviewsByUser.set(rv.applicantId, list);
-    }
+    const rows = await tx.query.applications.findMany({
+      where: {
+        roomId,
+        NOT: { status: ApplicationStatus.withdrawn },
+      },
+      orderBy: { appliedAt: "asc" },
+      limit: MAX_APPLICANTS_PER_PAGE,
+      columns: {
+        id: true,
+        userId: true,
+        personalMessage: true,
+        status: true,
+        appliedAt: true,
+      },
+      with: {
+        user: {
+          columns: {
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+            gender: true,
+            birthDate: true,
+            studyProgram: true,
+            studyLevel: true,
+            bio: true,
+            lifestyleTags: true,
+            vereniging: true,
+            institutionDomain: true,
+          },
+          with: {
+            photos: {
+              columns: { id: true, slot: true, url: true, caption: true },
+              orderBy: { slot: "asc" },
+            },
+            reviewsReceived: {
+              where: { roomId },
+              columns: {
+                reviewerId: true,
+                decision: true,
+                notes: true,
+              },
+              with: {
+                reviewer: {
+                  columns: { firstName: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
 
     return rows.map((r) => ({
-      ...r,
-      lifestyleTags: r.lifestyleTags ?? [],
-      photos: photosByUser.get(r.userId) ?? [],
-      reviews: reviewsByUser.get(r.userId) ?? [],
+      applicationId: r.id,
+      userId: r.userId,
+      personalMessage: r.personalMessage,
+      status: r.status,
+      appliedAt: r.appliedAt,
+      firstName: r.user.firstName,
+      lastName: r.user.lastName,
+      avatarUrl: r.user.avatarUrl,
+      gender: r.user.gender,
+      birthDate: r.user.birthDate,
+      studyProgram: r.user.studyProgram,
+      studyLevel: r.user.studyLevel,
+      bio: r.user.bio,
+      lifestyleTags: r.user.lifestyleTags ?? [],
+      vereniging: r.user.vereniging,
+      institutionDomain: r.user.institutionDomain,
+      photos: r.user.photos,
+      reviews: r.user.reviewsReceived.map((rv) => ({
+        reviewerId: rv.reviewerId,
+        reviewerName: rv.reviewer.firstName,
+        decision: rv.decision,
+        notes: rv.notes,
+      })),
     }));
   });
 }

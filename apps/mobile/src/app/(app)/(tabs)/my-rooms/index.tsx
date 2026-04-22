@@ -1,14 +1,18 @@
+import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
-import { Home } from 'lucide-react-native';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { MyRoomCard } from '@/components/rooms/my-room-card';
 import { NativeEmptyState } from '@/components/feedback/native-empty-state';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedSkeleton } from '@/components/native/skeleton';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { hapticPullToRefreshSnap } from '@/lib/haptics';
+import { shadow } from '@/design/tokens/shadows';
+import { hapticLight, hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useDeleteRoom, useMyRooms, useUpdateRoomStatus } from '@/services/my-rooms';
 
 function SkeletonRoomCard() {
@@ -30,6 +34,36 @@ function SkeletonRoomCard() {
   );
 }
 
+function PostRoomFab({ label, onPress }: { label: string; onPress: () => void }) {
+  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+
+  return (
+    <Pressable
+      onPress={() => {
+        hapticLight();
+        onPress();
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      android_ripple={{ color: colors.primaryForeground, borderless: false }}
+      style={({ pressed }) => [
+        styles.fab,
+        shadow('md'),
+        {
+          backgroundColor: colors.primary,
+          bottom: bottom + 16,
+          opacity: pressed ? 0.9 : 1,
+        },
+      ]}>
+      <NativeIcon name="plus" androidName="add" size={20} color={colors.primaryForeground} />
+      <ThemedText variant="headline" color={colors.primaryForeground}>
+        {label}
+      </ThemedText>
+    </Pressable>
+  );
+}
+
 export default function MyRoomsListScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const router = useRouter();
@@ -42,13 +76,7 @@ export default function MyRoomsListScreen() {
     refetch();
   };
 
-  const handleDelete = (roomId: string) => {
-    deleteRoom.mutate(roomId);
-  };
-
-  const handleStatusChange = (roomId: string, newStatus: string) => {
-    updateStatus.mutate({ roomId, status: newStatus });
-  };
+  const createRoom = () => router.push('/(app)/manage-room/create/house-gate');
 
   if (isLoading) {
     return (
@@ -64,40 +92,49 @@ export default function MyRoomsListScreen() {
     return (
       <NativeEmptyState
         sfSymbol="house"
-        icon={Home}
+        androidIcon="home"
         title={t('title')}
         subtitle={t('empty')}
         actionLabel={t('createFirst')}
-        onAction={() => router.push('/(app)/manage-room/create/house-gate')}
+        onAction={createRoom}
       />
     );
   }
 
   return (
-    <FlatList
-      contentInsetAdjustmentBehavior="automatic"
-      data={rooms}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <View style={styles.cardWrapper}>
-          <MyRoomCard room={item} onDelete={handleDelete} onStatusChange={handleStatusChange} />
-        </View>
-      )}
-      contentContainerStyle={styles.listContent}
-      refreshing={isRefetching}
-      onRefresh={handleRefresh}
-    />
+    <View style={styles.container}>
+      <FlashList
+        contentInsetAdjustmentBehavior="automatic"
+        data={rooms}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.cardWrapper}>
+            <MyRoomCard
+              room={item}
+              onDelete={(roomId) => deleteRoom.mutate(roomId)}
+              onStatusChange={(roomId, status) => updateStatus.mutate({ roomId, status })}
+            />
+          </View>
+        )}
+        contentContainerStyle={styles.listContent}
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />}
+      />
+      <PostRoomFab label={t('createNew')} onPress={createRoom} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   cardWrapper: {
     paddingHorizontal: 16,
     paddingBottom: 12,
   },
   listContent: {
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 96,
   },
   skeletonList: {
     flex: 1,
@@ -110,5 +147,15 @@ const styles = StyleSheet.create({
   skeletonContent: {
     padding: 16,
     gap: 10,
+  },
+  fab: {
+    position: 'absolute',
+    end: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    borderRadius: radius.full,
   },
 });

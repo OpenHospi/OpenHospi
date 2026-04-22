@@ -2,6 +2,7 @@ import { type AddressResult } from '@openhospi/shared/pdok';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { AddressSearchInput } from '@/components/forms/address-search';
@@ -10,14 +11,15 @@ import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import RoomLocationMap from '@/components/rooms/room-location-map';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { useMyRoom, useSaveBasicInfo } from '@/services/my-rooms';
 
 export default function BasicInfoScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
@@ -167,14 +169,23 @@ export default function BasicInfoScreen() {
         </View>
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={tCommon('next')}
           onPress={handleNext}
           loading={saveBasicInfo.isPending}
           disabled={!title.trim()}
         />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

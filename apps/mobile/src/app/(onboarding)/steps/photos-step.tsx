@@ -1,4 +1,5 @@
 import { MAX_PROFILE_PHOTOS } from '@openhospi/shared/constants';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 import * as ImagePicker from 'expo-image-picker';
 import { useImperativeHandle, useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -8,9 +9,9 @@ import { GroupedSection } from '@/components/layout/grouped-section';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
+import { hapticFormSubmitError, hapticFormSubmitSuccess, hapticLight } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useUploadProfilePhoto } from '@/services/profile';
-import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 import type { StepHandle } from '@/components/shared/onboarding-types';
 
@@ -55,6 +56,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
 
   function handleSubmit() {
     if (!hasAtLeastOnePhoto) {
+      hapticFormSubmitError();
       Alert.alert(tOnboarding('errors.minPhotos'));
       return;
     }
@@ -64,6 +66,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
   useImperativeHandle(ref, () => ({ submit: handleSubmit }));
 
   async function pickPhoto(slotIndex: number) {
+    hapticLight();
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -91,6 +94,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
       },
       {
         onSuccess: () => {
+          hapticFormSubmitSuccess();
           setSlots((prev) => {
             const next = [...prev];
             next[slotIndex] = { uri: asset.uri, uploading: false, uploaded: true };
@@ -98,6 +102,7 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
           });
         },
         onError: () => {
+          hapticFormSubmitError();
           setSlots((prev) => {
             const next = [...prev];
             next[slotIndex] = null;
@@ -118,7 +123,13 @@ export default function PhotosStep({ ref, onNext, profile }: Props) {
         {SLOT_KEYS.map((key, index) => {
           const photo = slots[index];
           return (
-            <Pressable key={key} onPress={() => pickPhoto(index)} disabled={photo?.uploading}>
+            <Pressable
+              key={key}
+              onPress={() => void pickPhoto(index)}
+              disabled={photo?.uploading}
+              accessibilityRole="button"
+              accessibilityLabel={t(key)}
+              accessibilityState={{ disabled: !!photo?.uploading, selected: !!photo?.uploaded }}>
               <GroupedSection style={styles.slotCard}>
                 <View style={styles.slotRow}>
                   {photo?.uri ? (

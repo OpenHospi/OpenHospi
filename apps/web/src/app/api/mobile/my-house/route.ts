@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { createDrizzleSupabaseClient, db } from "@openhospi/database";
-import { houseMembers, houses, profiles } from "@openhospi/database/schema";
+import { houseMembers, houses } from "@openhospi/database/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -12,53 +12,38 @@ export async function GET(request: Request) {
     const session = await requireApiSession(request);
 
     const result = await createDrizzleSupabaseClient(session.user.id).rls(async (tx) => {
-      // Find the user's house membership
-      const [membership] = await tx
-        .select({
-          houseId: houseMembers.houseId,
-          role: houseMembers.role,
-        })
-        .from(houseMembers)
-        .where(eq(houseMembers.userId, session.user.id))
-        .limit(1);
+      const membership = await tx.query.houseMembers.findFirst({
+        where: { userId: session.user.id },
+        columns: { role: true },
+        with: {
+          house: {
+            columns: { id: true, name: true, inviteCode: true, createdAt: true },
+            with: {
+              members: {
+                columns: { userId: true, role: true, joinedAt: true },
+                with: {
+                  user: {
+                    columns: { firstName: true, lastName: true, avatarUrl: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
 
-      if (!membership) return null;
-
-      // Get house details
-      const [house] = await tx
-        .select({
-          id: houses.id,
-          name: houses.name,
-          inviteCode: houses.inviteCode,
-          createdAt: houses.createdAt,
-        })
-        .from(houses)
-        .where(eq(houses.id, membership.houseId));
-
-      if (!house) return null;
-
-      // Get all members with profile info
-      const members = await tx
-        .select({
-          userId: houseMembers.userId,
-          role: houseMembers.role,
-          joinedAt: houseMembers.joinedAt,
-          firstName: profiles.firstName,
-          lastName: profiles.lastName,
-          avatarUrl: profiles.avatarUrl,
-        })
-        .from(houseMembers)
-        .innerJoin(profiles, eq(houseMembers.userId, profiles.id))
-        .where(eq(houseMembers.houseId, house.id));
+      if (!membership?.house) return null;
 
       return {
-        house: {
-          id: house.id,
-          name: house.name,
-          inviteCode: house.inviteCode,
-          createdAt: house.createdAt,
-        },
-        members,
+        house: membership.house,
+        members: membership.house.members.map((m) => ({
+          userId: m.userId,
+          role: m.role,
+          joinedAt: m.joinedAt,
+          firstName: m.user.firstName,
+          lastName: m.user.lastName,
+          avatarUrl: m.user.avatarUrl,
+        })),
         currentUserRole: membership.role,
       };
     });

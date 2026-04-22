@@ -11,4 +11,3 @@ export * from "./security";
 export * from "./privacy";
 export * from "./notifications";
 export * from "./rls-helpers";
-export { relations } from "./relations";

@@ -1,13 +1,18 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ban, BellOff, ChevronRight, Flag, Shield } from 'lucide-react-native';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { GroupedSection } from '@/components/layout/grouped-section';
+import { ListCell } from '@/components/layout/list-cell';
+import { PlatformSurface } from '@/components/layout/platform-surface';
+import { NativeDivider } from '@/components/native/divider';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
 import { useSession } from '@/lib/auth-client';
+import { hapticDelete, hapticLight } from '@/lib/haptics';
 import { useConversationDetail } from '@/services/chat';
 
 export default function ConversationInfoScreen() {
@@ -21,11 +26,11 @@ export default function ConversationInfoScreen() {
   const userId = session?.user?.id;
   const { data: detail } = useConversationDetail(conversationId);
   const router = useRouter();
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
   if (!detail) {
     return (
-      <View style={styles.centered}>
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
         <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
           {t('loading_messages')}
         </ThemedText>
@@ -33,15 +38,16 @@ export default function ConversationInfoScreen() {
     );
   }
 
-  const initial = detail.roomTitle.charAt(0).toUpperCase();
-
   function handleBlock() {
     Alert.alert(t('block_user'), t('blocked'), [
       { text: tCommon('cancel'), style: 'cancel' },
       {
         text: t('block_user'),
         style: 'destructive',
-        onPress: () => Alert.alert(t('block_user'), 'User blocked'),
+        onPress: () => {
+          hapticDelete();
+          Alert.alert(t('block_user'), 'User blocked');
+        },
       },
     ]);
   }
@@ -52,122 +58,154 @@ export default function ConversationInfoScreen() {
       {
         text: t('report_message'),
         style: 'destructive',
-        onPress: () => Alert.alert(t('report_message'), 'Report submitted'),
+        onPress: () => {
+          hapticDelete();
+          Alert.alert(t('report_message'), 'Report submitted');
+        },
       },
     ]);
   }
 
+  function handleViewListing() {
+    if (!detail) return;
+    hapticLight();
+    router.push({ pathname: '/(app)/room/[id]', params: { id: detail.roomId } });
+  }
+
+  const otherMembers = detail.members.filter((m) => m.userId !== userId);
+
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={[styles.flex1, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.scrollContent}>
-      {/* Header */}
-      <View style={styles.headerContainer}>
-        <ThemedAvatar fallback={initial} size={80} />
-        <ThemedText variant="headline">{detail.roomTitle}</ThemedText>
-        <View style={styles.encryptedRow}>
-          <Shield size={14} color={colors.primary} />
-          <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-            {t('encrypted')}
+    <>
+      <Stack.Screen options={{ headerTitle: t('info') }} />
+      <ScrollView
+        style={[styles.flex1, { backgroundColor: colors.background }]}
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{ padding: spacing.lg, gap: spacing.xl }}>
+        {/* Header */}
+        <View style={styles.headerContainer}>
+          <ThemedAvatar
+            fallback={detail.roomTitle}
+            size={88}
+            accessibilityLabel={`${detail.roomTitle} avatar`}
+          />
+          <ThemedText variant="title3" weight="700" style={styles.textCenter}>
+            {detail.roomTitle}
           </ThemedText>
+          <View
+            style={[styles.encryptedPill, { backgroundColor: colors.primary + '1A' }]}
+            accessibilityRole="text"
+            accessibilityLabel={t('encrypted')}>
+            <NativeIcon name="lock.fill" androidName="lock" size={12} color={colors.primary} />
+            <ThemedText variant="caption1" weight="600" color={colors.primary}>
+              {t('encrypted')}
+            </ThemedText>
+          </View>
         </View>
-      </View>
 
-      {/* Room info card */}
-      <View
-        style={[styles.roomInfoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText variant="subheadline" weight="600">
-          {t('room_info')}
-        </ThemedText>
-        <ThemedText variant="subheadline" color={colors.tertiaryForeground}>
-          {detail.roomTitle}
-        </ThemedText>
-        <Pressable
-          onPress={() =>
-            router.push({ pathname: '/(app)/room/[id]', params: { id: detail.roomId } })
-          }
-          style={[styles.viewListingButton, { borderColor: colors.border }]}>
-          <ThemedText variant="subheadline" weight="500" color={colors.primary}>
-            {t('view_listing')}
+        {/* Room context card */}
+        <PlatformSurface variant="card" style={[styles.cardPad, { gap: spacing.md }]}>
+          <ThemedText variant="caption1" weight="600" color={colors.tertiaryForeground}>
+            {t('room_info').toUpperCase()}
           </ThemedText>
-        </Pressable>
-      </View>
+          <ThemedText variant="body" color={colors.foreground}>
+            {detail.roomTitle}
+          </ThemedText>
+          <NativeDivider />
+          <ListCell
+            label={t('view_listing')}
+            icon="arrow.up.right.square"
+            onPress={handleViewListing}
+            accessibilityHint="Opens room listing"
+          />
+        </PlatformSurface>
 
-      {/* Members */}
-      <View style={styles.membersSection}>
-        <ThemedText
-          variant="caption1"
-          weight="500"
-          color={colors.tertiaryForeground}
-          style={styles.sectionLabel}>
-          {t('members')} ({detail.members.length})
-        </ThemedText>
-        {detail.members.map((member) => {
-          const isCurrentUser = member.userId === userId;
+        {/* Members */}
+        <GroupedSection header={`${t('members')} (${detail.members.length})`}>
+          {detail.members.map((member, index) => {
+            const isCurrentUser = member.userId === userId;
+            const label = `${member.firstName}${isCurrentUser ? ` (${t('you')})` : ''}`;
+            const showDivider = index < detail.members.length - 1;
 
-          const row = (
-            <View style={styles.memberRow}>
-              <ThemedAvatar fallback={member.firstName.charAt(0).toUpperCase()} size={32} />
-              <View style={styles.flex1}>
-                <ThemedText variant="subheadline">
-                  {member.firstName}
-                  {isCurrentUser && (
-                    <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                      {' '}
-                      ({t('you')})
-                    </ThemedText>
-                  )}
-                </ThemedText>
-                {!isCurrentUser && (
-                  <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                    {tSafetyNumber('title')}
-                  </ThemedText>
-                )}
+            return (
+              <View key={member.userId}>
+                <ListCell
+                  label={label}
+                  leftContent={
+                    <ThemedAvatar
+                      fallback={member.firstName}
+                      size={32}
+                      accessibilityLabel={`${member.firstName} avatar`}
+                    />
+                  }
+                  value={isCurrentUser ? undefined : tSafetyNumber('title')}
+                  onPress={
+                    isCurrentUser
+                      ? undefined
+                      : () => {
+                          hapticLight();
+                          router.push({
+                            pathname: '/(app)/(tabs)/chat/[conversationId]/verify/[userId]',
+                            params: { conversationId, userId: member.userId },
+                          });
+                        }
+                  }
+                  chevron={!isCurrentUser}
+                  accessibilityHint={
+                    isCurrentUser
+                      ? undefined
+                      : tSafetyNumber('description', { name: member.firstName })
+                  }
+                />
+                {showDivider ? (
+                  <View style={styles.innerDivider}>
+                    <NativeDivider />
+                  </View>
+                ) : null}
               </View>
-              {!isCurrentUser && <ChevronRight size={16} color={colors.tertiaryForeground} />}
-            </View>
-          );
+            );
+          })}
+        </GroupedSection>
 
-          if (isCurrentUser) return <View key={member.userId}>{row}</View>;
+        {/* Actions */}
+        <GroupedSection>
+          <ListCell
+            label={t('mute_conversation')}
+            icon="bell.slash"
+            onPress={() => {
+              hapticLight();
+              Alert.alert(t('mute_conversation'));
+            }}
+          />
+          <View style={styles.innerDivider}>
+            <NativeDivider />
+          </View>
+          <ListCell
+            label={t('block_user')}
+            icon="hand.raised.fill"
+            destructive
+            onPress={handleBlock}
+          />
+          <View style={styles.innerDivider}>
+            <NativeDivider />
+          </View>
+          <ListCell
+            label={t('report_message')}
+            icon="flag.fill"
+            destructive
+            onPress={handleReport}
+          />
+        </GroupedSection>
 
-          return (
-            <Pressable
-              key={member.userId}
-              onPress={() =>
-                router.push({
-                  pathname: '/(app)/(tabs)/chat/[conversationId]/verify/[userId]',
-                  params: { conversationId, userId: member.userId },
-                })
-              }>
-              {row}
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Actions */}
-      <View style={styles.actionsSection}>
-        <Pressable style={styles.actionRow} onPress={() => Alert.alert(t('mute_conversation'))}>
-          <BellOff size={20} color={colors.tertiaryForeground} />
-          <ThemedText variant="subheadline">{t('mute_conversation')}</ThemedText>
-        </Pressable>
-
-        <Pressable style={styles.actionRow} onPress={handleBlock}>
-          <Ban size={20} color={colors.destructive} />
-          <ThemedText variant="subheadline" color={colors.destructive}>
-            {t('block_user')}
+        {otherMembers.length === 1 ? (
+          <ThemedText
+            variant="caption1"
+            color={colors.tertiaryForeground}
+            style={styles.textCenter}>
+            {tSafetyNumber('description', { name: otherMembers[0].firstName })}
           </ThemedText>
-        </Pressable>
-
-        <Pressable style={styles.actionRow} onPress={handleReport}>
-          <Flag size={20} color={colors.destructive} />
-          <ThemedText variant="subheadline" color={colors.destructive}>
-            {t('report_message')}
-          </ThemedText>
-        </Pressable>
-      </View>
-    </ScrollView>
+        ) : null}
+      </ScrollView>
+    </>
   );
 }
 
@@ -180,50 +218,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  scrollContent: {
-    padding: 24,
-    gap: 24,
+  textCenter: {
+    textAlign: 'center',
   },
   headerContainer: {
     alignItems: 'center',
     gap: 12,
   },
-  encryptedRow: {
+  encryptedPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: radius.full,
   },
-  roomInfoCard: {
-    borderRadius: radius.lg,
+  cardPad: {
     padding: 16,
-    gap: 12,
-    borderWidth: 1,
   },
-  viewListingButton: {
-    borderRadius: radius.md,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  membersSection: {
-    gap: 12,
-  },
-  sectionLabel: {
-    textTransform: 'uppercase',
-  },
-  memberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  actionsSection: {
-    gap: 2,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 4,
+  innerDivider: {
+    marginStart: 56,
   },
 });

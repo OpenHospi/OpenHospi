@@ -1,50 +1,81 @@
-import React from 'react';
-import { View, type ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedText } from '@/components/native/text';
+import { useTheme } from '@/design';
+
+type StatusPillColor =
+  | 'default'
+  | 'primary'
+  | 'success'
+  | 'warning'
+  | 'destructive'
+  | 'info'
+  | 'muted';
 
 interface StatusPillProps {
-  /** Display text */
   label: string;
-  /** Semantic color */
-  color: 'primary' | 'success' | 'warning' | 'destructive' | 'muted';
+  color?: StatusPillColor;
+  /** Optional SF Symbol / Material Symbol name rendered before the label. */
+  icon?: string;
 }
 
-/**
- * Small colored pill for inline status indicators.
- * Uses a tinted background with matching text color.
- */
-function StatusPill({ label, color }: StatusPillProps) {
-  const { colors } = useTheme();
+// 0x18 = 24/255 ≈ 9% — matches iOS tinted badge contrast on both light/dark surfaces.
+const TINT_ALPHA = '29';
 
-  const colorMap = {
-    primary: { bg: colors.primary + '18', text: colors.primary },
-    success: { bg: colors.success + '18', text: colors.success },
-    warning: { bg: colors.warning + '18', text: colors.warning },
-    destructive: { bg: colors.destructive + '18', text: colors.destructive },
-    muted: { bg: colors.muted, text: colors.mutedForeground },
-  };
+function StatusPill({ label, color = 'default', icon }: StatusPillProps) {
+  const { colors, radius, spacing } = useTheme();
 
-  const { bg, text } = colorMap[color];
-
-  const pillStyle: ViewStyle = {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: radius.full,
-    backgroundColor: bg,
-    alignSelf: 'flex-start',
-  };
+  const { background, foreground } = resolveTint(color, colors);
 
   return (
-    <View style={pillStyle}>
-      <ThemedText variant="caption1" weight="600" color={text}>
+    <View
+      style={[
+        styles.pill,
+        {
+          backgroundColor: background,
+          borderRadius: radius.full,
+          paddingHorizontal: spacing.sm,
+          paddingVertical: spacing.xxs,
+          gap: spacing.xs,
+        },
+      ]}
+      accessibilityRole="text"
+      accessibilityLabel={label}>
+      {icon ? <NativeIcon name={icon} size={12} color={foreground} /> : null}
+      <ThemedText variant="caption1" weight="600" color={foreground}>
         {label}
       </ThemedText>
     </View>
   );
 }
 
+function resolveTint(color: StatusPillColor, colors: ReturnType<typeof useTheme>['colors']) {
+  switch (color) {
+    case 'primary':
+      return { background: colors.primary + TINT_ALPHA, foreground: colors.primary };
+    case 'success':
+      return { background: colors.success + TINT_ALPHA, foreground: colors.success };
+    case 'warning':
+      return { background: colors.warning + TINT_ALPHA, foreground: colors.warning };
+    case 'destructive':
+      return { background: colors.destructive + TINT_ALPHA, foreground: colors.destructive };
+    case 'info':
+      return { background: colors.accent, foreground: colors.accentForeground };
+    case 'muted':
+      return { background: colors.muted, foreground: colors.mutedForeground };
+    default:
+      return { background: colors.secondaryBackground, foreground: colors.secondaryForeground };
+  }
+}
+
+const styles = StyleSheet.create({
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+});
+
 export { StatusPill };
-export type { StatusPillProps };
+export type { StatusPillColor, StatusPillProps };

@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, TextInput, type TextInputProps, type TextStyle } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  type AccessibilityRole,
+  type AccessibilityState,
+  type TextInputProps,
+  type TextStyle,
+} from 'react-native';
 
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -7,6 +14,10 @@ import { radius } from '@/design/tokens/radius';
 interface ThemedInputProps extends TextInputProps {
   /** Show in an error state */
   error?: boolean;
+  accessibilityRole?: AccessibilityRole;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityState?: AccessibilityState;
 }
 
 function ThemedInput({ error, editable = true, style, ...props }: ThemedInputProps) {
@@ -24,9 +35,7 @@ function ThemedInput({ error, editable = true, style, ...props }: ThemedInputPro
     opacity: editable ? 1 : 0.5,
     ...typography.body,
     color: colors.foreground,
-    padding: 0,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingVertical: 0,
   };
 
   return (
@@ -34,6 +43,7 @@ function ThemedInput({ error, editable = true, style, ...props }: ThemedInputPro
       style={[inputStyle, style]}
       placeholderTextColor={colors.tertiaryForeground}
       editable={editable}
+      accessibilityState={{ disabled: !editable, ...(props.accessibilityState ?? {}) }}
       onFocus={(e) => {
         setFocused(true);
         props.onFocus?.(e);

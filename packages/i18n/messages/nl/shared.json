@@ -69,7 +69,12 @@
       "loading": "Laden...",
       "uploading": "Uploaden...",
       "uploaded": "Geupload",
-      "language": "Taal"
+      "language": "Taal",
+      "appearance": "Weergave",
+      "system": "Systeem",
+      "light": "Licht",
+      "dark": "Donker",
+      "dynamicColor": "Dynamische kleur"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerij",
@@ -511,6 +516,8 @@
         "city": "Stad",
         "cityPlaceholder": "Alle steden",
         "priceRange": "Prijsbereik",
+        "minPrice": "Min",
+        "maxPrice": "Max",
         "houseType": "Woningtype",
         "houseTypePlaceholder": "Alle types",
         "furnishing": "Inrichting",
@@ -654,7 +661,7 @@
         "pin_hint": "Deze PIN beschermt je versleutelingssleutel. Je hebt hem nodig om je chats op een nieuw apparaat te herstellen.",
         "setup_success": "Chatversleuteling succesvol ingesteld",
         "setup_error": "Kon versleuteling niet instellen. Probeer het opnieuw.",
-        "generating_keys": "Versleutelingssleutels genereren\u2026",
+        "generating_keys": "Versleutelingssleutels genereren…",
         "change_pin": "PIN wijzigen",
         "recovery_title": "Herstel je versleutelingssleutels",
         "recovery_description": "Voer de PIN in die je tijdens het onboarden hebt gekozen om je versleutelingssleutels te herstellen.",
@@ -1365,7 +1372,7 @@
       "safety_number": {
         "title": "Veiligheidsnummer",
         "description": "Vergelijk dit nummer met {name} om te controleren of je gesprek end-to-end versleuteld is.",
-        "loading": "Veiligheidsnummer genereren\u2026",
+        "loading": "Veiligheidsnummer genereren…",
         "instructions": "Als dit nummer op beide apparaten overeenkomt, is je gesprek veilig. Vergelijk persoonlijk of via een vertrouwd kanaal.",
         "unavailable": "Veiligheidsnummer niet beschikbaar. Beide gebruikers moeten versleuteling hebben ingesteld.",
         "qr_tab": "Jouw code",
@@ -1377,8 +1384,8 @@
         "mismatch": "Komt niet overeen",
         "mismatch_description": "De veiligheidsnummers komen niet overeen. Deze verbinding is mogelijk niet veilig.",
         "key_changed": "Beveiligingscode gewijzigd",
-        "key_changed_description": "De beveiligingssleutel van {name} is gewijzigd. Tik om opnieuw te verifi\u00ebren.",
-        "reverify": "Opnieuw verifi\u00ebren",
+        "key_changed_description": "De beveiligingssleutel van {name} is gewijzigd. Tik om opnieuw te verifiëren.",
+        "reverify": "Opnieuw verifiëren",
         "camera_permission": "Cameratoegang is nodig om QR-codes te scannen",
         "camera_permission_settings": "Schakel cameratoegang in via Instellingen om QR-codes te scannen.",
         "grant_camera": "Camera toestaan",
@@ -1386,7 +1393,7 @@
         "invalid_qr": "Deze QR-code is geen geldig OpenHospi-veiligheidsnummer",
         "scan_own_qr": "Je hebt je eigen QR-code gescand",
         "mark_verified": "Markeer als geverifieerd",
-        "confirm_title": "{name} verifi\u00ebren?",
+        "confirm_title": "{name} verifiëren?",
         "confirm_description": "Heb je deze veiligheidsnummers met {name} persoonlijk of via een vertrouwd kanaal vergeleken?",
         "try_again": "Opnieuw proberen",
         "done": "Klaar",
@@ -1448,64 +1455,6 @@
       "submit": "Melding indienen",
       "success": "Melding ingediend. Bedankt.",
       "error": "Melding indienen mislukt. Probeer het opnieuw."
-    }
-  },
-  "emails": {
-    "common": {
-      "footer": "OpenHospi | Gratis platform voor studentenkamers in Nederland",
-      "doNotReply": "Dit is een automatisch bericht. Antwoord niet op deze e-mail.",
-      "viewInApp": "Bekijk in app"
-    },
-    "verificationCode": {
-      "subject": "Je OpenHospi verificatiecode",
-      "heading": "Verifieer je e-mail",
-      "codeLabel": "Je verificatiecode:",
-      "expiresIn": "Deze code verloopt na 60 minuten."
-    },
-    "eventInvitation": {
-      "subject": "Je bent uitgenodigd voor een hospi-evenement: {eventTitle}",
-      "heading": "Je bent uitgenodigd!",
-      "body": "Je bent uitgenodigd voor het hospi-evenement \"{eventTitle}\" voor de kamer \"{roomTitle}\".",
-      "cta": "Bekijk uitnodiging"
-    },
-    "eventReminder": {
-      "subject": "Herinnering: {eventTitle} begint binnenkort",
-      "heading": "Evenementherinnering",
-      "body": "Ter herinnering: \"{eventTitle}\" begint om {time}.",
-      "cta": "Bekijk evenement"
-    },
-    "eventCancelled": {
-      "subject": "Evenement geannuleerd: {eventTitle}",
-      "heading": "Evenement geannuleerd",
-      "body": "Het hospi-evenement \"{eventTitle}\" is geannuleerd door de organisator."
-    },
-    "rsvpReceived": {
-      "subject": "RSVP ontvangen van {name}",
-      "heading": "Nieuwe RSVP",
-      "body": "{name} heeft gereageerd met: {status}."
-    },
-    "applicationAccepted": {
-      "subject": "Gefeliciteerd! Je aanmelding voor \"{roomTitle}\" is geaccepteerd",
-      "heading": "Aanmelding geaccepteerd!",
-      "body": "Goed nieuws! Je bent gekozen voor de kamer \"{roomTitle}\". De eigenaar neemt contact met je op voor de volgende stappen.",
-      "cta": "Bekijk kamer"
-    },
-    "applicationNotChosen": {
-      "subject": "Update over je aanmelding voor \"{roomTitle}\"",
-      "heading": "Aanmelding update",
-      "body": "Helaas is de kamer \"{roomTitle}\" inmiddels bezet. Geef niet op, er zijn genoeg andere kamers beschikbaar!"
-    },
-    "userBanned": {
-      "subject": "Je OpenHospi-account is geschorst",
-      "heading": "Account geschorst",
-      "body": "Je account is geschorst om de volgende reden: {reason}.",
-      "contact": "Als je denkt dat dit een vergissing is, neem dan contact met ons op via support@openhospi.nl."
-    },
-    "listingRemoved": {
-      "subject": "Je advertentie is verwijderd",
-      "heading": "Advertentie verwijderd",
-      "body": "Je advertentie is verwijderd om de volgende reden: {reason}.",
-      "contact": "Als je denkt dat dit een vergissing is, neem dan contact met ons op via support@openhospi.nl."
     }
   }
 }

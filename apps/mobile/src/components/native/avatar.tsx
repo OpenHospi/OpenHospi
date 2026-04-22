@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, type ViewStyle } from 'react-native';
+import {
+  View,
+  type AccessibilityRole,
+  type AccessibilityState,
+  type ViewStyle,
+} from 'react-native';
 import { Image } from 'expo-image';
 
 import { useTheme } from '@/design';
@@ -13,9 +18,22 @@ interface ThemedAvatarProps {
   /** Diameter in points */
   size?: number;
   style?: ViewStyle;
+  accessibilityRole?: AccessibilityRole;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityState?: AccessibilityState;
 }
 
-function ThemedAvatar({ source, fallback, size = 40, style }: ThemedAvatarProps) {
+function ThemedAvatar({
+  source,
+  fallback,
+  size = 40,
+  style,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityState,
+}: ThemedAvatarProps) {
   const { colors } = useTheme();
   const [imageError, setImageError] = React.useState(false);
 
@@ -30,9 +48,15 @@ function ThemedAvatar({ source, fallback, size = 40, style }: ThemedAvatarProps)
   };
 
   const showFallback = !source || imageError;
+  const derivedLabel = accessibilityLabel ?? (fallback ? `${fallback} avatar` : 'Avatar');
 
   return (
-    <View style={[containerStyle, style]}>
+    <View
+      style={[containerStyle, style]}
+      accessibilityRole={accessibilityRole ?? 'image'}
+      accessibilityLabel={derivedLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={accessibilityState}>
       {showFallback ? (
         <ThemedText
           variant={size >= 64 ? 'title3' : size >= 40 ? 'headline' : 'footnote'}

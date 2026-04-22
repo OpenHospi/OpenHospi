@@ -132,14 +132,12 @@ export function RoomCreateForm({ room }: Props) {
           <DetailsStep
             roomId={room.id}
             defaultValues={{
-              rentPrice: Number(room.rentPrice) || undefined,
-              deposit: room.deposit ? Number(room.deposit) : undefined,
+              rentPrice: room.rentPrice || undefined,
+              deposit: room.deposit ?? undefined,
               utilitiesIncluded:
                 (room.utilitiesIncluded as RoomDetailsData["utilitiesIncluded"]) ?? undefined,
-              serviceCosts: room.serviceCosts ? Number(room.serviceCosts) : undefined,
-              estimatedUtilitiesCosts: room.estimatedUtilitiesCosts
-                ? Number(room.estimatedUtilitiesCosts)
-                : undefined,
+              serviceCosts: room.serviceCosts ?? undefined,
+              estimatedUtilitiesCosts: room.estimatedUtilitiesCosts ?? undefined,
               roomSizeM2: room.roomSizeM2 ?? undefined,
               availableFrom: room.availableFrom ?? "",
               availableUntil: room.availableUntil ?? "",

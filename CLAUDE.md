@@ -75,12 +75,14 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 
 ### i18n (next-intl)
 
-- Translation files: `packages/i18n/messages/{nl,en,de}/{shared,web,admin,app}.json`
+- Translation files: `packages/i18n/messages/{nl,en,de}/{shared,web,admin,app,emails,legal}.json`
 - `shared.json` — Keys used by BOTH web and mobile: common, enums, notifications, auth, app screens
 - `web.json` — Web-only: marketing pages (home, about, safety, costs, etc.) and public SEO pages
 - `admin.json` — Admin dashboard (web-only)
 - `app.json` — Mobile-only keys (currently empty, will grow with mobile app)
-- Loading: `@openhospi/i18n/web` merges shared + web + admin; `@openhospi/i18n/app` merges shared + app
+- `emails.json` — Transactional email templates only. Flat namespaces (no `emails.*` prefix) — `createTranslator({ ..., namespace: "verificationCode" })`
+- `legal.json` — Privacy / terms / ANBI / legal pages
+- Loading: `@openhospi/i18n/web` merges shared + web + admin + legal; `@openhospi/i18n/app` merges shared + app; `@openhospi/i18n/email` returns emails-only
 - **ZERO duplication rule**: If a label (cancel, save, next, back, etc.) is used across 2+ features, it goes in `common.labels` — never repeated per feature namespace
 - Use `useTranslations("common.labels")` / `getTranslations("common.labels")` alongside feature translations for shared labels
 - Feature-specific text stays in its own namespace (e.g. `admin.reports`, `app.rooms`)
@@ -94,10 +96,13 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 
 ### Database & Drizzle ORM
 
+- Version: `drizzle-orm@1.0.0-beta.22` (pinned in `pnpm-workspace.yaml` catalog, uniform across monorepo)
 - Schema: `packages/database/src/schema/` — camelCase JS keys, snake_case DB columns
-- Validators: Derived from Drizzle tables via `createInsertSchema` from `drizzle-orm/zod`
-- Types: `InferSelectModel`/`InferInsertModel` — single source of truth
-- Connection: Lazy proxy in `packages/database/src/db.ts` (defers until first use — required for Next.js build)
+- Relations (RQBv2): `packages/database/src/schema/relations.ts` — single `defineRelations()` call, passed to `drizzle({ relations })`. Use `tx.query.<table>.findFirst/findMany({ where: {...}, with: {...} })` for nested reads
+- Types: `InferSelectModel`/`InferInsertModel` — canonical source for row shapes
+- Validators: `@openhospi/validators` — hand-rolled Zod schemas with UI-grade constraints (charlen caps, coord bounds, postal regex, cross-field refinements, `z.coerce.number()` for HTML inputs). We deliberately do NOT use `drizzle-orm/zod` / `createInsertSchema` — the DB-derived schema is too loose for the form layer
+- Money columns: use `numeric(..., { mode: "number" })` so JS gets `number`, not `string` — precision 7 scale 2 is exact under IEEE 754 for our rent ranges. No manual `Number(...)` wrapping at call sites
+- Connection: Lazy proxy in `packages/database/src/index.ts` — `db` defers `drizzle()` until first property access (required for Next.js build). Client uses `{ connection: { url, prepare: false } }` form so drizzle owns the postgres.js client
 
 #### RLS (Row-Level Security) policies
 
@@ -106,13 +111,15 @@ IMPORTANT: Read the full file before making changes. Understand the complete flo
 - Use `pgPolicy` with raw `sql` for complex conditions (subqueries, joins, multi-table checks)
 - **Don't use `eq()` in policy expressions** — use raw `sql` with string literals to avoid `$1` placeholder bugs
 - `auth.uid()` is the Supabase function for the current user ID. The `auth` schema is managed by Supabase — don't modify it
-- `withRLS(userId, fn)` in `packages/database/src/rls.ts` wraps queries in RLS-enforced transactions — sets `request.jwt.claims` and switches to `authenticated` role
+- RLS bootstrap: `createDrizzleSupabaseClient(userId)` returns `{ admin, rls(fn) }`. The `rls` transaction sets `request.jwt.claims` via a parameterised `sql` template and switches roles via `sql.identifier(role)` after validating against an allow-list (`anon`, `authenticated`, `service_role`, `postgres`)
+- `withRLS(userId, fn)` in `packages/database/src/rls.ts` (re-exported from `@openhospi/database`) is the canonical helper for RLS-enforced transactions
 - Better Auth provisioning and admin operations use `db` directly (postgres role, bypasses RLS)
 
 #### Schema commands
 
 - Run pnpm scripts from the **repo root**: `pnpm db:push`
 - `db:push` is the standard workflow — pushes schema directly to the database (no migration files)
+- `pnpm db:check` runs `drizzle-kit check` for migration DAG commutativity (use before generating migrations if we ever leave db:push)
 - `drizzle.config.ts` has `schemaFilter: ["public"]` and `entities.roles.provider: "supabase"`
 
 ### Git

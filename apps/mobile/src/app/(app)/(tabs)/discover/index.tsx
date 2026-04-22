@@ -1,8 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useRouter } from 'expo-router';
-import { Search } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { RefreshControl, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { LogoText } from '@/components/shared/logo-text';
@@ -16,36 +15,6 @@ import { radius } from '@/design/tokens/radius';
 import { hapticPullToRefreshSnap } from '@/lib/haptics';
 import { useRooms } from '@/services/rooms';
 import type { DiscoverRoom } from '@openhospi/shared/api-types';
-
-function DiscoverHeader({
-  searchPlaceholder,
-  onSearchChange,
-  onFilterPress,
-}: {
-  searchPlaceholder: string;
-  onSearchChange: (text: string) => void;
-  onFilterPress: () => void;
-}) {
-  return (
-    <>
-      <Stack.Screen
-        options={{
-          headerTitle: () => <LogoText height={40} />,
-        }}
-      />
-      <Stack.SearchBar
-        placeholder={searchPlaceholder}
-        hideWhenScrolling
-        obscureBackground
-        onChangeText={(event) => onSearchChange(event.nativeEvent.text)}
-        onCancelButtonPress={() => onSearchChange('')}
-      />
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="line.3.horizontal.decrease" onPress={onFilterPress} />
-      </Stack.Toolbar>
-    </>
-  );
-}
 
 function SkeletonRoomCard() {
   const { colors } = useTheme();
@@ -68,11 +37,14 @@ function SkeletonRoomCard() {
 
 export default function DiscoverScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.discover' });
+  const { t: tFilters } = useTranslation('translation', {
+    keyPrefix: 'app.discover.filters',
+  });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const router = useRouter();
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
-  const { filters } = useDiscoverFilters();
+  const { filters, activeFilterCount } = useDiscoverFilters();
   const [searchText, setSearchText] = useState('');
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, refetch, isRefetching } =
@@ -90,70 +62,85 @@ export default function DiscoverScreen() {
     refetch();
   };
 
-  if (isPending) {
-    return (
-      <>
-        <DiscoverHeader
-          searchPlaceholder={tCommon('search')}
-          onSearchChange={setSearchText}
-          onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
-        />
+  const openFilters = () => router.push('/(app)/(modals)/filter-sheet');
+
+  const headerOptions = {
+    headerTitle: () => <LogoText height={40} />,
+  };
+
+  const listHeader =
+    totalCount > 0 ? (
+      <View style={styles.listHeader}>
+        <ThemedText
+          variant="caption1"
+          color={colors.tertiaryForeground}
+          style={{ paddingHorizontal: spacing.lg }}>
+          {searchText
+            ? t('roomCountFiltered', { showing: filteredRooms.length, total: totalCount })
+            : t('roomCount', { count: totalCount })}
+        </ThemedText>
+      </View>
+    ) : null;
+
+  return (
+    <>
+      <Stack.Screen options={headerOptions} />
+      <Stack.SearchBar
+        placeholder={tCommon('search')}
+        hideWhenScrolling
+        obscureBackground
+        onChangeText={(event) => setSearchText(event.nativeEvent.text)}
+        onCancelButtonPress={() => setSearchText('')}
+      />
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={openFilters}
+          accessibilityLabel={tFilters('showFilters')}
+          selected={activeFilterCount > 0}
+          tintColor={colors.primary}>
+          <Stack.Toolbar.Icon sf="line.3.horizontal.decrease" />
+          <Stack.Toolbar.Label>{tFilters('title')}</Stack.Toolbar.Label>
+          {activeFilterCount > 0 ? (
+            <Stack.Toolbar.Badge>{String(activeFilterCount)}</Stack.Toolbar.Badge>
+          ) : null}
+        </Stack.Toolbar.Button>
+      </Stack.Toolbar>
+
+      {isPending ? (
         <View style={styles.skeletonList}>
           <SkeletonRoomCard />
           <SkeletonRoomCard />
           <SkeletonRoomCard />
         </View>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <DiscoverHeader
-        searchPlaceholder={tCommon('search')}
-        onSearchChange={setSearchText}
-        onFilterPress={() => router.push('/(app)/(modals)/filter-sheet')}
-      />
-      <FlashList
-        contentInsetAdjustmentBehavior="automatic"
-        data={filteredRooms}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }: { item: DiscoverRoom }) => (
-          <View style={styles.cardWrapper}>
-            <RoomCard room={item} />
-          </View>
-        )}
-        ListHeaderComponent={
-          totalCount > 0 ? (
-            <View style={styles.countHeader}>
-              <ThemedText variant="caption1" color={colors.tertiaryForeground}>
-                {searchText
-                  ? t('roomCountFiltered', { showing: filteredRooms.length, total: totalCount })
-                  : t('roomCount', { count: totalCount })}
-              </ThemedText>
+      ) : (
+        <FlashList
+          contentInsetAdjustmentBehavior="automatic"
+          data={filteredRooms}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }: { item: DiscoverRoom }) => (
+            <View style={styles.cardWrapper}>
+              <RoomCard room={item} />
             </View>
-          ) : null
-        }
-        ListEmptyComponent={
-          <NativeEmptyState sfSymbol="magnifyingglass" icon={Search} title={t('empty')} />
-        }
-        contentContainerStyle={styles.listContent}
-        refreshing={isRefetching}
-        onRefresh={handleRefresh}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            void fetchNextPage();
+          )}
+          ListHeaderComponent={listHeader}
+          ListEmptyComponent={<NativeEmptyState sfSymbol="magnifyingglass" title={t('empty')} />}
+          contentContainerStyle={styles.listContent}
+          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              void fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View style={styles.footer}>
+                <ThemedSkeleton width="100%" height={80} rounded="lg" />
+              </View>
+            ) : null
           }
-        }}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <ActivityIndicator />
-            </View>
-          ) : null
-        }
-      />
+        />
+      )}
     </>
   );
 }
@@ -163,14 +150,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
-  countHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  listHeader: {
+    paddingTop: 8,
+    paddingBottom: 4,
   },
   listContent: {
     paddingBottom: 16,
   },
   footer: {
+    paddingHorizontal: 16,
     paddingVertical: 16,
   },
   skeletonList: {

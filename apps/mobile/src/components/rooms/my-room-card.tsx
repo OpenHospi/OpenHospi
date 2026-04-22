@@ -1,9 +1,8 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Pause, Play, Trash2 } from 'lucide-react-native';
-import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +11,8 @@ import { RoomStatus } from '@openhospi/shared/enums';
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { SwipeableRow } from '@/components/shared/swipeable-row';
 import { ThemedText } from '@/components/native/text';
+import { AppContextMenu } from '@/components/native/context-menu';
+import type { ContextMenuAction } from '@/components/native/context-menu';
 import { StatusPill } from '@/components/layout/status-pill';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
@@ -73,30 +74,72 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
     onStatusChange?.(room.id, newStatus);
   };
 
-  // Build swipe actions based on room status
   const swipeActions = [];
   if (room.status === RoomStatus.draft && onDelete) {
     swipeActions.push({
-      icon: Trash2,
+      iconName: 'trash',
       color: colors.destructiveForeground,
       backgroundColor: colors.destructive,
+      accessibilityLabel: tCommon('delete'),
       onPress: handleDelete,
     });
   }
   if (room.status === RoomStatus.active && onStatusChange) {
     swipeActions.push({
-      icon: Pause,
+      iconName: 'pause',
       color: colors.primaryForeground,
       backgroundColor: colors.warning,
+      accessibilityLabel: t('actions.pause'),
       onPress: handleTogglePause,
     });
   }
   if (room.status === RoomStatus.paused && onStatusChange) {
     swipeActions.push({
-      icon: Play,
+      iconName: 'play',
       color: colors.primaryForeground,
       backgroundColor: colors.success,
+      accessibilityLabel: t('actions.activate'),
       onPress: handleTogglePause,
+    });
+  }
+
+  const menuActions: ContextMenuAction[] = [
+    {
+      key: 'edit',
+      label: t('actions.edit'),
+      systemImage: 'pencil',
+      onPress: navigateToEdit,
+    },
+    {
+      key: 'share',
+      label: t('shareLink.title'),
+      systemImage: 'link',
+      onPress: navigateToShareLink,
+    },
+  ];
+  if (room.status === RoomStatus.active && onStatusChange) {
+    menuActions.push({
+      key: 'pause',
+      label: t('actions.pause'),
+      systemImage: 'pause.circle',
+      onPress: handleTogglePause,
+    });
+  }
+  if (room.status === RoomStatus.paused && onStatusChange) {
+    menuActions.push({
+      key: 'activate',
+      label: t('actions.activate'),
+      systemImage: 'play.circle',
+      onPress: handleTogglePause,
+    });
+  }
+  if (room.status === RoomStatus.draft && onDelete) {
+    menuActions.push({
+      key: 'delete',
+      label: t('actions.deleteDraft'),
+      systemImage: 'trash',
+      destructive: true,
+      onPress: handleDelete,
     });
   }
 
@@ -188,75 +231,9 @@ export function MyRoomCard({ room, onDelete, onStatusChange }: Props) {
     </SwipeableRow>
   );
 
-  if (Platform.OS === 'ios') {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Host, ContextMenu, Button: ExpoButton } = require('@expo/ui/swift-ui');
-
-    return (
-      <Animated.View entering={LIST_ITEM_ENTERING}>
-        <Host matchContents>
-          <ContextMenu>
-            <ContextMenu.Items>
-              <ExpoButton label={t('actions.edit')} systemImage="pencil" onPress={navigateToEdit} />
-              <ExpoButton
-                label={t('shareLink.title')}
-                systemImage="link"
-                onPress={navigateToShareLink}
-              />
-              {room.status === RoomStatus.active && onStatusChange && (
-                <ExpoButton
-                  label={t('actions.pause')}
-                  systemImage="pause.circle"
-                  onPress={handleTogglePause}
-                />
-              )}
-              {room.status === RoomStatus.paused && onStatusChange && (
-                <ExpoButton
-                  label={t('actions.activate')}
-                  systemImage="play.circle"
-                  onPress={handleTogglePause}
-                />
-              )}
-              {room.status === RoomStatus.draft && onDelete && (
-                <ExpoButton
-                  label={t('actions.deleteDraft')}
-                  systemImage="trash"
-                  role="destructive"
-                  onPress={handleDelete}
-                />
-              )}
-            </ContextMenu.Items>
-            <ContextMenu.Trigger>{cardContent}</ContextMenu.Trigger>
-          </ContextMenu>
-        </Host>
-      </Animated.View>
-    );
-  }
-
-  // Android: long-press opens action sheet
-  const handleLongPress = () => {
-    const options: { text: string; onPress: () => void; style?: 'destructive' | 'cancel' }[] = [
-      { text: t('actions.edit'), onPress: navigateToEdit },
-      { text: t('shareLink.title'), onPress: navigateToShareLink },
-    ];
-
-    if (room.status === RoomStatus.active && onStatusChange) {
-      options.push({ text: t('actions.pause'), onPress: handleTogglePause });
-    }
-    if (room.status === RoomStatus.paused && onStatusChange) {
-      options.push({ text: t('actions.activate'), onPress: handleTogglePause });
-    }
-    if (room.status === RoomStatus.draft && onDelete) {
-      options.push({ text: t('actions.deleteDraft'), onPress: handleDelete, style: 'destructive' });
-    }
-    options.push({ text: tCommon('cancel'), onPress: () => {}, style: 'cancel' });
-
-    Alert.alert(room.title || tEnums('room_status.draft'), undefined, options);
-  };
-
   return (
     <Animated.View entering={LIST_ITEM_ENTERING}>
-      <Pressable onLongPress={handleLongPress}>{cardContent}</Pressable>
+      <AppContextMenu actions={menuActions}>{cardContent}</AppContextMenu>
     </Animated.View>
   );
 }

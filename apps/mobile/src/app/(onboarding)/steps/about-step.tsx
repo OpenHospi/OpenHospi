@@ -1,17 +1,21 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender, StudyLevel, Vereniging } from '@openhospi/shared/enums';
-import { useImperativeHandle, useState } from 'react';
+import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
+import { useEffect, useImperativeHandle, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 import { CitySearchInput } from '@/components/forms/city-search';
 import { DatePickerSheet } from '@/components/forms/date-picker-sheet';
-import { NativeMenuPicker } from '@/components/forms/native-menu-picker';
 import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
 import { ThemedInput } from '@/components/native/input';
+import { NativePicker } from '@/components/native/picker';
 import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
+import { hapticFormSubmitError } from '@/lib/haptics';
 import { useSubmitAbout } from '@/services/onboarding';
-import type { ProfileWithPhotos } from '@openhospi/shared/api-types';
 
 import type { StepHandle } from '@/components/shared/onboarding-types';
 
@@ -20,6 +24,17 @@ type Props = {
   onNext: () => void;
   profile: ProfileWithPhotos | undefined;
 };
+
+const aboutSchema = z.object({
+  gender: z.string().min(1),
+  birthDate: z.date(),
+  studyProgram: z.string().trim().min(1),
+  studyLevel: z.string().nullable(),
+  preferredCity: z.string().min(1),
+  vereniging: z.string().nullable(),
+});
+
+type AboutForm = z.infer<typeof aboutSchema>;
 
 function toDateObject(dateStr: string | null | undefined): Date {
   if (dateStr) {
@@ -44,57 +59,90 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
     keyPrefix: 'app.onboarding.placeholders',
   });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { t: tVerenigingEnums } = useTranslation('translation', {
-    keyPrefix: 'enums.vereniging',
-  });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
   const { t: tErrors } = useTranslation('translation', { keyPrefix: 'common.errors' });
 
-  const [gender, setGender] = useState<string | null>(profile?.gender ?? null);
-  const [birthDate, setBirthDate] = useState(() => toDateObject(profile?.birthDate));
-  const [studyProgram, setStudyProgram] = useState(profile?.studyProgram ?? '');
-  const [studyLevel, setStudyLevel] = useState<string | null>(profile?.studyLevel ?? null);
-  const [preferredCity, setPreferredCity] = useState<string | null>(profile?.preferredCity ?? null);
-  const [vereniging, setVereniging] = useState<string | null>(profile?.vereniging ?? null);
+  const [formResetCounter, setFormResetCounter] = useState(0);
 
   const submitAbout = useSubmitAbout();
 
-  function handleSubmit() {
-    if (!gender || !studyProgram.trim() || !preferredCity) {
-      Alert.alert(tOnboarding('errors.requiredFields'));
-      return;
-    }
+  const { control, handleSubmit, watch } = useForm<AboutForm>({
+    resolver: zodResolver(aboutSchema),
+    defaultValues: {
+      gender: profile?.gender ?? '',
+      birthDate: toDateObject(profile?.birthDate),
+      studyProgram: profile?.studyProgram ?? '',
+      studyLevel: profile?.studyLevel ?? null,
+      preferredCity: profile?.preferredCity ?? '',
+      vereniging: profile?.vereniging ?? null,
+    },
+  });
+
+  useEffect(() => {
+    setFormResetCounter((n) => n + 1);
+  }, [
+    profile?.gender,
+    profile?.birthDate,
+    profile?.studyProgram,
+    profile?.studyLevel,
+    profile?.preferredCity,
+    profile?.vereniging,
+  ]);
+
+  const gender = watch('gender');
+
+  function onSubmit(data: AboutForm) {
     submitAbout.mutate(
       {
-        gender,
-        birthDate: toISODate(birthDate),
-        studyProgram: studyProgram.trim(),
-        studyLevel: studyLevel || undefined,
-        preferredCity,
-        vereniging: vereniging || undefined,
+        gender: data.gender,
+        birthDate: toISODate(data.birthDate),
+        studyProgram: data.studyProgram.trim(),
+        studyLevel: data.studyLevel ?? undefined,
+        preferredCity: data.preferredCity,
+        vereniging: data.vereniging ?? undefined,
       },
-      { onSuccess: onNext, onError: () => Alert.alert(tErrors('generic')) }
+      {
+        onSuccess: onNext,
+        onError: () => {
+          hapticFormSubmitError();
+          Alert.alert(tErrors('generic'));
+        },
+      }
     );
   }
 
-  useImperativeHandle(ref, () => ({ submit: handleSubmit }));
+  function submitWithValidation() {
+    void handleSubmit(onSubmit, () => {
+      hapticFormSubmitError();
+      Alert.alert(tOnboarding('errors.requiredFields'));
+    })();
+  }
+
+  useImperativeHandle(ref, () => ({ submit: submitWithValidation }));
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={styles.scrollContent}>
+      contentContainerStyle={styles.scrollContent}
+      key={formResetCounter}>
       <View style={styles.field}>
         <ThemedText variant="subheadline" weight="500">
           {t('gender')}
         </ThemedText>
-        <NativeMenuPicker
-          values={Gender.values}
-          selected={gender}
-          onSelect={setGender}
-          placeholder={t('gender')}
-          t={(v) => tEnums(`gender.${v}`)}
+        <Controller
+          control={control}
+          name="gender"
+          render={({ field }) => (
+            <NativePicker
+              value={field.value ?? ''}
+              options={Gender.values.map((v) => ({ value: v, label: tEnums(`gender.${v}`) }))}
+              onValueChange={field.onChange}
+              placeholder={t('gender')}
+              label={t('gender')}
+            />
+          )}
         />
         {gender === Gender.prefer_not_to_say && (
           <ThemedText variant="footnote" color={colors.tertiaryForeground}>
@@ -107,12 +155,18 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         <ThemedText variant="subheadline" weight="500">
           {t('birthDate')}
         </ThemedText>
-        <DatePickerSheet
-          value={birthDate}
-          onChange={setBirthDate}
-          title={t('birthDate')}
-          maximumDate={new Date()}
-          minimumDate={new Date(1950, 0, 1)}
+        <Controller
+          control={control}
+          name="birthDate"
+          render={({ field }) => (
+            <DatePickerSheet
+              value={field.value}
+              onChange={field.onChange}
+              title={t('birthDate')}
+              maximumDate={new Date()}
+              minimumDate={new Date(1950, 0, 1)}
+            />
+          )}
         />
       </View>
 
@@ -120,10 +174,19 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         <ThemedText variant="subheadline" weight="500">
           {t('studyProgram')}
         </ThemedText>
-        <ThemedInput
-          value={studyProgram}
-          onChangeText={setStudyProgram}
-          placeholder={tPlaceholders('studyProgram')}
+        <Controller
+          control={control}
+          name="studyProgram"
+          render={({ field }) => (
+            <ThemedInput
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder={tPlaceholders('studyProgram')}
+              autoCapitalize="sentences"
+              accessibilityLabel={t('studyProgram')}
+            />
+          )}
         />
       </View>
 
@@ -131,12 +194,21 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         <ThemedText variant="subheadline" weight="500">
           {t('studyLevel')}
         </ThemedText>
-        <NativeMenuPicker
-          values={StudyLevel.values}
-          selected={studyLevel}
-          onSelect={setStudyLevel}
-          placeholder={tPlaceholders('studyLevel')}
-          t={(v) => tEnums(`study_level.${v}`)}
+        <Controller
+          control={control}
+          name="studyLevel"
+          render={({ field }) => (
+            <NativePicker
+              value={field.value ?? ''}
+              options={StudyLevel.values.map((v) => ({
+                value: v,
+                label: tEnums(`study_level.${v}`),
+              }))}
+              onValueChange={(v) => field.onChange(v || null)}
+              placeholder={tPlaceholders('studyLevel')}
+              label={t('studyLevel')}
+            />
+          )}
         />
       </View>
 
@@ -144,10 +216,16 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
         <ThemedText variant="subheadline" weight="500">
           {t('preferredCity')}
         </ThemedText>
-        <CitySearchInput
-          value={preferredCity ?? ''}
-          onSelect={setPreferredCity}
-          placeholder={tPlaceholders('preferredCity')}
+        <Controller
+          control={control}
+          name="preferredCity"
+          render={({ field }) => (
+            <CitySearchInput
+              value={field.value}
+              onSelect={field.onChange}
+              placeholder={tPlaceholders('preferredCity')}
+            />
+          )}
         />
       </View>
 
@@ -158,14 +236,19 @@ export default function AboutStep({ ref, onNext, profile }: Props) {
             ({tCommon('optional')})
           </ThemedText>
         </ThemedText>
-        <SelectPickerSheet
-          values={Vereniging.values}
-          selected={vereniging}
-          onSelect={setVereniging}
-          title={t('vereniging')}
-          placeholder={tPlaceholders('vereniging')}
-          searchPlaceholder={tPlaceholders('searchVereniging')}
-          t={tVerenigingEnums}
+        <Controller
+          control={control}
+          name="vereniging"
+          render={({ field }) => (
+            <SelectPickerSheet
+              values={Vereniging.values}
+              selected={field.value}
+              onSelect={field.onChange}
+              placeholder={tPlaceholders('vereniging')}
+              searchPlaceholder={tPlaceholders('searchVereniging')}
+              translationKeyPrefix="enums.vereniging"
+            />
+          )}
         />
       </View>
     </ScrollView>

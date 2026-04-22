@@ -1,7 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
   runOnJS,
@@ -15,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
 import { ThemedAvatar } from '@/components/native/avatar';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { GroupedSection } from '@/components/layout/grouped-section';
@@ -22,7 +21,6 @@ import { NativeDivider } from '@/components/native/divider';
 import { useTheme } from '@/design';
 import { SPRING_SNAPPY } from '@/lib/animations';
 import { hapticLight, hapticMedium } from '@/lib/haptics';
-import { isIOS } from '@/lib/platform';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useSubmitVotes, useVotableApplicants, useVoteBoard } from '@/services/my-rooms';
 import type { VotableApplicant } from '@openhospi/shared/api-types';
@@ -108,15 +106,12 @@ function DraggableItem({
         </ThemedText>
         <GestureDetector gesture={pan}>
           <Animated.View style={styles.dragHandle}>
-            {isIOS ? (
-              <SymbolView
-                name="line.3.horizontal"
-                size={20}
-                tintColor={colors.tertiaryForeground}
-              />
-            ) : (
-              <MaterialIcons name="drag-indicator" size={20} color={colors.tertiaryForeground} />
-            )}
+            <NativeIcon
+              name="line.3.horizontal"
+              androidName="drag-indicator"
+              size={20}
+              color={colors.tertiaryForeground}
+            />
           </Animated.View>
         </GestureDetector>
       </View>
@@ -142,14 +137,14 @@ export default function VotingScreen() {
     setInitialized(true);
   }
 
-  const handleReorder = useCallback((fromIndex: number, toIndex: number) => {
+  const handleReorder = (fromIndex: number, toIndex: number) => {
     setRankings((prev) => {
       const next = [...prev];
       const [moved] = next.splice(fromIndex, 1);
       next.splice(toIndex, 0, moved);
       return next;
     });
-  }, []);
+  };
 
   if (loadingApplicants || loadingBoard) {
     return <SkeletonVoting />;
@@ -214,6 +209,9 @@ export default function VotingScreen() {
           {board && (
             <GroupedSection inset={false}>
               <AnimatedPressable
+                accessibilityRole="button"
+                accessibilityLabel={t('voteBoard')}
+                accessibilityState={{ expanded: showBoard }}
                 onPress={() => {
                   hapticLight();
                   setShowBoard(!showBoard);

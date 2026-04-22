@@ -1,38 +1,35 @@
+import type { ApplicationStatus } from '@openhospi/shared/enums';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Dot } from 'lucide-react-native';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
-import { isIOS } from '@/lib/platform';
-
-import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
 import { HospiInvitationCard } from '@/components/events/hospi-invitation-card';
+import { GroupedSection } from '@/components/layout/grouped-section';
 import { ThemedBadge } from '@/components/native/badge';
 import { NativeButton } from '@/components/native/button';
+import { NativeIcon } from '@/components/native/icon';
+import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { GroupedSection } from '@/components/layout/grouped-section';
-import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/design';
+import { radius } from '@/design/tokens/radius';
+import { hapticDelete } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
 import { useApplicationDetail, useWithdrawApplication } from '@/services/applications';
-import type { ApplicationStatus } from '@openhospi/shared/enums';
 
 const TIMELINE_STEPS: ApplicationStatus[] = ['sent', 'seen', 'liked', 'hospi', 'accepted'];
+const TERMINAL_STATUSES: ApplicationStatus[] = ['rejected', 'not_chosen', 'withdrawn'];
 
 function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus }) {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications.timeline' });
   const { colors } = useTheme();
 
-  const terminalStatuses = ['rejected', 'not_chosen', 'withdrawn'] as const;
-  const isTerminal = (terminalStatuses as readonly string[]).includes(currentStatus);
-
+  const isTerminal = TERMINAL_STATUSES.includes(currentStatus);
   const currentIndex = TIMELINE_STEPS.indexOf(currentStatus);
 
   return (
-    <View style={{ gap: 0 }}>
+    <View>
       {TIMELINE_STEPS.map((step, index) => {
         const isReached = currentIndex >= index;
         const isLast = index === TIMELINE_STEPS.length - 1;
@@ -46,14 +43,14 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
                   { backgroundColor: isReached ? colors.primary : colors.muted },
                 ]}
               />
-              {!isLast && (
+              {!isLast ? (
                 <View
                   style={[
                     styles.timelineConnector,
                     { backgroundColor: isReached ? colors.primary : colors.muted },
                   ]}
                 />
-              )}
+              ) : null}
             </View>
             <ThemedText
               variant="subheadline"
@@ -66,7 +63,7 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
         );
       })}
 
-      {isTerminal && (
+      {isTerminal ? (
         <View style={styles.timelineStep}>
           <View style={styles.timelineLine}>
             <View
@@ -77,12 +74,29 @@ function StatusTimeline({ currentStatus }: { currentStatus: ApplicationStatus })
             variant="subheadline"
             weight="500"
             color={colors.destructive}
-            style={{ marginLeft: 8 }}>
+            style={styles.timelineLabel}>
             {t(currentStatus)}
           </ThemedText>
         </View>
-      )}
+      ) : null}
     </View>
+  );
+}
+
+function LoadingState() {
+  const { colors, spacing } = useTheme();
+  return (
+    <ScrollView
+      style={[styles.flex, { backgroundColor: colors.background }]}
+      contentInsetAdjustmentBehavior="automatic">
+      <ThemedSkeleton width="100%" height={200} rounded="sm" />
+      <View style={[styles.content, { gap: spacing['2xl'], padding: spacing.lg }]}>
+        <ThemedSkeleton width="70%" height={28} />
+        <ThemedSkeleton width="50%" height={18} />
+        <ThemedSkeleton width="100%" height={120} rounded="lg" />
+        <ThemedSkeleton width="100%" height={80} rounded="lg" />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -92,15 +106,15 @@ export default function ApplicationDetailScreen() {
   const { t } = useTranslation('translation', { keyPrefix: 'app.applications' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
-  const { colors } = useTheme();
+  const { colors, spacing } = useTheme();
 
   const { data: app, isPending } = useApplicationDetail(id);
   const withdrawMutation = useWithdrawApplication();
 
-  const canWithdraw =
-    app && !(['rejected', 'accepted', 'not_chosen', 'withdrawn'] as string[]).includes(app.status);
+  const canWithdraw = app && !TERMINAL_STATUSES.includes(app.status);
 
   const handleWithdraw = () => {
+    hapticDelete();
     Alert.alert(t('withdrawConfirmTitle'), t('withdrawConfirmDescription'), [
       { text: tCommon('cancel'), style: 'cancel' },
       {
@@ -116,17 +130,16 @@ export default function ApplicationDetailScreen() {
   };
 
   if (isPending) {
-    return (
-      <SafeAreaView style={[styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
-    );
+    return <LoadingState />;
   }
 
   if (!app) {
     return (
       <SafeAreaView
-        style={[styles.centered, { backgroundColor: colors.background, paddingHorizontal: 32 }]}>
+        style={[
+          styles.centered,
+          { backgroundColor: colors.background, paddingHorizontal: spacing['3xl'] },
+        ]}>
         <ThemedText variant="body" color={colors.tertiaryForeground} style={styles.textCenter}>
           {t('errors.not_found')}
         </ThemedText>
@@ -141,51 +154,65 @@ export default function ApplicationDetailScreen() {
   return (
     <SafeAreaView style={[styles.flex, { backgroundColor: colors.background }]} edges={['bottom']}>
       <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
         style={styles.flex}
-        contentContainerStyle={{ paddingBottom: canWithdraw ? 80 : 16 }}>
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{ paddingBottom: canWithdraw ? 96 : spacing.lg }}>
         {coverUrl ? (
-          <Image source={{ uri: coverUrl }} style={styles.coverImage} contentFit="cover" />
+          <Image
+            source={{ uri: coverUrl }}
+            style={styles.coverImage}
+            contentFit="cover"
+            accessibilityLabel={app.roomTitle}
+          />
         ) : (
           <View style={[styles.placeholderCover, { backgroundColor: colors.muted }]}>
-            {isIOS ? (
-              <SymbolView name="house" size={48} tintColor={colors.mutedForeground} />
-            ) : (
-              <MaterialIcons name="home" size={48} color={colors.mutedForeground} />
-            )}
+            <NativeIcon name="house" androidName="home" size={48} color={colors.mutedForeground} />
           </View>
         )}
 
-        <View style={styles.content}>
+        <View style={[styles.content, { gap: spacing['2xl'], padding: spacing.lg }]}>
           <View>
             <ThemedText variant="title2">{app.roomTitle}</ThemedText>
             <View style={styles.metaRow}>
               <ThemedText variant="body" color={colors.tertiaryForeground}>
                 {tEnums(`city.${app.roomCity}`)}
               </ThemedText>
-              {app.roomHouseType && (
+              {app.roomHouseType ? (
                 <>
-                  <Dot size={16} color={colors.mutedForeground} />
+                  <NativeIcon
+                    name="circle.fill"
+                    iosName="circle.fill"
+                    androidName="fiber-manual-record"
+                    size={4}
+                    color={colors.mutedForeground}
+                  />
                   <ThemedText variant="body" color={colors.tertiaryForeground}>
                     {tEnums(`house_type.${app.roomHouseType}`)}
                   </ThemedText>
                 </>
-              )}
-              {app.roomSizeM2 && (
+              ) : null}
+              {app.roomSizeM2 ? (
                 <>
-                  <Dot size={16} color={colors.mutedForeground} />
+                  <NativeIcon
+                    name="circle.fill"
+                    iosName="circle.fill"
+                    androidName="fiber-manual-record"
+                    size={4}
+                    color={colors.mutedForeground}
+                  />
                   <ThemedText variant="body" color={colors.tertiaryForeground}>
                     {app.roomSizeM2}m²
                   </ThemedText>
                 </>
-              )}
+              ) : null}
             </View>
             <View style={styles.priceRow}>
-              {isIOS ? (
-                <SymbolView name="eurosign" size={18} tintColor={colors.primary} />
-              ) : (
-                <MaterialIcons name="euro" size={18} color={colors.primary} />
-              )}
+              <NativeIcon
+                name="eurosign"
+                androidName="euro-symbol"
+                size={18}
+                color={colors.primary}
+              />
               <ThemedText variant="headline" color={colors.primary}>
                 {app.roomRentPrice}
                 {tCommon('perMonth')}
@@ -202,62 +229,70 @@ export default function ApplicationDetailScreen() {
             <ThemedText
               variant="caption1"
               color={colors.tertiaryForeground}
-              style={{ marginTop: 4 }}>
+              style={{ marginTop: spacing.xs }}>
               {t('appliedOn', { date: new Date(app.appliedAt).toLocaleDateString() })}
             </ThemedText>
           </View>
 
           <View>
-            <ThemedText variant="body" weight="600" style={{ marginBottom: 12 }}>
+            <ThemedText variant="body" weight="600" style={{ marginBottom: spacing.md }}>
               {t('timeline.title')}
             </ThemedText>
             <StatusTimeline currentStatus={app.status} />
           </View>
 
-          {app.invitation && (
+          {app.invitation ? (
             <HospiInvitationCard invitation={app.invitation} applicationId={app.id} />
-          )}
+          ) : null}
 
-          {app.personalMessage && (
+          {app.personalMessage ? (
             <View>
-              <ThemedText variant="body" weight="600" style={{ marginBottom: 8 }}>
+              <ThemedText variant="body" weight="600" style={{ marginBottom: spacing.sm }}>
                 {t('yourMessage')}
               </ThemedText>
-              <GroupedSection>
-                <View style={{ padding: 16 }}>
+              <GroupedSection inset={false}>
+                <View style={{ padding: spacing.lg }}>
                   <ThemedText variant="subheadline">{app.personalMessage}</ThemedText>
                 </View>
               </GroupedSection>
             </View>
-          )}
+          ) : null}
 
           <NativeButton
             label={t('viewRoom')}
             variant="outline"
+            systemImage="house"
+            materialIcon="home"
             onPress={() =>
               router.push({ pathname: '/(app)/room/[id]', params: { id: app.roomId } })
             }
+            accessibilityHint={app.roomTitle}
           />
         </View>
       </ScrollView>
 
-      {canWithdraw && (
+      {canWithdraw ? (
         <View
           style={[
             styles.bottomBar,
             {
               borderTopColor: colors.border,
               backgroundColor: colors.background,
+              paddingHorizontal: spacing.lg,
+              paddingTop: spacing.md,
+              paddingBottom: spacing['2xl'],
             },
           ]}>
           <NativeButton
-            label={withdrawMutation.isPending ? '...' : t('withdraw')}
+            label={t('withdraw')}
             variant="destructive"
             onPress={handleWithdraw}
+            loading={withdrawMutation.isPending}
             disabled={withdrawMutation.isPending}
+            accessibilityHint={t('withdrawConfirmDescription')}
           />
         </View>
-      )}
+      ) : null}
     </SafeAreaView>
   );
 }
@@ -284,20 +319,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
-    gap: 24,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
+  content: {},
   metaRow: {
     marginTop: 4,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
   },
   priceRow: {
     marginTop: 4,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 2,
   },
   timelineStep: {
     flexDirection: 'row',
@@ -318,7 +351,7 @@ const styles = StyleSheet.create({
     minHeight: 24,
   },
   timelineLabel: {
-    marginLeft: 8,
+    marginStart: 8,
     paddingBottom: 16,
   },
   bottomBar: {
@@ -326,9 +359,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 32,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
 });

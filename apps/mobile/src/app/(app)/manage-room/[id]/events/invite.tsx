@@ -1,9 +1,9 @@
 import { INVITABLE_APPLICATION_STATUSES } from '@openhospi/shared/enums';
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Users } from 'lucide-react-native';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { AnimatedPressable } from '@/components/shared/animated-pressable';
@@ -15,7 +15,7 @@ import { ThemedCheckbox } from '@/components/native/checkbox';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
 import { NativeDivider } from '@/components/native/divider';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
 import { hapticLight } from '@/lib/haptics';
 import { getStoragePublicUrl } from '@/lib/storage-url';
@@ -42,7 +42,8 @@ export default function InviteApplicantsScreen() {
   const router = useRouter();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms.invite' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
 
   const { data: allApplicants, isLoading } = useRoomApplicants(id);
   const batchInvite = useBatchInvite();
@@ -89,7 +90,6 @@ export default function InviteApplicantsScreen() {
     return (
       <NativeEmptyState
         sfSymbol="person.crop.rectangle.stack"
-        icon={Users}
         title={t('inviteApplicants')}
         subtitle={t('noInvitable')}
       />
@@ -145,13 +145,22 @@ export default function InviteApplicantsScreen() {
         ItemSeparatorComponent={NativeDivider}
       />
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={t('submit', { count: selected.size })}
           onPress={handleInvite}
           disabled={selected.size === 0 || batchInvite.isPending}
         />
-      </BlurBottomBar>
+      </PlatformSurface>
     </View>
   );
 }

@@ -92,6 +92,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: 'nl.openhospi.app',
     softwareKeyboardLayoutMode: 'resize',
+    predictiveBackGestureEnabled: true,
     permissions: [
       'CAMERA',
       'READ_MEDIA_IMAGES',

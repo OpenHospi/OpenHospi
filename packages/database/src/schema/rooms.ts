@@ -58,16 +58,24 @@ export const rooms = pgTable(
     municipality: text("municipality"),
     latitude: doublePrecision("latitude"),
     longitude: doublePrecision("longitude"),
-    rentPrice: numeric("rent_price", { precision: 7, scale: 2 }).notNull().default("0"),
-    deposit: numeric("deposit", { precision: 7, scale: 2 }),
+    rentPrice: numeric("rent_price", { precision: 7, scale: 2, mode: "number" })
+      .notNull()
+      .default(0),
+    deposit: numeric("deposit", { precision: 7, scale: 2, mode: "number" }),
     utilitiesIncluded: utilitiesIncludedEnum("utilities_included").default(
       UtilitiesIncluded.included,
     ),
-    serviceCosts: numeric("service_costs", { precision: 7, scale: 2 }),
-    estimatedUtilitiesCosts: numeric("estimated_utilities_costs", { precision: 7, scale: 2 }),
-    totalCost: numeric("total_cost", { precision: 7, scale: 2 }).generatedAlwaysAs(
-      sql`rent_price + COALESCE(service_costs, 0) + COALESCE(estimated_utilities_costs, 0)`,
-    ),
+    serviceCosts: numeric("service_costs", { precision: 7, scale: 2, mode: "number" }),
+    estimatedUtilitiesCosts: numeric("estimated_utilities_costs", {
+      precision: 7,
+      scale: 2,
+      mode: "number",
+    }),
+    totalCost: numeric("total_cost", { precision: 7, scale: 2, mode: "number" })
+      .notNull()
+      .generatedAlwaysAs(
+        sql`rent_price + COALESCE(service_costs, 0) + COALESCE(estimated_utilities_costs, 0)`,
+      ),
     roomSizeM2: integer("room_size_m2"),
     availableFrom: date("available_from"),
     availableUntil: date("available_until"),

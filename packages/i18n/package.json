@@ -10,6 +10,7 @@
     "./web": "./src/web.ts",
     "./admin": "./src/admin.ts",
     "./app": "./src/app.ts",
+    "./email": "./src/email.ts",
     "./messages/*": "./messages/*"
   },
   "scripts": {

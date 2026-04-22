@@ -69,7 +69,12 @@
       "loading": "Laden...",
       "uploading": "Hochladen...",
       "uploaded": "Hochgeladen",
-      "language": "Sprache"
+      "language": "Sprache",
+      "appearance": "Darstellung",
+      "system": "System",
+      "light": "Hell",
+      "dark": "Dunkel",
+      "dynamicColor": "Dynamische Farbe"
     },
     "gallery": {
       "lightboxTitle": "Fotogalerie",
@@ -511,6 +516,8 @@
         "city": "Stadt",
         "cityPlaceholder": "Alle Städte",
         "priceRange": "Preisspanne",
+        "minPrice": "Min",
+        "maxPrice": "Max",
         "houseType": "Wohnungstyp",
         "houseTypePlaceholder": "Alle Typen",
         "furnishing": "Einrichtung",
@@ -654,7 +661,7 @@
         "pin_hint": "Diese PIN schützt deinen Verschlüsselungsschlüssel. Du brauchst sie, um deine Chats auf einem neuen Gerät wiederherzustellen.",
         "setup_success": "Chat-Verschlüsselung erfolgreich eingerichtet",
         "setup_error": "Verschlüsselung konnte nicht eingerichtet werden. Bitte versuche es erneut.",
-        "generating_keys": "Verschlüsselungsschlüssel werden generiert\u2026",
+        "generating_keys": "Verschlüsselungsschlüssel werden generiert…",
         "change_pin": "PIN ändern",
         "recovery_title": "Verschlüsselungsschlüssel wiederherstellen",
         "recovery_description": "Gib die PIN ein, die du beim Onboarding gewählt hast, um deine Verschlüsselungsschlüssel wiederherzustellen.",
@@ -1364,33 +1371,33 @@
       "room_info": "Zimmerinfo",
       "safety_number": {
         "title": "Sicherheitsnummer",
-        "description": "Vergleiche diese Nummer mit {name}, um zu \u00fcberpr\u00fcfen, ob euer Gespr\u00e4ch Ende-zu-Ende-verschl\u00fcsselt ist.",
-        "loading": "Sicherheitsnummer wird generiert\u2026",
-        "instructions": "Wenn diese Nummer auf beiden Ger\u00e4ten \u00fcbereinstimmt, ist euer Gespr\u00e4ch sicher. Vergleicht pers\u00f6nlich oder \u00fcber einen vertrauensw\u00fcrdigen Kanal.",
-        "unavailable": "Sicherheitsnummer nicht verf\u00fcgbar. Beide Nutzer m\u00fcssen die Verschl\u00fcsselung eingerichtet haben.",
+        "description": "Vergleiche diese Nummer mit {name}, um zu überprüfen, ob euer Gespräch Ende-zu-Ende-verschlüsselt ist.",
+        "loading": "Sicherheitsnummer wird generiert…",
+        "instructions": "Wenn diese Nummer auf beiden Geräten übereinstimmt, ist euer Gespräch sicher. Vergleicht persönlich oder über einen vertrauenswürdigen Kanal.",
+        "unavailable": "Sicherheitsnummer nicht verfügbar. Beide Nutzer müssen die Verschlüsselung eingerichtet haben.",
         "qr_tab": "Dein Code",
         "scan_tab": "Code scannen",
         "scan_instructions": "Richte deine Kamera auf den QR-Code der anderen Person",
         "verified": "Verifiziert",
-        "verified_description": "Eure Sicherheitsnummern stimmen \u00fcberein. Dieses Gespr\u00e4ch ist sicher.",
+        "verified_description": "Eure Sicherheitsnummern stimmen überein. Dieses Gespräch ist sicher.",
         "already_verified": "Zuvor verifiziert am {date}",
-        "mismatch": "Keine \u00dcbereinstimmung",
-        "mismatch_description": "Die Sicherheitsnummern stimmen nicht \u00fcberein. Diese Verbindung ist m\u00f6glicherweise nicht sicher.",
-        "key_changed": "Sicherheitscode ge\u00e4ndert",
-        "key_changed_description": "Der Sicherheitsschl\u00fcssel von {name} hat sich ge\u00e4ndert. Tippe, um erneut zu verifizieren.",
+        "mismatch": "Keine Übereinstimmung",
+        "mismatch_description": "Die Sicherheitsnummern stimmen nicht überein. Diese Verbindung ist möglicherweise nicht sicher.",
+        "key_changed": "Sicherheitscode geändert",
+        "key_changed_description": "Der Sicherheitsschlüssel von {name} hat sich geändert. Tippe, um erneut zu verifizieren.",
         "reverify": "Erneut verifizieren",
-        "camera_permission": "Kamerazugriff wird ben\u00f6tigt, um QR-Codes zu scannen",
+        "camera_permission": "Kamerazugriff wird benötigt, um QR-Codes zu scannen",
         "camera_permission_settings": "Aktiviere den Kamerazugriff in den Einstellungen, um QR-Codes zu scannen.",
         "grant_camera": "Kamera erlauben",
-        "open_settings": "Einstellungen \u00f6ffnen",
-        "invalid_qr": "Dieser QR-Code ist keine g\u00fcltige OpenHospi-Sicherheitsnummer",
+        "open_settings": "Einstellungen öffnen",
+        "invalid_qr": "Dieser QR-Code ist keine gültige OpenHospi-Sicherheitsnummer",
         "scan_own_qr": "Du hast deinen eigenen QR-Code gescannt",
         "mark_verified": "Als verifiziert markieren",
         "confirm_title": "{name} verifizieren?",
-        "confirm_description": "Hast du diese Sicherheitsnummern mit {name} pers\u00f6nlich oder \u00fcber einen vertrauensw\u00fcrdigen Kanal verglichen?",
+        "confirm_description": "Hast du diese Sicherheitsnummern mit {name} persönlich oder über einen vertrauenswürdigen Kanal verglichen?",
         "try_again": "Erneut versuchen",
         "done": "Fertig",
-        "close": "Schlie\u00dfen"
+        "close": "Schließen"
       },
       "encryption": {
         "unlock_title": "Entsperre deine Chats",
@@ -1448,64 +1455,6 @@
       "submit": "Meldung einreichen",
       "success": "Meldung eingereicht. Vielen Dank.",
       "error": "Meldung konnte nicht eingereicht werden. Bitte versuche es erneut."
-    }
-  },
-  "emails": {
-    "common": {
-      "footer": "OpenHospi | Kostenlose Plattform für Studentenzimmer in den Niederlanden",
-      "doNotReply": "Dies ist eine automatische Nachricht. Bitte antworte nicht auf diese E-Mail.",
-      "viewInApp": "In der App ansehen"
-    },
-    "verificationCode": {
-      "subject": "Dein OpenHospi-Verifizierungscode",
-      "heading": "Bestätige deine E-Mail",
-      "codeLabel": "Dein Verifizierungscode:",
-      "expiresIn": "Dieser Code läuft in 60 Minuten ab."
-    },
-    "eventInvitation": {
-      "subject": "Du bist zu einem Hospi-Event eingeladen: {eventTitle}",
-      "heading": "Du bist eingeladen!",
-      "body": "Du wurdest zum Hospi-Event \"{eventTitle}\" für das Zimmer \"{roomTitle}\" eingeladen.",
-      "cta": "Einladung ansehen"
-    },
-    "eventReminder": {
-      "subject": "Erinnerung: {eventTitle} steht bevor",
-      "heading": "Eventerinnerung",
-      "body": "Zur Erinnerung: \"{eventTitle}\" beginnt um {time}.",
-      "cta": "Event ansehen"
-    },
-    "eventCancelled": {
-      "subject": "Event abgesagt: {eventTitle}",
-      "heading": "Event abgesagt",
-      "body": "Das Hospi-Event \"{eventTitle}\" wurde vom Veranstalter abgesagt."
-    },
-    "rsvpReceived": {
-      "subject": "RSVP erhalten von {name}",
-      "heading": "Neue RSVP",
-      "body": "{name} hat geantwortet mit: {status}."
-    },
-    "applicationAccepted": {
-      "subject": "Herzlichen Glückwunsch! Deine Bewerbung für \"{roomTitle}\" wurde angenommen",
-      "heading": "Bewerbung angenommen!",
-      "body": "Gute Nachrichten! Du wurdest für das Zimmer \"{roomTitle}\" ausgewählt. Der Eigentümer wird sich bezüglich der nächsten Schritte bei dir melden.",
-      "cta": "Zimmer ansehen"
-    },
-    "applicationNotChosen": {
-      "subject": "Update zu deiner Bewerbung für \"{roomTitle}\"",
-      "heading": "Bewerbungsupdate",
-      "body": "Leider ist das Zimmer \"{roomTitle}\" bereits vergeben. Gib nicht auf, es gibt viele andere verfügbare Zimmer!"
-    },
-    "userBanned": {
-      "subject": "Dein OpenHospi-Konto wurde gesperrt",
-      "heading": "Konto gesperrt",
-      "body": "Dein Konto wurde aus folgendem Grund gesperrt: {reason}.",
-      "contact": "Wenn du glaubst, dass dies ein Fehler ist, kontaktiere uns bitte unter support@openhospi.nl."
-    },
-    "listingRemoved": {
-      "subject": "Dein Inserat wurde entfernt",
-      "heading": "Inserat entfernt",
-      "body": "Dein Inserat wurde aus folgendem Grund entfernt: {reason}.",
-      "contact": "Wenn du glaubst, dass dies ein Fehler ist, kontaktiere uns bitte unter support@openhospi.nl."
     }
   }
 }

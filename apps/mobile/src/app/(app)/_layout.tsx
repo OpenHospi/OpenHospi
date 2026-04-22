@@ -1,13 +1,20 @@
 import { Stack } from 'expo-router';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ConnectionStatusBar } from '@/components/feedback/connection-status-bar';
 import { DiscoverFiltersProvider } from '@/context/discover-filters';
+import { isIOS } from '@/lib/platform';
 
 const subScreenOptions = {
   animation: 'slide_from_right' as const,
-  ...(Platform.OS === 'ios' ? { headerTransparent: true } : {}),
+  ...(isIOS ? { headerTransparent: true } : {}),
+};
+
+const largeTitleOptions = {
+  ...subScreenOptions,
+  headerLargeTitle: true,
+  ...(isIOS ? { headerBlurEffect: 'regular' as const } : {}),
 };
 
 export default function AppLayout() {
@@ -26,16 +33,16 @@ export default function AppLayout() {
             options={{ headerShown: false, title: tBreadcrumbs('discover') }}
           />
           <Stack.Screen name="(modals)" options={{ headerShown: false }} />
-          <Stack.Screen name="room/[id]" options={{ title: '', ...subScreenOptions }} />
+          <Stack.Screen name="room/[id]" options={{ title: '', ...largeTitleOptions }} />
           <Stack.Screen
             name="application/[id]"
-            options={{ title: t('detailTitle'), ...subScreenOptions }}
+            options={{ title: t('detailTitle'), ...largeTitleOptions }}
           />
           <Stack.Screen
             name="settings"
-            options={{ title: tSettings('title'), ...subScreenOptions }}
+            options={{ title: tSettings('title'), ...largeTitleOptions }}
           />
-          <Stack.Screen name="my-house" options={{ ...subScreenOptions }} />
+          <Stack.Screen name="my-house" options={{ ...largeTitleOptions }} />
           <Stack.Screen name="join/[code]" options={{ ...subScreenOptions }} />
 
           {/* My Rooms — create wizard */}
@@ -74,20 +81,20 @@ export default function AppLayout() {
             options={{
               title: tRooms('manage.details'),
               headerBackTitle: tRooms('title'),
-              ...subScreenOptions,
+              ...largeTitleOptions,
             }}
           />
           <Stack.Screen
             name="manage-room/[id]/edit"
-            options={{ title: tRooms('actions.edit'), ...subScreenOptions }}
+            options={{ title: tRooms('actions.edit'), ...largeTitleOptions }}
           />
           <Stack.Screen
             name="manage-room/[id]/share-link"
-            options={{ title: tRooms('shareLink.title'), ...subScreenOptions }}
+            options={{ title: tRooms('shareLink.title'), ...largeTitleOptions }}
           />
           <Stack.Screen
             name="manage-room/[id]/applicants"
-            options={{ title: tRooms('applicants.title'), ...subScreenOptions }}
+            options={{ title: tRooms('applicants.title'), ...largeTitleOptions }}
           />
           <Stack.Screen
             name="manage-room/[id]/applicant/[applicantUserId]"
@@ -95,7 +102,7 @@ export default function AppLayout() {
           />
           <Stack.Screen
             name="manage-room/[id]/events/index"
-            options={{ title: tRooms('events.title'), ...subScreenOptions }}
+            options={{ title: tRooms('events.title'), ...largeTitleOptions }}
           />
           <Stack.Screen
             name="manage-room/[id]/events/create"
@@ -111,11 +118,11 @@ export default function AppLayout() {
           />
           <Stack.Screen
             name="manage-room/[id]/voting"
-            options={{ title: tRooms('voting.title'), ...subScreenOptions }}
+            options={{ title: tRooms('voting.title'), ...largeTitleOptions }}
           />
           <Stack.Screen
             name="manage-room/[id]/close-room"
-            options={{ title: tRooms('closeRoom.title'), ...subScreenOptions }}
+            options={{ title: tRooms('closeRoom.title'), ...largeTitleOptions }}
           />
         </Stack>
       </View>

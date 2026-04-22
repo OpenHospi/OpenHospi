@@ -1,33 +1,31 @@
 import { GenderPreference, Language, LocationTag, RoomFeature } from '@openhospi/shared/enums';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { MultiChipPicker } from '@/components/forms/multi-chip-picker';
-import { AppBottomSheetModal, type BottomSheetModal } from '@/components/shared/bottom-sheet';
+import { SelectPickerSheet } from '@/components/forms/select-picker-sheet';
 import { NativeButton } from '@/components/native/button';
 import { ThemedInput } from '@/components/native/input';
 import { ThemedSkeleton } from '@/components/native/skeleton';
 import { ThemedText } from '@/components/native/text';
-import { NativeSelect } from '@/components/native/select';
-import { BlurBottomBar } from '@/components/layout/blur-bottom-bar';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
-import { hapticLight } from '@/lib/haptics';
 import { useMyRoom, useSavePreferences } from '@/services/my-rooms';
 
 export default function PreferencesScreen() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { bottom } = useSafeAreaInsets();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation('translation', { keyPrefix: 'app.rooms' });
   const { t: tEnums } = useTranslation('translation', { keyPrefix: 'enums' });
   const { t: tCommon } = useTranslation('translation', { keyPrefix: 'common.labels' });
 
   const { data: room, isLoading } = useMyRoom(roomId);
   const savePreferences = useSavePreferences();
-  const genderSheetRef = useRef<BottomSheetModal>(null);
 
   const [features, setFeatures] = useState<string[]>([]);
   const [locationTags, setLocationTags] = useState<string[]>([]);
@@ -132,14 +130,13 @@ export default function PreferencesScreen() {
             {t('wizard.sectionDescriptions.preferences')}
           </ThemedText>
 
-          <NativeSelect
-            value={preferredGender}
-            options={GenderPreference.values.map((v: string) => ({
-              value: v,
-              label: tEnums(`gender_preference.${v}`),
-            }))}
-            onValueChange={setPreferredGender}
-            onPress={() => genderSheetRef.current?.present()}
+          <SelectPickerSheet
+            values={GenderPreference.values}
+            selected={preferredGender}
+            onSelect={(v) => setPreferredGender(v ?? GenderPreference.no_preference)}
+            placeholder={tEnums(`gender_preference.${GenderPreference.no_preference}`)}
+            searchPlaceholder={tEnums(`gender_preference.${GenderPreference.no_preference}`)}
+            translationKeyPrefix="enums.gender_preference"
           />
 
           <View style={styles.rowFields}>
@@ -190,39 +187,22 @@ export default function PreferencesScreen() {
         </View>
       </ScrollView>
 
-      <BlurBottomBar>
+      <PlatformSurface
+        variant="chrome"
+        edge="bottom"
+        glass="regular"
+        style={{
+          paddingHorizontal: spacing.lg,
+          paddingTop: spacing.md,
+          paddingBottom: Math.max(bottom, spacing.lg),
+          gap: spacing.sm,
+        }}>
         <NativeButton
           label={tCommon('next')}
           onPress={handleNext}
           loading={savePreferences.isPending}
         />
-      </BlurBottomBar>
-
-      <AppBottomSheetModal ref={genderSheetRef} enableDynamicSizing scrollable={false}>
-        <View style={styles.pickerContent}>
-          {GenderPreference.values.map((v: string) => (
-            <Pressable
-              key={v}
-              onPress={() => {
-                hapticLight();
-                setPreferredGender(v);
-                genderSheetRef.current?.dismiss();
-              }}
-              android_ripple={{ color: 'rgba(0,0,0,0.08)' }}
-              style={[
-                styles.pickerRow,
-                preferredGender === v ? { backgroundColor: colors.accent } : undefined,
-              ]}>
-              <ThemedText
-                variant="body"
-                weight={preferredGender === v ? '600' : '400'}
-                color={preferredGender === v ? colors.primary : colors.foreground}>
-                {tEnums(`gender_preference.${v}`)}
-              </ThemedText>
-            </Pressable>
-          ))}
-        </View>
-      </AppBottomSheetModal>
+      </PlatformSurface>
     </View>
   );
 }
@@ -235,6 +215,4 @@ const styles = StyleSheet.create({
   fieldGroup: { gap: 8 },
   rowFields: { flexDirection: 'row', gap: 8 },
   flex1: { flex: 1 },
-  pickerContent: { paddingHorizontal: 16, paddingVertical: 8 },
-  pickerRow: { borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12 },
 });

@@ -1,113 +1,80 @@
-import { ChevronRight } from 'lucide-react-native';
-import { useRef, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import {
-  AppBottomSheetModal as BottomSheet,
-  type BottomSheetModal,
-} from '@/components/shared/bottom-sheet';
+import { NativeIcon } from '@/components/native/icon';
+import { ThemedText } from '@/components/native/text';
 import { useTheme } from '@/design';
 import { radius } from '@/design/tokens/radius';
-import { ThemedInput } from '@/components/native/input';
-import { ThemedText } from '@/components/native/text';
+import { hapticLight } from '@/lib/haptics';
+import { registerPickerCallback } from '@/lib/picker-callbacks';
 
 type SelectPickerSheetProps = {
   values: readonly string[];
   selected: string | null;
   onSelect: (value: string | null) => void;
-  title: string;
   placeholder: string;
   searchPlaceholder: string;
-  t: (key: string) => string;
+  /** Screen title in the picker sheet. Falls back to `placeholder`. */
+  title?: string;
+  /**
+   * i18n key prefix used to translate each value into its display label.
+   * Omit to render raw values.
+   */
+  translationKeyPrefix?: string;
 };
 
 export function SelectPickerSheet({
   values,
   selected,
   onSelect,
-  title,
   placeholder,
   searchPlaceholder,
-  t,
+  title,
+  translationKeyPrefix,
 }: SelectPickerSheetProps) {
   const { colors } = useTheme();
-  const sheetRef = useRef<BottomSheetModal>(null);
-  const [search, setSearch] = useState('');
+  const router = useRouter();
+  const { t } = useTranslation('translation', { keyPrefix: translationKeyPrefix });
 
-  const filtered = values.filter((v) => {
-    if (!search.trim()) return true;
-    const label = t(v);
-    return label.toLowerCase().includes(search.trim().toLowerCase());
-  });
-
-  function handleSelect(value: string) {
-    onSelect(selected === value ? null : value);
-    sheetRef.current?.dismiss();
-    setSearch('');
+  function openPicker() {
+    hapticLight();
+    const callbackId = registerPickerCallback<string | null>(onSelect);
+    router.push({
+      pathname: '/(pickers)/pick-option',
+      params: {
+        callbackId,
+        values: JSON.stringify(values),
+        current: selected ?? '',
+        searchPlaceholder,
+        title: title ?? placeholder,
+        ...(translationKeyPrefix ? { translationKeyPrefix } : {}),
+      },
+    });
   }
 
+  const displayLabel = selected ? (translationKeyPrefix ? t(selected) : selected) : placeholder;
+
   return (
-    <>
-      <Pressable
-        onPress={() => sheetRef.current?.present()}
-        style={[
-          styles.trigger,
-          {
-            borderColor: colors.input,
-            backgroundColor: colors.background,
-          },
-        ]}>
-        <ThemedText variant="body" color={selected ? colors.foreground : colors.tertiaryForeground}>
-          {selected ? t(selected) : placeholder}
-        </ThemedText>
-        <ChevronRight size={16} color={colors.mutedForeground} />
-      </Pressable>
-
-      <BottomSheet
-        ref={sheetRef}
-        title={title}
-        scrollable={false}
-        snapPoints={['60%']}
-        enableDynamicSizing={false}
-        onDismiss={() => setSearch('')}>
-        <View style={{ flex: 1 }}>
-          <View style={styles.searchContainer}>
-            <ThemedInput
-              value={search}
-              onChangeText={setSearch}
-              placeholder={searchPlaceholder}
-              autoFocus
-            />
-          </View>
-
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => item}
-            style={{ flex: 1 }}
-            contentContainerStyle={styles.listContent}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => {
-              const isSelected = item === selected;
-              return (
-                <Pressable
-                  onPress={() => handleSelect(item)}
-                  style={[
-                    styles.listItem,
-                    isSelected && { backgroundColor: colors.primary + '1A' },
-                  ]}>
-                  <ThemedText
-                    variant="body"
-                    weight={isSelected ? '600' : '400'}
-                    color={isSelected ? colors.primary : colors.foreground}>
-                    {t(item)}
-                  </ThemedText>
-                </Pressable>
-              );
-            }}
-          />
-        </View>
-      </BottomSheet>
-    </>
+    <Pressable
+      onPress={openPicker}
+      accessibilityRole="button"
+      accessibilityLabel={displayLabel}
+      style={[
+        styles.trigger,
+        {
+          borderColor: colors.input,
+          backgroundColor: colors.background,
+        },
+      ]}>
+      <ThemedText
+        variant="body"
+        color={selected ? colors.foreground : colors.tertiaryForeground}
+        numberOfLines={1}>
+        {displayLabel}
+      </ThemedText>
+      <NativeIcon name="chevron.right" size={16} color={colors.mutedForeground} />
+    </Pressable>
   );
 }
 
@@ -120,18 +87,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radius.lg,
-  },
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 32,
-  },
-  listItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderRadius: radius.md,
   },
 });

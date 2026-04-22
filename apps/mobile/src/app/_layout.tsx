@@ -8,7 +8,6 @@ setCryptoProvider(createNativeCryptoProvider());
 
 import { hideSplash } from '@/lib/splash';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isRunningInExpoGo } from 'expo';
@@ -59,7 +58,7 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
     <View style={errorStyles.container}>
       <Text style={errorStyles.title}>Something went wrong</Text>
       <Text style={errorStyles.message}>{error.message}</Text>
-      <Pressable onPress={retry}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Try Again" onPress={retry}>
         <Text style={errorStyles.retry}>Try Again</Text>
       </Pressable>
     </View>
@@ -86,7 +85,7 @@ initializeNotificationListeners();
 function RootNavigator() {
   const [i18nLoaded, setI18nLoaded] = React.useState(false);
   const { success: migrationsSuccess, error: migrationsError } = useRunMigrations();
-  const { isLoading, isAuthenticated, needsOnboarding } = useAppSession();
+  const { session, isLoading, isAuthenticated, needsOnboarding } = useAppSession();
 
   React.useEffect(() => {
     i18nReady.then(() => setI18nLoaded(true));
@@ -121,6 +120,9 @@ function RootNavigator() {
       <Stack.Protected guard={needsOnboarding}>
         <Stack.Screen name="(onboarding)" />
       </Stack.Protected>
+      <Stack.Protected guard={!!session}>
+        <Stack.Screen name="(pickers)" options={{ presentation: 'formSheet' }} />
+      </Stack.Protected>
       <Stack.Protected guard={!isAuthenticated && !needsOnboarding}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
@@ -145,13 +147,11 @@ let RootLayout = function RootLayout() {
       <ThemeProvider>
         <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
           <I18nextProvider i18n={i18n}>
-            <BottomSheetModalProvider>
-              <SessionProvider>
-                <ToastProvider>
-                  <RootNavigator />
-                </ToastProvider>
-              </SessionProvider>
-            </BottomSheetModalProvider>
+            <SessionProvider>
+              <ToastProvider>
+                <RootNavigator />
+              </ToastProvider>
+            </SessionProvider>
           </I18nextProvider>
         </PersistQueryClientProvider>
       </ThemeProvider>

@@ -1,0 +1,67 @@
+name: CI — Email
+
+on:
+  pull_request:
+    branches: [dev, main]
+    paths:
+      - "packages/email/**"
+      - "packages/i18n/messages/**/emails.json"
+      - "packages/i18n/src/email.ts"
+      - "packages/i18n/src/types.ts"
+      - "packages/shared/src/constants.ts"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/ci-email.yml"
+  push:
+    branches: [main]
+    paths:
+      - "packages/email/**"
+      - "packages/i18n/messages/**/emails.json"
+      - "packages/i18n/src/email.ts"
+      - "packages/i18n/src/types.ts"
+      - "packages/shared/src/constants.ts"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/ci-email.yml"
+
+concurrency:
+  group: ci-email-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: email build (preview app compile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - run: corepack enable
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: email build
+        run: pnpm --filter @openhospi/email build
+
+  smoke:
+    name: Render smoke test (9 templates × 3 locales)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - run: corepack enable
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Render every template × locale through renderEmail()
+        run: pnpm --filter @openhospi/email smoke
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: email-renders-${{ github.sha }}
+          path: packages/email/dist-html/
+          retention-days: 14
+          if-no-files-found: error

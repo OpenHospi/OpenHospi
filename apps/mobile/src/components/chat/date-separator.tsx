@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@/design';
-import { radius } from '@/design/tokens/radius';
+import { PlatformSurface } from '@/components/layout/platform-surface';
 import { ThemedText } from '@/components/native/text';
+import { useTheme } from '@/design';
 
 type Props = {
   date: Date;
@@ -30,14 +30,15 @@ export function formatDateSeparator(
 
 export function DateSeparator({ date, locale, labels }: Props) {
   const { colors } = useTheme();
+  const label = formatDateSeparator(date, locale, labels);
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.pill, { backgroundColor: colors.muted }]}>
-        <ThemedText variant="caption1" color={colors.mutedForeground}>
-          {formatDateSeparator(date, locale, labels)}
+    <View style={styles.container} accessibilityRole="header" accessibilityLabel={label}>
+      <PlatformSurface variant="card" style={styles.pill}>
+        <ThemedText variant="caption1" weight="500" color={colors.secondaryForeground}>
+          {label}
         </ThemedText>
-      </View>
+      </PlatformSurface>
     </View>
   );
 }
@@ -48,7 +49,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   pill: {
-    borderRadius: radius.lg,
     paddingHorizontal: 12,
     paddingVertical: 4,
   },

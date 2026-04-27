@@ -58,7 +58,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Render every template × locale through renderEmail()
         run: pnpm --filter @openhospi/email smoke
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: email-renders-${{ github.sha }}
